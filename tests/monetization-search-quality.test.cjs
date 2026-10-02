@@ -8,24 +8,15 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const SLOT = '8250492620';
+const { openingTags } = require('./helpers/markup-contract.cjs');
 
-test('記事・LP・ゲームの管理広告は有効な広告ユニットIDを持つ', () => {
-  const targets = [
-    ['articles/2025-12-25-campaign.html', 'article-ad-container'],
-    ['status/gold/index.html', 'lp-ad-container'],
-    ['games/fgo/index.html', 'game-ad-container'],
-    ['en/games/fgo/index.html', 'game-ad-container']
-  ];
-  for (const [targetFile, klass] of targets) {
-    const html = read(targetFile);
-    const marker = 'class="' + klass + '"';
-    const index = html.indexOf(marker);
-    assert.ok(index >= 0, targetFile + ': 管理広告枠がありません');
-    const block = html.slice(index, index + 900);
-    assert.ok(block.includes('data-ad-slot="' + SLOT + '"'), targetFile + ': data-ad-slot がありません');
+test("記事・LP・ゲームの管理広告は有効な広告ユニットIDを持つ", () => {
+  for (const targetFile of ['articles/2025-12-25-campaign.html', 'status/gold/index.html', 'games/fgo/index.html', 'en/games/fgo/index.html']) {
+    const ads = openingTags(read(targetFile)).filter(tag => tag.tag === 'ins' && (tag.attrs.class || '').split(/\s+/).includes('adsbygoogle'));
+    assert.ok(ads.length > 0, targetFile + ': 広告要素がない');
+    for (const ad of ads) assert.equal(ad.attrs['data-ad-slot'], SLOT, targetFile);
   }
 });
-
 
 test('記事・LP・ゲームの広告初期化経路が共通runtimeと広告Consent境界に接続される', () => {
   for (const [file, scripts] of [
@@ -42,15 +33,6 @@ test('記事・LP・ゲームの広告初期化経路が共通runtimeと広告Co
   const sharedRuntime = read('js/third-party.js');
   assert.match(articleRuntime, /PlayPointConsent\.whenAdsAllowed\s*\(/, '記事広告が広告Consent境界を通っていません');
   assert.match(sharedRuntime, /runAfterConsent\([^,\n]+,\s*['"]ads['"]\)/, 'LP・ゲーム広告が広告Consent用途を指定していません');
-});
-
-test('記事・ブログGA4はconfig後にreadinessを立てる', () => {
-  const source = read('blog/components.js');
-  const configIndex = source.indexOf("window.gtag('config', GA_MEASUREMENT_ID)");
-  const readyIndex = source.indexOf('window.PlayPointAnalytics.markAnalyticsReady()');
-  assert.ok(configIndex >= 0);
-  assert.ok(readyIndex > configIndex);
-  assert.ok(!source.includes('window.PlayPointAnalytics.flushPending()'));
 });
 
 test('未確認の未来イベント記事は検索品質保留としてnoindex・サイトマップ除外する', () => {
@@ -109,7 +91,6 @@ test('広告生成スクリプト自体もdata-ad-slotを保持する', () => {
     assert.ok(read(file).includes('data-ad-slot=\"' + SLOT + '\"'), file);
   }
 });
-
 
 test('ゲーム計算機の国別公式レートは現行Google表と一致する', () => {
   const generator = read('scripts/generate-game-simulators.cjs');

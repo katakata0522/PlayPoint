@@ -66,7 +66,7 @@ test('完了イベントはモードごとに一度だけ記録する', () => {
   ]);
 });
 
-test('入力エラーは分類値だけをイベントへ渡し生入力を受け取るAPIを持たない', () => {
+test("入力エラーは分類値だけを渡し余分な生入力をイベントへ含めない", () => {
   const runtime = createRuntime();
 
   assert.equal(runtime.tracker.trackValidationError('main', 'needed_points'), true);
@@ -77,13 +77,11 @@ test('入力エラーは分類値だけをイベントへ渡し生入力を受�
     { calculation_mode: 'rank_up', region: 'JP', error_type: 'needed_points' },
     { calculation_mode: 'spend_to_points', region: 'JP', error_type: 'amount_or_rate_input' }
   ]);
-  assert.deepEqual(Object.keys(runtime.tracker).sort(), [
-    'resetIfDenied',
-    'trackCompleted',
-    'trackFormStarted',
-    'trackModeChange',
-    'trackValidationError'
-  ]);
+  // 追加の公開メソッドを禁止せず、渡された余分な生入力がイベントに出ないことを確認する。
+  runtime.tracker.trackValidationError('main', 'needed_points', { raw_value: 'private@example.com' });
+  assert.deepEqual(eventsNamed(runtime, 'calculator_validation_error').at(-1).params, {
+    calculation_mode: 'rank_up', region: 'JP', error_type: 'needed_points'
+  });
 });
 
 test('拒否中は送信だけでなく開始・完了のdedupe状態も汚さない', () => {

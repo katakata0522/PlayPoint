@@ -12,7 +12,7 @@ function runtime(googleValues = null) {
   let timeoutCallback = null;
   const googleCallbacks = [];
   const context = {
-    console,
+    console: { warn() {}, error() {} },
     dataLayer: [],
     CustomEvent: class CustomEvent { constructor(type, init = {}) { this.type = type; this.detail = init.detail; } },
     document: { dispatchEvent(event) { events.push(event); } },
@@ -57,13 +57,17 @@ const grantedGoogleValues = {
 };
 
 test('Google Privacy & MessagingのConsent Mode値を一次情報として使用する', () => {
-  const { context, fireGoogleFc } = runtime(grantedGoogleValues);
+  const { context, fireGoogleFc, listener } = runtime(grantedGoogleValues);
   assert.equal(context.gtag_enable_tcf_support, true);
   assert.equal(context.PlayPointConsent.getStatus(), 'pending');
   fireGoogleFc();
   assert.equal(context.PlayPointConsent.getSource(), 'googlefc');
   assert.equal(context.PlayPointConsent.getStatus(), 'granted');
   assert.equal(context.PlayPointConsent.getAdStatus(), 'granted');
+  // GoogleFCを優先し、矛盾するTCF拒否で上書きしない。
+  listener()({eventStatus:'useractioncomplete',gdprApplies:true,purpose:{consents:{1:false}}}, true);
+  assert.equal(context.PlayPointConsent.getStatus(), 'granted');
+  assert.equal(context.PlayPointConsent.getSource(), 'googlefc');
   assert.deepEqual(JSON.parse(JSON.stringify(context.PlayPointConsent.getConsentState())), {
     analytics_storage: 'granted',
     ad_storage: 'granted',
@@ -88,6 +92,8 @@ test('解析と広告の許可を別々にゲートする', () => {
   assert.equal(context.PlayPointConsent.getAdStatus(), 'denied');
   assert.equal(analyticsCalls, 1);
   assert.equal(adCalls, 0);
+  fireGoogleFc();
+  assert.equal(analyticsCalls, 1, '確定通知の重複で待機callbackを再実行しない');
 });
 
 test('TCFフォールバックではPurpose 7拒否をad_user_dataへ反映する', () => {

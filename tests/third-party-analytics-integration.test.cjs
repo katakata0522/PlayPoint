@@ -239,6 +239,13 @@ test('AdSense取得失敗時は失敗scriptを再利用せず実際に一度だ�
   assert.equal(scriptsMatching(runtime, 'adsbygoogle.js').length, 2, '失敗済みscriptを既存扱いして再取得していません');
 
   assert.equal(runtime.timerCount, 0, '成功後も追加のAdSense再試行を予約しています');
+  const failed = createRuntime({ readyState: 'loading', adsenseFailures: 2 });
+  failed.fireDocument('DOMContentLoaded');
+  await settleAsyncWork();
+  failed.runNextTimer();
+  await settleAsyncWork();
+  assert.equal(scriptsMatching(failed, 'adsbygoogle.js').length, 2);
+  assert.equal(failed.timerCount, 0, '継続障害で無制限retryをしてはいけない');
 });
 
 test('別経路でGA4初期化済みなら二重configしない', async () => {

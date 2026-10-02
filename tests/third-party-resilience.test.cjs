@@ -170,7 +170,9 @@ function createRuntime({
   const pendingConsent = [];
   const logs = [];
   const gtagCalls = [];
-  const core = { installGtagBridge() {}, markAnalyticsReady() {} };
+  const core = { installGtagBridge() {}, markAnalyticsReady() {
+    gtagCalls.push(['ready']);
+  } };
   const consent = {
     whenGranted(callback) { gate('analytics', callback); },
     whenAnalyticsGranted(callback) { gate('analytics', callback); },
@@ -386,6 +388,9 @@ test('blog広告: 解析は依然として解析モジュール取得完了を�
   r.completeCore();
   await settle();
   assert.equal(r.gtagCalls.filter(call => call[0] === 'config').length, 1);
+  const configIndex = r.gtagCalls.findIndex(call => call[0] === 'config');
+  assert.equal(r.gtagCalls.filter(call => call[0] === 'ready').length, 1);
+  assert.ok(configIndex < r.gtagCalls.findIndex(call => call[0] === 'ready'), 'GA設定より先に保留イベントを開放してはいけない');
   assert.equal(r.context.adsbygoogle.length, 1);
 });
 

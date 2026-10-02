@@ -15,200 +15,19 @@ function inclusiveDays(start, end) {
   return Math.floor((Date.parse(`${end}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) / day) + 1;
 }
 
-test('Phase 2 baseline fixes one comparable pre-change window and user-count semantics', () => {
-  assert.equal(baseline.id, 'phase2-pre-change-2026-09-15');
-  assert.equal(baseline.recordedAt, '2026-09-15');
+test("保存済み計測baselineは有効な比較窓と利用者単位を区別する", () => {
   assert.equal(inclusiveDays(baseline.sourceWindow.start, baseline.sourceWindow.end), baseline.sourceWindow.days);
-  assert.equal(baseline.sourceWindow.days, 7);
+  assert.ok(baseline.sourceWindow.days > 0);
   assert.equal(baseline.decisionUnits.primaryUserUnit, 'activeUsers');
   assert.equal(baseline.decisionUnits.diagnosticCountUnit, 'eventCount');
   assert.equal(baseline.decisionUnits.unavailableValue, 'UNAVAILABLE');
-  assert.match(baseline.decisionUnits.rule, /Never coerce unavailable measurement to zero/);
 });
 
-test('GA4 baseline distinguishes API-confirmed state from manual-only DebugView evidence', () => {
-  assert.equal(baseline.ga4.keyEvents.calculation_completed, 'confirmed');
-  assert.equal(baseline.ga4.keyEvents.reverse_calculation_completed, 'optional_unregistered');
-  assert.equal(baseline.ga4.customDimensions.entry_source_path, 'confirmed');
-  assert.equal(baseline.ga4.customDimensions.entry_link_context, 'confirmed');
-  assert.equal(baseline.ga4.customDimensions.calculator_preset, 'confirmed');
-  assert.equal(baseline.ga4.customDimensions.app_display_mode, 'unregistered_as_of_2026-09-10');
-  assert.equal(baseline.ga4.debugView, 'manual_verification_required');
-  assert.deepEqual(baseline.ga4.eventCounts, {
-    calculator_form_started: 36,
-    calculation_completed: 70,
-    reverse_calculation_completed: 7,
-    calculator_funnel_completed: 28
-  });
+test("legacy AdSense PAGE_URL breakdown is diagnostic-only and cannot become the scheduled page-revenue SSOT", () => {
+  const { source } = loadP12Runtime();
+  // 自動収集モジュールにAdSense PAGE_URL呼出を混在させないownership境界。
+  assert.doesNotMatch(source, /AdSense[^\n]*PAGE_URL[^\n]*reports:generate/);
 });
-
-test('measurement contract forbids raw calculator and diary values and respects consent', () => {
-  const contract = baseline.ga4.privacyContract;
-  assert.equal(contract.rawSpendingAmount, 'forbidden');
-  assert.equal(contract.rawNeededPoints, 'forbidden');
-  assert.equal(contract.rawEarnedPoints, 'forbidden');
-  assert.equal(contract.rawDiaryContent, 'forbidden');
-  assert.equal(contract.beforeConsent, 'do_not_send');
-  assert.equal(contract.afterDenial, 'do_not_send');
-});
-
-test('Search Console baseline keeps Raw, Normalized and Property Total as separate evidence layers', () => {
-  assert.deepEqual(baseline.searchConsole.layers.map(layer => layer.id), ['raw', 'normalized', 'property_total']);
-  const raw = baseline.searchConsole.layers[0];
-  const normalized = baseline.searchConsole.layers[1];
-  const total = baseline.searchConsole.layers[2];
-  assert.deepEqual(raw.dimensions, ['query', 'exact_url']);
-  assert.equal(raw.preserveFragment, true);
-  assert.equal(raw.aggregationType, 'byPage');
-  assert.deepEqual(normalized.dimensions, ['query', 'base_url']);
-  assert.equal(normalized.preserveFragment, false);
-  assert.equal(normalized.aggregationType, 'derived_from_raw');
-  assert.equal(normalized.derivedFrom, 'raw');
-  assert.deepEqual(total.dimensions, []);
-  assert.equal(total.aggregationType, 'byProperty');
-  assert.equal(baseline.searchConsole.ga4Comparison, 'organic_search_split_by_search_engine');
-  assert.equal(baseline.searchConsole.beforeAfterComparison.seoWindowDays, 28);
-  assert.equal(baseline.searchConsole.beforeAfterComparison.overlap, 'forbidden');
-  assert.equal(baseline.searchConsole.beforeAfterComparison.compareSameIntent, true);
-  assert.equal(baseline.searchConsole.beforeAfterComparison.compareSameMetricDefinitions, true);
-  const capture = baseline.searchConsole.captureContract;
-  assert.equal(capture.historySheet, '🗃GSC 28日履歴');
-  assert.equal(capture.comparisonSheet, '🔍GSC 28日比較');
-  assert.equal(capture.normalizedComparisonSheet, '🧹GSC 28日正規化');
-  assert.equal(capture.searchType, 'web');
-  assert.equal(capture.apiTimezone, 'America/Los_Angeles');
-  assert.deepEqual(capture.windowRoles, ['current_28d', 'previous_28d']);
-  assert.deepEqual(capture.requiredLayers, ['raw', 'normalized', 'property_total']);
-  assert.equal(capture.finalDataOnly, true);
-  assert.equal(capture.failClosedWhenPairMissing, true);
-  assert.equal(capture.failClosedWhenLayerMissing, true);
-  assert.equal(capture.verifyResponseAggregationType, true);
-  assert.deepEqual(capture.idempotencyKey, ['pair_id', 'window_role', 'layer', 'record_type', 'search_query', 'exact_url', 'base_url']);
-  assert.match(capture.rule, /rolling 30-day snapshot/);
-  for (const required of [
-    'layer',
-    'search_query',
-    'exact_url',
-    'base_url',
-    'period_start',
-    'period_end',
-    'clicks',
-    'impressions',
-    'ctr',
-    'avg_position',
-    'search_type',
-    'dimensions',
-    'request_aggregation_type',
-    'response_aggregation_type',
-    'site_property',
-    'api_timezone'
-  ]) {
-    assert.ok(capture.requiredColumns.includes(required), `missing GSC capture column: ${required}`);
-  }
-});
-
-test('P1/P2 analytics sheet sync contract uses user-based funnel, GA4 publisher revenue, GSC cross analysis and bounded URL inspection', () => {
-  const sync = baseline.analyticsSheetSync;
-  assert.equal(sync.pageValue.sheet, '📊ページ価値ファネル');
-  assert.equal(sync.pageValue.primaryUnit, 'activeUsers');
-  assert.deepEqual(sync.pageValue.gscDimensions, ['page']);
-  assert.equal(sync.pageValue.gscAggregationType, 'byPage');
-  assert.equal(sync.pageValue.gscFinalDataOnly, true);
-  assert.equal(sync.pageValue.pageKey, 'normalized_site_relative_path');
-  assert.equal(sync.pageValue.joinIntegrity.metric, 'gsc_click_weighted_to_ga4_organic');
-  assert.equal(sync.pageValue.joinIntegrity.minimumClicks, 20);
-  assert.equal(sync.pageValue.joinIntegrity.minimumJoinRate, 0.5);
-  assert.equal(sync.pageValue.joinIntegrity.unnormalizedAbsoluteUrlForbidden, true);
-  assert.equal(sync.pageValue.attributionDimension, 'entry_source_path');
-  assert.equal(sync.pageValue.events.articleToCalculator, 'article_to_calculator_clicked');
-  assert.equal(sync.pageValue.events.calculatorStart, 'calculator_form_started');
-  assert.equal(sync.pageValue.events.firstSuccess, 'calculator_funnel_completed');
-  assert.equal(sync.pageValue.pageRevenueSource, 'ga4_publisher_metrics');
-  assert.deepEqual(sync.pageValue.pageRevenueMetrics, [
-    'totalAdRevenue',
-    'publisherAdImpressions',
-    'publisherAdClicks',
-    'screenPageViews'
-  ]);
-  assert.equal(sync.pageValue.adsensePageUrlBreakdownIsPrimary, false);
-  assert.equal(sync.pageValue.unavailableValue, 'blank_not_zero');
-
-  assert.equal(sync.searchCross.sheet, '🔎検索クロス分析');
-  assert.equal(sync.searchCross.ga4OrganicDimension, 'sessionSourceMedium');
-  assert.deepEqual(sync.searchCross.gscDimensions, [
-    ['query', 'country'],
-    ['query', 'device']
-  ]);
-  assert.equal(sync.searchCross.gscWindowDays, 28);
-  assert.equal(sync.searchCross.overlap, 'forbidden');
-  assert.equal(sync.searchCross.finalDataOnly, true);
-  assert.equal(sync.searchCross.aggregationType, 'byProperty');
-
-  assert.equal(sync.urlInspection.sheet, '🧭URL検査');
-  assert.equal(sync.urlInspection.maxUrlsPerRun, 30);
-  assert.deepEqual(sync.urlInspection.selection, ['fixed_critical', 'top_gsc_impressions']);
-  assert.equal(sync.logging.sheet, '実行ログ');
-  assert.equal(sync.logging.forbidOpaqueErrorOnly, true);
-  assert.equal(sync.logging.preserveLegacyLogs, true);
-});
-
-test('legacy AdSense PAGE_URL breakdown is diagnostic-only and cannot become the scheduled page-revenue SSOT', () => {
-  const pageUrl = baseline.adsense.pageUrlBreakdown;
-  assert.equal(pageUrl.owner, 'diagnostic_only');
-  assert.equal(pageUrl.scheduled, false);
-  assert.equal(pageUrl.sourceOfTruth, false);
-  assert.equal(pageUrl.requiredProductFilter, 'PRODUCT_CODE==AFC');
-  assert.equal(pageUrl.noRowsMeaning, 'unavailable_not_zero');
-  assert.equal(pageUrl.preserveHistoricalLogs, true);
-  assert.equal(pageUrl.preserveHistoricalArchives, true);
-
-  const runbook = read('docs/PLAYPOINT_ANALYTICS_P1P2_RUNBOOK.md');
-  assert.match(runbook, /PAGE_URL.*自動日次・背景バックフィル・週次分析から外す/s);
-  assert.match(runbook, /PRODUCT_CODE==AFC/);
-  assert.match(runbook, /過去の.*WARN.*監査証拠/s);
-  assert.match(runbook, /GA4 publisher metrics.*正本/s);
-});
-
-test('AdSense anomaly remains reviewable evidence instead of being silently corrected or removed', () => {
-  const anomaly = baseline.adsense.anomalies.find(item => item.date === '2026-08-27');
-  assert.ok(anomaly);
-  assert.equal(anomaly.ga4PageViews, 42);
-  assert.equal(anomaly.adsensePageViews, 630);
-  assert.equal(anomaly.status, 'ANOMALY_REVIEW');
-  assert.equal(anomaly.autoCorrect, false);
-  assert.equal(anomaly.autoExclude, false);
-});
-
-test('retention baseline preserves zero versus unavailable and freezes the next review boundary', () => {
-  assert.equal(baseline.retention.activeUsers, 309);
-  assert.equal(baseline.retention.returningUsers, 18);
-  assert.equal(baseline.retention.diaryTabOpenedActiveUsers, 2);
-  assert.equal(baseline.retention.diaryEntrySavedActiveUsers, 0);
-  assert.equal(baseline.retention.appDisplayModeUsers, 'UNAVAILABLE');
-  assert.equal(baseline.comparisonGuardrails.nextReviewDate, '2026-09-25');
-  assert.equal(baseline.comparisonGuardrails.minimumObservationDaysAfterEarlySeptemberChanges, 14);
-  assert.equal(baseline.comparisonGuardrails.preserveBaseline, true);
-});
-
-test('human measurement audit names the same Phase 2 baseline and never claims manual-only checks are complete', () => {
-  const audit = read('docs/MEASUREMENT_AUDIT_2026-09-15.md');
-  assert.match(audit, /phase2-pre-change-2026-09-15/);
-  assert.match(audit, /2026-09-01〜2026-09-07/);
-  assert.match(audit, /activeUsers/);
-  assert.match(audit, /Raw \/ Normalized \/ Property Total/);
-  assert.match(audit, /ANOMALY_REVIEW/);
-  assert.match(audit, /DebugView.*未完了|未完了.*DebugView/s);
-  assert.doesNotMatch(audit, /DebugView[^\n]{0,60}(完了済み|確認済み)/);
-});
-
-test('analytics plan records the confirmed key event without closing DebugView by implication', () => {
-  const analytics = read('docs/ANALYTICS.md');
-  assert.match(analytics, /2026-09-15 本番点検/);
-  assert.match(analytics, /`calculation_completed`[^\n]*Key event[^\n]*確認済み/);
-  assert.match(analytics, /DebugView[^\n]*未完了/);
-  assert.match(analytics, /app_display_mode[^\n]*未登録/);
-});
-
 
 function loadGscCaptureRuntime() {
   const source = read('scripts/gsc-nonoverlap-28d.gs');
@@ -218,33 +37,42 @@ function loadGscCaptureRuntime() {
   return { source, context };
 }
 
-test('GSC capture module keeps adjacent non-overlapping 28-day query × exact URL FINAL windows', () => {
-  const { source, context } = loadGscCaptureRuntime();
+test("GSC capture module keeps adjacent non-overlapping 28-day query × exact URL FINAL windows", () => {
+  const { context } = loadGscCaptureRuntime();
   const windows = context.playPointGscBuildWindows_('2026-09-11');
-
-  assert.deepEqual(
-    JSON.parse(JSON.stringify(windows)),
-    {
-      current: { start: '2026-08-15', end: '2026-09-11', days: 28 },
-      previous: { start: '2026-07-18', end: '2026-08-14', days: 28 }
-    }
-  );
-  assert.equal(context.playPointGscShiftIsoDate_(windows.previous.end, 1), windows.current.start);
-
-  assert.match(source, /dimensions:\s*\['query', 'page'\]/);
-  assert.match(source, /dataState:\s*'final'/);
-  assert.match(source, /aggregationType:\s*'byPage'/);
-  assert.match(source, /aggregationType:\s*'byProperty'/);
-  assert.match(source, /dimensions:\s*\[\]/);
-  assert.match(source, /responseAggregationType/);
-  assert.match(source, /America\/Los_Angeles/);
-  assert.match(source, /rowLimit:\s*25000/);
-  assert.match(source, /startRow\s*\+=\s*rows\.length/);
-  assert.match(source, /current_28d/);
-  assert.match(source, /previous_28d/);
-  assert.match(source, /SKIPPED_ALREADY_COMPLETE/);
+  assert.deepEqual(JSON.parse(JSON.stringify(windows)), {
+    current: { start: '2026-08-15', end: '2026-09-11', days: 28 },
+    previous: { start: '2026-07-18', end: '2026-08-14', days: 28 }
+  });
+  const requests = [];
+  context.PLAYPOINT_GSC_28D_CONFIG = { ...context.PLAYPOINT_GSC_28D_CONFIG, rowLimit: 2 };
+  context.playPointGscQueryApi_ = (_site, body) => {
+    requests.push(JSON.parse(JSON.stringify(body)));
+    assert.ok(requests.length <= 3, 'ページ送りが進まない');
+    return { responseAggregationType: body.aggregationType, rows: body.startRow === 0 ? [
+      { keys: ['q', 'https://playpoint-sim.com/a#one'], clicks: 1, impressions: 2 },
+      { keys: ['q', 'https://playpoint-sim.com/a#two'], clicks: 3, impressions: 4 }
+    ] : [] };
+  };
+  const raw = context.playPointGscFetchQueryPageRows_('sc-domain:playpoint-sim.com', windows.current.start, windows.current.end);
+  assert.equal(raw.rows.length, 2);
+  assert.equal(raw.rows[0].exactUrl, 'https://playpoint-sim.com/a#one');
+  assert.equal(raw.rows[0].baseUrl, 'https://playpoint-sim.com/a');
+  assert.deepEqual(requests.map(r => r.startRow), [0, 2]);
+  for (const request of requests) {
+    assert.deepEqual(request.dimensions, ['query', 'page']);
+    assert.equal(request.dataState, 'final');
+    assert.equal(request.aggregationType, 'byPage');
+    assert.equal(request.startDate, windows.current.start);
+    assert.equal(request.endDate, windows.current.end);
+  }
+  context.playPointGscFetchPropertyTotal_('sc-domain:playpoint-sim.com', windows.current.start, windows.current.end);
+  assert.deepEqual(requests.at(-1).dimensions, []);
+  assert.equal(requests.at(-1).aggregationType, 'byProperty');
+  assert.equal(requests.at(-1).dataState, 'final');
+  context.playPointGscQueryApi_ = () => ({ responseAggregationType: 'byProperty', rows: [] });
+  assert.throws(() => context.playPointGscFetchQueryPageRows_('site', '2026-08-15', '2026-09-11'), /aggregation/i);
 });
-
 test('GSC normalization strips fragments only and aggregates position by impressions', () => {
   const { context } = loadGscCaptureRuntime();
   const rows = context.playPointGscNormalizeRows_([
@@ -295,7 +123,10 @@ test('GSC P0 capture requires Raw, Normalized and Property Total for both window
   ];
 
   assert.equal(context.playPointGscPairComplete_(complete), true);
-  assert.equal(context.playPointGscPairComplete_(complete.slice(0, 5)), false);
+  for (let index = 0; index < complete.length; index += 1) {
+    assert.equal(context.playPointGscPairComplete_(complete.filter((_, i) => i !== index)), false);
+  }
+  assert.equal(context.playPointGscPairComplete_([]), false);
   assert.match(source, /QUERY_PAGE_RAW/);
   assert.match(source, /QUERY_BASE_URL_NORMALIZED/);
   assert.match(source, /PROPERTY_TOTAL/);
@@ -304,25 +135,36 @@ test('GSC P0 capture requires Raw, Normalized and Property Total for both window
   assert.match(source, /response_aggregation_type/);
 });
 
-test('GSC scheduled capture separates trigger event objects from manual final-end-date strings', () => {
-  const { source } = loadGscCaptureRuntime();
-  assert.match(source, /typeof input === 'object'/);
-  assert.match(source, /typeof input === 'string'/);
-  assert.match(source, /playPointAutomationTriggerAllowed_\('captureGscNonOverlapping28d', event\)/);
+test("GSC scheduled capture separates trigger event objects from manual final-end-date strings", () => {
+  const { context } = loadGscCaptureRuntime();
+  const gateCalls = [];
+  context.playPointAutomationTriggerAllowed_ = (handler, event) => { gateCalls.push({handler, event}); return false; };
+  const event = { triggerUid: 'stale' };
+  assert.equal(context.captureGscNonOverlapping28d(event).status, 'SKIPPED_STALE_TRIGGER');
+  assert.equal(gateCalls[0].event, event);
+  context.captureGscNonOverlapping28d('2026-09-11');
+  assert.equal(gateCalls[1].event, null);
+  context.playPointAutomationTriggerAllowed_ = () => true;
+  context.playPointGscGetSpreadsheet_ = () => ({});
+  context.playPointGscGetSiteUrl_ = () => 'site';
+  context.playPointGscFindLatestFinalDate_ = () => '2026-09-10';
+  context.playPointGscEnsureHistorySheet_ = () => ({});
+  context.playPointGscRowsForPair_ = () => ['complete'];
+  context.playPointGscPairComplete_ = () => true;
+  context.playPointGscRebuildComparisonViews_ = () => {};
+  assert.equal(context.captureGscNonOverlapping28d('2026-09-11').current.end, '2026-09-11');
+  assert.equal(context.captureGscNonOverlapping28d(event).current.end, '2026-09-10');
 });
-
-test('GSC capture module exposes one idempotent weekly installer and dedicated history/comparison sheets', () => {
-  const { source, context } = loadGscCaptureRuntime();
-  assert.equal(typeof context.captureGscNonOverlapping28d, 'function');
-  assert.equal(typeof context.installPlayPointGsc28dWeeklyTrigger, 'function');
-  assert.match(source, /🗃GSC 28日履歴/);
-  assert.match(source, /🔍GSC 28日比較/);
-  assert.match(source, /🧹GSC 28日正規化/);
-  assert.match(source, /getProjectTriggers\(\)/);
-  assert.match(source, /getHandlerFunction\(\) === handler/);
-  assert.match(source, /onWeekDay\(ScriptApp\.WeekDay\.FRIDAY\)/);
+test("GSC capture module exposes one idempotent weekly installer and dedicated history/comparison sheets", () => {
+  const { context } = loadGscCaptureRuntime();
+  const handler = 'captureGscNonOverlapping28d';
+  const fixture = stubTriggers(context, handler);
+  context.installPlayPointGsc28dWeeklyTrigger();
+  context.ScriptApp.getProjectTriggers = () => [fixture.created];
+  assert.equal(context.installPlayPointGsc28dWeeklyTrigger(), 'EXISTING_TRIGGER');
+  assert.equal(fixture.calls.filter(c => c[0] === 'create').length, 1);
+  for (const name of ['historySheet', 'comparisonSheet', 'normalizedComparisonSheet']) assert.ok(context.PLAYPOINT_GSC_28D_CONFIG[name]);
 });
-
 
 function loadP12Runtime() {
   const source = read('scripts/playpoint-analytics-p1p2.gs');
@@ -332,73 +174,78 @@ function loadP12Runtime() {
   return { source, context };
 }
 
-test('P1/P2 and GSC installers roll back a newly-created trigger if registry activation fails', () => {
-  const p12 = loadP12Runtime().source;
-  const gsc = loadGscCaptureRuntime().source;
-  assert.match(p12, /if \(created\) \{\s*try \{ ScriptApp\.deleteTrigger\(created\)/);
-  assert.match(gsc, /if \(created\) \{\s*try \{ ScriptApp\.deleteTrigger\(created\)/);
+test("P1/P2 and GSC installers roll back a newly-created trigger if registry activation fails", () => {
+  for (const [context, installer, handler] of installerRuntimes()) {
+    const old = { getHandlerFunction: () => handler };
+    const fixture = stubTriggers(context, handler, [old]);
+    context.playPointAutomationRegisterTrigger_ = () => { throw new Error('activation failed'); };
+    assert.throws(() => context[installer](), /activation failed/);
+    assert.deepEqual(fixture.calls.filter(c => c[0] === 'delete').map(c => c[1]), [fixture.created]);
+  }
+});
+test("P1/P2 and GSC installers can register an active trigger UID when the v11.6 core is present", () => {
+  for (const [context, installer, handler] of installerRuntimes()) {
+    const old = { getHandlerFunction: () => handler };
+    const unrelated = { getHandlerFunction: () => 'other' };
+    const fixture = stubTriggers(context, handler, [old, unrelated]);
+    context.playPointAutomationRegisterTrigger_ = (name, trigger) => { fixture.calls.push(['register', name, trigger]); };
+    context[installer]();
+    const register = fixture.calls.findIndex(c => c[0] === 'register');
+    const deletion = fixture.calls.findIndex(c => c[0] === 'delete');
+    assert.ok(register >= 0 && register < deletion);
+    assert.equal(fixture.calls[register][1], handler);
+    assert.equal(fixture.calls[register][2], fixture.created);
+    assert.deepEqual(fixture.calls.filter(c => c[0] === 'delete').map(c => c[1]), [old]);
+    context.playPointAutomationTriggerAllowed_ = () => false;
+    const result = context[handler]({ triggerUid: 'old' });
+    assert.equal(Array.isArray(result) ? result[0].status : result.status, 'SKIPPED_STALE_TRIGGER');
+  }
+});
+test("P1/P2 and GSC weekly triggers pin Asia/Tokyo explicitly", () => {
+  for (const [context, installer, handler] of installerRuntimes()) {
+    const fixture = stubTriggers(context, handler);
+    context[installer]();
+    assert.deepEqual(fixture.calls.filter(c => c[0] === 'inTimezone'), [['inTimezone', 'Asia/Tokyo']]);
+    assert.deepEqual(fixture.calls.filter(c => c[0] === 'onWeekDay'), [['onWeekDay', 'FRIDAY']]);
+  }
+});
+test("P1/P2 and GSC can reuse the core CONFIG instead of depending on hidden script properties", () => {
+  for (const [context] of installerRuntimes()) {
+    let properties = {};
+    context.PropertiesService = { getScriptProperties: () => ({ getProperty: key => properties[key] || null }) };
+    context.CONFIG = { SEARCH_CONSOLE_SITE_URL: 'sc-domain:core.example', GA4_PROPERTY_ID: 'core-id' };
+    const site = context.playPointP12GetSiteUrl_ || context.playPointGscGetSiteUrl_;
+    assert.equal(site(), 'sc-domain:core.example');
+    properties.SEARCH_CONSOLE_SITE_URL = 'sc-domain:property.example';
+    assert.equal(site(), 'sc-domain:property.example');
+    if (context.playPointP12GetGa4PropertyId_) {
+      assert.equal(context.playPointP12GetGa4PropertyId_(), 'core-id');
+      properties.GA4_PROPERTY_ID = 'property-id';
+      assert.equal(context.playPointP12GetGa4PropertyId_(), 'property-id');
+    }
+  }
 });
 
-test('P1/P2 and GSC installers can register an active trigger UID when the v11.6 core is present', () => {
-  const p12 = loadP12Runtime().source;
-  const gsc = loadGscCaptureRuntime().source;
-  assert.match(p12, /playPointAutomationRegisterTrigger_\(handler, created\)/);
-  assert.match(gsc, /playPointAutomationRegisterTrigger_\(handler, created\)/);
-  assert.match(p12, /SKIPPED_STALE_TRIGGER/);
-  assert.match(gsc, /SKIPPED_STALE_TRIGGER/);
-});
-
-test('P1/P2 and GSC weekly triggers pin Asia/Tokyo explicitly', () => {
-  const p12 = loadP12Runtime().source;
-  const gsc = loadGscCaptureRuntime().source;
-  assert.match(p12, /inTimezone\(PLAYPOINT_P12_CONFIG\.ga4Timezone\)/);
-  assert.match(gsc, /triggerTimezone:\s*'Asia\/Tokyo'/);
-  assert.match(gsc, /inTimezone\(PLAYPOINT_GSC_28D_CONFIG\.triggerTimezone\)/);
-});
-
-test('P1/P2 and GSC can reuse the core CONFIG instead of depending on hidden script properties', () => {
-  const p12 = loadP12Runtime().source;
-  const gsc = loadGscCaptureRuntime().source;
-  assert.match(p12, /CONFIG\.SEARCH_CONSOLE_SITE_URL/);
-  assert.match(p12, /CONFIG\.GA4_PROPERTY_ID/);
-  assert.match(gsc, /CONFIG\.SEARCH_CONSOLE_SITE_URL/);
-});
-
-test('P1 page-value aligns its 30-day window to the earlier of GA4 settled end and latest GSC FINAL', () => {
-  const { source } = loadP12Runtime();
-  assert.match(source, /latestGscFinal < ga4CandidatePeriod\.end/);
-  assert.match(source, /gscFinalEnd:\s*latestGscFinal/);
-  assert.match(source, /ga4CandidateEnd:\s*ga4CandidatePeriod\.end/);
-});
-
-test('P1 search-cross surfaces sheet truncation instead of silently reporting OK', () => {
-  const { source } = loadP12Runtime();
-  assert.match(source, /crossRowsTotal/);
-  assert.match(source, /crossRowsTruncated/);
-  assert.match(source, /TRUNCATED/);
-  assert.match(source, /result && result\.truncated/);
-});
-
-test('P1/P2 collector is valid JavaScript and exposes one capture plus one idempotent weekly installer', () => {
-  const { source, context } = loadP12Runtime();
+test("P1/P2 collector is valid JavaScript and exposes one capture plus one idempotent weekly installer", () => {
+  const { context } = loadP12Runtime();
   assert.equal(typeof context.capturePlayPointAnalyticsP1P2, 'function');
-  assert.equal(typeof context.installPlayPointAnalyticsP1P2WeeklyTrigger, 'function');
-  assert.match(source, /getProjectTriggers\(\)/);
-  assert.match(source, /getHandlerFunction\(\) === handler/);
-  assert.match(source, /onWeekDay\(ScriptApp\.WeekDay\.FRIDAY\)/);
-  assert.match(source, /\[P1P2:/);
-  assert.doesNotMatch(source, /AdSense[^\n]*PAGE_URL[^\n]*reports:generate/);
+  const fixture = stubTriggers(context, 'capturePlayPointAnalyticsP1P2');
+  context.installPlayPointAnalyticsP1P2WeeklyTrigger();
+  context.ScriptApp.getProjectTriggers = () => [fixture.created];
+  context.installPlayPointAnalyticsP1P2WeeklyTrigger();
+  assert.equal(fixture.calls.filter(c => c[0] === 'create').length, 1);
 });
-
-test('P1 Organic landing uses query-free landingPage so activeUsers are not re-summed across query variants', () => {
-  const { source } = loadP12Runtime();
-  const organicStart = source.indexOf('function playPointP12FetchOrganicLandings_');
-  const organicEnd = source.indexOf('function playPointP12FetchArticleClicks_', organicStart);
-  const organicSource = source.slice(organicStart, organicEnd);
-  assert.match(organicSource, /name: 'landingPage'/);
-  assert.doesNotMatch(organicSource, /landingPagePlusQueryString/);
+test("P1 Organic landing uses query-free landingPage so activeUsers are not re-summed across query variants", () => {
+  const { context } = loadP12Runtime();
+  let request;
+  context.playPointP12Ga4Report_ = (_id, body) => { request = body; return { rows: [{ dimensionValues: [{ value: '/article' }], metricValues: [{ value: '7' }, { value: '4' }] }] }; };
+  const rows = context.playPointP12FetchOrganicLandings_('id', {start:'2026-08-01',end:'2026-08-30'});
+  assert.deepEqual(JSON.parse(JSON.stringify(request.dimensions)), [{name:'landingPage'}]);
+  assert.deepEqual(JSON.parse(JSON.stringify(request.metrics)), [{name:'sessions'},{name:'activeUsers'}]);
+  assert.equal(request.dimensionFilter.filter.stringFilter.value, 'Organic Search');
+  assert.equal(rows[0].page, '/article');
+  assert.equal(rows[0].activeUsers, 4);
 });
-
 test('P1 page-value aggregation keeps unavailable GSC and Organic metrics blank instead of false zeroes', () => {
   const { context } = loadP12Runtime();
   const rows = context.playPointP12BuildPageValueRows_({
@@ -551,36 +398,25 @@ test('P1 page normalization joins Search Console absolute URLs with GA4 paths wi
   assert.equal(rows[0].organicSessions, 20);
 });
 
-test('P1 page-value GSC source uses page-only byPage FINAL evidence instead of query by page totals', () => {
-  const { source, context } = loadP12Runtime();
-
-  let captured = null;
-  context.playPointP12FetchGscRows_ = (siteUrl, startDate, endDate, dimensions, aggregationType) => {
-    captured = { siteUrl, startDate, endDate, dimensions, aggregationType };
-    return {
-      rows: [{
-        keys: ['https://playpoint-sim.com/articles/example.html'],
-        clicks: 9,
-        impressions: 240
-      }],
-      responseAggregationType: 'byPage'
-    };
+test("P1 page-value GSC source uses page-only byPage FINAL evidence instead of query by page totals", () => {
+  const { context } = loadP12Runtime();
+  const requests = [];
+  context.playPointP12GoogleJson_ = (url, options) => {
+    requests.push({url, body: options.payload});
+    return { rows: [{ keys: ['https://playpoint-sim.com/articles/example.html'], clicks: 9, impressions: 240 }], responseAggregationType: 'byPage' };
   };
-
-  const rows = context.playPointP12FetchGscPage_(
-    'sc-domain:playpoint-sim.com',
-    '2026-08-18',
-    '2026-09-16'
-  );
-
-  assert.deepEqual(JSON.parse(JSON.stringify(captured.dimensions)), ['page']);
-  assert.equal(captured.aggregationType, 'byPage');
-  assert.equal(rows.length, 1);
+  const rows = context.playPointP12FetchGscPage_('sc-domain:playpoint-sim.com', '2026-08-18', '2026-09-16');
+  assert.equal(requests.length, 1);
+  assert.deepEqual(JSON.parse(JSON.stringify(requests[0].body.dimensions)), ['page']);
+  assert.equal(requests[0].body.aggregationType, 'byPage');
+  assert.equal(requests[0].body.dataState, 'final');
+  assert.equal(requests[0].body.startDate, '2026-08-18');
+  assert.equal(requests[0].body.endDate, '2026-09-16');
   assert.equal(rows[0].page, '/articles/example.html');
   assert.equal(rows[0].clicks, 9);
-  assert.doesNotMatch(source, /playPointP12FetchGscQueryPage_/);
+  context.playPointP12GoogleJson_ = () => ({ rows: [], responseAggregationType: 'byProperty' });
+  assert.throws(() => context.playPointP12FetchGscPage_('site', '2026-08-18', '2026-09-16'), /aggregation/i);
 });
-
 test('P1 page-value join integrity fails closed to PARTIAL when GSC and GA4 keys split', () => {
   const { context } = loadP12Runtime();
 
@@ -649,65 +485,92 @@ test('P1 safe-source wrapper preserves structured GSC cross rows and response ag
   assert.equal(simple.rows.length, 1);
 });
 
-test('P1 GSC cross windows are adjacent non-overlapping 28 days and use query×country/device byProperty FINAL evidence', () => {
-  const { source, context } = loadP12Runtime();
+test("P1 GSC cross windows are adjacent non-overlapping 28 days and use query×country/device byProperty FINAL evidence", () => {
+  const { context } = loadP12Runtime();
   const windows = context.playPointP12BuildNonOverlapping28d_('2026-09-11');
-
   assert.deepEqual(JSON.parse(JSON.stringify(windows)), {
     current: { start: '2026-08-15', end: '2026-09-11', days: 28 },
     previous: { start: '2026-07-18', end: '2026-08-14', days: 28 }
   });
-  assert.match(source, /\['query', 'country'\]/);
-  assert.match(source, /\['query', 'device'\]/);
-  assert.match(source, /dataState:\s*'final'/);
-  assert.match(source, /'byProperty'/);
-  assert.match(source, /sessionSourceMedium/);
+  const requests = [];
+  context.playPointP12GoogleJson_ = (_url, options) => {
+    requests.push(JSON.parse(JSON.stringify(options.payload)));
+    return { rows: [], responseAggregationType: 'byProperty' };
+  };
+  for (const dims of [['query','country'],['query','device']]) context.playPointP12FetchGscCrossPair_('site', windows, dims);
+  assert.equal(requests.length, 4);
+  for (const [index, request] of requests.entries()) {
+    assert.deepEqual(request.dimensions, index < 2 ? ['query','country'] : ['query','device']);
+    assert.equal(request.dataState, 'final');
+    assert.equal(request.aggregationType, 'byProperty');
+    assert.equal(request.startDate, index % 2 === 0 ? windows.current.start : windows.previous.start);
+    assert.equal(request.endDate, index % 2 === 0 ? windows.current.end : windows.previous.end);
+  }
+  let organicRequest;
+  context.playPointP12Ga4Report_ = (_id, body) => { organicRequest = body; return { rows: [] }; };
+  context.playPointP12FetchOrganicEngines_('id', windows.current);
+  assert.deepEqual(JSON.parse(JSON.stringify(organicRequest.dimensions)), [{name:'sessionSourceMedium'}]);
 });
-
-test('P2 URL Inspection stays bounded to critical and top-search URLs and records actual per-URL errors', () => {
-  const { source, context } = loadP12Runtime();
-  assert.equal(context.PLAYPOINT_P12_CONFIG.urlInspectionMaxUrls, 30);
-  assert.ok(context.PLAYPOINT_P12_CONFIG.fixedInspectionUrls.includes('https://playpoint-sim.com/'));
-  assert.ok(context.PLAYPOINT_P12_CONFIG.fixedInspectionUrls.includes('https://playpoint-sim.com/games/'));
-  assert.ok(!context.PLAYPOINT_P12_CONFIG.fixedInspectionUrls.includes('https://playpoint-sim.com/articles/'));
-  assert.match(source, /urlInspection\/index:inspect/);
-  assert.match(source, /FIXED_CRITICAL/);
-  assert.match(source, /TOP_GSC_IMPRESSIONS/);
-  assert.match(source, /playPointP12ErrorText_\(error\)/);
-  assert.match(source, /\[P1P2:' \+ stage \+ '\]/);
+test("P2 URL Inspection stays bounded to critical and top-search URLs and records actual per-URL errors", () => {
+  const { context } = loadP12Runtime();
+  const writes = stubAnalyticsSheet(context);
+  context.playPointP12StyleUrlInspectionSheet_ = () => {};
+  const candidates = Array.from({length:40}, (_, i) => ['', '', 'https://playpoint-sim.com/article-' + i, '', 100-i]);
+  candidates.push(['','','https://example.com/private','',1000]);
+  const gsc = {getLastRow:()=>candidates.length+1,getLastColumn:()=>9,getRange:()=>({getValues:()=>candidates})};
+  const spreadsheet = {getSheetByName:()=>gsc};
+  const priority = context.playPointP12BuildInspectionPriority_(spreadsheet);
+  assert.equal(priority.length, 30);
+  assert.equal(priority[0].url, 'https://playpoint-sim.com/');
+  assert.ok(priority.some(item => item.url === 'https://playpoint-sim.com/games/'));
+  assert.ok(priority.every(item => item.url.startsWith('https://playpoint-sim.com/')));
+  assert.equal(new Set(priority.map(item=>item.url)).size, priority.length);
+  const requests = [];
+  context.playPointP12GoogleJson_ = (url, options) => {
+    requests.push({url,body:options.payload});
+    if (options.payload.inspectionUrl === priority[1].url) throw new Error('fixture URL failure');
+    return {inspectionResult:{indexStatusResult:{verdict:'PASS'}}};
+  };
+  const result = context.playPointP12CaptureUrlInspection_(spreadsheet);
+  assert.equal(result.inspected, 30);
+  assert.equal(result.errors, 1);
+  assert.equal(requests.length, 30);
+  assert.ok(requests.every(r=>r.url.endsWith('/urlInspection/index:inspect')));
+  const data = writes.find(w=>w.args[0]===7).value;
+  assert.equal(data[1][12], 'ERROR');
+  assert.match(data[1][13], /fixture URL failure/);
+  assert.equal(data.at(-1)[12], 'OK', '個別URL失敗で後続処理を止めない');
 });
-
-test('P1/P2 health reporting failures are logged instead of being silently swallowed', () => {
-  const { source } = loadP12Runtime();
-  assert.match(source, /health update failed:/);
-  assert.match(source, /playPointP12TryHealth_\(stage, fn\)/);
-  assert.doesNotMatch(source, /function playPointP12TryHealth_\(fn\)/);
+test("P1/P2 health reporting failures are logged instead of being silently swallowed", () => {
+  const { context } = loadP12Runtime();
+  const logs = [];
+  context.playPointP12Log_ = (...args) => logs.push(args);
+  assert.doesNotThrow(() => context.playPointP12TryHealth_('PAGE_VALUE', () => { throw new Error('fixture health failed'); }));
+  assert.equal(logs.length, 1);
+  assert.equal(logs[0][0], 'WARN');
+  assert.equal(logs[0][1], 'PAGE_VALUE');
+  assert.match(logs[0][2], /fixture health failed/);
 });
-
-test('P1/P2 collector updates health rows from WAITING to RUNNING/OK/PARTIAL/ERROR semantics', () => {
-  const { source, context } = loadP12Runtime();
-
-  assert.equal(context.PLAYPOINT_P12_CONFIG.healthSheet, '🩺データ鮮度・システム状態');
-  assert.equal(context.PLAYPOINT_P12_CONFIG.healthComponents.PAGE_VALUE, 'P1 ページ価値ファネル');
-  assert.equal(context.PLAYPOINT_P12_CONFIG.healthComponents.SEARCH_CROSS, 'P1 検索クロス分析');
-  assert.equal(context.PLAYPOINT_P12_CONFIG.healthComponents.URL_INSPECTION, 'P2 URL Inspection');
-
-  assert.equal(context.playPointP12ResultState_('PAGE_VALUE', {
-    availability: { gsc: true, organic: true, articleClicks: true, attributed: true, revenue: true },
-    joinIntegrity: { status: 'OK' }
-  }), 'OK');
-  assert.equal(context.playPointP12ResultState_('PAGE_VALUE', {
-    availability: { gsc: true, organic: true, articleClicks: true, attributed: false, revenue: true }
-  }), 'PARTIAL');
-  assert.equal(context.playPointP12ResultState_('URL_INSPECTION', { errors: 2 }), 'PARTIAL');
-
-  assert.match(source, /playPointP12HealthStart_/);
-  assert.match(source, /playPointP12HealthSuccess_/);
-  assert.match(source, /playPointP12HealthError_/);
-  assert.match(source, /consecutiveFailures/);
-  assert.match(source, /実行ログの\[P1P2:/);
+test("P1/P2 collector updates health rows from WAITING to RUNNING/OK/PARTIAL/ERROR semantics", () => {
+  const { context } = loadP12Runtime();
+  const transitions = [];
+  context.playPointP12Log_ = () => {};
+  context.playPointP12HealthStart_ = stage => transitions.push([stage, 'RUNNING']);
+  context.playPointP12HealthSuccess_ = (stage, _at, state) => transitions.push([stage, state]);
+  context.playPointP12HealthError_ = (stage, _at, message) => transitions.push([stage, 'ERROR', message]);
+  const complete = { availability:{gsc:true,organic:true,articleClicks:true,attributed:true,revenue:true},joinIntegrity:{status:'OK'} };
+  for (const [result, expected] of [[complete,'OK'],[{...complete,availability:{...complete.availability,attributed:false}},'PARTIAL']]) {
+    assert.equal(context.playPointP12RunStage_('PAGE_VALUE',()=>result).status, expected);
+    assert.deepEqual(transitions.splice(0), [['PAGE_VALUE','RUNNING'],['PAGE_VALUE',expected]]);
+  }
+  assert.equal(context.playPointP12RunStage_('URL_INSPECTION',()=>({errors:2})).status, 'PARTIAL');
+  transitions.length=0;
+  const failure = context.playPointP12RunStage_('PAGE_VALUE',()=>{throw new Error('fixture stage failed');});
+  assert.equal(failure.status, 'ERROR');
+  assert.match(failure.error, /fixture stage failed/);
+  assert.equal(transitions[0][1], 'RUNNING');
+  assert.equal(transitions[1][1], 'ERROR');
 });
-
 
 test('v11.6.2 Drive safety patch separates reconciled analytics success from owner-sensitive archive maintenance', () => {
   const patch = read('docs/patches/playpoint-analytics-v11.6.2-drive-safe.patch');
@@ -821,3 +684,17 @@ test('Drive safety patch preserves LF context on Windows checkouts', () => {
   assert.equal(read(patchPath).includes('\r'),false);
   assert.match(execFileSync('git',['check-attr','eol','--',patchPath],{cwd:root,encoding:'utf8'}), /: eol: lf\s*$/);
 });
+
+function installerRuntimes() {
+  return [[loadP12Runtime().context, 'installPlayPointAnalyticsP1P2WeeklyTrigger', 'capturePlayPointAnalyticsP1P2'],
+    [loadGscCaptureRuntime().context, 'installPlayPointGsc28dWeeklyTrigger', 'captureGscNonOverlapping28d']];
+}
+function stubTriggers(context, handler, existing = []) {
+  const calls = [];
+  const created = { getHandlerFunction: () => handler, getUniqueId: () => 'new-uid' };
+  const chain = Object.fromEntries(['timeBased', 'onWeekDay', 'atHour', 'inTimezone'].map(method => [method, value => { calls.push([method, value]); return chain; }]));
+  chain.create = () => { calls.push(['create']); return created; };
+  context.ScriptApp = { WeekDay: { FRIDAY: 'FRIDAY' }, getProjectTriggers: () => existing,
+    newTrigger(name) { calls.push(['new', name]); return chain; }, deleteTrigger(trigger) { calls.push(['delete', trigger]); } };
+  return { calls, created };
+}

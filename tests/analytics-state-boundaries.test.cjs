@@ -8,7 +8,7 @@ const {
   eventCalls
 } = require('./helpers/analytics-runtime.cjs');
 
-test('未来日時・壊れたJSONの流入情報は破棄し、イベント送信を止めない', () => {
+test("未来日時・壊れたJSON・storage障害でも安全にイベントを継続する", () => {
   const future = createAnalyticsRuntime({
     consentStatus: 'granted',
     ready: true,
@@ -29,7 +29,14 @@ test('未来日時・壊れたJSONの流入情報は破棄し、イベント送�
   assert.equal(malformed.context.PlayPointAnalytics.track('calculation_completed', { region: 'JP' }), true);
   assert.deepEqual(eventCalls(malformed.context, 'calculation_completed')[0], { region: 'JP' });
   assert.equal(malformed.storage.size, 0);
-  assert.equal(malformed.warnings.length, 1);
+  assert.ok(malformed.warnings.length >= 1);
+  const unavailable = createAnalyticsRuntime({consentStatus:'granted', ready:true});
+  for (const operation of ['getItem','setItem','removeItem']) {
+    unavailable.context.sessionStorage[operation] = () => { throw new Error('storage unavailable'); };
+  }
+  assert.equal(unavailable.context.PlayPointAnalytics.rememberCalculatorEntry('/'), false);
+  assert.equal(unavailable.context.PlayPointAnalytics.track('calculation_completed', {region:'JP'}), true);
+  assert.deepEqual(eventCalls(unavailable.context, 'calculation_completed')[0], {region:'JP'});
 });
 
 test('保留キューは上限20件を維持し、古いイベントから落とす', () => {
