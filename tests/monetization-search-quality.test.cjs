@@ -165,10 +165,16 @@ test('品質保留記事はタイトル・OGP・構造化データ・記事台�
 });
 
 function assertNoMissingTemplateValues(html,label) {
-  const markup = html.replace(/<!--[\s\S]*?-->|<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,'');
-  assert.doesNotMatch(markup.replace(/<[^>]*>/g,' '),/\b(?:undefined|NaN)\b|\$\{[^}]*\}/,label+': 表示値が未定義');
-  for(const node of openingTags(markup))for(const value of Object.values(node.attrs))
-    assert.doesNotMatch(value,/\b(?:undefined|NaN)\b|\$\{[^}]*\}/,label+': 属性値が未定義');
+  const missing=/\b(?:undefined|NaN)\b|\$\{[^}]*\}/;
+  const tokens=/<!--[\s\S]*?(?:-->|$)|<(script|style)\b[^>]*>[\s\S]*?(?:<\/\1(?=[\s/>])[^>]*>|$)|<\/?[a-z][\w:-]*\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
+  let cursor=0;
+  for (const token of html.matchAll(tokens)) {
+    assert.doesNotMatch(html.slice(cursor,token.index),missing,label+': 表示値が未定義');
+    if (!token[1]) for(const node of openingTags(token[0]))for(const value of Object.values(node.attrs))
+      assert.doesNotMatch(value,missing,label+': 属性値が未定義');
+    cursor=token.index+token[0].length;
+  }
+  assert.doesNotMatch(html.slice(cursor),missing,label+': 表示値が未定義');
 }
 test('全ゲームの生成出力と公開4言語ページに未定義テンプレート値を残さない', () => {
   const {getGamePageHtmlFiles}=require('../scripts/game-page-targets.cjs');
@@ -180,4 +186,5 @@ test('全ゲームの生成出力と公開4言語ページに未定義テンプ�
   for(const bad of ['<p>value: undefined result</p>','<a href="/games/undefined/">Guide</a>','<p>NaN points</p>','<p>\$'+'{missing}</p>'])
     assert.throws(()=>assertNoMissingTemplateValues(bad,'欠損fixture'));
   assertNoMissingTemplateValues('<script>let undefinedValue;</script><!-- undefined --> <p>Valid</p>','非表示のコード');
+  assertNoMissingTemplateValues('<script>undefined</script\t\n bar><p>Valid</p>','終了タグ属性');
 });

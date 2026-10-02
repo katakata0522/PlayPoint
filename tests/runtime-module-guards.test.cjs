@@ -8,7 +8,7 @@ const test = require('node:test');
 const { createAppModuleRevision, collectAssetVersions, APP_MODULE_FILES, ROOT_SERVICE_WORKER_ASSETS } = require('../scripts/asset-sync.cjs');
 const { cssTargets } = require('../.github/scripts/minify.cjs');
 const { createHash } = require('node:crypto');
-const { openingTags } = require('./helpers/markup-contract.cjs');
+const { parseAttributes } = require('./helpers/markup-contract.cjs');
 const { runEsmProbe, ORIGIN } = require('./helpers/runtime-esm.cjs');
 const { createRuntime } = require('./helpers/service-worker-runtime.cjs');
 const { observeComponentStyles } = require('./helpers/component-styles.cjs');
@@ -30,15 +30,18 @@ const runtimeModules = [
 const graph = runEsmProbe({ kind: 'graph' });
 const revision = file => createHash('sha256').update(read(file).replace(/\r\n/g, '\n')).digest('hex').slice(0, 10);
 
-// scriptの開始タグだけ残し、本文内の偽タグを実参照として読まない。
+// raw textのscript/styleとコメントは1トークンで読み、本文の偽タグを参照にしない。
 function publicAssetReferences(html) {
-  const markup = html.replace(/<script\b((?:"[^"]*"|'[^']*'|[^'">])*)>[\s\S]*?<\/script\s*>/gi,
-    '<asset-script$1></asset-script>');
-  return openingTags(markup).flatMap(node => {
-    if (node.tag==='link' && (node.attrs.rel || '').toLowerCase().split(/\s+/).includes('stylesheet')) return [{href:node.attrs.href,extensions:['.css']}];
-    if (node.tag==='asset-script' && node.attrs.src) return [{href:node.attrs.src,extensions:['.js','.mjs']}];
-    return [];
-  });
+  const references=[];
+  const tokens=/<!--[\s\S]*?(?:-->|$)|<(script|style)\b((?:"[^"]*"|'[^']*'|[^'">])*)>[\s\S]*?(?:<\/\1(?=[\s/>])[^>]*>|$)|<([a-z][\w:-]*)\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
+  for (const token of html.matchAll(tokens)) {
+    const tag=(token[1]||token[3]||'').toLowerCase();
+    if (!tag || tag==='style') continue;
+    const attrs=parseAttributes(tag==='script'?'<script'+token[2]+'>':token[0]);
+    if (tag==='link' && (attrs.rel||'').toLowerCase().split(/\s+/).includes('stylesheet')) references.push({href:attrs.href,extensions:['.css']});
+    if (tag==='script' && attrs.src) references.push({href:attrs.src,extensions:['.js','.mjs']});
+  }
+  return references;
 }
 function assertPublicAssetReferences(html,file,base=root) {
   const { createRevision, resolveLocalAsset } = require('../scripts/article-asset-versioning.cjs');
@@ -69,6 +72,7 @@ test('公開HTMLのローカルCSS・JavaScriptは実在し、実内容と一致
   const valid="<link href='/a.css?v="+version+"' rel='stylesheet'><script src='/a.mjs?v="+version+"'></script>";
   assertPublicAssetReferences(valid,page,base);
   assertPublicAssetReferences(`<!-- <link rel="stylesheet" href="missing.css"> --><script>const fake = '<link rel="stylesheet" href="fake.css">';</script>`+valid,page,base);
+  assertPublicAssetReferences(`<script>const fake = '<link rel="stylesheet" href="fake.css">';</script\t\n bar>`+valid,page,base);
   for (const bad of [
     "<link href='/missing.css?v="+version+"' rel='stylesheet'>",
     "<link href='/a.css?v=0000000000' rel='stylesheet'>",
