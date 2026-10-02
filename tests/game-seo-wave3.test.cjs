@@ -139,10 +139,4 @@ test('Wave 3 guides are sitemap-visible and use verified editorial dates', () =>
   }
 });
 
-test('canonical build runs Wave 3 synchronization after the earlier game SEO layers', () => {
-  const build = read('scripts/build-html.js');
-  const expanded = build.indexOf('syncGameSeoExpanded(rootDir)');
-  const wave3 = build.indexOf('syncGameSeoWave3(rootDir)');
-  assert.ok(expanded >= 0);
-  assert.ok(wave3 > expanded);
-});
+

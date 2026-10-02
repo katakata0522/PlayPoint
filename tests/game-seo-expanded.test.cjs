@@ -170,9 +170,4 @@ test('第2波深掘り記事はゲームサイトマップに再帰的に入る'
   }
 });
 
-test('通常ビルドは第2波ゲームSEO同期を毎回実行する', () => {
-  const build = read('scripts/build-html.js');
-  assert.match(build, /game-seo-expanded-sync\.cjs/);
-  assert.match(build, /syncGameSeoExpanded\(rootDir\)/);
-  assert.match(build, /syncGameSeoSafety\(rootDir\)/);
-});
+

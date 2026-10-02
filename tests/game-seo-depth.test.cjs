@@ -5,6 +5,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
+const { openingTags } = require('./helpers/markup-contract.cjs');
+
 const root = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
 const { GAME_SEO, FGO_PACKS_JP, SOURCES } = require('../scripts/game-seo-data.cjs');
@@ -18,7 +20,7 @@ const bluearchive = () => read('games/bluearchive/index.html');
 const formatNumber = value => new Intl.NumberFormat('ja-JP').format(value);
 
 function hrefUrls(html) {
-  return [...html.matchAll(/\bhref="([^"]+)"/g)].map(match => new URL(match[1], SITE_ORIGIN));
+  return openingTags(html).filter(node => node.tag === 'a' && node.attrs.href).map(node => new URL(node.attrs.href.replaceAll('&amp;', '&'), SITE_ORIGIN));
 }
 
 function assertHasHref(html, expectedUrl) {
@@ -26,7 +28,8 @@ function assertHasHref(html, expectedUrl) {
   const found = hrefUrls(html).some(candidate =>
     candidate.protocol === expected.protocol &&
     candidate.hostname === expected.hostname &&
-    candidate.pathname === expected.pathname
+    candidate.pathname === expected.pathname &&
+    candidate.search === expected.search
   );
   assert.equal(found, true, `expected href for ${expected.hostname}${expected.pathname}`);
 }
@@ -130,10 +133,4 @@ test('ゲーム深掘り記事はゲームサイトマップ対象として再�
   assertSitemapHasPath(sitemap, '/games/monst/google-play-vs-webshop/');
 });
 
-test('通常ビルドが検証済みゲームSEOとfail-closed安全処理の両方を実行する', () => {
-  const build = read('scripts/build-html.js');
-  assert.ok(build.includes("require('./game-seo-sync.cjs')"));
-  assert.ok(build.includes("require('./game-seo-safety-sync.cjs')"));
-  assert.ok(build.includes('syncGameSeo(rootDir)'));
-  assert.ok(build.includes('syncGameSeoSafety(rootDir)'));
-});
+

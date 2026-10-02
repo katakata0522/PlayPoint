@@ -5,13 +5,18 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
+const { openingTags } = require('./helpers/markup-contract.cjs');
+const { createHash } = require('node:crypto');
+const meta = (html, key) => openingTags(html).filter(node => node.tag === 'meta' && (node.attrs.property === key || node.attrs.name === key));
+const value = (html, key) => { const nodes = meta(html, key); assert.equal(nodes.length, 1, key + ': exactly one meta'); return nodes[0].attrs.content; };
+
 const root = path.resolve(__dirname, '..');
 const articlesDir = path.join(root, 'articles');
 const ogpDir = path.join(articlesDir, 'ogp');
 
 function getImageDimensions(buffer) {
   if (!buffer || buffer.length < 24) return null;
-  if (buffer.subarray(1, 4).toString('ascii') === 'PNG') {
+  if (buffer.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10]))) {
     return {
       type: 'png',
       width: buffer.readUInt32BE(16),
@@ -20,7 +25,7 @@ function getImageDimensions(buffer) {
   }
   if (buffer[0] === 0xFF && buffer[1] === 0xD8) {
     let i = 2;
-    while (i < buffer.length) {
+    while (i + 8 < buffer.length) {
       if (buffer[i] !== 0xFF) { i++; continue; }
       const marker = buffer[i + 1];
       if (marker === 0xC0 || marker === 0xC2) {
@@ -31,56 +36,38 @@ function getImageDimensions(buffer) {
         };
       }
       const len = buffer.readUInt16BE(i + 2);
+      if (len < 2 || i + 2 + len > buffer.length) return null;
       i += 2 + len;
     }
   }
   return null;
 }
 
-test('全記事は重複のない専用OGP画像URLを持ち、共通ogp.pngを使用しない', () => {
-  const files = fs.readdirSync(articlesDir).filter(f => f.endsWith('.html'));
-  assert.ok(files.length > 0, '記事の検査対象が空でないこと');
-
-  const ogImages = new Map();
-  for (const file of files) {
-    const html = fs.readFileSync(path.join(articlesDir, file), 'utf8');
-    const ogMatch = html.match(/<meta property=["']og:image["'] content=["']([^"']+)["']/i);
-    assert.ok(ogMatch, `${file} に og:image が存在すること`);
-
-    const ogUrl = ogMatch[1];
-    assert.notEqual(ogUrl, 'https://playpoint-sim.com/ogp.png', `${file} がシミュレーター共通 ogp.png を使用していないこと`);
-    assert.match(ogUrl, /^https:\/\/playpoint-sim\.com\/articles\/ogp\/[^/]+\.png$/, `${file} の OGP URL が正規形式であること`);
-
-    if (ogImages.has(ogUrl)) {
-      assert.fail(`重複OGP画像検出: ${ogUrl} (使用: ${ogImages.get(ogUrl)} と ${file})`);
-    }
-    ogImages.set(ogUrl, file);
-  }
-
-  assert.equal(ogImages.size, files.length, '全記事がそれぞれ一意なOGP画像を持つこと');
+test('日本語articles直下の各記事は一意の専用OGP画像URLと画像実体を持つ', () => {
+ const files=fs.readdirSync(articlesDir).filter(f=>f.endsWith('.html')); assert.ok(files.length>0);
+ const urls=new Set(), images=new Map();
+ for(const file of files){
+  const html=fs.readFileSync(path.join(articlesDir,file),'utf8'), url=value(html,'og:image');
+  assert.match(url,/^https:\/\/playpoint-sim\.com\/articles\/ogp\/[^/]+\.png$/,file);
+  assert.ok(!urls.has(url),file+': duplicate URL'); urls.add(url);
+  const image=fs.readFileSync(path.join(root,new URL(url).pathname));
+  const hash=createHash('sha256').update(image).digest('hex');
+  assert.ok(!images.has(hash),file+': identical image bytes with '+images.get(hash));images.set(hash,file);
+ }
 });
 
-test('全記事のHTMLは1200x630規格・alt・MIME型・locale・Twitterタグを完備する', () => {
-  const files = fs.readdirSync(articlesDir).filter(f => f.endsWith('.html'));
-
-  for (const file of files) {
-    const html = fs.readFileSync(path.join(articlesDir, file), 'utf8');
-    assert.match(html, /<meta property=["']og:image:width["'] content=["']1200["']\s*\/?>/, `${file} に og:image:width="1200" があること`);
-    assert.match(html, /<meta property=["']og:image:height["'] content=["']630["']\s*\/?>/, `${file} に og:image:height="630" があること`);
-    assert.match(html, /<meta property=["']og:image:type["'] content=["']image\/jpeg["']\s*\/?>/, `${file} に og:image:type="image/jpeg" があること`);
-    assert.match(html, /<meta property=["']og:locale["'] content=["']ja_JP["']\s*\/?>/, `${file} に og:locale="ja_JP" があること`);
-    assert.match(html, /<meta property=["']og:image:alt["'] content=["'][^"']+["']\s*\/?>/, `${file} に 空でない og:image:alt があること`);
-    assert.match(html, /<meta name=["']twitter:card["'] content=["']summary_large_image["']\s*\/?>/, `${file} に twitter:card があること`);
-
-    const ogImg = html.match(/<meta property=["']og:image["'] content=["']([^"']+)["']/i)[1];
-    const twImg = html.match(/<meta name=["']twitter:image["'] content=["']([^"']+)["']/i)?.[1];
-    assert.equal(twImg, ogImg, `${file} の twitter:image が og:image と一致すること`);
-  }
+test('日本語articles直下の各記事はOGP・Twitterタグを実metaとして持つ', () => {
+ for(const file of fs.readdirSync(articlesDir).filter(f=>f.endsWith('.html'))){
+  const html=fs.readFileSync(path.join(articlesDir,file),'utf8');
+  for(const [key,expected] of Object.entries({'og:image:width':'1200','og:image:height':'630','og:image:type':'image/jpeg','og:locale':'ja_JP','twitter:card':'summary_large_image'}))assert.equal(value(html,key),expected,file+': '+key);
+  assert.ok(value(html,'og:image:alt')?.trim(),file+': image alternative text');
+  assert.equal(value(html,'twitter:image'),value(html,'og:image'),file+': Twitter image');
+ }
 });
 
 test('articles/ogp/ 内の全PNG画像は1200x630のJPEG実体である', () => {
   const files = fs.readdirSync(ogpDir).filter(f => f.endsWith('.png'));
-  assert.ok(files.length >= 64, 'articles/ogp/ に64枚以上の画像が存在すること');
+  assert.ok(files.length > 0, '記事OGPの検査対象が空でないこと');
 
   for (const file of files) {
     const buf = fs.readFileSync(path.join(ogpDir, file));

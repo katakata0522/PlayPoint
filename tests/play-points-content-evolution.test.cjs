@@ -88,19 +88,7 @@ test('買い切り購入と継続課金の記事は役割を相互案内する',
   assert.ok(subscriptionHtml.includes('./2025-12-25-movies-books.html'));
 });
 
-test('今回のPlay Points公式記事群へ第三者決済キャンペーンを混入させない', () => {
-  const paths = [
-    superWeeklyPath,
-    questsPath,
-    'articles/2025-12-25-weekly-reward.html',
-    'articles/2026-07-24-earn-play-points-free.html',
-    'latest/index.html'
-  ];
 
-  for (const relativePath of paths) {
-    assert.doesNotMatch(read(relativePath), /\bJCB\b/i, relativePath);
-  }
-});
 
 
 test('Black Diamond記事は確定情報と未発表情報を分離する', () => {

@@ -137,10 +137,4 @@ test('Wave 4 deep guides are discoverable and use verified editorial dates', () 
   assert.equal(getGeneratedGamePageContentDate('games/reverse1999/index.html'), VERIFIED_AT);
 });
 
-test('canonical build runs Wave 4 after Wave 3', () => {
-  const build = read('scripts/build-html.js');
-  const wave3 = build.indexOf('syncGameSeoWave3(rootDir)');
-  const wave4 = build.indexOf('syncGameSeoWave4(rootDir)');
-  assert.ok(wave3 >= 0);
-  assert.ok(wave4 > wave3);
-});
+

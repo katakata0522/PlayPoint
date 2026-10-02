@@ -21,10 +21,7 @@ function read(file) {
   return fs.readFileSync(path.join(root, file), 'utf8');
 }
 
-function jsonLd(html) {
-  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
-    .map(match => JSON.parse(match[1]));
-}
+const { schemas: jsonLd } = require('./helpers/intl-check.cjs');
 
 function localPath(href) {
   const clean = href.replace(/^\//, '').split(/[?#]/, 1)[0];

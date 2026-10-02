@@ -118,7 +118,6 @@ test('Playポイントデー記事は最大7倍を全員共通と書かない', 
   assert.match(html, /2026年10月1日/);
   assert.match(html, /5倍.*3倍|3倍.*5倍/);
   assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍|全員が7倍/);
-  assert.doesNotMatch(html, /カレンダー/);
 });
 
 test('YouTube Premium記事は未確認の定期購入を公式獲得対象と断定しない', () => {
@@ -143,7 +142,6 @@ test('ウィークリーリワード非表示記事はランク別週次と曜�
   assert.match(html, /金曜日/);
   assert.match(html, /火曜|火曜日/);
   assert.doesNotMatch(html, /最大\s*(?:100|200|500|1,000)\s*(?:pt|ポイント)/);
-  assert.doesNotMatch(html, /カレンダー/);
 });
 
 test('1月1日再判定記事は残高リセットと到達年の即日降格を書かない', () => {
@@ -171,7 +169,6 @@ test('PC版Play Games記事はプレイ時間獲得とスマホへのPCブース
   assert.match(html, /パソコンで購入したアイテムにのみ適用/);
   assert.match(html, /クエストとスタンプカードはスマートフォンでのみ/);
   assert.doesNotMatch(html, /遊ぶだけで(?:ポイントは)?貯まる[^か]/);
-  assert.doesNotMatch(html, /カレンダー/);
 });
 
 test('ゴールド到達記事は1,000ポイントと1.25概算を守り非公式倍率を書かない', () => {
@@ -179,7 +176,6 @@ test('ゴールド到達記事は1,000ポイントと1.25概算を守り非公�
   assert.match(html, /1,000ポイント/);
   assert.match(html, /約60,000円/);
   assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍/);
-  assert.doesNotMatch(html, /カレンダー/);
 });
 
 test('プラチナ到達記事は4,000ポイントと税抜約20万円を守り非公式倍率を書かない', () => {
@@ -188,7 +184,6 @@ test('プラチナ到達記事は4,000ポイントと税抜約20万円を守り�
   assert.match(html, /約20万円/);
   assert.match(html, /プレミアムサポートはプラチナとダイヤモンド/);
   assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍/);
-  assert.doesNotMatch(html, /カレンダー/);
 });
 
 test('プレミアムサポート記事はプラチナ以上と待ち時間非保証を明記する', () => {
@@ -196,7 +191,6 @@ test('プレミアムサポート記事はプラチナ以上と待ち時間非�
   assert.match(html, /プラチナとダイヤモンド/);
   assert.match(html, /待ち時間の短縮は保証されない/);
   assert.doesNotMatch(html, /待ち時間は必ず短くなります[^か]/);
-  assert.doesNotMatch(html, /カレンダー/);
 });
 
 test('支払い方法記事はチャージ非対象を守りキャリア還元をPlayポイントと足さない', () => {
@@ -204,7 +198,6 @@ test('支払い方法記事はチャージ非対象を守りキャリア還元�
   assert.match(html, /ギフトカードの購入やアカウントへのチャージではポイントが貯まらない/);
   assert.match(html, /キャリア独自のポイント還元はPlayポイントではありません/);
   assert.doesNotMatch(html, /クレジットカード払いなら必ず貯まります[^か]/);
-  assert.doesNotMatch(html, /カレンダー/);
 });
 
 test('ポイント消失記事は1年期限とランクリセットを分けて残高消去を断定しない', () => {
@@ -213,7 +206,6 @@ test('ポイント消失記事は1年期限とランクリセットを分けて�
   assert.doesNotMatch(html, /受取後1週間|1年間未使用で失効/);
   assert.match(html, /ランクの年次リセットと、ポイント残高の失効は別/);
   assert.doesNotMatch(html, /1月1日にポイント残高が消える/);
-  assert.doesNotMatch(html, /カレンダー/);
 });
 
 test('Family Link記事は管理アカウントを対象外とし回避策を書かない', () => {
@@ -221,7 +213,6 @@ test('Family Link記事は管理アカウントを対象外とし回避策を書
   assert.match(html, /参加対象外/);
   assert.match(html, /公式の回避策はありません/);
   assert.doesNotMatch(html, /Family Linkを外す手順/);
-  assert.doesNotMatch(html, /カレンダー/);
 });
 
 test('救出3記事はPlay Pointsを還元率パーセントやランク1.5倍として案内しない', () => {

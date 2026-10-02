@@ -5,6 +5,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
+const { openingTags } = require('./helpers/markup-contract.cjs');
+
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
@@ -19,6 +21,6 @@ test('each calculator entry page has a stable static lang for pre-init errors', 
   ];
 
   for (const [relativePath, lang] of entries) {
-    assert.ok(read(relativePath).includes(`<html lang="${lang}">`), `${relativePath}: missing lang=${lang}`);
+    assert.equal(openingTags(read(relativePath)).find(node => node.tag === 'html')?.attrs.lang, lang, `${relativePath}: lang`);
   }
 });

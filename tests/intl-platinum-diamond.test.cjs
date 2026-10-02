@@ -48,10 +48,7 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
 
-function schemas(html) {
-  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
-    .map(match => JSON.parse(match[1]));
-}
+const { schemas: schemas } = require('./helpers/intl-check.cjs');
 
 function modifiedDate(html, label) {
   const match = html.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})"/);

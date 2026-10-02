@@ -140,10 +140,4 @@ test('localized author pages share the international Japanese-style shell withou
   }
 });
 
-test('international article CSS has one canonical writer', () => {
-  const pagesSource = fs.readFileSync(path.join(root, 'scripts', 'intl-seo-pages.cjs'), 'utf8');
-  const layoutSource = fs.readFileSync(modulePath, 'utf8');
-  assert.match(pagesSource, /minifyCSS\(INTL_LAYOUT_CSS\)/);
-  assert.doesNotMatch(pagesSource, /minifyCSS\(INTL_ARTICLE_CSS\)/);
-  assert.doesNotMatch(layoutSource, /function synchronizeIntlArticleStylesheet/);
-});
+

@@ -17,12 +17,11 @@ test('期限の説明と検索用説明は最後の獲得または使用を基�
  const d=s.match(/<meta name="description" content="([^"]+)"/)[1];assert.match(d,/最後の獲得または使用から1年/);
  assert.doesNotMatch(s,/受取後1週間|残高の1年期限、1年の未利用/);
 });
-test('海外版のSuper Ticketは過去条件を現行の保証にしない',()=>{
+test('海外版のSuper Ticketは現行の期限を概要に示し、古い周期を復活させない',()=>{
  for(const l of ['en','ko','tw']){
- const s=read(l+'/articles/google-play-points-super-weekly-reward.html');
- const d=s.match(/<meta name="description" content="([^"]+)"/)[1];
- assert.doesNotMatch(d,/30.?90|30일|90일/);
- assert.match(s,/historical|과거|過去/);assert.match(s,/current card|현재 카드|目前卡片/);
+  const s=read(l+'/articles/google-play-points-super-weekly-reward.html');
+  const d=require('./helpers/markup-contract.cjs').openingTags(s).find(n=>n.tag==='meta'&&n.attrs.name==='description')?.attrs.content;
+  assert.ok(d);assert.match(d,/48/);assert.match(d,/eight-week|8주|8 週/);assert.doesNotMatch(d,/30.?90|30일|90일/);
  }
 });
 test('ギフトコードの抽選は確定還元として負担から差し引かない',()=>{

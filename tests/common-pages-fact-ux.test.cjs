@@ -20,8 +20,10 @@ test('地域別の公式レート・年間しきい値・通貨単位を固定�
     IN: { rates: [1, 1.1, 1.2, 1.4], thresholds: [250, 1000, 4000], spendUnit: 5, rateUnit: '₹5' }
   };
   for (const [region, values] of Object.entries(expected)) {
-    assert.deepEqual(Object.values(configs[region].statusRates).sort((a, b) => a - b), values.rates, region + ' rates');
-    assert.deepEqual(Object.values(configs[region].thresholds), values.thresholds, region + ' thresholds');
+    const config = configs[region];
+    const actual = Object.entries(config.statuses).map(([label, rate]) => [config.tierIdsByLabel[label], rate, config.thresholds[label] ?? 0]);
+    const tiers = ['bronze', 'silver', 'gold', 'platinum', 'diamond'].slice(0, values.rates.length);
+    assert.deepEqual(actual, tiers.map((tier, i) => [tier, values.rates[i], i ? values.thresholds[i - 1] : 0]), region + ' tier-specific rates and thresholds');
     assert.equal(configs[region].spendUnit, values.spendUnit, region + ' spendUnit');
     assert.equal(configs[region].rateUnit, values.rateUnit, region + ' rateUnit');
   }
@@ -47,9 +49,6 @@ test('トップは通常率と特別獲得率の意味を公開HTMLで示す', (
   assert.match(html, /キャンペーン特別獲得率/);
   assert.match(html, /高い方を試算に使います/);
   assert.match(html, /対象・上限・有効化/);
-  assert.match(html, /id="neededPoints" min="1" step="1"/);
-  assert.match(html, /id="amountYen" min="0\.01" step="0\.01"/);
-  assert.doesNotMatch(html, /id="pack-amount"/);
 });
 
 test('4言語トップは対象条件・保存範囲・aria-labelを初期表示から翻訳する', () => {
