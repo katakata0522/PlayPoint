@@ -152,26 +152,45 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
         overflow:document.documentElement.scrollWidth>innerWidth,
         columns:getComputedStyle(document.querySelector('.search-pathways-grid')).gridTemplateColumns.split(' ').length,
         controls:[...document.querySelectorAll('.guide-nav-button')].filter(el=>el.getClientRects().length).every(el=>{const r=el.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;}),
-        pathwaysFit:[...document.querySelectorAll('.search-pathways--primary .search-pathway-card')].every(el=>el.scrollWidth<=el.clientWidth+1 && el.getBoundingClientRect().height>=44),
-        firstArticleY:document.querySelector('.article-card').getBoundingClientRect().top+scrollY
+        pathwaysFit:[...document.querySelectorAll('.search-pathways--primary .search-pathway-card')].filter(el=>el.getClientRects().length).every(el=>{
+          const title=el.querySelector('.pathway-title');
+          return el.scrollWidth<=el.clientWidth+1 && el.getBoundingClientRect().height>=44
+            && (!title || title.scrollWidth<=title.clientWidth+1);
+        }),
+        visiblePurposeCount:[...document.querySelectorAll('.search-pathways--primary .search-pathway-card')].filter(el=>el.getClientRects().length).length,
+        firstArticleY:document.querySelector('.article-card').getBoundingClientRect().top+scrollY,
+        menuRight:(()=>{
+          const button=document.querySelector('.guide-nav-button[aria-controls="guide-menu"]');
+          const brand=document.querySelector('.guide-header .brand');
+          if(!button||!brand) return null;
+          return button.getBoundingClientRect().left > brand.getBoundingClientRect().right;
+        })()
       }));
       assert(!state.overflow&&state.controls,`Responsive overflow at ${width}: ${JSON.stringify(state)}`);
       if(width<=760) {
-        assert.equal(state.columns,2,`Mobile purpose-grid breakpoint ${width}`);
+        assert.equal(state.columns,3,`Mobile purpose-grid breakpoint ${width}`);
+        assert.equal(state.visiblePurposeCount,3,`Mobile purpose links count ${width}`);
         assert(state.pathwaysFit,`Mobile purpose links must fit and remain tappable at ${width}`);
         const visualCards=await page.locator('.article-card--visual').evaluateAll(cards=>cards.map(card=>({
           titleWidth:card.querySelector('h3').getBoundingClientRect().width,
           titleLeft:card.querySelector('h3').getBoundingClientRect().left,
           titleRight:card.querySelector('h3').getBoundingClientRect().right,
+          titleTop:card.querySelector('h3').getBoundingClientRect().top,
+          imageTop:card.querySelector('.card-thumb').getBoundingClientRect().top,
           imageRight:card.querySelector('.card-thumb').getBoundingClientRect().right,
           cardRight:card.getBoundingClientRect().right,
           cardWidth:card.getBoundingClientRect().width,
           imageFrames:card.querySelectorAll('.card-thumb img').length
         })));
-        assert(visualCards.length>0&&visualCards.every(card=>card.titleWidth>=150&&card.titleLeft>=card.imageRight+8&&card.titleRight<=card.cardRight+1&&card.imageFrames===1),`スマホの記事は画像と見出しを重ねず並べ、見出しの可読幅を確保する: ${width}: ${JSON.stringify(visualCards)}`);
+        assert(visualCards.length>0&&visualCards.every(card=>card.titleWidth>=150&&card.titleLeft>=card.imageRight+8&&card.titleRight<=card.cardRight+1&&card.imageFrames===1&&Math.abs(card.titleTop-card.imageTop)<=1),`スマホの記事は画像と見出しを同じ開始行に揃え、見出しの可読幅を確保する: ${width}: ${JSON.stringify(visualCards)}`);
       }
       if(width>760) { assert.equal(state.columns,4,`Purpose-grid breakpoint ${width}`); assert(state.pathwaysFit,`Purpose links must fit and remain tappable at ${width}`); }
-      assert(state.firstArticleY<700,`First article is pushed below the initial screen at ${width}: ${state.firstArticleY}`);
+      if(width<=760) {
+        assert(state.firstArticleY<540,`Mobile first article is pushed too far below the initial view at ${width}: ${state.firstArticleY}`);
+        assert(state.menuRight===true,`Mobile menu button must sit to the right of the centered brand at ${width}`);
+      } else {
+        assert(state.firstArticleY<700,`First article is pushed below the initial screen at ${width}: ${state.firstArticleY}`);
+      }
       responsive.push({width,...state});
     }
     report.interactions.responsive=responsive;

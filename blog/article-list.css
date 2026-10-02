@@ -1,0 +1,157 @@
+/* PlayPoint article list: fixed square thumbnail slot for mixed article types. */
+html[lang="ja"] body.blog-index-compact .article-card,
+html[lang="ja"] body.blog-index-compact .article-card.article-card--visual {
+  grid-template-columns:120px minmax(0,1fr);
+  gap:20px;
+  align-items:start;
+  padding:22px 0;
+}
+html[lang="ja"] body.blog-index-compact .article-card .card-thumb,
+html[lang="ja"] body.blog-index-compact .article-card--visual .card-thumb {
+  width:100%;
+  height:auto;
+  min-height:0;
+  aspect-ratio:1;
+  align-self:start;
+  overflow:hidden;
+  border-radius:8px;
+  background:var(--reading-soft);
+}
+html[lang="ja"] body.blog-index-compact .article-card .card-thumb img,
+html[lang="ja"] body.blog-index-compact .article-card--visual .card-thumb img {
+  display:block;
+  width:100%;
+  height:100%;
+  padding:0;
+  box-sizing:border-box;
+  object-fit:cover;
+  object-position:center;
+  transform:none;
+}
+html[lang="ja"] body.blog-index-compact .article-card .card-thumb--app-icon img {
+  object-fit:contain;
+  padding:10px;
+}
+@media(max-width:760px) {
+  /* Blog-only mobile navigation placement; shared article pages stay untouched. */
+  html[lang="ja"].guide-navigation-enabled body.blog-index-compact .guide-nav-button[aria-controls="guide-menu"] {
+    grid-column:3;
+    grid-row:1;
+  }
+  html[lang="ja"].guide-navigation-enabled body.blog-index-compact .guide-header-spacer {
+    grid-column:1;
+    grid-row:1;
+  }
+  html[lang="ja"] body.blog-index-compact #guide-menu {
+    inset:0 0 0 auto;
+    box-shadow:-8px 0 40px #102d4330;
+  }
+
+  /* Mobile is article-first: keep search usable, but let the first story enter the initial view. */
+  html[lang="ja"] body.blog-index-compact .breadcrumb,
+  html[lang="ja"] body.blog-index-compact .guide-eyebrow,
+  html[lang="ja"] body.blog-index-compact .guide-intro,
+  html[lang="ja"] body.blog-index-compact .guide-search-label {
+    display:none;
+  }
+  html[lang="ja"] body.blog-index-compact .hero-section {
+    margin:0 0 10px;
+    padding:0;
+  }
+  html[lang="ja"] body.blog-index-compact .hero-title {
+    margin:0;
+    font-size:22px;
+    line-height:1.4;
+  }
+  html[lang="ja"] body.blog-index-compact .search-sort-row--primary {
+    margin:0 0 8px;
+  }
+  html[lang="ja"] body.blog-index-compact #search-input {
+    min-height:44px;
+  }
+  html[lang="ja"] body.blog-index-compact .game-filter-container {
+    margin:0 0 8px;
+  }
+  html[lang="ja"] body.blog-index-compact .search-pathways--primary {
+    margin:6px 0;
+  }
+  html[lang="ja"] body.blog-index-compact .search-pathways--primary .search-pathways-grid {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:6px;
+  }
+  html[lang="ja"] body.blog-index-compact .search-pathways--primary .pathway-trouble {
+    display:none;
+  }
+  html[lang="ja"] body.blog-index-compact .search-pathways--primary .search-pathway-card {
+    min-height:44px;
+    padding:5px 4px;
+    text-align:center;
+  }
+  html[lang="ja"] body.blog-index-compact .search-pathways--primary .pathway-title {
+    font-size:12px;
+    line-height:1.35;
+    white-space:nowrap;
+  }
+  html[lang="ja"] body.blog-index-compact .search-pathways--primary .pathway-arrow {
+    display:none;
+  }
+  html[lang="ja"] body.blog-index-compact .article-filter-panel {
+    margin:6px 0 2px;
+  }
+  html[lang="ja"] body.blog-index-compact .article-filter-panel > summary {
+    min-height:40px;
+    padding:8px 12px;
+  }
+  html[lang="ja"] body.blog-index-compact .article-list-heading {
+    padding-bottom:8px;
+  }
+  html[lang="ja"] body.blog-index-compact .article-card,
+  html[lang="ja"] body.blog-index-compact .article-card.article-card--visual {
+    grid-template-columns:96px minmax(0,1fr);
+    grid-template-areas:
+      ". meta"
+      "thumb main";
+    column-gap:14px;
+    row-gap:0;
+    padding:14px 0;
+  }
+  /* The meta row can change height; the thumbnail always starts with the headline row. */
+  html[lang="ja"] body.blog-index-compact .article-card .card-content {
+    display:contents;
+  }
+  html[lang="ja"] body.blog-index-compact .article-card .card-meta {
+    grid-area:meta;
+  }
+  html[lang="ja"] body.blog-index-compact .article-card .card-main {
+    grid-area:main;
+    min-width:0;
+  }
+  html[lang="ja"] body.blog-index-compact .article-card .card-main h3 {
+    margin-top:0;
+  }
+  html[lang="ja"] body.blog-index-compact .article-card .card-thumb,
+  html[lang="ja"] body.blog-index-compact .article-card--visual .card-thumb {
+    grid-area:thumb;
+    margin-top:0;
+  }
+}
+@media(max-width:360px) {
+  html[lang="ja"] body.blog-index-compact .search-pathways--primary .search-pathway-card {
+    padding-inline:2px;
+  }
+  html[lang="ja"] body.blog-index-compact .search-pathways--primary .pathway-card-header,
+  html[lang="ja"] body.blog-index-compact .search-pathways--primary .pathway-title {
+    min-width:0;
+  }
+  html[lang="ja"] body.blog-index-compact .search-pathways--primary .pathway-title {
+    font-size:11px;
+    letter-spacing:-.02em;
+    white-space:normal;
+    overflow-wrap:anywhere;
+  }
+  html[lang="ja"] body.blog-index-compact .article-card,
+  html[lang="ja"] body.blog-index-compact .article-card.article-card--visual {
+    grid-template-columns:88px minmax(0,1fr);
+    gap:12px;
+  }
+}
