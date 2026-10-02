@@ -30,6 +30,7 @@ const BROWSER_GATE_INPUTS = Object.freeze([
 ]);
 
 const APACHE_GATE_INPUTS = Object.freeze([
+  '.github/scripts/detect-pr-gate-impact.cjs',
   '.htaccess',
   'tests/helpers/apache-cache-contract.cjs',
   '.github/scripts/http-cache-contract.cjs',
