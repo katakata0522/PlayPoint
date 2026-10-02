@@ -8,7 +8,7 @@ US/KR/TWのSuper Ticketを現在の国別Google公式ヘルプに合わせ、火
 
 ゲーム5波の内部呼出名/順序、共有CSS writer名、EN/KO/TW配列の字面禁止、第三者キャンペーンの一律禁止、Platinumの重複2項目を計10項目退役。既存build-output、手動記事所有権、生成成果物、intl-locale-registry、status-lp-meaning-consistencyが必要な保証を担当する。合法なカレンダー記述を禁止しない。既存JSON-LD parserを使用し、共有helper原本10本と既存の判断は維持する。新たなworkflow・ゲート・frameworkは追加しない。
 
-既存必須ChromiumのUI laneに3言語の記事を追加し、320/1280pxで実本文と国別出典を確認する。14回の隔離比較で、ランク別レート入替・comment出典・偽相互alternate・html.lang欠損・FGO出典query破壊の旧pass/新failを確認。合法なカレンダー記述とmetaの引用符/属性順変更は旧fail/新pass。全mutation coverageや実購入・Googleサービス送信の証明とは扱わない。ゲーム内の現行Google Play購入価格を別プラットフォームの商品ページから確定せず、公開本文を取得できなかった限定ガチャ/チャージセンター条件は再確認事項として残す。
+既存必須ChromiumのUI laneに3言語の記事を追加し、320/1280pxで実本文と国別出典を確認する。14回の隔離比較で、ランク別レート入替・comment出典・偽相互alternate・html.lang欠損・FGO出典query破壊の旧pass/新failを確認。合法なカレンダー記述とmetaの引用符/属性順変更は旧fail/新pass。全mutation coverageや実購入・Googleサービス送信の証明とは扱わない。ゲーム内の現行Google Play購入価格を別プラットフォームの商品ページから確定せず、限定ガチャ/チャージセンターの公式本文も実ブラウザで照合し、当期だけの条件・終了済み海外キャンペーンを現在の全地域向け保証にしない。
 
 ## 2026-10-02 第4段階：生成・資産・配信
 
