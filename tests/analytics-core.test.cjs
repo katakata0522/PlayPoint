@@ -212,6 +212,19 @@ test('許可外イベント・パラメータ・外部遷移は送信または�
   assert.deepEqual(eventCalls(context, 'search')[0], {});
   assert.deepEqual(eventCalls(context, 'search')[1], { results_count: 3 });
   assert.equal(storage.size, 0);
+  for (const [value, expected] of [[0, 0], [2.5, undefined], [Infinity, undefined], [NaN, undefined]]) {
+    analytics.track('search', { results_count: value, search_term: 'private@example.com' });
+    const sent = eventCalls(context, 'search').at(-1);
+    assert.equal(sent.results_count, expected);
+    assert.equal(sent.search_term, undefined);
+  }
+  analytics.track('lp_related_link_clicked', {
+    source_path: '/status/gold/?amount=9800#private',
+    target_path: 'https://playpoint-sim.com/articles/guide.html?points=1728#private'
+  });
+  assert.deepEqual(eventCalls(context, 'lp_related_link_clicked').at(-1), {
+    source_path: '/status/gold/', target_path: '/articles/guide.html'
+  });
 });
 
 test('同意後でもGA4準備前はflushせず、拒否時は保存情報も破棄する', () => {

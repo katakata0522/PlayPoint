@@ -34,16 +34,11 @@ function daily(date, revenue, ga4Pv, adsensePv, impressions, clicks, pageCtr, pa
   };
 }
 
-test('module is valid JS, exposes capture/installer, and never uses PAGE_URL', () => {
+test("収益診断モジュールは有効なJavaScriptと公開収集・導入入口を保つ", () => {
   const context = load();
   assert.equal(typeof context.capturePlayPointRevenueDiagnostics, 'function');
   assert.equal(typeof context.installPlayPointRevenueDiagnosticsDailyTrigger, 'function');
-  assert.doesNotMatch(source, /dimensions:\s*\[[^\]]*PAGE_URL/);
-  assert.match(source, /COUNTRY_CODE/);
-  assert.match(source, /PLATFORM_TYPE_CODE/);
-  assert.match(source, /BID_TYPE_CODE/);
-  assert.match(source, /OWNED_SITE_DOMAIN_NAME==/);
-  assert.match(source, /PRODUCT_CODE==AFC/);
+  // 収集時のdimension/filterは実リクエスト検査が担当。
 });
 
 test('2026-09-29-like rate spike is classified as unit-value spike, not traffic spike', () => {
@@ -176,6 +171,13 @@ test('AdSense report parser binds cells by header names and preserves currency',
   assert.equal(parsed.rows[0].ESTIMATED_EARNINGS, 120.5);
   assert.equal(parsed.rows[0].CLICKS, 2);
   assert.equal(parsed.rows[0].IMPRESSIONS_RPM, 2410);
+  const order = [7, 2, 0, 6, 5, 4, 3, 1];
+  const reordered = {
+    headers: order.map(i=>report.headers[i]),
+    rows: [{cells:order.map(i=>report.rows[0].cells[i])}]
+  };
+  assert.deepEqual(JSON.parse(JSON.stringify(context.playPointRevenueParseAdSenseReport_(reordered, ['COUNTRY_CODE']))), JSON.parse(JSON.stringify(parsed)));
+  assert.throws(()=>context.playPointRevenueParseAdSenseReport_({headers:report.headers.slice(1),rows:[]}, ['COUNTRY_CODE']), /missing header/);
 });
 
 test('anomaly drilldown uses separate one/two-dimension reports instead of risky multi-dimension mega-report', () => {
@@ -236,4 +238,6 @@ test('AdSense Apps Script request uses the v2 flattened date parameter names', (
   assert.equal(captured.options['endDate.day'], 29);
   assert.equal('startDate' in captured.options, false);
   assert.equal('endDate' in captured.options, false);
+  assert.deepEqual(JSON.parse(JSON.stringify(captured.options.dimensions)), ['COUNTRY_CODE']);
+  assert.deepEqual(JSON.parse(JSON.stringify(captured.options.filters)), ['PRODUCT_CODE==AFC','OWNED_SITE_DOMAIN_NAME==playpoint-sim.com']);
 });

@@ -1,5 +1,22 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-02 第3段階：計測・同意・広告
+
+12ファイルの元121項目を個別判断。過去の観測件数・確認日・次回レビュー日・文書の言い回しは保存済みbaselineと監査文書に残し、現在の回帰契約から外す。計算・日記の生入力遮断は実allowlist、取得不能と0の区別は実集計、分析異常は実分類が担当する。件数を整理の目標にしない。
+
+- `calculator-funnel-analytics`: 実mainと実ファネル／coreを動かし、同意・現在地域の受渡しとクリック先の内部／公式／外部分類を確認。mainのDOM登録・ESMリンクは既存ブラウザ検証の担当。余分な生入力を受理するAPI一覧の禁止は、実イベントに生値を含めない検査へ置換。
+- `measurement-baseline-contract`: GSCの実リクエストでFINAL・非重複窓・集計方式・ページ送り・欠損を確認。2種類の実トリガー導入で登録前に旧triggerを消さず、登録失敗では新規だけ復旧、無関係triggerを保持、timezoneと既存時の二重導入を確認。共通30日窓と5000行の切捨ては既存の実captureへ統合。
+- `monetization-search-quality`: 900文字窓内のslot文字列を、実広告要素の属性へ置換。記事／ブログのGA configより先にreadinessを開放しない保証は、`third-party-resilience` の実ブログロード検査へ統合。
+- `analytics-core` / `analytics-state-boundaries`: query/hashと生検索の遮断、件数の小数／非有限、Storage read/write/remove障害でも安全にイベント継続を確認。
+- `consent-state` / `third-party-analytics-integration`: GoogleFCとTCFの矛盾時はGoogleFC優先、重複確定通知は待機callbackを再発火しない。広告取得が継続失敗しても一度の再試行で止まる。
+- `playpoint-revenue-diagnostics`: ヘッダーを並べ替えても同じ値／通貨で読み、必須ヘッダーの欠損を拒否。実リクエストのsite/product filterを確認しソース存在の重複を外す。
+
+11項目の保証を実行検査／保存済み履歴へ移し、現行の対象110項目は102完了・8部分引継ぎ。第4段階は広告生成・未定義値、第5段階は記事広告の実DOM接続、第6段階は記事の意味・公式レート・noindexを担当する。過去の固定値を現在の測定状態と扱わない。
+
+一時読込み差替えの実験で、FINALやページ送りをコメントだけ残して壊す、登録失敗時の旧trigger削除、誤timezone、mainの常時同意許可・外部path偽装、生の日記値の混入、無制限の広告retry、config前のreadyを旧検査が見逃し、実行検査は検出した。無害なメソッド追加・同じFINAL文字列の表記変更は受理。故障コードや新たなCIゲートは追加しない。
+
+VMと制御したタイマー・API／DOMスタブの成功は実GoogleFC・GA・AdSense通信やlive bound Apps Scriptの成功を意味しない。広告位置・デザイン・記事内容・製品ランタイムは今回変更しない。既存ブラウザ／公開検証と、個々のテストの必要性判断を区別する。
+
 ## 2026-10-02 第2段階：計算・入力・保存
 
 件数は目標にしない。同じ条件・同じ層の重複は統合し、計算の既知値、入力境界、書込失敗時のデータ保護は残す。実コードを実行する検査と、文書・公開マークアップの検査は区別する。
