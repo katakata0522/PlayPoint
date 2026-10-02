@@ -5,6 +5,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
+const { assertOfficialAnswers, assertPhrases } = require('./helpers/intl-check.cjs');
+const { openingTags } = require('./helpers/markup-contract.cjs');
+
 const root = path.resolve(__dirname, '..');
 
 function read(relativePath) {
@@ -66,27 +69,19 @@ test('영문 구독 가이드는 Google Play를 통한 적격 구독의 적립 �
   assert.match(text, /subscriptions?[\s\S]{0,160}Google Play[\s\S]{0,160}(?:earn|Play Points)/i, 'Google Play 결제 구독의 적립 답변이 없습니다');
 });
 
-test('Super Weekly Prize는 현행 공식 조건을 유지하고 Super Ticket은 현재 계정 카드 기준으로 한정한다', () => {
+test('Super Tickets explain current regional eligibility, deadlines and replacement risk', () => {
   const cases = [
-    {
-      file: 'ko/articles/google-play-points-super-weekly-reward.html',
-      accountScope: /현재 카드|본인 Google Play 계정의 혜택 화면|모든 .*계정에 자동 제공된다고 단정할 수는 없습니다/,
-      historicalGuard: /과거 지급 주기를 현행 규칙으로 보장하지/
-    },
-    {
-      file: 'tw/articles/google-play-points-super-weekly-reward.html',
-      accountScope: /目前帳號卡片|自己的 Google Play 福利頁|目前帳號/,
-      historicalGuard: /不把過去發放週期當作現行規則/
-    }
+    { locale: 'en', country: 'US', phrases: ['Platinum and Diamond', 'Tuesday', 'Play Pass', 'Gold', 'Thursday', '48 hours', 'eight weeks from when it became available', 'not from the day you saved it', 'gives up the first prize', 'lower or higher', 'current card', 'do not guarantee'] },
+    { locale: 'ko', country: 'KR', phrases: ['플래티넘·다이아몬드', '화요일', 'Play Pass', '골드', '목요일', '48시간', '저장일이 아니라 제공된 시점부터 8주', '기존 보상이 사라지고', '더 적거나 많을', '현재 카드', '보장하는 규칙은 아닙니다'] },
+    { locale: 'tw', country: 'TW', phrases: ['白金級與鑽石級', '星期二', 'Play Pass', '黃金級', '星期四', '48 小時', '提供日起算 8 週', '不是從儲存日開始', '放棄原獎勵', '較少或較多', '目前卡片', '不保證'] }
   ];
-
-  for (const { file, accountScope, historicalGuard } of cases) {
-    const html = read(file);
-    assert.match(html, /Super Weekly Prize/, `${file}: Super Weekly Prize名稱`);
-    assert.match(html, /Super Ticket/, `${file}: Super Ticket主題`);
-    assert.match(html, /mc_editorialmd_loyalty_swp_cujs_unenrolled_fcp/, `${file}: current Super Weekly Prize source`);
-    assert.match(html, accountScope, `${file}: account/current-card scope`);
-    assert.match(html, historicalGuard, `${file}: historical ticket rule guard`);
+  for (const { locale, country, phrases } of cases) {
+    const file = locale + '/articles/google-play-points-super-weekly-reward.html', html = read(file);
+    assertOfficialAnswers(html, file, ['9080348']); assertPhrases(html, file, phrases);
+    assert.ok(openingTags(html).filter(node => node.tag === 'a').some(node => {
+      try { const url = new URL((node.attrs.href || '').replaceAll('&amp;', '&')); return url.hostname === 'support.google.com' && url.pathname === '/googleplay/answer/9080348' && url.searchParams.get('co') === 'GENIE.CountryCode=' + country; } catch { return false; }
+    }), file + ': explicit country source');
+    assert.doesNotMatch(html, /linked page is not currently available|현재 연결된 페이지를 확인할 수 없어|目前連結頁面無法取得/, file + ': obsolete unavailable-source claim');
   }
 });
 

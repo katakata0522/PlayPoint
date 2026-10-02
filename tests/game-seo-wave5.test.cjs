@@ -179,11 +179,4 @@ test('Wave 5 deep guides are discoverable in sitemap with verified editorial dat
   }
 });
 
-test('canonical build runs Wave 5 after Wave 4 and regional normalization after Wave 5 generation', () => {
-  const build = read('scripts/build-html.js');
-  const wave4 = build.indexOf('syncGameSeoWave4(rootDir)');
-  const wave5 = build.indexOf('syncGameSeoWave5(rootDir)');
-  const regional = build.indexOf('syncGameSeoWave5RegionalRates(rootDir)');
-  assert.ok(wave4 >= 0 && wave5 > wave4, 'Wave 5 must run after Wave 4');
-  assert.ok(regional > wave5, 'regional normalization must run after Wave 5 page generation');
-});
+

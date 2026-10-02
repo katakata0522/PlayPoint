@@ -100,10 +100,7 @@ function read(relativePath) {
 function articlePath(locale, topic) {
   return `${locale.key}/articles/${topic.slug}`;
 }
-function schemas(html) {
-  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
-    .map(match => JSON.parse(match[1]));
-}
+const { schemas: schemas } = require('./helpers/intl-check.cjs');
 
 test('国・地域別の実用記事を3言語で意味のある本文として公開する', () => {
   const publishedSlugs = new Set(expansionTopics.map(topic => topic.slug));

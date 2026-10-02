@@ -33,15 +33,7 @@ function visibleText(html) {
     .trim();
 }
 
-function schemas(html, file) {
-  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match => {
-    try {
-      return JSON.parse(match[1]);
-    } catch (error) {
-      assert.fail(`${file}: invalid JSON-LD: ${error.message}`);
-    }
-  });
-}
+const { schemas: schemas } = require('./helpers/intl-check.cjs');
 
 test('reward and quest topics have complete Japanese, English, Korean and Taiwan clusters', () => {
   for (const [topic, cluster] of Object.entries(clusters)) {
@@ -82,9 +74,9 @@ test('new international guides are sourced, attributable and structurally usable
 test('Super Weekly Prize articles keep limited-stock/no-guarantee facts and scope Super Ticket to current account terms', () => {
   const ticketScope = new Map([
     [clusters.reward.ja, /現在の付与状況|現在.*特典.*画面|以前公開していたSuper Ticket/],
-    [clusters.reward.en, /current account card|older ticket schedules are not verified current terms/i],
-    [clusters.reward.ko, /현재 카드|과거 지급 주기를 현행 규칙으로 보장하지/],
-    [clusters.reward.tw, /目前帳號卡片|不把過去發放週期當作現行規則/]
+    [clusters.reward.en, /current card on your account/i],
+    [clusters.reward.ko, /현재 카드/],
+    [clusters.reward.tw, /目前卡片/]
   ]);
 
   for (const file of Object.values(clusters.reward)) {

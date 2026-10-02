@@ -235,6 +235,29 @@ async function verifyUiContracts(browser, baseUrl, locales, blockExternalRequest
       }
       results.contextual.push(article.relativePath);
     }
+    // Official rule copy must also remain rendered and readable at narrow widths.
+    results.superTickets=[];
+    for(const [locale,country,phrases] of [
+      ['en','US',['Tuesday','Thursday','48 hours','eight weeks','gives up the first prize','lower or higher']],
+      ['ko','KR',['화요일','목요일','48시간','8주','기존 보상이 사라지고','더 적거나 많을']],
+      ['tw','TW',['星期二','星期四','48 小時','8 週','放棄原獎勵','較少或較多']]
+    ]){
+      const relative=locale+'/articles/google-play-points-super-weekly-reward.html';
+      const {page,errors}=await open(relative);
+      const section=page.locator('section').filter({has:page.locator('#section-4')});
+      for(const width of [320,1280]){
+        await page.setViewportSize({width,height:900});await section.scrollIntoViewIfNeeded();
+        assert.ok(await section.isVisible(),relative);
+        await page.waitForFunction(({selector,phrase})=>document.querySelector(selector)?.closest('section')?.innerText.includes(phrase),{selector:'#section-4',phrase:phrases[0]});
+        const text=await section.innerText();for(const phrase of phrases)assert.ok(text.includes(phrase),relative+': '+phrase);
+        assert.ok(await section.evaluate(el=>el.getBoundingClientRect().right<=innerWidth+1),relative+': overflow');
+        const source=page.locator('aside.official-source-note a[href*="answer/9080348"]');
+        await source.scrollIntoViewIfNeeded();assert.ok(await source.isVisible(),relative+': source');
+        assert.equal(new URL(await source.getAttribute('href')).searchParams.get('co'),'GENIE.CountryCode='+country);
+        if(width===320&&artifactDir)await page.screenshot({path:path.join(artifactDir,'super-ticket-'+locale+'.png')});
+      }
+      assert.deepEqual(errors,[],relative);results.superTickets.push({locale,country,widths:[320,1280],visibleRules:true,source:true});
+    }
     if(artifactDir)fs.writeFileSync(path.join(artifactDir,'ui-contract-report.json'),JSON.stringify({passed:true,...results},null,2));
     return {passed:true,...results};
   } finally { for(const context of contexts)await context.close(); }

@@ -47,10 +47,7 @@ function fileFor(topic, locale) {
 function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
-function schemas(html) {
-  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
-    .map(match => JSON.parse(match[1]));
-}
+const { schemas: schemas } = require('./helpers/intl-check.cjs');
 function hasOgSiteName(html, siteName) {
   return html.includes(`<meta property="og:site_name" content="${siteName}">`)
     || html.includes(`<meta property="og:site_name" content="${siteName}" />`);

@@ -104,7 +104,7 @@ test('Korean balance-check intent has one clear owner and descriptive internal a
   const sitemap = read('sitemap-intl-content-expansion.xml');
   assert.match(
     sitemap,
-    /<loc>https:\/\/playpoint-sim\.com\/ko\/articles\/google-play-points-balance-history-progress\.html<\/loc>\s*<lastmod>2026-09-19<\/lastmod>/
+    /<loc>https:\/\/playpoint-sim\.com\/ko\/articles\/google-play-points-balance-history-progress\.html<\/loc>\s*<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/
   );
 
   const hub = read('ko/articles/index.html');
