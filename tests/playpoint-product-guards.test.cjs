@@ -10,6 +10,9 @@ const { openingTags } = require('./helpers/markup-contract.cjs');
 const root = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
+const elementText = html => [...html.matchAll(/<!--[\s\S]*?(?:-->|$)|<(script|style)\b[^>]*>[\s\S]*?(?:<\/\1(?=[\s/>])[^>]*>|$)|<\/?[a-z][\w:-]*\b(?:"[^"]*"|'[^']*'|[^'">])*>|([^<]+)/gi)]
+  .filter(match => match[2] !== undefined).map(match => match[2]).join('');
+
 // --- former playpoint-nine-fixes ---
 
 test('著者ページのOGP画像は実在する', () => {
@@ -104,11 +107,11 @@ test('多言語トップはJS実行前の主要文言も翻訳済みにする', 
     const headings = tags.filter(node => node.tag === 'h1' && node.attrs.id === 'main-title');
     assert.equal(headings.length, 1, file);
     assert.equal(headings[0].attrs['data-lang-key'], 'mainTitle');
-    const text = html.slice(headings[0].index).split(/<\/h1\s*>/i)[0].replace(/<[^>]*>/g, '').trim();
+    const text = elementText(html.slice(headings[0].index).split(/<\/h1\s*>/i)[0]).trim();
     assert.equal(text, expected, file);
     const tab = tags.find(node => node.tag === 'button' && node.attrs['data-lang-key'] === 'tabMain');
     assert.ok(tab, file + ': main tab missing');
-    assert.doesNotMatch(html.slice(tab.index).split(/<\/button\s*>/i)[0].replace(/<[^>]*>/g, ''), /通常計算/);
+    assert.doesNotMatch(elementText(html.slice(tab.index).split(/<\/button\s*>/i)[0]), /通常計算/);
   }
 });
 

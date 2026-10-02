@@ -126,9 +126,9 @@ function fragment(raw) {
 
 function htmlReferences(content) {
   const tags = openingTags(content);
-  const active = content.replace(/<!--[\s\S]*?(?:-->|$)/g, '');
-  for (const match of active.matchAll(/<script\b((?:"[^"]*"|'[^']*'|[^'">])*)>[\s\S]*?<\/script\s*>/gi)) {
-    tags.push({ tag: 'script', attrs: parseAttributes('script ' + match[1]) });
+  for (const match of content.matchAll(/<!--[\s\S]*?(?:-->|$)|<(script|style)\b((?:"[^"]*"|'[^']*'|[^'">])*)>([\s\S]*?)(?:<\/\1(?=[\s/>])[^>]*>|$)/gi)) {
+    if (match[1]?.toLowerCase() !== 'script') continue;
+    tags.push({ tag: 'script', attrs: parseAttributes('script ' + match[2]) });
   }
   const values = [];
   for (const { tag, attrs } of tags) {

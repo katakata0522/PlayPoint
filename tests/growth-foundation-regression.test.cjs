@@ -10,8 +10,9 @@ const { parseAttributes } = require('./helpers/markup-contract.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
-const scripts = html => [...html.replace(/<!--[\s\S]*?(?:-->|$)/g, '').matchAll(/<script\b((?:"[^"]*"|'[^']*'|[^'">])*)>[\s\S]*?<\/script\s*>/gi)]
-  .map(match => ({ attrs: parseAttributes('script ' + match[1]), index: match.index }));
+const scripts = html => [...html.matchAll(/<!--[\s\S]*?(?:-->|$)|<(script|style)\b((?:"[^"]*"|'[^']*'|[^'">])*)>([\s\S]*?)(?:<\/\1(?=[\s/>])[^>]*>|$)/gi)]
+  .filter(match => match[1]?.toLowerCase() === 'script')
+  .map(match => ({ attrs: parseAttributes('script ' + match[2]), index: match.index }));
 
 // T0451: tests/http-cache-contract.test.cjs + tests/helpers/apache-cache-contract.cjs へ統合。監査IDと理由は履歴台帳へ保持。
 

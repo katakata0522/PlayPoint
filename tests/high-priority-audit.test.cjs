@@ -17,7 +17,8 @@ test('PWA起動は保存済み地域を復元する専用ランチャーを経�
   const serviceWorker = read('sw.js');
 
   assert.equal(manifest.start_url, '/pwa-launch.html');
-  const inline = launcher.replace(/<!--[\s\S]*?-->/g, '').match(/<script\b[^>]*>([\s\S]*?)<\/script>/i)?.[1];
+  const inline = [...launcher.matchAll(/<!--[\s\S]*?(?:-->|$)|<(script|style)\b((?:"[^"]*"|'[^']*'|[^'">])*)>([\s\S]*?)(?:<\/\1(?=[\s/>])[^>]*>|$)/gi)]
+    .find(match => match[1]?.toLowerCase() === 'script')?.[3];
   assert.ok(inline, 'PWA launcher script missing');
   for (const [region, expected] of [['JP', '/'], ['US', '/en/'], ['KR', '/ko/'], ['TW', '/tw/'], ['HK', '/hk/'], ['IN', '/in/'], ['UNKNOWN', '/'], [null, '/'], ['throw', '/']]) {
     const actual = [];
