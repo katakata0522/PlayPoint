@@ -135,6 +135,21 @@ test('broken thumbnails use same-origin fallback and cannot loop or replace the 
   assert.ok(fs.existsSync(path.join(root,image.src)));
 });
 
+test('editorial thumbnails can opt into a sanitized focal position', () => {
+  const articles = JSON.parse(read('blog/articles.json'));
+  const blackDiamond = articles.find(article => article.id === 'black-diamond-diamond-vip-2026');
+  assert.ok(blackDiamond);
+  assert.equal(blackDiamond.thumbnail, '../articles/ogp/2026-10-01-black-diamond-diamond-vip.png');
+  assert.equal(blackDiamond.thumbnailPosition, 'left');
+
+  const script = read('blog/script.js');
+  const css = read('blog/article-list.css');
+  assert.match(script, /function sanitizeArticleThumbnailPosition\(value\)/);
+  assert.match(script, /card-thumb--focus-\$\{thumbnailPosition\}/);
+  assert.match(css, /\.card-thumb--focus-left img/);
+  assert.match(css, /object-position:left center/);
+});
+
 test('reading theme resolves saved intent before the system preference and ignores invalid values', () => {
   const {resolveTheme} = require('../js/reading-theme.js');
   assert.equal(resolveTheme({theme:'dark'},false),'dark');
