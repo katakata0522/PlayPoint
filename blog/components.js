@@ -163,9 +163,15 @@
 
     function setupBlogAdsense() {
         if (!(isBlogPage || isArticlePageTop)) return;
-        // Google Privacy & Messaging / TCFの初期化に必要な非同期ライブラリは早期取得する。
+        // CMPは最初の描画機会の直後に取得し、本文の描画を先に進める。
         // 手動広告枠のpushはarticle.js側でad_storage許可後にだけ実行する。
-        loadBlogAdsense();
+        if (typeof window.requestAnimationFrame === 'function' && document.visibilityState !== 'hidden') {
+            let started = false;
+            const start = () => { if (!started) { started = true; document.removeEventListener('visibilitychange', onVisibility); loadBlogAdsense(); } };
+            const onVisibility = () => { if (document.visibilityState === 'hidden') start(); };
+            document.addEventListener('visibilitychange', onVisibility);
+            window.requestAnimationFrame(() => window.requestAnimationFrame(start));
+        } else loadBlogAdsense();
         if (isBlogPage) void requestBlogAds();
     }
 

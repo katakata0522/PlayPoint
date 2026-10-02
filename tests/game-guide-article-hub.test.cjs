@@ -129,9 +129,9 @@ test('一覧ファイルがなくても通常記事を監査し、未登録の�
 test('ブログの実際の入力境界は既存記事・ゲーム記事だけを受理する', () => {
   const vm = require('node:vm');
   for (const file of ['blog/script.js', 'blog/article.js']) {
-    const source = read(file).match(/    function sanitizeArticleFile\(value\) \{[\s\S]*?\n    \}/)?.[0];
-    assert.ok(source, file);
-    const sanitize = vm.runInNewContext('(' + source.trim() + ')');
+    const source = file === 'blog/article.js' ? read(file).match(/    function sanitizeArticleFile\(value\) \{[\s\S]*?\n    \}/)?.[0] : null;
+    if (file === 'blog/article.js') assert.ok(source, file);
+    const sanitize = source ? vm.runInNewContext('(' + source.trim() + ')') : value => blogUtils.normalizeArticle({ file:value }).file;
     assert.equal(sanitize('../articles/example.html'), '../articles/example.html');
     for (const article of GAME_GUIDE_ARTICLES) assert.equal(sanitize(article.file), article.file);
     for (const candidate of [null, '../games/fgo/index.html', '../games/../private/index.html', '../games/fgo/%2e%2e/index.html', 'https://evil.example/a.html', '../articles/a.html<script>', '../games/fgo/pity-cost/index.html?x=1']) {

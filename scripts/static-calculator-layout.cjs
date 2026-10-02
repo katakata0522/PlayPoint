@@ -13,8 +13,8 @@ const ADVANCED_SETTINGS_STATE_SCRIPT_ID = 'playpoint-first-view-state';
 const ADVANCED_SETTINGS_COPY = '獲得率・キャンペーンを調整（任意）';
 
 const ADVANCED_SETTINGS_CRITICAL_STYLE = `<style id="${ADVANCED_SETTINGS_STYLE_ID}">
-#mainMode>.section:first-child{display:flex;flex-direction:column}
-#mainMode>.section:first-child>#calculateButton{order:2;margin-top:1em}
+#main-calculator-inputs{display:flex;flex-direction:column}
+#main-calculator-inputs>#calculateButton{order:2;margin-top:1em}
 .calculator-last-value{display:flex;align-items:center;gap:.45em;flex-wrap:wrap;margin:.55em 0 0;font-size:.88em;line-height:1.5;color:var(--muted-text-color,#5f6368)}
 .calculator-last-value[hidden]{display:none!important}
 .calculator-last-value__reuse{appearance:none;border:0;background:transparent;color:var(--link-color,#0b57d0);padding:.1em .15em;font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;box-shadow:none}
@@ -24,8 +24,8 @@ const ADVANCED_SETTINGS_CRITICAL_STYLE = `<style id="${ADVANCED_SETTINGS_STYLE_I
 .calculator-advanced-settings__toggle{display:none}
 .region-switch [data-region-recommended="true"]{outline:2px solid var(--input-focus-border-color,#005fcc);outline-offset:2px;box-shadow:0 0 0 1px color-mix(in srgb,var(--section-bg-color,#fff) 80%,transparent)}
 @media(max-width:640px){
-#mainMode>.section:first-child>#calculateButton{order:1}
-#mainMode>.section:first-child>#calculator-advanced-settings{order:2}
+#main-calculator-inputs>#calculateButton{order:1}
+#main-calculator-inputs>#calculator-advanced-settings{order:2}
 .calculator-advanced-settings{display:block;margin-top:.85em}
 .calculator-advanced-settings__toggle{display:flex;align-items:center;justify-content:space-between;gap:.75em;width:100%;min-height:46px;margin:0;padding:.65em .8em;box-sizing:border-box;border:1px solid rgba(11,87,208,.22);border-radius:8px;background:rgba(11,87,208,.055);color:var(--text-color,#1f2937);box-shadow:none;font:inherit;font-weight:700;text-align:left;cursor:pointer}
 .calculator-advanced-settings__toggle:hover{background:rgba(11,87,208,.1);box-shadow:none;transform:none}
@@ -293,9 +293,11 @@ function ensureStaticCalculatorLayout(indexHtml) {
   if (!indexHtml.includes('data-visible-base-rate-layout="true"')) {
     content = convertLegacyCalculatorLayout(content);
   }
+  if (content.includes('</head>') && !content.includes('data-region-selector-style')) content = content.replace('</head>', '<link rel="stylesheet" href="/region-selector.css" data-region-selector-style="true">\n</head>');
   content = decorateStaticLabels(content);
   content = ensureStaticAdvancedSettings(content);
   content = ensurePrimaryActionSourceOrder(content);
+  content = content.replace(/(<div\b[^>]*id="mainMode"[^>]*>\s*<div) class="section"/, '$1 id="main-calculator-inputs" class="section"');
   content = content.replace(/[ \t]+(?=\r?$)/gm, '');
   validateStaticLayout(content);
   return content;

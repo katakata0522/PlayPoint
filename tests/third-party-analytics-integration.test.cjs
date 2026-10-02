@@ -21,7 +21,9 @@ function createRuntime({
   readyState = 'complete',
   standalone = false,
   managedAds = [],
-  adsenseFailures = 0
+  adsenseFailures = 0,
+  animationFrames = false,
+  visibilityState = 'visible'
 } = {}) {
   const storage = new Map();
   const appendedScripts = [];
@@ -30,6 +32,7 @@ function createRuntime({
   const windowListeners = new Map();
   const timers = [];
   const idleTasks = [];
+  const frames = [];
   let remainingAdsenseFailures = adsenseFailures;
 
   const context = {
@@ -54,11 +57,13 @@ function createRuntime({
 
   context.document = {
     readyState,
+    visibilityState,
     currentScript: {
       src: 'https://playpoint-sim.com/js/third-party.js?v=test',
       getAttribute(name) { return name === 'src' ? '/js/third-party.js?v=test' : null; }
     },
     addEventListener(type, listener) { documentListeners.set(type, listener); },
+    removeEventListener(type) { documentListeners.delete(type); },
     dispatchEvent(event) { documentListeners.get(event.type)?.(event); },
     querySelector(selector) {
       const exactSrc = selector.match(/^script\[src="([^"]+)"\]$/)?.[1];
@@ -101,6 +106,7 @@ function createRuntime({
       }
     }
   };
+  if (animationFrames) context.requestAnimationFrame = callback => frames.push(callback);
 
   context.PlayPointConsent = {
     getStatus: () => analyticsConsent,
@@ -120,6 +126,7 @@ function createRuntime({
     context,
     fireDocument(type) { documentListeners.get(type)?.({ type }); },
     fireWindow(type) { windowListeners.get(type)?.({ type }); },
+    runFrame() { const callback = frames.shift(); assert.ok(callback); callback(); },
     get idleCount() { return idleTasks.length; },
     runNextIdle() {
       const task = idleTasks.shift();
@@ -154,6 +161,32 @@ function gtagCalls(context) {
 function scriptsMatching(runtime, needle) {
   return runtime.appendedScripts.filter(item => item.src.includes(needle));
 }
+
+test('表示中のページは最初の描画機会を渡してからAdSenseを一度だけ取得する', async () => {
+  const runtime = createRuntime({ animationFrames: true });
+  await settleAsyncWork();
+  assert.equal(scriptsMatching(runtime, 'adsbygoogle.js').length, 0);
+  runtime.runFrame();
+  await settleAsyncWork();
+  assert.equal(scriptsMatching(runtime, 'adsbygoogle.js').length, 0);
+  runtime.runFrame();
+  await settleAsyncWork();
+  assert.equal(scriptsMatching(runtime, 'adsbygoogle.js').length, 1);
+});
+
+test('描画待ち中に非表示になってもCMPの取得を止めず重複取得しない', async () => {
+  const runtime = createRuntime({ animationFrames: true });
+  runtime.context.document.visibilityState = 'hidden';
+  runtime.fireDocument('visibilitychange');
+  await settleAsyncWork();
+  assert.equal(scriptsMatching(runtime, 'adsbygoogle.js').length, 1);
+  runtime.runFrame(); runtime.runFrame();
+  await settleAsyncWork();
+  assert.equal(scriptsMatching(runtime, 'adsbygoogle.js').length, 1);
+  const hidden = createRuntime({ animationFrames: true, visibilityState: 'hidden' });
+  await settleAsyncWork();
+  assert.equal(scriptsMatching(hidden, 'adsbygoogle.js').length, 1);
+});
 
 test('DOMContentLoaded後はAdSenseを先に取得しAnalyticsはload・delay・idle後まで待つ', async () => {
   const runtime = createRuntime({ readyState: 'loading' });

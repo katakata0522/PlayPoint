@@ -206,14 +206,20 @@ test('タブ・補足・復元欄はCSSが失敗してもhidden属性で初期�
   assert.ok(boxes.length > 0); assert.ok(boxes.every(hidden));
 });
 
-test('ブログ初期表示は最終件数と同じ6枚のスケルトンをHTMLで確保する', () => {
+test('ブログ初期表示は通信を待たず新着6件の本文とリンクをHTMLで提供する', () => {
   const html = read('blog/index.html');
-  const script = read('blog/script.js');
-  assert.equal((html.match(/class="skeleton-card"/g) || []).length, 6);
+  const utils = require('../blog/utils.js');
+  const listed = JSON.parse(read('blog/articles.json')).map(utils.normalizeArticle).filter(a => a.file !== '#' && a.listed);
+  const expected = utils.sortListedArticles(listed, {mode:'newest'}).slice(0,6);
+  const cards = openingTags(html).filter(node => node.tag === 'a' && node.attrs['data-blog-initial-card'] === 'true');
+  assert.equal(cards.length,6);
+  assert.deepEqual(cards.map(card => card.attrs.href),expected.map(article => article.file));
+  for (const article of expected) {
+    assert.ok(elementText(html).includes(article.listTitle));
+    assert.ok(elementText(html).includes(article.listDescription));
+  }
   assert.match(html, /<noscript>[\s\S]*href="noscript\.css\?v=[a-f0-9]+"/);
   assert.match(html, /<noscript>[\s\S]*class="static-article-fallback"[\s\S]*<\/noscript>/);
-  assert.match(script, /querySelectorAll\('\.skeleton-card'\)\.length === CONFIG\.itemsPerPage/);
-  assert.match(script, /i < CONFIG\.itemsPerPage/);
 });
 
 // P21: CSS記法ではなく必須browser-smokeの計算詳細実表示（項目・値・改行・はみ出し）で検証する。

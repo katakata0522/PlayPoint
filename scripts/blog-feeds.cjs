@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const BlogUtils = require('../blog/utils.js');
 const { isSupportedJapaneseArticleManifestFile } = require('./game-guide-article-catalog.cjs');
 
 const FEED_TITLE = 'Google Play Points 完全攻略ガイド | Playポイント計算機';
@@ -104,6 +105,13 @@ function syncBlogStaticArticleIndex(rootDir, articles) {
 
   let html = fs.readFileSync(blogIndexPath, 'utf8');
   const original = html;
+  if (html.includes('id="article-grid"')) {
+    const cards = BlogUtils.sortListedArticles(articles.map(BlogUtils.normalizeArticle).filter(a => a.file !== '#' && a.listed !== false && !/side[ -]?fire|サイドfire/i.test(a.title + ' ' + a.description + ' ' + a.tags.join(' '))), { mode: 'newest' }).slice(0, 6);
+    const markup = cards.map((article, i) => '<a class="article-card' + (article.thumbnailKind !== 'app-icon' ? ' article-card--visual' : '') + '" data-blog-initial-card="true" data-blog-initial-signature="' + escapeHtml(BlogUtils.articleCardIdentity(article)) + '" href="' + escapeHtml(article.file) + '" aria-label="' + escapeHtml(article.title) + '">' + BlogUtils.articleCardMarkup(article, { first: i === 0, staticCard: true }) + '</a>').join(detectNewline(html));
+    // noscriptの全カテゴリ索引は引き続き残す。
+    html = html.replace(/(<div\b[^>]*id="article-grid"[^>]*>)[\s\S]*?(?=<noscript>)/, (match, opening) => opening + detectNewline(html) + markup + detectNewline(html));
+    html = html.replace(/(<script src="(?:utils|components|script)\.js[^" ]*"[^>]*)(>)/g, (m, open, close) => /\bdefer\b/.test(open) ? m : open + ' defer' + close);
+  }
   const fallback = sectionRange(html, 'class="static-article-fallback"');
   if (listed.length > 0 && !fallback) {
     throw new Error('blog/index.html に静的新着欄 (static-article-fallback) がありません');

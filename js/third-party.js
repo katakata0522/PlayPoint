@@ -203,7 +203,14 @@
 
         // Load the async AdSense library early so Google Privacy & Messaging / TCF can initialize.
         // Manual ad-slot requests remain gated by ad_storage consent below.
-        void loadAdsense();
+        // 初回描画の機会を先に渡す。非表示のページと旧ブラウザではCMP取得を止めない。
+        if (typeof window.requestAnimationFrame === 'function' && document.visibilityState !== 'hidden') {
+            let started = false;
+            const start = () => { if (!started) { started = true; document.removeEventListener('visibilitychange', onVisibility); void loadAdsense(); } };
+            const onVisibility = () => { if (document.visibilityState === 'hidden') start(); };
+            document.addEventListener('visibilitychange', onVisibility);
+            window.requestAnimationFrame(() => window.requestAnimationFrame(start));
+        } else void loadAdsense();
         void runAfterConsent(initializeManagedAds, 'ads');
 
         const scheduleAfterLoad = () => {

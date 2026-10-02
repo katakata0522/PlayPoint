@@ -195,67 +195,7 @@
         return diffDays >= 0 && diffDays <= CONFIG.newThresholdDays;
     }
 
-    function sanitizeArticleFile(value) {
-        if (typeof value !== 'string') return '#';
-        const standardArticle = /^\.\.\/articles\/[^/]+\.html$/.test(value);
-        const gameGuideArticle = /^\.\.\/games\/[a-z0-9-]+\/[a-z0-9-]+\/index\.html$/.test(value);
-        if (!standardArticle && !gameGuideArticle) return '#';
-        if (/[<>"']/.test(value)) return '#';
-        return value;
-    }
-
-    function sanitizeArticleThumbnail(value) {
-        if (typeof value !== 'string') return BlogUtils.getPlaceholderImage();
-        const standardThumbnail = /^\.\.\/articles\/ogp\/[^/]+\.png$/.test(value);
-        const editorialThumbnail = /^\.\.\/articles\/thumbnails\/[a-z0-9-]+\.webp$/.test(value);
-        const gameIcon = /^\.\.\/images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp)$/.test(value);
-        const sharedSiteOgp = value === '../ogp.png';
-        if (!standardThumbnail && !editorialThumbnail && !gameIcon && !sharedSiteOgp) return BlogUtils.getPlaceholderImage();
-        if (/[<>"']/.test(value)) return BlogUtils.getPlaceholderImage();
-        return value;
-    }
-
-    function sanitizeArticleThumbnailKind(value) {
-        return ['generic', 'app-icon', 'event-visual'].includes(value) ? value : 'generic';
-    }
-
-    function sanitizeArticleThumbnailPosition(value) {
-        return ['left', 'center', 'right'].includes(value) ? value : 'center';
-    }
-
-    // 記事JSONの値を描画前に正規化する
-    function normalizeArticle(article) {
-        article = article && typeof article === 'object' ? article : {};
-        const tags = Array.isArray(article.tags) ? article.tags.filter(tag => typeof tag === 'string') : [];
-        const title = typeof article.title === 'string' ? article.title : '';
-        const description = typeof article.description === 'string' ? article.description : '';
-        const category = typeof article.category === 'string' ? article.category : '';
-
-        return {
-            id: typeof article.id === 'string' ? article.id : '',
-            title,
-            listTitle: typeof article.listTitle === 'string' && article.listTitle.trim() ? article.listTitle.trim() : title,
-            date: BlogUtils.validArticleDate(article.date),
-            modified: BlogUtils.validArticleDate(article.modified),
-            category,
-            gameTitle: typeof article.gameTitle === 'string' ? article.gameTitle : '',
-            browseCategory: typeof article.browseCategory === 'string' ? article.browseCategory : '',
-            tags,
-            description,
-            listDescription: typeof article.listDescription === 'string' ? article.listDescription : description,
-            file: sanitizeArticleFile(article.file),
-            thumbnail: sanitizeArticleThumbnail(article.thumbnail),
-            thumbnailKind: sanitizeArticleThumbnailKind(article.thumbnailKind),
-            thumbnailPosition: sanitizeArticleThumbnailPosition(article.thumbnailPosition),
-            listed: article.listed !== false,
-            searchIndex: BlogUtils.buildArticleSearchIndex({
-                title,
-                description,
-                tags,
-                category
-            })
-        };
-    }
+    const normalizeArticle = BlogUtils.normalizeArticle;
 
     const COMPACT_THUMBNAIL_QUERY = '(max-width: 760px)';
     const COMPACT_THUMBNAIL_ROOT_MARGIN = '96px 0px';
@@ -269,6 +209,7 @@
     function loadDeferredThumbnail(image) {
         const source = image?.dataset?.src;
         if (!source) return;
+        image.closest('picture')?.querySelector('source')?.remove();
         image.src = source;
         delete image.dataset.src;
     }
@@ -329,7 +270,7 @@
 
     // Create Skeleton Loading Cards
     function showSkeletonLoading() {
-        if (!dom.grid) return;
+        if (!dom.grid || dom.grid.querySelector('[data-blog-initial-card]')) return;
         compactThumbnailObserver?.disconnect();
         if (dom.grid.querySelectorAll('.skeleton-card').length === CONFIG.itemsPerPage) return;
         dom.grid.innerHTML = '';
@@ -379,6 +320,16 @@
         updateSortControl();
         syncFilterPanelState();
 
+        dom.grid?.querySelectorAll('[data-blog-initial-card] img').forEach(image => {
+            image.onerror = () => BlogUtils.handleImageError(image);
+            if (image.dataset.src) {
+                if (isCompactArticleList()) observeDeferredThumbnail(image);
+                else loadDeferredThumbnail(image);
+            }
+        });
+
+        dom.grid?.setAttribute('aria-busy', 'true');
+        [dom.searchInput, dom.sortToggle, dom.gameTitleFilter].forEach(control => { if (control) control.disabled = true; });
         await loadArticles();
     }
 
@@ -535,12 +486,15 @@
                 render();
             });
 
+            [dom.searchInput, dom.sortToggle, dom.gameTitleFilter].forEach(control => { if (control) control.disabled = false; });
+            dom.grid?.setAttribute('aria-busy', 'false');
             render();
             if (currentSearch) { await loadBodySearch(); render(); }
 
         } catch (e) {
             console.error('Article loading error:', e);
             fetchRetryCount++;
+            dom.grid?.setAttribute('aria-busy', 'false');
             showErrorWithRetry();
         }
     }
@@ -550,7 +504,7 @@
         if (dom.loading) dom.loading.classList.add('hidden');
         if (dom.grid) {
             const canRetry = fetchRetryCount < CONFIG.maxRetries;
-            dom.grid.innerHTML = `
+            const errorMarkup = `
                 <div class="error-state">
                     <p style="color: #dc3545; font-size: 1.2rem; margin-bottom: 1rem;">
                         ⚠️ 記事の読み込みに失敗しました
@@ -569,6 +523,9 @@
                     `}
                 </div>
             `;
+            dom.grid.querySelector('.error-state')?.remove();
+            if (dom.grid.querySelector('[data-blog-initial-card]')) dom.grid.insertAdjacentHTML('beforeend', errorMarkup);
+            else dom.grid.innerHTML = errorMarkup;
             const retryBtn = document.getElementById('retry-load');
             if (retryBtn) {
                 retryBtn.addEventListener('click', () => {
@@ -754,6 +711,30 @@
         const end = start + CONFIG.itemsPerPage;
         const pageItems = filtered.slice(start, end);
 
+        // 追加通信が完了しても、同じ初期カードの本文と画像は作り直さない。
+        const initialCards = [...dom.grid.querySelectorAll('[data-blog-initial-card]')];
+        if (initialCards.length && !currentSearch && !currentGameTitle && !currentBrowseCategory && currentCategory === 'all' && currentPage === 1 && sortMode === 'newest'
+            && initialCards.length === pageItems.length && initialCards.every((card, i) => card.dataset.blogInitialSignature === BlogUtils.articleCardIdentity(pageItems[i]))) {
+            initialCards.forEach((card, i) => {
+                const article = pageItems[i];
+                delete card.dataset.blogInitialCard;
+                card.addEventListener('click', () => Analytics.trackArticleClick(article.title, article.category));
+                const image = card.querySelector('img');
+                if (image) {
+                    image.onerror = () => BlogUtils.handleImageError(image);
+                    if (image.complete && !image.naturalWidth) BlogUtils.handleImageError(image);
+                }
+                if (isNewArticle(article.date)) card.querySelector('.card-topic')?.insertAdjacentHTML('afterend', '<span class="badge-new">NEW</span>');
+            });
+            dom.grid.querySelector('.error-state')?.remove();
+            listingAd = createAdElement();
+            initialCards[CONFIG.adInterval - 1].after(listingAd);
+            listingAd.dataset.requestScheduled = 'true';
+            void window.PlayPointBlogAds?.request(dom.grid);
+            renderPagination(totalPages);
+            return;
+        }
+
         // Render Grid
         if (dom.loading) dom.loading.classList.add('hidden');
         compactThumbnailObserver?.disconnect();
@@ -806,57 +787,15 @@
             }
 
             const card = document.createElement('a');
-            const safeTitle = BlogUtils.escapeHtml(article.listTitle);
             card.setAttribute('aria-label', article.title);
             const snippet = window.PlayPointSearch?.excerpt(article, currentSearch, 'ja');
-            const safeDesc = BlogUtils.escapeHtml(currentSearch ? (snippet?.text || article.description) : article.listDescription);
-            const safeCategory = BlogUtils.escapeHtml(article.category);
-            const safeFile = BlogUtils.escapeHtml(article.file);
-            const safeThumbnail = BlogUtils.escapeHtml(article.thumbnail);
-            const updated = article.modified && article.modified > article.date ? article.modified : '';
-            const dateMarkup = `<time datetime="${updated || article.date}">${updated ? '更新 ' : ''}${BlogUtils.formatDate(updated || article.date)}</time>`;
-            const categoryColor = getCategoryColor(article.category);
-            const isNew = isNewArticle(article.date);
-            const newBadge = isNew ? '<span class="badge-new">NEW</span>' : '';
-
-            card.href = safeFile;
+            card.href = article.file;
             if (currentSearch && snippet?.id) card.href = article.file + '#' + encodeURIComponent(snippet.id);
             card.className = 'article-card';
-            card.addEventListener('click', () => {
-                Analytics.trackArticleClick(article.title, article.category);
-            });
-            const thumbnailKind = sanitizeArticleThumbnailKind(article.thumbnailKind);
-            const thumbnailPosition = sanitizeArticleThumbnailPosition(article.thumbnailPosition);
-            const visualThumbnail = thumbnailKind !== 'app-icon';
-            card.classList.toggle('article-card--visual', visualThumbnail);
-            const compactExplicitThumbnail = isCompactArticleList();
-            const loadCompactThumbnailImmediately = compactExplicitThumbnail && compactThumbnailIndex === 0;
-            if (compactExplicitThumbnail) compactThumbnailIndex += 1;
-            const deferThumbnail = compactExplicitThumbnail && !loadCompactThumbnailImmediately;
-            const thumbnailWidth = thumbnailKind === 'app-icon' ? 96 : 1200;
-            const thumbnailHeight = thumbnailKind === 'app-icon' ? 96 : 630;
-            const thumbnailLoading = loadCompactThumbnailImmediately ? 'eager' : 'lazy';
-            const thumbnailFetchPriority = loadCompactThumbnailImmediately ? 'high' : 'low';
-            const thumbnailMarkup = `<img src="${deferThumbnail ? TRANSPARENT_THUMBNAIL_PLACEHOLDER : safeThumbnail}"${deferThumbnail ? ` data-src="${safeThumbnail}"` : ''} alt="" width="${thumbnailWidth}" height="${thumbnailHeight}" loading="${thumbnailLoading}" decoding="async" fetchpriority="${thumbnailFetchPriority}">`;
-            const thumbnailClass = `card-thumb card-thumb--${thumbnailKind} card-thumb--focus-${thumbnailPosition}`;
-            const thumbnailLabel = safeCategory;
-
-            card.innerHTML = `
-                <div class="${thumbnailClass}">
-                    ${thumbnailMarkup}
-                </div>
-                <div class="card-content">
-                    <div class="card-meta"><span class="card-topic">${thumbnailLabel}</span>${newBadge}${dateMarkup}</div>
-                    <div class="card-main">
-                        <h3>${safeTitle}</h3>
-                        ${currentSearch && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : ''}
-                        <p class="card-desc">${safeDesc}</p>
-                        <div class="card-tags">
-                            ${article.tags.map(t => `#${BlogUtils.escapeHtml(t)}`).join(' ')}
-                        </div>
-                    </div>
-                </div>
-            `;
+            card.classList.toggle('article-card--visual', article.thumbnailKind !== 'app-icon');
+            card.addEventListener('click', () => Analytics.trackArticleClick(article.title, article.category));
+            const compact = isCompactArticleList();
+            card.innerHTML = BlogUtils.articleCardMarkup(article, { search: currentSearch, snippet, isNew: isNewArticle(article.date), compact, first: compact && compactThumbnailIndex++ === 0 });
 
             // Attach error handler
             const img = card.querySelector('img');
