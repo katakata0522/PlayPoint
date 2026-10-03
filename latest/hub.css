@@ -93,3 +93,4 @@ html[lang="ja"] body .guide-latest-layout .benefit-card .benefit-card-body { pad
 
 /* 確認記録の背景も明暗テーマの意味色へ追従させる。 */
 html[data-reading-theme] .history-records { background:var(--reading-surface); color:var(--reading-text); transition:none; }
+html[lang="ja"][data-reading-theme] body .guide-latest-layout .history-records :is(h2,h3) { color:var(--reading-text); }
