@@ -752,11 +752,11 @@
               widen.addEventListener('click', () => { currentBrowseCategory = ''; currentCategory = 'all'; currentGameTitle = ''; currentPage = 1; if (dom.gameTitleFilter) dom.gameTitleFilter.value = ''; syncCategoryActiveState(); updateURLState(); render(); }); recovery.append(widen);
           }
           const related = window.PlayPointSearch?.suggest(allArticles, currentSearch, 'ja') || [];
-          const label = document.createElement('p'); label.textContent = related.length ? '一部のキーワードに関連する記事' : '目的から探す'; recovery.append(label);
+          const label = document.createElement('p'); label.textContent = related.length ? '入力した言葉に関連する記事' : '目的から探す'; recovery.append(label);
           const choices = related.length ? related.map(a => ({ href: a.file, title: a.title })) : [
-              { href: '../articles/2026-08-05-play-points-levels-guide.html', title: 'ランクの条件を調べる' },
-              { href: '../articles/2026-03-10-play-points-reflection-timing.html', title: 'ポイントが反映されない時の確認' },
-              { href: '../articles/2025-12-25-best-use.html', title: 'ポイントの使い方を選ぶ' }
+              { href: '../articles/2026-08-05-play-points-levels-guide.html', title: '各ランクの必要ポイント・特典を比較' },
+              { href: '../articles/2026-03-10-play-points-reflection-timing.html', title: 'ポイントが付かないときの確認手順' },
+              { href: '../articles/2025-12-25-best-use.html', title: 'クーポン・アイテム・Playクレジットの使い道を比較' }
           ];
           const list = document.createElement('ul');
           choices.forEach(item => { const li = document.createElement('li'), link = document.createElement('a'); link.href = item.href; link.textContent = item.title; li.append(link); list.append(li); });
