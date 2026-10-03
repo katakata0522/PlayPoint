@@ -10,6 +10,16 @@ const root = path.resolve(__dirname, '..');
 const { GAME_THUMBNAIL_ASSETS, resolveGameThumbnail } = require('../scripts/game-thumbnail-assets.cjs');
 const { GAME_GUIDE_ARTICLES } = require('../scripts/game-guide-article-catalog.cjs');
 
+function webpDimensions(buffer) {
+  assert.equal(buffer.subarray(0, 4).toString('ascii'), 'RIFF');
+  assert.equal(buffer.subarray(8, 12).toString('ascii'), 'WEBP');
+  assert.equal(buffer.subarray(12, 16).toString('ascii'), 'VP8X');
+  return {
+    width: 1 + buffer.readUIntLE(24, 3),
+    height: 1 + buffer.readUIntLE(27, 3)
+  };
+}
+
 test('game thumbnail registry covers every listed Japanese game guide exactly once', () => {
   const titles = GAME_GUIDE_ARTICLES.map(article => article.gameTitle);
   assert.equal(new Set(titles).size, titles.length, 'game guide titles should be unique for thumbnail lookup');
@@ -37,6 +47,7 @@ test('thumbnail registry keeps provenance and never activates a missing local as
       const absolute = path.join(root, entry.localPath);
       assert.equal(fs.existsSync(absolute), true, entry.localPath + ' should exist');
       assert.ok(fs.statSync(absolute).size <= 50 * 1024, entry.localPath + ' should stay within the 50KB mobile list-image budget');
+      assert.deepEqual(webpDimensions(fs.readFileSync(absolute)), { width: 128, height: 128 }, entry.localPath + ' should be a 128px square mobile list image');
     }
   }
 });
