@@ -621,14 +621,19 @@ async function verifyBlogPage(browser, baseUrl) {
       if ([390, 768, 1280].includes(width)) await saveScreenshot(page, `blog-thumbnails-${width}.png`);
     }
 
-    // User-visible mobile first view: prove that the list itself is present without an initial scroll.
+    // 最初の記事はスクロール前に読める。短いカードは全体、長いカードは160px以上と見出し・説明を確認する。
     await page.setViewportSize({ width:390, height:844 });
     await page.evaluate(() => scrollTo(0, 0));
     await page.waitForFunction(() => {
       const card = document.querySelector('.article-card');
       if (!card) return false;
       const rect = card.getBoundingClientRect();
-      return rect.top < 540 && Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0) >= 160;
+      const readable = [...card.querySelectorAll('h3,.card-desc')];
+      const visibleHeight = Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0);
+      return rect.top < 540 && visibleHeight >= Math.min(rect.height, 160) && readable.length === 2 && readable.every(element => {
+        const text = element.getBoundingClientRect();
+        return element.checkVisibility() && element.textContent.trim() && text.height > 0 && text.top >= 0 && text.bottom <= innerHeight;
+      });
     }, null, { polling:'raf', timeout:5_000 });
     await page.screenshot({ path:path.join(ARTIFACT_DIR,'blog-first-view-390.png'), fullPage:false });
 

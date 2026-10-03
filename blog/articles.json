@@ -650,6 +650,27 @@
     "browseCategory": "ゲーム別課金"
   },
   {
+    "id": "super-weekly-reward-prize-history",
+    "title": "スーパーウィークリーリワードで何が当たる？賞品一覧と過去の掲載記録",
+    "listTitle": "スーパーウィークリーで何が当たる？賞品一覧と掲載履歴",
+    "description": "Google Playの日本向け公式ページに掲載された賞品を、確認日・対象ランク付きで記録。現在の掲載と過去の賞品例を分け、残数や参加条件を確認する場所も案内します。",
+    "category": "キャンペーン",
+    "browseCategory": "最新情報・イベント",
+    "tags": [
+      "Play Points",
+      "スーパーウィークリー",
+      "賞品",
+      "掲載履歴"
+    ],
+    "date": "2026-10-03",
+    "modified": "2026-10-03",
+    "file": "../articles/2026-10-03-super-weekly-reward-prize-history.html",
+    "ogp": "../articles/ogp/2026-10-03-super-weekly-reward-prize-history.png",
+    "thumbnail": "../articles/thumbnails/2026-10-03-super-weekly-reward-prize-history.webp",
+    "thumbnailKind": "generic",
+    "listed": true
+  },
+  {
     "id": "suikoden-star-leap-google-play-vs-store",
     "date": "2026-10-03",
     "modified": "2026-10-03",
@@ -1551,7 +1572,7 @@
     "id": "super-weekly-reward",
     "title": "Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・対象ランク",
     "date": "2026-07-31",
-    "modified": "2026-10-02",
+    "modified": "2026-10-03",
     "category": "ランク",
     "tags": [
       "Play Points",

@@ -87,3 +87,10 @@ html[lang="ja"] body .guide-latest-layout .benefit-card .benefit-card-body { pad
 .benefit-details { margin:6px 0 0; border-bottom:0; }
 .benefit-details summary { font-size:14px; padding:8px 0; }
 .benefit-diary { display:flex; align-items:center; min-height:44px; margin-top:2px; font-size:14px; line-height:1.6; color:var(--reading-link,#0b57d0); text-underline-offset:3px; }
+
+/* 変更日と確認日を分けて読み返せる記録欄。 */
+.history-shortcuts{display:flex;flex-wrap:wrap;gap:8px 16px}.history-shortcuts a{min-height:44px;display:inline-flex;align-items:center}.history-timeline{list-style:none;padding:0;margin:20px 0}.history-timeline>li{border-left:3px solid var(--reading-link,#12665c);padding:4px 0 18px 20px;margin:0 0 24px}.history-timeline h3{font-size:20px;line-height:1.6}.history-timeline p{line-height:1.85}.history-records{scroll-margin-top:90px}
+
+/* 確認記録の背景も明暗テーマの意味色へ追従させる。 */
+html[data-reading-theme] .history-records { background:var(--reading-surface); color:var(--reading-text); transition:none; }
+html[lang="ja"][data-reading-theme] body .guide-latest-layout .history-records :is(h2,h3) { color:var(--reading-text); }
