@@ -163,7 +163,7 @@ test('6地域の実登録処理は同じroot SWをHTTP cacheを使わず登録�
   }
 });
 
-test('SW登録はload後のidleへ遅延し、idle APIがない場合もtimerから一度起動する', () => {
+test('SW登録はDOMContentLoaded後のidleへ遅延し、idle APIがない場合もtimerから一度起動する', () => {
   const results = runEsmProbe({ kind: 'registration', scenarios: [{ pathname: '/' }, { pathname: '/', noIdle: true }] });
   for (const [index, result] of results.entries()) {
     assert.equal(result.beforeLoad, 0);
@@ -195,4 +195,10 @@ test('SW登録拒否と更新拒否は未処理例外にせず、登録拒否時
 });
 
 // S08: HTTP cacheの主担当はPR Gateの実Apache検査とproduction security health。
+test('DOMContentLoaded後に読み込まれてもidle登録を一度起動する', () => {
+  const [result] = runEsmProbe({ kind: 'registration', scenarios: [{ pathname: '/', readyState: 'complete' }] });
+  assert.equal(result.loadListeners, 0);
+  assert.equal(result.calls.length, 1);
+  assert.equal(result.updates, 1);
+});
 // 設定文の並びを疑似解釈する旧静的テストは、実HTTPで同等以上を保証して置換した。

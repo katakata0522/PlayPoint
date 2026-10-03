@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20261001_2256-80d96696';;
+const CACHE_NAME = 'playpoint-calc-v20261001_2256-3c9f2a90';;
 // 初回は計算機の必須シェルだけを先読みし、記事・日記などは実利用時にキャッシュする。
 const ASSETS = [
   './',
@@ -111,13 +111,42 @@ async function storeRuntimeResponse(cache, key, response) {
 // HTMLはネットワーク優先。通信が失敗した時だけ同一ページ／トップへ戻す。
 const OFFLINE_FALLBACK_URL = new URL('./', self.registration.scope).toString();
 
-async function handleNavigationRequest(request, cacheKey) {
+// 応答ヘッダーだけでなく本文の読み込みにも待機上限を設ける。
+async function fetchWithTimeout(request, timeoutMs = 4000) {
+  const controller = new AbortController();
+  let timer;
+  try {
+    return await Promise.race([
+      (async () => {
+        const response = await fetch(request, { signal: controller.signal });
+        if (typeof response.clone().arrayBuffer === 'function') await response.clone().arrayBuffer();
+        return response;
+      })(),
+      new Promise((_, reject) => {
+        timer = setTimeout(() => {
+          controller.abort();
+          reject(new Error('PWA通信待ちの上限に達しました'));
+        }, timeoutMs);
+      })
+    ]);
+  } finally { clearTimeout(timer); }
+}
+
+function trackResponseStorage(event) {
+  let finish;
+  event.waitUntil(new Promise(resolve => { finish = resolve; }));
+  return finish;
+}
+
+async function handleNavigationRequest(request, cacheKey, event) {
+  const finish = trackResponseStorage(event);
   const cache = await openRuntimeCache();
   try {
-    const networkResponse = await fetch(request);
-    await storeRuntimeResponse(cache, cacheKey, networkResponse);
+    const networkResponse = await fetchWithTimeout(request);
+    storeRuntimeResponse(cache, cacheKey, networkResponse).finally(finish);
     return networkResponse;
   } catch (error) {
+    finish();
     const cachedResponse = await matchRuntimeCache(cache, cacheKey);
     const fallback = cachedResponse || await matchRuntimeCache(cache, OFFLINE_FALLBACK_URL);
     if (fallback) return fallback;
@@ -127,15 +156,16 @@ async function handleNavigationRequest(request, cacheKey) {
 
 // 静的資産は既存cacheを先に返し、再取得と保存をイベントの寿命へ結び付ける。
 function handleStaticRequest(request, cacheKey, event) {
+  const finish = trackResponseStorage(event);
   const cachePromise = openRuntimeCache();
   const refreshed = cachePromise.then(async (cache) => {
-    const networkResponse = await fetch(request);
-    await storeRuntimeResponse(cache, cacheKey, networkResponse);
+    const networkResponse = await fetchWithTimeout(request);
+    storeRuntimeResponse(cache, cacheKey, networkResponse).finally(finish);
     return networkResponse;
   });
   // cache hitでもworker終了で再取得が途中放棄されないよう、dispatch中に登録する。
   // background失敗は処理済みにするが、cache missの応答側には通信エラーを伝える。
-  event.waitUntil(refreshed.then(() => undefined, () => undefined));
+  event.waitUntil(refreshed.then(() => undefined, () => { finish(); }));
   return cachePromise.then(async (cache) => {
     const cachedResponse = await matchRuntimeCache(cache, cacheKey);
     return cachedResponse || refreshed;
@@ -150,7 +180,7 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     isNavigation
-      ? handleNavigationRequest(event.request, cacheKey)
+      ? handleNavigationRequest(event.request, cacheKey, event)
       : handleStaticRequest(event.request, cacheKey, event)
   );
 });

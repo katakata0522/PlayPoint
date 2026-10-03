@@ -79,7 +79,9 @@ async function observeRegistration(options, overrides) {
         } };
       }
     } },
-    document: { addEventListener() {}, querySelector() { return null; }, querySelectorAll() { return []; },
+    document: { readyState: options.readyState || 'loading',
+      addEventListener(type, callback) { if (!listeners.has(type)) listeners.set(type, []); listeners.get(type).push(callback); },
+      querySelector() { return null; }, querySelectorAll() { return []; },
       getElementById() { return null; }, createElement() { return { dataset: {}, setAttribute() {} }; },
       head: { appendChild() {} }, documentElement: { lang: 'en' } },
     sessionStorage: { getItem(key) { return storage.get(key) || null; }, setItem(key, value) { storage.set(key, String(value)); }, removeItem(key) { storage.delete(key); } },
@@ -93,9 +95,10 @@ async function observeRegistration(options, overrides) {
   const entry = loader.load('/js/service-worker-registration.js');
   await entry.link((specifier, parent) => loader.load(loader.resolve(specifier, parent.identifier)));
   await entry.evaluate();
+  const priorDomListeners = (listeners.get('DOMContentLoaded') || []).length;
   entry.namespace.registerServiceWorker();
   const beforeLoad = calls.length;
-  const loadListeners = listeners.get('load') || [];
+  const loadListeners = (listeners.get('DOMContentLoaded') || []).slice(priorDomListeners);
   loadListeners.forEach(callback => callback());
   const afterLoad = calls.length;
   const scheduled = { idle: idle.length, timers: timers.length };
