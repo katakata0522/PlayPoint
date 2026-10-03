@@ -171,6 +171,24 @@ test('記事・画像の保存件数を制限し、必須起動資産と地域�
   assert.equal(runtime.cacheEntries.has(`${ORIGIN}/articles/ogp/extra-134.jpg`), true);
 });
 
+test('旧版で増えた保存内容は有効化時と容量不足時にも必須資産を残して整理する', async () => {
+  for (const stage of ['activate', 'quota']) {
+    const runtime = createRuntime({ putHandler: async () => { throw new Error('quota'); } });
+    await runtime.fireInstall();
+    const core = runtime.addAllCalls[0].map(item => new URL(item.url, `${ORIGIN}/`).href);
+    for (const url of core) runtime.cacheEntries.set(url, basicResponse('core'));
+    for (let index = 0; index < 135; index++) runtime.cacheEntries.set(`${ORIGIN}/old-${index}.jpg`, basicResponse('old'));
+    if (stage === 'activate') await runtime.fireActivate();
+    else {
+      const fresh = await runtime.fireFetch(request(`${ORIGIN}/new.jpg`, { destination: 'image' }));
+      assert.equal(fresh.response.label, 'network', '容量不足でも正常応答を返す');
+      await runtime.settleBackground();
+    }
+    assert.ok(core.every(url => runtime.cacheEntries.has(url)));
+    assert.equal(runtime.cacheEntries.size, core.length + 100);
+  }
+});
+
 test('静的cache hitは即応答し、再取得と保存の完了までfetch eventを延長する', async () => {
   const key = `${ORIGIN}/js/main.js?v=current`;
   const cached = basicResponse('cached');
