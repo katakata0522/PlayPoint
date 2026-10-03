@@ -70,6 +70,9 @@ self.addEventListener('activate', (event) => {
 });
 
 const CACHEABLE_DESTINATIONS = new Set(['document', 'style', 'script', 'image', 'font', 'manifest']);
+// 記事・画像の補助保存は上限を設け、起動に必要な先読み資産を残す。
+const CORE_CACHE_KEYS = new Set(ASSETS.map(asset => new URL(asset, self.registration.scope).href));
+const MAX_RUNTIME_ENTRIES = 100;
 
 function isCacheableRequest(request) {
   if (request.method !== 'GET') return false;
@@ -103,7 +106,13 @@ async function matchRuntimeCache(cache, key) {
 
 async function storeRuntimeResponse(cache, key, response) {
   if (!cache || !response || !response.ok || response.type !== 'basic') return;
-  try { await cache.put(key, response.clone()); } catch {
+  try {
+    await cache.put(key, response.clone());
+    const extra = (await cache.keys()).filter(request => !CORE_CACHE_KEYS.has(request.url));
+    for (const request of extra.slice(0, Math.max(0, extra.length - MAX_RUNTIME_ENTRIES))) {
+      await cache.delete(request);
+    }
+  } catch {
     // 容量不足などの保存失敗で、取得済みの正常な応答を失わせない。
   }
 }
@@ -143,6 +152,13 @@ async function handleNavigationRequest(request, cacheKey, event) {
   const cache = await openRuntimeCache();
   try {
     const networkResponse = await fetchWithTimeout(request);
+    // 通信できてもサーバー障害なら、保存済みの正常画面を使う。404はそのまま返す。
+    if (networkResponse.status >= 500) {
+      const cached = await matchRuntimeCache(cache, cacheKey);
+      const fallback = cached || await matchRuntimeCache(cache, OFFLINE_FALLBACK_URL);
+      finish();
+      return fallback || networkResponse;
+    }
     storeRuntimeResponse(cache, cacheKey, networkResponse).finally(finish);
     return networkResponse;
   } catch (error) {
