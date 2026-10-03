@@ -132,6 +132,45 @@ function deferred() {
   return { promise, resolve };
 }
 
+test('サーバー障害は同じ地域の保存画面へ戻り、保存がなければ元のエラーを保つ', async () => {
+  for (const status of [500, 502, 503, 504]) {
+    for (const region of ['', 'en/', 'ko/', 'tw/', 'hk/', 'in/']) {
+      const key = `${ORIGIN}/${region}`;
+      const cached = basicResponse('same-region');
+      const root = basicResponse('root-fallback');
+      const failure = { ...basicResponse('server-error'), ok: false, status };
+      const runtime = createRuntime({
+        cacheEntries: new Map([[`${ORIGIN}/`, root], [key, cached]]),
+        networkHandler: async () => failure
+      });
+      assert.equal((await runtime.fireFetch(request(key))).response, cached);
+      await runtime.settleBackground();
+      assert.equal(runtime.putCalls.length, 0);
+    }
+    const failure = { ...basicResponse('server-error'), ok: false, status };
+    const empty = createRuntime({ networkHandler: async () => failure });
+    assert.equal((await empty.fireFetch(request(`${ORIGIN}/`))).response, failure);
+    await empty.settleBackground();
+  }
+});
+
+test('記事・画像の保存件数を制限し、必須起動資産と地域別入口は残す', async () => {
+  const runtime = createRuntime();
+  await runtime.fireInstall();
+  const coreUrls = runtime.addAllCalls[0].map(item => new URL(item.url, `${ORIGIN}/`).href);
+  for (const url of coreUrls) runtime.cacheEntries.set(url, basicResponse('core'));
+  for (let index = 0; index < 135; index++) {
+    const url = `${ORIGIN}/articles/ogp/extra-${index}.jpg`;
+    await runtime.fireFetch(request(url, { destination: 'image' }));
+    await runtime.settleBackground();
+  }
+  assert.ok(coreUrls.every(url => runtime.cacheEntries.has(url)), '必須資産を削除しない');
+  const extra = [...runtime.cacheEntries.keys()].filter(url => !coreUrls.includes(url));
+  assert.equal(extra.length, 100);
+  assert.equal(runtime.cacheEntries.has(`${ORIGIN}/articles/ogp/extra-0.jpg`), false);
+  assert.equal(runtime.cacheEntries.has(`${ORIGIN}/articles/ogp/extra-134.jpg`), true);
+});
+
 test('静的cache hitは即応答し、再取得と保存の完了までfetch eventを延長する', async () => {
   const key = `${ORIGIN}/js/main.js?v=current`;
   const cached = basicResponse('cached');
@@ -191,7 +230,8 @@ test('HTTPエラー・非basic応答は返してもcacheへ保存せず正常cac
       const previous = basicResponse('previous');
       const entries = destination === 'document' ? new Map([[key, previous]]) : new Map();
       const runtime = createRuntime({ cacheEntries: entries, networkHandler: async () => response });
-      assert.equal((await runtime.fireFetch(request(key, { destination }))).response, response);
+      const expected = destination === 'document' && response.status >= 500 ? previous : response;
+      assert.equal((await runtime.fireFetch(request(key, { destination }))).response, expected);
       if (destination === 'document') assert.equal(entries.get(key), previous);
       await runtime.settleBackground();
       assert.equal(runtime.putCalls.length, 0, `${destination}/${response.label}`);

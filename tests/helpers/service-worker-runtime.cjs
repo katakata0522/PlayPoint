@@ -46,6 +46,8 @@ function createRuntime({
   let claimCalls = 0;
 
   const cache = {
+    async keys() { return [...cacheEntries.keys()].map(url => ({ url })); },
+    async delete(request) { return cacheEntries.delete(request.url || String(request)); },
     async addAll(requests) {
       addAllCalls.push(requests);
       if (installFailure) throw new Error('precache failed');
