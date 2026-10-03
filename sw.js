@@ -63,7 +63,9 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    }).then(() => {
+    }).then(async () => {
+      // 以前の版で多く保存された端末も、起動資産を残して上限へ揃える。
+      await trimRuntimeCache(await openRuntimeCache());
       return self.clients.claim();
     })
   );
@@ -106,14 +108,21 @@ async function matchRuntimeCache(cache, key) {
 
 async function storeRuntimeResponse(cache, key, response) {
   if (!cache || !response || !response.ok || response.type !== 'basic') return;
+  try { await cache.put(key, response.clone()); } catch {
+    // 容量不足などの保存失敗で、取得済みの正常な応答を失わせない。
+  }
+  await trimRuntimeCache(cache);
+}
+
+async function trimRuntimeCache(cache) {
+  if (!cache) return;
   try {
-    await cache.put(key, response.clone());
     const extra = (await cache.keys()).filter(request => !CORE_CACHE_KEYS.has(request.url));
     for (const request of extra.slice(0, Math.max(0, extra.length - MAX_RUNTIME_ENTRIES))) {
       await cache.delete(request);
     }
   } catch {
-    // 容量不足などの保存失敗で、取得済みの正常な応答を失わせない。
+    // 補助保存の整理が失敗しても、応答と有効化を妨げない。
   }
 }
 
