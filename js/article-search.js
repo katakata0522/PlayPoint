@@ -8,32 +8,114 @@
     tw: [['playpoints', 'googleplaypoints', 'google playpoints', 'googleplay points', 'google play points', 'play points', 'play 點數', 'play點數', 'google play 點數', 'google play點數', 'googleplay點數'], ['到期', '有效期限', '過期', '失效'], ['未入帳', '沒有入帳', '沒收到', '未收到'], ['每週', '每周', '週獎勵']]
   };
   function normalize(value) { return String(value || '').normalize('NFKC').toLowerCase().replace(/\s+/g, ' ').trim(); }
+  // ひらがな入力でも商品名を探せる。表示用の文字列は変換しない。
+  function fold(value, locale) {
+    const text = normalize(value);
+    return locale === 'ja' ? text.replace(/[ぁ-ゖ]/g, char => String.fromCharCode(char.charCodeAt(0) + 0x60)) : text;
+  }
+  groups.ja[0].push('ポイント', 'ぷれいぽいんと');
+  // Google/グーグル、Play/プレイの混在と単語間の空白位置をまとめて扱う。
+  for (const prefix of ['', 'google', 'グーグル']) for (const play of ['play', 'プレイ'])
+    for (const points of ['points', 'ポイント']) for (const firstSpace of ['', ' ']) for (const secondSpace of ['', ' '])
+      groups.ja[0].push((prefix + (prefix ? firstSpace : '') + play + secondSpace + points).trim());
+  groups.ja[2].push('付与', 'いつ付く', 'いつつく', 'いつ反映', '反映されてない', '反映されていない', 'ついてない', 'ついていない', '付いてない', '付いていない', 'もらえない');
+  groups.ja[1].push('期限が切れた', '期限切れになった');
+  groups.ja.push(
+    ['消えた', '消える', '消えました', '消えてしまった', 'なくなった', 'なくなりました', '無くなった', '消失'],
+    ['月パス', '月額パス', 'マンスリー', '30日補給', '空月の祝福', '列車補給標章', 'インターノット会員'],
+    ['原神', 'げんしん', 'Genshin Impact', 'genshin'],
+    ['モンスト', 'モンスターストライク', 'Monster Strike'],
+    ['スタレ', '崩壊スターレイル', '崩壊：スターレイル', 'Honkai Star Rail'],
+    ['ゼンゼロ', 'ゼンレスゾーンゼロ', 'Zenless Zone Zero'],
+    ['パズドラ', 'パズル＆ドラゴンズ', 'パズル&ドラゴンズ', 'Puzzle and Dragons'],
+    ['FGO', 'Fate/Grand Order', 'フェイトグランドオーダー'],
+    ['ウマ娘', 'ウマムスメ'], ['プロセカ', 'プロジェクトセカイ'],
+    ['ポケポケ', 'ポケモントレーディングカードゲームポケット', 'Pokemon TCG Pocket'],
+    ['アークナイツ', 'Arknights'], ['ドッカン', 'ドッカンバトル'],
+    ['ヘブバン', 'ヘブンバーンズレッド', 'Heaven Burns Red'],
+    ['ファンパレ', 'ファントムパレード'], ['プロスピA', 'プロ野球スピリッツA'],
+    ['スーパーチケット', 'Super Ticket', 'superticket'],
+    ['Playクレジット', 'Play クレジット', 'プレイクレジット', 'プレイ クレジット', 'google play credit'],
+    ['初心者', '初めて', 'はじめて', '始め方', 'はじめ方', '登録方法'],
+    ['使い方', '使い道', '使う', '使いたい', '交換先'],
+    ['機種変更', 'スマホ変更', 'スマホを変えた', '機種を変えた'],
+    ['見つからない', '見当たらない', '表示されない', '出てこない', '出ない'],
+    ['届かない', '受け取れない', '受け取れません'],
+    ['キャンペーン', '増量キャンペーン'], ['クエスト', 'quest'],
+    ['使えない', '使えません', '利用できない', 'できない', '出来ない', 'できません'],
+    ['ランク', 'ステータス'], ['必要額', 'いくら必要', '必要金額'],
+    ['貯まらない', 'たまらない', '増えない', '貯められない', 'ためられない']
+  );
+  const escapePattern = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   // 同義語は固定なので、記事・比較回数ごとに正規化と並べ替えを繰り返さない。
   const replacementsByLocale = Object.fromEntries(Object.entries(groups).map(([locale, aliases]) => [locale,
-    aliases.flatMap((group, index) => group.map(word => [normalize(word), 'zzalias' + index + 'zz'])).sort((a, b) => b[0].length - a[0].length)
+    aliases.flatMap((group, index) => group.map(word => [fold(word, locale), 'zzalias' + index + 'zz'])).sort((a, b) => b[0].length - a[0].length)
   ]));
+  const dictionaries = Object.fromEntries(Object.entries(replacementsByLocale).map(([locale, words]) => [locale, {
+    words, map: new Map(words), pattern: new RegExp(words.map(([word]) => escapePattern(word)).join('|'), 'g')
+  }]));
+  // 記事の回答範囲が質問と一致する場合だけ優先する。辞書の並び番号に依存しない。
+  const purposeOwners = new Map([
+    [['初心者'], '2025-12-25-getting-started.html'], [['使い方'], '2025-12-25-best-use.html'],
+    [['交換'], '2025-12-25-best-use.html'], [['消えた'], '2026-08-16-points-disappeared.html'],
+    [['失効'], '2025-12-25-expiration.html'], [['反映'], '2026-03-10-play-points-reflection-timing.html'],
+    [['クーポン','見つからない'], '2026-07-25-play-points-coupon-not-applied.html'],
+    [['クーポン','使えない'], '2026-07-25-play-points-coupon-not-applied.html'],
+    [['ウィークリー','見つからない'], '2026-08-16-weekly-reward-not-showing.html'],
+    [['ウィークリー','受け取れない'], '2026-08-16-weekly-reward-not-showing.html'],
+    [['ウィークリー','反映'], '2026-08-16-weekly-reward-not-showing.html'],
+    [['キャンペーン','見つからない'], '2026-09-19-play-points-promotion-not-showing.html'],
+    [['登録','見つからない'], '2026-08-05-play-points-cannot-join.html'],
+    [['登録','使えない'], '2026-08-05-play-points-cannot-join.html'],
+    [['アイテム','届かない'], '2026-08-19-redeemed-item-not-received.html']
+  ].map(([words, owner]) => [words.map(word => dictionaries.ja.map.get(fold(word, 'ja')) || fold(word, 'ja')).sort().join(' '), owner]));
   function canonical(value, locale = 'ja') {
-    let result = normalize(value);
-    const replacements = replacementsByLocale[locale] || replacementsByLocale.en;
-    for (const [word, replacement] of replacements) result = result.split(word).join(replacement);
-    return result;
+    const dictionary = dictionaries[locale] || dictionaries.en;
+    return fold(value, locale).replace(dictionary.pattern, word => dictionary.map.get(word));
   }
+  // 長い既知の名前に限り1文字の挿入・削除・置換・隣接入れ替えを補正する。
+  // 短い語や同距離の別候補は推測せず、未知の条件も検索から捨てない。
+  function oneEdit(left, right) {
+    if (Math.abs(left.length - right.length) > 1) return false;
+    let i = 0; while (i < Math.min(left.length, right.length) && left[i] === right[i]) i++;
+    if (i === Math.min(left.length, right.length)) return true;
+    if (left.length === right.length) return left.slice(i + 1) === right.slice(i + 1) ||
+      (left[i] === right[i + 1] && left[i + 1] === right[i] && left.slice(i + 2) === right.slice(i + 2));
+    return left.length > right.length ? left.slice(i + 1) === right.slice(i) : left.slice(i) === right.slice(i + 1);
+  }
+  function correct(token, locale) {
+    if (locale !== 'ja' || token.length < 4 || token.length > 48 || /^zzalias\d+zz$/.test(token)) return token;
+    if (dictionaries.ja.map.has(token)) return token;
+    const variants = [token, token.replace(/(?:ガ|ハ|ヲ|ノ|ニ|デ|ト){1,2}$/, '')];
+    const candidates = new Set(dictionaries.ja.words.filter(([word]) => word.length >= 4 && word[0] === token[0] && variants.some(value => value.length >= 4 && oneEdit(value, word))).map(([, id]) => id));
+    return candidates.size === 1 ? [...candidates][0] : token;
+  }
+  const domainWords = ['インストール', 'アイテム', 'ゲーム', '課金', '購入', '交換', '登録', '残高', '確認', '期限', '更新', '解約', '返金', '払い戻し', 'ボタン', '天井', 'ゴールド', 'プラチナ', 'シルバー', 'ダイヤモンド', 'ブラックダイヤモンド', '必要額'];
+  const domainPattern = new RegExp('zzalias\\d+zz|' + domainWords.map(word => fold(word, 'ja')).sort((a,b) => b.length-a.length).join('|'), 'g');
+  const queryCache = new Map();
   function tokens(query, locale = 'ja') {
-    let value = canonical(query, locale);
+    const input = String(query || '');
+    if (input.length > 256) return ['zzquerytoolongzz'];
+    const key = locale + ':' + input;
+    if (queryCache.has(key)) return queryCache.get(key).slice();
+    let value = canonical(fold(input, locale).split(/\s+/).map(token => correct(token, locale)).join(' '), locale);
     if (locale === 'ja') {
-      // 日本語の助詞でつながった質問も、症状と対象を分けて照合する。
-      value = value.replace(/(?:ポイント)?(?:が|は)?(zzalias2zz)/g, ' $1 ')
-        .replace(/(zzalias\d+zz)/g, ' $1 ').replace(/(?:^|\s)(?:が|は|を|の|です|する|される)(?=\s|$)/g, ' ');
+      value = value.replace(/(?:教エテ(?:クダサイ)?|知リタイ|調ベタイ|探シタイ|ニツイテ|ドウヤッテ|ドウシタラ|ドウスレバ|ナゼ|ドウシテ|ニナルニハ)/g, ' ')
+        .replace(domainPattern, ' $& ').replace(/[、。？！!?「」『』（）()：:・]/g, ' ')
+        .replace(/(?:^|\s)(?:(?:ガ|ハ|ヲ|ノ|ニ|デ|ト|モ|ヘ|カ){1,3}|デス|デスカ|マス|マスカ|スル|シタイ|シテ|シタ|サレル|ナ|コト|方法|理由|原因|ンダケド|ンデスガ|(?:ハ|ガ|ヲ|ノ)?(?:イクラ|イツ|ドコ|ドレ|ナニ|何)(?:デスカ|カ)?)(?=\s|$)/g, ' ');
     }
-    return [...new Set(value.split(' ').filter(Boolean))].slice(0, 12);
+    const terms = [...new Set(value.split(/\s+/).filter(Boolean).map(token => correct(token, locale)))];
+    const result = terms.length > 12 ? ['zzquerytoolongzz'] : terms;
+    if (queryCache.size >= 64) queryCache.delete(queryCache.keys().next().value);
+    queryCache.set(key, result);
+    return result.slice();
   }
   // 一般的な目的だけを案内記事へ寄せる。ゲーム名などの追加条件がある質問には適用しない。
   function intentOwner(query, locale) {
     if (locale !== 'ja') return '';
-    const purpose = canonical(query, locale).replace(/^zzalias0zz\s*/, '').trim();
-    if (/^(?:初心者|はじめて|初めて|始め方|はじめ方|登録方法)$/.test(purpose)) return '2025-12-25-getting-started.html';
-    if (/^(?:ポイント(?:の使い方|を使う|を使いたい|交換|の交換先)|使い方|使う|使いたい|交換先)$/.test(purpose)) return '2025-12-25-best-use.html';
-    return '';
+    const purpose = tokens(query, locale).filter(term => term !== 'zzalias0zz');
+    if (!purpose.length && tokens(query, locale).includes('zzalias0zz')) return '2025-12-25-getting-started.html';
+    return purposeOwners.get(purpose.slice().sort().join(' ')) || '';
   }
   function isIntentOwner(article, query, locale) {
     const owner = intentOwner(query, locale);
@@ -41,16 +123,29 @@
   }
   function sections(article) { return Array.isArray(article.sections) ? article.sections : []; }
   function searchable(article) { return [article.title, article.description, article.category, ...(article.tags || []), ...sections(article).map(s => s.heading + ' ' + s.text)].join(' '); }
-  function matches(article, query, locale) { if (isIntentOwner(article, query, locale)) return true; const haystack = canonical(searchable(article), locale); return tokens(query, locale).every(token => haystack.includes(token)); }
-  function score(article, query, locale) {
+  const articleCache = new WeakMap();
+  function indexed(article, locale) {
+    const previous = articleCache.get(article);
+    if (previous && previous.locale === locale && previous.sections === article.sections && previous.title === article.title && previous.description === article.description && previous.tags === article.tags && previous.category === article.category) return previous;
+    const index = { locale, sections: article.sections, title: article.title, description: article.description, tags: article.tags, category: article.category,
+      text: canonical(searchable(article), locale), titleText: canonical(article.title, locale),
+      headings: canonical(sections(article).map(s => s.heading).join(' '), locale) };
+    articleCache.set(article, index); return index;
+  }
+  function matches(article, query, locale = 'ja') {
+    if (isIntentOwner(article, query, locale)) return true;
     const terms = tokens(query, locale);
-    const title = canonical(article.title, locale);
-    const headings = canonical(sections(article).map(s => s.heading).join(' '), locale);
+    if (normalize(query) && !terms.length) return false;
+    return terms.every(token => indexed(article, locale).text.includes(token));
+  }
+  function score(article, query, locale = 'ja') {
+    const terms = tokens(query, locale);
+    const { titleText: title, headings } = indexed(article, locale);
     const generalMissing = locale === 'ja' && terms.includes('zzalias2zz') && terms.every(term => ['zzalias0zz', 'zzalias2zz', 'ポイント'].includes(term));
     const mainAnswer = generalMissing && /reflection-timing\.html$/.test(article.path || article.file || '');
-    return (isIntentOwner(article, query, locale) ? 50 : 0) + (mainAnswer ? 30 : 0) + terms.reduce((sum, token) => sum + (title.includes(token) ? 10 : 0) + (headings.includes(token) ? 2 : 0), 0);
+    return (isIntentOwner(article, query, locale) ? 100 : 0) + (mainAnswer ? 30 : 0) + terms.reduce((sum, token) => sum + (title.includes(token) ? 10 : 0) + (headings.includes(token) ? 2 : 0), 0);
   }
-  function excerpt(article, query, locale) {
+  function excerpt(article, query, locale = 'ja') {
     if (!normalize(query)) return { text: article.description || '', id: '', heading: '' };
     const terms = tokens(query, locale);
     const title = canonical(article.title, locale);
@@ -70,11 +165,11 @@
     const start = Math.max(0, (literal.length ? Math.min(...literal) : 0) - 40);
     return { text: (start ? '…' : '') + text.slice(start, start + 180) + (text.length > start + 180 ? '…' : ''), id: best.id || '', heading: best.heading || '' };
   }
-  function suggest(articles, query, locale) {
+  function suggest(articles, query, locale = 'ja') {
     const terms = tokens(query, locale);
     if (!terms.length) return [];
     return articles.map(article => {
-      const haystack = canonical(searchable(article), locale);
+      const haystack = indexed(article, locale).text;
       return { article, count: terms.filter(t => haystack.includes(t)).length };
     })
       .filter(item => item.count > 0).sort((a, b) => b.count - a.count).slice(0, 3).map(item => item.article);
