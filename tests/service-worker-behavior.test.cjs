@@ -132,6 +132,63 @@ function deferred() {
   return { promise, resolve };
 }
 
+test('サーバー障害は同じ地域の保存画面へ戻り、保存がなければ元のエラーを保つ', async () => {
+  for (const status of [500, 502, 503, 504]) {
+    for (const region of ['', 'en/', 'ko/', 'tw/', 'hk/', 'in/']) {
+      const key = `${ORIGIN}/${region}`;
+      const cached = basicResponse('same-region');
+      const root = basicResponse('root-fallback');
+      const failure = { ...basicResponse('server-error'), ok: false, status };
+      const runtime = createRuntime({
+        cacheEntries: new Map([[`${ORIGIN}/`, root], [key, cached]]),
+        networkHandler: async () => failure
+      });
+      assert.equal((await runtime.fireFetch(request(key))).response, cached);
+      await runtime.settleBackground();
+      assert.equal(runtime.putCalls.length, 0);
+    }
+    const failure = { ...basicResponse('server-error'), ok: false, status };
+    const empty = createRuntime({ networkHandler: async () => failure });
+    assert.equal((await empty.fireFetch(request(`${ORIGIN}/`))).response, failure);
+    await empty.settleBackground();
+  }
+});
+
+test('記事・画像の保存件数を制限し、必須起動資産と地域別入口は残す', async () => {
+  const runtime = createRuntime();
+  await runtime.fireInstall();
+  const coreUrls = runtime.addAllCalls[0].map(item => new URL(item.url, `${ORIGIN}/`).href);
+  for (const url of coreUrls) runtime.cacheEntries.set(url, basicResponse('core'));
+  for (let index = 0; index < 135; index++) {
+    const url = `${ORIGIN}/articles/ogp/extra-${index}.jpg`;
+    await runtime.fireFetch(request(url, { destination: 'image' }));
+    await runtime.settleBackground();
+  }
+  assert.ok(coreUrls.every(url => runtime.cacheEntries.has(url)), '必須資産を削除しない');
+  const extra = [...runtime.cacheEntries.keys()].filter(url => !coreUrls.includes(url));
+  assert.equal(extra.length, 100);
+  assert.equal(runtime.cacheEntries.has(`${ORIGIN}/articles/ogp/extra-0.jpg`), false);
+  assert.equal(runtime.cacheEntries.has(`${ORIGIN}/articles/ogp/extra-134.jpg`), true);
+});
+
+test('旧版で増えた保存内容は有効化時と容量不足時にも必須資産を残して整理する', async () => {
+  for (const stage of ['activate', 'quota']) {
+    const runtime = createRuntime({ putHandler: async () => { throw new Error('quota'); } });
+    await runtime.fireInstall();
+    const core = runtime.addAllCalls[0].map(item => new URL(item.url, `${ORIGIN}/`).href);
+    for (const url of core) runtime.cacheEntries.set(url, basicResponse('core'));
+    for (let index = 0; index < 135; index++) runtime.cacheEntries.set(`${ORIGIN}/old-${index}.jpg`, basicResponse('old'));
+    if (stage === 'activate') await runtime.fireActivate();
+    else {
+      const fresh = await runtime.fireFetch(request(`${ORIGIN}/new.jpg`, { destination: 'image' }));
+      assert.equal(fresh.response.label, 'network', '容量不足でも正常応答を返す');
+      await runtime.settleBackground();
+    }
+    assert.ok(core.every(url => runtime.cacheEntries.has(url)));
+    assert.equal(runtime.cacheEntries.size, core.length + 100);
+  }
+});
+
 test('静的cache hitは即応答し、再取得と保存の完了までfetch eventを延長する', async () => {
   const key = `${ORIGIN}/js/main.js?v=current`;
   const cached = basicResponse('cached');
@@ -191,7 +248,8 @@ test('HTTPエラー・非basic応答は返してもcacheへ保存せず正常cac
       const previous = basicResponse('previous');
       const entries = destination === 'document' ? new Map([[key, previous]]) : new Map();
       const runtime = createRuntime({ cacheEntries: entries, networkHandler: async () => response });
-      assert.equal((await runtime.fireFetch(request(key, { destination }))).response, response);
+      const expected = destination === 'document' && response.status >= 500 ? previous : response;
+      assert.equal((await runtime.fireFetch(request(key, { destination }))).response, expected);
       if (destination === 'document') assert.equal(entries.get(key), previous);
       await runtime.settleBackground();
       assert.equal(runtime.putCalls.length, 0, `${destination}/${response.label}`);
@@ -216,4 +274,44 @@ test('異なる資産版は追跡queryが違っても混線せず、network失�
   assert.equal((await runtime.fireFetch(request(`${oldKey}&utm_source=a`, { destination: 'script' }))).response, old);
   await assert.rejects(runtime.fireFetch(request(`${ORIGIN}/js/main.js?v=new&utm_source=a`, { destination: 'script' })), /offline/);
   await runtime.settleBackground();
+});
+
+test('応答しない通信や本文は待機上限で同一ページcacheへ戻る', async () => {
+  const cached = basicResponse('cached-page');
+  for (const bodyStall of [false, true]) {
+    const runtime = createRuntime({
+      cacheEntries: new Map([[ORIGIN + '/', cached]]),
+      networkHandler: bodyStall ? async () => ({
+        ...basicResponse('headers-only'),
+        clone() { return { arrayBuffer: () => new Promise(() => {}) }; }
+      }) : () => new Promise(() => {}),
+      timers: { setTimeout: callback => setImmediate(callback), clearTimeout: clearImmediate }
+    });
+    assert.equal((await runtime.fireFetch(request(ORIGIN + '/'))).response, cached);
+    await runtime.settleBackground();
+  }
+});
+
+test('未保存の静的資産の通信停滞は上限で失敗し、HTMLを返さない', async () => {
+  const runtime = createRuntime({
+    networkHandler: () => new Promise(() => {}),
+    timers: { setTimeout: callback => setImmediate(callback), clearTimeout: clearImmediate }
+  });
+  await assert.rejects(runtime.fireFetch(request(ORIGIN + '/js/missing.js', { destination: 'script' })), /上限/);
+  await runtime.settleBackground();
+});
+
+test('取得できた画面・未保存資産はcache保存の完了を待たず返る', async () => {
+  for (const destination of ['document', 'script']) {
+    const stored = deferred();
+    const fresh = basicResponse('fresh');
+    const runtime = createRuntime({ putHandler: () => stored.promise, networkHandler: async () => fresh });
+    const response = runtime.fireFetch(request(ORIGIN + '/resource', { destination }));
+    try {
+      const pending = Symbol('保存待ち');
+      const result = await Promise.race([response, new Promise(resolve => setImmediate(() => resolve(pending)))]);
+      assert.notEqual(result, pending);
+      assert.equal(result.response, fresh);
+    } finally { stored.resolve(); await runtime.settleBackground(); }
+  }
 });

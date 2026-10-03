@@ -32,7 +32,8 @@ function createRuntime({
   openFailure = false,
   matchFailure = false,
   putHandler = async () => {},
-  workerSource = source
+  workerSource = source,
+  timers = { setTimeout, clearTimeout }
 } = {}) {
   const listeners = new Map();
   const addAllCalls = [];
@@ -45,6 +46,8 @@ function createRuntime({
   let claimCalls = 0;
 
   const cache = {
+    async keys() { return [...cacheEntries.keys()].map(url => ({ url })); },
+    async delete(request) { return cacheEntries.delete(request.url || String(request)); },
     async addAll(requests) {
       addAllCalls.push(requests);
       if (installFailure) throw new Error('precache failed');
@@ -66,6 +69,9 @@ function createRuntime({
     console: { log() {}, warn() {}, error() {} },
     URL,
     Set,
+    AbortController,
+    setTimeout: timers.setTimeout,
+    clearTimeout: timers.clearTimeout,
     Request: FakeRequest,
     caches: {
       async open(name) { openedCaches.push(String(name)); if (openFailure) throw new Error('cache open unavailable'); return cache; },

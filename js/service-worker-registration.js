@@ -13,7 +13,7 @@ function runWhenIdle(callback, timeout = 2000) {
 export function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
 
-    window.addEventListener('load', () => {
+    const schedule = () => {
         runWhenIdle(() => {
             const swPath = (isEnglishPath() || isKoreanPath() || isTaiwanPath()) ? '../sw.js' : './sw.js';
             navigator.serviceWorker.register(swPath, { updateViaCache: 'none' })
@@ -23,5 +23,10 @@ export function registerServiceWorker() {
                 })
                 .catch(err => console.error('ServiceWorker registration failed:', err));
         });
-    });
+    };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', schedule, { once: true });
+    } else {
+        schedule();
+    }
 }
