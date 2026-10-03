@@ -32,3 +32,8 @@
 ## 5. 自動監査と品質ガード
 - `scripts/seo-head-audit.cjs`: 全ページの OGP メタタグの完全性、画像ファイルのローカル存在、実画像寸法（1200×630）を静的監査する。
 - `tests/ogp-standardization.test.cjs`: CI 自動テストで全記事の一意性、寸法、MIME型契約を検証する。
+
+## 6. 一覧サムネイルと画像役割台帳
+- 一般記事の一覧サムネイルは `articles/thumbnails/<article-id>-square-v1.webp`（256×256 WebP）、ゲーム記事は22種のGoogle Play公式アプリアイコン（`images/game-icons/*.webp`、256×256）を使う。これらは記事専用OGPとは別の一覧画像である。
+- `blog/articles.json` は生成済み記事の役割マニフェスト、`scripts/article-image-assets.json` は画像役割レジストリとし、`scripts/article-image-assets.cjs` を `scripts/build-html.js` から実行してマニフェスト・HTMLメタタグ・JSON-LDを同期する。
+- 画像を再生成・差し替えた場合は、役割レジストリと実体を揃えてからビルドを再実行し、`tests/ogp-standardization.test.cjs` と `tests/ogp-mime-contract.test.cjs` で専用OGPの一意性、寸法、JPEG実体、一覧画像との分離を確認する。

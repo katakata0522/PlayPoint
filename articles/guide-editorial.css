@@ -48,6 +48,7 @@ html[lang="ja"] body .ja-article-sidebar .sidebar-browse-item.is-current-topic .
 html[lang="ja"] body .ja-article-sidebar .sidebar-popular-link { font-size:13px; line-height:1.7; }
 html[lang="ja"] body .ja-article-sidebar .sidebar-popular-rank { font-variant-numeric:tabular-nums; font-size:16px; }
 html[lang="ja"] body .ja-article-sidebar .sidebar-popular-thumb { aspect-ratio:1200/630; border:0; border-radius:4px; }
+html[lang="ja"] body .ja-article-sidebar .sidebar-popular-thumb.sidebar-popular-thumb--square { aspect-ratio:1; }
 html[lang="ja"] body .ja-article-sidebar .sidebar-popular-thumb img { object-fit:contain; }
 html[lang="ja"] body .ja-article-sidebar .sidebar-author-name { font-size:15px; }
 html[lang="ja"] body .guide-hub-sidebar > .sidebar-widget--search { display:none; }

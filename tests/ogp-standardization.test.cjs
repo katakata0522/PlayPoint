@@ -13,6 +13,27 @@ const value = (html, key) => { const nodes = meta(html, key); assert.equal(nodes
 const root = path.resolve(__dirname, '..');
 const articlesDir = path.join(root, 'articles');
 const ogpDir = path.join(articlesDir, 'ogp');
+const siteOrigin = 'https://playpoint-sim.com';
+const articlesManifest = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'));
+const manifestByFile = new Map(articlesManifest.map(article => [String(article.file || '').replace(/^\.\.\//, ''), article]));
+const directArticleFiles = fs.readdirSync(articlesDir)
+  .filter(file => file.endsWith('.html'))
+  .sort();
+const listedGameArticles = articlesManifest.filter(article => article.listed !== false && /^\.\.\/games\/[a-z0-9-]+\/[a-z0-9-]+\/index\.html$/i.test(String(article.file || '')));
+const articlePages = [
+  ...directArticleFiles.map(file => ({ file: `articles/${file}`, manifest: manifestByFile.get(`articles/${file}`) })),
+  ...listedGameArticles.map(article => ({ file: String(article.file).replace(/^\.\.\//, ''), manifest: article }))
+];
+
+function publicManifestUrl(value) {
+  return new URL(String(value || ''), `${siteOrigin}/blog/`).href;
+}
+
+function localPathForPublicUrl(value) {
+  const url = new URL(value);
+  assert.equal(url.origin, siteOrigin, 'OGP URLは正本サイトのURLであること');
+  return path.join(root, url.pathname.replace(/^\/+/, ''));
+}
 
 function getImageDimensions(buffer) {
   if (!buffer || buffer.length < 24) return null;
@@ -43,26 +64,53 @@ function getImageDimensions(buffer) {
   return null;
 }
 
-test('日本語articles直下の各記事は一意の専用OGP画像URLと画像実体を持つ', () => {
- const files=fs.readdirSync(articlesDir).filter(f=>f.endsWith('.html')); assert.ok(files.length>0);
- const urls=new Set(), images=new Map();
- for(const file of files){
-  const html=fs.readFileSync(path.join(articlesDir,file),'utf8'), url=value(html,'og:image');
-  assert.match(url,/^https:\/\/playpoint-sim\.com\/articles\/ogp\/[^/]+\.png$/,file);
-  assert.ok(!urls.has(url),file+': duplicate URL'); urls.add(url);
-  const image=fs.readFileSync(path.join(root,new URL(url).pathname));
-  const hash=createHash('sha256').update(image).digest('hex');
-  assert.ok(!images.has(hash),file+': identical image bytes with '+images.get(hash));images.set(hash,file);
- }
+test('日本語記事全体は一意の専用OGP画像URL・実体を持ち、manifestの画像役割と一致する', () => {
+  assert.ok(directArticleFiles.length > 0, 'articles直下のHTMLが存在すること');
+  assert.ok(listedGameArticles.length > 0, 'listed manifestのゲーム記事が存在すること');
+  assert.equal(new Set(articlePages.map(page => page.file)).size, articlePages.length, '検査対象のページパスが重複しないこと');
+
+  const urls = new Set();
+  const images = new Map();
+  for (const page of articlePages) {
+    const htmlPath = path.join(root, page.file);
+    assert.ok(fs.existsSync(htmlPath), page.file + ': HTMLが存在すること');
+    assert.ok(page.manifest, page.file + ': blog/articles.jsonに対応する記事があること');
+    const html = fs.readFileSync(htmlPath, 'utf8');
+    const url = value(html, 'og:image');
+    assert.match(url, /^https:\/\/playpoint-sim\.com\/articles\/ogp\/[^/]+\.png$/, page.file);
+    assert.ok(!urls.has(url), page.file + ': duplicate URL');
+    urls.add(url);
+
+    const imagePath = localPathForPublicUrl(url);
+    assert.ok(fs.existsSync(imagePath), page.file + ': OGP実体が存在すること');
+    const image = fs.readFileSync(imagePath);
+    const hash = createHash('sha256').update(image).digest('hex');
+    assert.ok(!images.has(hash), page.file + ': identical image bytes with ' + images.get(hash));
+    images.set(hash, page.file);
+
+    if (page.manifest.listed !== false) {
+      assert.match(String(page.manifest.ogp || ''), /^\.\.\/articles\/ogp\/[^/]+\.png$/i, page.file + ': manifest.ogp');
+      assert.equal(publicManifestUrl(page.manifest.ogp), url, page.file + ': manifest.ogpとog:imageが一致');
+      assert.ok(page.manifest.thumbnail, page.file + ': manifest.thumbnailが存在すること');
+      assert.notEqual(publicManifestUrl(page.manifest.thumbnail), url, page.file + ': thumbnailをOGPに流用しない');
+      if (page.manifest.thumbnailKind === 'app-icon') {
+        assert.match(page.manifest.thumbnail, /^\.\.\/images\/game-icons\/[a-z0-9-]+\.webp$/i, page.file + ': ゲーム一覧アイコン');
+      } else if (page.manifest.thumbnailKind === 'generic') {
+        assert.match(page.manifest.thumbnail, /^\.\.\/articles\/thumbnails\/[a-z0-9-]+-square-v1\.webp$/i, page.file + ': 一般記事正方形サムネイル');
+      }
+    }
+  }
 });
 
-test('日本語articles直下の各記事はOGP・Twitterタグを実metaとして持つ', () => {
- for(const file of fs.readdirSync(articlesDir).filter(f=>f.endsWith('.html'))){
-  const html=fs.readFileSync(path.join(articlesDir,file),'utf8');
-  for(const [key,expected] of Object.entries({'og:image:width':'1200','og:image:height':'630','og:image:type':'image/jpeg','og:locale':'ja_JP','twitter:card':'summary_large_image'}))assert.equal(value(html,key),expected,file+': '+key);
-  assert.ok(value(html,'og:image:alt')?.trim(),file+': image alternative text');
-  assert.equal(value(html,'twitter:image'),value(html,'og:image'),file+': Twitter image');
- }
+test('日本語記事全体はOGP・Twitterの必須タグを実metaとして持つ', () => {
+  for (const page of articlePages) {
+    const html = fs.readFileSync(path.join(root, page.file), 'utf8');
+    for (const [key, expected] of Object.entries({ 'og:image:width': '1200', 'og:image:height': '630', 'og:image:type': 'image/jpeg', 'og:locale': 'ja_JP', 'twitter:card': 'summary_large_image' })) {
+      assert.equal(value(html, key), expected, page.file + ': ' + key);
+    }
+    assert.ok(value(html, 'og:image:alt')?.trim(), page.file + ': image alternative text');
+    assert.equal(value(html, 'twitter:image'), value(html, 'og:image'), page.file + ': Twitter image');
+  }
 });
 
 test('articles/ogp/ 内の全PNG画像は1200x630のJPEG実体である', () => {

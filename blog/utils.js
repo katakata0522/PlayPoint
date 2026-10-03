@@ -202,6 +202,13 @@
     function articleCardIdentity(article) {
         return JSON.stringify([article.title, article.listTitle, article.date, article.modified, article.category, article.tags, article.listDescription, article.file, article.thumbnail, article.thumbnailKind, article.thumbnailPosition]);
     }
+    function articleThumbnailDimensions(article) {
+        if (article?.thumbnailKind === 'app-icon') return { width: 96, height: 96 };
+        if (/^\.\.\/articles\/thumbnails\/[a-z0-9-]+-square-v1\.webp$/i.test(String(article?.thumbnail || ''))) {
+            return { width: 256, height: 256 };
+        }
+        return { width: 1200, height: 630 };
+    }
     function articleCardMarkup(article, { search = '', snippet = null, isNew = false, compact = false, first = false, staticCard = false } = {}) {
         const safeTitle = BlogUtils.escapeHtml(article.listTitle);
         const safeDesc = BlogUtils.escapeHtml(search ? (snippet?.text || article.description) : article.listDescription);
@@ -210,10 +217,11 @@
         const dateMarkup = '<time datetime="' + (updated || article.date) + '">' + (updated ? '更新 ' : '') + BlogUtils.formatDate(updated || article.date) + '</time>';
         const newBadge = isNew ? '<span class="badge-new">NEW</span>' : '';
         const kind = article.thumbnailKind, position = article.thumbnailPosition;
+        const dimensions = articleThumbnailDimensions(article);
         const deferThumbnail = compact && !first;
         const placeholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
         const source = BlogUtils.escapeHtml(article.thumbnail);
-        const image = '<img src="' + (deferThumbnail ? placeholder : source) + '"' + (deferThumbnail || (staticCard && !first) ? ' data-src="' + source + '"' : '') + ' alt="" width="' + (kind === 'app-icon' ? 96 : 1200) + '" height="' + (kind === 'app-icon' ? 96 : 630) + '" loading="' + (first ? 'eager' : 'lazy') + '" decoding="async" fetchpriority="' + (first ? 'high' : 'low') + '">';
+        const image = '<img src="' + (deferThumbnail ? placeholder : source) + '"' + (deferThumbnail || (staticCard && !first) ? ' data-src="' + source + '"' : '') + ' alt="" width="' + dimensions.width + '" height="' + dimensions.height + '" loading="' + (first ? 'eager' : 'lazy') + '" decoding="async" fetchpriority="' + (first ? 'high' : 'low') + '">';
         // 画面外画像はスマホの初回描画と競合させず、PCはnative lazy loadingを使う。
         const thumbnail = staticCard && !first ? '<picture><source media="(max-width:760px)" srcset="' + PLACEHOLDER_IMAGE + '">' + image + '</picture>' : image;
         return '<div class="card-thumb card-thumb--' + kind + ' card-thumb--focus-' + position + '">' + thumbnail + '</div><div class="card-content"><div class="card-meta"><span class="card-topic">' + safeCategory + '</span>' + newBadge + dateMarkup + '</div><div class="card-main"><h3>' + safeTitle + '</h3>' + (search && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : '') + '<p class="card-desc">' + safeDesc + '</p><div class="card-tags">' + article.tags.map(t => '#' + BlogUtils.escapeHtml(t)).join(' ') + '</div></div></div>';
@@ -297,7 +305,7 @@
         clampPageJump: clampPageJump,
         filterListedArticles: filterListedArticles,
         GAME_TITLE_FILTERS: GAME_TITLE_FILTERS,
-        validArticleDate, sortListedArticles, gameTitleFilters, relatedGameCalculators, normalizeArticle, articleCardMarkup, articleCardIdentity
+        validArticleDate, sortListedArticles, gameTitleFilters, relatedGameCalculators, normalizeArticle, articleCardMarkup, articleCardIdentity, articleThumbnailDimensions
     };
 
     const api = Object.assign({}, BlogUtils, {
@@ -307,7 +315,7 @@
         clampPageJump: clampPageJump,
         filterListedArticles: filterListedArticles,
         GAME_TITLE_FILTERS: GAME_TITLE_FILTERS,
-        validArticleDate, sortListedArticles, gameTitleFilters, relatedGameCalculators, normalizeArticle, articleCardMarkup, articleCardIdentity
+        validArticleDate, sortListedArticles, gameTitleFilters, relatedGameCalculators, normalizeArticle, articleCardMarkup, articleCardIdentity, articleThumbnailDimensions
     });
 
     if (typeof module === 'object' && module.exports) {

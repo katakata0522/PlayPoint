@@ -373,8 +373,10 @@
     function sanitizeArticleThumbnail(value) {
         if (typeof value !== 'string') return CONFIG.placeholderImage;
         const standardThumbnail = /^\.\.\/articles\/ogp\/[^/]+\.png$/.test(value);
+        const editorialThumbnail = /^\.\.\/articles\/thumbnails\/[a-z0-9-]+\.webp$/i.test(value);
+        const gameIcon = /^\.\.\/images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp)$/i.test(value);
         const sharedSiteOgp = value === '../ogp.png';
-        if (!standardThumbnail && !sharedSiteOgp) return CONFIG.placeholderImage;
+        if (!standardThumbnail && !editorialThumbnail && !gameIcon && !sharedSiteOgp) return CONFIG.placeholderImage;
         if (/[<>"']/.test(value)) return CONFIG.placeholderImage;
         return value;
     }
@@ -390,6 +392,40 @@
             thumbnail: sanitizeArticleThumbnail(article.thumbnail),
             listed: article.listed !== false
         };
+    }
+
+    function relatedCardMarkup(article, utils = getUtils()) {
+        const safeTitle = utils.escapeHtml(article.title);
+        const safeCategory = utils.escapeHtml(article.category);
+        const formattedDate = utils.formatDate(article.date);
+        return `
+                    <div class="related-card-thumb">
+                        <img src="${article.thumbnail}" alt="${safeTitle}" loading="lazy">
+                        <span class="related-card-category">${safeCategory}</span>
+                    </div>
+                    <div class="related-card-content">
+                        <time>${formattedDate}</time>
+                        <h4>${safeTitle}</h4>
+                    </div>
+                `;
+    }
+
+    function isSquareRelatedThumbnail(value) {
+        return /^(?:\.\.\/articles\/thumbnails\/[a-z0-9-]+\.webp|\.\.\/images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp))$/i.test(String(value || ''));
+    }
+
+    function createRelatedCard(article) {
+        const card = document.createElement('a');
+        card.href = article.file;
+        card.className = `related-card${isSquareRelatedThumbnail(article.thumbnail) ? ' related-card--square' : ''}`;
+        card.innerHTML = relatedCardMarkup(article);
+        const img = card.querySelector('img');
+        if (img) {
+            img.addEventListener('error', () => {
+                img.src = CONFIG.placeholderImage;
+            }, { once: true });
+        }
+        return card;
     }
 
     // Get current article's category from meta tag or data attribute
@@ -653,31 +689,7 @@
                 container.innerHTML = '';
 
                 recommended.forEach(article => {
-                const utils = getUtils();
-                const safeTitle = utils.escapeHtml(article.title);
-                const safeCategory = utils.escapeHtml(article.category);
-                const formattedDate = utils.formatDate(article.date);
-
-                const card = document.createElement('a');
-                card.href = article.file;
-                card.className = 'related-card';
-                card.innerHTML = `
-                    <div class="related-card-thumb">
-                        <img src="${article.thumbnail}" alt="${safeTitle}" loading="lazy">
-                        <span class="related-card-category">${safeCategory}</span>
-                    </div>
-                    <div class="related-card-content">
-                        <time>${formattedDate}</time>
-                        <h4>${safeTitle}</h4>
-                    </div>
-                `;
-                const img = card.querySelector('img');
-                if (img) {
-                    img.addEventListener('error', () => {
-                        img.src = CONFIG.placeholderImage;
-                    }, { once: true });
-                }
-                container.appendChild(card);
+                    container.appendChild(createRelatedCard(article));
                 });
             }
 
