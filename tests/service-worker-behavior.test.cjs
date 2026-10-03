@@ -217,3 +217,43 @@ test('異なる資産版は追跡queryが違っても混線せず、network失�
   await assert.rejects(runtime.fireFetch(request(`${ORIGIN}/js/main.js?v=new&utm_source=a`, { destination: 'script' })), /offline/);
   await runtime.settleBackground();
 });
+
+test('応答しない通信や本文は待機上限で同一ページcacheへ戻る', async () => {
+  const cached = basicResponse('cached-page');
+  for (const bodyStall of [false, true]) {
+    const runtime = createRuntime({
+      cacheEntries: new Map([[ORIGIN + '/', cached]]),
+      networkHandler: bodyStall ? async () => ({
+        ...basicResponse('headers-only'),
+        clone() { return { arrayBuffer: () => new Promise(() => {}) }; }
+      }) : () => new Promise(() => {}),
+      timers: { setTimeout: callback => setImmediate(callback), clearTimeout: clearImmediate }
+    });
+    assert.equal((await runtime.fireFetch(request(ORIGIN + '/'))).response, cached);
+    await runtime.settleBackground();
+  }
+});
+
+test('未保存の静的資産の通信停滞は上限で失敗し、HTMLを返さない', async () => {
+  const runtime = createRuntime({
+    networkHandler: () => new Promise(() => {}),
+    timers: { setTimeout: callback => setImmediate(callback), clearTimeout: clearImmediate }
+  });
+  await assert.rejects(runtime.fireFetch(request(ORIGIN + '/js/missing.js', { destination: 'script' })), /上限/);
+  await runtime.settleBackground();
+});
+
+test('取得できた画面・未保存資産はcache保存の完了を待たず返る', async () => {
+  for (const destination of ['document', 'script']) {
+    const stored = deferred();
+    const fresh = basicResponse('fresh');
+    const runtime = createRuntime({ putHandler: () => stored.promise, networkHandler: async () => fresh });
+    const response = runtime.fireFetch(request(ORIGIN + '/resource', { destination }));
+    try {
+      const pending = Symbol('保存待ち');
+      const result = await Promise.race([response, new Promise(resolve => setImmediate(() => resolve(pending)))]);
+      assert.notEqual(result, pending);
+      assert.equal(result.response, fresh);
+    } finally { stored.resolve(); await runtime.settleBackground(); }
+  }
+});

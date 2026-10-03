@@ -32,7 +32,8 @@ function createRuntime({
   openFailure = false,
   matchFailure = false,
   putHandler = async () => {},
-  workerSource = source
+  workerSource = source,
+  timers = { setTimeout, clearTimeout }
 } = {}) {
   const listeners = new Map();
   const addAllCalls = [];
@@ -66,6 +67,9 @@ function createRuntime({
     console: { log() {}, warn() {}, error() {} },
     URL,
     Set,
+    AbortController,
+    setTimeout: timers.setTimeout,
+    clearTimeout: timers.clearTimeout,
     Request: FakeRequest,
     caches: {
       async open(name) { openedCaches.push(String(name)); if (openFailure) throw new Error('cache open unavailable'); return cache; },
