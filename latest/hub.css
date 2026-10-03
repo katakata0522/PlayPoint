@@ -90,3 +90,6 @@ html[lang="ja"] body .guide-latest-layout .benefit-card .benefit-card-body { pad
 
 /* 変更日と確認日を分けて読み返せる記録欄。 */
 .history-shortcuts{display:flex;flex-wrap:wrap;gap:8px 16px}.history-shortcuts a{min-height:44px;display:inline-flex;align-items:center}.history-timeline{list-style:none;padding:0;margin:20px 0}.history-timeline>li{border-left:3px solid var(--reading-link,#12665c);padding:4px 0 18px 20px;margin:0 0 24px}.history-timeline h3{font-size:20px;line-height:1.6}.history-timeline p{line-height:1.85}.history-records{scroll-margin-top:90px}
+
+/* 確認記録の背景も明暗テーマの意味色へ追従させる。 */
+html[data-reading-theme] .history-records { background:var(--reading-surface); color:var(--reading-text); transition:none; }
