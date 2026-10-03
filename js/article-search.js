@@ -170,9 +170,11 @@
     if (!terms.length) return [];
     return articles.map(article => {
       const haystack = indexed(article, locale).text;
-      return { article, count: terms.filter(t => haystack.includes(t)).length };
+      const relatedTerms = terms.filter(t => haystack.includes(t));
+      // ゼロ件時の参考候補だけを、一致する語の関連度で並べる。通常のAND検索は緩めない。
+      return { article, count: relatedTerms.length, relevance: score(article, relatedTerms.join(' '), locale) };
     })
-      .filter(item => item.count > 0).sort((a, b) => b.count - a.count).slice(0, 3).map(item => item.article);
+      .filter(item => item.count > 0).sort((a, b) => b.count - a.count || b.relevance - a.relevance).slice(0, 3).map(item => item.article);
   }
   const api = { normalize, canonical, tokens, matches, score, excerpt, suggest };
   if (typeof module === 'object' && module.exports) module.exports = api;

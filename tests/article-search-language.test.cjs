@@ -60,6 +60,18 @@ test('個別条件を一般案内で上書きせず、絞り込みとAND条件�
   assert.equal(filtered.length, 0);
 });
 
+test('ゼロ件時の候補は回答の関連度で並べ、通常検索の追加条件を消さない', () => {
+  const query = 'ポイントが反映されてない 未掲載の条件xyz';
+  assert.equal(hits(query).length,0);
+  assert.equal(search.suggest(articles,query,'ja')[0]?.id,'play-points-reflection-timing');
+  const specific = 'インストール ポイントが反映されてない 未掲載の条件xyz';
+  assert.equal(hits(specific).length,0);
+  assert.equal(search.suggest(articles,specific,'ja')[0]?.id,'install-offer-points-not-received');
+  const gameQuery = 'にけ 月パス 未掲載の条件xyz';
+  assert.equal(hits(gameQuery).length,0);
+  assert.equal(search.suggest(articles,gameQuery,'ja')[0]?.id,'nikke-monthly-card-midasbuy-2026');
+});
+
 test('本文索引の遅延読み込み後にも検索キャッシュを更新し、節へのリンクを返す', () => {
   const article = { title:'Guide', description:'Summary', sections:[] };
   assert.equal(search.matches(article,'げんしん 月パス','ja'),false);
