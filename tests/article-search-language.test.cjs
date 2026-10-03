@@ -24,7 +24,7 @@ test('普段の質問から対象と症状を分け、一般的な回答を先�
 });
 
 test('サービス表記・ゲームの正式名・略称・ひらがな・全角を同じ対象として探す', () => {
-  for (const query of ['プレイポイント', 'ぷれいぽいんと', 'Ｐｌａｙ Ｐｏｉｎｔｓ', 'GooglePlayPoints', 'グーグル プレイ ポイント', 'Googleプレイポイント', 'GooglePlay ポイント', 'グーグルプレイ ポイント']) {
+  for (const query of ['プレイポイント', 'ぷれいぽいんと', 'Ｐｌａｙ Ｐｏｉｎｔｓ', 'GooglePlayPoints', 'グーグル プレイ ポイント', 'Googleプレイポイント', 'GooglePlay ポイント', 'グーグルプレイ ポイント', 'Google プレイポイント', 'google playポイント', 'グーグル プレイポイント']) {
     assert.equal(hits(query)[0]?.id, 'getting-started', query);
     assert.equal(hits(query).length, articles.length, query);
   }

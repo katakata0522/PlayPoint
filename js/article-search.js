@@ -13,7 +13,11 @@
     const text = normalize(value);
     return locale === 'ja' ? text.replace(/[ぁ-ゖ]/g, char => String.fromCharCode(char.charCodeAt(0) + 0x60)) : text;
   }
-  groups.ja[0].push('ポイント', 'ぷれいぽいんと', 'googleプレイポイント', 'googleプレイ ポイント', 'googleplay ポイント', 'グーグルプレイ ポイント');
+  groups.ja[0].push('ポイント', 'ぷれいぽいんと');
+  // Google/グーグル、Play/プレイの混在と単語間の空白位置をまとめて扱う。
+  for (const prefix of ['', 'google', 'グーグル']) for (const play of ['play', 'プレイ'])
+    for (const points of ['points', 'ポイント']) for (const firstSpace of ['', ' ']) for (const secondSpace of ['', ' '])
+      groups.ja[0].push((prefix + (prefix ? firstSpace : '') + play + secondSpace + points).trim());
   groups.ja[2].push('付与', 'いつ付く', 'いつつく', 'いつ反映', '反映されてない', '反映されていない', 'ついてない', 'ついていない', '付いてない', '付いていない', 'もらえない');
   groups.ja[1].push('期限が切れた', '期限切れになった');
   groups.ja.push(
