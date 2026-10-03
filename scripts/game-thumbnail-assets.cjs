@@ -5,7 +5,7 @@ const DEFAULT_THUMBNAIL = Object.freeze({
   thumbnailKind: 'generic'
 });
 
-const ACQUIRED_AT = '2026-09-19';
+const ACQUIRED_AT = '2026-10-03';
 
 function activeAsset(gameId, gameTitle, rightsHolder, sourcePageUrl, sourceImageUrl) {
   return Object.freeze({
@@ -17,10 +17,10 @@ function activeAsset(gameId, gameTitle, rightsHolder, sourcePageUrl, sourceImage
     sourceImageUrl,
     localPath: 'images/game-icons/' + gameId + '.webp',
     acquiredAt: ACQUIRED_AT,
-    modification: 'resize-only-96px-webp',
+    modification: 'resize-only-128px-webp',
     usage: 'article-list-thumbnail',
     status: 'active',
-    notes: 'Google Playの公式アプリ掲載ページで現行アイコンを確認し、同ページが参照するGoogle配信画像を96px WebPへ縮小してローカル保存。内容改変・外部CDNホットリンクなし。'
+    notes: 'Google Playの公式アプリ掲載ページで現行アイコンを確認し、同ページが参照するGoogle配信画像を128px WebPへ縦横比を保って縮小し、ローカル保存。内容改変・外部CDNホットリンクなし。'
   });
 }
 
@@ -33,7 +33,7 @@ const GAME_THUMBNAIL_ASSETS = Object.freeze({
   '原神': activeAsset(
     'genshin', '原神', 'COGNOSPHERE PTE. LTD.',
     'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=com.miHoYo.GenshinImpact',
-    'https://play-lh.googleusercontent.com/YQqyKaXX-63krqsfIzUEJWUWLINxcb5tbS6QVySdxbS7eZV7YB2dUjUvX27xA0TIGtfxQ5v-tQjwlT5tTB-O=s0-br30'
+    'https://play-lh.googleusercontent.com/PQEqjOxr-3uZaNHmWoQinLVQQ9fbSegMKXmqgFm5nGgagqC2REH-1er3BguYStWbH3YStijj5WH1DDlwPh2ehw=s0-br30'
   ),
   'モンスト': activeAsset(
     'monst', 'モンスト', 'XFLAG, Inc.',
@@ -53,12 +53,12 @@ const GAME_THUMBNAIL_ASSETS = Object.freeze({
   'ウマ娘': activeAsset(
     'umamusume', 'ウマ娘', 'Cygames, Inc.',
     'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=jp.co.cygames.umamusume',
-    'https://play-lh.googleusercontent.com/bww9X1CiJudBPk1Bld11v61SPbS5UQhus43qHiDhapvfW5ahkfH3lgUNdjCx45yu_3Ft-OhT26SvWu2r01uu=s0-br30'
+    'https://play-lh.googleusercontent.com/kpMAHoFE7T_ccji5-P1I6njm7tufDzFHFPTPUDstve1L1_3hKHU29_bu8kZASVSiGOnIpqyG4CmAcib7Kzh8Vg=s0-br30'
   ),
   'プロセカ': activeAsset(
     'proseka', 'プロセカ', 'SEGA CORPORATION',
     'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=com.sega.pjsekai',
-    'https://play-lh.googleusercontent.com/pdv4ajv4O-ow2BVpWopiMy9XSHXTJSEzi1gjTeD-mg4V3bkM6dmu8qJv_-Poupg5mQ6wNXlhJRuXaH-8SE91=s0-br30'
+    'https://play-lh.googleusercontent.com/BWJxYwzJFPOgdrBX_4DIspL90JuxuScIw3S8DpdE95_8SFuXkbYIJ0macz5p-a_M4f33QbisdbfZJBFHL6arlQ=s0-br30'
   ),
   'ポケポケ': activeAsset(
     'pokepoke', 'ポケポケ', 'The Pokémon Company',
@@ -83,7 +83,7 @@ const GAME_THUMBNAIL_ASSETS = Object.freeze({
   'ヘブバン': activeAsset(
     'hbr', 'ヘブバン', 'WFS, Inc.',
     'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=com.heavenburnsred',
-    'https://play-lh.googleusercontent.com/IzdBGRsLy5Cf9NCTd11VTBAGZX6RaOqUglTAgvl5pRRXTDjDxQc1YlWM4vykHwu2rnpOBTo-Pqh8lON2ko5aLQ=s0-br30'
+    'https://play-lh.googleusercontent.com/6qv7YkyQQ9fVeyM-PSIvnD1vnBO9xZVZoqQy9f3s9m3_IIUt2JS4ni3jDi7TZFpyrKN0cC-I2BbuXMYuhY1aCxg=s0-br30'
   ),
   '崩壊3rd': activeAsset(
     'honkai3rd', '崩壊3rd', 'COGNOSPHERE PTE. LTD.',
@@ -109,6 +109,31 @@ const GAME_THUMBNAIL_ASSETS = Object.freeze({
     'efootball', 'eFootball', 'KONAMI',
     'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=jp.konami.pesam',
     'https://play-lh.googleusercontent.com/jn-jaGEFUPiu0dBP9O6PjiRk-BCwFFLm0RdeOjLH-qLYjhHJlzNBMgl3Sah24htajj67_fdve-DzGsqmMUx1tqQ=s0-br30'
+  ),
+  NIKKE: activeAsset(
+    'nikke', 'NIKKE', 'Level Infinite',
+    'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=com.proximabeta.nikke',
+    'https://play-lh.googleusercontent.com/JK5mejs0bVT_9613gCxNfCjRw_m3JiQ4wC8B8Kt471yu7ThFQazVkCLTfPZ81hnenft7ilaE-qSwVGpQT6sEFcY=s0-br30'
+  ),
+  'ブルアカ': activeAsset(
+    'bluearchive', 'ブルアカ', 'Yostar, Inc.',
+    'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=com.YostarJP.BlueArchive',
+    'https://play-lh.googleusercontent.com/H975s6W1-boCSogzpF5_rIyawbjiXfG842ncgjIRiVGzhXHFTCVut0DkBhlDR4CgN1nn98OOC1fWN-LE7kUHnQ=s0-br30'
+  ),
+  '学マス': activeAsset(
+    'gakumas', '学マス', 'Bandai Namco Entertainment Inc.',
+    'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=com.bandainamcoent.idolmaster_gakuen',
+    'https://play-lh.googleusercontent.com/ch_SGwCMoLElrzColmSthRPYxzv608YoyBx4tXY3ciM8Bg4fLxKhRHdeoqPSbygFruy62D9p5EdGAwLW8KGTfwI=s0-br30'
+  ),
+  'ポケスリ': activeAsset(
+    'pokemon-sleep', 'ポケスリ', 'The Pokémon Company',
+    'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=jp.pokemon.pokemonsleep',
+    'https://play-lh.googleusercontent.com/tg-BeEJO7UDjvfxWXWJ1u-PMLa-45twu0YhJkZfQu-PEjRJU_2l9Sb9xMR3YBha3mtLzdzU-016ZpWN5IUwrFwU=s0-br30'
+  ),
+  '幻水SP': activeAsset(
+    'suikoden-star-leap', '幻水SP', 'KONAMI',
+    'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=jp.konami.suikoden.starleap',
+    'https://play-lh.googleusercontent.com/CZqC6kjKA871p5R5tf734xuTrgNd7B2DC9Q2Y1Fj0Bmdg3z2I8PhgV-7JNsOg-g-BV1ZWNLRPqq0frr9byaN=s0-br30'
   )
 });
 

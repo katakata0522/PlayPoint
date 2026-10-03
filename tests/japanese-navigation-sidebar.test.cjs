@@ -3,7 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { BROWSE_CATEGORIES, transformArticle, nextFor } = require('../scripts/japanese-navigation-sidebar.cjs');
+const { BROWSE_CATEGORIES, transformArticle, nextFor, renderSidebar } = require('../scripts/japanese-navigation-sidebar.cjs');
 const { JAPANESE_POPULAR_GUIDES, POPULAR_GUIDES_SNAPSHOT } = require('../scripts/japanese-popular-guides.cjs');
 const root = path.resolve(__dirname, '..');
 const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8')).filter(a => a.listed !== false)
@@ -124,6 +124,7 @@ test('人気記事の小画像は原本の内容と一致する派生だけを�
   const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-sidebar-thumbnail-'));
   t.after(() => fs.rmSync(fixture, { recursive: true, force: true }));
   fs.mkdirSync(path.join(fixture, 'articles/ogp'), { recursive: true });
+  fs.mkdirSync(path.join(fixture, 'articles/thumbnails'), { recursive: true });
   fs.mkdirSync(path.join(fixture, 'images/navigation-thumbnails'), { recursive: true });
   const source = 'articles/ogp/example.png';
   fs.writeFileSync(path.join(fixture, source), 'original');
@@ -134,7 +135,31 @@ test('人気記事の小画像は原本の内容と一致する派生だけを�
   assert.equal(publicThumbnail('../' + source, fixture), '/' + derivative);
   fs.writeFileSync(path.join(fixture, source), 'updated');
   assert.equal(publicThumbnail('../' + source, fixture), '/' + source);
+  const squareSource = 'articles/thumbnails/example-square-v1.webp';
+  fs.writeFileSync(path.join(fixture, squareSource), 'square');
+  const squareDigest = createHash('sha256').update('square').digest('hex').slice(0, 16);
+  assert.equal(publicThumbnail('../' + squareSource, fixture), '/' + squareSource);
+  fs.writeFileSync(path.join(fixture, `images/navigation-thumbnails/${squareDigest}-186.webp`), 'small-square');
+  assert.equal(publicThumbnail('../' + squareSource, fixture), `/images/navigation-thumbnails/${squareDigest}-186.webp`);
   for (const unsafe of ['https://example.com/a.png', '../../outside.png', 'javascript:alert(1)', '']) {
     assert.equal(publicThumbnail(unsafe, fixture), '');
   }
+});
+
+test('人気記事の正方形画像だけ正方形の表示クラスを持ち、横長OGPは従来枠を使う', () => {
+  const popularCatalog = JAPANESE_POPULAR_GUIDES.map(([href], index) => ({
+    href,
+    browseCategory: '最新情報・イベント',
+    thumbnail: index === 0 ? '../articles/thumbnails/example-square-v1.webp' : '../articles/ogp/example.png'
+  }));
+  const squareSidebar = renderSidebar({ href: '/articles/current.html' }, 'reference', [], popularCatalog);
+  assert.match(squareSidebar, /class="sidebar-popular-thumb sidebar-popular-thumb--square"/);
+
+  const ogpCatalog = popularCatalog.map(item => ({ ...item, thumbnail: '../articles/ogp/example.png' }));
+  const ogpSidebar = renderSidebar({ href: '/articles/current.html' }, 'reference', [], ogpCatalog);
+  assert.match(ogpSidebar, /class="sidebar-popular-thumb"/);
+  assert.doesNotMatch(ogpSidebar, /sidebar-popular-thumb sidebar-popular-thumb--square/);
+
+  const css = fs.readFileSync(path.join(root, 'articles', 'guide-editorial.css'), 'utf8');
+  assert.match(css, /\.sidebar-popular-thumb\.sidebar-popular-thumb--square\s*\{[\s\S]*?aspect-ratio:1/);
 });

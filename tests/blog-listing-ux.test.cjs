@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const vm = require('node:vm');
 const blogUtils = require('../blog/utils.js');
 const {
   buildArticleSearchIndex,
@@ -135,11 +136,70 @@ test('broken thumbnails use same-origin fallback and cannot loop or replace the 
   assert.ok(fs.existsSync(path.join(root,image.src)));
 });
 
+test('関連記事カードの実生成はゲームアイコンと一般webpを保持し、外部画像だけをplaceholderへ置換する', () => {
+  const source = read('blog/article.js');
+  const extract = name => {
+    const match = source.match(new RegExp(`    function ${name}\\([^\\n]*\\) \\{[\\s\\S]*?\\n    \\}`));
+    assert.ok(match, `blog/article.js に ${name} がありません`);
+    return match[0];
+  };
+  const runtime = vm.runInNewContext(`(() => {
+    ${extract('sanitizeArticleFile')}
+    ${extract('sanitizeArticleThumbnail')}
+    ${extract('normalizeArticle')}
+    ${extract('relatedCardMarkup')}
+    ${extract('isSquareRelatedThumbnail')}
+    ${extract('createRelatedCard')}
+    return { normalizeArticle, relatedCardMarkup, createRelatedCard };
+  })()`, {
+    CONFIG: { placeholderImage: '/images/article-placeholder.svg' },
+    getUtils: () => blogUtils,
+    document: {
+      createElement() {
+        const image = { addEventListener() {} };
+        return {
+          href: '', className: '', innerHTML: '',
+          querySelector(selector) { return selector === 'img' ? image : null; }
+        };
+      }
+    }
+  });
+
+  const game = runtime.normalizeArticle({
+    title: 'NIKKEの課金', date: '2026-10-03', category: 'ゲーム別課金',
+    file: '../games/nikke/guide/index.html', thumbnail: '../images/game-icons/nikke.webp'
+  });
+  const gameMarkup = runtime.relatedCardMarkup(game, blogUtils);
+  assert.match(gameMarkup, /<img src="\.\.\/images\/game-icons\/nikke\.webp"/);
+  assert.match(gameMarkup, /<h4>NIKKEの課金<\/h4>/);
+  assert.equal(runtime.createRelatedCard(game).className, 'related-card related-card--square');
+
+  const generic = runtime.normalizeArticle({
+    title: '週次特典', date: '2026-10-03', category: '最新情報',
+    file: '../articles/weekly.html', thumbnail: '../articles/thumbnails/weekly-square-v1.webp'
+  });
+  assert.match(runtime.relatedCardMarkup(generic, blogUtils), /<img src="\.\.\/articles\/thumbnails\/weekly-square-v1\.webp"/);
+  assert.equal(runtime.createRelatedCard(generic).className, 'related-card related-card--square');
+
+  const untrusted = runtime.normalizeArticle({
+    title: '外部画像', date: '2026-10-03', category: 'トラブル',
+    file: '../articles/untrusted.html', thumbnail: 'https://evil.example/tracker.svg'
+  });
+  assert.equal(untrusted.thumbnail, '/images/article-placeholder.svg');
+  assert.match(runtime.relatedCardMarkup(untrusted, blogUtils), /<img src="\/images\/article-placeholder\.svg"/);
+  assert.equal(runtime.createRelatedCard(untrusted).className, 'related-card');
+  const css = read('blog/style.css');
+  assert.match(css, /\.related-card--square \.related-card-thumb\s*\{[\s\S]*?aspect-ratio:\s*1/);
+  assert.match(css, /\.related-card--square \.related-card-thumb img\s*\{[\s\S]*?object-fit:\s*contain/);
+});
+
 test('editorial thumbnails can opt into a sanitized focal position', () => {
   const articles = JSON.parse(read('blog/articles.json'));
   const blackDiamond = articles.find(article => article.id === 'black-diamond-diamond-vip-2026');
   assert.ok(blackDiamond);
-  assert.equal(blackDiamond.thumbnail, '../articles/ogp/2026-10-01-black-diamond-diamond-vip.png');
+  assert.equal(blackDiamond.thumbnail, '../articles/thumbnails/black-diamond-diamond-vip-2026-square-v1.webp');
+  assert.equal(blackDiamond.thumbnailKind, 'generic');
+  assert.notEqual(blackDiamond.thumbnail, blackDiamond.ogp, '一覧サムネイルと記事OGPは独立している');
   assert.equal(blackDiamond.thumbnailPosition, 'left');
 
   const css = read('blog/article-list.css');

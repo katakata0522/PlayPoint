@@ -99,7 +99,7 @@ function renderBrowseWidget(catalog = [], currentArticle = null) {
 
 function publicThumbnail(value, rootDir = path.resolve(__dirname, '..')) {
   const relative = String(value || '').replace(/^\.\.\//, '');
-  if (!/^(?:articles\/ogp\/[^/?#]+\.png|images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp)|ogp\.png)$/i.test(relative)) return '';
+  if (!/^(?:articles\/ogp\/[^/?#]+\.png|articles\/thumbnails\/[a-z0-9-]+\.webp|images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp)|ogp\.png)$/i.test(relative)) return '';
   const original = '/' + relative;
   const sourcePath = path.join(rootDir, relative);
   if (!fs.existsSync(sourcePath)) return original;
@@ -107,6 +107,11 @@ function publicThumbnail(value, rootDir = path.resolve(__dirname, '..')) {
   const digest = createHash('sha256').update(fs.readFileSync(sourcePath)).digest('hex').slice(0, 16);
   const thumbnail = `images/navigation-thumbnails/${digest}-186.webp`;
   return fs.existsSync(path.join(rootDir, thumbnail)) ? '/' + thumbnail : original;
+}
+
+function isSquareThumbnail(value) {
+  const relative = String(value || '').replace(/^\.\.\//, '');
+  return /^(?:articles\/thumbnails\/[a-z0-9-]+\.webp|images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp))$/i.test(relative);
 }
 
 function renderPopularWidget(article, catalog = []) {
@@ -117,12 +122,13 @@ function renderPopularWidget(article, catalog = []) {
     const meta = byHref.get(item.href);
     const featured = item.rank === 1;
     const thumbnail = featured ? publicThumbnail(meta?.thumbnail) : '';
+    const squareThumbnail = thumbnail && isSquareThumbnail(meta?.thumbnail);
     const topic = featured && meta?.browseCategory ? `<span class="sidebar-popular-topic">${escapeHtml(meta.browseCategory)}</span>` : '';
     const title = item.isCurrent
       ? `<span class="sidebar-popular-current-title">${escapeHtml(item.label)}</span><span class="sidebar-popular-reading">閲覧中</span>`
       : `<a class="sidebar-popular-link" href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a>`;
     if (featured) {
-      return `<li class="sidebar-popular-item sidebar-popular-item--featured${thumbnail ? '' : ' sidebar-popular-item--text-only'}${item.isCurrent ? ' is-current' : ''}"><span class="sidebar-popular-rank">${rank}</span>${thumbnail ? `<div class="sidebar-popular-thumb"><img src="${escapeHtml(thumbnail)}" alt="" loading="lazy" decoding="async"></div>` : ''}<div class="sidebar-popular-feature-copy">${topic}${title}</div></li>`;
+      return `<li class="sidebar-popular-item sidebar-popular-item--featured${thumbnail ? '' : ' sidebar-popular-item--text-only'}${item.isCurrent ? ' is-current' : ''}"><span class="sidebar-popular-rank">${rank}</span>${thumbnail ? `<div class="sidebar-popular-thumb${squareThumbnail ? ' sidebar-popular-thumb--square' : ''}"><img src="${escapeHtml(thumbnail)}" alt="" loading="lazy" decoding="async"></div>` : ''}<div class="sidebar-popular-feature-copy">${topic}${title}</div></li>`;
     }
     return `<li class="sidebar-popular-item${item.isCurrent ? ' is-current' : ''}"><span class="sidebar-popular-rank">${rank}</span><div>${title}</div></li>`;
   }).join('')}</ol></div></section>`;
@@ -247,4 +253,4 @@ function syncJapaneseNavigation(root) {
   if (homeAfter !== homeBefore) fs.writeFileSync(home, homeAfter);
   return { checked: catalog.length, changed };
 }
-module.exports = { publicThumbnail, BROWSE_CATEGORIES, NAV, relatedFor, nextFor, renderBrowseWidget, renderSidebar, renderHeader, renderNavigation, syncGuideHubs, transformArticle, syncJapaneseNavigation };
+module.exports = { publicThumbnail, isSquareThumbnail, BROWSE_CATEGORIES, NAV, relatedFor, nextFor, renderBrowseWidget, renderSidebar, renderHeader, renderNavigation, syncGuideHubs, transformArticle, syncJapaneseNavigation };
