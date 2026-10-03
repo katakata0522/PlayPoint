@@ -7,6 +7,14 @@ const ARTICLE_DIRS = ['articles', 'en/articles', 'ko/articles', 'tw/articles'];
 const { getJapaneseArticleRepoPaths, isGameGuideArticlePath } = require('./game-guide-article-catalog.cjs');
 
 const RELATED_SECTIONS = {
+  'articles/2026-10-03-suikoden-star-leap-google-play-vs-store.html': {
+    heading: '幻水SPの購入前に確認したい関連記事',
+    links: [
+      ['./2026-08-19-web-store-external-billing-points.html', 'WebストアとGoogle Play課金の違い'],
+      ['./2026-08-05-play-points-multiplier-stacking.html', '倍率・獲得率の正しい読み方'],
+      ['./2025-12-25-best-use.html', '交換先の利用価値を比較する']
+    ]
+  },
   'articles/2025-12-25-campaign.html': {
     heading: '次に確認したい関連記事',
     links: [
