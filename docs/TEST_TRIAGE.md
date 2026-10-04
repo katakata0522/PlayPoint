@@ -1676,4 +1676,8 @@ Head監査はファイル名の例外を廃止し、全サイトマップURLへ�
 自然文検索・桁の区別・目的別ガイドは既存 article-search-language、固定IDと同意・自由入力非送信は analytics-core、ゲーム記事の人気対象と正規URL重複は update-japanese-popular-guides に追加する。
 ## Draft中のCI抑制（2026-10-05）
 
-`ci-draft-lifecycle.test.cjs` は実workflowの条件を評価し、Draftではrunnerを起動せず、ready_for_review・通常PR・手動実行・定期計測では従来の検証を実行することを保護する。Draft専用チェック名と独立したconcurrency groupにより、必須のPR Gateと進行中の実検証を上書きしない。
+| テスト | 主担当の保証 |
+| --- | --- |
+| `ci-draft-lifecycle.test.cjs` | Draftのrunner抑制、Ready時の実検証、必須チェック名と進行中検証の保護 |
+
+実workflowの条件を評価し、Draftではrunnerを起動せず、ready_for_review・通常PR・手動実行・定期計測では従来の検証を実行することを保護する。Draft専用チェック名と独立したconcurrency groupにより、必須のPR Gateと進行中の実検証を上書きしない。
