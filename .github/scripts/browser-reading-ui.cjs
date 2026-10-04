@@ -304,7 +304,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     }
     await goto(page,'latest/');
     await page.locator('.benefit-audience summary').click();
-    for (const theme of ['dark','light']) {
+    for (const theme of ['light','dark']) {
       if (await page.evaluate(()=>document.documentElement.dataset.readingTheme)!==theme) await chooseTheme(page);
       for (const item of await palette(page,['.benefit-audience-controls label'])) assert(item.ratio>=4.5,`Benefit label ${theme}: ${item.ratio}`);
     }
