@@ -8,6 +8,29 @@ const index = require('../blog/article-search-index.json').articles;
 const articles = manifest.map(article => ({ ...article, sections: index.find(entry => entry.path === new URL(article.file, 'https://playpoint-sim.com/blog/').pathname)?.sections || [] }));
 function hits(query) { return articles.filter(article => search.matches(article, query, 'ja')).sort((a,b) => search.score(b, query, 'ja') - search.score(a, query, 'ja')); }
 
+test('読者の目的を表す自然文を回答に結び、数字の桁を取り違えない', () => {
+  for (const [query, id] of [
+    ['毎週何がもらえる', 'weekly-reward'], ['課金しないで貯めたい', 'earn-play-points-free'],
+    ['ポイントを一番お得に使いたい', 'best-use'], ['ウィークリー', 'weekly-reward'],
+    ['1ポイントは何円', 'points-value-1'], ['100ポイントは何円', 'points-value-100']
+  ]) assert.equal(hits(query)[0]?.id, id, query);
+  assert.equal(search.matches({ title: '100ポイント' }, '1ポイント', 'ja'), false);
+  assert.equal(search.matches({ title: '1ポイント' }, '1ポイント', 'ja'), true);
+  assert.equal(hits('課金しないで貯めたい 未掲載xyz').length, 0);
+});
+
+test('必要額と開催情報は記事以外の回答へも案内する', () => {
+  const destinations = require('../blog/article-search-index.json').destinations;
+  assert.equal(destinations.length, 4);
+  const cases = [['あといくらでゴールド', 'guides/ranks/', 'rank_cost'], ['今週の特典', 'latest/', 'current_benefits'], ['キャンペーンいつ', 'latest/', 'current_benefits']];
+  for (const [query, owner, intent] of cases) {
+    const matches = destinations.filter(a => search.matches(a, query, 'ja')).sort((a,b) => search.score(b, query, 'ja') - search.score(a, query, 'ja'));
+    assert.equal(matches[0]?.path, '/' + owner, query);
+    assert.equal(search.intentId(query), intent, query);
+  }
+  assert.equal(search.intentId('連絡先 personal@example.com'), 'other');
+});
+
 test('ポケモンGOの日本語と公式表記から同じ比較記事にたどり着く', () => {
   const expected = hits('Pokémon GO');
   assert.match(expected[0]?.id || '', /pokemon-go/);

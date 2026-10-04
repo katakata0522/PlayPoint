@@ -143,14 +143,14 @@ syncAnalyticsRuntimeScripts(rootDir);
 
 const intlLocalizationSummary = normalizeIntlGeneratedCopy(rootDir);
 console.log(`[build-html] normalized international copy/semantics: ${intlLocalizationSummary.changedFiles.length} updated`);
+const { syncReaderImprovements } = require('./article-reader-improvements.cjs');
+console.log('[build-html] synchronized reader answers and sources:', syncReaderImprovements(rootDir));
 syncJapaneseNavigation(rootDir);
 // This pass produces the real content-hash updates. A second full-tree pass at
 // the end of the build was empirically a no-op, so keep the proven position and
 // avoid rescanning every public HTML file twice.
 syncPublicAssetVersions(rootDir);
 
-const { syncReaderImprovements } = require('./article-reader-improvements.cjs');
-console.log('[build-html] synchronized reader answers and sources:', syncReaderImprovements(rootDir));
 generateBlogFeeds(rootDir);
 
 const seoSummary = normalizeArticleFiles(rootDir, { checkOnly: false });

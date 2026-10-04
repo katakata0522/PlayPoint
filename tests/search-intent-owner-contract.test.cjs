@@ -125,9 +125,9 @@ test('exchange comparison and cash-out pages state their different jobs with rec
   const bestUse = read('articles/2025-12-25-best-use.html');
   assert.match(
     bestUse,
-    /href="\.\/2026-07-24-play-points-cash-conversion\.html">現金化・PayPay交換の可否ガイド<\/a>/
+    /href="\.\/2026-07-24-play-points-cash-conversion\.html">交換できるもの・できないものを見る<\/a>/
   );
-  assert.match(bestUse, /<strong>現金やPayPayへ換えられるか<\/strong>を先に確認したい場合/);
+  assert.match(bestUse, /<strong>現金・PayPayへ替えたい<\/strong>Play Pointsは換金できません。/);
 });
 
 test('central article surfaces stay in sync with updated JP titles', () => {

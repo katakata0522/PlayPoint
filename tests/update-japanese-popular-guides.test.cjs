@@ -12,6 +12,16 @@ const fixture = () => ({ source: 'PlayPoint Analytics / 📄ページ別分析',
   rows: registry.map((a,i) => ({ path: '/' + a.file.slice(3), pv: i + 1 })) });
 const today = '2026-09-21';
 
+test('ゲーム別の記事も対象にし、index.html と正規URLの重複を拒否する', () => {
+  const game = { file: '../games/fgo/test/index.html', title: 'FGO' };
+  const input = fixture();
+  input.rows.push({ path: '/games/fgo/test/index.html', pv: 100 });
+  const next = buildSnapshot(input, [...registry, game], previous, today);
+  assert.deepEqual(next.guides[0], ['/games/fgo/test/', 'FGO']);
+  input.rows.push({ path: '/games/fgo/test/', pv: 50 });
+  assert.throws(() => buildSnapshot(input, [...registry, game], previous, today));
+});
+
 test('日本語公開記事だけを順位化し、非公開・海外・トップを除外してPVを出力しない', () => {
   const input = fixture();
   input.rows.push({ path: '/', pv: 999 }, { path: '/en/articles/a.html', pv: 999 }, { path: '/articles/hidden.html', pv: 999 });

@@ -22,16 +22,17 @@ function buildSnapshot(input, registry, previous, today) {
     throw new Error('直近30日の期間または取得日時が不正・古いため、前回順位を保持します');
   }
   if (!Array.isArray(input.rows) || input.rows.length === 0) throw new Error('集計行がありません');
-  const labels = new Map(registry.filter(a => a.listed !== false).map(a => ['/' + a.file.replace(/^\.\.\//, ''), a.listTitle || a.title]));
+  const canonicalPath = value => value.replace(/\/index\.html$/, '/');
+  const labels = new Map(registry.filter(a => a.listed !== false).map(a => [canonicalPath('/' + a.file.replace(/^\.\.\//, '')), a.listTitle || a.title]));
   const oldLabels = new Map(previous.guides);
   const seen = new Set();
   for (const row of input.rows) {
-    if (typeof row.path !== 'string' || !row.path.startsWith('/') || row.path.startsWith('//') || /[?#]/.test(row.path) || seen.has(row.path) || !Number.isSafeInteger(row.pv) || row.pv < 0) {
+    if (typeof row.path !== 'string' || !row.path.startsWith('/') || row.path.startsWith('//') || /[?#]/.test(row.path) || seen.has(canonicalPath(row.path)) || !Number.isSafeInteger(row.pv) || row.pv < 0) {
       throw new Error('重複・不正なURLまたはPVを検出しました');
     }
-    seen.add(row.path);
+    seen.add(canonicalPath(row.path));
   }
-  const selected = input.rows.filter(row => /^\/articles\/[^/]+\.html$/.test(row.path) && labels.has(row.path) && row.pv > 0)
+  const selected = input.rows.map(row => ({ ...row, path: canonicalPath(row.path) })).filter(row => labels.has(row.path) && row.pv > 0)
     .sort((a, b) => b.pv - a.pv || (a.path < b.path ? -1 : a.path > b.path ? 1 : 0)).slice(0, 5);
   if (selected.length !== 5) throw new Error('公開日本語記事5件分のデータがありません');
   if (JSON.stringify(selected.map(row => row.path)) === JSON.stringify(previous.guides.map(([href]) => href))) return null;

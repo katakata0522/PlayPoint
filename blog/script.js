@@ -88,7 +88,7 @@
         },
         trackSearch: function (query, resultsCount) {
             this.track('search', {
-
+                intent_id: window.PlayPointSearch?.intentId(query, 'ja') || 'other',
                 results_count: resultsCount
             });
         },
@@ -344,6 +344,7 @@
     // 本文検索は検索欄を使う時に取得し、記事一覧の初期表示を待たせない。
     let bodySearchPromise = null;
     let bodySearchReady = false;
+    let searchDestinations = [];
     function searchNotice(message, retry = false) {
         let notice = document.getElementById('body-search-notice');
         if (!notice) {
@@ -375,6 +376,7 @@
         }).then(index => {
             if (!Array.isArray(index?.articles)) throw new Error('Invalid search index');
             const byPath = new Map(index.articles.map(item => [item.path, item]));
+            searchDestinations = (index.destinations || []).filter(item => /^\/(?:latest\/|guides\/(?:ranks|using-points|troubleshooting)\/)$/.test(item.path));
             allArticles.forEach(article => { article.sections = byPath.get(new URL(article.file, window.location.href).pathname)?.sections || []; });
             bodySearchReady = true;
             searchNotice('');
@@ -388,6 +390,28 @@
             dom.grid?.setAttribute('aria-busy', 'false');
         });
         return bodySearchPromise;
+    }
+
+    function renderSearchDestinations() {
+        const search = window.PlayPointSearch;
+        const matches = currentSearch && !currentGameTitle && !currentBrowseCategory && currentCategory === 'all' && search?.intentId(currentSearch) !== 'other'
+            ? searchDestinations.filter(item => search.matches(item, currentSearch, 'ja') && search.score(item, currentSearch, 'ja') >= 100).slice(0, 1) : [];
+        let panel = document.getElementById('search-destinations');
+        if (!matches.length) { panel?.remove(); return; }
+        const signature = JSON.stringify(matches.map(item => item.path));
+        if (panel?.dataset.signature === signature) return;
+        if (!panel) {
+            panel = document.createElement('section'); panel.id = 'search-destinations'; panel.className = 'search-destinations';
+            panel.setAttribute('aria-label', '質問に合う案内'); dom.grid.before(panel);
+        }
+        panel.dataset.signature = signature; panel.replaceChildren();
+        const heading = document.createElement('h2'); heading.textContent = '質問に合う案内'; panel.append(heading);
+        matches.forEach(item => {
+            const link = document.createElement('a'); link.href = item.path; link.textContent = item.title;
+            link.dataset.readerQuestion = search.intentId(currentSearch);
+            const description = document.createElement('p'); description.textContent = item.description;
+            const group = document.createElement('div'); group.append(link, description); panel.append(group);
+        });
     }
 
     let gameCalculators = [];
@@ -695,6 +719,7 @@
         if (!dom.grid) return;
 
         let filtered = filterArticles();
+        renderSearchDestinations();
 
         updateSortControl();
         syncFilterPanelState();
@@ -756,7 +781,7 @@
 
         if (pageItems.length === 0) {
           var q = BlogUtils.escapeHtml(currentSearch);
-          dom.grid.insertAdjacentHTML('afterbegin', '<div class="empty-state"><h2>' + (q ? '「' + q + '」に一致する記事は見つかりませんでした' : 'この絞り込みに一致する記事はありません') + '</h2><p>表記を短くするか、「必要額」「反映」「キャンペーン」などでもお試しください。</p><button class="reset-btn" id="reset-filters">検索とカテゴリーをリセット</button></div>');
+          dom.grid.insertAdjacentHTML('afterbegin', '<div class="empty-state"><h2>' + (q ? '「' + q + '」に一致する記事は見つかりませんでした' : 'この絞り込みに一致する記事はありません') + '</h2><p>ゲーム名や困っていることを短くして検索できます。関連する確認先もご覧ください。</p><button class="reset-btn" id="reset-filters">検索とカテゴリーをリセット</button></div>');
           document.getElementById('reset-filters').addEventListener('click', resetFilters);
           const recovery = document.createElement('div'); recovery.className = 'search-recovery';
           if (currentBrowseCategory || currentCategory !== 'all' || currentGameTitle) {

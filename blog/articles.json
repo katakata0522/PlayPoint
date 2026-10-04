@@ -1704,7 +1704,7 @@
     "id": "super-weekly-reward",
     "title": "Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・対象ランク",
     "date": "2026-07-31",
-    "modified": "2026-10-03",
+    "modified": "2026-10-05",
     "category": "ランク",
     "tags": [
       "Play Points",
@@ -1712,7 +1712,7 @@
       "ゴールド",
       "毎週"
     ],
-    "description": "Google Play Pointsのスーパーウィークリーリワードとは？対象ランク、過去の賞品例、確率が非公開である点、金曜に確認することを整理します。",
+    "description": "スーパーウィークリーの対象ランクと賞品を確認。今週のカード、過去の賞品、非公開の当選確率を分け、Super Ticketと受け取り手順を解説します。",
     "file": "../articles/2026-07-31-super-weekly-reward.html",
     "thumbnail": "../articles/thumbnails/super-weekly-reward-square-v1.webp",
     "browseCategory": "ランク・ステータス",
@@ -2235,10 +2235,10 @@
       "クレジット",
       "使い道"
     ],
-    "description": "Google Play Pointsのクーポン、ゲーム内アイテム、Playクレジットを実用価値・最低購入額・期限で比較し、自分に合う交換先を選ぶ方法を解説します。",
+    "description": "Play Pointsの交換先を、買う予定・最低購入額・有効期限で比較。クーポン、アイテム、Playクレジットの選び方と、Google ストアや現金化との違いを確認できます。",
     "file": "../articles/2025-12-25-best-use.html",
     "thumbnail": "../articles/thumbnails/best-use-square-v1.webp",
-    "modified": "2026-09-30",
+    "modified": "2026-10-05",
     "browseCategory": "使う・交換",
     "ogp": "../articles/ogp/best-use.png",
     "thumbnailKind": "generic",

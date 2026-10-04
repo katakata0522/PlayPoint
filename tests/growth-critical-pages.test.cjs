@@ -119,7 +119,7 @@ test('ambiguous search intents hand off to the dedicated owner pages', () => {
 
   const superTicket = assertArticleRuntime('articles/2026-09-19-google-play-super-ticket.html');
   assert.match(titleOf(superTicket, 'Super Ticket'), /Super Ticket/);
-  assert.match(superTicket, /href="\.\/2026-07-31-super-weekly-reward\.html"/);
+  assert.match(superTicket, /href="(?:\.\/|\/articles\/)2026-07-31-super-weekly-reward\.html"/);
   assert.match(superWeekly, /href="\.\/2026-09-19-google-play-super-ticket\.html"/);
 
   const koreanUse = read('ko/articles/google-play-points-use-coupons.html');

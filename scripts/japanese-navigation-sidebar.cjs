@@ -23,10 +23,10 @@ const BROWSE_CATEGORIES = Object.freeze([
 const NAV = Object.freeze([
   ['/blog/', '記事一覧'],
   ['/latest/', '開催中の特典'],
-  ['/blog/?topic=' + encodeURIComponent('ランク・ステータス'), 'ランク・ステータス'],
+  ['/guides/ranks/', 'ランク・維持条件'],
   ['/blog/?topic=' + encodeURIComponent('貯める・キャンペーン'), '貯める・キャンペーン'],
-  ['/blog/?topic=' + encodeURIComponent('使う・交換'), '使う・交換'],
-  ['/blog/?topic=' + encodeURIComponent('トラブル・アカウント'), 'トラブル・アカウント'],
+  ['/guides/using-points/', '使い道を選ぶ'],
+  ['/guides/troubleshooting/', '困ったときの確認'],
   ['/', '計算する']
 ]);
 const escapeHtml = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -118,7 +118,7 @@ function isSquareThumbnail(value) {
 function renderPopularWidget(article, catalog = []) {
   const popular = getJapanesePopularGuides(article.href, 5);
   const byHref = new Map(catalog.map(item => [item.href, item]));
-  return `  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}"><h2 class="sidebar-widget-title">よく読まれている記事</h2><div class="sidebar-widget-body"><p class="sidebar-widget-note">${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}時点の${escapeHtml(POPULAR_GUIDES_WINDOW)}</p><ol class="sidebar-popular-list">${popular.map(item => {
+  return `  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}"><h2 class="sidebar-widget-title">よく読まれている記事</h2><div class="sidebar-widget-body"><p class="sidebar-widget-note">集計期間 ${escapeHtml(POPULAR_GUIDES_WINDOW)}</p><ol class="sidebar-popular-list">${popular.map(item => {
     const rank = String(item.rank).padStart(2, '0');
     const meta = byHref.get(item.href);
     const featured = item.rank === 1;
@@ -159,6 +159,9 @@ function renderGamesWidget(catalog) {
 }
 
 function renderNavigation(current) {
+  const guideByTopic = { 'ランク・ステータス': '/guides/ranks/', '使う・交換': '/guides/using-points/', 'トラブル・アカウント': '/guides/troubleshooting/' };
+  const topic = new URL(current || '/', 'https://playpoint-sim.com').searchParams.get('topic');
+  current = guideByTopic[topic] || current;
   return '<nav class="global-nav ja-global-nav" aria-label="目的から探す"><div class="global-nav-inner">'
     + NAV.map(([href, label]) => `<a class="nav-item" href="${escapeHtml(href)}"${href === current ? ' aria-current="page"' : ''}><span>${label}</span></a>`).join('') + '</div></nav>';
 }

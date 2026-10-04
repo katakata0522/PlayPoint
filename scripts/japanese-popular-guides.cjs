@@ -3,7 +3,7 @@
 // 順位だけを保存する。更新手順は docs/JAPANESE_NAVIGATION_SIDEBAR.md を参照。
 const snapshot = require('./japanese-popular-guides.snapshot.json');
 const POPULAR_GUIDES_SNAPSHOT = snapshot.snapshot;
-const POPULAR_GUIDES_WINDOW = '直近30日';
+const POPULAR_GUIDES_WINDOW = snapshot.start + '〜' + snapshot.end;
 const JAPANESE_POPULAR_GUIDES = Object.freeze(snapshot.guides.map(item => Object.freeze([...item])));
 
 function normalizePath(value) {

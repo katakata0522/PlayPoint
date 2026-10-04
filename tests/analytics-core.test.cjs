@@ -58,6 +58,31 @@ function eventCalls(context, eventName) {
     .map(item => JSON.parse(JSON.stringify(item[2])));
 }
 
+test('検索目的は固定IDだけ送り、自由入力や連絡先をパラメータに含めない', () => {
+  const { context } = createRuntime('granted');
+  const analytics = context.PlayPointAnalytics;
+  analytics.markAnalyticsReady();
+  analytics.track('search', { results_count: 3, intent_id: 'use_points', query: 'private@example.com' });
+  assert.deepEqual(eventCalls(context, 'search')[0], { results_count: 3, intent_id: 'use_points' });
+  analytics.track('search', { results_count: 0, intent_id: 'private@example.com' });
+  assert.deepEqual(eventCalls(context, 'search')[1], { results_count: 0 });
+});
+
+test('質問入口のクリックは同意済みだけ送信し、URLクエリを送らない', () => {
+  for (const consent of ['granted', 'denied']) {
+    const { context } = createRuntime(consent);
+    context.PlayPointAnalytics.markAnalyticsReady();
+    const link = {
+      href: 'https://playpoint-sim.com/latest/?q=private@example.com',
+      getAttribute: name => name === 'data-reader-question' ? 'current_benefits' : 'https://playpoint-sim.com/latest/?q=private@example.com'
+    };
+    context.document.dispatchEvent({ type: 'click', target: { closest: () => link } });
+    const calls = eventCalls(context, 'reader_question_clicked');
+    assert.equal(calls.length, consent === 'granted' ? 1 : 0);
+    if (calls.length) assert.deepEqual(calls[0], { candidate_id:'current_benefits', source_path:'/articles/guide.html', target_path:'/latest/' });
+  }
+});
+
 test('GA4初期化前のイベントは保持し、準備完了後に一度だけ送信する', () => {
   const { context } = createRuntime('granted');
   const analytics = context.PlayPointAnalytics;
