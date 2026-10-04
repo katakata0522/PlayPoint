@@ -154,6 +154,6 @@ html[lang="ja"] body .guide-toc-links a:hover { color:var(--reading-link); }
   html[lang="ja"] body.blog-index-compact #article-filter-panel { margin-top:0; }
   html[lang="ja"] body.blog-index-compact .guide-hub-layout .hub-heading { margin-bottom:0; }
   html[lang="ja"] body.blog-index-compact .hub-result-toolbar { padding:4px 0; }
-  html[lang="ja"] body.blog-index-compact .hub-result-toolbar .sort-container { display:flex; align-items:center; gap:6px; }
-  html[lang="ja"] body.blog-index-compact .hub-result-toolbar label { margin:0; }
+  html[lang="ja"] body.blog-index-compact .guide-hub-layout .hub-result-toolbar .sort-container { display:flex; align-items:center; gap:6px; }
+  html[lang="ja"] body.blog-index-compact .guide-hub-layout .hub-result-toolbar label { margin:0; }
 }
