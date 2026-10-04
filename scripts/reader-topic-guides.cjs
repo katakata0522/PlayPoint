@@ -60,9 +60,12 @@ function syncTopicGuides(root) {
   html = html.replace(/<!-- reader-topics:start -->[\s\S]*?<!-- reader-topics:end -->\s*/g, '');
   const links = '<!-- reader-topics:start --><details class="reader-topic-disclosure"><summary>目的別の読む順番</summary><nav class="reader-topic-entry" aria-label="目的別の読む順番">' + TOPIC_GUIDES.map(guide => `<a href="/guides/${guide.slug}/">${guide.label}</a>`).join('') + '</nav></details><!-- reader-topics:end -->';
   html = html.replace('<!-- hub-library-mount -->', links + '\n        <!-- hub-library-mount -->');
-  html = html.replace(/(id="search-input"\s+placeholder=")[^"]*/, '$1例：有効期限');
+  const searchExample = '例：Google Play Pass、ゴールドステータスなど';
+  html = html.replace(/(id="search-input"\s+placeholder=")[^"]*/, '$1' + searchExample);
+  if (!html.includes('class="search-input-wrap"')) html = html.replace(/(<input\b[^>]*id="search-input"[^>]*>)/, '<div class="search-input-wrap">$1<span class="search-example" aria-hidden="true">' + searchExample + '</span></div>');
+  html = html.replace(/(<span class="search-example" aria-hidden="true">)[^<]*/, '$1' + searchExample);
   html = html.replace(/<!-- reader-questions:start -->[\s\S]*?<!-- reader-questions:end -->\s*/g, '');
-  const questions = '<!-- reader-questions:start --><nav class="reader-question-links" aria-label="気になることから読む"><a href="/latest/" data-reader-question="current_benefits">次の増量はいつ？</a><a href="/articles/2025-12-25-best-use.html" data-reader-question="use_points">お得な交換先は？</a></nav><!-- reader-questions:end -->\n';
+  const questions = '<!-- reader-questions:start --><nav class="reader-question-links" aria-label="気になることから読む"><a href="/latest/#next-campaign-title" data-reader-question="current_benefits">次の増量はいつ？</a><a href="/articles/2025-12-25-best-use.html" data-reader-question="use_points">お得な交換先は？</a></nav><!-- reader-questions:end -->\n';
   html = html.replace(/(<details\b[^>]*class="[^"]*article-filter-panel)/, questions + '$1');
   fs.writeFileSync(file, html);
   // 記事の一覧件数とページ送りは保ち、案内・開催情報は別の検索候補として渡す。

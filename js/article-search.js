@@ -22,6 +22,7 @@
   groups.ja[1].push('期限が切れた', '期限切れになった');
   groups.ja[4].push('毎週');
   groups.ja.push(
+    ['Google Play Pass', 'Play Pass', 'Googleプレイパス', 'グーグルプレイパス', 'プレイパス', 'プレイ パス'],
     ['Pokémon GO', 'Pokemon GO', 'PokémonGO', 'PokemonGO', 'ポケモンGO', 'ポケモン GO', 'ポケモンゴー'],
     ['消えた', '消える', '消えました', '消えてしまった', 'なくなった', 'なくなりました', '無くなった', '消失'],
     ['月パス', '月額パス', 'マンスリー', '30日補給', '空月の祝福', '列車補給標章', 'インターノット会員'],
@@ -71,6 +72,8 @@
     [['失効'], '2025-12-25-expiration.html'], [['反映'], '2026-03-10-play-points-reflection-timing.html'],
     [['現金'], '2026-07-24-play-points-cash-conversion.html'],
     [['ギフトカード'], '2025-12-25-gift-card.html'],
+    [['Play Pass'], '2026-08-16-play-pass-worth-it.html'],
+    [['ゴールド', 'ランク'], '2026-08-16-fastest-gold.html'],
     [['無料', '貯める'], '2026-07-24-earn-play-points-free.html'],
     [['お得', '使い方'], '2025-12-25-best-use.html'],
     [['お得', '交換'], '2025-12-25-best-use.html'],

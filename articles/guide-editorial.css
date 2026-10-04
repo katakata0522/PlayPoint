@@ -140,6 +140,12 @@ html[lang="ja"] body .guide-toc-links a:hover { color:var(--reading-link); }
 /* 入力中も選べる、少数の質問の入口。 */
 .reader-question-links { display:flex; flex-wrap:wrap; gap:0 18px; margin:4px 0 8px; }
 .reader-question-links a { display:inline-flex; align-items:center; min-height:44px; color:var(--reading-link); font-size:13px; text-decoration:underline; text-underline-offset:3px; }
+/* 長い検索例は入力欄の中で折り返す。入力と同時に消え、操作は遮らない。 */
+.search-input-wrap { position:relative; }
+.search-example { position:absolute; inset:0 16px; display:none; align-items:center; color:var(--reading-muted); font-size:14px; line-height:1.5; pointer-events:none; }
+html[lang="ja"] body.blog-index-compact .search-input-wrap #search-input::placeholder { color:transparent; }
+.search-input-wrap #search-input:placeholder-shown + .search-example { display:flex; }
+@media(max-width:380px) { html[lang="ja"] body.blog-index-compact .search-input-wrap #search-input { min-height:68px; } }
 .search-destinations { margin:12px 0; padding:16px; border:1px solid var(--reading-border); border-radius:8px; background:var(--reading-soft); }
 .search-destinations h2 { font-size:16px; margin:0 0 10px; }
 .search-destinations a { display:inline-block; padding:6px 0; color:var(--reading-link); font-weight:650; text-decoration:underline; }

@@ -172,6 +172,8 @@
     let sortMode = 'newest';
     let sortIsExplicit = false;
     let searchDebounceTimer = null;
+    let editingSearchHistory = false;
+    window.addEventListener('pagehide', () => { editingSearchHistory = false; });
     let fetchRetryCount = 0;
 
     // ===========================================
@@ -473,7 +475,8 @@
                     if (changed) { sortIsExplicit = false; sortMode = value ? 'relevance' : Storage.getSortOrder() || 'newest'; }
                     if (!value && sortMode === 'relevance') sortMode = Storage.getSortOrder() || 'newest';
                     currentPage = 1;
-                    updateURLState('push');
+                    updateURLState(editingSearchHistory ? 'replace' : 'push', true);
+                    editingSearchHistory = true;
                     render();
                     if (value) await loadBodySearch();
                     if (currentSearch !== value) return;
@@ -499,6 +502,7 @@
             // Handle browser back/forward buttons
             window.addEventListener('popstate', () => {
                 clearTimeout(searchDebounceTimer);
+                editingSearchHistory = false;
                 const state = URLState.get();
                 currentCategory = state.category;
                 currentBrowseCategory = state.topic;
@@ -579,7 +583,9 @@
     }
 
     // Update URL state
-    function updateURLState(mode = 'replace') {
+    function updateURLState(mode = 'replace', preserveSearchEditing = false) {
+        // 検索以外の条件・ページ移動が入ったら、次の検索編集は新しい履歴にする。
+        if (!preserveSearchEditing) editingSearchHistory = false;
         URLState.set({
             category: currentCategory,
             topic: currentBrowseCategory,
@@ -743,7 +749,7 @@
         // 3. Paginate
         const totalPages = Math.ceil(filtered.length / CONFIG.itemsPerPage);
         currentPage = BlogUtils.clampPageJump(currentPage, totalPages);
-        updateURLState();
+        updateURLState('replace', true);
 
         const start = (currentPage - 1) * CONFIG.itemsPerPage;
         const end = start + CONFIG.itemsPerPage;

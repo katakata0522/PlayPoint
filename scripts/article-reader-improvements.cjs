@@ -102,6 +102,25 @@ function syncReaderImprovements(root) {
     const file = path.join(root, 'articles', name), before = fs.readFileSync(file, 'utf8'), after = updateDate(transform(before));
     if (after !== before) { fs.writeFileSync(file, after); changed++; }
   }
+  const calendarFile = path.join(root, 'articles/2026-09-19-play-points-calendar-schedule-guide.html');
+  const calendarBefore = fs.readFileSync(calendarFile, 'utf8');
+  let calendarAfter = calendarBefore.replace(/<!-- reader-calendar:start -->[\s\S]*?<!-- reader-calendar:end -->\s*/g, '');
+  const calendar = `<!-- reader-calendar:start --><section class="section reader-calendar" aria-labelledby="reader-calendar-title">
+<h2 id="reader-calendar-title">自分の確認日をカレンダーに残す</h2>
+<p>自分に関係する日だけを選べます。各予定は次回から3回分の終日予定です。開催日時や特典の提供を保証するものではありません。</p>
+<form data-reader-calendar hidden><fieldset><legend>保存したい確認日</legend>
+<label><input type="checkbox" name="check-day" value="ticket">火曜：Super Ticket（プラチナ・ダイヤモンド）</label>
+<label><input type="checkbox" name="check-day" value="pass">木曜：Play Pass週次特典（対象の利用者）</label>
+<label><input type="checkbox" name="check-day" value="weekly">金曜：週次リワード（シルバー以上）</label>
+<label><input type="checkbox" name="check-day" value="monthly">毎月1日：自分に届く増量案内を確認</label>
+</fieldset><button type="submit">選んだ確認日を保存する</button><p class="reader-source">カレンダー用ファイル（.ics）をダウンロードします。開いて追加すると予定が保存されます。通知はカレンダー側で設定してください。</p><p role="status" aria-live="polite"></p></form>
+<noscript><p>カレンダーへ手動で追加する場合は、対象に応じて火曜・木曜・金曜・毎月1日を確認日にしてください。</p></noscript>
+<p><a href="/?mode=diary&amp;week=current" data-diary-entry>受け取ったポイントを、ほくほくリワード日記に記録する →</a></p>
+</section><!-- reader-calendar:end -->\n`;
+  calendarAfter = calendarAfter.replace(/(<section class="section">\s*<h2 id="article-section-11">購入・受け取り前に確認すること<\/h2>)/, calendar + '$1');
+  if (!calendarAfter.includes('/js/reader-calendar.js')) calendarAfter = calendarAfter.replace('</head>', '<script defer src="/js/reader-calendar.js"></script>\n</head>');
+  calendarAfter = calendarAfter.replace(/(<meta\b[^>]*name="last-modified"[^>]*content=")[^"]*/, '$12026-10-05');
+  if (calendarAfter !== calendarBefore) { fs.writeFileSync(calendarFile, calendarAfter); changed++; }
   const file = path.join(root, 'blog/articles.json'), manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
   const byId = new Map(manifest.map(article => [article.id, article]));
   for (const article of manifest.filter(article => article.listed !== false && article.source !== 'game-guide')) {
@@ -110,6 +129,8 @@ function syncReaderImprovements(root) {
     if (after !== before) { fs.writeFileSync(articleFile, after); changed++; }
   }
   for (const article of manifest) if (article.source === 'game-guide' || ['getting-started', 'points-disappeared'].includes(article.id)) article.modified = modified;
+  const calendarEntry = manifest.find(article => article.id === 'play-points-calendar-schedule-guide-2026');
+  if (calendarEntry) calendarEntry.modified = '2026-10-05';
   fs.writeFileSync(file, JSON.stringify(manifest, null, 2) + '\n');
   return changed;
 }

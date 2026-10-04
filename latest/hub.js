@@ -13,7 +13,13 @@
     if (end !== null && end - now <= SOON_MS) return 'soon';
     return 'active';
   }
-  if (typeof module !== 'undefined' && module.exports) module.exports = { classifyBenefit };
+  const RANKS = ['bronze', 'silver', 'gold', 'platinum', 'diamond'];
+  function matchesAudience(offer, rank = '', pass = '') {
+    const selectedRank = RANKS.indexOf(rank), minimum = RANKS.indexOf(offer.minRank);
+    if (selectedRank >= 0 && minimum >= 0 && selectedRank < minimum) return false;
+    return !(offer.requiresPass === 'true' && pass === 'no');
+  }
+  if (typeof module !== 'undefined' && module.exports) module.exports = { classifyBenefit, matchesAudience };
   if (typeof document === 'undefined') return;
   const board = document.querySelector('.benefit-board');
   if (!board) return;
@@ -26,6 +32,10 @@
   const count = board.querySelector('.benefit-count');
   const empty = board.querySelector('.benefit-empty');
   const note = board.querySelector('[data-filter-note]');
+  const audience = board.querySelector('.benefit-audience');
+  const rankSelect = board.querySelector('#benefit-rank');
+  const passSelect = board.querySelector('#benefit-pass');
+  const clearAudience = board.querySelector('[data-clear-audience]');
   const descriptions = {
     active: '参加期間中の企画と、毎週・アカウント別にチェックしたい特典です。',
     soon: '終了まで7日以内のポイント企画です。先着枠は期限前に終了する場合があります。',
@@ -45,7 +55,8 @@
     selected = filter;
     const now = Date.now();
     const states = cards.map(card => classifyBenefit(card.dataset, now));
-    const signature = JSON.stringify([filter, states, cards.map(card => card.dataset.kind)]);
+    const rank = rankSelect?.value || '', pass = passSelect?.value || '';
+    const signature = JSON.stringify([filter, states, rank, pass, cards.map(card => card.dataset.kind)]);
     // 定期確認は続けるが、期限・タブが変わらなければDOMと読み上げ領域を更新しない。
     if (signature === lastRender) {
       if (focus) tabs.find(tab => tab.dataset.filter === filter)?.focus();
@@ -71,7 +82,7 @@
         return;
       }
       if (card.parentElement !== grid) grid.append(card);
-      const shown = state === filter || (filter === 'active' && state === 'soon');
+      const shown = (state === filter || (filter === 'active' && state === 'soon')) && matchesAudience(card.dataset, rank, pass);
       card.hidden = !shown;
       if (shown) visible++;
       badge.textContent = state === 'soon' ? 'まもなく終了' : state === 'upcoming' ? '開始予定' : state === 'unknown' ? '日時を確認中' : card.dataset.kind === 'report' ? '配布報告・条件は個別確認' : card.dataset.kind === 'weekly' ? '毎週チェック' : card.dataset.kind === 'account' ? 'アカウント別' : state === 'other' ? 'その他の特典' : '開催期間中';
@@ -80,7 +91,9 @@
     note.textContent = descriptions[filter];
     count.textContent = visible + '件の情報';
     empty.hidden = visible !== 0;
-    empty.querySelector('[data-empty-message]').textContent = emptyMessages[filter];
+    const unfilteredCount = states.filter(state => state === filter || (filter === 'active' && state === 'soon')).length;
+    empty.querySelector('[data-empty-message]').textContent = unfilteredCount && (rank || pass)
+      ? 'このランク・加入状況に合う掲載情報はありません。条件を解除すると、この区分の全件を確認できます。' : emptyMessages[filter];
     panel.setAttribute('aria-labelledby', 'benefit-tab-' + filter);
   }
   tabs.forEach((tab, index) => {
@@ -98,6 +111,14 @@
   });
   panel.setAttribute('role', 'tabpanel');
   panel.tabIndex = 0;
+  function changeAudience() {
+    render(selected);
+    window.PlayPointAnalytics?.track('benefit_filter_changed', { rank_filter: rankSelect.value || 'all', pass_filter: passSelect.value || 'all', benefit_tab: selected,
+      results_count: cards.filter(card => !card.hidden && card.parentElement === grid).length });
+  }
+  [rankSelect, passSelect].forEach(control => control?.addEventListener('change', changeAudience));
+  clearAudience?.addEventListener('click', () => { rankSelect.value = ''; passSelect.value = ''; changeAudience(); });
+  if (audience) audience.hidden = false;
   render(selected);
   board.querySelector('[role="tablist"]').hidden = false;
   note.hidden = false;

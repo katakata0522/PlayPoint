@@ -225,7 +225,18 @@ test('最新情報ハブの共通componentはlatest階層からサイトルー�
 });
 
 
-const { classifyBenefit } = require('../latest/hub.js');
+const { classifyBenefit, matchesAudience } = require('../latest/hub.js');
+
+test('特典の絞り込みは既知の対象条件だけ除外し、未指定や個別オファーを隠さない', () => {
+  assert.equal(matchesAudience({ minRank: 'silver' }, 'bronze'), false);
+  assert.equal(matchesAudience({ minRank: 'silver' }, 'silver'), true);
+  assert.equal(matchesAudience({ minRank: 'platinum' }, 'gold'), false);
+  assert.equal(matchesAudience({ minRank: 'platinum' }, 'diamond'), true);
+  assert.equal(matchesAudience({ requiresPass: 'true' }, 'gold', 'no'), false);
+  assert.equal(matchesAudience({ requiresPass: 'true' }, 'bronze', 'yes'), true);
+  assert.equal(matchesAudience({ minRank: 'platinum', requiresPass: 'true' }), true);
+  assert.equal(matchesAudience({ kind: 'account' }, 'bronze', 'no'), true);
+});
 
 test('期限付き企画は日本時間の開始・7日前・終了の境界で分類が切り替わる', () => {
   const offer = { category: 'points', start: '2026-09-10T10:00:00+09:00', end: '2026-10-16T10:00:00+09:00' };

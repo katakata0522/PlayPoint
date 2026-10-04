@@ -9,6 +9,14 @@ const { KEY, makeStore, safePath } = require('../js/reading-library.js');
 const { extractSections, text } = require('../scripts/article-discovery-sync.cjs');
 const outcomes = require('../scripts/article-outcome-report.cjs');
 const root = path.resolve(__dirname, '..');
+test('検索例の商品名・ステータスは基本条件の記事を優先し、追加条件は落とさない', () => {
+  const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog/article-search-index.json'), 'utf8')).articles;
+  for (const [query, target] of [['Google Play Pass', 'play-pass-worth-it'], ['Googleプレイパス', 'play-pass-worth-it'], ['ゴールドステータス', 'fastest-gold']]) {
+    const hits = articles.filter(a => search.matches(a, query, 'ja')).sort((a, b) => search.score(b, query, 'ja') - search.score(a, query, 'ja'));
+    assert.ok(hits[0]?.path.includes(target), query);
+    assert.equal(articles.some(a => search.matches(a, query + ' 未掲載xyz', 'ja')), false);
+  }
+});
 test('自然な未反映の質問では一般的な確認手順を先頭にし、個別条件は維持する', () => {
   const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog/article-search-index.json'), 'utf8')).articles;
   for (const query of ['ポイントがつかない', 'ポイントが付かない', '反映されない', '反映']) {
