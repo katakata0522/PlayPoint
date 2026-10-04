@@ -57,6 +57,8 @@ function getSyncedHtmlFiles(currentRootDir = rootDir) {
 const syncedHtmlFiles = getSyncedHtmlFiles();
 
 const generatedFiles = [
+  ...require('./reader-topic-guides.cjs').guideFiles(),
+  ...require('./blog-static-pages.cjs').staticPageFiles(rootDir),
   'index.html',
   ...generatedLocaleFiles,
   ...getIntlSeoFiles(),

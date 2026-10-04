@@ -5,7 +5,7 @@ const path = require('node:path');
 const { getJapaneseArticleRepoPaths } = require('./game-guide-article-catalog.cjs');
 
 const GUIDE_BRAND = 'Google Play Points 完全攻略ガイド';
-const GUIDE_PAGE_TITLE = `${GUIDE_BRAND} | Playポイント計算機`;
+const GUIDE_PAGE_TITLE = 'Google Play Points 記事一覧 | PlayPoint';
 const GUIDE_DESCRIPTION = 'Google Play Pointsのランク、使い方、キャンペーン、反映トラブル、ゲーム別攻略を、公式情報と計算例で整理した完全攻略ガイドです。';
 const GUIDE_HERO_TEXT = 'ランク・使い方・キャンペーン・トラブル・ゲーム別課金を、公式情報と計算例から探せます。';
 
@@ -14,6 +14,7 @@ function renderGuideBrand(isBlog = false) {
 }
 
 const LEGACY_BLOG_TITLES = Object.freeze([
+  `${GUIDE_BRAND} | Playポイント計算機`,
   'Google Play Points攻略・使い方ブログ | Playポイント計算機',
   'Google Play Points 攻略・使い方記事 | Playポイント計算機'
 ]);
@@ -50,6 +51,9 @@ function syncBlogIndexBrand(html) {
   next = replaceKnownValue(next, LEGACY_BLOG_DESCRIPTIONS, GUIDE_DESCRIPTION);
   next = replaceKnownValue(next, LEGACY_BLOG_NAMES, GUIDE_BRAND);
   next = replaceKnownValue(next, LEGACY_HERO_TEXTS, GUIDE_HERO_TEXT);
+  next = next.replace(/(<meta\b[^>]*(?:property|name)="(?:og:image|twitter:image)"[^>]*content=")[^"]*(")/g, '$1https://playpoint-sim.com/images/guides/article-guide.jpg$2')
+    .replace(/(<meta\b[^>]*property="og:image:alt"[^>]*content=")[^"]*(")/, '$1Google Play Points 記事一覧：基本・ランク・使い道・トラブル・ゲーム別課金$2')
+    .replace(/(<meta\b[^>]*property="og:image:type"[^>]*content=")[^"]*(")/, '$1image/jpeg$2');
   next = next.replace(`class="brand">${GUIDE_BRAND}</a>`, `class="brand">${renderGuideBrand(true)}</a>`);
 
   next = next.replace(

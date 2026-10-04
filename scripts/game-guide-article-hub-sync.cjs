@@ -81,6 +81,7 @@ function synchronizeStructuredData(head, article) {
     const node = firstArticleNode(data);
     if (!node) return full;
     node.image ||= new URL(article.ogp || '../ogp.png', 'https://playpoint-sim.com/blog/').href;
+    node.headline = article.title;
     node.datePublished = article.date || PUBLISHED_AT;
     node.dateModified = article.modified || article.date || PUBLISHED_AT;
     return `<script${attrs}>\n${JSON.stringify(data, null, 2)}\n</script>`;
@@ -118,6 +119,9 @@ function ensureMeta(head, property, content) {
 
 function standardizeHead(originalHead, article) {
   let head = synchronizeStructuredData(originalHead, article);
+  head = head.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(article.title)} | PlayPoint</title>`);
+  head = ensureMeta(head, 'og:title', escapeHtml(article.title));
+  head = head.replace(/(<meta\b[^>]*name="twitter:title"[^>]*content=")[^"]*(")/i, '$1' + escapeHtml(article.title) + '$2');
   head = head.replace(/\s*<link\b[^>]*href=["'][^"']*games\.css(?:\?[^"']*)?["'][^>]*>\s*/i, '\n');
   if (!/article-modern\.css/.test(head)) {
     head = head.replace(/(<link\b[^>]*href=["'][^"']*article-shared\.css(?:\?[^"']*)?["'][^>]*>)/i,
@@ -240,7 +244,7 @@ function transformGameGuide(rootDir, article) {
   const output = renderShell({
     head,
     article,
-    title: main.title || article.title,
+    title: article.title,
     badge: main.badge,
     lead: main.lead,
     body,

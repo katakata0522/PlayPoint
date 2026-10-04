@@ -77,11 +77,13 @@ function compactReadingMetadata(html, locale) {
     const modified = inner.match(/data-article-date="modified" datetime="(\d{4}-\d{2}-\d{2})"/)?.[1];
     if (!published) return whole;
     const updated = modified && modified > published;
-    return `<details class="reading-metadata"><summary>${copy[updated ? 1 : 0]} ${updated ? modified : published} <span>${copy[2]}</span></summary>${whole}</details>`;
+    const verified = inner.match(/data-article-date="official-verified" datetime="(\d{4}-\d{2}-\d{2})"/)?.[1];
+    return `<details class="reading-metadata"><summary>${copy[updated ? 1 : 0]} ${updated ? modified : published}${locale === 'ja' && verified ? ` · 公式確認 ${verified}` : ''} <span>${copy[2]}</span></summary>${whole}</details>`;
   });
 }
 
 function prepareDiscoveryArticle(html, entry) {
+  html = html.replace(/<!-- reader-toc:start -->[\s\S]*?<!-- reader-toc:end -->\s*/g, '');
   const role = classifyArticleRole(entry.path);
   // 本文の解析を待たせず、計測コア→依存コードの実行順は維持する。
   // 初回配色を決めるreading-themeとナビ配置の同期処理は対象外。
@@ -104,6 +106,16 @@ function prepareDiscoveryArticle(html, entry) {
       return `<h${level}${attrs} id="article-section-${index}">`;
     }) + end;
   });
+  if (entry.locale === 'ja' && /data-game-guide-article="true"/.test(html)) {
+    const articleBody = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1] || '';
+    const headings = [...articleBody.matchAll(/<h2\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)]
+      .map(match => ({ id: match[1], label: text(match[2]) }))
+      .filter(heading => !/公式ソース|出典|次にやること|あわせて|よくある質問|関連|運営者|この記事の著者/.test(heading.label));
+    if (headings.length > 1) {
+      const toc = '<!-- reader-toc:start --><details class="inpage-toc reader-toc"><summary class="inpage-toc-title">目次を開く</summary><nav aria-label="この記事の目次"><ol>' + headings.map(heading => `<li><a href="#${heading.id}">${heading.label}</a></li>`).join('') + '</ol></nav></details><!-- reader-toc:end -->';
+      html = html.replace(/(<section\b[^>]*class="[^"]*answer-box[^"]*"[^>]*>[\s\S]*?<\/section>)/, '$1\n' + toc);
+    }
+  }
   const existingDiary = entry.locale === 'ja' && html.match(/<section\b[^>]*aria-labelledby="diary-cta"[^>]*>[\s\S]*?<\/section>/);
   if (existingDiary) {
     // 本文の日記案内を活かし、同じ案内を末尾へ重ねない。

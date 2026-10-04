@@ -127,7 +127,7 @@ test('articles/ogp/ 内の全PNG画像は1200x630のJPEG実体である', () => 
   }
 });
 
-test('共通ページは1200x630のogp.pngと統一メタタグを持つ', () => {
+test('共通ページは用途に合う1200x630の画像と統一メタタグを持つ', () => {
   const commonPages = [
     'index.html', 'about-playpoints.html', 'attention.html', 'changelog.html',
     'embed.html', 'info.html', 'privacy.html', 'terms.html', 'sitemap.html',
@@ -136,10 +136,12 @@ test('共通ページは1200x630のogp.pngと統一メタタグを持つ', () =>
 
   for (const file of commonPages) {
     const html = fs.readFileSync(path.join(root, file), 'utf8');
-    assert.match(html, /<meta property=["']og:image["'] content=["']https:\/\/playpoint-sim\.com\/ogp\.png["']\s*\/?>/, `${file} に og:image があること`);
+    const hub = file === 'blog/index.html';
+    const expectedImage = hub ? 'images/guides/article-guide.jpg' : 'ogp.png';
+    assert.ok(html.includes(`property="og:image" content="https://playpoint-sim.com/${expectedImage}"`), `${file} に用途に合う og:image があること`);
     assert.match(html, /<meta property=["']og:image:width["'] content=["']1200["']\s*\/?>/, `${file} に og:image:width="1200" があること`);
     assert.match(html, /<meta property=["']og:image:height["'] content=["']630["']\s*\/?>/, `${file} に og:image:height="630" があること`);
-    assert.match(html, /<meta property=["']og:image:type["'] content=["']image\/png["']\s*\/?>/, `${file} に og:image:type="image/png" があること`);
+    assert.ok(html.includes(`property="og:image:type" content="image/${hub ? 'jpeg' : 'png'}"`), `${file} の画像MIMEが実体と一致すること`);
     const expectedLocale = file === 'attention.html' ? 'en_US' : 'ja_JP';
     const actualLocale = html.match(/<meta property=["']og:locale["'] content=["']([^"']+)["']/)?.[1];
     assert.equal(actualLocale, expectedLocale, `${file} の本文言語と共有言語が一致すること`);

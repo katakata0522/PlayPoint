@@ -8,7 +8,7 @@ const { VERIFIED_AT, SOURCES, GAME_SEO_WAVE4 } = require('./game-seo-wave4-data.
 const guideShell = createGuideShell({
   verifiedAt: VERIFIED_AT,
   badge: '🔎 公式情報を基準に検証',
-  verificationPolicy: 'Google Playと公式Web決済は別の購入経路です。現行Google Play価格を公開一次情報で確認できない場合は推測で補わず、ゲーム内・Google Playの購入画面を最終正本とします。'
+  verificationPolicy: 'Google Playと公式Web決済は別の購入経路です。現行Google Play価格を公開一次情報で確認できない場合は推測で補わず、ゲーム内・Google Playの購入画面を購入前に確認してください。'
 });
 
 function syncCustomOnly(rootDir, config) {
@@ -62,7 +62,7 @@ function renderPhantomGuide() {
     <section class="section"><h2>Google Play Pointsを含めた比較</h2><p>WEBショップ購入はGoogle Play上の購入ではないため、Google Play Points獲得を前提にしません。「WEB増量・マイル」と「Google Play Points」を別々に見て、自分の購入額と現在のキャンペーンに合わせて選ぶのが安全です。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.phantomWebShop}" target="_blank" rel="noopener noreferrer">ファンパレ公式WEBショップ：現在の商品・増量表示</a></li><li><a href="${SOURCES.phantomWebShopLogin}" target="_blank" rel="noopener noreferrer">公式WEBショップ：アカウント連携</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ファンパレ Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'phantomparade', slug: 'google-play-vs-webshop', pageDescription: 'ファンパレ公式WEBショップの増量率、マイルpt、パス商品とGoogle Play Pointsを別軸で比較。Google Play価格は推測せず購入画面を正本にします。', lead: 'ファンパレ公式WEBショップには増量商品とマイルptがあります。Google Play Pointsと同じものではないため、現在の増量・支払経路・ポイントを分けて比較します。', body, faq: [
+  return guideShell({ gameId: 'phantomparade', slug: 'google-play-vs-webshop', pageDescription: 'ファンパレ公式WEBショップの増量率、マイルpt、パス商品とGoogle Play Pointsを別軸で比較。Google Play価格は推測せず購入画面で確認します。', lead: 'ファンパレ公式WEBショップには増量商品とマイルptがあります。Google Play Pointsと同じものではないため、現在の増量・支払経路・ポイントを分けて比較します。', body, faq: [
     { q: 'ファンパレWEBショップには増量がありますか？', a: '2026年9月13日の公式WEBショップでは、有償廻珠の初回17〜20%増量や、期間商品4〜5%増量などが表示されています。内容は時期で変わります。' },
     { q: 'WEBショップでGoogle Play Pointsは貯まりますか？', a: 'WEBショップはGoogle Play上の購入ではありません。Google Play PointsはGoogle Play上の対象購入で確認してください。' }
   ] });
@@ -74,9 +74,9 @@ function syncGameSeoWave4(rootDir) {
     {
       file: 'games/hbr/index.html',
       tableMessage: 'プレミアム/ライトパスの存在と公式WEB SHOPは確認済みですが、現行Google Playのパス・クォーツ価格を公開一次情報で固定できません。購入画面の実額を入力してください。',
-      gameMeta: `ヘブバン Google Play・WEB SHOP・Play Points確認：${VERIFIED_AT}（Google Play価格は購入画面を正本）`,
+      gameMeta: `ヘブバン Google Play・WEB SHOP・Play Points確認：${VERIFIED_AT}（Google Play価格は購入画面で確認）`,
       descriptionBefore: 'ヘブンバーンズレッド（ヘブバン）のクォーツ購入、ライト/プレミアムパス、200連天井ガチャで貯まるGoogle Play Pointsをパッと計算！パック別還元早見表や使い道も掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。',
-      descriptionAfter: 'ヘブバンのGoogle Play課金予定額からPlay Pointsを計算。公式WEB SHOPの5%OFF・独自ポイントは別決済として分離し、Google Play価格は購入画面を正本とします。',
+      descriptionAfter: 'ヘブバンのGoogle Play課金予定額からPlay Pointsを計算。公式WEB SHOPの5%OFF・独自ポイントは別決済として分離し、Google Play価格は購入画面で確認します。',
       replacements: [
         ['ヘブバンのクォーツ課金でGoogle Play Pointsは貯まりますか？', 'ヘブバンのGoogle Play課金でPlay Pointsは貯まりますか？'],
         ['はい！AndroidおよびPC版（Steam除くPlayストア経由）の決済で100円につき1pt以上が貯まります。', 'Google Play上の対象購入として処理される場合にポイントが計算されます。WEB SHOP購入はGoogle Play決済と分けて確認してください。']
@@ -87,7 +87,7 @@ function syncGameSeoWave4(rootDir) {
     {
       file: 'games/honkai3rd/index.html',
       tableMessage: '公式チャージセンターの仕組みは確認済みですが、現行日本Google Playの水晶・月パス価格を公開一次情報で固定できません。購入画面の実額を入力してください。',
-      gameMeta: `崩壊3rd Google Play・公式チャージセンター確認：${VERIFIED_AT}（Google Play価格は購入画面を正本）`,
+      gameMeta: `崩壊3rd Google Play・公式チャージセンター確認：${VERIFIED_AT}（Google Play価格は購入画面で確認）`,
       descriptionBefore: '崩壊3rdの水晶購入、ギフトコイン、月パス、90連キャラ確定天井で貯まるGoogle Play Pointsをパッと計算！パック別ポイント還元早見表や使い道も一覧で比較できます。補給前の課金シミュレーションにぜひ使ってみてくださいね。',
       descriptionAfter: '崩壊3rdのGoogle Play課金予定額からPlay Pointsを計算。HoYoverse公式チャージセンターの2倍特典共有や月パス条件と分けて比較できます。',
       replacements: [
@@ -100,9 +100,9 @@ function syncGameSeoWave4(rootDir) {
     {
       file: 'games/phantomparade/index.html',
       tableMessage: '公式WEBショップの商品・増量は確認済みですが、Google Play側の現行商品価格として流用しません。Google Play購入画面の実額を入力してください。',
-      gameMeta: `ファンパレ Google Play・公式WEBショップ確認：${VERIFIED_AT}（Google Play価格は購入画面を正本）`,
+      gameMeta: `ファンパレ Google Play・公式WEBショップ確認：${VERIFIED_AT}（Google Play価格は購入画面で確認）`,
       descriptionBefore: '呪術廻戦ファントムパレード（ファンパレ）の有償廻珠、ファンパレパス、250連天井ガチャで貯まるPlayポイントをサクッと計算！パック別還元早見表やポイント使い道も比較できます。ガチャ前のシミュレーションにぜひ使ってみてくださいね。',
-      descriptionAfter: 'ファンパレのGoogle Play課金予定額からPlay Pointsを計算。公式WEBショップの増量・マイル・パス商品は別決済として分離し、Google Play価格は購入画面を正本とします。',
+      descriptionAfter: 'ファンパレのGoogle Play課金予定額からPlay Pointsを計算。公式WEBショップの増量・マイル・パス商品は別決済として分離し、Google Play価格は購入画面で確認します。',
       replacements: [
         ['ファンパレの天井（250連）で何ポイント貯まりますか？', 'ファンパレの250連分に必要な現金額は固定ですか？'],
         ['約75,000円課金した場合、通常時（1pt/100円）で約750pt、特別獲得率5pt/100円時なら約3,750pt（ゴールドランク即到達）還元されます。', 'いいえ。所持廻珠・配布・チケット・販売中の商品構成・購入経路で実負担が変わるため固定円額とは扱いません。Google Playの実支払額からPlay Pointsを確認してください。']
@@ -113,9 +113,9 @@ function syncGameSeoWave4(rootDir) {
     {
       file: 'games/reverse1999/index.html',
       tableMessage: '公式は販売価格を購入ページ表示としており、チャージセンターも提供しています。現行Google Play価格を固定せず、購入画面の実額を入力してください。',
-      gameMeta: `リバース1999 Google Play・公式チャージセンター確認：${VERIFIED_AT}（価格は購入ページを正本）`,
+      gameMeta: `リバース1999 Google Play・公式チャージセンター確認：${VERIFIED_AT}（価格は購入ページで確認）`,
       descriptionBefore: 'リバース：1999の純雨の雫パック、咆哮のひと月（月パス）、70連/140連天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や使い道も比較できます。召喚前のポイント確認にぜひ役立ててみてくださいね。',
-      descriptionAfter: 'リバース：1999のGoogle Play課金予定額からPlay Pointsを計算。公式が価格を購入ページ表示としているため、固定価格や固定天井額を推測せず実額を正本とします。',
+      descriptionAfter: 'リバース：1999のGoogle Play課金予定額からPlay Pointsを計算。公式が価格を購入ページ表示としているため、固定価格や固定天井額を推測せず実際の支払額を確認します。',
       replacements: [
         ['はい！咆哮のひと月（月パス）や純雨の雫パックの購入ですべてポイントが還元されます。', 'Google Play上の対象購入として処理される場合にポイントが計算されます。公式チャージセンターなどGoogle Play外の購入は分けて確認してください。']
       ]

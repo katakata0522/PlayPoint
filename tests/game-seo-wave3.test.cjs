@@ -124,7 +124,7 @@ test('stale Wave 3 fixed-price claims do not survive across Japanese game pages'
   }
 });
 
-test('Wave 3 guides are sitemap-visible and use verified editorial dates', () => {
+test('Wave 3 guides are sitemap-visible and keep editorial and official verification dates distinct', () => {
   const paths = [
     'games/pokepoke/premium-pass-guide/index.html',
     'games/pad/pad-pass-value/index.html',
@@ -132,8 +132,14 @@ test('Wave 3 guides are sitemap-visible and use verified editorial dates', () =>
     'games/dokkan/google-play-vs-webstore/index.html'
   ];
   const sitemap = read('sitemap.xml');
+  const articles = require('../scripts/game-guide-article-catalog.cjs').GAME_GUIDE_ARTICLES;
+  const verification = require('../scripts/article-official-verification-dates.json');
   for (const file of paths) {
-    assert.equal(getGeneratedGamePageContentDate(file), file === 'games/pad/pad-pass-value/index.html' ? '2026-09-23' : VERIFIED_AT);
+    const html = read(file), article = articles.find(item => item.file.slice(3) === file);
+    assert.equal(getGeneratedGamePageContentDate(file), article.modified);
+    assert.ok(html.includes(`name="last-modified" content="${article.modified}"`));
+    assert.ok(html.includes(`data-article-date="official-verified" datetime="${verification[file]}"`));
+    assert.ok(article.modified >= verification[file]);
     const relativeUrl = `/${file.replace(/index\.html$/, '')}`;
     assert.ok(sitemap.includes(relativeUrl), `${relativeUrl} should be present in sitemap`);
   }

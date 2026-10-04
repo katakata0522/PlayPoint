@@ -124,7 +124,7 @@ function renderGuideShell({ gameId, slug, lead, body, faq = [], pageDescription 
     <header class="game-header"><span class="game-badge">${badge}</span><h1 class="game-title">${title}</h1><p class="game-meta">最終確認：${verifiedAt}</p></header>
     <p>${lead}</p>
     ${body}
-    <section class="section"><h2>このページの確認方針</h2><p>${verificationPolicy}</p></section>
+    <section class="section"><h2>購入前に確認すること</h2><p>${verificationPolicy}</p></section>
   </main></div>
   <footer class="site-footer"><p>© Playポイント計算機 / 非公式の独立した計算・解説サイトです。</p></footer>
 </body>

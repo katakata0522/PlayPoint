@@ -294,6 +294,8 @@ function syncSitemap(rootDir) {
   const gameEntries = getGameSitemapEntries(rootDir);
   const topPageSynced = syncSitemapContent(fs.readFileSync(sitemapPath, 'utf8'));
   let content = syncSitemapEntries(topPageSynced, [
+    ...require('./reader-topic-guides.cjs').guideEntries(),
+    ...require('./blog-static-pages.cjs').staticPageEntries(rootDir),
     ...getIntlSitemapEntries(),
     ...getLocalizedGameGuideSitemapEntries(),
     ...discoverableBlogEntries,

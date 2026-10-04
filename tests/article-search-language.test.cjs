@@ -69,6 +69,10 @@ test('個別条件を一般案内で上書きせず、絞り込みとAND条件�
 });
 
 test('ゼロ件時の候補は回答の関連度で並べ、通常検索の追加条件を消さない', () => {
+  for (const [query, id] of [['プラチナ 維持費', 'playpoints-rank-maintenance'], ['ポイントがついてこない', 'play-points-reflection-timing'], ['ポイントを現金にしたい', 'play-points-cash-conversion'], ['プリペイド', 'gift-card']]) assert.equal(hits(query)[0]?.id, id, query);
+  const cashQuery = 'ポイントを現金にしたい 未掲載xyz';
+  assert.equal(hits(cashQuery).length, 0);
+  assert.deepEqual(search.suggest(articles, cashQuery, 'ja').map(article => article.id), ['play-points-cash-conversion']);
   const query = 'ポイントが反映されてない 未掲載の条件xyz';
   assert.equal(hits(query).length,0);
   assert.equal(search.suggest(articles,query,'ja')[0]?.id,'play-points-reflection-timing');

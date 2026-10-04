@@ -246,14 +246,15 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       const actual=await page.locator('.pagination-page-input').inputValue();
       const total=(await page.locator('.pagination-page-total').textContent()).trim();
       assert.equal(actual,expected||total);
-      assert.equal(new URL(page.url()).searchParams.get('page'),actual==='1'?null:actual,'URL matches displayed page');
+      assert.equal(new URL(page.url()).pathname,actual==='1'?'/blog/':`/blog/page/${actual}/`,'Static URL matches displayed page');
+      assert.equal(new URL(page.url()).searchParams.get('page'),null,'Legacy page query is normalized');
     }
     // 表記・条件・履歴が変わっても、次に読みたい記事へ直接進める。
     await goto(page,'blog/?sort=newest'); await cards(page);
     await page.locator('.pagination-next').click();
-    await page.waitForFunction(()=>new URL(location.href).searchParams.get('page')==='2');
+    await page.waitForFunction(()=>new URL(location.href).pathname==='/blog/page/2/');
     await page.goBack();
-    await page.waitForFunction(()=>!new URL(location.href).searchParams.has('page'));
+    await page.waitForFunction(()=>new URL(location.href).pathname==='/blog/');
     await page.locator('#search-input').fill('ポイントが消えた');
     await page.waitForFunction(()=>document.querySelector('#sort-toggle')?.value==='relevance');
     assert.match(await page.locator('.article-card').first().getAttribute('href'),/points-disappeared/);
