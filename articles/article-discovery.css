@@ -52,6 +52,19 @@ details.inpage-toc :focus-visible { outline:3px solid #0891b2; outline-offset:3p
 .reader-guide .section { margin-block: 2rem; }
 .reader-guide-order { padding: 1rem; border: 1px solid var(--border-color, #8193a5); border-radius: 8px; }
 .reader-guide-order ol { margin: 0; padding-left: 1.5rem; }
+/* ガイドも本文と同じ意味色を使い、明暗どちらでも日付まで読めるようにする。 */
+html[data-reading-theme] .reader-guide > .hero { background:var(--reading-surface); color:var(--reading-text); border-left:4px solid var(--reading-link); padding:24px; }
+html[data-reading-theme] .reader-guide > .hero h1 { color:var(--reading-text); }
+html[data-reading-theme] .reader-guide a { color:var(--reading-link); text-underline-offset:3px; }
+.reader-guide [id^="step-"] { scroll-margin-top:90px; }
+.reader-guide-order a { display:inline-block; padding-block:8px; }
+html[lang="ja"] body .main-content-column .reader-calendar { padding:16px; border:1px solid var(--reading-border); border-radius:8px; background:var(--reading-surface); }
+.reader-calendar [hidden] { display:none; }
+.reader-calendar fieldset { margin:12px 0; padding:12px; border:1px solid var(--reading-border); border-radius:6px; }
+.reader-calendar label { display:flex; align-items:start; gap:8px; min-height:44px; padding-block:8px; cursor:pointer; }
+.reader-calendar input { margin-top:7px; flex:none; }
+.reader-calendar button { min-height:44px; padding:10px 16px; border:1px solid var(--reading-action); border-radius:6px; background:var(--reading-action); color:var(--reading-on-action); font:inherit; cursor:pointer; }
+.reader-calendar [role="status"]:empty { display:none; }
 .reader-topic-entry { display: flex; flex-wrap: wrap; gap: .35rem 1rem; font-size: .875rem; }
 .reader-topic-entry a { padding-block: .35rem; }
 .reader-topic-disclosure summary { cursor: pointer; font-size: .875rem; padding-block: .5rem; }

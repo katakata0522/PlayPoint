@@ -2,7 +2,7 @@
 
 import { createRegionCalculationConfig } from './region-rules.js';
 
-import './analytics-core.js?v=b704cc8b30';
+import './analytics-core.js?v=e63a4a63f7';
 
 // 全画面で同じ許可リスト・同意判定・流入引き継ぎを利用する。
 if (!window.PlayPointAnalytics) {

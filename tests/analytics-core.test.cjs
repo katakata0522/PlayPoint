@@ -58,6 +58,23 @@ function eventCalls(context, eventName) {
     .map(item => JSON.parse(JSON.stringify(item[2])));
 }
 
+test('絞り込みと確認日のダウンロードは同意を守り、固定選択肢と件数だけ記録する', () => {
+  for (const consent of ['granted', 'denied']) {
+    const { context } = createRuntime(consent), analytics = context.PlayPointAnalytics;
+    analytics.markAnalyticsReady();
+    analytics.track('benefit_filter_changed', { rank_filter: 'gold', pass_filter: 'no', benefit_tab: 'active', results_count: 3, query: 'private@example.com' });
+    analytics.track('reader_calendar_download', { results_count: 2, filename: 'private@example.com' });
+    assert.equal(eventCalls(context, 'benefit_filter_changed').length, consent === 'granted' ? 1 : 0);
+    assert.equal(eventCalls(context, 'reader_calendar_download').length, consent === 'granted' ? 1 : 0);
+    if (consent === 'granted') {
+      assert.deepEqual(eventCalls(context, 'benefit_filter_changed')[0], { rank_filter: 'gold', pass_filter: 'no', benefit_tab: 'active', results_count: 3 });
+      assert.deepEqual(eventCalls(context, 'reader_calendar_download')[0], { results_count: 2 });
+      analytics.track('benefit_filter_changed', { rank_filter: 'private@example.com', pass_filter: 'invalid', benefit_tab: 'invalid' });
+      assert.deepEqual(eventCalls(context, 'benefit_filter_changed')[1], {});
+    }
+  }
+});
+
 test('検索目的は固定IDだけ送り、自由入力や連絡先をパラメータに含めない', () => {
   const { context } = createRuntime('granted');
   const analytics = context.PlayPointAnalytics;

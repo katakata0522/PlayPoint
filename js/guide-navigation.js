@@ -113,6 +113,12 @@
       if (!libraryInline && media.matches && location.hash === '#reading-library') { const panel = doc.getElementById('reading-library'); if (panel) { menu.open(); panel.open = true; panel.scrollIntoView({ block: 'start' }); } }
     }
     layout(); media.addEventListener('change', () => { layout(); libraryFromHash(); });
+    // ページ内案内でも、移動した見出しからキーボードで読み進められるようにする。
+    doc.querySelector('.reader-guide-order')?.addEventListener('click', event => {
+      const link = event.target.closest('a[href^="#"]');
+      const section = link && doc.getElementById(link.hash.slice(1));
+      if (section) { section.tabIndex = -1; section.focus({ preventScroll: true }); }
+    });
     libraryFromHash(); window.addEventListener('hashchange', libraryFromHash);
     doc.addEventListener('click', event => { if (event.target.closest('a[href="#reading-library"]') && !libraryInline && media.matches) { event.preventDefault(); const panel = doc.getElementById('reading-library'); menu.open(); panel.open = true; panel.scrollIntoView({ block: 'start' }); } });
     window.addEventListener('pagehide', () => { menu.dialog.close(); toc?.dialog.close(); });

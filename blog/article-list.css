@@ -43,7 +43,7 @@ html[lang="ja"] body.blog-index-compact .game-search-links { margin-top:20px; pa
   html[lang="ja"] body.blog-index-compact .hub-result-toolbar label { display:block; margin-bottom:3px; }
   html[lang="ja"] body.blog-index-compact #sort-toggle { width:116px; }
 }
-@media(max-width:380px) {
+@media(max-width:480px) {
   html[lang="ja"] body.blog-index-compact .hub-search-controls { grid-template-columns:minmax(0,1fr); }
   html[lang="ja"] body.blog-index-compact .hub-search-controls .game-filter-container { display:grid; grid-template-columns:52px minmax(0,1fr); align-items:center; }
   html[lang="ja"] body.blog-index-compact .hub-search-controls .game-filter-label { margin:0; }

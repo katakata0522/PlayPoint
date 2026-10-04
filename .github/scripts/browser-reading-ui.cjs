@@ -278,6 +278,55 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.setViewportSize({width:390,height:844}); await waitNavigationLayout(page);
     assert(await page.locator('#reading-library summary').isVisible(),'Saved articles are directly reachable on mobile');
     report.interactions.readerFlow={history:true,relevance:true,conditions:true,skip:true,mobileLibrary:true};
+    // 入力途中の履歴ではなく、検索前と確定した検索結果を往復できる。
+    await goto(page,'blog/'); await cards(page);
+    for (const query of ['ポイント','ポイント 期限','ポイント 有効期限']) {
+      await page.locator('#search-input').fill(query);
+      await page.waitForFunction(q=>new URL(location.href).searchParams.get('q')===q,query);
+    }
+    await page.goBack();
+    await page.waitForFunction(()=>document.querySelector('#search-input').value==='');
+    await page.goForward();
+    await page.waitForFunction(()=>document.querySelector('#search-input').value==='ポイント 有効期限');
+    await page.getByRole('link',{name:'次の増量はいつ？',exact:true}).click();
+    await page.evaluate(()=>document.fonts.ready);
+    await page.waitForFunction(()=>{const r=document.querySelector('#next-campaign-title')?.getBoundingClientRect();return r && r.top>=document.querySelector('.guide-header').getBoundingClientRect().bottom && r.top<innerHeight/2;});
+
+    for (const slug of ['ranks','using-points','troubleshooting']) {
+      await goto(page,`guides/${slug}/`); await page.evaluate(()=>document.fonts.ready);
+      for (const theme of ['light','dark']) {
+        if (await page.evaluate(()=>document.documentElement.dataset.readingTheme)!==theme) await chooseTheme(page);
+        for (const item of await palette(page,['.reader-guide h1','.hero .reader-source'])) assert(item.ratio>=4.5,`${slug} ${theme} ${item.selector}: ${item.ratio}`);
+      }
+      await page.locator('.reader-guide-order a').first().click();
+      await page.waitForFunction(()=>{const h=document.querySelector(location.hash)?.querySelector('h2');return h && h.getBoundingClientRect().top>=document.querySelector('.guide-header').getBoundingClientRect().bottom;});
+      assert(await page.evaluate(()=>document.activeElement===document.querySelector(location.hash)),`${slug}: destination receives keyboard focus`);
+    }
+    await goto(page,'latest/');
+    await page.locator('.benefit-audience summary').click();
+    for (const theme of ['dark','light']) {
+      if (await page.evaluate(()=>document.documentElement.dataset.readingTheme)!==theme) await chooseTheme(page);
+      for (const item of await palette(page,['.benefit-audience-controls label'])) assert(item.ratio>=4.5,`Benefit label ${theme}: ${item.ratio}`);
+    }
+    await page.locator('#benefit-rank').selectOption('bronze');
+    await page.locator('#benefit-pass').selectOption('no');
+    assert.equal(await page.locator('[data-benefit-id="weekly-points"]').isVisible(),false);
+    assert.equal(await page.locator('[data-benefit-id="play-pass"]').isVisible(),false);
+    assert(await page.locator('[data-benefit-id="personal-promotion"]').isVisible());
+    await page.locator('#benefit-rank').selectOption('gold');
+    assert(await page.locator('[data-benefit-id="weekly-points"]').isVisible());
+    await page.locator('[data-clear-audience]').click();
+    assert(await page.locator('[data-benefit-id="play-pass"]').isVisible());
+    await goto(page,'articles/2026-09-19-play-points-calendar-schedule-guide.html');
+    const calendar=page.locator('[data-reader-calendar]');
+    await calendar.locator('input[value="weekly"]').check();
+    const downloading=page.waitForEvent('download');
+    await calendar.getByRole('button',{name:'選んだ確認日を保存する'}).click();
+    const downloaded=await downloading;
+    assert.equal(downloaded.suggestedFilename(),'playpoint-check-dates.ics');
+    assert.equal(await downloaded.failure(),null);
+    report.interactions.followthrough={searchHistory:true,campaignArrival:true,guideThemes:true,guideAnchors:true,benefitFilter:true,calendarDownload:true};
+    await goto(page,'blog/'); await cards(page);
     const articleRequests = [];
     const recordArticleRequest = request => articleRequests.push(new URL(request.url()).pathname);
     page.on('request', recordArticleRequest);

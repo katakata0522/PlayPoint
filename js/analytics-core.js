@@ -28,6 +28,11 @@
         destination_type: new Set(['internal', 'external', 'official_google_support'])
     });
     const ENUM_PARAM_VALUES = Object.freeze({
+        benefit_filter_changed: Object.freeze({
+            rank_filter: new Set(['all', 'bronze', 'silver', 'gold', 'platinum', 'diamond']),
+            pass_filter: new Set(['all', 'yes', 'no']),
+            benefit_tab: new Set(['active', 'soon', 'upcoming', 'other'])
+        }),
         article_navigation_click: Object.freeze({
             component: new Set(['site_identity', 'global_nav', 'breadcrumb', 'region_switch', 'next_step', 'popular', 'related', 'author', 'katakatalab', 'browse', 'citation', 'diary', 'contextual_action']),
             locale: new Set(['ja', 'en', 'ko', 'tw']),
@@ -67,6 +72,8 @@
         article_click: ['article_title', 'article_category'],
         search: ['results_count', 'intent_id'],
         reader_question_clicked: ['candidate_id', 'source_path', 'target_path'],
+        benefit_filter_changed: ['rank_filter', 'pass_filter', 'benefit_tab', 'results_count'],
+        reader_calendar_download: ['results_count'],
         category_filter: ['category_name'],
         theme_change: ['theme_mode'],
         points_cost_calculation_completed: ['region', 'status', 'point_bucket']

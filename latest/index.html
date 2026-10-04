@@ -39,16 +39,16 @@
     "author":{"@type":"Person","name":"かたかた","url":"https://playpoint-sim.com/author/katakata.html"}
   }
   </script>
-  <link rel="stylesheet" href="./hub.css?v=53c2675d2d">
-  <script defer src="./hub.js?v=e982ccf39d"></script>
+  <link rel="stylesheet" href="./hub.css?v=cf9fed0cfd">
+  <script defer src="./hub.js?v=bc11c8d04b"></script>
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/reading-theme.css?v=1f042a0022">
 <link rel="stylesheet" href="/articles/japanese-shell.css?v=d16155b158">
 
 <!-- guide-navigation-assets:start -->
 <link rel="stylesheet" href="/articles/guide-navigation.css?v=1fdc90c133">
-<script src="/js/guide-navigation.js?v=e8a000c9db"></script>
-<link rel="stylesheet" href="/articles/guide-editorial.css?v=d548466956">
+<script src="/js/guide-navigation.js?v=6d3b8055d5"></script>
+<link rel="stylesheet" href="/articles/guide-editorial.css?v=4f776a1d8d">
 <!-- guide-navigation-assets:end -->
 </head>
 <body>
@@ -76,6 +76,13 @@
       <button type="button" role="tab" id="benefit-tab-other" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="other">その他の特典</button>
     </div>
     <p class="benefit-filter-note" data-filter-note hidden></p>
+    <details class="benefit-audience" hidden><summary>ランク・Play Passで絞る</summary>
+      <div class="benefit-audience-controls">
+        <label for="benefit-rank">今のランク<select id="benefit-rank"><option value="">すべて・わからない</option><option value="bronze">ブロンズ</option><option value="silver">シルバー</option><option value="gold">ゴールド</option><option value="platinum">プラチナ</option><option value="diamond">ダイヤモンド</option></select></label>
+        <label for="benefit-pass">Play Passの利用<select id="benefit-pass"><option value="">指定しない</option><option value="yes">利用中・ファミリー対象</option><option value="no">利用していない</option></select></label>
+        <button type="button" data-clear-audience>条件を解除</button>
+      </div><p class="benefit-footnote">掲載されている対象条件で絞ります。個別オファーが届くことや、賞品の残数は保証しません。実際の対象はPlayストアで確認してください。</p>
+    </details>
     <div id="benefit-panel">
       <p class="benefit-count" role="status" aria-live="polite" aria-atomic="true" hidden></p>
       <div class="benefit-grid">
@@ -92,7 +99,7 @@
         <details class="benefit-details"><summary>確認方法・条件・出典</summary><p class="benefit-note">抽選・先着を含みます。先着枠の残数は未確認で、期間内でも受付終了の場合があります。</p><p>会場イベントが終わっても、オンライン企画は続きます。ポイント企画は第1・2弾で条件が異なり、第2弾はゴールド以下の方に招待コードが必要です。スマートフォンから参加できます。</p><p class="benefit-source"><a href="https://playpoints.withgoogle.com/tgs/2026/terms-privacy/">Google公式規約</a> · 確認日: <time datetime="2026-09-22">2026-09-22</time></p></details>
       </div></article>
 
-      <article class="benefit-card benefit-theme-gift" data-benefit-id="weekly-points" data-category="points" data-kind="weekly">
+      <article class="benefit-card benefit-theme-gift" data-benefit-id="weekly-points" data-category="points" data-kind="weekly" data-min-rank="silver">
         <div class="benefit-card-body"><div class="benefit-labels"><span class="benefit-status" data-benefit-status>毎週チェック</span><span class="benefit-tag">シルバー以上</span></div>
         <h3><span aria-hidden="true">🎁</span> ウィークリーリワード</h3>
         <p class="benefit-reward">シルバー以上なら、毎週のポイント受け取りをチェック</p>
@@ -105,7 +112,7 @@
         <details class="benefit-details"><summary>確認方法・条件・出典</summary><p>Playストアの「Play Points」→「特典」から確認できます。受け取ったポイントは履歴でチェック。日本向けのステータス表では、シルバーはウィークリー、ゴールド・プラチナ・ダイヤモンドはスーパーウィークリーです。Play Pass加入者向けの木曜特典は別制度です。</p><p class="benefit-source">Google公式ヘルプに基づく案内 · 確認日: <time datetime="2026-10-02">2026-10-02</time></p></details>
       </div></article>
 
-      <article class="benefit-card benefit-theme-spark" data-benefit-id="play-pass" data-category="points" data-kind="weekly">
+      <article class="benefit-card benefit-theme-spark" data-benefit-id="play-pass" data-category="points" data-kind="weekly" data-requires-pass="true">
         <div class="benefit-card-body"><div class="benefit-labels"><span class="benefit-status" data-benefit-status>毎週チェック</span><span class="benefit-tag">Play Pass加入者</span></div>
         <h3><span aria-hidden="true">✨</span> Play Passの週次ボーナス</h3>
         <p class="benefit-reward">加入中なら、ポイントボーナス・ブースターを確認</p>
@@ -125,13 +132,14 @@
         <dl><div><dt>対象</dt><dd>対象アプリ・利用者はアカウントごとに異なります</dd></div><div><dt>期限</dt><dd>Playストアに表示された期限</dd></div></dl>
 
 
-        <a class="benefit-action" href="../articles/2026-09-19-play-points-promotion-not-showing.html">表示されないときの確認順を見る <span aria-hidden="true">→</span></a>
+        <a class="benefit-action" href="#personal-offer-check">自分の増量・クエストを確認する <span aria-hidden="true">→</span></a>
+        <a class="benefit-diary" href="../articles/2026-09-19-play-points-promotion-not-showing.html">表示されないときの確認順を見る →</a>
 
 
         <details class="benefit-details"><summary>確認方法・条件・出典</summary><p>「Play Points」→「貯める」で、対象アプリ・獲得率・有効化が必要かを確認してから購入しましょう。全員共通の開催情報ではありません。</p><p class="benefit-source">Google公式説明に基づく案内 · 確認日: <time datetime="2026-10-02">2026-10-02</time></p></details>
       </div></article>
 
-      <article class="benefit-card benefit-theme-gear" data-benefit-id="steelseries" data-category="other" data-kind="dated" data-end="2027-03-31T23:46:00+09:00">
+      <article class="benefit-card benefit-theme-gear" data-benefit-id="steelseries" data-category="other" data-kind="dated" data-end="2027-03-31T23:46:00+09:00" data-min-rank="platinum">
         <div class="benefit-card-body"><div class="benefit-labels"><span class="benefit-status" data-benefit-status>その他の特典</span><span class="benefit-tag">プラチナ以上</span></div>
         <h3><span aria-hidden="true">🎧</span> SteelSeriesの製品割引</h3>
         <p class="benefit-reward">プラチナ以上向けのハードウェア特典</p>
@@ -159,9 +167,16 @@
       </div>
       <div class="benefit-empty" hidden><p data-empty-message></p><a href="#next-campaign-title">次回のポイント増量について確認する</a></div>
     </div>
-    <details class="benefit-ended" hidden><summary>終了した企画</summary><div class="benefit-grid" data-ended-list></div></details>
+    <details class="benefit-ended" hidden><summary>終了した企画（全件）</summary><div class="benefit-grid" data-ended-list></div></details>
     <p class="benefit-footnote">日時は日本時間です。掲載時点の情報をもとに、対象・在庫・受取条件はリンク先やご自身のPlayストアで確認してください。</p>
     <noscript><p class="benefit-footnote">すべての掲載情報を表示しています。開始日・終了日を確認してご利用ください。</p></noscript>
+  </section>
+  <section class="section personal-offer-check" aria-labelledby="personal-offer-check">
+    <h2 id="personal-offer-check">自分の増量・クエストを確認する</h2>
+    <ol><li>利用するGoogleアカウントでPlayストアを開き、プロフィールから「Play Points」へ進みます。</li><li>増量は「貯める」で、対象商品・獲得率・期限・開始操作が必要かを確認します。</li><li>クエストは表示されたカードを開き、各ステップと完了期限を確認します。「ゲーム」「アプリ」などに表示される場合もあります。</li></ol>
+    <p>表示内容はアカウントごとに異なります。購入する場合は、元から予定している商品が条件に合うかを先に確認してください。</p>
+    <p><a href="../articles/2026-07-31-google-play-quests.html#quest-route-title">クエストの購入条件・進め方を見る</a> ／ <a href="../articles/2026-09-19-play-points-promotion-not-showing.html">表示されないときの確認順</a></p>
+    <p class="benefit-source">公式の確認先：<a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja">ポイント増量</a> ／ <a href="https://support.google.com/googleplay/answer/11534416?hl=ja">Google Playのクエスト</a></p>
   </section>
   <section class="section latest-status-panel lp-hero-panel" aria-labelledby="current-notes-title" id="current-notes">
 <h2 id="current-notes-title">10月3日の追加確認：今の条件をひと目で</h2>
@@ -428,9 +443,9 @@
         <p class="site-footer-trademark">Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは個人によって運営される非公式のファンサイト・計算ツールであり、Google LLC および掲載されている各ゲームの配信元・開発会社とは一切関係ありません。</p>
         <p class="copyright">© 2026 PlayPoint Simulation Tool All Rights Reserved.</p>
     </footer>
-<script src="/js/analytics-core.js?v=b704cc8b30"></script>
+<script src="/js/analytics-core.js?v=e63a4a63f7"></script>
 <script src="/js/intent-tracking.js?v=cdaccb870f"></script>
-<script src="/js/third-party.js?v=64e6dc8284"></script>
-<script src="../blog/components.js?v=8eac7babcf"></script>
+<script src="/js/third-party.js?v=acdacb4b38"></script>
+<script src="../blog/components.js?v=b30dc9e66b"></script>
 </body>
 </html>
