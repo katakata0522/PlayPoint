@@ -177,7 +177,7 @@ async function verifyCommonAccessibility(browser, baseUrl, blockExternalRequests
       }
       await page.setViewportSize({ width: 390, height: 844 });
       if (pathname === '/privacy.html' || pathname === '/blog/') {
-        const links = pathname === '/privacy.html' ? page.locator('.container p a') : page.locator('.breadcrumb a');
+        const links = pathname === '/privacy.html' ? page.locator('.container p a') : page.locator('.hub-start-links a');
         assert.ok(await links.count());
         assert.ok(await links.evaluateAll(elements => elements.every(el => getComputedStyle(el).textDecorationLine.includes('underline'))), pathname + ': 色以外のリンク識別');
       }

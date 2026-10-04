@@ -206,13 +206,13 @@ test('タブ・補足・復元欄はCSSが失敗してもhidden属性で初期�
   assert.ok(boxes.length > 0); assert.ok(boxes.every(hidden));
 });
 
-test('ブログ初期表示は通信を待たず新着6件の本文とリンクをHTMLで提供する', () => {
+test('ブログ初期表示は通信を待たず新着12件の本文とリンクをHTMLで提供する', () => {
   const html = read('blog/index.html');
   const utils = require('../blog/utils.js');
   const listed = JSON.parse(read('blog/articles.json')).map(utils.normalizeArticle).filter(a => a.file !== '#' && a.listed);
-  const expected = utils.sortListedArticles(listed, {mode:'newest'}).slice(0,6);
+  const expected = utils.sortListedArticles(listed, {mode:'newest'}).slice(0,12);
   const cards = openingTags(html).filter(node => node.tag === 'a' && node.attrs['data-blog-initial-card'] === 'true');
-  assert.equal(cards.length,6);
+  assert.equal(cards.length,12);
   assert.deepEqual(cards.map(card => card.attrs.href),expected.map(article => article.file));
   for (const article of expected) {
     assert.ok(elementText(html).includes(article.listTitle));

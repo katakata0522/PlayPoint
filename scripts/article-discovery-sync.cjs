@@ -54,7 +54,7 @@ function readingMount(html, locale, isHub) {
     ? '<details id="reading-library" class="reading-library"><summary>' + copy[2] + '</summary><p>' + copy[8] + '</p></details>'
     : '<div class="reading-tools" data-reading-tools><button type="button" disabled aria-pressed="false">' + copy[0] + '</button><a href="' + hub + '#reading-library">' + copy[2] + '</a><span role="status"></span></div>';
   const block = '\n<!-- reading-tools:start -->' + inner + '<!-- reading-tools:end -->\n';
-  if (isHub && locale === 'ja') return html.replace(/(<div\b[^>]*id="pagination"[^>]*>[\s\S]*?<\/div>)/i, '$1' + block);
+  if (isHub && locale === 'ja') return html.includes('<!-- hub-library-mount -->') ? html.replace('<!-- hub-library-mount -->', '<!-- hub-library-mount -->' + block) : html.replace(/(<div\b[^>]*id="pagination"[^>]*>[\s\S]*?<\/div>)/i, '$1' + block);
   if (isHub) return html.replace(/[ \t]*(<div\b[^>]*(?:data-intl-guide-controls|id="article-grid")[^>]*>)/i, (_, tag) => block + tag);
   const header = [...html.matchAll(/<header\b[^>]*>[\s\S]*?<\/header>/gi)].find(match => /<h1\b/i.test(match[0]));
   if (header) return html.replace(header[0], tag => tag + block);

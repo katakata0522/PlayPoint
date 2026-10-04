@@ -13,7 +13,10 @@ const { GAME_GUIDE_ARTICLES } = require('../scripts/game-guide-article-catalog.c
 function webpDimensions(buffer) {
   assert.equal(buffer.subarray(0, 4).toString('ascii'), 'RIFF');
   assert.equal(buffer.subarray(8, 12).toString('ascii'), 'WEBP');
-  assert.equal(buffer.subarray(12, 16).toString('ascii'), 'VP8X');
+  const format = buffer.subarray(12, 16).toString('ascii');
+  if (format === 'VP8 ') return { width: buffer.readUInt16LE(26) & 16383, height: buffer.readUInt16LE(28) & 16383 };
+  if (format === 'VP8L') { const bits = buffer.readUInt32LE(21); return { width: (bits & 16383) + 1, height: ((bits >>> 14) & 16383) + 1 }; }
+  assert.equal(format, 'VP8X');
   return {
     width: 1 + buffer.readUIntLE(24, 3),
     height: 1 + buffer.readUIntLE(27, 3)
@@ -47,7 +50,10 @@ test('thumbnail registry keeps provenance and never activates a missing local as
       const absolute = path.join(root, entry.localPath);
       assert.equal(fs.existsSync(absolute), true, entry.localPath + ' should exist');
       assert.ok(fs.statSync(absolute).size <= 50 * 1024, entry.localPath + ' should stay within the 50KB mobile list-image budget');
-      assert.deepEqual(webpDimensions(fs.readFileSync(absolute)), { width: 128, height: 128 }, entry.localPath + ' should be a 128px square mobile list image');
+      assert.deepEqual(webpDimensions(fs.readFileSync(absolute)), { width: 128, height: 128 });
+      const highDensity = path.join(root, entry.highDensityLocalPath);
+      assert.ok(fs.statSync(highDensity).size <= 112 * 1024, entry.gameId + ': high-density icon budget');
+      assert.deepEqual(webpDimensions(fs.readFileSync(highDensity)), { width: 240, height: 240 }, '120px at 2x density must not upscale the source');
     }
   }
 });
@@ -57,6 +63,7 @@ test('active game icons resolve to local app-icon thumbnails and unknown games f
     assert.equal(entry.status, 'active');
     assert.deepEqual(resolveGameThumbnail(entry.gameTitle), {
       thumbnail: '../' + entry.localPath,
+      thumbnail2x: '../' + entry.highDensityLocalPath,
       thumbnailKind: 'app-icon'
     });
   }
@@ -72,7 +79,7 @@ test('game-guide manifest entries use the registry thumbnail contract', () => {
     const entry = manifest.find(item => item.id === article.id);
     assert.ok(entry, article.id + ': manifest entry should exist');
     assert.deepEqual(
-      { thumbnail: entry.thumbnail, thumbnailKind: entry.thumbnailKind },
+      { thumbnail: entry.thumbnail, thumbnail2x: entry.thumbnail2x, thumbnailKind: entry.thumbnailKind },
       resolveGameThumbnail(article.gameTitle),
       article.id + ': manifest thumbnail should follow registry'
     );

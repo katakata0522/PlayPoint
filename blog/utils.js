@@ -185,6 +185,7 @@
             listDescription: typeof article.listDescription === 'string' ? article.listDescription : description,
             file: sanitizeArticleFile(article.file),
             thumbnail: sanitizeArticleThumbnail(article.thumbnail),
+            thumbnail2x: typeof article.thumbnail === 'string' && /^\.\.\/images\/game-icons\/[a-z0-9-]+\.webp$/.test(article.thumbnail) && article.thumbnail2x === article.thumbnail.replace(/\.webp$/, '-2x.webp') ? article.thumbnail2x : '',
             thumbnailKind: sanitizeArticleThumbnailKind(article.thumbnailKind),
             thumbnailPosition: sanitizeArticleThumbnailPosition(article.thumbnailPosition),
             listed: article.listed !== false,
@@ -212,16 +213,18 @@
     function articleCardMarkup(article, { search = '', snippet = null, isNew = false, compact = false, first = false, staticCard = false } = {}) {
         const safeTitle = BlogUtils.escapeHtml(article.listTitle);
         const safeDesc = BlogUtils.escapeHtml(search ? (snippet?.text || article.description) : article.listDescription);
-        const safeCategory = BlogUtils.escapeHtml(article.category);
+        const safeCategory = BlogUtils.escapeHtml(article.browseCategory || article.category);
         const updated = article.modified && article.modified > article.date ? article.modified : '';
-        const dateMarkup = '<time datetime="' + (updated || article.date) + '">' + (updated ? '更新 ' : '') + BlogUtils.formatDate(updated || article.date) + '</time>';
-        const newBadge = isNew ? '<span class="badge-new">NEW</span>' : '';
+        const dateMarkup = '<time datetime="' + (updated || article.date) + '">' + (updated ? '更新 ' : '公開 ') + BlogUtils.formatDate(updated || article.date) + '</time>';
+        const newBadge = isNew ? '<span class="badge-new" title="公開から7日以内">新着</span>' : '';
         const kind = article.thumbnailKind, position = article.thumbnailPosition;
         const dimensions = articleThumbnailDimensions(article);
         const deferThumbnail = compact && !first;
         const placeholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
         const source = BlogUtils.escapeHtml(article.thumbnail);
-        const image = '<img src="' + (deferThumbnail ? placeholder : source) + '"' + (deferThumbnail || (staticCard && !first) ? ' data-src="' + source + '"' : '') + ' alt="" width="' + dimensions.width + '" height="' + dimensions.height + '" loading="' + (first ? 'eager' : 'lazy') + '" decoding="async" fetchpriority="' + (first ? 'high' : 'low') + '">';
+        const highDensity = kind === 'app-icon' && article.thumbnail2x ? BlogUtils.escapeHtml(article.thumbnail2x) : '';
+        const srcset = highDensity ? ' ' + (deferThumbnail ? 'data-srcset' : 'srcset') + '="' + source + ' 128w, ' + highDensity + ' 240w" sizes="(max-width:360px) 88px, (max-width:760px) 96px, 120px"' : '';
+        const image = '<img src="' + (deferThumbnail ? placeholder : source) + '"' + srcset + (deferThumbnail || (staticCard && !first) ? ' data-src="' + source + '"' : '') + ' alt="" width="' + dimensions.width + '" height="' + dimensions.height + '" loading="' + (first ? 'eager' : 'lazy') + '" decoding="async" fetchpriority="' + (first ? 'high' : 'low') + '">';
         // 画面外画像はスマホの初回描画と競合させず、PCはnative lazy loadingを使う。
         const thumbnail = staticCard && !first ? '<picture><source media="(max-width:760px)" srcset="' + PLACEHOLDER_IMAGE + '">' + image + '</picture>' : image;
         return '<div class="card-thumb card-thumb--' + kind + ' card-thumb--focus-' + position + '">' + thumbnail + '</div><div class="card-content"><div class="card-meta"><span class="card-topic">' + safeCategory + '</span>' + newBadge + dateMarkup + '</div><div class="card-main"><h3>' + safeTitle + '</h3>' + (search && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : '') + '<p class="card-desc">' + safeDesc + '</p><div class="card-tags">' + article.tags.map(t => '#' + BlogUtils.escapeHtml(t)).join(' ') + '</div></div></div>';

@@ -8,6 +8,14 @@ const index = require('../blog/article-search-index.json').articles;
 const articles = manifest.map(article => ({ ...article, sections: index.find(entry => entry.path === new URL(article.file, 'https://playpoint-sim.com/blog/').pathname)?.sections || [] }));
 function hits(query) { return articles.filter(article => search.matches(article, query, 'ja')).sort((a,b) => search.score(b, query, 'ja') - search.score(a, query, 'ja')); }
 
+test('ポケモンGOの日本語と公式表記から同じ比較記事にたどり着く', () => {
+  const expected = hits('Pokémon GO');
+  assert.match(expected[0]?.id || '', /pokemon-go/);
+  for (const query of ['ポケモンGO', 'Pokemon GO', 'PokémonGO', 'ポケモン GO']) {
+    assert.deepEqual(hits(query).map(article => article.id), expected.map(article => article.id), query);
+  }
+});
+
 test('普段の質問から対象と症状を分け、一般的な回答を先頭にする', () => {
   const cases = [
     ['ポイントが消えた', 'points-disappeared'], ['ポイントがなくなったんだけど', 'points-disappeared'],

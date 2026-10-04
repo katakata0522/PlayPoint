@@ -20,8 +20,8 @@ test('日本語の全公開記事は検索・人気5件・次行動1件を持ち
     assert.ok(sidebar.includes('/blog/?topic='), article.path);
     assert.equal((sidebar.match(/class="sidebar-popular-item(?: sidebar-popular-item--featured)?(?: is-current)?"/g) || []).length, 5, article.path);
     assert.equal((sidebar.match(/sidebar-popular-item--featured/g) || []).length, 1, article.path);
-    assert.ok(sidebar.includes('今月よく読まれている記事'), article.path);
-    assert.ok(sidebar.includes('直近30日・' + POPULAR_GUIDES_SNAPSHOT + '更新'), article.path);
+    assert.ok(sidebar.includes('よく読まれている記事'), article.path);
+    assert.ok(sidebar.includes(POPULAR_GUIDES_SNAPSHOT + '時点の直近30日'), article.path);
     assert.ok(!/\bPV\b|ページビュー/.test(sidebar), article.path + ': PV数は公開しない');
     assert.equal((sidebar.match(/class="sidebar-next-link"/g) || []).length, 1, article.path);
     const links = [...sidebar.matchAll(/class="sidebar-related-link" href="([^"]+)"/g)].map(m => m[1]);
@@ -88,7 +88,7 @@ test('検索・人気記事のスタイルは既存の日本語共通CSSへ統�
   assert.ok(!fs.existsSync(path.join(root, 'articles', 'japanese-sidebar-v2.css')));
 });
 
-test('記事一覧・最新情報・本文は同じ6つの行き先を持つ', () => {
+test('記事一覧・最新情報・本文は同じ分類と7つの行き先を持つ', () => {
   const pages = ['blog/index.html', 'latest/index.html', articles[0].path];
   const targets = pages.map(file => {
     const html = fs.readFileSync(path.join(root, file), 'utf8');
@@ -98,7 +98,7 @@ test('記事一覧・最新情報・本文は同じ6つの行き先を持つ', (
     assert.ok(!html.includes('id="sidebar-toggle"'), file + ': 主導線をメニュー内に隠さない');
     return [...nav.matchAll(/href="([^"]+)"/g)].map(match => match[1]);
   });
-  assert.equal(targets[0].length, 6);
+  assert.equal(targets[0].length, 7);
   assert.deepEqual(targets[1], targets[0]);
   assert.deepEqual(targets[2], targets[0]);
   assert.ok(targets[0].includes('/latest/'));
