@@ -510,7 +510,7 @@ async function verifyBlogPage(browser, baseUrl) {
     assert(initial.cards > 0, 'Blog initial article cards were not rendered');
     assert(/件/.test(initial.resultStatus), `Blog result status missing: ${initial.resultStatus}`);
     assert(initial.activeTopic === '', `Blog initial topic mismatch: ${initial.activeTopic}`);
-    assert(initial.navigationLinks === 6, 'Blog keeps all six primary destinations');
+    assert(initial.navigationLinks === 7, 'Blog separates earning and spending destinations');
     assert(initial.genericThumbnailImages > 0, '通常記事のサムネイルがスマホでも表示される');
     assert(initial.thumbnailImages === initial.appIconThumbnails + initial.eventVisualThumbnails + initial.genericThumbnailImages,
       `Blog mobile cards loaded an unclassified thumbnail: ${initial.thumbnailImages}`);
