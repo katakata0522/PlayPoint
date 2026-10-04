@@ -33,6 +33,7 @@
     "date": "2026-09-13",
     "ogp": "../articles/ogp/fgo-pity-cost-2026.png",
     "thumbnail": "../images/game-icons/fgo.webp",
+    "thumbnail2x": "../images/game-icons/fgo-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -71,6 +72,7 @@
     "date": "2026-09-13",
     "ogp": "../articles/ogp/genshin-welkin-value-2026.png",
     "thumbnail": "../images/game-icons/genshin.webp",
+    "thumbnail2x": "../images/game-icons/genshin-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -117,6 +119,7 @@
     "date": "2026-09-13",
     "ogp": "../articles/ogp/monst-google-play-vs-webshop-2026.png",
     "thumbnail": "../images/game-icons/monst.webp",
+    "thumbnail2x": "../images/game-icons/monst-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -156,6 +159,7 @@
     "date": "2026-09-13",
     "ogp": "../articles/ogp/starrail-supply-pass-value-2026.png",
     "thumbnail": "../images/game-icons/starrail.webp",
+    "thumbnail2x": "../images/game-icons/starrail-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -195,6 +199,7 @@
     "date": "2026-09-13",
     "ogp": "../articles/ogp/zzz-membership-value-2026.png",
     "thumbnail": "../images/game-icons/zzz.webp",
+    "thumbnail2x": "../images/game-icons/zzz-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -234,6 +239,7 @@
     "date": "2026-09-13",
     "ogp": "../articles/ogp/umamusume-umasuku-value-2026.png",
     "thumbnail": "../images/game-icons/umamusume.webp",
+    "thumbnail2x": "../images/game-icons/umamusume-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -273,6 +279,7 @@
     "modified": "2026-09-13",
     "ogp": "../articles/ogp/proseka-google-play-vs-webstore-2026.png",
     "thumbnail": "../images/game-icons/proseka.webp",
+    "thumbnail2x": "../images/game-icons/proseka-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -312,6 +319,7 @@
     "modified": "2026-09-13",
     "ogp": "../articles/ogp/pokepoke-premium-pass-guide-2026.png",
     "thumbnail": "../images/game-icons/pokepoke.webp",
+    "thumbnail2x": "../images/game-icons/pokepoke-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -351,6 +359,7 @@
     "date": "2026-09-13",
     "ogp": "../articles/ogp/pad-pass-value-2026.png",
     "thumbnail": "../images/game-icons/pad.webp",
+    "thumbnail2x": "../images/game-icons/pad-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -390,6 +399,7 @@
     "modified": "2026-09-13",
     "ogp": "../articles/ogp/arknights-monthly-pass-limited-scout-2026.png",
     "thumbnail": "../images/game-icons/arknights.webp",
+    "thumbnail2x": "../images/game-icons/arknights-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -428,6 +438,7 @@
     "modified": "2026-09-13",
     "ogp": "../articles/ogp/dokkan-google-play-vs-webstore-2026.png",
     "thumbnail": "../images/game-icons/dokkan.webp",
+    "thumbnail2x": "../images/game-icons/dokkan-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -467,6 +478,7 @@
     "modified": "2026-09-13",
     "ogp": "../articles/ogp/hbr-google-play-vs-webshop-2026.png",
     "thumbnail": "../images/game-icons/hbr.webp",
+    "thumbnail2x": "../images/game-icons/hbr-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -505,6 +517,7 @@
     "date": "2026-09-13",
     "ogp": "../articles/ogp/honkai3rd-google-play-vs-charge-center-2026.png",
     "thumbnail": "../images/game-icons/honkai3rd.webp",
+    "thumbnail2x": "../images/game-icons/honkai3rd-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -544,6 +557,7 @@
     "modified": "2026-09-13",
     "ogp": "../articles/ogp/phantomparade-google-play-vs-webshop-2026.png",
     "thumbnail": "../images/game-icons/phantomparade.webp",
+    "thumbnail2x": "../images/game-icons/phantomparade-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -583,6 +597,7 @@
     "modified": "2026-09-13",
     "ogp": "../articles/ogp/prospi-a-google-play-vs-konami-store-2026.png",
     "thumbnail": "../images/game-icons/prospi-a.webp",
+    "thumbnail2x": "../images/game-icons/prospi-a-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -622,6 +637,7 @@
     "date": "2026-09-13",
     "ogp": "../articles/ogp/pokemon-go-google-play-vs-webstore-2026.png",
     "thumbnail": "../images/game-icons/pokemon-go.webp",
+    "thumbnail2x": "../images/game-icons/pokemon-go-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -661,6 +677,7 @@
     "modified": "2026-09-13",
     "ogp": "../articles/ogp/efootball-google-play-points-vs-efootball-points-2026.png",
     "thumbnail": "../images/game-icons/efootball.webp",
+    "thumbnail2x": "../images/game-icons/efootball-2x.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true,
@@ -709,7 +726,8 @@
     "thumbnailKind": "app-icon",
     "listed": true,
     "browseCategory": "ゲーム別課金",
-    "listDescription": "通常商品と初回セールの幻想石を比較。購入先を選ぶ前に、OSと有償石の扱い、ポイントの使い道を確認できます。"
+    "listDescription": "通常商品と初回セールの幻想石を比較。購入先を選ぶ前に、OSと有償石の扱い、ポイントの使い道を確認できます。",
+    "thumbnail2x": "../images/game-icons/suikoden-star-leap-2x.webp"
   },
   {
     "id": "black-diamond-diamond-vip-2026",
@@ -784,7 +802,8 @@
     "listed": true,
     "thumbnail": "../images/game-icons/nikke.webp",
     "thumbnailKind": "app-icon",
-    "listDescription": "30日間の受取を続けられるか、すぐジュエルが必要かで比較。Midasbuyのマンスリーカードと通常購入の違いが分かります。"
+    "listDescription": "30日間の受取を続けられるか、すぐジュエルが必要かで比較。Midasbuyのマンスリーカードと通常購入の違いが分かります。",
+    "thumbnail2x": "../images/game-icons/nikke-2x.webp"
   },
   {
     "id": "bluearchive-monthly-packs-guide-2026",
@@ -819,7 +838,8 @@
     "listed": true,
     "thumbnail": "../images/game-icons/bluearchive.webp",
     "thumbnailKind": "app-icon",
-    "listDescription": "マンスリーとハーフを、AP特典と受取日数で比較。公式チャージセンターとGoogle Playの購入条件も確認できます。"
+    "listDescription": "マンスリーとハーフを、AP特典と受取日数で比較。公式チャージセンターとGoogle Playの購入条件も確認できます。",
+    "thumbnail2x": "../images/game-icons/bluearchive-2x.webp"
   },
   {
     "id": "gakumas-webshop-google-play-2026",
@@ -853,7 +873,8 @@
     "listed": true,
     "thumbnail": "../images/game-icons/gakumas.webp",
     "thumbnailKind": "app-icon",
-    "listDescription": "WEB SHOPの増量とGoogle Playの還元を比較。購入前にスマホ版・DMM版でのジュエルの扱いも確認できます。"
+    "listDescription": "WEB SHOPの増量とGoogle Playの還元を比較。購入前にスマホ版・DMM版でのジュエルの扱いも確認できます。",
+    "thumbnail2x": "../images/game-icons/gakumas-2x.webp"
   },
   {
     "id": "pokemon-sleep-play-points-coupon-2026",
@@ -887,7 +908,8 @@
     "listed": true,
     "thumbnail": "../images/game-icons/pokemon-sleep.webp",
     "thumbnailKind": "app-icon",
-    "listDescription": "ポケスリのクーポンを交換・使用する手順と期限を確認。表示されない時や、プレミアムパス購入前の注意点が分かります。"
+    "listDescription": "ポケスリのクーポンを交換・使用する手順と期限を確認。表示されない時や、プレミアムパス購入前の注意点が分かります。",
+    "thumbnail2x": "../images/game-icons/pokemon-sleep-2x.webp"
   },
   {
     "id": "monst-in-app-packs-guide-2026",
@@ -926,7 +948,8 @@
     "listTitle": "モンスト｜パックとモンパスの選び方",
     "listDescription": "常設パックとモンパスを、価格・内容・購入条件で比較。確定ガチャや遊び方に合わせて選べます。",
     "browseCategory": "ゲーム別課金",
-    "ogp": "../articles/ogp/2026-09-19-monst-in-app-packs-guide.png"
+    "ogp": "../articles/ogp/2026-09-19-monst-in-app-packs-guide.png",
+    "thumbnail2x": "../images/game-icons/monst-2x.webp"
   },
   {
     "id": "monst-web-shop-vs-google-play-2026",
@@ -965,7 +988,8 @@
     "listTitle": "モンスト｜1万円課金の損得分岐点を計算",
     "listDescription": "1万円でアプリ180個、Web190個・月1回200個。将来使えるポイントが何円分あれば逆転するか確認できます。",
     "browseCategory": "ゲーム別課金",
-    "ogp": "../articles/ogp/2026-09-19-monst-web-shop-vs-google-play.png"
+    "ogp": "../articles/ogp/2026-09-19-monst-web-shop-vs-google-play.png",
+    "thumbnail2x": "../images/game-icons/monst-2x.webp"
   },
   {
     "id": "play-points-calendar-schedule-guide-2026",
@@ -1059,7 +1083,8 @@
     "thumbnailKind": "app-icon",
     "ogp": "../articles/ogp/2026-08-25-pad-puzzle-and-dragons-play-points.png",
     "browseCategory": "ゲーム別課金",
-    "listDescription": "パスを使い切れるか、魔法石セットと確定セットのどちらを選ぶかを比較。自動更新と受取条件も確認できます。"
+    "listDescription": "パスを使い切れるか、魔法石セットと確定セットのどちらを選ぶかを比較。自動更新と受取条件も確認できます。",
+    "thumbnail2x": "../images/game-icons/pad-2x.webp"
   },
   {
     "id": "dokkan-battle-dragon-ball-play-points",
@@ -1078,7 +1103,8 @@
     "thumbnailKind": "app-icon",
     "ogp": "../articles/ogp/2026-08-25-dokkan-battle-dragon-ball-play-points.png",
     "browseCategory": "ゲーム別課金",
-    "listDescription": "ガシャ期限までに受け取れる龍石の数で、デイリー型と即時購入を比較。コインの条件とポイント還元も分けて判断できます。"
+    "listDescription": "ガシャ期限までに受け取れる龍石の数で、デイリー型と即時購入を比較。コインの条件とポイント還元も分けて判断できます。",
+    "thumbnail2x": "../images/game-icons/dokkan-2x.webp"
   },
   {
     "id": "umamusume-half-anniversary-points",
@@ -1097,7 +1123,8 @@
     "thumbnailKind": "app-icon",
     "ogp": "../articles/ogp/2026-08-24-umamusume-half-anniversary-points.png",
     "browseCategory": "ゲーム別課金",
-    "listDescription": "ハーフアニバの無料ガチャ・引換券・有償ジュエルを比較。対象と期限を確認し、予算内で選ぶ考え方が分かります。"
+    "listDescription": "ハーフアニバの無料ガチャ・引換券・有償ジュエルを比較。対象と期限を確認し、予算内で選ぶ考え方が分かります。",
+    "thumbnail2x": "../images/game-icons/umamusume-2x.webp"
   },
   {
     "id": "play-points-locked",

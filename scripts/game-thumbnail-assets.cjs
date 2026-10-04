@@ -148,6 +148,7 @@ function resolveGameThumbnail(gameTitle) {
   if (!current || current.status !== 'active' || !current.localPath) return DEFAULT_THUMBNAIL;
   return {
     thumbnail: '../' + current.localPath.replace(/^\/+/, ''),
+    thumbnail2x: '../' + current.highDensityLocalPath.replace(/^\/+/, ''),
     thumbnailKind: current.assetType === 'event_key_visual' ? 'event-visual' : 'app-icon'
   };
 }

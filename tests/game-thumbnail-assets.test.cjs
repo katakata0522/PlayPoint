@@ -63,6 +63,7 @@ test('active game icons resolve to local app-icon thumbnails and unknown games f
     assert.equal(entry.status, 'active');
     assert.deepEqual(resolveGameThumbnail(entry.gameTitle), {
       thumbnail: '../' + entry.localPath,
+      thumbnail2x: '../' + entry.highDensityLocalPath,
       thumbnailKind: 'app-icon'
     });
   }
@@ -78,7 +79,7 @@ test('game-guide manifest entries use the registry thumbnail contract', () => {
     const entry = manifest.find(item => item.id === article.id);
     assert.ok(entry, article.id + ': manifest entry should exist');
     assert.deepEqual(
-      { thumbnail: entry.thumbnail, thumbnailKind: entry.thumbnailKind },
+      { thumbnail: entry.thumbnail, thumbnail2x: entry.thumbnail2x, thumbnailKind: entry.thumbnailKind },
       resolveGameThumbnail(article.gameTitle),
       article.id + ': manifest thumbnail should follow registry'
     );

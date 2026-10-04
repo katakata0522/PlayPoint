@@ -185,6 +185,7 @@
             listDescription: typeof article.listDescription === 'string' ? article.listDescription : description,
             file: sanitizeArticleFile(article.file),
             thumbnail: sanitizeArticleThumbnail(article.thumbnail),
+            thumbnail2x: typeof article.thumbnail === 'string' && /^\.\.\/images\/game-icons\/[a-z0-9-]+\.webp$/.test(article.thumbnail) && article.thumbnail2x === article.thumbnail.replace(/\.webp$/, '-2x.webp') ? article.thumbnail2x : '',
             thumbnailKind: sanitizeArticleThumbnailKind(article.thumbnailKind),
             thumbnailPosition: sanitizeArticleThumbnailPosition(article.thumbnailPosition),
             listed: article.listed !== false,
@@ -221,7 +222,7 @@
         const deferThumbnail = compact && !first;
         const placeholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
         const source = BlogUtils.escapeHtml(article.thumbnail);
-        const highDensity = kind === 'app-icon' && /^\.\.\/images\/game-icons\/[a-z0-9-]+\.webp$/.test(article.thumbnail) ? source.replace(/\.webp$/, '-2x.webp') : '';
+        const highDensity = kind === 'app-icon' && article.thumbnail2x ? BlogUtils.escapeHtml(article.thumbnail2x) : '';
         const srcset = highDensity ? ' ' + (deferThumbnail ? 'data-srcset' : 'srcset') + '="' + source + ' 128w, ' + highDensity + ' 240w" sizes="(max-width:360px) 88px, (max-width:760px) 96px, 120px"' : '';
         const image = '<img src="' + (deferThumbnail ? placeholder : source) + '"' + srcset + (deferThumbnail || (staticCard && !first) ? ' data-src="' + source + '"' : '') + ' alt="" width="' + dimensions.width + '" height="' + dimensions.height + '" loading="' + (first ? 'eager' : 'lazy') + '" decoding="async" fetchpriority="' + (first ? 'high' : 'low') + '">';
         // 画面外画像はスマホの初回描画と競合させず、PCはnative lazy loadingを使う。
