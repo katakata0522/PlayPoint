@@ -71,14 +71,14 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     },selectors);
   }
   try {
-    // 台帳の通信を止めても、最初の6件の本文・リンクを利用できる。
+    // 台帳の通信を止めても、最初の12件の本文・リンクを利用できる。
     const delayed = await context(), initialPage = await delayed.newPage();
     let releaseCatalog;
     const catalogReady = new Promise(resolve => { releaseCatalog = resolve; });
     await delayed.route('**/blog/articles.json*', async route => { await catalogReady; await route.continue(); });
     await goto(initialPage, 'blog/');
     await initialPage.locator('[data-blog-initial-card]').first().waitFor({state:'visible'});
-    assert.equal(await initialPage.locator('.article-card').count(), 6);
+    assert.equal(await initialPage.locator('.article-card').count(),12);
     const firstCard = await initialPage.locator('.article-card').first().elementHandle();
     const initialTitle = await firstCard.$eval('h3', node => node.textContent);
     assert(initialTitle.trim(), '台帳の追加通信前に見出しを読める');
@@ -93,11 +93,11 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await offline.route('**/blog/articles.json*', route => route.fulfill({status:503,body:'unavailable'}));
     await goto(offlinePage, 'blog/');
     await offlinePage.locator('.error-state').waitFor({state:'visible'});
-    assert.equal(await offlinePage.locator('.article-card').count(),6,'通信失敗時も記事リンクを残す');
+    assert.equal(await offlinePage.locator('.article-card').count(),12,'通信失敗時も記事リンクを残す');
     await offlinePage.locator('#retry-load').click();
-    assert.equal(await offlinePage.locator('.article-card').count(),6,'再試行中も記事リンクを残す');
+    assert.equal(await offlinePage.locator('.article-card').count(),12,'再試行中も記事リンクを残す');
     await offline.close();
-    report.interactions.initialCards = { count:6, retainedAfterCatalog:true, retainedOnFailure:true };
+    report.interactions.initialCards = { count:12, retainedAfterCatalog:true, retainedOnFailure:true };
     const c = await context(), page = await c.newPage();
     await goto(page,'blog/'); await cards(page);
     async function verifyArticleNavigation() {
@@ -121,7 +121,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
         },theme,{timeout:10000});
         const brand = page.locator('.guide-header .brand');
         assert(await brand.isVisible() && (await brand.innerText()).includes(width <= 760 ? 'PlayPoint' : 'Google Play Points'),`${theme}/${width}: header brand must be visible`);
-        const samples = await palette(page,['h1','.article-card h3','.article-card time','#category-filter button.active','#search-input']);
+        const samples = await palette(page,['h1','.article-card h3','.article-card time','#sort-toggle','#search-input']);
         if(await page.locator('.card-category:visible').count()) samples.push(...await palette(page,['.card-category']));
         for(const sample of samples) assert(!sample.missing && sample.ratio>=4.5,`${theme}/${width}: ${JSON.stringify(sample)}`);
         const bg = await page.evaluate(()=>getComputedStyle(document.body).backgroundColor);
@@ -151,7 +151,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       filters:document.querySelector('#article-filter-panel')?.getBoundingClientRect().top,
       list:document.querySelector('.article-list-heading')?.getBoundingClientRect().top
     }));
-    assert(order.search < order.game && order.game < order.filters && order.filters < order.list,'Discovery order: '+JSON.stringify(order));
+    assert(order.search <= order.game && order.game < order.filters && order.filters < order.list,'Discovery order: '+JSON.stringify(order));
     await filterPanel.locator('summary').click();
     const gameFilter = page.locator('#game-title-filter');
     await gameFilter.waitFor({ state: 'visible', timeout: 10000 });
@@ -185,14 +185,8 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await page.setViewportSize({width,height:844});
       const state=await page.evaluate(()=>({
         overflow:document.documentElement.scrollWidth>innerWidth,
-        columns:getComputedStyle(document.querySelector('.search-pathways-grid')).gridTemplateColumns.split(' ').length,
+        discoveryFit:[...document.querySelectorAll('#search-input,#game-title-filter,#sort-toggle')].every(el=>{const r=el.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.height>=40;}),
         controls:[...document.querySelectorAll('.guide-nav-button')].filter(el=>el.getClientRects().length).every(el=>{const r=el.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;}),
-        pathwaysFit:[...document.querySelectorAll('.search-pathways--primary .search-pathway-card')].filter(el=>el.getClientRects().length).every(el=>{
-          const title=el.querySelector('.pathway-title');
-          return el.scrollWidth<=el.clientWidth+1 && el.getBoundingClientRect().height>=44
-            && (!title || title.scrollWidth<=title.clientWidth+1);
-        }),
-        visiblePurposeCount:[...document.querySelectorAll('.search-pathways--primary .search-pathway-card')].filter(el=>el.getClientRects().length).length,
         firstArticleY:document.querySelector('.article-card').getBoundingClientRect().top+scrollY,
         menuRight:(()=>{
           const button=document.querySelector('.guide-nav-button[aria-controls="guide-menu"]');
@@ -203,9 +197,6 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       }));
       assert(!state.overflow&&state.controls,`Responsive overflow at ${width}: ${JSON.stringify(state)}`);
       if(width<=760) {
-        assert.equal(state.columns,3,`Mobile purpose-grid breakpoint ${width}`);
-        assert.equal(state.visiblePurposeCount,3,`Mobile purpose links count ${width}`);
-        assert(state.pathwaysFit,`Mobile purpose links must fit and remain tappable at ${width}`);
         const visualCards=await page.locator('.article-card--visual').evaluateAll(cards=>cards.map(card=>({
           titleWidth:card.querySelector('h3').getBoundingClientRect().width,
           titleLeft:card.querySelector('h3').getBoundingClientRect().left,
@@ -219,7 +210,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
         })));
         assert(visualCards.length>0&&visualCards.every(card=>card.titleWidth>=150&&card.titleLeft>=card.imageRight+8&&card.titleRight<=card.cardRight+1&&card.imageFrames===1&&Math.abs(card.titleTop-card.imageTop)<=1),`スマホの記事は画像と見出しを同じ開始行に揃え、見出しの可読幅を確保する: ${width}: ${JSON.stringify(visualCards)}`);
       }
-      if(width>760) { assert.equal(state.columns,4,`Purpose-grid breakpoint ${width}`); assert(state.pathwaysFit,`Purpose links must fit and remain tappable at ${width}`); }
+      assert(state.discoveryFit,`Discovery controls must fit and remain tappable at ${width}`);
       if(width<=760) {
         assert(state.firstArticleY<540,`Mobile first article is pushed too far below the initial view at ${width}: ${state.firstArticleY}`);
         assert(state.menuRight===true,`Mobile menu button must sit to the right of the centered brand at ${width}`);
@@ -233,7 +224,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
 
     await openMenu(page);
     const destinations=page.locator('.ja-global-nav a');
-    assert.equal(await destinations.count(),6);
+    assert.equal(await destinations.count(),7);
     await destinations.first().focus();
     await page.keyboard.press('Tab');
     assert(await destinations.nth(1).evaluate(el=>el===document.activeElement),'Primary navigation follows the visible order');
@@ -241,12 +232,15 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     assert.equal(await page.locator('main').evaluate(el=>el.inert),false);
     await page.locator('.pagination-next').focus(); await page.keyboard.press('Enter');
     await page.waitForFunction(()=>document.querySelector('.pagination-page-input')?.value==='2');
-    assert(await page.locator('.pagination-next').evaluate(el=>el===document.activeElement),'Pagination focus retained');
+    assert(await page.locator('.article-card').first().evaluate(el=>el===document.activeElement),'New page begins at its first article');
+    await page.keyboard.press('Tab');
+    assert(await page.locator('.article-card').nth(1).evaluate(el=>el===document.activeElement),'Keyboard continues through the new results');
+    await page.locator('.pagination-next').focus();
     await page.keyboard.press('Enter');
     await page.waitForFunction(()=>document.querySelector('.pagination-page-input')?.value==='3');
     await page.locator('.pagination-page-input').fill('１'); await page.keyboard.press('Enter');
     await page.waitForFunction(()=>document.querySelector('.pagination-page-input')?.value==='1');
-    assert(await page.locator('.pagination-page-input').evaluate(el=>el===document.activeElement),'Page input focus retained');
+    assert(await page.locator('.article-card').first().evaluate(el=>el===document.activeElement),'Page jump focuses the first result');
     for(const [raw,expected] of [['-1','1'],['2.7','1'],['９９９',null]]) {
       await goto(page,`blog/?page=${encodeURIComponent(raw)}`); await cards(page);
       const actual=await page.locator('.pagination-page-input').inputValue();
@@ -254,6 +248,35 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       assert.equal(actual,expected||total);
       assert.equal(new URL(page.url()).searchParams.get('page'),actual==='1'?null:actual,'URL matches displayed page');
     }
+    // 表記・条件・履歴が変わっても、次に読みたい記事へ直接進める。
+    await goto(page,'blog/?sort=newest'); await cards(page);
+    await page.locator('.pagination-next').click();
+    await page.waitForFunction(()=>new URL(location.href).searchParams.get('page')==='2');
+    await page.goBack();
+    await page.waitForFunction(()=>!new URL(location.href).searchParams.has('page'));
+    await page.locator('#search-input').fill('ポイントが消えた');
+    await page.waitForFunction(()=>document.querySelector('#sort-toggle')?.value==='relevance');
+    assert.match(await page.locator('.article-card').first().getAttribute('href'),/points-disappeared/);
+    await page.locator('#sort-toggle').selectOption('newest');
+    await page.locator('#search-input').fill('ニケ 月パス');
+    await page.waitForFunction(()=>document.querySelector('#sort-toggle')?.value==='relevance');
+    assert.equal(await page.locator('#article-filter-panel').evaluate(el=>el.open),false,'Search leaves the collapsed category panel closed');
+    await page.setViewportSize({width:1264,height:552}); await waitNavigationLayout(page);
+    await page.locator('#game-title-filter').selectOption({label:'NIKKE'});
+    const facet=page.locator('.guide-hub-sidebar .sidebar-browse-category[data-topic="ゲーム別課金"]');
+    await facet.click();
+    assert.equal(new URL(page.url()).searchParams.get('game'),'NIKKE');
+    assert.equal(new URL(page.url()).searchParams.get('q'),'ニケ 月パス');
+    assert.equal(await facet.locator('.sidebar-browse-count').textContent(),'1');
+    await goto(page,'blog/?sort=newest'); await cards(page);
+    await page.evaluate(()=>{scrollTo(0,0);document.activeElement.blur();});
+    await page.keyboard.press('Tab');
+    assert(await page.locator('.hub-skip-link').evaluate(el=>el===document.activeElement),'First keyboard stop bypasses repeated navigation');
+    const firstTitle=await page.locator('.article-card h3').first().boundingBox();
+    assert(firstTitle.y+firstTitle.height<=552,'Full first headline fits a short desktop viewport');
+    await page.setViewportSize({width:390,height:844}); await waitNavigationLayout(page);
+    assert(await page.locator('#reading-library summary').isVisible(),'Saved articles are directly reachable on mobile');
+    report.interactions.readerFlow={history:true,relevance:true,conditions:true,skip:true,mobileLibrary:true};
     const articleRequests = [];
     const recordArticleRequest = request => articleRequests.push(new URL(request.url()).pathname);
     page.on('request', recordArticleRequest);

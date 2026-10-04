@@ -1,4 +1,53 @@
 /* PlayPoint article list: fixed square thumbnail slot for mixed article types. */
+/* 記事の発見・再訪・絞り込みを、一覧の前で長く待たせない。 */
+.hub-skip-link { position:fixed; top:8px; left:16px; z-index:10000; padding:10px 16px; background:var(--reading-surface); color:var(--reading-link); border:2px solid currentColor; transform:translateY(-200%); }
+.hub-skip-link:focus { transform:none; }
+@media(prefers-reduced-motion:reduce) {
+  .hub-skip-link, html[lang="ja"] body.blog-index-compact .badge-new { animation:none!important; transition:none!important; }
+}
+html[lang="ja"] body.blog-index-compact .guide-hub-layout { margin-top:18px; }
+html[lang="ja"] body.blog-index-compact .hub-heading { margin-bottom:8px; }
+html[lang="ja"] body.blog-index-compact .hero-title { margin:0; font-size:27px; line-height:1.4; }
+.hub-access-row { display:flex; align-items:baseline; flex-wrap:wrap; gap:0 20px; margin-top:4px; }
+.hub-start-links { display:flex; gap:20px; margin:0; font-size:13px; }
+html[lang="ja"] body.blog-index-compact #reading-library { flex:0 1 auto; width:auto; min-width:0; margin:0; padding:0; border:0; background:none; scroll-margin-top:16px; }
+html[lang="ja"] body.blog-index-compact #reading-library > summary { width:max-content; max-width:100%; padding:6px 0; font-size:13px; min-height:32px; color:var(--reading-link); }
+html[lang="ja"] body.blog-index-compact #reading-library[open] { flex-basis:100%; border-bottom:1px solid var(--reading-border); padding-bottom:12px; }
+html[lang="ja"] body.blog-index-compact .hub-search-controls { display:grid; grid-template-columns:minmax(0,1fr) 210px; align-items:end; gap:12px; margin:0 0 8px; }
+html[lang="ja"] body.blog-index-compact .hub-search-controls .game-filter-container { display:block; margin:0; }
+html[lang="ja"] body.blog-index-compact .hub-search-controls :is(.guide-search-label,.game-filter-label) { display:block; margin:0 0 4px; font-size:13px; line-height:1.5; }
+html[lang="ja"] body.blog-index-compact #search-input { min-height:44px; height:44px; padding:8px 12px; }
+html[lang="ja"] body.blog-index-compact #game-title-filter { width:100%; height:44px; }
+html[lang="ja"] body.blog-index-compact .article-filter-panel { margin:0 0 8px; border:0; background:none; }
+html[lang="ja"] body.blog-index-compact .article-filter-panel > summary { width:max-content; max-width:100%; min-height:32px; padding:4px 0; color:var(--reading-link); }
+html[lang="ja"] body.blog-index-compact .article-filter-panel-body { padding:8px 0; }
+.hub-result-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:2px solid var(--reading-text); }
+html[lang="ja"] body.blog-index-compact .hub-result-toolbar .article-list-heading { display:block; padding:0; margin:0; border:0; }
+html[lang="ja"] body.blog-index-compact #article-list-title { margin:0; font-size:18px; line-height:1.5; scroll-margin-top:16px; }
+html[lang="ja"] body.blog-index-compact .hub-result-toolbar .article-result-status { margin:3px 0 0; font-size:13px; }
+html[lang="ja"] body.blog-index-compact .hub-result-toolbar .sort-container { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.hub-result-toolbar label { font-size:13px; }
+html[lang="ja"] body.blog-index-compact #sort-toggle { width:140px; height:40px; min-height:40px; margin:0; padding:6px 10px; border:1px solid var(--reading-border); border-radius:6px; background:var(--reading-surface); color:var(--reading-text); font-size:14px; }
+.article-page-summary { margin:6px 0 0; color:var(--reading-muted); font-size:13px; line-height:1.5; }
+html[lang="ja"] body.blog-index-compact .article-card .card-meta { flex-wrap:wrap; gap:6px 10px; font-size:13px; }
+html[lang="ja"] body.blog-index-compact .badge-new { position:static; animation:none; font-size:12px; letter-spacing:0; }
+html[lang="ja"] body.blog-index-compact .article-card .card-desc { line-height:1.7; }
+.hub-reading-next { display:flex; flex-wrap:wrap; gap:12px 24px; margin:24px 0; padding-top:16px; border-top:1px solid var(--reading-border); font-size:14px; }
+html[lang="ja"] body.blog-index-compact .game-search-links { margin-top:20px; padding:12px 0; border:0; border-top:1px solid var(--reading-border); background:none; }
+@media(max-width:760px) {
+  html[lang="ja"] body.blog-index-compact .hub-search-controls { grid-template-columns:minmax(0,1fr) 145px; gap:8px; }
+  html[lang="ja"] body.blog-index-compact .hero-title { font-size:22px; }
+  .hub-start-links { gap:14px; margin:0; }
+  html[lang="ja"] body.blog-index-compact .hub-result-toolbar { align-items:flex-start; }
+  html[lang="ja"] body.blog-index-compact .hub-result-toolbar .sort-container { display:block; }
+  html[lang="ja"] body.blog-index-compact .hub-result-toolbar label { display:block; margin-bottom:3px; }
+  html[lang="ja"] body.blog-index-compact #sort-toggle { width:116px; }
+}
+@media(max-width:380px) {
+  html[lang="ja"] body.blog-index-compact .hub-search-controls { grid-template-columns:minmax(0,1fr); }
+  html[lang="ja"] body.blog-index-compact .hub-search-controls .game-filter-container { display:grid; grid-template-columns:52px minmax(0,1fr); align-items:center; }
+  html[lang="ja"] body.blog-index-compact .hub-search-controls .game-filter-label { margin:0; }
+}
 html[lang="ja"] body.blog-index-compact .article-card,
 html[lang="ja"] body.blog-index-compact .article-card.article-card--visual {
   grid-template-columns:120px minmax(0,1fr);
@@ -171,3 +220,9 @@ html[lang="ja"] body.blog-index-compact .article-card .card-thumb--app-icon img 
     gap:12px;
   }
 }
+
+/* 共有シェルの検索欄全幅指定を、この一覧の2列に限定して戻す。 */
+html[lang="ja"] body.blog-index-compact .hub-search-controls > .search-container { grid-column:auto; width:auto; min-width:0; max-width:none; }
+html[lang="ja"] body.blog-index-compact #article-result-status.visually-hidden { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); clip-path:inset(50%); white-space:nowrap; }
+@media(min-width:1000px) { html[lang="ja"] body.blog-index-compact #article-filter-panel { display:none; } }
+@media(max-width:760px) { html[lang="ja"] body.blog-index-compact .hub-access-row { gap:0 14px; } }

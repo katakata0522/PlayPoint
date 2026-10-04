@@ -1,6 +1,7 @@
 [
   {
     "id": "fgo-pity-cost-2026",
+    "listDescription": "天井330回までの費用を知りたい方へ。必要な聖晶石、最小購入例、福袋の有償15個とポイント還元を確認できます。",
     "modified": "2026-09-23",
     "title": "FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】",
     "category": "使い方",
@@ -39,6 +40,7 @@
   },
   {
     "id": "genshin-welkin-value-2026",
+    "listDescription": "毎日受け取る空月の祝福と、今すぐ使える通常チャージを比較。受取日数とガチャの予定から選べます。",
     "modified": "2026-09-27",
     "title": "原神「空月の祝福」はどれくらいお得？原石3000相当とPlay Points",
     "category": "使い方",
@@ -76,6 +78,7 @@
   },
   {
     "id": "monst-google-play-vs-webshop-2026",
+    "listDescription": "同じ1万円でアプリ180個、Web190個、月イチ200個。ポイントの利用価値も含めて購入先を選べます。",
     "modified": "2026-09-22",
     "title": "モンストの購入経路ガイド｜アプリ180個・Web190個・月イチ200個の違い",
     "category": "使い方",
@@ -121,6 +124,7 @@
   },
   {
     "id": "starrail-supply-pass-value-2026",
+    "listDescription": "列車補給標章を毎日受け取れる場合と、すぐ星玉が必要な場合を比較。通常購入との違いを確認できます。",
     "modified": "2026-09-27",
     "title": "スタレ「列車補給標章」はどれくらいお得？3000星玉相当とPlay Points",
     "category": "使い方",
@@ -159,6 +163,7 @@
   },
   {
     "id": "zzz-membership-value-2026",
+    "listDescription": "インターノット会員と通常購入を、受取日数と必要なタイミングで比較。ポイント還元も分けて考えられます。",
     "modified": "2026-09-27",
     "title": "ゼンゼロ「インターノット会員」はお得？3000相当とPlay Points",
     "category": "使い方",
@@ -197,6 +202,7 @@
   },
   {
     "id": "umamusume-umasuku-value-2026",
+    "listDescription": "月980円のウマスクを使い切れるか確認。ジュエル、未受取時の扱い、WebStoreとGoogle Playの違いが分かります。",
     "modified": "2026-09-23",
     "title": "ウマ娘「ウマスク」はどれくらいお得？月980円・ジュエル・Play Points比較【2026年】",
     "category": "使い方",
@@ -235,6 +241,7 @@
   },
   {
     "id": "proseka-google-play-vs-webstore-2026",
+    "listDescription": "カラフルパス3種とミッションパス、公式WebStoreを比較。商品ごとの内容と購入経路の違いを確認できます。",
     "title": "プロセカはGoogle Playと公式WebStoreどっちがお得？パス・クリスタル・Play Points比較",
     "category": "使い方",
     "gameTitle": "プロセカ",
@@ -273,6 +280,7 @@
   },
   {
     "id": "pokepoke-premium-pass-guide-2026",
+    "listDescription": "プレミアムパスを試す前に、14日無料体験と定期購入の条件を確認。Googleアカウントとの紐付けにも注意できます。",
     "title": "ポケポケのプレミアムパスはどう課金される？無料体験・Google Play Points確認【2026年】",
     "category": "使い方",
     "gameTitle": "ポケポケ",
@@ -311,6 +319,7 @@
   },
   {
     "id": "pad-pass-value-2026",
+    "listDescription": "月980円のパズドラパスと1週間無料トライアルの条件を確認。毎日のダンジョンや特典を使い切れるか判断できます。",
     "modified": "2026-09-23",
     "title": "パズドラパスは月額980円で何が得？無料トライアル・特典・Play Points【2026年】",
     "category": "使い方",
@@ -349,6 +358,7 @@
   },
   {
     "id": "arknights-monthly-pass-limited-scout-2026",
+    "listDescription": "月パスの受取内容と、限定スカウト300回の条件を確認。必要な時期とGoogle Playでの購入額を分けて考えられます。",
     "title": "アークナイツ月パスと限定300連をどう見る？内容・天井・Play Points【2026年】",
     "category": "使い方",
     "gameTitle": "アークナイツ",
@@ -387,6 +397,7 @@
   },
   {
     "id": "dokkan-google-play-vs-webstore-2026",
+    "listDescription": "公式Web StoreとGoogle Playは別決済。価格とポイントの対象経路を、購入前に比べられます。",
     "title": "ドッカンバトルはGoogle PlayとWeb Storeどっちで買う？Play Pointsの違い【2026年】",
     "category": "使い方",
     "gameTitle": "ドッカン",
@@ -424,6 +435,7 @@
   },
   {
     "id": "hbr-google-play-vs-webshop-2026",
+    "listDescription": "WEB SHOPの5%OFFと専用ポイントを、Google Playの還元と比較。Webでは加入できない月額パスにも注意できます。",
     "title": "ヘブバンはGoogle PlayとWEB SHOPどっちがお得？5%OFF・独自ポイント・パスの違い【2026年】",
     "category": "使い方",
     "gameTitle": "ヘブバン",
@@ -462,6 +474,7 @@
   },
   {
     "id": "honkai3rd-google-play-vs-charge-center-2026",
+    "listDescription": "Google Playと公式チャージセンターで、2倍特典・月パス延長・割引の扱いを確認。購入する商品の条件から選べます。",
     "modified": "2026-09-27",
     "title": "崩壊3rdはGoogle Playと公式チャージセンターどっち？2倍特典・月パス・Play Points【2026年】",
     "category": "使い方",
@@ -499,6 +512,7 @@
   },
   {
     "id": "phantomparade-google-play-vs-webshop-2026",
+    "listDescription": "公式WEBショップの増量、マイルpt、パス商品を比較。Google Play Pointsと別の特典として判断できます。",
     "title": "ファンパレはGoogle PlayとWEBショップどっちがお得？増量・マイル・Play Points比較【2026年】",
     "category": "使い方",
     "gameTitle": "ファンパレ",
@@ -537,6 +551,7 @@
   },
   {
     "id": "prospi-a-google-play-vs-konami-store-2026",
+    "listDescription": "Google PlayとKONAMI Gamesストアの購入経路を比較。Play Points、パワスピ・ゴールド、dポイントの違いが分かります。",
     "title": "プロスピAはGoogle PlayとKONAMI Gamesストアどっちがお得？Play Points・パワスピG・dポイント比較【2026年】",
     "category": "使い方",
     "gameTitle": "プロスピA",
@@ -575,6 +590,7 @@
   },
   {
     "id": "pokemon-go-google-play-vs-webstore-2026",
+    "listDescription": "ポケコインを買う前に、公式Web StoreのボーナスとGoogle Playの還元を比較。Reward RoadやGalaxy Storeとの違いも確認できます。",
     "modified": "2026-09-27",
     "title": "Pokémon GOはGoogle PlayとWeb Storeどっちがお得？ボーナスポケコイン・Reward Road・Play Points比較【2026年】",
     "category": "使い方",
@@ -613,6 +629,7 @@
   },
   {
     "id": "efootball-google-play-points-vs-efootball-points-2026",
+    "listDescription": "コイン、eFootballポイント、GP、Play Pointsは別のもの。課金で増える数字と使い道を確認できます。",
     "title": "eFootballコイン購入でGoogle Play Pointsは貯まる？eFootballポイントとの違い【2026年】",
     "category": "使い方",
     "gameTitle": "eFootball",
@@ -668,7 +685,8 @@
     "ogp": "../articles/ogp/2026-10-03-super-weekly-reward-prize-history.png",
     "thumbnail": "../articles/thumbnails/super-weekly-reward-prize-history-square-v1.webp",
     "thumbnailKind": "generic",
-    "listed": true
+    "listed": true,
+    "listDescription": "スーパーウィークリーの賞品を確認したい方へ。現在の掲載と過去の賞品例、対象ランク、参加条件の確認先が分かります。"
   },
   {
     "id": "suikoden-star-leap-google-play-vs-store",
@@ -690,7 +708,8 @@
     "thumbnail": "../images/game-icons/suikoden-star-leap.webp",
     "thumbnailKind": "app-icon",
     "listed": true,
-    "browseCategory": "ゲーム別課金"
+    "browseCategory": "ゲーム別課金",
+    "listDescription": "通常商品と初回セールの幻想石を比較。購入先を選ぶ前に、OSと有償石の扱い、ポイントの使い道を確認できます。"
   },
   {
     "id": "black-diamond-diamond-vip-2026",
@@ -725,7 +744,7 @@
     "source": "article",
     "listed": true,
     "listTitle": "Black Diamond・Diamond VIPはある？新ランクの痕跡を検証",
-    "listDescription": "公開ランクは5段階のまま。TGS現地確認、公式ページ、APK解析を分けて整理します。",
+    "listDescription": "公式の公開ランクは5段階。Black Diamond・Diamond VIPの確認できた痕跡と、未確定の条件を分けて確認できます。",
     "browseCategory": "ランク・ステータス",
     "thumbnailKind": "generic",
     "thumbnailPosition": "left",
@@ -764,7 +783,8 @@
     "browseCategory": "ゲーム別課金",
     "listed": true,
     "thumbnail": "../images/game-icons/nikke.webp",
-    "thumbnailKind": "app-icon"
+    "thumbnailKind": "app-icon",
+    "listDescription": "30日間の受取を続けられるか、すぐジュエルが必要かで比較。Midasbuyのマンスリーカードと通常購入の違いが分かります。"
   },
   {
     "id": "bluearchive-monthly-packs-guide-2026",
@@ -798,7 +818,8 @@
     "browseCategory": "ゲーム別課金",
     "listed": true,
     "thumbnail": "../images/game-icons/bluearchive.webp",
-    "thumbnailKind": "app-icon"
+    "thumbnailKind": "app-icon",
+    "listDescription": "マンスリーとハーフを、AP特典と受取日数で比較。公式チャージセンターとGoogle Playの購入条件も確認できます。"
   },
   {
     "id": "gakumas-webshop-google-play-2026",
@@ -831,7 +852,8 @@
     "browseCategory": "ゲーム別課金",
     "listed": true,
     "thumbnail": "../images/game-icons/gakumas.webp",
-    "thumbnailKind": "app-icon"
+    "thumbnailKind": "app-icon",
+    "listDescription": "WEB SHOPの増量とGoogle Playの還元を比較。購入前にスマホ版・DMM版でのジュエルの扱いも確認できます。"
   },
   {
     "id": "pokemon-sleep-play-points-coupon-2026",
@@ -864,7 +886,8 @@
     "browseCategory": "ゲーム別課金",
     "listed": true,
     "thumbnail": "../images/game-icons/pokemon-sleep.webp",
-    "thumbnailKind": "app-icon"
+    "thumbnailKind": "app-icon",
+    "listDescription": "ポケスリのクーポンを交換・使用する手順と期限を確認。表示されない時や、プレミアムパス購入前の注意点が分かります。"
   },
   {
     "id": "monst-in-app-packs-guide-2026",
@@ -901,7 +924,7 @@
     "source": "article",
     "listed": true,
     "listTitle": "モンスト｜パックとモンパスの選び方",
-    "listDescription": "各パックの価格とオーブ単価を比較。自分に必要な特典から購入候補を選べます。",
+    "listDescription": "常設パックとモンパスを、価格・内容・購入条件で比較。確定ガチャや遊び方に合わせて選べます。",
     "browseCategory": "ゲーム別課金",
     "ogp": "../articles/ogp/2026-09-19-monst-in-app-packs-guide.png"
   },
@@ -940,7 +963,7 @@
     "source": "article",
     "listed": true,
     "listTitle": "モンスト｜1万円課金の損得分岐点を計算",
-    "listDescription": "オーブ増量とポイント還元を比較し、購入額に応じた使い分けを確認できます。",
+    "listDescription": "1万円でアプリ180個、Web190個・月1回200個。将来使えるポイントが何円分あれば逆転するか確認できます。",
     "browseCategory": "ゲーム別課金",
     "ogp": "../articles/ogp/2026-09-19-monst-web-shop-vs-google-play.png"
   },
@@ -977,7 +1000,7 @@
     "source": "article",
     "listed": true,
     "listTitle": "Play Pointsのお得カレンダー｜毎週・毎月の確認日",
-    "listDescription": "週次リワードやポイント増量日など、いつ何を確認するかを一覧で整理します。",
+    "listDescription": "金曜の週次特典、毎月1日のポイントデーなど、確認する日を一覧で把握。毎日・毎週・毎月の特典を見落としにくくなります。",
     "browseCategory": "最新情報・イベント",
     "ogp": "../articles/ogp/2026-09-19-play-points-calendar-schedule-guide.png",
     "thumbnailKind": "generic"
@@ -1016,7 +1039,8 @@
     "listed": true,
     "browseCategory": "最新情報・イベント",
     "ogp": "../articles/ogp/2026-09-19-google-play-super-ticket.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "Super Ticketを受け取ったら、48時間以内の保存と使用期限を確認。再抽選で元の報酬を失う条件にも注意できます。"
   },
   {
     "id": "pad-puzzle-and-dragons-play-points",
@@ -1034,7 +1058,8 @@
     "modified": "2026-09-12",
     "thumbnailKind": "app-icon",
     "ogp": "../articles/ogp/2026-08-25-pad-puzzle-and-dragons-play-points.png",
-    "browseCategory": "ゲーム別課金"
+    "browseCategory": "ゲーム別課金",
+    "listDescription": "パスを使い切れるか、魔法石セットと確定セットのどちらを選ぶかを比較。自動更新と受取条件も確認できます。"
   },
   {
     "id": "dokkan-battle-dragon-ball-play-points",
@@ -1052,7 +1077,8 @@
     "modified": "2026-09-12",
     "thumbnailKind": "app-icon",
     "ogp": "../articles/ogp/2026-08-25-dokkan-battle-dragon-ball-play-points.png",
-    "browseCategory": "ゲーム別課金"
+    "browseCategory": "ゲーム別課金",
+    "listDescription": "ガシャ期限までに受け取れる龍石の数で、デイリー型と即時購入を比較。コインの条件とポイント還元も分けて判断できます。"
   },
   {
     "id": "umamusume-half-anniversary-points",
@@ -1070,7 +1096,8 @@
     "modified": "2026-09-12",
     "thumbnailKind": "app-icon",
     "ogp": "../articles/ogp/2026-08-24-umamusume-half-anniversary-points.png",
-    "browseCategory": "ゲーム別課金"
+    "browseCategory": "ゲーム別課金",
+    "listDescription": "ハーフアニバの無料ガチャ・引換券・有償ジュエルを比較。対象と期限を確認し、予算内で選ぶ考え方が分かります。"
   },
   {
     "id": "play-points-locked",
@@ -1089,7 +1116,8 @@
     "modified": "2026-09-12",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-19-play-points-locked.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "「利用できません」「アカウントに問題があります」と出た時の確認順。表示不具合と制限を切り分け、問い合わせに必要な情報を確認できます。"
   },
   {
     "id": "install-offer-points-not-received",
@@ -1108,7 +1136,8 @@
     "modified": "2026-09-12",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-19-install-offer-points-not-received.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "アプリ体験の特典が付かない方へ。初回インストール、利用時間、設定、対象アカウントを順番に確認できます。"
   },
   {
     "id": "redeemed-item-not-received",
@@ -1127,7 +1156,8 @@
     "modified": "2026-09-12",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-19-redeemed-item-not-received.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "交換したアイテムが届かない時に、履歴・再起動・ストア更新を確認。ゲーム運営へ問い合わせる前の確認順が分かります。"
   },
   {
     "id": "play-points-promotion-not-showing",
@@ -1167,7 +1197,8 @@
     "listed": true,
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-09-19-play-points-promotion-not-showing.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "自分だけ増量キャンペーンが出ない時の確認順。対象者、設定、端末、国・通貨の条件を切り分けられます。"
   },
   {
     "id": "web-store-external-billing-points",
@@ -1186,7 +1217,8 @@
     "modified": "2026-09-12",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/2026-08-19-web-store-external-billing-points.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "Webストアや代替課金でもPlay Pointsは付く？ポイント・残高・特典の扱いから、Google Playとの実質負担を比べられます。"
   },
   {
     "id": "play-points-google-store",
@@ -1205,7 +1237,8 @@
     "modified": "2026-09-12",
     "browseCategory": "使う・交換",
     "ogp": "../articles/ogp/2026-08-19-play-points-google-store.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "Google Store用コードへの交換と、Googleストアポイントは別の制度。Playクレジットとの違いも確認できます。"
   },
   {
     "id": "tgs-google-play-vip",
@@ -1226,7 +1259,8 @@
     "listTitle": "【開催終了】TGS2026 Google Playブースの記録",
     "browseCategory": "最新情報・イベント",
     "ogp": "../articles/ogp/2026-08-17-tgs-google-play-vip.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "TGS2026のGoogle Playブースの過去記録。開催当時の入場条件、会場特典、ラウンジの案内を確認できます。"
   },
   {
     "id": "diamond-valley-festival-guide",
@@ -1263,7 +1297,8 @@
     "modified": "2026-10-03",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/play-pass-worth-it.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "日本のPlay Pass週次特典は木曜更新。自分に表示されたボーナスと購入予定から加入を判断できます。日本はゴールド付与の公式対象国に含まれません。"
   },
   {
     "id": "pc-play-games-points",
@@ -1282,7 +1317,8 @@
     "modified": "2026-09-12",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/pc-play-games-points.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "PC限定ブーストはスマホ購入に適用されません。Google Play Gamesでの対象購入と、スマホ限定クエストの違いを確認できます。"
   },
   {
     "id": "fastest-gold",
@@ -1301,7 +1337,8 @@
     "modified": "2026-09-12",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/fastest-gold.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "ゴールドまでの不足ポイントと必要額を概算。スーパー週次の対象条件と、予定購入に使える獲得率を確認できます。"
   },
   {
     "id": "fastest-platinum",
@@ -1320,7 +1357,8 @@
     "modified": "2026-09-12",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/fastest-platinum.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "プラチナまでの不足ポイントと必要額を概算。ゴールドから残り3,000ポイントの場合は税抜約20万円が通常時の目安です。"
   },
   {
     "id": "gold-platinum-worth-it",
@@ -1339,7 +1377,8 @@
     "modified": "2026-09-12",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/gold-platinum-worth-it.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "ゴールドで止めるか、プラチナを目指すか。週次特典・サポートの差と、自分の不足ポイント・購入予定で判断できます。"
   },
   {
     "id": "premium-support",
@@ -1358,7 +1397,8 @@
     "modified": "2026-09-12",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/premium-support.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "プレミアムサポートはプラチナ・ダイヤモンドの特典。問い合わせの入口と対象範囲を確認できます。待ち時間の短縮は保証されません。"
   },
   {
     "id": "payment-methods-points",
@@ -1377,7 +1417,8 @@
     "modified": "2026-09-12",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/payment-methods-points.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "ギフトカードのチャージだけではポイントは付きません。対象のPlay購入と、キャリア独自の還元を分けて確認できます。"
   },
   {
     "id": "points-disappeared",
@@ -1396,7 +1437,8 @@
     "modified": "2026-09-27",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/points-disappeared.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "ポイントが消えた方へ。使える残高と年次ランク進捗を区別し、履歴・アカウント・最後の獲得や使用からの期限を順に確認できます。"
   },
   {
     "id": "family-link-play-points",
@@ -1415,7 +1457,8 @@
     "modified": "2026-09-12",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/family-link-play-points.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "Family Link管理アカウントは参加対象外。家族の別アカウントで参加できる条件と、公式にない回避策を確認できます。"
   },
   {
     "id": "play-points-day",
@@ -1434,7 +1477,8 @@
     "modified": "2026-09-27",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/play-points-day.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "毎月1日のポイントデーで、自分に表示された倍率を確認。最大7倍が全員に適用されるわけではありません。"
   },
   {
     "id": "youtube-premium-play-points",
@@ -1453,7 +1497,8 @@
     "modified": "2026-09-12",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/youtube-premium-play-points.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "YouTube Premiumで貯まるかを、請求経路とポイント履歴で確認。日本の公式の獲得対象リストには掲載されていません。"
   },
   {
     "id": "pixel-discount-coupon",
@@ -1471,7 +1516,7 @@
     "thumbnail": "../articles/thumbnails/pixel-discount-coupon-square-v1.webp",
     "modified": "2026-09-12",
     "listTitle": "Pixel割引はどこで確認する？",
-    "listDescription": "個別配布の「特典」と、ポイント交換の「使う」の違い・確認手順を整理します。",
+    "listDescription": "Pixelの個別特典とGoogle Storeコードへの交換を区別。「特典」「使う」の確認先と、対象商品・金額・期限が分かります。",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/pixel-discount-coupon.png",
     "thumbnailKind": "generic"
@@ -1493,7 +1538,8 @@
     "modified": "2026-09-12",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/weekly-reward-not-showing.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "週次ボタンが見つからない方へ。ランク、アカウント、受取済み、Play Passの木曜特典との取り違えを順に確認できます。"
   },
   {
     "id": "january-rank-reset",
@@ -1512,7 +1558,8 @@
     "modified": "2026-09-12",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/january-rank-reset.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "1月にランクが下がっても残高は消えません。前年の獲得ポイントによる判定と、期限・別アカウントを切り分けられます。"
   },
   {
     "id": "play-points-levels-guide",
@@ -1529,7 +1576,7 @@
     "file": "../articles/2026-08-05-play-points-levels-guide.html",
     "thumbnail": "../articles/thumbnails/play-points-levels-guide-square-v1.webp",
     "listTitle": "Play Pointsのランク一覧｜条件・必要額・特典",
-    "listDescription": "各ランクの必要ポイントと特典を比較し、目標までの条件を確認できます。",
+    "listDescription": "ブロンズからダイヤモンドまでの必要ポイント・獲得率・特典を一覧比較。自分の目標ランクと購入額の目安を確認できます。",
     "browseCategory": "ランク・ステータス",
     "thumbnailKind": "generic",
     "modified": "2026-10-03",
@@ -1552,7 +1599,8 @@
     "modified": "2026-09-12",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-05-play-points-cannot-join.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "登録できない方へ。年齢、国、アカウント、支払い方法、管理設定、端末を順番に確認できます。"
   },
   {
     "id": "play-country-change-points",
@@ -1570,7 +1618,8 @@
     "thumbnail": "../articles/thumbnails/play-country-change-points-square-v1.webp",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-05-play-country-change-points.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "国を変えるとPlay Pointsとランクは引き継げません。残高、定期購入、ファミリー、変更制限を事前に確認できます。"
   },
   {
     "id": "play-points-multiplier-stacking",
@@ -1589,7 +1638,8 @@
     "modified": "2026-09-12",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/2026-08-05-play-points-multiplier-stacking.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "複数の増量特典は併用されず、最も高い獲得率が適用されます。倍率・税抜価格・商品ごとの丸めを例で確認できます。"
   },
   {
     "id": "fastest-silver",
@@ -1608,7 +1658,8 @@
     "modified": "2026-09-12",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/2026-08-05-fastest-silver.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "シルバーまでの250ポイントを目指す方へ。正規の特典、倍率キャンペーン、予定購入を組み合わせる順番が分かります。"
   },
   {
     "id": "device-change",
@@ -1627,7 +1678,8 @@
     "modified": "2026-09-12",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-03-play-points-device-change.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "同じGoogleアカウントなら残高・ランク・履歴は通常引き継がれます。表示されない時のアカウント・国・特典遅延を確認できます。"
   },
   {
     "id": "super-weekly-reward",
@@ -1646,7 +1698,8 @@
     "thumbnail": "../articles/thumbnails/super-weekly-reward-square-v1.webp",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/2026-07-31-super-weekly-reward.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "スーパーウィークリーの対象ランクと過去の賞品例を確認。通常週次との違いと、金曜に見る場所が分かります。確率は非公開です。"
   },
   {
     "id": "google-play-quests",
@@ -1665,7 +1718,8 @@
     "thumbnail": "../articles/thumbnails/google-play-quests-square-v1.webp",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/2026-07-31-google-play-quests.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "クエストの表示場所と、自分に提示された達成条件を確認。「購入」に数えられる取引やログイン、返金時の扱いが分かります。"
   },
   {
     "id": "play-points-coupon-not-applied",
@@ -1684,7 +1738,8 @@
     "thumbnail": "../articles/thumbnails/play-points-coupon-not-applied-square-v1.webp",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-07-25-play-points-coupon-not-applied.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "クーポンが見つからない・使えない時に、種類、保存場所、期限を確認。Playクレジットとの取り違えも切り分けられます。"
   },
   {
     "id": "play-credit-not-working",
@@ -1703,7 +1758,8 @@
     "thumbnail": "../articles/thumbnails/play-credit-not-working-square-v1.webp",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-07-25-play-credit-not-working.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "Playクレジットへ交換できない・使えない方へ。必要ポイント、期限、アカウント、国・通貨、対象購入を確認できます。"
   },
   {
     "id": "play-points-cash-conversion",
@@ -1722,7 +1778,8 @@
     "thumbnail": "../articles/thumbnails/play-points-cash-conversion-square-v1.webp",
     "browseCategory": "使う・交換",
     "ogp": "../articles/ogp/2026-07-24-play-points-cash-conversion.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "Play Pointsは現金・PayPay・銀行口座へ交換できません。Playクレジットやクーポンなど、公式の使い道が分かります。"
   },
   {
     "id": "points-value-1",
@@ -1743,7 +1800,8 @@
     "thumbnail": "../articles/thumbnails/points-value-1-square-v1.webp",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/2026-07-24-play-points-1-value.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "税抜価格から付くポイントを計算。商品ごとの四捨五入と、分割購入・合計計算の差を確認できます。"
   },
   {
     "id": "points-value-500-1000",
@@ -1762,7 +1820,8 @@
     "thumbnail": "../articles/thumbnails/points-value-500-1000-square-v1.webp",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/2026-07-24-play-points-500-1000-value.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "500・1,000ポイントまでに必要な購入額を比較。獲得率、途中の昇格、税抜価格と丸めによる違いが分かります。"
   },
   {
     "id": "earn-play-points-free",
@@ -1781,7 +1840,8 @@
     "thumbnail": "../articles/thumbnails/earn-play-points-free-square-v1.webp",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/2026-07-24-earn-play-points-free.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "予定購入以外でもらえる正規の特典を探す方へ。週次、アプリ体験、クエスト、Play Passの条件から選べます。"
   },
   {
     "id": "points-value-100",
@@ -1800,7 +1860,8 @@
     "thumbnail": "../articles/thumbnails/points-value-100-square-v1.webp",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/2026-07-24-play-points-100-value.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "100ポイントの使える価値と、貯めるために必要な購入額を区別。獲得率とキャンペーン時の目安を確認できます。"
   },
   {
     "id": "discount-gift-cards",
@@ -1819,7 +1880,8 @@
     "modified": "2026-09-30",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/discount-gift-cards.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "ギフトコードを買う前に、還元上限・エントリー・使い切り期限を確認。正規販売と実質負担の見方が分かります。"
   },
   {
     "id": "play-points-reflection-timing",
@@ -1837,7 +1899,7 @@
     "thumbnail": "../articles/thumbnails/play-points-reflection-timing-square-v1.webp",
     "modified": "2026-09-27",
     "listTitle": "ポイントが付かない｜確認する順番と待ち時間",
-    "listDescription": "注文状態・ポイント履歴・購入アカウントを確認し、状況に合う対処へ進めます。",
+    "listDescription": "購入後にポイントが付かない方へ。通常購入とアプリ体験を分け、注文・履歴・アカウントを確認できます。",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-03-10-play-points-reflection-timing.png",
     "thumbnailKind": "generic"
@@ -1859,7 +1921,8 @@
     "modified": "2026-08-04",
     "browseCategory": "はじめて・基本",
     "ogp": "../articles/ogp/multiple-accounts.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "複数アカウントのポイントは合算・移動できません。購入アカウントと、ポイント分散がランクへ与える影響を確認できます。"
   },
   {
     "id": "play-games",
@@ -1878,7 +1941,8 @@
     "modified": "2026-09-12",
     "browseCategory": "はじめて・基本",
     "ogp": "../articles/ogp/play-games.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "遊ぶだけで通常ポイントは付きません。Play GamesとPlay Pointsの役割、クエストのログイン条件、PC購入の対象が分かります。"
   },
   {
     "id": "movies-books",
@@ -1897,7 +1961,8 @@
     "modified": "2026-09-12",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/movies-books.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "電子書籍・有料アプリ・買い切りゲームで貯まる条件を確認。購入前の参加と決済経路、対象国・アカウントが分かります。"
   },
   {
     "id": "expiration",
@@ -1916,7 +1981,8 @@
     "modified": "2026-10-03",
     "browseCategory": "はじめて・基本",
     "ogp": "../articles/ogp/expiration.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "最後の獲得・使用から1年で失効します。期限の確認先と対策、ランク進捗や交換後クレジットとの違いが分かります。"
   },
   {
     "id": "promo-code",
@@ -1935,7 +2001,8 @@
     "modified": "2026-09-12",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/promo-code.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "プロモコードや割引を使う前に、支払い額と併用条件を確認。購入後に付いたポイントを履歴で確かめられます。"
   },
   {
     "id": "check-balance",
@@ -1954,7 +2021,8 @@
     "modified": "2026-10-03",
     "browseCategory": "はじめて・基本",
     "ogp": "../articles/ogp/check-balance.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "残高と履歴の確認先を知りたい方へ。使えるポイント、年間ランク進捗、Play残高を区別できます。"
   },
   {
     "id": "refund",
@@ -1973,7 +2041,8 @@
     "modified": "2026-08-04",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/refund.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "返金後は獲得ポイントが残高とランク進捗から減ります。マイナス残高・ランク低下と、定期購入の解約の違いが分かります。"
   },
   {
     "id": "gift-card",
@@ -1992,7 +2061,8 @@
     "modified": "2026-09-12",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/gift-card.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "購入・チャージだけではポイントは付きません。ギフトカードで対象コンテンツを買う時の付与条件を確認できます。"
   },
   {
     "id": "family-sharing",
@@ -2011,7 +2081,8 @@
     "modified": "2026-07-24",
     "browseCategory": "はじめて・基本",
     "ogp": "../articles/ogp/family-sharing.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "家族間でもポイントは合算・移動できません。ファミリーライブラリの共有範囲と、購入アカウントの注意点が分かります。"
   },
   {
     "id": "subscription",
@@ -2030,7 +2101,8 @@
     "modified": "2026-09-12",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/subscription.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "定期購入で貯まるかをGoogle Play経由の請求で確認。Google Oneの契約経路、初回・更新時と外部決済の違いが分かります。"
   },
   {
     "id": "weekly-reward",
@@ -2048,7 +2120,7 @@
     "thumbnail": "../articles/thumbnails/weekly-reward-square-v1.webp",
     "modified": "2026-09-22",
     "listTitle": "ウィークリーリワード｜曜日・対象・受け取り方",
-    "listDescription": "通常・スーパー・Play Passの違いと、受け取り画面を確認できます。",
+    "listDescription": "日本の通常週次はシルバー以上・金曜更新。賞品と受取方法、スーパー週次・Play Pass週次との違いを確認できます。",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/weekly-reward.png",
     "thumbnailKind": "generic"
@@ -2070,7 +2142,8 @@
     "modified": "2026-09-12",
     "browseCategory": "はじめて・基本",
     "ogp": "../articles/ogp/getting-started.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "初めて使う方へ。登録してから確認する貯め方・使い道・ランクの基本を順番に読めます。"
   },
   {
     "id": "new-year-campaign",
@@ -2089,7 +2162,8 @@
     "modified": "2026-09-12",
     "browseCategory": "最新情報・イベント",
     "ogp": "../articles/ogp/new-year-campaign.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "年末年始の増量を待つか、今購入するか。購入期限と自分に表示された倍率・対象条件から判断できます。"
   },
   {
     "id": "diamond-vip",
@@ -2108,7 +2182,8 @@
     "modified": "2026-08-05",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/diamond-vip.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "ダイヤ固有の特典と、プラチナ共通・個別オファーの違いを確認。自分の使い方で価値があるか判断できます。"
   },
   {
     "id": "campaign",
@@ -2127,7 +2202,8 @@
     "modified": "2026-09-12",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/campaign.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "増量キャンペーンを待つべきか。対象アカウント、開始操作、獲得率、購入期限から通常時との必要額を比べられます。"
   },
   {
     "id": "best-use",
@@ -2146,7 +2222,8 @@
     "modified": "2026-09-30",
     "browseCategory": "使う・交換",
     "ogp": "../articles/ogp/best-use.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "クーポン・アイテム・Playクレジットを比較。最低購入額、期限、使える場面から自分に合う交換先を選べます。"
   },
   {
     "id": "diamond-worth-it",
@@ -2165,7 +2242,8 @@
     "modified": "2026-08-04",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/diamond-worth-it.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "プラチナとダイヤモンドを、必要ポイント・獲得率・共通特典で比較。翌年も目指す場合の参考額が分かります。"
   },
   {
     "id": "playpoints-rank-maintenance",
@@ -2183,6 +2261,7 @@
     "modified": "2026-09-12",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/playpoints-rank-maintenance.png",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "listDescription": "到達したランクは翌年末まで維持。再判定の時期と、今年貯める必要があるステータス判定ポイントが分かります。"
   }
 ]

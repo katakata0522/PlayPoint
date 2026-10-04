@@ -6,7 +6,7 @@
     // ===========================================
     const CONFIG = {
         articlesUrl: 'articles.json?v=20260925_sidebar1',
-        itemsPerPage: 6,
+        itemsPerPage: 12,
         adInterval: 3,
         newThresholdDays: 7,
         searchDebounceMs: 300,
@@ -114,7 +114,7 @@
                 sort: ['newest', 'oldest', 'updated', 'relevance'].includes(params.get('sort')) ? params.get('sort') : null
             };
         },
-        set: function (state) {
+        set: function (state, mode = 'replace') {
             const url = new URL(window.location);
             // Category
             if (state.category && state.category !== 'all') {
@@ -151,7 +151,7 @@
             } else {
                 url.searchParams.delete('sort');
             }
-            window.history.replaceState({}, '', url);
+            if (url.href !== window.location.href) window.history[mode === 'push' ? 'pushState' : 'replaceState']({}, '', url);
         }
     };
 
@@ -209,6 +209,7 @@
     function loadDeferredThumbnail(image) {
         const source = image?.dataset?.src;
         if (!source) return;
+        if (image.dataset.srcset) { image.srcset = image.dataset.srcset; delete image.dataset.srcset; }
         image.closest('picture')?.querySelector('source')?.remove();
         image.src = source;
         delete image.dataset.src;
@@ -313,8 +314,8 @@
         currentGameTitle = urlState.game;
         currentPage = urlState.page;
         const storedSort = Storage.getSortOrder();
-        sortIsExplicit = Boolean(urlState.sort || storedSort);
-        sortMode = urlState.sort || storedSort || (currentSearch ? 'relevance' : 'newest');
+        sortIsExplicit = Boolean(urlState.sort);
+        sortMode = urlState.sort || (currentSearch ? 'relevance' : storedSort || 'newest');
         if (!currentSearch && sortMode === 'relevance') sortMode = 'newest';
         if (dom.searchInput && currentSearch) dom.searchInput.value = currentSearch;
         updateSortControl();
@@ -411,7 +412,7 @@
             section.append(links);
             const emptyState = dom.grid.querySelector('.empty-state');
             if (emptyState) emptyState.after(section);
-            else dom.grid.prepend(section);
+            else dom.grid.append(section);
         }
     }
 
@@ -435,11 +436,13 @@
             if (dom.searchInput && !dom.searchInput.dataset.bound) {
                 dom.searchInput.dataset.bound = 'true';
                 const debouncedSearch = debounce(async value => {
+                    const changed = value !== currentSearch;
                     currentSearch = value;
-                    if (!sortIsExplicit) sortMode = value ? 'relevance' : 'newest';
+                    // 新しい質問は関連度順。検索後に読者が選んだ順序は次の入力まで保つ。
+                    if (changed) { sortIsExplicit = false; sortMode = value ? 'relevance' : Storage.getSortOrder() || 'newest'; }
                     if (!value && sortMode === 'relevance') sortMode = Storage.getSortOrder() || 'newest';
                     currentPage = 1;
-                    updateURLState();
+                    updateURLState('push');
                     render();
                     if (value) await loadBodySearch();
                     if (currentSearch !== value) return;
@@ -456,7 +459,7 @@
                     sortIsExplicit = true;
                     Storage.setSortOrder(sortMode);
                     currentPage = 1;
-                    updateURLState(); render();
+                    updateURLState('push'); render();
                 });
             }
 
@@ -464,14 +467,15 @@
 
             // Handle browser back/forward buttons
             window.addEventListener('popstate', () => {
+                clearTimeout(searchDebounceTimer);
                 const state = URLState.get();
                 currentCategory = state.category;
                 currentBrowseCategory = state.topic;
                 currentSearch = state.search;
                 currentGameTitle = state.game;
                 currentPage = state.page;
-                sortIsExplicit = Boolean(state.sort || Storage.getSortOrder());
-                sortMode = state.sort || Storage.getSortOrder() || (currentSearch ? 'relevance' : 'newest');
+                sortIsExplicit = Boolean(state.sort);
+                sortMode = state.sort || (currentSearch ? 'relevance' : Storage.getSortOrder() || 'newest');
 
                 if (dom.searchInput) {
                     dom.searchInput.value = currentSearch;
@@ -484,6 +488,7 @@
                 syncFilterPanelState();
                 if (currentSearch) loadBodySearch().then(render);
                 render();
+                focusResults();
             });
 
             [dom.searchInput, dom.sortToggle, dom.gameTitleFilter].forEach(control => { if (control) control.disabled = false; });
@@ -543,7 +548,7 @@
     }
 
     // Update URL state
-    function updateURLState() {
+    function updateURLState(mode = 'replace') {
         URLState.set({
             category: currentCategory,
             topic: currentBrowseCategory,
@@ -551,7 +556,7 @@
             game: currentGameTitle,
             page: currentPage,
             sort: sortMode
-        });
+        }, mode);
     }
 
     // Filter articles (extracted for reuse)
@@ -588,7 +593,7 @@
         select.addEventListener('change', () => {
             currentGameTitle = select.value;
             currentPage = 1;
-            updateURLState();
+            updateURLState('push');
             render();
         });
     }
@@ -614,7 +619,7 @@
             sortMode === 'updated'
         );
         dom.filterPanel.classList.toggle('has-active-filter', hasOptionalFilter);
-        if (hasOptionalFilter) dom.filterPanel.open = true;
+        // 開閉は読者の操作を保持し、検索の再描画では変更しない。
     }
 
 
@@ -663,7 +668,7 @@
         if (dom.searchInput) dom.searchInput.value = '';
         if (dom.gameTitleFilter) dom.gameTitleFilter.value = '';
         syncCategoryActiveState();
-        updateURLState();
+        updateURLState('push');
         render();
     }
 
@@ -672,7 +677,7 @@
         currentCategory = 'all';
         currentPage = 1;
 
-        updateURLState();
+        updateURLState('push');
         Analytics.trackCategoryFilter(topic || 'all');
 
         syncCategoryActiveState();
@@ -687,12 +692,13 @@
         updateSortControl();
         syncFilterPanelState();
         filtered = BlogUtils.sortListedArticles(filtered, { mode: sortMode, search: currentSearch });
+        syncBrowseFacets();
 
         // 全件・絞り込みとも実際の件数を示し、適用中の条件を解除できる。
         if (dom.resultStatus) {
             const active = Boolean(currentSearch || currentGameTitle || currentBrowseCategory || currentCategory !== 'all');
             const conditions = [currentSearch ? '「' + currentSearch + '」' : '', currentGameTitle, currentBrowseCategory, currentCategory !== 'all' ? currentCategory : ''].filter(Boolean);
-            dom.resultStatus.classList.remove('visually-hidden');
+            dom.resultStatus.classList.toggle('visually-hidden', !active);
             dom.resultStatus.replaceChildren(document.createTextNode((conditions.length ? conditions.join(' / ') + '：' : '') + filtered.length + '件'));
             if (active) {
                 const clear = document.createElement('button'); clear.type = 'button'; clear.className = 'filter-reset-inline'; clear.textContent = '条件を解除';
@@ -724,7 +730,7 @@
                     image.onerror = () => BlogUtils.handleImageError(image);
                     if (image.complete && !image.naturalWidth) BlogUtils.handleImageError(image);
                 }
-                if (isNewArticle(article.date)) card.querySelector('.card-topic')?.insertAdjacentHTML('afterend', '<span class="badge-new">NEW</span>');
+                if (isNewArticle(article.date)) card.querySelector('.card-topic')?.insertAdjacentHTML('afterend', '<span class="badge-new" title="公開から7日以内">新着</span>');
             });
             dom.grid.querySelector('.error-state')?.remove();
             listingAd = createAdElement();
@@ -740,7 +746,6 @@
         compactThumbnailObserver?.disconnect();
         for (const child of Array.from(dom.grid.childNodes)) { if (child !== listingAd) child.remove(); }
 
-        renderGameCalculatorLinks();
 
         if (pageItems.length === 0) {
           var q = BlogUtils.escapeHtml(currentSearch);
@@ -767,6 +772,7 @@
           latestLink.textContent = benefitQuery ? 'Pixel・SteelSeriesなど「その他の特典」を見る' : '記事になっていないキャンペーンは最新情報で確認する';
           const latestChoice = document.createElement('p'); latestChoice.append(latestLink); recovery.append(latestChoice);
           dom.grid.append(recovery);
+          renderGameCalculatorLinks();
           renderPagination(0); return;
         }
 
@@ -810,6 +816,7 @@
         });
 
         renderPagination(totalPages);
+        renderGameCalculatorLinks();
 
     }
 
@@ -905,13 +912,53 @@
 
     function changePage(num) {
         currentPage = num;
-        updateURLState();
+        updateURLState('push');
         render();
-        // Scroll to top of grid (with null check)
-        const scrollTarget = dom.categoryFilter || dom.grid;
-        if (scrollTarget) {
-            const topOfGrid = scrollTarget.getBoundingClientRect().top + window.scrollY - 100;
-            window.scrollTo({ top: topOfGrid, behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        focusResults();
+    }
+
+    function focusResults() {
+        const target = dom.grid?.querySelector('.article-card') || document.getElementById('article-list-title');
+        target?.focus({ preventScroll: true });
+        const heading = document.getElementById('article-list-title');
+        if (heading) window.scrollTo({ top: Math.max(0, heading.getBoundingClientRect().top + window.scrollY - 16), behavior: 'auto' });
+    }
+
+    function syncBrowseFacets() {
+        const candidates = BlogUtils.filterListedArticles(allArticles, { search: currentSearch, gameTitle: currentGameTitle });
+        const counts = Object.fromEntries(BROWSE_CATEGORIES.map(topic => [topic, candidates.filter(a => a.browseCategory === topic).length]));
+        dom.categoryFilter?.querySelectorAll('button').forEach(button => {
+            const topic = button.dataset.topic;
+            button.textContent = topic ? `${topic} (${counts[topic] || 0})` : `すべて (${candidates.length})`;
+        });
+        document.querySelectorAll('.guide-hub-sidebar .sidebar-browse-category').forEach(link => {
+            const topic = link.dataset.topic || new URL(link.href, location.href).searchParams.get('topic');
+            const count = counts[topic] || 0;
+            const badge = link.querySelector('.sidebar-browse-count');
+            if (badge) { badge.textContent = count; badge.setAttribute('aria-label', count + '件'); }
+            const url = new URL('/blog/', location.href);
+            if (topic !== currentBrowseCategory) url.searchParams.set('topic', topic);
+            if (currentSearch) url.searchParams.set('q', currentSearch);
+            if (currentGameTitle) url.searchParams.set('game', currentGameTitle);
+            if (sortIsExplicit) url.searchParams.set('sort', sortMode);
+            link.href = url.pathname + url.search;
+            // topicは元の分類名を保持し、選択解除後の再描画でも失わない。
+            link.dataset.topic = link.dataset.topic || topic;
+            link.parentElement.classList.toggle('is-current-topic', link.dataset.topic === currentBrowseCategory);
+            if (link.dataset.topic === currentBrowseCategory) link.setAttribute('aria-current', 'true'); else link.removeAttribute('aria-current');
+            if (link.dataset.filterBound) return;
+            link.dataset.filterBound = 'true';
+            link.addEventListener('click', event => {
+                if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+                event.preventDefault(); setBrowseCategory(currentBrowseCategory === link.dataset.topic ? '' : link.dataset.topic);
+            });
+        });
+        const totalPages = Math.max(1, Math.ceil(filterArticles().length / CONFIG.itemsPerPage));
+        const current = Math.min(Math.max(1, Number(currentPage) || 1), totalPages);
+        const summary = document.getElementById('article-page-summary');
+        if (summary) {
+            const total = filterArticles().length;
+            summary.textContent = total ? `${(current - 1) * CONFIG.itemsPerPage + 1}〜${Math.min(current * CONFIG.itemsPerPage, total)}件目 / ${total}件 · ${current} / ${totalPages}ページ` : '';
         }
     }
 

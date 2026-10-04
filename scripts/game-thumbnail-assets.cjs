@@ -16,11 +16,13 @@ function activeAsset(gameId, gameTitle, rightsHolder, sourcePageUrl, sourceImage
     sourcePageUrl,
     sourceImageUrl,
     localPath: 'images/game-icons/' + gameId + '.webp',
+    highDensityLocalPath: 'images/game-icons/' + gameId + '-2x.webp',
+    highDensityAcquiredAt: '2026-10-04',
     acquiredAt: ACQUIRED_AT,
     modification: 'resize-only-128px-webp',
     usage: 'article-list-thumbnail',
     status: 'active',
-    notes: 'Google Playの公式アプリ掲載ページで現行アイコンを確認し、同ページが参照するGoogle配信画像を128px WebPへ縦横比を保って縮小し、ローカル保存。内容改変・外部CDNホットリンクなし。'
+    notes: 'Google Playの公式アプリ掲載ページで現行アイコンを確認し、同ページが参照するGoogle配信画像を128px WebPへ縦横比を保って縮小し、ローカル保存。高密度表示用に同じ配信元の240px WebP版を追加。内容改変・外部CDNホットリンクなし。'
   });
 }
 

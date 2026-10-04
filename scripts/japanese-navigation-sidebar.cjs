@@ -22,10 +22,11 @@ const BROWSE_CATEGORIES = Object.freeze([
 
 const NAV = Object.freeze([
   ['/blog/', '記事一覧'],
-  ['/latest/', '最新情報'],
-  ['/articles/2026-08-05-play-points-levels-guide.html', 'ランク・特典'],
-  ['/articles/2025-12-25-best-use.html', '貯める・使う'],
-  ['/blog/?category=トラブル', '困ったとき'],
+  ['/latest/', '開催中の特典'],
+  ['/blog/?topic=' + encodeURIComponent('ランク・ステータス'), 'ランク・ステータス'],
+  ['/blog/?topic=' + encodeURIComponent('貯める・キャンペーン'), '貯める・キャンペーン'],
+  ['/blog/?topic=' + encodeURIComponent('使う・交換'), '使う・交換'],
+  ['/blog/?topic=' + encodeURIComponent('トラブル・アカウント'), 'トラブル・アカウント'],
   ['/', '計算する']
 ]);
 const escapeHtml = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -90,7 +91,7 @@ function renderBrowseWidget(catalog = [], currentArticle = null) {
   for (const article of catalog) {
     if (counts.has(article.browseCategory)) counts.set(article.browseCategory, counts.get(article.browseCategory) + 1);
   }
-  return `  <section class="sidebar-widget sidebar-widget--browse"><h2 class="sidebar-widget-title">カテゴリーから探す</h2><div class="sidebar-widget-body"><ul class="sidebar-browse-list">${BROWSE_CATEGORIES.map(label => {
+  return `  <section class="sidebar-widget sidebar-widget--browse"><h2 class="sidebar-widget-title">カテゴリーで絞る</h2><div class="sidebar-widget-body"><ul class="sidebar-browse-list">${BROWSE_CATEGORIES.map(label => {
     const count = counts.get(label) || 0;
     const current = currentArticle?.browseCategory === label;
     return `<li class="sidebar-browse-item${current ? ' is-current-topic' : ''}"><a class="sidebar-browse-category" href="/blog/?topic=${encodeURIComponent(label)}"><span>${escapeHtml(label)}</span><span class="sidebar-browse-count" aria-label="${count}件">${count}</span></a></li>`;
@@ -117,7 +118,7 @@ function isSquareThumbnail(value) {
 function renderPopularWidget(article, catalog = []) {
   const popular = getJapanesePopularGuides(article.href, 5);
   const byHref = new Map(catalog.map(item => [item.href, item]));
-  return `  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}"><h2 class="sidebar-widget-title">今月よく読まれている記事</h2><div class="sidebar-widget-body"><p class="sidebar-widget-note">${escapeHtml(POPULAR_GUIDES_WINDOW)}・${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}更新</p><ol class="sidebar-popular-list">${popular.map(item => {
+  return `  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}"><h2 class="sidebar-widget-title">よく読まれている記事</h2><div class="sidebar-widget-body"><p class="sidebar-widget-note">${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}時点の${escapeHtml(POPULAR_GUIDES_WINDOW)}</p><ol class="sidebar-popular-list">${popular.map(item => {
     const rank = String(item.rank).padStart(2, '0');
     const meta = byHref.get(item.href);
     const featured = item.rank === 1;

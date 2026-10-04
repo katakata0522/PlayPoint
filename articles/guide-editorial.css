@@ -16,7 +16,7 @@ html[lang="ja"] body .guide-header .guide-brand-caption { display:block; padding
 .guide-brand-points i:nth-child(2) { width:7px; height:7px; }
 .guide-brand-points i:nth-child(3) { width:9px; height:9px; }
 html[lang="ja"] body .ja-global-nav { padding:0 20px; border-bottom:1px solid var(--reading-border); background:var(--reading-surface); }
-html[lang="ja"] body .ja-global-nav .global-nav-inner { max-width:1160px; }
+html[lang="ja"] body .ja-global-nav .global-nav-inner { max-width:1160px; grid-template-columns:repeat(7,minmax(0,1fr)); }
 html[lang="ja"] body .ja-global-nav .nav-item { min-height:48px; color:var(--reading-muted); font-weight:650; background:none; }
 html[lang="ja"] body .ja-global-nav .nav-item:hover { color:var(--reading-link); background:var(--reading-soft); }
 html[lang="ja"] body .ja-global-nav .nav-item[aria-current="page"] { color:var(--reading-link); background:none; border-bottom-color:var(--reading-link); }

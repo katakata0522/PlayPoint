@@ -74,7 +74,8 @@
     moveLater(doc.querySelector('.ja-global-nav'));
     moveLater(sidebar?.querySelector('.sidebar-widget--browse'));
     moveLater(sidebar?.querySelector('.sidebar-widget--games'), 'ゲーム別に探す');
-    moveLater(doc.getElementById('reading-library'));
+    const libraryInline = doc.body.classList.contains('blog-index-compact');
+    if (!libraryInline) moveLater(doc.getElementById('reading-library'));
     // 一覧には人気記事を残す。本文では読書を遮らない位置で呼び出す。
     if (sidebar) for (const widget of sidebar.querySelectorAll(':scope > .sidebar-widget')) {
       if (moves.some(item => item.node === widget)) continue;
@@ -106,11 +107,11 @@
       doc.documentElement.classList.add('guide-navigation-ready');
     }
     function libraryFromHash() {
-      if (media.matches && location.hash === '#reading-library') { const panel = doc.getElementById('reading-library'); if (panel) { menu.open(); panel.open = true; panel.scrollIntoView({ block: 'start' }); } }
+      if (!libraryInline && media.matches && location.hash === '#reading-library') { const panel = doc.getElementById('reading-library'); if (panel) { menu.open(); panel.open = true; panel.scrollIntoView({ block: 'start' }); } }
     }
     layout(); media.addEventListener('change', () => { layout(); libraryFromHash(); });
     libraryFromHash(); window.addEventListener('hashchange', libraryFromHash);
-    doc.addEventListener('click', event => { if (event.target.closest('a[href="#reading-library"]') && media.matches) { event.preventDefault(); const panel = doc.getElementById('reading-library'); menu.open(); panel.open = true; panel.scrollIntoView({ block: 'start' }); } });
+    doc.addEventListener('click', event => { if (event.target.closest('a[href="#reading-library"]') && !libraryInline && media.matches) { event.preventDefault(); const panel = doc.getElementById('reading-library'); menu.open(); panel.open = true; panel.scrollIntoView({ block: 'start' }); } });
     window.addEventListener('pagehide', () => { menu.dialog.close(); toc?.dialog.close(); });
   }
   // 保存リストなど既存の初期化が終わってから移動する。
