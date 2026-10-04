@@ -149,9 +149,8 @@ syncJapaneseNavigation(rootDir);
 // avoid rescanning every public HTML file twice.
 syncPublicAssetVersions(rootDir);
 
-syncSitemap(rootDir);
-syncRegionSitemap(rootDir);
-
+const { syncReaderImprovements } = require('./article-reader-improvements.cjs');
+console.log('[build-html] synchronized reader answers and sources:', syncReaderImprovements(rootDir));
 generateBlogFeeds(rootDir);
 
 const seoSummary = normalizeArticleFiles(rootDir, { checkOnly: false });
@@ -188,6 +187,12 @@ console.log(`[build-html] finalized international/Japanese hreflang: ${finalIntl
 
 // 翻訳・ゲーム・機能ページも、最終生成物の画像実体と補助タグを一致させる。
 const { syncSubmittedPageOgp } = require('./update-common-pages-ogp.cjs');
+const { syncTopicGuides } = require('./reader-topic-guides.cjs');
+const { syncBlogStaticPages } = require('./blog-static-pages.cjs');
+console.log('[build-html] synchronized purpose guides:', syncTopicGuides(rootDir));
+console.log('[build-html] synchronized crawlable article pages:', syncBlogStaticPages(rootDir));
+syncSitemap(rootDir);
+syncRegionSitemap(rootDir);
 console.log('[build-html] finalized submitted-page OGP:', syncSubmittedPageOgp(rootDir));
 
 console.log('[build-html] finalized keyboard-scroll regions:', syncScrollableRegions(rootDir));

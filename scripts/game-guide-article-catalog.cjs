@@ -5,13 +5,12 @@ const path = require('node:path');
 const { resolveGameThumbnail } = require('./game-thumbnail-assets.cjs');
 
 const PUBLISHED_AT = '2026-09-13';
-const MODIFIED_AT = '2026-09-13';
+const MODIFIED_AT = '2026-10-04';
 
 const GAME_GUIDE_ARTICLES = Object.freeze([
   {
     id: 'fgo-pity-cost-2026',
     listDescription: "天井330回までの費用を知りたい方へ。必要な聖晶石、最小購入例、福袋の有償15個とポイント還元を確認できます。",
-    modified: '2026-09-23',
     title: 'FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】',
     category: '使い方',
     gameTitle: 'FGO',
@@ -20,15 +19,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'FGOの確定召喚330回に必要な聖晶石と課金額を、現行の公式価格から計算。ゼロからの最小購入例、福袋の有償15個、Google Play Points還元をまとめます。',
     file: '../games/fgo/pity-cost/index.html',
     related: [
-      ['/articles/2026-08-05-play-points-multiplier-stacking.html', '倍率キャンペーン時のPlay Pointsを確認する'],
-      ['/articles/2026-06-20-discount-gift-cards.html', 'Google Playギフトコードの割引購入前に確認する'],
-      ['/games/genshin/welkin-value/', '原神の月パスと通常チャージを比較する']
+      ["/articles/2026-08-05-play-points-multiplier-stacking.html","倍率キャンペーン時のPlay Pointsを確認する"],
+      ["/articles/2026-06-20-discount-gift-cards.html","Google Playギフトコードの割引購入前に確認する"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
     id: 'genshin-welkin-value-2026',
     listDescription: "毎日受け取る空月の祝福と、今すぐ使える通常チャージを比較。受取日数とガチャの予定から選べます。",
-    modified: '2026-09-27',
     title: '原神「空月の祝福」はどれくらいお得？原石3000相当とPlay Points',
     category: '使い方',
     gameTitle: '原神',
@@ -37,15 +35,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: '原神の空月の祝福を、最大3,000原石相当・Google Play Pointsの観点で比較。通常チャージや90連・180連との違いも整理します。',
     file: '../games/genshin/welkin-value/index.html',
     related: [
-      ['/articles/2025-12-25-subscription.html', '定期購入でもPlay Pointsが貯まる条件を確認する'],
-      ['/articles/2025-12-25-campaign.html', '増量キャンペーンを待つべきか判断する'],
-      ['/games/starrail/supply-pass-value/', 'スタレの列車補給標章と比較する']
+      ["/articles/2025-12-25-subscription.html","定期購入でもPlay Pointsが貯まる条件を確認する"],
+      ["/articles/2025-12-25-campaign.html","増量キャンペーンを待つべきか判断する"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
     id: 'monst-google-play-vs-webshop-2026',
     listDescription: "同じ1万円でアプリ180個、Web190個、月イチ200個。ポイントの利用価値も含めて購入先を選べます。",
-    modified: '2026-09-22',
     title: 'モンストの購入経路ガイド｜アプリ180個・Web190個・月イチ200個の違い',
     category: '使い方',
     gameTitle: 'モンスト',
@@ -54,17 +51,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'モンストの1万円課金を比較。アプリ内180個、Webショップ190個、月イチ200個の差とGoogle Play Pointsを含めた選び方を整理します。',
     file: '../games/monst/google-play-vs-webshop/index.html',
     related: [
-      ['/articles/2026-09-19-monst-web-shop-vs-google-play.html', '1万円課金のポイント価値・損得分岐点を計算する'],
-      ['/articles/2026-08-19-web-store-external-billing-points.html', '公式WebストアとGoogle Play課金の違いを確認する'],
-      ['/articles/2026-08-05-play-points-multiplier-stacking.html', '特別獲得率の扱いを確認する'],
-      ['/articles/2026-09-19-monst-in-app-packs-guide.html', 'モンストのパック・モンパスを目的から選ぶ'],
-      ['/games/monst/', 'モンストの購入額でポイントを計算する']
+      ["/articles/2026-09-19-monst-web-shop-vs-google-play.html","1万円課金のポイント価値・損得分岐点を計算する"],
+      ["/articles/2026-09-19-monst-in-app-packs-guide.html","モンストのパック・モンパスを目的から選ぶ"],
+      ["/articles/2026-08-05-play-points-multiplier-stacking.html","特別獲得率の扱いを確認する"]
     ]
   },
   {
     id: 'starrail-supply-pass-value-2026',
     listDescription: "列車補給標章を毎日受け取れる場合と、すぐ星玉が必要な場合を比較。通常購入との違いを確認できます。",
-    modified: '2026-09-27',
     title: 'スタレ「列車補給標章」はどれくらいお得？3000星玉相当とPlay Points',
     category: '使い方',
     gameTitle: 'スタレ',
@@ -73,15 +67,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: '崩壊：スターレイルの列車補給標章を最大3,000星玉相当・受取速度・Google Play Pointsで比較します。',
     file: '../games/starrail/supply-pass-value/index.html',
     related: [
-      ['/articles/2025-12-25-subscription.html', '定期購入のPlay Points条件を確認する'],
-      ['/games/genshin/welkin-value/', '原神の空月の祝福と比較する'],
-      ['/games/zzz/membership-value/', 'ゼンゼロのインターノット会員と比較する']
+      ["/articles/2025-12-25-subscription.html","定期購入のPlay Points条件を確認する"],
+      ["/articles/2025-12-25-campaign.html","購入前に増量オファーの条件を確認する"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
     id: 'zzz-membership-value-2026',
     listDescription: "インターノット会員と通常購入を、受取日数と必要なタイミングで比較。ポイント還元も分けて考えられます。",
-    modified: '2026-09-27',
     title: 'ゼンゼロ「インターノット会員」はお得？3000相当とPlay Points',
     category: '使い方',
     gameTitle: 'ゼンゼロ',
@@ -90,15 +83,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'ゼンレスゾーンゼロのインターノット会員を最大3,000ポリクローム相当・受取速度・Google Play Pointsで比較します。',
     file: '../games/zzz/membership-value/index.html',
     related: [
-      ['/articles/2025-12-25-subscription.html', '定期購入のPlay Points条件を確認する'],
-      ['/games/genshin/welkin-value/', '原神の空月の祝福と比較する'],
-      ['/games/starrail/supply-pass-value/', 'スタレの列車補給標章と比較する']
+      ["/articles/2025-12-25-subscription.html","定期購入のPlay Points条件を確認する"],
+      ["/articles/2025-12-25-campaign.html","購入前に増量オファーの条件を確認する"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
     id: 'umamusume-umasuku-value-2026',
     listDescription: "月980円のウマスクを使い切れるか確認。ジュエル、未受取時の扱い、WebStoreとGoogle Playの違いが分かります。",
-    modified: '2026-09-23',
     title: 'ウマ娘「ウマスク」はどれくらいお得？月980円・ジュエル・Play Points比較【2026年】',
     category: '使い方',
     gameTitle: 'ウマ娘',
@@ -107,9 +99,9 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'ウマ娘の現行月額「ウマスク」を公式情報で整理。月980円、ジュエル、未受取仕様、WebStoreとGoogle Playの違いを比較します。',
     file: '../games/umamusume/umasuku-value/index.html',
     related: [
-      ['/articles/2025-12-25-subscription.html', '月額サービスのPlay Points条件を確認する'],
-      ['/articles/2026-08-19-web-store-external-billing-points.html', 'Webストア決済との違いを確認する'],
-      ['/articles/2026-08-24-umamusume-half-anniversary-points.html', 'ウマ娘の期間課金判断も確認する']
+      ["/articles/2025-12-25-subscription.html","月額サービスのPlay Points条件を確認する"],
+      ["/articles/2026-08-19-web-store-external-billing-points.html","Webストア決済との違いを確認する"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
@@ -123,9 +115,9 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'プロセカ公式WebStoreの現行価格、カラフルパス3種、ミッションパスとGoogle Play Pointsの違いを整理します。',
     file: '../games/proseka/google-play-vs-webstore/index.html',
     related: [
-      ['/articles/2026-08-19-web-store-external-billing-points.html', '公式WebストアとGoogle Play課金の違いを確認する'],
-      ['/articles/2025-12-25-subscription.html', '月額商品のPlay Points条件を確認する'],
-      ['/games/phantomparade/google-play-vs-webshop/', 'ファンパレのWEBショップ比較を見る']
+      ["/articles/2026-08-19-web-store-external-billing-points.html","公式WebストアとGoogle Play課金の違いを確認する"],
+      ["/articles/2025-12-25-subscription.html","月額商品のPlay Points条件を確認する"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
@@ -139,15 +131,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'Pokémon TCG Pocketのプレミアムパスを、1か月の定期購入、14日無料体験、Googleアカウントとの紐付け、Play Pointsから整理します。',
     file: '../games/pokepoke/premium-pass-guide/index.html',
     related: [
-      ['/articles/2025-12-25-subscription.html', '定期購入・無料体験のPlay Points条件を確認する'],
-      ['/articles/2025-12-25-multiple-accounts.html', '複数Googleアカウント利用時の注意点を見る'],
-      ['/games/pad/pad-pass-value/', 'パズドラパスの無料体験と比較する']
+      ["/articles/2025-12-25-subscription.html","定期購入・無料体験のPlay Points条件を確認する"],
+      ["/articles/2025-12-25-multiple-accounts.html","複数Googleアカウント利用時の注意点を見る"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
     id: 'pad-pass-value-2026',
     listDescription: "月980円のパズドラパスと1週間無料トライアルの条件を確認。毎日のダンジョンや特典を使い切れるか判断できます。",
-    modified: '2026-09-23',
     title: 'パズドラパスは月額980円で何が得？無料トライアル・特典・Play Points【2026年】',
     category: '使い方',
     gameTitle: 'パズドラ',
@@ -156,9 +147,9 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'パズドラパスの月額980円、1週間無料トライアル、毎日ダンジョンや常設特典とGoogle Play Pointsを整理します。',
     file: '../games/pad/pad-pass-value/index.html',
     related: [
-      ['/articles/2025-12-25-subscription.html', '定期購入・無料体験のPlay Points条件を確認する'],
-      ['/articles/2026-08-25-pad-puzzle-and-dragons-play-points.html', 'パズドラ課金全体の選び方を確認する'],
-      ['/games/pokepoke/premium-pass-guide/', 'ポケポケのプレミアムパスと比較する']
+      ["/articles/2025-12-25-subscription.html","定期購入・無料体験のPlay Points条件を確認する"],
+      ["/articles/2026-08-25-pad-puzzle-and-dragons-play-points.html","パズドラ課金全体の選び方を確認する"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
@@ -172,9 +163,9 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'アークナイツの月パス内容と限定スカウト300回の仕様を公式情報で整理し、Google Play価格とPlay Pointsを分けて解説します。',
     file: '../games/arknights/monthly-pass-limited-scout/index.html',
     related: [
-      ['/articles/2025-12-25-subscription.html', '定期購入のPlay Points条件を確認する'],
-      ['/articles/2025-12-25-campaign.html', '期間キャンペーンの確認方法を見る'],
-      ['/games/fgo/pity-cost/', 'FGOの天井課金額の考え方を見る']
+      ["/articles/2025-12-25-subscription.html","定期購入のPlay Points条件を確認する"],
+      ["/articles/2025-12-25-campaign.html","期間キャンペーンの確認方法を見る"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
@@ -188,9 +179,9 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'ドッカンバトル公式Web StoreとGoogle Play購入を別決済として整理。Play Points対象経路、価格変動、購入前の比較ポイントを解説します。',
     file: '../games/dokkan/google-play-vs-webstore/index.html',
     related: [
-      ['/articles/2026-08-19-web-store-external-billing-points.html', '公式WebストアとGoogle Play課金の違いを確認する'],
-      ['/articles/2026-08-25-dokkan-battle-dragon-ball-play-points.html', 'ドッカン課金全体の選び方を見る'],
-      ['/games/monst/google-play-vs-webshop/', 'モンストのWebショップ比較を見る']
+      ["/articles/2026-08-19-web-store-external-billing-points.html","公式WebストアとGoogle Play課金の違いを確認する"],
+      ["/articles/2026-08-25-dokkan-battle-dragon-ball-play-points.html","ドッカン課金全体の選び方を見る"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
@@ -204,15 +195,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'ヘブバン公式WEB SHOPの5%OFF、WEB SHOPポイント、WEB限定クォーツ、月額パス加入不可の条件をGoogle Play Pointsと分けて比較します。',
     file: '../games/hbr/google-play-vs-webshop/index.html',
     related: [
-      ['/articles/2026-08-19-web-store-external-billing-points.html', '公式WebストアとGoogle Play課金の違いを確認する'],
-      ['/articles/2025-12-25-campaign.html', '割引・キャンペーンの比較方法を見る'],
-      ['/games/phantomparade/google-play-vs-webshop/', 'ファンパレのWEBショップ比較を見る']
+      ["/articles/2026-08-19-web-store-external-billing-points.html","公式WebストアとGoogle Play課金の違いを確認する"],
+      ["/articles/2025-12-25-campaign.html","割引・キャンペーンの比較方法を見る"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
     id: 'honkai3rd-google-play-vs-charge-center-2026',
     listDescription: "Google Playと公式チャージセンターで、2倍特典・月パス延長・割引の扱いを確認。購入する商品の条件から選べます。",
-    modified: '2026-09-27',
     title: '崩壊3rdはGoogle Playと公式チャージセンターどっち？2倍特典・月パス・Play Points【2026年】',
     category: '使い方',
     gameTitle: '崩壊3rd',
@@ -221,9 +211,9 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: '崩壊3rdのGoogle Play購入とHoYoverse公式チャージセンターを、2倍特典、月パス延長、期間限定割引、Play Pointsの違いから整理します。',
     file: '../games/honkai3rd/google-play-vs-charge-center/index.html',
     related: [
-      ['/articles/2026-08-19-web-store-external-billing-points.html', '外部決済とGoogle Play課金の違いを見る'],
-      ['/articles/2025-12-25-campaign.html', '期間限定割引を比較する時の確認点を見る'],
-      ['/games/genshin/welkin-value/', '原神のHoYoverse系月パスを見る']
+      ["/articles/2026-08-19-web-store-external-billing-points.html","外部決済とGoogle Play課金の違いを見る"],
+      ["/articles/2025-12-25-campaign.html","期間限定割引を比較する時の確認点を見る"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
@@ -237,9 +227,9 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'ファンパレ公式WEBショップの増量率、マイルpt、パス商品とGoogle Play Pointsを別軸で比較します。',
     file: '../games/phantomparade/google-play-vs-webshop/index.html',
     related: [
-      ['/articles/2026-08-19-web-store-external-billing-points.html', '公式WebストアとGoogle Play課金の違いを見る'],
-      ['/games/hbr/google-play-vs-webshop/', 'ヘブバンのWEB SHOP比較を見る'],
-      ['/games/proseka/google-play-vs-webstore/', 'プロセカのWebStore比較を見る']
+      ["/articles/2026-08-19-web-store-external-billing-points.html","公式WebストアとGoogle Play課金の違いを見る"],
+      ["/articles/2025-12-25-campaign.html","購入前に増量オファーの条件を確認する"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
@@ -253,16 +243,15 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'プロスピAのGoogle Play課金とKONAMI Gamesストアを、Google Play Points、パワスピ・ゴールド、dポイント、購入経路の違いから比較します。',
     file: '../games/prospi-a/google-play-vs-konami-store/index.html',
     related: [
-      ['/articles/2026-08-19-web-store-external-billing-points.html', '公式WebストアとGoogle Play課金の違いを見る'],
-      ['/games/monst/google-play-vs-webshop/', 'モンストの購入経路比較を見る'],
-      ['/games/efootball/google-play-points-vs-efootball-points/', 'eFootballのKONAMI独自ポイントとの違いを見る']
+      ["/articles/2026-08-19-web-store-external-billing-points.html","公式WebストアとGoogle Play課金の違いを見る"],
+      ["/articles/2025-12-25-campaign.html","購入前に増量オファーの条件を確認する"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
     id: 'pokemon-go-google-play-vs-webstore-2026',
     listDescription: "ポケコインを買う前に、公式Web StoreのボーナスとGoogle Playの還元を比較。Reward RoadやGalaxy Storeとの違いも確認できます。",
-    modified: '2026-09-27',
-    title: 'Pokémon GOはGoogle PlayとWeb Storeどっちがお得？ボーナスポケコイン・Reward Road・Play Points比較【2026年】',
+    title: 'Pokémon GOの課金はどこがお得？Google PlayとWeb Storeを比較',
     category: '使い方',
     gameTitle: 'Pokémon GO',
     listTitle: 'Pokémon GO｜Google PlayとWebストアを比較',
@@ -270,9 +259,9 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'Pokémon GOのGoogle Play課金と公式Web Storeを、ボーナスポケコイン、Reward Road、Galaxy Storeとの違い、Google Play Pointsの観点から比較します。',
     file: '../games/pokemon-go/google-play-vs-webstore/index.html',
     related: [
-      ['/articles/2026-08-19-web-store-external-billing-points.html', '公式WebストアとGoogle Play課金の違いを見る'],
-      ['/articles/2025-12-25-campaign.html', '期間限定ボーナスを比較する時の確認点を見る'],
-      ['/games/monst/google-play-vs-webshop/', 'モンストのWebショップ比較を見る']
+      ["/articles/2026-08-19-web-store-external-billing-points.html","公式WebストアとGoogle Play課金の違いを見る"],
+      ["/articles/2025-12-25-campaign.html","期間限定ボーナスを比較する時の確認点を見る"],
+      ["/articles/2025-12-25-best-use.html","獲得ポイントをどこで使うか確認する"]
     ]
   },
   {
@@ -286,9 +275,9 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     description: 'eFootballコインのGoogle Play課金と、KONAMI独自のeFootballポイント、GP、Google Play Pointsの違いを公式情報で整理します。',
     file: '../games/efootball/google-play-points-vs-efootball-points/index.html',
     related: [
-      ['/articles/2025-12-25-campaign.html', 'Play Pointsキャンペーンの確認方法を見る'],
-      ['/games/prospi-a/google-play-vs-konami-store/', 'KONAMI Gamesストアとの比較例を見る'],
-      ['/articles/2025-12-25-best-use.html', 'Google Play Pointsの使い道を比較する']
+      ["/articles/2025-12-25-campaign.html","Play Pointsキャンペーンの確認方法を見る"],
+      ["/articles/2025-12-25-best-use.html","Google Play Pointsの使い道を比較する"],
+      ["/articles/2026-03-10-play-points-reflection-timing.html","購入後のPlay Pointsが見えないときの確認順"]
     ]
   }
 ].map(article => Object.freeze({

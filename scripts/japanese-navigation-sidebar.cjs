@@ -222,6 +222,21 @@ function transformArticle(html, article, catalog) {
   const nav = renderNavigation(article.href);
   const sidebar = renderSidebar(article, role, related, catalog);
   let after = normalizeSharedArticleCopy(removeLegacySidebarStylesheet(html.replace(GLOBAL_NAV, nav)));
+  const topic = article.browseCategory || categoryFor(article, role);
+  const trail = [{ name: 'ホーム', href: '/' }, { name: '記事一覧', href: '/blog/' },
+    { name: topic, href: '/blog/?topic=' + encodeURIComponent(topic) }];
+  const label = (article.listTitle || article.title).split('｜').join('：');
+  const breadcrumb = `<div class="breadcrumbs-wrapper"><nav aria-label="パンくずリスト">${trail.map(item => `<a href="${item.href}">${escapeHtml(item.name)}</a> <span aria-hidden="true">&gt;</span> `).join('')}<span aria-current="page">${escapeHtml(label)}</span></nav></div>`;
+  after = after.replace(/<div class="breadcrumbs-wrapper">[\s\S]*?<\/div>/, breadcrumb);
+  after = after.replace(/(<script\b[^>]*type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/g, (whole, start, json, end) => {
+    const data = JSON.parse(json);
+    const update = node => {
+      if (!node || typeof node !== 'object') return;
+      if (node['@type'] === 'BreadcrumbList') node.itemListElement = [...trail, { name: label, href: article.href }].map((item, i) => ({ '@type': 'ListItem', position: i + 1, name: item.name, item: 'https://playpoint-sim.com' + item.href }));
+      if (Array.isArray(node)) node.forEach(update); else Object.values(node).forEach(update);
+    };
+    update(data); return start + JSON.stringify(data) + end;
+  });
   after = after.replace(/<header\b[^>]*class="[^"]*\bsite-header\b[^"]*"[^>]*>[\s\S]*?<\/header>/, renderHeader());
   if (SIDEBAR.test(after)) after = after.replace(SIDEBAR, sidebar);
   else {

@@ -57,6 +57,7 @@ const PUBLIC_TOP_LEVEL_DIRECTORIES = new Set([
   'embed',
   'en',
   'games',
+  'guides',
   'hk',
   'images',
   'in',

@@ -38,3 +38,23 @@ details.inpage-toc :focus-visible { outline:3px solid #0891b2; outline-offset:3p
 .reading-table-hint[hidden] { display:none; }
 [data-reading-table] { max-width:100%; overflow-x:auto; }
 .reading-table-overflow { border-inline-end:3px solid var(--reading-border,#cbd5e1); }
+/* 回答とその根拠へ、端末幅にかかわらず進める。 */
+.reader-source { font-size: .875rem; line-height: 1.7; color: var(--text-secondary); margin: .8rem 0 0; }
+.reader-situation-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: 1rem; }
+.reader-situation-links a { display: block; padding: .85rem; border: 1px solid currentColor; border-radius: 8px; text-decoration: none; line-height: 1.5; }
+.reader-situation-links a:hover, .reader-situation-links a:focus-visible { text-decoration: underline; }
+.reader-step-figure { margin: 1.5rem 0; }
+.reader-step-figure img { display: block; width: min(100%, 360px); height: auto; margin-inline: auto; }
+.reader-step-figure figcaption { margin-top: .75rem; font-size: .875rem; line-height: 1.7; }
+.reader-toc { margin: 1rem 0; }
+.reader-guide { max-width: 58rem; padding: 1.5rem; margin: 0 auto; line-height: 1.9; }
+.reader-guide h1 { font-size: clamp(1.75rem, 3vw, 2.6rem); line-height: 1.45; }
+.reader-guide .section { margin-block: 2rem; }
+.reader-guide-order { padding: 1rem; border: 1px solid var(--border-color, #8193a5); border-radius: 8px; }
+.reader-guide-order ol { margin: 0; padding-left: 1.5rem; }
+.reader-topic-entry { display: flex; flex-wrap: wrap; gap: .35rem 1rem; font-size: .875rem; }
+.reader-topic-entry a { padding-block: .35rem; }
+.reader-toc summary { cursor: pointer; }
+.reader-toc nav ol { padding-left: 1.5rem; }
+.reader-toc li { margin: .5rem 0; }
+@media (max-width: 480px) { .reader-situation-links { grid-template-columns: 1fr; } }

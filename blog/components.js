@@ -12,7 +12,7 @@
     const isArticlePageTop = window.location.pathname.includes('/articles/');
     const isBlogPage = window.location.pathname.includes('/blog');
     const isLatestPage = window.location.pathname.includes('/latest/');
-    const rootPath = (isArticlePageTop || isBlogPage || isLatestPage) ? '../' : './';
+    const rootPath = /^\/blog\/page\/\d+\//.test(window.location.pathname) ? '/' : (isArticlePageTop || isBlogPage || isLatestPage) ? '../' : './';
 
     function ensureConsentManager() {
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);

@@ -18,7 +18,7 @@
   for (const prefix of ['', 'google', 'グーグル']) for (const play of ['play', 'プレイ'])
     for (const points of ['points', 'ポイント']) for (const firstSpace of ['', ' ']) for (const secondSpace of ['', ' '])
       groups.ja[0].push((prefix + (prefix ? firstSpace : '') + play + secondSpace + points).trim());
-  groups.ja[2].push('付与', 'いつ付く', 'いつつく', 'いつ反映', '反映されてない', '反映されていない', 'ついてない', 'ついていない', '付いてない', '付いていない', 'もらえない');
+  groups.ja[2].push('付与', 'いつ付く', 'いつつく', 'いつ反映', '反映されてない', '反映されていない', 'ついてない', 'ついていない', '付いてない', '付いていない', 'もらえない', 'ついてこない', '付いてこない');
   groups.ja[1].push('期限が切れた', '期限切れになった');
   groups.ja.push(
     ['Pokémon GO', 'Pokemon GO', 'PokémonGO', 'PokemonGO', 'ポケモンGO', 'ポケモン GO', 'ポケモンゴー'],
@@ -45,7 +45,10 @@
     ['キャンペーン', '増量キャンペーン'], ['クエスト', 'quest'],
     ['使えない', '使えません', '利用できない', 'できない', '出来ない', 'できません'],
     ['ランク', 'ステータス'], ['必要額', 'いくら必要', '必要金額'],
-    ['貯まらない', 'たまらない', '増えない', '貯められない', 'ためられない']
+    ['貯まらない', 'たまらない', '増えない', '貯められない', 'ためられない'],
+    ['維持', '維持費', '維持金額', 'ランク維持'],
+    ['現金', '現金化', '現金にしたい', '現金にする'],
+    ['ギフトカード', 'ギフトコード', 'プリペイド', 'プリペイドカード']
   );
   const escapePattern = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   // 同義語は固定なので、記事・比較回数ごとに正規化と並べ替えを繰り返さない。
@@ -60,6 +63,8 @@
     [['初心者'], '2025-12-25-getting-started.html'], [['使い方'], '2025-12-25-best-use.html'],
     [['交換'], '2025-12-25-best-use.html'], [['消えた'], '2026-08-16-points-disappeared.html'],
     [['失効'], '2025-12-25-expiration.html'], [['反映'], '2026-03-10-play-points-reflection-timing.html'],
+    [['現金'], '2026-07-24-play-points-cash-conversion.html'],
+    [['ギフトカード'], '2025-12-25-gift-card.html'],
     [['クーポン','見つからない'], '2026-07-25-play-points-coupon-not-applied.html'],
     [['クーポン','使えない'], '2026-07-25-play-points-coupon-not-applied.html'],
     [['ウィークリー','見つからない'], '2026-08-16-weekly-reward-not-showing.html'],
@@ -167,8 +172,12 @@
     return { text: (start ? '…' : '') + text.slice(start, start + 180) + (text.length > start + 180 ? '…' : ''), id: best.id || '', heading: best.heading || '' };
   }
   function suggest(articles, query, locale = 'ja') {
-    const terms = tokens(query, locale);
+    const terms = tokens(query, locale).filter(term => locale !== 'ja' || term !== 'zzalias0zz');
     if (!terms.length) return [];
+    const known = terms.filter(term => /^zzalias\d+zz$/.test(term) || domainWords.some(word => fold(word, locale) === term));
+    const owner = locale === 'ja' ? purposeOwners.get(known.slice().sort().join(' ')) : '';
+    const answer = owner && articles.find(article => (article.path || article.file || '').endsWith('/' + owner));
+    if (answer) return [answer];
     return articles.map(article => {
       const haystack = indexed(article, locale).text;
       const relatedTerms = terms.filter(t => haystack.includes(t));

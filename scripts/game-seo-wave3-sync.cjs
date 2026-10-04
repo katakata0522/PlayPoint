@@ -20,7 +20,7 @@ function pointTableHtml(amount) {
 const guideShell = createGuideShell({
   verifiedAt: VERIFIED_AT,
   badge: '🔎 公式情報を基準に検証',
-  verificationPolicy: '価格・定額商品・ガチャ仕様は変更されることがあります。公開一次情報で確認できないGoogle Play価格は推測で補わず、購入直前のゲーム内表示とGoogle Playの獲得予定ポイント表示を最終正本にします。'
+  verificationPolicy: '価格・定額商品・ガチャ仕様は変更されることがあります。公開一次情報で確認できないGoogle Play価格は推測で補わず、購入直前のゲーム内表示とGoogle Playの獲得予定ポイント表示を購入前に確認してください。'
 });
 
 function syncVerifiedInputOnly(rootDir, config) {
@@ -40,7 +40,7 @@ function syncVerifiedInputOnly(rootDir, config) {
 function renderPokepokeGuide() {
   const body = `
     <section class="section"><h2>プレミアムパスは月額型、初回無料体験は14日</h2><p>ポケポケ公式サポートでは、プレミアムパスは<strong>1か月単位の定期購入</strong>として案内され、初めて利用するプラットフォームアカウントでは<strong>14日間の無料体験</strong>が利用できます。Google Playでは選択したGoogleアカウントに購入権利が結びつくため、複数アカウント利用時は購入先の確認が重要です。</p></section>
-    <section class="section"><h2>現行月額・ポケゴールド価格は購入画面を正本にする</h2><p>公式サポートの公開ページでは、プレミアムパスの現行日本円月額や各ポケゴールド商品の現在価格を固定表示していません。そのため、旧PlayPointに残っていた980円や140円〜13,800円の固定価格は現行値として使わず、Google Play購入画面の支払額を入力してPlay Pointsを計算します。</p></section>
+    <section class="section"><h2>現行月額・ポケゴールド価格は購入画面で確認する</h2><p>公式サポートの公開ページでは、プレミアムパスの現行日本円月額や各ポケゴールド商品の現在価格を固定表示していません。月額と更新日、ポケゴールドの個数を購入直前に確認し、Google Play画面の支払額からPlay Pointsを計算してください。無料体験の終了後は有料で更新されるため、解約期限も確認します。</p></section>
     <section class="section"><h2>Play Pointsで見るときの注意点</h2><p>無料体験中は支払いが発生しないため、その時点の購入額からPlay Pointsを見積もる対象にはしません。有料更新やポケゴールド購入をGoogle Play上で行う場合は、購入確認画面に表示される支払額と獲得予定ポイントを優先してください。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.pokepokePremiumPass}" target="_blank" rel="noopener noreferrer">ポケポケ公式サポート：プレミアムパス</a></li><li><a href="${SOURCES.pokepokePremiumMechanics}" target="_blank" rel="noopener noreferrer">Pokémon Support：購入・Premium Pass FAQ</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ポケポケ Play Points計算機へ戻る ➔</a></p>`;
@@ -68,7 +68,7 @@ function renderPadGuide() {
 function renderArknightsGuide() {
   const body = `
     <section class="section"><h2>月パスの中身は公式確認できる</h2><p>アークナイツ公式サポートでは、月パス購入時に<strong>有償純正源石6個</strong>を受け取り、その後30日間、毎日<strong>合成玉200個 + 理性回復剤1個</strong>を受け取る仕様が案内されています。</p></section>
-    <section class="section"><h2>ただし現行Google Play価格は固定しない</h2><p>公開一次情報から現在の日本Google Play月パス価格や各純正源石パック価格を固定できないため、旧ページの610円・2,440円・各石パック価格は現行値として掲載しません。購入画面に表示された実額からPlay Pointsを計算してください。</p></section>
+    <section class="section"><h2>月パスと源石パックの価格を購入前に確認する</h2><p>月パスは毎日の受け取り、源石パックは購入直後に使える個数を比べてください。現在の日本Google Play価格は購入画面で確認し、表示された支払額からPlay Pointsを計算します。</p></section>
     <section class="section"><h2>リミテッドスカウトの「300回」は現金9万円ではない</h2><p>2026年の公式リミテッドスカウトでも、1回のスカウトにつきリミテッドスカウト契約証を1枚獲得し、<strong>300回スカウト時の追加限定オペレーター</strong>が案内されています。ただし、合成玉・スカウト券・無料分・所持資源があるため、「300回=9万円」のような固定現金額にはしません。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.arknightsMonthlyPass}" target="_blank" rel="noopener noreferrer">アークナイツ公式サポート：月パス内容</a></li><li><a href="${SOURCES.arknightsLimited2026}" target="_blank" rel="noopener noreferrer">アークナイツ公式：2026年リミテッドスカウト</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">アークナイツ Play Points計算機へ戻る ➔</a></p>`;
@@ -82,7 +82,7 @@ function renderDokkanGuide() {
   const body = `
     <section class="section"><h2>ドッカンには公式Web Storeがある</h2><p>バンダイナムコ公式FAQでは、ドッカンバトルの<strong>Web Store</strong>購入と、アプリ外で購入した商品の購入履歴を確認できることが案内されています。Web Storeで購入した龍石等はゲームへ反映されますが、Google Play決済とは別の購入経路です。</p></section>
     <section class="section"><h2>Google PlayとWeb StoreをPlay Pointsで混同しない</h2><p>Google Play PointsはGoogle Play上の対象購入を基準にします。公式Web Storeでの商品増量やキャンペーンがあっても、それをGoogle Play購入としてPlay Pointsへ加算しません。Web Storeのお得度は、その時点の商品内容を公式表示で確認してください。</p></section>
-    <section class="section"><h2>旧固定価格・周年5万円プリセットは撤去</h2><p>龍石販売やセール商品は時期で変わるため、旧ページにあった固定の龍石価格、デイリーカプセル価格、周年・Wフェス5万円などを現行正本として扱いません。Google Play購入時は購入画面の実額を自由入力してPlay Pointsを計算します。</p></section>
+    <section class="section"><h2>龍石の個数と支払額を同じ条件で比較する</h2><p>龍石販売やセール商品は時期で変わります。同じ支払額で受け取れる龍石と、すぐ受け取れる分・毎日受け取る分を比較してください。Google Playで購入する場合は、購入画面に表示された支払額と獲得予定ポイントを確認します。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.dokkanWebStoreUsage}" target="_blank" rel="noopener noreferrer">バンダイナムコ公式FAQ：Web Store購入</a></li><li><a href="${SOURCES.dokkanWebStoreReflection}" target="_blank" rel="noopener noreferrer">バンダイナムコ公式FAQ：Web Store反映</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ドッカンバトル Play Points計算機へ戻る ➔</a></p>`;
   return guideShell({ gameId: 'dokkan', slug: 'google-play-vs-webstore', lead: 'ドッカンバトルではGoogle Playと公式Web Storeが別の購入経路です。龍石の個数だけでなく、Play Points対象かどうかも分けて比較します。', body, faq: [
@@ -107,18 +107,18 @@ function syncWave3(rootDir) {
     {
       file: 'games/pokepoke/index.html', presetLabel: 'Google Playの表示額を入力', optionLabel: '現行価格をGoogle Playで確認して入力',
       tableMessage: 'プレミアムパスの定期購入仕様は公式確認済みですが、現行日本円価格・ポケゴールド価格は公開公式FAQで固定されていません。購入画面の実額を入力してください。',
-      gameMeta: `ポケポケ定期購入・Play Points確認：${VERIFIED_AT}（価格は購入画面を正本） ｜ Google Play Points`,
+      gameMeta: `ポケポケ定期購入・Play Points確認：${VERIFIED_AT}（価格は購入画面で確認） ｜ Google Play Points`,
       descriptionBefore: 'ポケポケ（Pokémon TCG Pocket）のポケゴールド購入、プレミアムパス、パック開封で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。課金前のシミュレーションにぜひ役立ててみてくださいね。',
-      descriptionAfter: 'ポケポケのGoogle Play課金予定額からPlay Pointsを計算。プレミアムパスは月額定期購入・初回14日無料体験を公式確認し、現行価格は購入画面を正本とします。',
+      descriptionAfter: 'ポケポケのGoogle Play課金予定額からPlay Pointsを計算。プレミアムパスは月額定期購入・初回14日無料体験を公式確認し、現行価格は購入画面で確認します。',
       replacements: [['はい。Android端末から購入するとPlay Pointsが貯まります。', 'Google Play上の対象購入として処理される場合にポイントが計算されます。購入前のGoogle Play画面に表示される獲得予定ポイントを確認してください。']],
-      guideBlock: `<section class="section" data-game-seo-guide="pokepoke"><h2>プレミアムパスの無料体験・更新・Play Pointsを分離</h2><p>公式サポートで1か月の定期購入、初回14日無料体験、Googleアカウントとの紐付けを確認しています。現行価格は推測せず購入画面を正本にします。</p><p><a href="./premium-pass-guide/">プレミアムパスの課金ルールを詳しく見る ➔</a></p></section>`, guideMarker: 'data-game-seo-guide="pokepoke"'
+      guideBlock: `<section class="section" data-game-seo-guide="pokepoke"><h2>プレミアムパスの無料体験・更新・Play Pointsを分離</h2><p>公式サポートで1か月の定期購入、初回14日無料体験、Googleアカウントとの紐付けを確認しています。現行価格は推測せず購入画面で確認します。</p><p><a href="./premium-pass-guide/">プレミアムパスの課金ルールを詳しく見る ➔</a></p></section>`, guideMarker: 'data-game-seo-guide="pokepoke"'
     },
     {
       file: 'games/arknights/index.html', presetLabel: 'Google Playの表示額を入力', optionLabel: '現行価格をGoogle Playで確認して入力',
       tableMessage: '月パスの内容と限定300回の仕組みは公式確認済みですが、現行Google Play価格は公開一次情報で固定できません。購入画面の実額を入力してください。',
-      gameMeta: `アークナイツ月パス・限定スカウト・Play Points確認：${VERIFIED_AT}（価格は購入画面を正本）`,
+      gameMeta: `アークナイツ月パス・限定スカウト・Play Points確認：${VERIFIED_AT}（価格は購入画面で確認）`,
       descriptionBefore: 'アークナイツの純正源石購入、月パス、月間スカウトパック、300連天井・潜在MAX課金で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。人材発掘前の計画にぜひ使ってみてくださいね。',
-      descriptionAfter: 'アークナイツのGoogle Play課金予定額からPlay Pointsを計算。月パス内容と限定300回の仕様は公式確認し、現行商品価格は購入画面を正本とします。',
+      descriptionAfter: 'アークナイツのGoogle Play課金予定額からPlay Pointsを計算。月パス内容と限定300回の仕様は公式確認し、現行商品価格は購入画面で確認します。',
       replacements: [
         ['アークナイツの限定フェス天井（300連）で何ポイント貯まりますか？', 'アークナイツの限定300回分に必要な現金額は固定ですか？'],
         ['300連（約9万円）課金した場合、通常時（1pt/100円）で約900pt、特別獲得率5pt/100円時なら約4,500pt（プラチナランク到達）還元されます。', 'いいえ。所持合成玉・スカウト券・無料分などで現金負担が変わるため、固定9万円とは扱いません。Google Playで実際に支払う金額からPlay Pointsを確認してください。']
@@ -127,19 +127,19 @@ function syncWave3(rootDir) {
     },
     {
       file: 'games/dokkan/index.html', presetLabel: 'Google Playの表示額を入力', optionLabel: '現行価格をGoogle Playで確認して入力',
-      tableMessage: '龍石・デイリー商品・セールは時期で変わります。旧固定価格を残さず、Google Play購入画面の実額を入力してください。公式Web StoreはGoogle Playとは別決済です。',
-      gameMeta: `ドッカン Google Play・Web Store・Play Points確認：${VERIFIED_AT}（価格は購入画面を正本）`,
+      tableMessage: '龍石・デイリー商品・セールは時期で変わります。Google Play購入画面の支払額と受け取れる龍石の個数を確認してください。公式Web StoreはGoogle Playとは別決済です。',
+      gameMeta: `ドッカン Google Play・Web Store・Play Points確認：${VERIFIED_AT}（価格は購入画面で確認）`,
       descriptionBefore: 'ドラゴンボールZ ドッカンバトルの龍石購入、デイリーカプセル、フェスコイン交換・虹凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表や使い道も比較できます。ガシャ前のシミュレーションにぜひ役立ててみてくださいね。',
-      descriptionAfter: 'ドッカンバトルのGoogle Play課金予定額からPlay Pointsを計算。公式Web Storeは別決済として分離し、変動する龍石・セール価格は購入画面を正本とします。',
+      descriptionAfter: 'ドッカンバトルのGoogle Play課金予定額からPlay Pointsを計算。公式Web Storeは別決済として分離し、変動する龍石・セール価格は購入画面で確認します。',
       replacements: [['はい。龍石パックやデイリーカプセルの購入時にPlay Pointsが付与されます。', 'Google Play上の対象購入として処理される場合にポイントが計算されます。公式Web StoreはGoogle Play決済と分けて確認してください。']],
       guideBlock: `<section class="section" data-game-seo-guide="dokkan"><h2>Google Playと公式Web Storeを別軸で比較</h2><p>Web Storeは公式の購入経路ですがGoogle Play決済ではありません。変動する龍石価格を固定せず、Play Points対象経路と商品内容を分けて判断します。</p><p><a href="./google-play-vs-webstore/">Google PlayとWeb Storeの違いを見る ➔</a></p></section>`, guideMarker: 'data-game-seo-guide="dokkan"'
     },
     {
       file: 'games/wutheringwaves/index.html', presetLabel: 'Google Playの表示額を入力', optionLabel: '現行価格をGoogle Playで確認して入力',
       tableMessage: '鳴潮はAndroid対応・ゲーム内課金ありを公式確認していますが、現行日本Google Play商品価格を公開一次情報で固定できません。購入画面の実額を入力してください。',
-      gameMeta: `鳴潮 Google Play価格・Play Points確認：${VERIFIED_AT}（価格は購入画面を正本）`,
+      gameMeta: `鳴潮 Google Play価格・Play Points確認：${VERIFIED_AT}（価格は購入画面で確認）`,
       descriptionBefore: '鳴潮（Wuthering Waves）の月相購入、月相観測パス、先駆ラジオ、80連/160連天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表やお得な使い道も比較できます。集音前のポイント確認にぜひ使ってみてくださいね。',
-      descriptionAfter: '鳴潮のGoogle Play課金予定額からPlay Pointsを計算。現行商品価格や天井の現金額を推測で固定せず、購入画面の実額を正本として確認できます。',
+      descriptionAfter: '鳴潮のGoogle Play課金予定額からPlay Pointsを計算。現行商品価格や天井の現金額を推測で固定せず、購入画面の実際の支払額から確認できます。',
       replacements: [
         ['鳴潮の確定天井（160連）で何ポイント貯まりますか？', '鳴潮の160連分に必要な現金額は固定ですか？'],
         ['160連（約4.8万円）課金した場合、通常時（1pt/100円）で約480pt、特別獲得率5pt/100円時なら約2,400pt（ゴールドランク到達）還元されます。', 'いいえ。所持通貨・配布・チケット・販売中の商品構成で実負担が変わるため、固定4.8万円とは扱いません。Google Playで実際に支払う金額からPlay Pointsを確認してください。'],

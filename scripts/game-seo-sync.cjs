@@ -87,7 +87,7 @@ ${JSON.stringify({
       <header class="game-header"><span class="game-badge">🔎 公式情報を基準に検証</span><h1 class="game-title">${title}</h1><p class="game-meta">最終確認：${VERIFIED_AT}</p></header>
       <p>${lead}</p>
       ${body}
-      <section class="section"><h2>このページの確認方針</h2><p>金額・商品構成・ガチャ仕様は変更されることがあります。掲載値は確認日と出典を明示し、確認できない値を推測で補いません。実際の購入前にはゲーム内または公式ストアの最終表示、Google Playの獲得予定ポイント表示を優先してください。</p></section>
+      <section class="section"><h2>購入前に確認すること</h2><p>金額・商品構成・ガチャ仕様は変更されることがあります。掲載値は確認日と出典を明示し、確認できない値を推測で補いません。実際の購入前にはゲーム内または公式ストアの最終表示、Google Playの獲得予定ポイント表示を優先してください。</p></section>
     </main>
   </div>
   <footer class="site-footer"><p>© Playポイント計算機 / 非公式の独立した計算・解説サイトです。</p></footer>
@@ -122,7 +122,7 @@ function renderGenshinGuide() {
   const body = `
       <section class="section"><h2>空月の祝福は最大3,000原石相当</h2><p>空月の祝福は購入時に創世結晶300個、その後30日間、ログインした日に原石90個ずつ受け取れます。30日すべて受け取れば2,700原石なので、創世結晶を1:1で原石に変換する前提では<strong>合計最大3,000原石相当</strong>です。</p><p>ログインしなかった日の原石は後から受け取れず、有効期間も延長されません。即時チャージとは受け取れる時期が異なるため、実際にログインできる日数と必要な時期を基準に比較してください。</p></section>
       <section class="section"><h2>購入額からPlay Pointsを計算する</h2><p>以下は税込1,000円の対象商品を購入する場合の計算例です。月パスの販売価格を示すものではありません。</p>${pointTableHtml(1000)}<p><strong>Google Play経由で購入した場合</strong>にPlay Pointsの対象になります。HoYoverse公式チャージセンターなどGoogle Play外の決済は、Google Playでの購入ではないため、Play Points獲得を前提に比較しません。</p></section>
-      <section class="section"><h2>90連・180連を「固定の円額」にしない理由</h2><p>キャラクター祈願で最大90連なら14,400原石、すり抜け後も含む最大180連なら28,800原石が必要になる計算です。ただし、実際の現金負担は所持原石、紡がれた運命、空月、イベント配布、初回2倍、チャージ特典によって大きく変わります。そのため本サイトでは、一律の円額は示さず、実際に購入する金額からPlay Pointsを計算します。</p></section>
+      <section class="section"><h2>90連・180連までの不足原石と購入額を確認する</h2><p>キャラクター祈願で最大90連なら14,400原石、すり抜け後も含む最大180連なら28,800原石が必要になる計算です。ただし、実際の現金負担は所持原石、紡がれた運命、空月、イベント配布、初回2倍、チャージ特典によって大きく変わります。そのため本サイトでは、一律の円額は示さず、実際に購入する金額からPlay Pointsを計算します。</p></section>
       <section class="section"><h2>価格はGoogle Playの購入画面で確認する</h2><p>月パスと通常チャージの価格は、利用地域・購入経路・販売時期で異なる場合があります。このページでは日本のGoogle Playの現行価格を確定できていないため、金額を固定した価格表は掲載していません。購入する商品の価格と内容をGoogle Playの購入画面で確認し、実際の支払予定額を計算機に入力してください。</p></section>
       <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.genshinWelkinReference}" target="_blank" rel="noopener noreferrer">HoYoverse公式ヘルプ：空月の祝福の内容・未ログイン日の扱い</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li><li><a href="${SOURCES.googlePlayLevels}" target="_blank" rel="noopener noreferrer">Google Play公式：日本のステータス別獲得率</a></li></ul></section>
       <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">原神 Play Points計算機へ戻る ➔</a></p>`;

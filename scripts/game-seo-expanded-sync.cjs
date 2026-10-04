@@ -36,7 +36,7 @@ function renderStarrailGuide() {
   const body = `
     <section class="section"><h2>列車補給標章は最大3,000星玉相当</h2><p>購入時に往日の夢華300個を受け取り、30日間はログインした日に星玉90個を受け取れます。30日すべて受け取ると2,700星玉なので、往日の夢華300個を1:1で星玉へ交換する前提では<strong>最大3,000星玉相当</strong>です。</p><p>ログインしなかった日の90星玉は後からまとめて受け取れないため、即時チャージと同じ「購入直後に3,000個を受け取れる商品」として扱わないことが重要です。</p></section>
     <section class="section"><h2>価格は購入経路ごとに確認する</h2><p>月パスと通常チャージの価格は、利用地域・購入経路・販売時期で異なる場合があります。このページでは日本のGoogle Playの現行価格を確定できていないため、金額を固定した価格表は掲載していません。購入する商品の価格と内容をGoogle Playの購入画面で確認し、実際の支払予定額を計算機に入力してください。</p></section>
-    <section class="section"><h2>90連・180連を固定の円額にしない</h2><p>ガチャに必要な星玉は所持星玉、チケット、イベント配布、列車補給標章、初回チャージ特典などで補えるため、固定の円額では実負担を正確に表せません。実際の課金予定額を入力してPlay Pointsを計算してください。</p></section>
+    <section class="section"><h2>90連・180連までの不足星玉と購入額を確認する</h2><p>ガチャに必要な星玉は所持星玉、チケット、イベント配布、列車補給標章、初回チャージ特典などで補えるため、固定の円額では実負担を正確に表せません。実際の課金予定額を入力してPlay Pointsを計算してください。</p></section>
     <section class="section"><h2>購入額からPlay Pointsを計算する</h2><p>以下は税込1,000円の対象商品を購入する場合の計算例です。月パスの販売価格を示すものではありません。</p>${pointTableHtml(1000)}<p>列車補給標章を<strong>Google Play経由</strong>で購入した場合に限り、Google Play上の対象購入としてPlay Pointsを計算します。HoYoverseの別決済経路をGoogle Play購入として数えません。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.starrailSupplyPassReference}" target="_blank" rel="noopener noreferrer">COGNOSPHEREの商品説明（Epic Games）：列車補給標章の内容。Google Play価格の出典ではありません</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">スターレイル Play Points計算機へ戻る ➔</a></p>`;
@@ -56,7 +56,7 @@ function renderZzzGuide() {
   const body = `
     <section class="section"><h2>インターノット会員は最大3,000ポリクローム相当</h2><p>購入時にモノクローム300個、その後30日間にポリクローム90個ずつを受け取る定額型です。30日分をすべて受け取れば2,700ポリクロームなので、モノクローム300個を1:1で換算する前提では<strong>最大3,000ポリクローム相当</strong>です。</p><p>即時に3,000個を受け取る商品ではないため、通常チャージとは「総量」と「受取速度」を分けて比較します。</p></section>
     <section class="section"><h2>価格は購入経路ごとに確認する</h2><p>月パスと通常チャージの価格は、利用地域・購入経路・販売時期で異なる場合があります。このページでは日本のGoogle Playの現行価格を確定できていないため、金額を固定した価格表は掲載していません。購入する商品の価格と内容をGoogle Playの購入画面で確認し、実際の支払予定額を計算機に入力してください。</p></section>
-    <section class="section"><h2>90連・180連を「何円」と固定しない</h2><p>ガチャ必要量が同じでも、所持ポリクローム、暗号化マスターテープ、インターノット会員、イベント配布、初回増量などで現金負担は変わります。このため固定の円額では示さず、実際に支払う予定額からPlay Pointsを計算します。</p></section>
+    <section class="section"><h2>90連・180連までの不足通貨と購入額を確認する</h2><p>ガチャ必要量が同じでも、所持ポリクローム、暗号化マスターテープ、インターノット会員、イベント配布、初回増量などで現金負担は変わります。このため固定の円額では示さず、実際に支払う予定額からPlay Pointsを計算します。</p></section>
     <section class="section"><h2>購入額からPlay Pointsを計算する</h2><p>以下は税込1,000円の対象商品を購入する場合の計算例です。月パスの販売価格を示すものではありません。</p>${pointTableHtml(1000)}<p>Play PointsはGoogle Play上の対象購入を基準にします。ゲーム外・Google Play外の決済経路は同じものとして加算しません。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.zzzMembershipReference}" target="_blank" rel="noopener noreferrer">COGNOSPHEREの商品説明（PlayStation）：会員の内容。Google Play価格の出典ではありません</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ゼンゼロ Play Points計算機へ戻る ➔</a></p>`;
@@ -74,9 +74,9 @@ function renderUmasukuGuide() {
   const data = GAME_SEO.umamusume;
   const umasuku = data.umasuku;
   const body = `
-    <section class="section"><h2>デイリージュエルパックは終了。現在の月額は「ウマスク」</h2><p>旧「デイリージュエルパック」は<strong>2024年12月19日4:59に販売終了</strong>しています。現在の月額サービスとして公式に案内されている「ウマスク」は<strong>月980円</strong>です。旧商品を現行商品として計算候補に残さないよう修正します。</p></section>
+    <section class="section"><h2>デイリージュエルパックは終了。現在の月額は「ウマスク」</h2><p>旧「デイリージュエルパック」は<strong>2024年12月19日4:59に販売終了</strong>しています。現在の月額サービスとして公式に案内されている「ウマスク」は<strong>月980円</strong>です。購入する場合は現在販売されているウマスクの内容と更新条件を確認してください。</p></section>
     <section class="section"><h2>ウマスク980円でもらえるもの</h2><ul><li>購入時・更新時：有償ジュエル500個 + 無償ジュエル50個</li><li>ログイン時：無償ジュエル50個を毎日</li><li>育成の対象報酬：2倍（+100%）</li><li>デイリーレースチケット：毎日+3枚</li></ul><p>毎日分の無償ジュエルは未受取があっても<strong>次回ログイン時にまとめてプレゼントへ送られる</strong>と公式WebStoreに明記されています。これはHoYoverse系の月パスのような「未ログイン日は失う」商品とは扱いが違います。</p></section>
-    <section class="section"><h2>「30日で何ジュエル」と固定しすぎない</h2><p>ウマスクの有効期間は「購入後1か月」で、翌月同日までが基準です。月の日数や購入タイミングで日数が変わるため、PlayPointでは980円を一律「30日分○個」として固定換算しません。比較するときは、購入/更新時の550個と、実際の有効日数に応じる毎日50個を分けます。</p></section>
+    <section class="section"><h2>1か月分のジュエルは有効日数で確認する</h2><p>ウマスクの有効期間は「購入後1か月」で、翌月同日までが基準です。月の日数や購入タイミングで日数が変わるため、日数を一律30日として換算すると、実際にもらえる個数と異なる場合があります。比較するときは、購入/更新時の550個と、実際の有効日数に応じる毎日50個を分けます。</p></section>
     <section class="section"><h2>Google PlayとCygames WebStoreは別の購入経路</h2><p>2026年2月からウマスクはCygames WebStoreでも購入可能です。ただし、Google Play PointsはGoogle Play上の対象購入に対する制度なので、WebStore購入をGoogle Play購入としてポイント計算しません。Play Pointsを重視する場合はGoogle Play側の購入画面、お得なWebStore施策を重視する場合はCygames WebStoreを別軸で比較します。</p>${pointTableHtml(umasuku.price)}</section>
     <section class="section"><h2>ウマプランとは別サービス</h2><p>2026年2月24日から月額1,980円の「ウマプラン」も登場しています。ウマスクと重複購入できるため、ジュエル系月額と機能系月額を混同しないようにします。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.umamusumeUmasuku}" target="_blank" rel="noopener noreferrer">ウマ娘公式WebStore：ウマスク詳細</a></li><li><a href="${SOURCES.umamusumeUmasukuLaunch}" target="_blank" rel="noopener noreferrer">ウマ娘公式：ウマスク開始・デイリージュエルパック終了</a></li><li><a href="${SOURCES.umamusumeUmaplan}" target="_blank" rel="noopener noreferrer">ウマ娘公式：ウマプランとWebStore対応</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>

@@ -9,6 +9,7 @@ const { GAME_LOCALE_DIRECTORIES } = require('./locale-ids.cjs');
 const { getLatestHubVerificationDate } = require('./latest-hub-audit.cjs');
 const { VERIFIED_AT: GAME_SEO_VERIFIED_AT } = require('./game-seo-data.cjs');
 const { VERIFIED_AT: GAME_SEO_WAVE5_VERIFIED_AT } = require('./game-seo-wave5-data.cjs');
+const { GAME_GUIDE_ARTICLES } = require('./game-guide-article-catalog.cjs');
 
 // Content dates only change when the corresponding page receives a meaningful
 // editorial update. Build timestamps and asset cache versions are kept separate.
@@ -87,7 +88,8 @@ const GAME_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
   'en/games/efootball/index.html': GAME_SEO_WAVE5_VERIFIED_AT,
   'ko/games/efootball/index.html': GAME_SEO_WAVE5_VERIFIED_AT,
   'tw/games/efootball/index.html': GAME_SEO_WAVE5_VERIFIED_AT,
-  'games/efootball/google-play-points-vs-efootball-points/index.html': GAME_SEO_WAVE5_VERIFIED_AT
+  'games/efootball/google-play-points-vs-efootball-points/index.html': GAME_SEO_WAVE5_VERIFIED_AT,
+  ...Object.fromEntries(GAME_GUIDE_ARTICLES.map(article => [article.file.slice(3), article.modified]))
 });
 const LATEST_HUB_VERIFICATION_DATE = getLatestHubVerificationDate(rootDir);
 

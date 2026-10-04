@@ -5,7 +5,7 @@
     // Configuration Constants
     // ===========================================
     const CONFIG = {
-        articlesUrl: 'articles.json?v=20260925_sidebar1',
+        articlesUrl: '/blog/articles.json?v=20260925_sidebar1',
         itemsPerPage: 12,
         adInterval: 3,
         newThresholdDays: 7,
@@ -110,7 +110,7 @@
                 topic: params.get('topic') || '',
                 search: params.get('q') || '',
                 game: params.get('game') || '',
-                page: params.get('page') || '1',
+                page: params.get('page') || window.location.pathname.match(/^\/blog\/page\/(\d+)\/$/)?.[1] || '1',
                 sort: ['newest', 'oldest', 'updated', 'relevance'].includes(params.get('sort')) ? params.get('sort') : null
             };
         },
@@ -151,7 +151,14 @@
             } else {
                 url.searchParams.delete('sort');
             }
+            url.pathname = '/blog/';
+            if (!state.search && !state.game && !state.topic && (!state.category || state.category === 'all') && (!state.sort || state.sort === 'newest')) {
+                if (Number(state.page) > 1) url.pathname = '/blog/page/' + state.page + '/';
+                url.searchParams.delete('page');
+            }
             if (url.href !== window.location.href) window.history[mode === 'push' ? 'pushState' : 'replaceState']({}, '', url);
+            const canonicalPath = /^\/blog\/page\/\d+\/$/.test(url.pathname) ? url.pathname : '/blog/';
+            document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://playpoint-sim.com' + canonicalPath);
         }
     };
 
@@ -362,7 +369,7 @@
         const timeout = setTimeout(() => controller.abort(), 12000);
         searchNotice('本文も検索できるように読み込んでいます…');
         dom.grid?.setAttribute('aria-busy', 'true');
-        bodySearchPromise = fetch('article-search-index.json', { signal: controller.signal }).then(response => {
+        bodySearchPromise = fetch('/blog/article-search-index.json', { signal: controller.signal }).then(response => {
             if (!response.ok) throw new Error('Search index unavailable');
             return response.json();
         }).then(index => {
@@ -388,7 +395,7 @@
     function loadGameCalculators() {
         if (gameCalculatorsLoaded) return;
         gameCalculatorsLoaded = true;
-        fetch('game-calculators.json').then(response => {
+        fetch('/blog/game-calculators.json').then(response => {
             if (!response.ok) throw new Error('Game links unavailable');
             return response.json();
         }).then(items => { gameCalculators = Array.isArray(items) ? items : []; renderGameCalculatorLinks(); })
@@ -719,7 +726,7 @@
 
         // 追加通信が完了しても、同じ初期カードの本文と画像は作り直さない。
         const initialCards = [...dom.grid.querySelectorAll('[data-blog-initial-card]')];
-        if (initialCards.length && !currentSearch && !currentGameTitle && !currentBrowseCategory && currentCategory === 'all' && currentPage === 1 && sortMode === 'newest'
+        if (initialCards.length && !currentSearch && !currentGameTitle && !currentBrowseCategory && currentCategory === 'all' && currentPage === Number(document.body.dataset.blogPage || 1) && sortMode === 'newest'
             && initialCards.length === pageItems.length && initialCards.every((card, i) => card.dataset.blogInitialSignature === BlogUtils.articleCardIdentity(pageItems[i]))) {
             initialCards.forEach((card, i) => {
                 const article = pageItems[i];
@@ -734,7 +741,7 @@
             });
             dom.grid.querySelector('.error-state')?.remove();
             listingAd = createAdElement();
-            initialCards[CONFIG.adInterval - 1].after(listingAd);
+            initialCards[CONFIG.adInterval - 1]?.after(listingAd);
             listingAd.dataset.requestScheduled = 'true';
             void window.PlayPointBlogAds?.request(dom.grid);
             renderPagination(totalPages);
@@ -795,13 +802,17 @@
             const card = document.createElement('a');
             card.setAttribute('aria-label', article.title);
             const snippet = window.PlayPointSearch?.excerpt(article, currentSearch, 'ja');
-            card.href = article.file;
-            if (currentSearch && snippet?.id) card.href = article.file + '#' + encodeURIComponent(snippet.id);
+            card.href = new URL(article.file, location.origin + '/blog/').pathname;
+            if (currentSearch && snippet?.id) card.href += '#' + encodeURIComponent(snippet.id);
             card.className = 'article-card';
             card.classList.toggle('article-card--visual', article.thumbnailKind !== 'app-icon');
             card.addEventListener('click', () => Analytics.trackArticleClick(article.title, article.category));
             const compact = isCompactArticleList();
             card.innerHTML = BlogUtils.articleCardMarkup(article, { search: currentSearch, snippet, isNew: isNewArticle(article.date), compact, first: compact && compactThumbnailIndex++ === 0 });
+            card.querySelectorAll('img, source').forEach(node => {
+                ['src', 'data-src'].forEach(attr => { const value = node.getAttribute(attr); if (value?.startsWith('../')) node.setAttribute(attr, new URL(value, location.origin + '/blog/').pathname); });
+                ['srcset', 'data-srcset'].forEach(attr => { const value = node.getAttribute(attr); if (value) node.setAttribute(attr, value.replace(/\.\.\//g, '/')); });
+            });
 
             // Attach error handler
             const img = card.querySelector('img');
@@ -832,11 +843,25 @@
         const wrapper = document.createElement('div');
         wrapper.className = 'pagination-compact-wrapper';
 
-        const prev = document.createElement('button');
+        const pageHref = page => {
+            const url = new URL(location.href);
+            const plain = !currentSearch && !currentGameTitle && !currentBrowseCategory && currentCategory === 'all' && sortMode === 'newest';
+            url.pathname = plain && page > 1 ? '/blog/page/' + page + '/' : '/blog/';
+            if (!plain && page > 1) url.searchParams.set('page', page); else url.searchParams.delete('page');
+            return url.pathname + url.search;
+        };
+        const navigate = (event, page) => {
+            if (event.currentTarget.getAttribute('aria-disabled') === 'true') { event.preventDefault(); return; }
+            if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+            event.preventDefault(); changePage(page);
+        };
+        const prev = document.createElement('a');
         prev.textContent = '← 前へ';
         prev.disabled = currentPage === 1;
+        prev.href = pageHref(Math.max(1, currentPage - 1));
+        if (prev.disabled) { prev.setAttribute('aria-disabled', 'true'); prev.tabIndex = -1; }
         prev.className = 'pagination-nav pagination-box pagination-prev';
-        prev.addEventListener('click', function () { changePage(currentPage - 1); });
+        prev.addEventListener('click', event => navigate(event, currentPage - 1));
 
         const inputWrap = document.createElement('div');
         inputWrap.className = 'pagination-box pagination-input-wrap';
@@ -890,11 +915,13 @@
         status.setAttribute('role', 'status');
         status.setAttribute('aria-live', 'polite');
 
-        const next = document.createElement('button');
+        const next = document.createElement('a');
         next.textContent = '次へ →';
         next.disabled = currentPage === totalPages;
+        next.href = pageHref(Math.min(totalPages, currentPage + 1));
+        if (next.disabled) { next.setAttribute('aria-disabled', 'true'); next.tabIndex = -1; }
         next.className = 'pagination-nav pagination-box pagination-next';
-        next.addEventListener('click', function () { changePage(currentPage + 1); });
+        next.addEventListener('click', event => navigate(event, currentPage + 1));
 
         wrapper.append(prev, inputWrap, next, status);
         dom.pagination.append(wrapper);
@@ -931,7 +958,7 @@
             const topic = button.dataset.topic;
             button.textContent = topic ? `${topic} (${counts[topic] || 0})` : `すべて (${candidates.length})`;
         });
-        document.querySelectorAll('.guide-hub-sidebar .sidebar-browse-category').forEach(link => {
+        document.querySelectorAll('.sidebar-browse-category').forEach(link => {
             const topic = link.dataset.topic || new URL(link.href, location.href).searchParams.get('topic');
             const count = counts[topic] || 0;
             const badge = link.querySelector('.sidebar-browse-count');
@@ -952,6 +979,15 @@
                 if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
                 event.preventDefault(); setBrowseCategory(currentBrowseCategory === link.dataset.topic ? '' : link.dataset.topic);
             });
+        });
+        document.querySelectorAll('.sidebar-search-input, .sidebar-search input[type="search"], #guide-menu input[name="q"]').forEach(input => { input.value = currentSearch; });
+        document.querySelectorAll('.sidebar-search-form').forEach(form => {
+            for (const [name, value] of Object.entries({ game: currentGameTitle, topic: currentBrowseCategory, category: currentCategory === 'all' ? '' : currentCategory })) {
+                let input = form.querySelector(`input[name="${name}"]`);
+                if (!value) { input?.remove(); continue; }
+                if (!input) { input = document.createElement('input'); input.type = 'hidden'; input.name = name; form.append(input); }
+                input.value = value;
+            }
         });
         const totalPages = Math.max(1, Math.ceil(filterArticles().length / CONFIG.itemsPerPage));
         const current = Math.min(Math.max(1, Number(currentPage) || 1), totalPages);
