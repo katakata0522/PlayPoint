@@ -65,6 +65,7 @@ test('購入比較は即時の個数と将来の還元を分け、Pokémon GOの
   assert.match(table, /支払額 ÷ ボーナス込みの受取個数/);
   assert.match(table, /今すぐ受け取るポケコインに足しません/);
   assert.ok(pokemon.match(/<h1\b[^>]*>([^<]+)<\/h1>/)[1].length < 60);
+  assert.match(pokemon, /<h2 id="article-section-2">AndroidはGoogle PlayとGalaxy Storeを区別する<\/h2>/, '既存の節への直リンクを新しい比較表でずらさない');
   assert.ok(read('games/dokkan/google-play-vs-webstore/index.html').includes('reader-comparison'));
 });
 
