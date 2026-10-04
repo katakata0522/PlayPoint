@@ -4,7 +4,15 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { GAME_GUIDE_ARTICLES } = require('./game-guide-article-catalog.cjs');
 const escape = value => String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-const plain = value => String(value).replace(/<[^>]*>/g, '').replace(/[<>]/g, '').trim();
+function plain(value) {
+  let text = '', inTag = false;
+  for (const character of String(value)) {
+    if (character === '<') inTag = true;
+    else if (character === '>') inTag = false;
+    else if (!inTag) text += character;
+  }
+  return text.trim();
+}
 const EARN_SOURCE = 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja';
 // 見出しの主張と一次情報を結ぶ。別制度の説明をGoogleの資料だけで裏付けない。
 const SOURCE_RULES = {
