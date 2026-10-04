@@ -137,3 +137,15 @@ html[lang="ja"] body .guide-toc-links a:hover { color:var(--reading-link); }
 @media(prefers-reduced-motion:reduce) {
   html[lang="ja"] body :is(.article-card,.search-pathway-card,.guide-nav-button) { transition:none; }
 }
+/* 入力中も選べる、少数の質問の入口。 */
+.reader-question-links { display:flex; flex-wrap:wrap; gap:0 18px; margin:4px 0 8px; }
+.reader-question-links a { display:inline-flex; align-items:center; min-height:44px; color:var(--reading-link); font-size:13px; text-decoration:underline; text-underline-offset:3px; }
+.search-destinations { margin:12px 0; padding:16px; border:1px solid var(--reading-border); border-radius:8px; background:var(--reading-soft); }
+.search-destinations h2 { font-size:16px; margin:0 0 10px; }
+.search-destinations a { display:inline-block; padding:6px 0; color:var(--reading-link); font-weight:650; text-decoration:underline; }
+.search-destinations p { margin:0 0 8px; font-size:14px; color:var(--reading-muted); }
+.reader-decision-summary { display:grid; gap:10px; margin:16px 0; padding:0; list-style:none; }
+.reader-decision-summary li { padding:12px 16px; border-left:3px solid var(--reading-link); background:var(--reading-soft); }
+.reader-decision-summary strong { display:block; }
+.reader-topic-return { margin:20px 0; padding:12px 0; border-top:1px solid var(--reading-border); }
+@media(max-width:760px) { .reader-question-links { gap:0 10px; } .reader-question-links a { font-size:12px; min-height:36px; } }

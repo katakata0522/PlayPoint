@@ -20,6 +20,7 @@
       groups.ja[0].push((prefix + (prefix ? firstSpace : '') + play + secondSpace + points).trim());
   groups.ja[2].push('付与', 'いつ付く', 'いつつく', 'いつ反映', '反映されてない', '反映されていない', 'ついてない', 'ついていない', '付いてない', '付いていない', 'もらえない', 'ついてこない', '付いてこない');
   groups.ja[1].push('期限が切れた', '期限切れになった');
+  groups.ja[4].push('毎週');
   groups.ja.push(
     ['Pokémon GO', 'Pokemon GO', 'PokémonGO', 'PokemonGO', 'ポケモンGO', 'ポケモン GO', 'ポケモンゴー'],
     ['消えた', '消える', '消えました', '消えてしまった', 'なくなった', 'なくなりました', '無くなった', '消失'],
@@ -44,11 +45,16 @@
     ['届かない', '受け取れない', '受け取れません'],
     ['キャンペーン', '増量キャンペーン'], ['クエスト', 'quest'],
     ['使えない', '使えません', '利用できない', 'できない', '出来ない', 'できません'],
-    ['ランク', 'ステータス'], ['必要額', 'いくら必要', '必要金額'],
+    ['ランク', 'ステータス'], ['必要額', 'いくら必要', '必要金額', 'あといくらで', 'あといくら', '何円で'],
     ['貯まらない', 'たまらない', '増えない', '貯められない', 'ためられない'],
     ['維持', '維持費', '維持金額', 'ランク維持'],
     ['現金', '現金化', '現金にしたい', '現金にする'],
-    ['ギフトカード', 'ギフトコード', 'プリペイド', 'プリペイドカード']
+    ['ギフトカード', 'ギフトコード', 'プリペイド', 'プリペイドカード'],
+    ['無料', '無課金', '課金しないで', '課金せずに', '課金なしで'],
+    ['貯める', '貯めたい', 'ためる', 'ためたい', '貯め方'],
+    ['お得', '一番お得', 'おすすめ'],
+    ['何がもらえる', '何が貰える', '何が当たる', '何が出る'],
+    ['今週', '現在', '今の'], ['予定', '開催予定', 'スケジュール']
   );
   const escapePattern = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   // 同義語は固定なので、記事・比較回数ごとに正規化と並べ替えを繰り返さない。
@@ -65,6 +71,22 @@
     [['失効'], '2025-12-25-expiration.html'], [['反映'], '2026-03-10-play-points-reflection-timing.html'],
     [['現金'], '2026-07-24-play-points-cash-conversion.html'],
     [['ギフトカード'], '2025-12-25-gift-card.html'],
+    [['無料', '貯める'], '2026-07-24-earn-play-points-free.html'],
+    [['お得', '使い方'], '2025-12-25-best-use.html'],
+    [['お得', '交換'], '2025-12-25-best-use.html'],
+    [['ウィークリー'], '2025-12-25-weekly-reward.html'],
+    [['ウィークリー', '何がもらえる'], '2025-12-25-weekly-reward.html'],
+    [['今週', '特典'], 'latest/'], [['キャンペーン'], 'latest/'], [['キャンペーン', '予定'], 'latest/'],
+    [['必要額', 'ゴールド'], 'guides/ranks/'], [['必要額', 'プラチナ'], 'guides/ranks/'],
+    [['必要額', 'ダイヤモンド'], 'guides/ranks/'], [['必要額', 'シルバー'], 'guides/ranks/'],
+    [['維持', 'プラチナ'], '2025-12-25-playpoints-rank-maintenance.html'],
+    [['維持', 'ゴールド'], '2025-12-25-playpoints-rank-maintenance.html'],
+    [['維持', 'ダイヤモンド'], '2025-12-25-playpoints-rank-maintenance.html'],
+    [['ランク'], 'guides/ranks/'], [['トラブル'], 'guides/troubleshooting/'],
+    [['1', '何円'], '2026-07-24-play-points-1-value.html'],
+    [['100', '何円'], '2026-07-24-play-points-100-value.html'],
+    [['500', '何円'], '2026-07-24-play-points-500-1000-value.html'],
+    [['1000', '何円'], '2026-07-24-play-points-500-1000-value.html'],
     [['クーポン','見つからない'], '2026-07-25-play-points-coupon-not-applied.html'],
     [['クーポン','使えない'], '2026-07-25-play-points-coupon-not-applied.html'],
     [['ウィークリー','見つからない'], '2026-08-16-weekly-reward-not-showing.html'],
@@ -96,7 +118,7 @@
     const candidates = new Set(dictionaries.ja.words.filter(([word]) => word.length >= 4 && word[0] === token[0] && variants.some(value => value.length >= 4 && oneEdit(value, word))).map(([, id]) => id));
     return candidates.size === 1 ? [...candidates][0] : token;
   }
-  const domainWords = ['インストール', 'アイテム', 'ゲーム', '課金', '購入', '交換', '登録', '残高', '確認', '期限', '更新', '解約', '返金', '払い戻し', 'ボタン', '天井', 'ゴールド', 'プラチナ', 'シルバー', 'ダイヤモンド', 'ブラックダイヤモンド', '必要額'];
+  const domainWords = ['インストール', 'アイテム', 'ゲーム', '課金', '購入', '交換', '登録', '残高', '確認', '期限', '更新', '解約', '返金', '払い戻し', 'ボタン', '天井', 'ゴールド', 'プラチナ', 'シルバー', 'ダイヤモンド', 'ブラックダイヤモンド', '必要額', '特典', '何円'];
   const domainPattern = new RegExp('zzalias\\d+zz|' + domainWords.map(word => fold(word, 'ja')).sort((a,b) => b.length-a.length).join('|'), 'g');
   const queryCache = new Map();
   function tokens(query, locale = 'ja') {
@@ -127,6 +149,22 @@
     const owner = intentOwner(query, locale);
     return !!owner && (article.path || article.file || '').endsWith('/' + owner);
   }
+  // 計測には自由入力を渡さず、回答先が確定する質問だけ固定の目的名にする。
+  function intentId(query, locale = 'ja') {
+    const owner = intentOwner(query, locale);
+    if (/earn-play-points-free/.test(owner)) return 'earn_free';
+    if (/best-use/.test(owner)) return 'use_points';
+    if (owner === 'latest/') return 'current_benefits';
+    if (owner === 'guides/ranks/') return 'rank_cost';
+    if (/weekly-reward\.html$/.test(owner)) return 'weekly_rewards';
+    if (/play-points-(?:1|100|500-1000)-value/.test(owner)) return 'point_value';
+    if (/reflection|not-|disappeared|cannot-join|troubleshooting/.test(owner)) return 'troubleshooting';
+    return 'other';
+  }
+  function contains(text, token) {
+    // 1を100や1000の部分一致として採点しない。
+    return /^\d+$/.test(token) ? new RegExp('(^|[^0-9])' + token + '(?![0-9])').test(text) : text.includes(token);
+  }
   function sections(article) { return Array.isArray(article.sections) ? article.sections : []; }
   function searchable(article) { return [article.title, article.description, article.category, ...(article.tags || []), ...sections(article).map(s => s.heading + ' ' + s.text)].join(' '); }
   const articleCache = new WeakMap();
@@ -142,14 +180,14 @@
     if (isIntentOwner(article, query, locale)) return true;
     const terms = tokens(query, locale);
     if (normalize(query) && !terms.length) return false;
-    return terms.every(token => indexed(article, locale).text.includes(token));
+    return terms.every(token => contains(indexed(article, locale).text, token));
   }
   function score(article, query, locale = 'ja') {
     const terms = tokens(query, locale);
     const { titleText: title, headings } = indexed(article, locale);
     const generalMissing = locale === 'ja' && terms.includes('zzalias2zz') && terms.every(term => ['zzalias0zz', 'zzalias2zz', 'ポイント'].includes(term));
     const mainAnswer = generalMissing && /reflection-timing\.html$/.test(article.path || article.file || '');
-    return (isIntentOwner(article, query, locale) ? 100 : 0) + (mainAnswer ? 30 : 0) + terms.reduce((sum, token) => sum + (title.includes(token) ? 10 : 0) + (headings.includes(token) ? 2 : 0), 0);
+    return (isIntentOwner(article, query, locale) ? 100 : 0) + (mainAnswer ? 30 : 0) + terms.reduce((sum, token) => sum + (contains(title, token) ? 10 : 0) + (contains(headings, token) ? 2 : 0), 0);
   }
   function excerpt(article, query, locale = 'ja') {
     if (!normalize(query)) return { text: article.description || '', id: '', heading: '' };
@@ -186,7 +224,7 @@
     })
       .filter(item => item.count > 0).sort((a, b) => b.count - a.count || b.relevance - a.relevance).slice(0, 3).map(item => item.article);
   }
-  const api = { normalize, canonical, tokens, matches, score, excerpt, suggest };
+  const api = { normalize, canonical, tokens, matches, score, excerpt, suggest, intentId };
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (root) root.PlayPointSearch = api;
 })(typeof globalThis === 'object' ? globalThis : this);

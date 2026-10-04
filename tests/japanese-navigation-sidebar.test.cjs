@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { BROWSE_CATEGORIES, transformArticle, nextFor, renderSidebar } = require('../scripts/japanese-navigation-sidebar.cjs');
-const { JAPANESE_POPULAR_GUIDES, POPULAR_GUIDES_SNAPSHOT } = require('../scripts/japanese-popular-guides.cjs');
+const { JAPANESE_POPULAR_GUIDES, POPULAR_GUIDES_SNAPSHOT, POPULAR_GUIDES_WINDOW } = require('../scripts/japanese-popular-guides.cjs');
 const root = path.resolve(__dirname, '..');
 const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8')).filter(a => a.listed !== false)
   .map(a => ({ ...a, path: a.file.replace(/^\.\.\//, ''), href: '/' + a.file.replace(/^\.\.\//, ''), label: a.title }));
@@ -21,7 +21,7 @@ test('日本語の全公開記事は検索・人気5件・次行動1件を持ち
     assert.equal((sidebar.match(/class="sidebar-popular-item(?: sidebar-popular-item--featured)?(?: is-current)?"/g) || []).length, 5, article.path);
     assert.equal((sidebar.match(/sidebar-popular-item--featured/g) || []).length, 1, article.path);
     assert.ok(sidebar.includes('よく読まれている記事'), article.path);
-    assert.ok(sidebar.includes(POPULAR_GUIDES_SNAPSHOT + '時点の直近30日'), article.path);
+    assert.ok(sidebar.includes('集計期間 ' + POPULAR_GUIDES_WINDOW), article.path);
     assert.ok(!/\bPV\b|ページビュー/.test(sidebar), article.path + ': PV数は公開しない');
     assert.equal((sidebar.match(/class="sidebar-next-link"/g) || []).length, 1, article.path);
     const links = [...sidebar.matchAll(/class="sidebar-related-link" href="([^"]+)"/g)].map(m => m[1]);

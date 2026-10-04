@@ -62,28 +62,31 @@
     const menu = makeDialog('guide-menu', 'メニュー', menuButton), menuBody = el('div', 'guide-menu-body ja-article-sidebar'); menu.dialog.append(menuBody);
     const sidebar = doc.querySelector('aside.ja-article-sidebar');
     const moves = [];
-    function moveLater(node, label) {
+    function moveLater(node, label, sharedTarget) {
       if (!node) return;
       const marker = doc.createComment('スマホメニューから戻す位置'); node.before(marker);
-      const target = el(label ? 'details' : 'div', label ? 'guide-menu-group' : 'guide-menu-slot');
+      const target = sharedTarget || el(label ? 'details' : 'div', label ? 'guide-menu-group' : 'guide-menu-slot');
       if (label) target.append(el('summary', '', label));
-      menuBody.append(target);
+      if (!sharedTarget) menuBody.append(target);
       moves.push({ node, marker, target });
+      return target;
     }
     moveLater(sidebar?.querySelector('.sidebar-widget--search'));
     moveLater(doc.querySelector('.ja-global-nav'));
-    moveLater(sidebar?.querySelector('.sidebar-widget--browse'));
+    moveLater(sidebar?.querySelector('.sidebar-widget--browse'), 'すべてのカテゴリー');
     moveLater(sidebar?.querySelector('.sidebar-widget--games'), 'ゲーム別に探す');
     const libraryInline = doc.body.classList.contains('blog-index-compact');
     if (!libraryInline) moveLater(doc.getElementById('reading-library'));
     // 一覧には人気記事を残す。本文では読書を遮らない位置で呼び出す。
     if (sidebar) for (const widget of sidebar.querySelectorAll(':scope > .sidebar-widget')) {
       if (moves.some(item => item.node === widget)) continue;
+      if (widget.matches('.sidebar-widget--author')) continue;
       if (widget.matches('.sidebar-widget--popular') && doc.body.classList.contains('blog-index-compact')) continue;
       moveLater(widget, widget.querySelector('h2')?.textContent || '関連リンク');
     }
     const settings = header.querySelector('.site-header-links');
-    moveLater(settings, '表示・運営者情報');
+    const settingsGroup = moveLater(settings, '表示設定・運営者情報');
+    moveLater(sidebar?.querySelector('.sidebar-widget--author'), null, settingsGroup);
 
     const article = doc.querySelector('article.content, article.main-content-column');
     let toc;

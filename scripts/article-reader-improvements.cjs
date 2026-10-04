@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { GAME_GUIDE_ARTICLES } = require('./game-guide-article-catalog.cjs');
+const { improveReaderLinks } = require('./reader-related-choices.cjs');
 const escape = value => String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 function plain(value) {
   let text = '', inTag = false;
@@ -102,6 +103,12 @@ function syncReaderImprovements(root) {
     if (after !== before) { fs.writeFileSync(file, after); changed++; }
   }
   const file = path.join(root, 'blog/articles.json'), manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const byId = new Map(manifest.map(article => [article.id, article]));
+  for (const article of manifest.filter(article => article.listed !== false && article.source !== 'game-guide')) {
+    const articleFile = path.join(root, article.file.slice(3)), before = fs.readFileSync(articleFile, 'utf8');
+    const after = improveReaderLinks(before, article, byId);
+    if (after !== before) { fs.writeFileSync(articleFile, after); changed++; }
+  }
   for (const article of manifest) if (article.source === 'game-guide' || ['getting-started', 'points-disappeared'].includes(article.id)) article.modified = modified;
   fs.writeFileSync(file, JSON.stringify(manifest, null, 2) + '\n');
   return changed;

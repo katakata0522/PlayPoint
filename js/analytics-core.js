@@ -65,7 +65,8 @@
         widget_code_copied: ['theme', 'language', 'mode'],
         web_vital: ['metric_name', 'metric_rating', 'metric_value_bucket', 'page_group', 'release_version'],
         article_click: ['article_title', 'article_category'],
-        search: ['results_count'],
+        search: ['results_count', 'intent_id'],
+        reader_question_clicked: ['candidate_id', 'source_path', 'target_path'],
         category_filter: ['category_name'],
         theme_change: ['theme_mode'],
         points_cost_calculation_completed: ['region', 'status', 'point_bucket']
@@ -89,6 +90,9 @@
 
     function sanitizeValue(key, value, enumRules = {}) {
         if (value === undefined || value === null || value === '') return null;
+        if (key === 'intent_id' || key === 'candidate_id') {
+            return ['earn_free', 'use_points', 'current_benefits', 'rank_cost', 'weekly_rewards', 'point_value', 'troubleshooting', 'other'].includes(value) ? value : null;
+        }
         if (key === 'link_position') {
             const numberValue = Number(value);
             return Number.isInteger(numberValue) && numberValue >= 1 && numberValue <= 10
@@ -467,6 +471,21 @@
         });
     }
 
+    function installReaderQuestionTracking() {
+        if (!window.document || typeof window.document.addEventListener !== 'function') return;
+        window.document.addEventListener('click', event => {
+            const link = event.target?.closest?.('a[data-reader-question]');
+            if (!link) return;
+            let url;
+            try { url = resolveUrl(link); } catch { return; }
+            if (url.origin !== window.location.origin) return;
+            const params = sanitizeParams('reader_question_clicked', {
+                candidate_id: link.getAttribute('data-reader-question'), source_path: window.location.pathname, target_path: url.pathname
+            });
+            if (params?.candidate_id) track('reader_question_clicked', params);
+        });
+    }
+
     function markEngaged() {
         if (typeof window.dispatchEvent === 'function' && typeof window.CustomEvent === 'function') {
             window.dispatchEvent(new CustomEvent('playpoint:engaged'));
@@ -489,6 +508,7 @@
 
     installGtagBridge();
     installArticleJourneyTracking();
+    installReaderQuestionTracking();
     if (window.document && typeof window.document.addEventListener === 'function') {
         window.document.addEventListener('playpoint:consent-ready', flushPending);
         window.document.addEventListener('playpoint:consent-updated', flushPending);
