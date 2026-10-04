@@ -33,7 +33,7 @@ function renderStaticPage(template, articles, page, coreVersion = '') {
   html = html.replace(/(<div\b[^>]*id="article-grid"[^>]*>)[\s\S]*?(?=<noscript>)/, '$1\n' + cards + '\n');
   html = html.replace(/(<div\b[^>]*id="pagination"[^>]*>)\s*(?:<!-- Populated by JS -->\s*)?(<\/div>)/, '$1' + pagination(page, count) + '$2');
   html = html.replace(/(<p\b[^>]*id="article-page-summary"[^>]*>)[\s\S]*?(<\/p>)/, `$1${(page - 1) * PAGE_SIZE + 1}〜${Math.min(page * PAGE_SIZE, articles.length)}件目 / ${articles.length}件 · ${page} / ${count}ページ$2`);
-  html = html.replace(/<body\b[^>]*>/, tag => tag.replace(/\sdata-blog-page="\d+"/, '').replace('>', ` data-blog-page="${page}">`));
+  html = html.replace(/<body\b[^>]*>/, tag => tag.replace(/\sdata-blog-page="\d+"/, '').replace(/>$/, ` data-blog-page="${page}">`));
   if (page > 1) html = html.replace(/\s*<link\b(?=[^>]*\bhreflang=)[^>]*>/g, '').replace(/(<script\b[^>]*type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/g, (whole, start, json, end) => {
     const data = JSON.parse(json);
     if (data['@type'] === 'Blog') return start + JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', url: ORIGIN + pagePath(page), name: `Google Play Points 記事一覧（${page}ページ目）`, description, inLanguage: 'ja', isPartOf: { '@type': 'Blog', url: ORIGIN + '/blog/' } }) + end;

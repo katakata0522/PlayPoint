@@ -54,6 +54,12 @@ details.inpage-toc :focus-visible { outline:3px solid #0891b2; outline-offset:3p
 .reader-guide-order ol { margin: 0; padding-left: 1.5rem; }
 .reader-topic-entry { display: flex; flex-wrap: wrap; gap: .35rem 1rem; font-size: .875rem; }
 .reader-topic-entry a { padding-block: .35rem; }
+.reader-topic-disclosure summary { cursor: pointer; font-size: .875rem; padding-block: .5rem; }
+@media (max-width: 600px) {
+  .reader-topic-disclosure summary { min-height: 44px; box-sizing: border-box; }
+  .reader-topic-entry { gap: 0; }
+  .reader-topic-entry a { display: flex; align-items: center; min-height: 44px; padding-block: 0; width: 100%; }
+}
 .reader-toc summary { cursor: pointer; }
 .reader-toc nav ol { padding-left: 1.5rem; }
 .reader-toc li { margin: .5rem 0; }

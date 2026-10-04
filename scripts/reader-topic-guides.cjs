@@ -58,7 +58,7 @@ function syncTopicGuides(root) {
   }
   const file = path.join(root, 'blog/index.html'); let html = fs.readFileSync(file, 'utf8');
   html = html.replace(/<!-- reader-topics:start -->[\s\S]*?<!-- reader-topics:end -->\s*/g, '');
-  const links = '<!-- reader-topics:start --><nav class="reader-topic-entry" aria-label="目的別の読む順番">' + TOPIC_GUIDES.map(guide => `<a href="/guides/${guide.slug}/">${guide.label}</a>`).join('') + '</nav><!-- reader-topics:end -->';
+  const links = '<!-- reader-topics:start --><details class="reader-topic-disclosure"><summary>目的別の読む順番</summary><nav class="reader-topic-entry" aria-label="目的別の読む順番">' + TOPIC_GUIDES.map(guide => `<a href="/guides/${guide.slug}/">${guide.label}</a>`).join('') + '</nav></details><!-- reader-topics:end -->';
   html = html.replace('<!-- hub-library-mount -->', links + '\n        <!-- hub-library-mount -->'); fs.writeFileSync(file, html);
   return TOPIC_GUIDES.length;
 }
