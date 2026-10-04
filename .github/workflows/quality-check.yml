@@ -3,6 +3,7 @@ name: PR Gate
 on:
   workflow_dispatch:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
     branches:
       - main
 
@@ -10,12 +11,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: pr-gate-${{ github.head_ref || github.ref }}
+  group: pr-gate-${{ github.head_ref || github.ref }}-${{ (github.event_name != 'pull_request' || !github.event.pull_request.draft) && 'active' || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   gate:
-    name: PR Gate
+    name: ${{ (github.event_name != 'pull_request' || !github.event.pull_request.draft) && 'PR Gate' || 'Draft PR Gate' }}
+    # Draftイベントは必須名の結果や進行中の実検証を上書きしない。
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -159,3 +162,4 @@ jobs:
           path: ${{ runner.temp }}/playpoint-ci-evidence/
           if-no-files-found: warn
           retention-days: 7
+
