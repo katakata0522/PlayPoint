@@ -149,3 +149,9 @@ html[lang="ja"] body .guide-toc-links a:hover { color:var(--reading-link); }
 .reader-decision-summary strong { display:block; }
 .reader-topic-return { margin:20px 0; padding:12px 0; border-top:1px solid var(--reading-border); }
 @media(max-width:760px) { .reader-question-links { gap:0 10px; } .reader-question-links a { font-size:12px; min-height:36px; } }
+@media(max-width:380px) {
+  .reader-question-links { margin:0; }
+  html[lang="ja"] body.blog-index-compact #article-filter-panel { margin-top:0; }
+  html[lang="ja"] body.blog-index-compact .guide-hub-layout .hub-heading { margin-bottom:0; }
+  html[lang="ja"] body.blog-index-compact .hub-result-toolbar { padding:4px 0; }
+}

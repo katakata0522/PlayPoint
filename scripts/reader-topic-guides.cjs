@@ -62,7 +62,7 @@ function syncTopicGuides(root) {
   html = html.replace('<!-- hub-library-mount -->', links + '\n        <!-- hub-library-mount -->');
   html = html.replace(/(id="search-input"\s+placeholder=")[^"]*/, '$1例：有効期限');
   html = html.replace(/<!-- reader-questions:start -->[\s\S]*?<!-- reader-questions:end -->\s*/g, '');
-  const questions = '<!-- reader-questions:start --><nav class="reader-question-links" aria-label="気になることから読む"><a href="/latest/" data-reader-question="current_benefits">次のポイント増量はいつ？</a><a href="/articles/2025-12-25-best-use.html" data-reader-question="use_points">ポイントは何に替えるとお得？</a></nav><!-- reader-questions:end -->\n';
+  const questions = '<!-- reader-questions:start --><nav class="reader-question-links" aria-label="気になることから読む"><a href="/latest/" data-reader-question="current_benefits">次の増量はいつ？</a><a href="/articles/2025-12-25-best-use.html" data-reader-question="use_points">お得な交換先は？</a></nav><!-- reader-questions:end -->\n';
   html = html.replace(/(<details\b[^>]*class="[^"]*article-filter-panel)/, questions + '$1');
   fs.writeFileSync(file, html);
   // 記事の一覧件数とページ送りは保ち、案内・開催情報は別の検索候補として渡す。
