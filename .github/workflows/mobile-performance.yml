@@ -15,6 +15,7 @@ on:
           - local
           - production
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
     branches:
       - main
     # PRでは実際に計測する代表画面と、その共有ランタイム/スタイルだけを対象にする。
@@ -55,11 +56,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: constrained-mobile-performance-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  group: constrained-mobile-performance-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}-${{ (github.event_name != 'pull_request' || !github.event.pull_request.draft) && 'active' || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   lighthouse:
+    name: ${{ (github.event_name != 'pull_request' || !github.event.pull_request.draft) && 'lighthouse' || 'Draft lighthouse' }}
+    # Draftイベントは必須名の結果や進行中の実検証を上書きしない。
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
@@ -171,3 +175,4 @@ jobs:
           path: ${{ runner.temp }}/playpoint-ci-evidence/
           if-no-files-found: warn
           retention-days: 7
+
