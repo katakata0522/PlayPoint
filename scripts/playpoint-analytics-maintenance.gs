@@ -203,7 +203,8 @@ function playPointCaptureReaderOutcomes_() {
     sheet.getRange(1, 1, grid.length, 12).setValues(grid);
     if (oldRows > grid.length) sheet.getRange(grid.length + 1, 1, oldRows - grid.length, 12).clearContent();
     sheet.setFrozenRows(8);
-    sheet.setFrozenColumns(2);
+    // 説明欄B:Lが固定境界をまたがないよう、種別列だけを固定する。
+    sheet.setFrozenColumns(1);
     sheet.getRange(1, 2, 7, 11).mergeAcross().setWrap(true);
     sheet.getRange(8, 1, 1, 12).setFontWeight('bold');
     sheet.setColumnWidth(1, 110); sheet.setColumnWidth(2, 170);
