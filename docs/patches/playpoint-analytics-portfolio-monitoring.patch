@@ -1,0 +1,24 @@
+diff --git a/PlayPoint_Analytics_v11_6_3_Code.gs b/PlayPoint_Analytics_v11_6_3_Code.gs
+index b9a6402..5bda70e 100644
+--- a/PlayPoint_Analytics_v11_6_3_Code.gs
++++ b/PlayPoint_Analytics_v11_6_3_Code.gs
+@@ -4047,7 +4047,9 @@ function updateHealthSheet_(ss) {
+     const match = /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}) JST$/.exec(stamp);
+     const epoch = match ? Date.parse(match[1] + 'T' + match[2] + ':00+09:00') : NaN;
+-    rows.push(['記事Portfolio（判断用資料）', '', stamp, match ? match[1] : '',
+-      !Number.isFinite(epoch) ? 'UNVERIFIED' : Date.now() - epoch > 7 * 86400000 ? DATA_STATE.STALE : 'MANUAL_SNAPSHOT',
+-      0, '', '自動収集対象外。分類・優先順位は資料日時を確認し、最新のP1/GSC集計と合わせて再評価。']);
++    const automatic = String(portfolio.getRange('A1').getDisplayValue()).indexOf('自動計測') >= 0;
++    const portfolioHealth = state.ARTICLE_PORTFOLIO || {};
++    rows.push(['記事Portfolio（計測＋判断）', portfolioHealth.lastAttempt || '', portfolioHealth.lastSuccess || stamp, portfolioHealth.dataThrough || (match ? match[1] : ''),
++      portfolioHealth.dataState === DATA_STATE.ERROR ? DATA_STATE.ERROR : !Number.isFinite(epoch) ? 'UNVERIFIED' : Date.now() - epoch > 9 * 86400000 ? DATA_STATE.STALE : automatic ? 'MEASUREMENT_PARTIAL' : 'MANUAL_SNAPSHOT',
++      number_(portfolioHealth.consecutiveFailures), portfolioHealth.lastError || '', automatic ? 'P1週次で計測値を更新。既存の編集判断日時はU列、再評価候補はS:T列。役割固有の未計測KPIを補助指標で代用しない。' : '分類・優先順位は資料日時を確認し、最新のP1/GSC集計と合わせて再評価。']);
+   }
+   const headers = [
+@@ -4059,5 +4061,5 @@ function updateHealthSheet_(ss) {
+   // P1/P2など別モジュールが所有する健康状態行を壊さない。旧実装は毎回
+   // 固定行だけでreplaceSheet_していたため、拡張モジュールの監視行を消していた。
+-  const ownedNames = {};
++  const ownedNames = { '記事Portfolio（判断用資料）': true };
+   rows.forEach(function (row) { ownedNames[String(row[0] || '')] = true; });
+   const extensionRows = [];

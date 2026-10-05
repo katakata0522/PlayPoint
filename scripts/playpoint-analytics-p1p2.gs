@@ -73,6 +73,15 @@ function capturePlayPointAnalyticsP1P2(e) {
     return playPointP12CaptureUrlInspection_(spreadsheet);
   }));
 
+  if (typeof refreshPlayPointArticlePortfolio === 'function') {
+    try {
+      summary.push({ stage: 'PORTFOLIO', status: 'OK', result: refreshPlayPointArticlePortfolio() });
+    } catch (portfolioError) {
+      playPointP12Log_('ERROR', 'PORTFOLIO', playPointP12ErrorText_(portfolioError));
+      summary.push({ stage: 'PORTFOLIO', status: 'ERROR', error: playPointP12ErrorText_(portfolioError) });
+    }
+  }
+
   var failed = summary.filter(function(item) { return item.status === 'ERROR'; });
   if (failed.length) {
     throw new Error(
