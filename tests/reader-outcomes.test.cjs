@@ -56,3 +56,16 @@ test('未取得の順序付きファネルを独立イベント人数で埋め�
   const c=runtime({playPointP12GoogleJson_:()=>({})});
   assert.throws(()=>c.playPointReaderOrderedFunnel_('p',{}),/応答形式/);
 });
+test('実APIの重複ヘッダーと短い値配列で実測人数を0に上書きしない',()=>{
+  const p1=fs.readFileSync(path.join(__dirname,'../scripts/playpoint-analytics-p1p2.gs'),'utf8');
+  const names=['activeUsers','funnelStepCompletionRate','funnelStepAbandonments','funnelStepAbandonmentRate'];
+  const table={dimensionHeaders:[{name:'funnelStepName'}],metricHeaders:names.concat(names).map(name=>({name})),
+    rows:[{dimensionValues:[{value:'1. 開始'}],metricValues:['215','.85581395348837208','31','.14418604651162792'].map(value=>({value}))},
+      {dimensionValues:[{value:'2. 成功'}],metricValues:['184','1','0','0'].map(value=>({value}))}]};
+  const c=runtime();vm.runInContext(p1,c);c.playPointP12GoogleJson_=()=>({funnelTable:table});
+  assert.deepEqual(Array.from(c.playPointReaderOrderedFunnel_('p',{}).rows,r=>r.activeUsers),[215,184]);
+  table.rows[0].metricValues.push({value:'216'});
+  assert.throws(()=>c.playPointReaderOrderedFunnel_('p',{}),/欠落・競合/);
+  table.rows[0].metricValues=[];
+  assert.throws(()=>c.playPointReaderOrderedFunnel_('p',{}),/欠落・競合/);
+});
