@@ -307,6 +307,21 @@ async function main() {
       await page.waitForURL(new URL(calculatorPath, baseUrl).href);
       assert(new URL(page.url()).pathname === calculatorPath, `${articlePath}: locale calculator destination`);
     }
+    // 翻訳記事への汎用計算案内の再挿入と、大型アンカーの展開を確認する。
+    for (const articlePath of [
+      'en/articles/google-play-quests.html',
+      'ko/articles/google-play-points-cash-conversion.html',
+      'articles/2025-12-25-best-use.html'
+    ]) {
+      await page.goto(new URL(articlePath, baseUrl).href, { waitUntil: 'domcontentloaded' });
+      await page.waitForFunction(() => document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]'));
+      const overlay = await page.locator('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]').getAttribute('data-overlays');
+      assert(overlay === 'collapsed-bottom', `${articlePath}: use regular bottom anchors`);
+      if (articlePath.includes('google-play-quests')) {
+        assert(await page.locator('.article-calculator-prompt').count() === 0, 'quest troubleshooting must precede any spending estimate');
+        assert(await page.locator('article.content > :first-child').getAttribute('class') === 'intro', 'quest definition precedes the troubleshooting table');
+      }
+    }
     await context.close();
     console.log('ok - article revenue smoke');
   } finally {

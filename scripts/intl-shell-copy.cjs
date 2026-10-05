@@ -39,7 +39,7 @@ const COPY = Object.freeze({
     hub: Object.freeze({ kicker: 'Play Points 가이드', title: '가이드 확인 후 직접 계산', body: '먼저 필요한 주제를 확인한 뒤, 실제 계정에 표시된 조건으로 계산기를 사용하세요.', cta: '계산기 열기', target: 'calculator' }),
     role: Object.freeze({
       calculator_bridge: Object.freeze({ kicker: '다음 단계', title: '내 조건으로 직접 계산하기', body: '남은 포인트와 Google Play에 표시된 최종 적립률을 넣어 개인별 예상치로 바꿔 보세요.', cta: '계산기 열기', target: 'calculator' }),
-      decision_support: Object.freeze({ kicker: '선택 지원', title: '결정 전에 비교하기', body: '결제·교환·설정 변경 전에 인접 가이드를 함께 보고 선택지의 차이를 비교하세요.', cta: '적립·사용 가이드 보기', target: 'earn' }),
+      decision_support: Object.freeze({ kicker: '결정 전 확인', title: '결정 전에 비교하기', body: '결제하거나 포인트를 교환하고 설정을 바꾸기 전에 관련 글에서 조건과 주의할 점을 비교해 보세요.', cta: '적립·사용 가이드 보기', target: 'earn' }),
       troubleshooting: Object.freeze({ kicker: '문제 해결', title: '증상 확인을 계속하세요', body: '이 글의 확인 순서를 진행한 뒤에도 문제가 남으면 문제 해결 가이드에서 다음 원인을 확인하세요.', cta: '문제 해결 가이드 보기', target: 'troubleshooting' }),
       retention: Object.freeze({ kicker: '최신 정보', title: '시간에 따라 바뀌는 내용을 확인', body: '주간 리워드·퀘스트·프로모션은 바뀔 수 있으므로 다음 수령이나 결제 전 최신 가이드를 확인하세요.', cta: '최신 가이드 보기', target: 'guides' }),
       game_decision: Object.freeze({ kicker: '게임 결제 판단', title: '결제가 주는 영향을 계산', body: '게임 결제를 Play Points 진행도로 바꿔 보고 실제로 결제할 가치가 있는지 비교하세요.', cta: '계산기 열기', target: 'calculator' }),

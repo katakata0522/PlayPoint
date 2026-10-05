@@ -48,13 +48,13 @@ const demandContracts = [
     name: 'English quests guide diagnoses missing and stuck states without a generic calculator CTA',
     file: 'en/articles/google-play-quests.html',
     marker: 'id="quest-quick-check"',
-    patterns: [/Quest missing or stuck/, /purchase step does not count/i, /Play Games profile/, /canceled or refunded/, /11534416/]
+    patterns: [/Quest missing or stuck/, /purchase step does not count/i, /Play Games profile/, /qualifying purchase.*refunded/, /11534416/]
   },
   {
     name: 'Korean quests owns generic and troubleshooting intent without a generic calculator CTA',
     file: 'ko/articles/google-play-quests.html',
     marker: 'id="ko-quest-quick-check"',
-    patterns: [/구글 플레이 퀘스트란/, /퀘스트 자체가 안 뜸/, /구매 단계가 완료되지 않음/, /Play 게임즈 프로필/, /취소되거나 환불/, /11534416/]
+    patterns: [/구글 플레이 퀘스트란/, /퀘스트 자체가 안 뜸/, /구매 단계가 완료되지 않음/, /Play 게임즈 프로필/, /구매가 환불되면/, /11534416/]
   },
   {
     name: 'Korean Super Ticket guide answers acquisition and use intent without a generic calculator CTA',

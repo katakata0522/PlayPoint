@@ -17,7 +17,9 @@ const REPRESENTATIVE_CASES = [
   { key: 'retention-super-ticket', path: 'articles/2026-09-19-google-play-super-ticket.html', related: true },
   { key: 'retention-quests', path: 'articles/2026-07-31-google-play-quests.html', related: true },
   { key: 'game-decision-deep', path: 'games/fgo/pity-cost/index.html', allArticle: true, intro: true, related: true },
-  { key: 'international-decision', path: 'en/articles/google-play-points-earn-free.html', related: true }
+  { key: 'international-decision', path: 'en/articles/google-play-points-earn-free.html', related: true },
+  { key: 'international-quest-reading', path: 'en/articles/google-play-quests.html', intro: true, related: true },
+  { key: 'korean-cash-reading', path: 'ko/articles/google-play-points-cash-conversion.html', intro: true, related: true }
 ];
 // 全件確認は明示指定時だけ実行し、通常CIの代表ケースは維持する。
 const CASES = process.env.ARTICLE_REVIEW_ALL === '1'

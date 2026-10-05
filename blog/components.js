@@ -134,6 +134,10 @@
         script.async = true;
         script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
         script.crossOrigin = 'anonymous';
+        // 対象記事ではGoogle公式の設定で大型アンカーの展開を抑える。
+        if (document.querySelector('meta[name="playpoint:anchor-ads"]')?.content === 'collapsed-bottom') {
+            script.setAttribute('data-overlays', 'collapsed-bottom');
+        }
         script.onerror = () => {
             // 自分で作成した失敗タグだけを除去し、同じURLを一度だけ再取得する。
             script.onerror = null;
