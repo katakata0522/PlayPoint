@@ -201,7 +201,15 @@ function playPointPageHistoryAuditChunk_() {
     props.setProperty(PLAYPOINT_MAINTENANCE.checkpoint, JSON.stringify(job));
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(job.start) || !/^\d{4}-\d{2}-\d{2}$/.test(job.end) || job.start > job.end || job.nextEnd > job.end) throw new Error('履歴確認の再開位置が不正です。');
-  if (job.nextEnd < job.start) return { complete: true, coveredDays: job.coveredDays, start: job.start, end: job.end };
+  if (job.nextEnd < job.start) {
+    var saved = ss.getSheetByName(PLAYPOINT_MAINTENANCE.coverage);
+    var verifiedDates = saved ? saved.getDataRange().getValues().slice(1).map(function(row) { return formatDateSafe_(row[0]); }).filter(function(day) { return day >= job.start && day <= job.end; }) : [];
+    if (new Set(verifiedDates).size === dateArrayInRange_(job.start, job.end).length) return { complete: true, coveredDays: job.coveredDays, start: job.start, end: job.end };
+    // 完了カーソルだけでは完了としない。確認表が欠けた場合は同じ日付窓を再検証する。
+    job.nextEnd = job.end; job.coveredDays = 0;
+    props.setProperty(PLAYPOINT_MAINTENANCE.checkpoint, JSON.stringify(job));
+    props.deleteProperty(SCRIPT_KEYS.PAGE_HISTORY_BACKFILL_COMPLETED_AT);
+  }
   var end = job.nextEnd, start = shiftDateString_(end, -13);
   if (start < job.start) start = job.start;
   recordHealthAttempt_('PAGE_HISTORY_BACKFILL');
@@ -213,9 +221,10 @@ function playPointPageHistoryAuditChunk_() {
     });
     upsertPageDailyHistory_(ss, rows);
     var coverage = getOrCreateSheet_(ss, PLAYPOINT_MAINTENANCE.coverage), existing = coverage.getDataRange().getValues(), byDate = {};
-    existing.slice(1).forEach(function(row) { if (/^\d{4}-\d{2}-\d{2}$/.test(String(row[0]))) byDate[row[0]] = row; });
+    existing.slice(1).forEach(function(row) { var day = formatDateSafe_(row[0]); if (day) { row[0] = day; byDate[day] = row; } });
     days.forEach(function(day) { byDate[day] = [day, counts[day] || 0, counts[day] ? 'API_ROWS' : 'API_NO_ROWS', start + ' ～ ' + end, currentTimestamp_()]; });
     replaceSheet_(coverage, ['日付', '取得ページ行数', 'API応答', '要求期間', '確認日時'], Object.keys(byDate).sort().map(function(day) { return byDate[day]; }), COLORS.BLUE);
+    coverage.getRange(2, 1, Object.keys(byDate).length, 1).setNumberFormat('@');
     invalidateArchivedMonthsForRange_(start, end);
     job.coveredDays += days.length; job.nextEnd = shiftDateString_(start, -1);
     props.setProperty(PLAYPOINT_MAINTENANCE.checkpoint, JSON.stringify(job));
@@ -230,4 +239,23 @@ function playPointPageHistoryAuditChunk_() {
   } catch (error) {
     recordHealthFailure_('PAGE_HISTORY_BACKFILL', error); updateHealthSheet_(ss); throw error;
   }
+}
+
+// 履歴の再取得で無効化したDrive月別アーカイブを、通常日次の全再実行なしで追随させる。
+function syncPlayPointPageHistoryArchives() {
+  var started = Date.now(), count = 0, paths;
+  do {
+    paths = withScriptLock_(function() {
+      var ss = resolveAndRememberSpreadsheet_();
+      recordHealthAttempt_('DRIVE_MAINTENANCE');
+      try {
+        var result = maybeArchiveCompletedMonths_(ss, ss.getSheetByName(CONFIG.SHEETS.LOG));
+        recordHealthSuccess_('DRIVE_MAINTENANCE', { dataThrough: relativeDateString_(-1), dataState: DATA_STATE.RECONCILED, detail: '履歴再取得後の月次アーカイブ追随: 今回' + result.length + '件。確定待ちの月は通常処理へ保留。' });
+        updateHealthSheet_(ss); return result;
+      } catch (error) { recordHealthFailure_('DRIVE_MAINTENANCE', error); updateHealthSheet_(ss); throw error; }
+    });
+    count += paths.length;
+  } while (paths.length >= Math.max(1, CONFIG.ARCHIVE_MAX_MONTHS_PER_RUN) && count < 12 && Date.now() - started < 120000);
+  console.log('Drive月次アーカイブ追随: 今回=' + count + '件');
+  return { count: count };
 }
