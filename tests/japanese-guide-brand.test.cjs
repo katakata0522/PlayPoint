@@ -10,6 +10,7 @@ const {
   GUIDE_DESCRIPTION,
   GUIDE_HERO_TEXT,
   GUIDE_PAGE_TITLE,
+  GUIDE_H1,
   japaneseArticleFiles,
   syncArticleBrand,
   syncBlogIndexBrand
@@ -33,7 +34,7 @@ test('日本語記事ハブは「Google Play Points 完全攻略ガイド」を�
   assert.ok(html.includes(`property="og:site_name" content="${GUIDE_BRAND}"`));
   const brand = html.match(/<a\b[^>]*class="brand"[^>]*>([\s\S]*?)<\/a>/)?.[1].replace(/<[^>]*>/g, ' ');
   assert.ok(brand?.includes(GUIDE_BRAND), 'ヘッダーに正式なガイド名がある');
-  assert.ok(html.includes('<h1 class="hero-title">Google Play Points 記事一覧</h1>'));
+  assert.ok(html.includes(`<h1 class="hero-title">${GUIDE_H1}</h1>`));
   assert.ok(!html.includes('<p class="hero-text">'), '検索前の重複する紹介文を戻さない');
   assert.ok(html.includes(`title="${GUIDE_BRAND} RSS"`));
   assert.ok(html.includes(`title="${GUIDE_BRAND} Atom"`));

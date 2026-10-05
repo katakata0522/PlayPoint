@@ -21,13 +21,13 @@ const BROWSE_CATEGORIES = Object.freeze([
 ]);
 
 const NAV = Object.freeze([
-  ['/blog/', '記事一覧'],
+  ['/blog/', '記事トップ'],
   ['/latest/', '開催中の特典'],
   ['/guides/ranks/', 'ランク・維持条件'],
   ['/blog/?topic=' + encodeURIComponent('貯める・キャンペーン'), '貯める・キャンペーン'],
   ['/guides/using-points/', '使い道を選ぶ'],
   ['/guides/troubleshooting/', '困ったときの確認'],
-  ['/', '計算する']
+  ['/', '必要額を計算する']
 ]);
 const escapeHtml = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const SIDEBAR = /<aside\b[^>]*class=["'][^"']*\bsidebar-column\b[^"']*["'][^>]*>[\s\S]*?<\/aside>/i;
@@ -226,7 +226,7 @@ function transformArticle(html, article, catalog) {
   const sidebar = renderSidebar(article, role, related, catalog);
   let after = normalizeSharedArticleCopy(removeLegacySidebarStylesheet(html.replace(GLOBAL_NAV, nav)));
   const topic = article.browseCategory || categoryFor(article, role);
-  const trail = [{ name: 'ホーム', href: '/' }, { name: '記事一覧', href: '/blog/' },
+  const trail = [{ name: '記事トップ', href: '/blog/' },
     { name: topic, href: '/blog/?topic=' + encodeURIComponent(topic) }];
   const label = (article.listTitle || article.title).split('｜').join('：');
   const breadcrumb = `<div class="breadcrumbs-wrapper"><nav aria-label="パンくずリスト">${trail.map(item => `<a href="${item.href}">${escapeHtml(item.name)}</a> <span aria-hidden="true">&gt;</span> `).join('')}<span aria-current="page">${escapeHtml(label)}</span></nav></div>`;

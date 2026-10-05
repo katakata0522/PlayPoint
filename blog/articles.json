@@ -985,7 +985,7 @@
   },
   {
     "id": "play-points-calendar-schedule-guide-2026",
-    "title": "Google Play Pointsお得カレンダー｜毎日・毎週・毎月・年間イベントのスケジュール完全攻略",
+    "title": "Play Pointsのお得カレンダー｜毎週・毎月の確認日",
     "date": "2026-09-19",
     "modified": "2026-10-05",
     "category": "キャンペーン",
@@ -996,7 +996,7 @@
       "Play Gamesストリーク",
       "年間スケジュール"
     ],
-    "description": "Google Play Pointsの「毎日・毎週・毎月・年間」のお得イベントを完全カレンダー化。Google Play Gamesの連続記録カレンダー、金曜ウィークリーリワード、毎月1日Playポイントデー、大型イベントの活用法を徹底解説します。",
+    "description": "火曜のSuper Ticket、木曜のPlay Pass特典、金曜の週次リワード、月初の増量案内を確認する日の目安です。対象条件と開催が未確定のイベントを分け、必要な確認日だけカレンダーに保存できます。",
     "file": "../articles/2026-09-19-play-points-calendar-schedule-guide.html",
     "related": [
       [
@@ -1310,10 +1310,10 @@
       "ウィークリーリワード",
       "ゴールド"
     ],
-    "description": "日本のPlay Pass加入者向けPlay Points週次ボーナス・ブースターは木曜日更新の別制度です。ゴールド付与特典の公式対象国には日本は入っていません。加入判断は画面の特典と予定購入で行います。",
+    "description": "Google Play Passの定額サービスとPlay Pointsの違いを説明。日本の木曜週次特典・対象条件を確認し、自分の使い方に合うか判断します。加入によるゴールド付与特典の公式対象国に日本は含まれていません。",
     "file": "../articles/2026-08-16-play-pass-worth-it.html",
     "thumbnail": "../articles/thumbnails/play-pass-worth-it-square-v1.webp",
-    "modified": "2026-10-03",
+    "modified": "2026-10-05",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/play-pass-worth-it.png",
     "thumbnailKind": "generic",
@@ -2226,7 +2226,7 @@
   },
   {
     "id": "best-use",
-    "title": "Google Play Pointsの使い道を比較｜クーポン・アイテム・Playクレジットの選び方",
+    "title": "Google Play Pointsの交換先おすすめ｜使い道・クーポン・Playクレジットを比較",
     "date": "2025-12-25",
     "category": "使い方",
     "tags": [

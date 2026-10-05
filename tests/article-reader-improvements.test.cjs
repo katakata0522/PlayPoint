@@ -10,6 +10,26 @@ const { GAME_GUIDE_ARTICLES } = require('../scripts/game-guide-article-catalog.c
 const { BROWSE_CATEGORIES } = require('../scripts/japanese-navigation-sidebar.cjs');
 const { TOPIC_GUIDES } = require('../scripts/reader-topic-guides.cjs');
 const { getImageDimensions } = require('../scripts/seo-head-audit.cjs');
+const { syncArticleMetadata, QUESTIONS } = require('../scripts/reader-foundations.cjs');
+
+test('検索・共有・本文の主題は台帳と一致し、短縮タイトルとFAQの内容は維持する', () => {
+  for (const article of manifest) {
+    const html = read(article.file.slice(3));
+    assert.equal(syncArticleMetadata(html, article), html, article.id + ': metadata already synchronized');
+  }
+  const source = '<title>old</title><meta name="description" content="old"><h1>old</h1><script type="application/ld+json">{"@type":"Article","headline":"old"}</script><script type="application/ld+json">{"@type":"FAQPage","name":"質問","mainEntity":[]}</script>';
+  const transformed = syncArticleMetadata(source, { title: 'A < B & C', description: '条件 "引用"' });
+  assert.match(transformed, /A &lt; B &amp; C/);
+  assert.match(transformed, /条件 &quot;引用&quot;/);
+  assert.match(transformed, /"name":"質問"/);
+  const hub = read('blog/index.html');
+  for (const [question,,href] of QUESTIONS) {
+    assert.ok(hub.includes(question));
+    const url = new URL(href, 'https://playpoint-sim.com');
+    const destination = read(url.pathname.slice(1));
+    if (url.hash) assert.ok(destination.includes(`id="${url.hash.slice(1)}"`));
+  }
+});
 
 test('一覧の全ページはJavaScriptなしでも別の記事へ進め、専用canonicalを持つ', () => {
   const count = Math.ceil(manifest.length / 12), seen = [];
@@ -39,7 +59,7 @@ test('記事パンくずは表示用7分類と構造化データを一致させ�
     assert.ok(breadcrumb.includes('?topic=' + encodeURIComponent(article.browseCategory)), article.id);
     const data = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map(match => JSON.parse(match[1]));
     const crumbs = data.flatMap(node => node['@graph'] || [node]).find(node => node['@type'] === 'BreadcrumbList');
-    if (crumbs) assert.equal(crumbs.itemListElement[2].name, article.browseCategory, article.id);
+    if (crumbs) assert.equal(crumbs.itemListElement[1].name, article.browseCategory, article.id);
   }
 });
 
@@ -94,6 +114,6 @@ test('目的別案内は空の絞り込みページではなく、状況・読�
     assert.deepEqual(getImageDimensions(image), { width: 1200, height: 630 });
   }
   const hub = read('blog/index.html');
-  assert.match(hub, /<title>Google Play Points 記事一覧 \| PlayPoint<\/title>/);
+  assert.match(hub, /<title>Google Play Points 記事ガイド \| PlayPoint<\/title>/);
   assert.match(hub, /images\/guides\/article-guide.jpg/);
 });

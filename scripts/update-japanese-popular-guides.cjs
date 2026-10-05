@@ -35,9 +35,10 @@ function buildSnapshot(input, registry, previous, today) {
   const selected = input.rows.map(row => ({ ...row, path: canonicalPath(row.path) })).filter(row => labels.has(row.path) && row.pv > 0)
     .sort((a, b) => b.pv - a.pv || (a.path < b.path ? -1 : a.path > b.path ? 1 : 0)).slice(0, 5);
   if (selected.length !== 5) throw new Error('公開日本語記事5件分のデータがありません');
-  if (JSON.stringify(selected.map(row => row.path)) === JSON.stringify(previous.guides.map(([href]) => href))) return null;
-  return { snapshot: today, start: input.start, end: input.end,
-    guides: selected.map(row => [row.path, oldLabels.get(row.path) || labels.get(row.path)]) };
+  // 順位が同じでも、正常に確認した集計期間は更新する。同じ期間の再実行は書き込まない。
+  const guides = selected.map(row => [row.path, labels.get(row.path) || oldLabels.get(row.path)]);
+  if (input.start === previous.start && input.end === previous.end && JSON.stringify(guides) === JSON.stringify(previous.guides)) return null;
+  return { snapshot: today, start: input.start, end: input.end, guides };
 }
 
 function updateFromFile(inputFile, root, today, write = false) {

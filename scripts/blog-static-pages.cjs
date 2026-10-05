@@ -34,13 +34,15 @@ function renderStaticPage(template, articles, page, coreVersion = '') {
   html = html.replace(/(<div\b[^>]*id="pagination"[^>]*>)\s*(?:<!-- Populated by JS -->\s*)?(<\/div>)/, '$1' + pagination(page, count) + '$2');
   html = html.replace(/(<p\b[^>]*id="article-page-summary"[^>]*>)[\s\S]*?(<\/p>)/, `$1${(page - 1) * PAGE_SIZE + 1}〜${Math.min(page * PAGE_SIZE, articles.length)}件目 / ${articles.length}件 · ${page} / ${count}ページ$2`);
   html = html.replace(/<body\b[^>]*>/, tag => tag.replace(/\sdata-blog-page="\d+"/, '').replace(/>$/, ` data-blog-page="${page}">`));
-  if (page > 1) html = html.replace(/\s*<link\b(?=[^>]*\bhreflang=)[^>]*>/g, '').replace(/(<script\b[^>]*type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/g, (whole, start, json, end) => {
+  if (page > 1) html = html.replace(/<!-- reader-hub-entry:start -->[\s\S]*?<!-- reader-hub-entry:end -->/g, '')
+    .replace(/(<h1 class="hero-title">)[\s\S]*?(<\/h1>)/, `$1Google Play Points 記事一覧（${page}ページ目）$2`)
+    .replace(/\s*<link\b(?=[^>]*\bhreflang=)[^>]*>/g, '').replace(/(<script\b[^>]*type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/g, (whole, start, json, end) => {
     const data = JSON.parse(json);
     if (data['@type'] === 'Blog') return start + JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', url: ORIGIN + pagePath(page), name: `Google Play Points 記事一覧（${page}ページ目）`, description, inLanguage: 'ja', isPartOf: { '@type': 'Blog', url: ORIGIN + '/blog/' } }) + end;
     if (data['@type'] === 'BreadcrumbList') data.itemListElement.push({ '@type': 'ListItem', position: data.itemListElement.length + 1, name: `${page}ページ目`, item: ORIGIN + pagePath(page) });
     return start + JSON.stringify(data) + end;
   });
-  const title = 'Google Play Points 記事一覧' + (page > 1 ? `（${page}ページ目）` : '') + ' | PlayPoint';
+  const title = page > 1 ? `Google Play Points 記事一覧（${page}ページ目） | PlayPoint` : require('./japanese-guide-brand.cjs').GUIDE_PAGE_TITLE;
   html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`)
     .replace(/(<link\b[^>]*rel="canonical"[^>]*href=")[^"]*(")/, '$1' + ORIGIN + pagePath(page) + '$2')
     .replace(/(<meta\b[^>]*(?:property|name)="(?:og:url)"[^>]*content=")[^"]*(")/, '$1' + ORIGIN + pagePath(page) + '$2')
