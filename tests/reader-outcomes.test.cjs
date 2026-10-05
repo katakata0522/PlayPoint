@@ -37,7 +37,7 @@ test('公開台帳の言語・役割を結合し、ページ再訪と入口コ�
 test('解決・行をまたぐユニーク数・空欄の誤解を避け、シート数式注入を防ぐ',()=>{
   const c=runtime(); const grid=c.playPointReaderBuildGrid_({start:'2026-09-03',end:'2026-10-02'},[],{
     ERRORS:{state:'ERROR',detail:'=IMPORTXML("bad")',rows:[]}},'2026-10-05');
-  assert.match(grid[5][1],/代用しない/);assert.match(grid[1][2],/足して全体人数にしない/);
+  assert.match(grid[5][1],/代用しない/);assert.match(grid[1][1],/足して全体人数にしない/);
   assert.equal(grid[8][11].charAt(0),"'");assert.equal(grid[8][9],'');
 });
 test('28日が経過した獲得日だけを追跡し、日次7・28日の率を取得する',()=>{
