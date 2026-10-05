@@ -195,7 +195,8 @@ function playPointCaptureReaderOutcomes_() {
   return withScriptLock_(function() {
     var sheet = playPointP12EnsureSheet_(ss, PLAYPOINT_READER_OUTCOMES.sheet, 12);
     var previous = String(sheet.getRange('B2').getValue() || '');
-    if (previous.slice(-10) > period.end && /^\d{4}-\d{2}-\d{2} ～/.test(previous)) throw new Error('より新しい読者集計を旧期間で置換しません。');
+    var previousPeriod = previous.match(/^\d{4}-\d{2}-\d{2} ～ (\d{4}-\d{2}-\d{2})(?:$|。)/);
+    if (previousPeriod && previousPeriod[1] > period.end) throw new Error('より新しい読者集計を旧期間で置換しません。');
     var oldRows = sheet.getLastRow();
     playPointP12EnsureRows_(sheet, grid.length);
     // 再実行時は結合を解除してから書き、説明文・取得日時を失わない。
