@@ -83,7 +83,20 @@ function playPointReaderOrderedFunnel_(propertyId, period) {
   if (dimensions.indexOf('funnelStepName') < 0 || metrics.indexOf('activeUsers') < 0) {
     throw new Error('順序付きファネルの利用者指標がありません。');
   }
-  return { rows: playPointP12ParseGa4Rows_(table, dimensions, metrics),
+  // alpha APIが同名ヘッダーを重複返却する場合も、空の後続列で実測値を上書きしない。
+  var uniqueMetrics = metrics.filter(function(name, index) { return metrics.indexOf(name) === index; });
+  var normalizedRows = (table.rows || []).map(function(row) {
+    return { dimensionValues: row.dimensionValues, metricValues: uniqueMetrics.map(function(name) {
+      var values = metrics.map(function(metric, index) {
+        return metric === name && row.metricValues && row.metricValues[index] ? row.metricValues[index].value : undefined;
+      }).filter(function(value) { return value !== undefined && value !== null && value !== ''; }).map(Number);
+      if (!values.length || values.some(function(value) { return !isFinite(value) || value !== values[0]; })) {
+        throw new Error('順序付きファネルの指標が欠落・競合しています: ' + name);
+      }
+      return { value: String(values[0]) };
+    }) };
+  });
+  return { rows: playPointP12ParseGa4Rows_({ rows: normalizedRows }, dimensions, uniqueMetrics),
     restricted: !!(table.metadata && (table.metadata.subjectToThresholding || table.metadata.dataLossFromOtherRow)) };
 }
 
