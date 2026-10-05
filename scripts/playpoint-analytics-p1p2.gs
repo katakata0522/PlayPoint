@@ -135,6 +135,9 @@ function installPlayPointAnalyticsP1P2WeeklyTrigger() {
 }
 
 function playPointP12RunStage_(stage, fn) {
+  if (stage === 'URL_INSPECTION') {
+    return playPointP12InspectionLease_(function() { return playPointP12RunStageUnlocked_(stage, fn); });
+  }
   // 本体のシート置換・健康状態更新と同じロックを使い、監視行の消失を防ぐ。
   if (typeof withScriptLock_ === 'function') {
     return withScriptLock_(function() { return playPointP12RunStageUnlocked_(stage, fn); });
@@ -142,24 +145,51 @@ function playPointP12RunStage_(stage, fn) {
   return playPointP12RunStageUnlocked_(stage, fn);
 }
 
+function playPointP12InspectionWrite_(fn) {
+  return typeof withScriptLock_ === 'function' ? withScriptLock_(fn) : fn();
+}
+
+function playPointP12InspectionLease_(fn) {
+  if (typeof withScriptLock_ !== 'function') return fn();
+  var props = PropertiesService.getScriptProperties(), key = 'PLAYPOINT_P12_INSPECTION_LEASE';
+  // 共通ロックをAPI通信中に持たず、同じ検査の重複だけを期限付きで防ぐ。
+  var lease = JSON.stringify({ token: Date.now() + '-' + Math.random(), until: Date.now() + 7 * 60000 });
+  playPointP12InspectionWrite_(function() {
+    var current = null;
+    try { current = JSON.parse(props.getProperty(key) || 'null'); } catch (ignore) { /* 壊れた一時leaseは復旧する。 */ }
+    if (current && Number.isFinite(current.until) && current.until > Date.now()) throw new Error('URL検査は別の実行が進行中です。後で再試行してください。');
+    props.setProperty(key, lease);
+  });
+  try { return fn(); }
+  finally {
+    playPointP12InspectionWrite_(function() {
+      if (props.getProperty(key) === lease) props.deleteProperty(key);
+    });
+  }
+}
+
+function playPointP12StageWrite_(stage, fn) {
+  return stage === 'URL_INSPECTION' ? playPointP12InspectionWrite_(fn) : fn();
+}
+
 function playPointP12RunStageUnlocked_(stage, fn) {
   var started = new Date();
-  playPointP12Log_('INFO', stage, 'started');
-  playPointP12TryHealth_(stage, function() {
-    playPointP12HealthStart_(stage, started);
+  playPointP12StageWrite_(stage, function() {
+    playPointP12Log_('INFO', stage, 'started');
+    playPointP12TryHealth_(stage, function() { playPointP12HealthStart_(stage, started); });
   });
 
   try {
     var result = fn();
     var finished = new Date();
     var resultState = playPointP12ResultState_(stage, result);
-    playPointP12Log_(
+    playPointP12StageWrite_(stage, function() {
+      playPointP12Log_(
       resultState === 'PARTIAL' ? 'WARN' : 'INFO',
       stage,
       'success state=' + resultState + ' ' + playPointP12CompactJson_(result)
     );
-    playPointP12TryHealth_(stage, function() {
-      playPointP12HealthSuccess_(stage, finished, resultState, result);
+      playPointP12TryHealth_(stage, function() { playPointP12HealthSuccess_(stage, finished, resultState, result); });
     });
     return {
       stage: stage,
@@ -171,9 +201,9 @@ function playPointP12RunStageUnlocked_(stage, fn) {
   } catch (error) {
     var finished = new Date();
     var message = playPointP12ErrorText_(error);
-    playPointP12Log_('ERROR', stage, message);
-    playPointP12TryHealth_(stage, function() {
-      playPointP12HealthError_(stage, finished, message);
+    playPointP12StageWrite_(stage, function() {
+      playPointP12Log_('ERROR', stage, message);
+      playPointP12TryHealth_(stage, function() { playPointP12HealthError_(stage, finished, message); });
     });
     return {
       stage: stage,
@@ -472,12 +502,13 @@ function playPointP12CaptureSearchCross_(spreadsheet) {
 
 function playPointP12CaptureUrlInspection_(spreadsheet) {
   var siteUrl = playPointP12GetSiteUrl_();
-  var priority = playPointP12BuildInspectionPriority_(spreadsheet);
+  var priority = playPointP12InspectionWrite_(function() { return playPointP12BuildInspectionPriority_(spreadsheet); });
   var rows = [];
 
   priority.forEach(function(item) {
     try {
       var payload = playPointP12InspectUrl_(siteUrl, item.url);
+      if (!payload || !payload.inspectionResult || !payload.inspectionResult.indexStatusResult) throw new Error('URL Inspectionのインデックス検査結果がありません。');
       var result = payload.inspectionResult || {};
       var index = result.indexStatusResult || {};
       var mobile = result.mobileUsabilityResult || {};
@@ -518,6 +549,13 @@ function playPointP12CaptureUrlInspection_(spreadsheet) {
     }
   });
 
+  if (!rows.length || rows.every(function(row) { return row[12] === 'ERROR'; })) {
+    throw new Error('URL Inspectionの全対象を取得できません。前回の検査表を保持します。' + (rows[0] ? ' ' + rows[0][13] : ''));
+  }
+  return playPointP12InspectionWrite_(function() { return playPointP12PublishUrlInspection_(spreadsheet, siteUrl, rows); });
+}
+
+function playPointP12PublishUrlInspection_(spreadsheet, siteUrl, rows) {
   var sheet = playPointP12EnsureSheet_(spreadsheet, PLAYPOINT_P12_CONFIG.urlInspectionSheet, 14);
   sheet.clearContents();
 

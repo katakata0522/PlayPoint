@@ -17,7 +17,7 @@ function refreshPlayPointArticlePortfolio() {
     recordHealthAttempt_('ARTICLE_PORTFOLIO');
     try {
       var result = playPointRefreshPortfolioUnlocked_();
-      recordHealthSuccess_('ARTICLE_PORTFOLIO', { dataThrough: result.period.slice(-10), dataState: 'MEASUREMENT_PARTIAL', detail: '全台帳 ' + result.inventoryCount + '記事 / 既存判断保護 ' + result.preserved + '件。主KPI未計測はpartial。' });
+      recordHealthSuccess_('ARTICLE_PORTFOLIO', { dataThrough: result.period.slice(-10), dataState: 'MEASUREMENT_PARTIAL', detail: '全台帳 ' + result.inventoryCount + '記事 / 既存行保持 ' + result.preserved + '件 / 判断日時あり ' + result.datedDecisions + '件。主KPI未計測はpartial。' });
       updateHealthSheet_(resolveAndRememberSpreadsheet_());
       return result;
     } catch (error) {
@@ -29,7 +29,7 @@ function refreshPlayPointArticlePortfolio() {
 function playPointMaintenancePath_(value) {
   var path = String(value || '').replace(/^https:\/\/playpoint-sim\.com/, '').split(/[?#]/)[0];
   if (path.indexOf('../') === 0) path = '/' + path.substring(3);
-  if (path.charAt(0) !== '/' || path.indexOf('..') >= 0 || /[\r\n]/.test(path)) {
+  if (path.charAt(0) !== '/' || path.indexOf('//') === 0 || path.indexOf('..') >= 0 || /[\s\\]/.test(path)) {
     throw new Error('台帳のパスが不正です。');
   }
   return path.replace(/\/index\.html$/, '/');
@@ -46,7 +46,7 @@ function playPointMaintenanceInventory_(manifest, indexes) {
     index.articles.forEach(function(article) {
       var path = playPointMaintenancePath_(article.path);
       var expected = locale === 'ja' ? !/^\/(en|ko|tw)\//.test(path) : path.indexOf('/' + locale + '/') === 0;
-      if (!expected || !PLAYPOINT_MAINTENANCE.roleKpis[article.role]) throw new Error('記事の言語・役割を確認してください: ' + path);
+      if (!expected || !Object.prototype.hasOwnProperty.call(PLAYPOINT_MAINTENANCE.roleKpis, article.role)) throw new Error('記事の言語・役割を確認してください: ' + path);
       if (registry[path]) throw new Error('記事台帳に重複があります: ' + path);
       registry[path] = article.role;
       if (locale !== 'ja') result[path] = { path: path, locale: locale.toUpperCase(), role: article.role, listed: true, modified: '' };
@@ -59,6 +59,11 @@ function playPointMaintenanceInventory_(manifest, indexes) {
     var role = listed ? registry[path] : 'hold';
     if (!role) throw new Error('公開記事が検索インデックスにありません: ' + path);
     result[path] = { path: path, locale: 'JP', role: role, listed: listed, modified: String(article.modified || '') };
+  });
+  Object.keys(registry).forEach(function(path) {
+    if (!/^\/(en|ko|tw)\//.test(path) && (!result[path] || !result[path].listed)) {
+      throw new Error('日本語検索インデックスと記事台帳が一致しません: ' + path);
+    }
   });
   return Object.keys(result).sort().map(function(key) { return result[key]; });
 }
@@ -95,10 +100,21 @@ function playPointMaintenanceRecommendation_(article, metrics) {
   return ['PROVE', '追加投資前に需要を検証。削除判断ではない'];
 }
 
+function playPointMaintenanceIsoDate_(value) {
+  var text = typeof value === 'string' ? value : formatDateSafe_(value);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(text || '')) return '';
+  var epoch = Date.parse(text + 'T00:00:00Z');
+  return Number.isFinite(epoch) && new Date(epoch).toISOString().slice(0, 10) === text ? text : '';
+}
+
 function playPointMaintenanceBuildPortfolio_(inventory, oldGrid, p1, now) {
   if (!p1[1] || !/^\d{4}-\d{2}-\d{2} ～ \d{4}-\d{2}-\d{2}$/.test(String(p1[1][1] || '')) ||
       !/^OK/.test(String(p1[1][11] || ''))) throw new Error('P1の正常な同一期間データを確認してください。');
-  var period = p1[1][1], end = period.slice(-10);
+  var period = p1[1][1], start = period.slice(0, 10), end = period.slice(-10);
+  if (!playPointMaintenanceIsoDate_(start) || !playPointMaintenanceIsoDate_(end) ||
+      Date.parse(end) - Date.parse(start) !== 29 * 86400000 || end >= now.slice(0, 10)) {
+    throw new Error('P1の対象期間は実在する過去30日間である必要があります。');
+  }
   if (Date.parse(now.slice(0, 10) + 'T00:00:00Z') - Date.parse(end + 'T00:00:00Z') > 9 * 86400000) throw new Error('P1の対象期間が古すぎます。');
   var old = {}, metrics = {}, stamp = oldGrid[0] ? String(oldGrid[0][1] || '') : '';
   oldGrid.slice(11).forEach(function(row) {
@@ -118,12 +134,12 @@ function playPointMaintenanceBuildPortfolio_(inventory, oldGrid, p1, now) {
   Object.keys(old).forEach(function(path) {
     if (!present[path]) items.push({ path: path, locale: old[path][0], role: old[path][3], listed: false, modified: '', missing: true });
   });
-  var counts = {}, preserved = 0, rows = items.map(function(article) {
+  var counts = {}, preserved = 0, datedDecisions = 0, measured = 0, partial = 0, unmatched = 0, rows = items.map(function(article) {
     var previous = old[article.path], m = metrics[article.path], recommendation = playPointMaintenanceRecommendation_(article, m);
     var row = Array(24).fill('');
     if (previous) { previous.slice(0, 18).forEach(function(value, i) { row[i] = value; }); preserved++; }
     else {
-      row[0] = article.locale; row[1] = article.path; row[2] = recommendation[0] || 'PROVE';
+      row[0] = article.locale; row[1] = article.path; row[2] = recommendation[0] || 'UNASSESSED';
       row[3] = article.role; row[4] = PLAYPOINT_MAINTENANCE.roleKpis[article.role] || '';
       row[5] = article.role === 'hold' ? 'operational' : article.role === 'calculator_bridge' ? 'measurable_now' : 'partial';
       row[17] = '新規台帳行。再評価候補を参照し、編集判断を確認する';
@@ -132,6 +148,9 @@ function playPointMaintenanceBuildPortfolio_(inventory, oldGrid, p1, now) {
     [1, 2, 3, 5, 7, 8, 9, 11].forEach(function(source, i) { row[7 + i] = m && m[source] !== undefined ? m[source] : ''; });
     row[18] = recommendation[0]; row[19] = recommendation[1];
     row[20] = previous ? (previous[20] || stamp) : '未レビュー（新規・暫定）';
+    if (previous && previous[20] === '未レビュー（新規・暫定）' && row[2] === 'PROVE' && (!m || m[13] !== 'OK')) row[2] = 'UNASSESSED';
+    if (row[20] !== '未レビュー（新規・暫定）') datedDecisions++;
+    if (!m) unmatched++; else if (m[13] !== 'OK') partial++; else measured++;
     row[21] = article.missing ? '台帳外・要確認' : article.listed ? '台帳掲載' : '非掲載';
     row[22] = article.modified;
     var notes = [];
@@ -145,19 +164,20 @@ function playPointMaintenanceBuildPortfolio_(inventory, oldGrid, p1, now) {
     return row;
   });
   var grid = Array.from({length: 11}, function() { return Array(24).fill(''); });
-  grid[0][0] = 'Article Portfolio 自動計測更新'; grid[0][1] = now;
+  grid[0][0] = '記事Portfolio 自動計測'; grid[0][1] = now;
   grid[0][2] = '計測を更新。既存の編集判断日時はU列に保存';
   grid[1][0] = 'P1共通計測期間'; grid[1][1] = period; grid[1][2] = 'GSC FINAL / GA4同一日付窓。人数比はコホート遷移率ではない';
   grid[2][0] = '台帳'; grid[2][1] = inventory.length; grid[2][2] = inventory.source || '正本記事台帳＋EN/KO/TW検索インデックス';
   grid[3][0] = '表示記事'; grid[3][1] = rows.length; grid[3][2] = '台帳外の旧判断も保持';
-  grid[4][0] = '保存した既存判断'; grid[4][1] = preserved; grid[4][2] = 'Bucket・役割・主KPI・intent・cooldown・next actionを保護';
-  grid[5][0] = 'Bucket（既存判断＋新規暫定）'; grid[5][1] = Object.keys(counts).sort().map(function(k) { return k + ' ' + counts[k]; }).join(' / ');
+  grid[4][0] = '保持した既存行'; grid[4][1] = preserved; grid[4][2] = '判断日時の記録あり ' + datedDecisions + '件 / 未レビュー行を確認済み判断に数えない';
+  grid[5][0] = '分類（暫定含む）'; grid[5][1] = Object.keys(counts).sort().map(function(k) { return k + ' ' + counts[k]; }).join(' / ');
   grid[6][0] = '再評価候補'; grid[6][1] = 'S:T列'; grid[6][2] = 'しきい値は編集判断の入口。既存Bucketを自動昇降格しない';
   grid[7][0] = '未計測'; grid[7][1] = '再訪・解決・文脈別次行動など'; grid[7][2] = 'partialを維持し、PVや計算クリックで主KPIを代用しない';
   grid[8][0] = '公開SEO編集'; grid[8][1] = '今回なし'; grid[8][2] = '記事内容・intent owner・広告設定は変更しない';
-  grid[9][0] = '空欄は未取得/該当なし。計測値は対象期間、編集判断はU列の日時を参照。新規Bucketは暫定。';
+  grid[9][0] = '計測対応'; grid[9][1] = 'OK ' + measured + ' / PARTIAL ' + partial + ' / NO_MATCH ' + unmatched;
+  grid[9][2] = '空欄は未取得・該当なし。未計測の暫定分類はUNASSESSED、編集判断日時はU列。';
   grid[10] = ['Locale', 'Path', 'Bucket', 'Article Role', 'Primary KPI', 'measurement status', 'data status', 'Search Click', 'Search Imp.', 'CTR', 'Organic users', 'Article→Calculator', 'Start', 'First Success', 'Revenue', 'intent warning', 'cooldown', 'next action', '再評価候補', '候補の根拠', '既存判断の日時', '台帳・公開状態', '内容更新日（JP）', '今回の確認事項'];
-  return { grid: grid.concat(rows), inventoryCount: inventory.length, rows: rows.length, preserved: preserved, period: period };
+  return { grid: grid.concat(rows), inventoryCount: inventory.length, rows: rows.length, preserved: preserved, datedDecisions: datedDecisions, period: period };
 }
 
 function playPointRefreshPortfolioUnlocked_() {
@@ -172,14 +192,20 @@ function playPointRefreshPortfolioUnlocked_() {
   if (!backup) { backup = sheet.copyTo(ss).setName('🗄Portfolio編集判断退避'); backup.hideSheet(); }
   if (sheet.getMaxRows() < result.grid.length) sheet.insertRowsAfter(sheet.getMaxRows(), result.grid.length - sheet.getMaxRows());
   var previousRows = sheet.getLastRow();
+  // 生成する概要領域だけ整え、記事分類列の幅に説明文を押し込めない。
+  sheet.getRange(1, 1, 10, 10).breakApart();
   sheet.getRange(1, 1, result.grid.length, 24).setValues(result.grid.map(function(row) { return row.map(function(value) { return typeof value === 'string' && value.charAt(0) === '=' ? "'" + value : value; }); }));
   if (previousRows > result.grid.length) sheet.getRange(result.grid.length + 1, 1, previousRows - result.grid.length, 24).clearContent();
   if (result.rows) { sheet.getRange(12, 10, result.rows, 1).setNumberFormat('0.00%'); sheet.getRange(12, 15, result.rows, 1).setNumberFormat('¥#,##0.00'); }
   sheet.getRange(11, 1, 1, 24).setFontWeight('bold');
+  [1, 2, 3, 4, 5, 7, 8, 9, 10].forEach(function(row) { sheet.getRange(row, 3, 1, 8).merge(); });
+  sheet.getRange(6, 2, 1, 9).merge();
+  sheet.getRange(1, 1, 10, 10).setWrap(true).setVerticalAlignment('middle');
+  sheet.setColumnWidth(1, 130);
+  sheet.autoResizeRows(1, 10);
   sheet.setFrozenRows(11);
-  if (typeof updateHealthSheet_ === 'function') updateHealthSheet_(ss);
-  console.log('Portfolio更新: 台帳=' + result.inventoryCount + ' / 表示=' + result.rows + ' / 既存判断保護=' + result.preserved + ' / 期間=' + result.period);
-  return { rows: result.rows, inventoryCount: result.inventoryCount, preserved: result.preserved, period: result.period };
+  console.log('Portfolio更新: 台帳=' + result.inventoryCount + ' / 表示=' + result.rows + ' / 既存行保持=' + result.preserved + ' / 判断日時あり=' + result.datedDecisions + ' / 期間=' + result.period);
+  return { rows: result.rows, inventoryCount: result.inventoryCount, preserved: result.preserved, datedDecisions: result.datedDecisions, period: result.period };
 }
 
 // 手動メンテナンス専用。各チャンクでロックを解放し、成功後だけ再開位置を保存する。
@@ -201,41 +227,59 @@ function playPointCoverageStyle_(sheet) {
   setColumnWidths_(sheet, { 1: 115, 2: 120, 3: 130, 4: 255, 5: 185 });
 }
 
+function playPointCoverageMap_(values) {
+  var byDate = {};
+  values.slice(1).forEach(function(row) {
+    var day = playPointMaintenanceIsoDate_(row[0]), count = Number(row[1]);
+    var request = /^(\d{4}-\d{2}-\d{2}) ～ (\d{4}-\d{2}-\d{2})$/.exec(String(row[3] || ''));
+    if (!day || !request || !playPointMaintenanceIsoDate_(request[1]) || !playPointMaintenanceIsoDate_(request[2]) ||
+        day < request[1] || day > request[2] || row[1] === '' || row[1] === null || !Number.isInteger(count) ||
+        !(row[2] === 'API_ROWS' && count > 0 || row[2] === 'API_NO_ROWS' && count === 0) || !row[4]) return;
+    row[0] = day; byDate[day] = row;
+  });
+  return byDate;
+}
+
 function playPointPageHistoryAuditChunk_() {
   var ss = resolveAndRememberSpreadsheet_(), props = PropertiesService.getScriptProperties();
-  var raw = props.getProperty(PLAYPOINT_MAINTENANCE.checkpoint), job = raw ? JSON.parse(raw) : null;
-  if (!job) {
-    job = { start: relativeDateString_(-365), end: relativeDateString_(-1), nextEnd: relativeDateString_(-1), coveredDays: 0 };
-    props.setProperty(PLAYPOINT_MAINTENANCE.checkpoint, JSON.stringify(job));
-  }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(job.start) || !/^\d{4}-\d{2}-\d{2}$/.test(job.end) || job.start > job.end || job.nextEnd > job.end) throw new Error('履歴確認の再開位置が不正です。');
-  if (job.nextEnd < job.start) {
-    var saved = ss.getSheetByName(PLAYPOINT_MAINTENANCE.coverage);
-    var verifiedDates = saved ? saved.getDataRange().getValues().slice(1).map(function(row) { return formatDateSafe_(row[0]); }).filter(function(day) { return day >= job.start && day <= job.end; }) : [];
-    if (new Set(verifiedDates).size === dateArrayInRange_(job.start, job.end).length) {
-      playPointCoverageStyle_(saved);
-      return { complete: true, coveredDays: job.coveredDays, start: job.start, end: job.end };
-    }
-    // 完了カーソルだけでは完了としない。確認表が欠けた場合は同じ日付窓を再検証する。
-    job.nextEnd = job.end; job.coveredDays = 0;
-    props.setProperty(PLAYPOINT_MAINTENANCE.checkpoint, JSON.stringify(job));
-    props.deleteProperty(SCRIPT_KEYS.PAGE_HISTORY_BACKFILL_COMPLETED_AT);
-  }
-  var end = job.nextEnd, start = shiftDateString_(end, -13);
-  if (start < job.start) start = job.start;
   recordHealthAttempt_('PAGE_HISTORY_BACKFILL');
   try {
+    var raw = props.getProperty(PLAYPOINT_MAINTENANCE.checkpoint), job = raw ? JSON.parse(raw) : null;
+    if (!job) {
+      job = { start: relativeDateString_(-365), end: relativeDateString_(-1), nextEnd: relativeDateString_(-1), coveredDays: 0 };
+      props.setProperty(PLAYPOINT_MAINTENANCE.checkpoint, JSON.stringify(job));
+    }
+    if (!playPointMaintenanceIsoDate_(job.start) || !playPointMaintenanceIsoDate_(job.end) || !playPointMaintenanceIsoDate_(job.nextEnd) ||
+        Date.parse(job.end) - Date.parse(job.start) !== 364 * 86400000 || job.end >= relativeDateString_(0) || !Number.isInteger(job.coveredDays) || job.coveredDays < 0 || job.coveredDays > 365 ||
+        job.nextEnd !== shiftDateString_(job.end, -job.coveredDays)) throw new Error('履歴確認の再開位置が不正です。');
+    var coverage = getOrCreateSheet_(ss, PLAYPOINT_MAINTENANCE.coverage);
+    var byDate = playPointCoverageMap_(coverage.getDataRange().getValues());
+    var savedDays = job.coveredDays ? dateArrayInRange_(shiftDateString_(job.nextEnd, 1), job.end) : [];
+    if (savedDays.some(function(day) { return !byDate[day]; })) {
+      // 中断中も保存済み区間を確認する。日付だけでAPI取得成功と判定しない。
+      job.nextEnd = job.end; job.coveredDays = 0;
+      props.setProperty(PLAYPOINT_MAINTENANCE.checkpoint, JSON.stringify(job));
+      props.setProperty(SCRIPT_KEYS.PAGE_HISTORY_BACKFILL_NEXT_END_DATE, job.end);
+      props.deleteProperty(SCRIPT_KEYS.PAGE_HISTORY_BACKFILL_COMPLETED_AT);
+    }
+    if (job.nextEnd < job.start) {
+      playPointCoverageStyle_(coverage);
+      recordHealthSuccess_('PAGE_HISTORY_BACKFILL', { dataThrough: job.start + ' ～ ' + job.end, dataState: DATA_STATE.RECONCILED, detail: '保存済み365日のAPI応答・対象期間を再確認。APIの重複取得なし。' });
+      updateHealthSheet_(ss);
+      return { complete: true, coveredDays: job.coveredDays, start: job.start, end: job.end };
+    }
+    var end = job.nextEnd, start = shiftDateString_(end, -13);
+    if (start < job.start) start = job.start;
     var rows = fetchGa4PageDailyRows_(start, end), days = dateArrayInRange_(start, end), counts = {};
     rows.forEach(function(row) {
-      if (row.date < start || row.date > end) throw new Error('取得履歴の日付が要求範囲外です。');
+      if (!playPointMaintenanceIsoDate_(row.date) || row.date < start || row.date > end) throw new Error('取得履歴の日付が要求範囲外です。');
       counts[row.date] = (counts[row.date] || 0) + 1;
     });
     upsertPageDailyHistory_(ss, rows);
-    var coverage = getOrCreateSheet_(ss, PLAYPOINT_MAINTENANCE.coverage), existing = coverage.getDataRange().getValues(), byDate = {};
-    existing.slice(1).forEach(function(row) { var day = formatDateSafe_(row[0]); if (day) { row[0] = day; byDate[day] = row; } });
     days.forEach(function(day) { byDate[day] = [day, counts[day] || 0, counts[day] ? 'API_ROWS' : 'API_NO_ROWS', start + ' ～ ' + end, currentTimestamp_()]; });
     replaceSheet_(coverage, ['日付', '取得ページ行数', 'API応答', '要求期間', '確認日時'], Object.keys(byDate).sort().map(function(day) { return byDate[day]; }), COLORS.BLUE);
     playPointCoverageStyle_(coverage);
+    SpreadsheetApp.flush();
     invalidateArchivedMonthsForRange_(start, end);
     job.coveredDays += days.length; job.nextEnd = shiftDateString_(start, -1);
     props.setProperty(PLAYPOINT_MAINTENANCE.checkpoint, JSON.stringify(job));
