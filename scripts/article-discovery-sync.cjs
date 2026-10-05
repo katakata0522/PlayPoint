@@ -55,7 +55,15 @@ function readingMount(html, locale, isHub) {
     : '<div class="reading-tools" data-reading-tools><button type="button" disabled aria-pressed="false">' + copy[0] + '</button><a href="' + hub + '#reading-library">' + copy[2] + '</a><span role="status"></span></div>';
   const block = '\n<!-- reading-tools:start -->' + inner + '<!-- reading-tools:end -->\n';
   if (isHub && locale === 'ja') return html.includes('<!-- hub-library-mount -->') ? html.replace('<!-- hub-library-mount -->', '<!-- hub-library-mount -->' + block) : html.replace(/(<div\b[^>]*id="pagination"[^>]*>[\s\S]*?<\/div>)/i, '$1' + block);
+  // 初期HTMLにも読書UIがあるため、JSだけでなく静的生成時に配置を揃える。
+  if (isHub && html.includes('data-intl-reading-library-slot')) {
+    return html.replace(/(<div\b[^>]*data-intl-reading-library-slot[^>]*>)/i, '$1' + block);
+  }
   if (isHub) return html.replace(/[ \t]*(<div\b[^>]*(?:data-intl-guide-controls|id="article-grid")[^>]*>)/i, (_, tag) => block + tag);
+  if (locale !== 'ja') {
+    const hero = html.match(/(<div\b[^>]*class="[^"]*\bhero\b[^"]*"[^>]*>[\s\S]*?)(<\/div>\s*<article\b)/i);
+    if (hero) return html.replace(hero[0], hero[1].trimEnd() + block + hero[2]);
+  }
   const header = [...html.matchAll(/<header\b[^>]*>[\s\S]*?<\/header>/gi)].find(match => /<h1\b/i.test(match[0]));
   if (header) return html.replace(header[0], tag => tag + block);
   return html.replace(/<h1\b[^>]*>[\s\S]*?<\/h1>/i, tag => tag + block);
