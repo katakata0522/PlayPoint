@@ -164,13 +164,13 @@ function playPointMaintenanceBuildPortfolio_(inventory, oldGrid, p1, now) {
     return row;
   });
   var grid = Array.from({length: 11}, function() { return Array(24).fill(''); });
-  grid[0][0] = 'Article Portfolio 自動計測更新'; grid[0][1] = now;
+  grid[0][0] = '記事Portfolio 自動計測'; grid[0][1] = now;
   grid[0][2] = '計測を更新。既存の編集判断日時はU列に保存';
   grid[1][0] = 'P1共通計測期間'; grid[1][1] = period; grid[1][2] = 'GSC FINAL / GA4同一日付窓。人数比はコホート遷移率ではない';
   grid[2][0] = '台帳'; grid[2][1] = inventory.length; grid[2][2] = inventory.source || '正本記事台帳＋EN/KO/TW検索インデックス';
   grid[3][0] = '表示記事'; grid[3][1] = rows.length; grid[3][2] = '台帳外の旧判断も保持';
   grid[4][0] = '保持した既存行'; grid[4][1] = preserved; grid[4][2] = '判断日時の記録あり ' + datedDecisions + '件 / 未レビュー行を確認済み判断に数えない';
-  grid[5][0] = 'Bucket（既存判断＋新規暫定）'; grid[5][1] = Object.keys(counts).sort().map(function(k) { return k + ' ' + counts[k]; }).join(' / ');
+  grid[5][0] = '分類（暫定含む）'; grid[5][1] = Object.keys(counts).sort().map(function(k) { return k + ' ' + counts[k]; }).join(' / ');
   grid[6][0] = '再評価候補'; grid[6][1] = 'S:T列'; grid[6][2] = 'しきい値は編集判断の入口。既存Bucketを自動昇降格しない';
   grid[7][0] = '未計測'; grid[7][1] = '再訪・解決・文脈別次行動など'; grid[7][2] = 'partialを維持し、PVや計算クリックで主KPIを代用しない';
   grid[8][0] = '公開SEO編集'; grid[8][1] = '今回なし'; grid[8][2] = '記事内容・intent owner・広告設定は変更しない';
@@ -192,10 +192,17 @@ function playPointRefreshPortfolioUnlocked_() {
   if (!backup) { backup = sheet.copyTo(ss).setName('🗄Portfolio編集判断退避'); backup.hideSheet(); }
   if (sheet.getMaxRows() < result.grid.length) sheet.insertRowsAfter(sheet.getMaxRows(), result.grid.length - sheet.getMaxRows());
   var previousRows = sheet.getLastRow();
+  // 生成する概要領域だけ整え、記事分類列の幅に説明文を押し込めない。
+  sheet.getRange(1, 1, 10, 10).breakApart();
   sheet.getRange(1, 1, result.grid.length, 24).setValues(result.grid.map(function(row) { return row.map(function(value) { return typeof value === 'string' && value.charAt(0) === '=' ? "'" + value : value; }); }));
   if (previousRows > result.grid.length) sheet.getRange(result.grid.length + 1, 1, previousRows - result.grid.length, 24).clearContent();
   if (result.rows) { sheet.getRange(12, 10, result.rows, 1).setNumberFormat('0.00%'); sheet.getRange(12, 15, result.rows, 1).setNumberFormat('¥#,##0.00'); }
   sheet.getRange(11, 1, 1, 24).setFontWeight('bold');
+  [1, 2, 3, 4, 5, 7, 8, 9, 10].forEach(function(row) { sheet.getRange(row, 3, 1, 8).merge(); });
+  sheet.getRange(6, 2, 1, 9).merge();
+  sheet.getRange(1, 1, 10, 10).setWrap(true).setVerticalAlignment('middle');
+  sheet.setColumnWidth(1, 130);
+  sheet.autoResizeRows(1, 10);
   sheet.setFrozenRows(11);
   console.log('Portfolio更新: 台帳=' + result.inventoryCount + ' / 表示=' + result.rows + ' / 既存行保持=' + result.preserved + ' / 判断日時あり=' + result.datedDecisions + ' / 期間=' + result.period);
   return { rows: result.rows, inventoryCount: result.inventoryCount, preserved: result.preserved, datedDecisions: result.datedDecisions, period: result.period };
