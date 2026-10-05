@@ -19,7 +19,8 @@ const REPRESENTATIVE_CASES = [
   { key: 'game-decision-deep', path: 'games/fgo/pity-cost/index.html', allArticle: true, intro: true, related: true },
   { key: 'international-decision', path: 'en/articles/google-play-points-earn-free.html', related: true },
   { key: 'international-quest-reading', path: 'en/articles/google-play-quests.html', intro: true, related: true },
-  { key: 'korean-cash-reading', path: 'ko/articles/google-play-points-cash-conversion.html', answerSelector: ':scope > .intro', intro: true, related: true }
+  { key: 'korean-cash-reading', path: 'ko/articles/google-play-points-cash-conversion.html', answerSelector: ':scope > .intro', intro: true, related: true },
+  { key: 'traditional-chinese-use', path: 'tw/articles/google-play-points-use-coupons.html', related: true }
 ];
 // 全件確認は明示指定時だけ実行し、通常CIの代表ケースは維持する。
 const CASES = process.env.ARTICLE_REVIEW_ALL === '1'
@@ -217,6 +218,69 @@ async function inspectGameReading(browser, baseUrl) {
   } finally { await context.close(); }
 }
 
+// 既存suiteで海外記事の検索・保存・小画面・テーマを一続きに確認する。
+async function inspectIntlReading(browser, baseUrl) {
+  const cases = [
+    { locale: 'en', width: 1280, query: 'quests' },
+    { locale: 'ko', width: 390, query: '퀘스트' },
+    { locale: 'tw', width: 320, query: '任務' }
+  ];
+  const origin = new URL(baseUrl).origin;
+  for (const item of cases) {
+    const context = await browser.newContext({ viewport: { width: item.width, height: 900 }, reducedMotion: 'reduce' });
+    await context.route('**/*', route => new URL(route.request().url()).origin === origin
+      ? route.continue() : route.fulfill({ status: 204, body: '' }));
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    try {
+      await page.goto(new URL('/' + item.locale + '/articles/google-play-quests.html', baseUrl).href, { waitUntil: 'load' });
+      const save = page.locator('.reading-tools button');
+      await save.waitFor({ state: 'visible' });
+      const title = await page.locator('h1').evaluate(el => parseFloat(getComputedStyle(el).fontSize));
+      const body = await page.locator('.content').evaluate(el => parseFloat(getComputedStyle(el).fontSize));
+      assert(title >= body * 1.5, item.locale + ': article title must be visually distinct from body copy');
+      await save.click();
+      assert(await save.getAttribute('aria-pressed') === 'true', item.locale + ': saving failed');
+      await page.locator('.reading-tools a').click();
+      const library = page.locator('#reading-library');
+      await library.waitFor({ state: 'visible' });
+      assert(await library.locator('a[href="/' + item.locale + '/articles/google-play-quests.html"]').count() >= 1, item.locale + ': saved article missing from library');
+      await page.goto(new URL('/' + item.locale + '/articles/', baseUrl).href, { waitUntil: 'load' });
+      const search = page.locator('[data-guide-search]');
+      await search.waitFor({ state: 'visible' });
+      const bounds = await search.boundingBox();
+      assert(bounds && bounds.y + bounds.height < 900, item.locale + ': guide search must be reachable in the first viewport');
+      const start = page.locator('[data-guide-start]');
+      assert(await start.isVisible(), item.locale + ': curated entrances missing before search');
+      await search.fill(item.query);
+      await page.waitForFunction(() => document.querySelector('[data-guide-start]')?.hidden && document.querySelectorAll('[data-guide-grid] [data-guide-card]:not([hidden])').length > 0);
+      await search.fill('zzzznomatch999999');
+      await page.locator('[data-guide-empty]').waitFor({ state: 'visible' });
+      assert(await page.locator('.search-recovery button').count() >= 1, item.locale + ': empty search has no recovery');
+      await search.fill('');
+      await start.waitFor({ state: 'visible' });
+      await page.locator('[data-guide-filter="levels"]').click();
+      assert(await page.locator('[data-guide-filter="levels"]').getAttribute('aria-pressed') === 'true', item.locale + ': selected category state missing');
+      assert(!await start.isVisible(), item.locale + ': curated entrances obscure filtered results');
+      const categories = await page.locator('[data-guide-grid] [data-guide-card]:visible').evaluateAll(cards => cards.map(card => card.dataset.category));
+      assert(categories.length && categories.every(category => category === 'levels'), item.locale + ': category filter returned unrelated guides');
+      await page.locator('[data-guide-filter="all"]').click();
+      for (const theme of ['light', 'dark']) {
+        if (theme === 'dark') await page.locator('.reading-theme-toggle').click();
+        const state = await page.evaluate(() => ({ theme: document.documentElement.dataset.readingTheme, overflow: document.documentElement.scrollWidth - innerWidth }));
+        assert(state.theme === theme && state.overflow <= 1, item.locale + '/' + theme + ': theme or reflow failed');
+        await search.focus();
+        const focus = await search.evaluate(el => ({ visible: el.matches(':focus-visible'), width: parseFloat(getComputedStyle(el).outlineWidth) }));
+        assert(focus.visible && focus.width >= 2, item.locale + '/' + theme + ': search keyboard focus missing');
+        await page.screenshot({ path: path.join(ARTIFACT_DIR, 'intl-guide-' + item.locale + '-' + item.width + '-' + theme + '.png'), fullPage: true });
+      }
+      assert(errors.length === 0, item.locale + ': runtime errors: ' + errors.join('; '));
+      console.log('[article-design-smoke] ' + item.locale + ': save, library, first-view search, results, zero results, categories, light/dark, reflow: OK');
+    } finally { await context.close(); }
+  }
+}
+
 async function main() {
   assert(CHROME_PATH, 'CHROME_PATH is required');
   const local = REQUESTED_BASE_URL ? null : await startLocalServer();
@@ -225,6 +289,7 @@ async function main() {
   try {
     for (const article of CASES) for (const viewport of VIEWPORTS) await inspect(browser, baseUrl, article, viewport);
     await inspectGameReading(browser, baseUrl);
+    await inspectIntlReading(browser, baseUrl);
   } finally {
     await browser.close();
     if (local) await local.close();

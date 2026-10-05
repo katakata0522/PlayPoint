@@ -38,10 +38,10 @@ min-width: 0;
 max-width: none;
 margin: 0;
 background: var(--cocoon-main-bg);
-border: 1px solid var(--cocoon-border);
-border-radius: 6px;
-padding: 36px 40px;
-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+border: 0;
+border-radius: 0;
+padding: 32px 36px;
+box-shadow: none;
 overflow: visible;
 }
 
@@ -53,19 +53,24 @@ text-align: left;
 
 .intl-layout-container .hero-badge {
 display: inline-block;
-border: 1px solid var(--reading-border, #cbd5e1);
+border: 0;
 color: var(--reading-muted, #64748b);
 font-size: 11px;
 font-weight: 700;
-padding: 2px 7px;
-border-radius: 3px;
-margin-bottom: 12px;
-background: var(--reading-soft, #f8fafc);
+padding: 0;
+border-radius: 0;
+margin-bottom: 8px;
+background: transparent;
 letter-spacing: normal;
 }
 
 .intl-layout-container .hero h1 {
 max-width: none;
+font-size: clamp(28px, 3vw, 38px);
+line-height: 1.3;
+letter-spacing: -0.025em;
+margin-bottom: 12px;
+overflow-wrap: anywhere;
 }
 
 .intl-layout-container .hero h1,
@@ -83,6 +88,100 @@ text-wrap: pretty;
 
 .intl-layout-container .content {
 padding: 0;
+max-width: 72ch;
+}
+
+/* 共通記事CSSの強調装飾は、この読み物用テンプレートで簡素化する。 */
+body .intl-layout-container .hero .hero-badge {
+padding: 0;
+border: 0;
+border-radius: 0;
+background: transparent;
+color: var(--reading-muted, #526176);
+}
+body .intl-layout-container .content :is(h2, h3) {
+display: block;
+background: none !important;
+color: var(--reading-text, #233044) !important;
+border: 0 !important;
+border-radius: 0 !important;
+box-shadow: none !important;
+padding: 0 !important;
+margin: 38px 0 16px !important;
+line-height: 1.5 !important;
+}
+body .intl-layout-container .content h2 { font-size: 1.4rem !important; }
+body .intl-layout-container .content h3 { font-size: 1.1rem !important; }
+body .intl-layout-container .content > :is(.answer-box, .editorial-answer, .summary-box) {
+background: var(--reading-note-bg, #eef5fb) !important;
+border: 0 !important;
+border-left: 3px solid var(--reading-brand-text, #164e63) !important;
+border-radius: 0 !important;
+padding: 20px 22px !important;
+margin: 20px 0 28px !important;
+box-shadow: none !important;
+font-size: 1rem;
+}
+body .intl-layout-container .content > :is(.answer-box, .editorial-answer)::before { content: none !important; }
+body .intl-layout-container .content > :is(.answer-box, .editorial-answer, .summary-box) > h2 {
+margin: 0 0 12px !important;
+font-size: 1.1rem !important;
+}
+body .intl-layout-container .content > .intro {
+border: 0 !important;
+border-left: 2px solid var(--reading-brand-text, #164e63) !important;
+padding: 0 0 0 16px !important;
+margin: 0 0 24px !important;
+}
+body .intl-layout-container .content > .intro > strong:first-child,
+body .intl-layout-container .content > :is(.answer-box, .editorial-answer) > p:first-of-type strong {
+background: none;
+padding: 0;
+}
+body .intl-layout-container .intl-article-toc {
+background: transparent;
+border: 0;
+border-block: 1px solid var(--reading-border, #cbd5e1);
+border-radius: 0;
+box-shadow: none;
+padding: 16px 0;
+}
+body .intl-layout-container .intl-article-toc > h2 { margin: 0 0 10px !important; font-size: 1rem !important; }
+body .intl-layout-container .content :is(.cta-box, .article-calculator-prompt) {
+background: var(--reading-soft, #f1f5f9);
+border: 0;
+border-radius: 0;
+box-shadow: none;
+padding: 20px;
+}
+body .intl-layout-container .content .cta-box .cta-btn,
+body .intl-layout-container .article-calculator-prompt__button {
+background: var(--reading-action, #166534);
+color: var(--reading-on-action, #fff) !important;
+box-shadow: none;
+transform: none;
+}
+body .intl-layout-container .reading-tools { font-size: 12px; margin: 4px 0 12px; }
+body .intl-layout-container .reading-tools button {
+border: 1px solid transparent;
+padding: 4px 8px;
+min-height: 44px;
+text-decoration: underline;
+text-underline-offset: 3px;
+}
+body .intl-layout-container .reading-tools a { color: var(--reading-muted, #526176); }
+body .intl-layout-container .reading-metadata { margin: 4px 0; }
+body .intl-layout-container .article-region-scope { margin: 8px 0 4px; }
+html:lang(ko) .intl-layout-container :is(h1, h2, h3, .sidebar-related-link, .intl-guide-card__title) {
+word-break: keep-all;
+overflow-wrap: anywhere;
+}
+html:lang(zh-TW) .intl-layout-container :is(h1, h2, h3) {
+word-break: keep-all;
+overflow-wrap: anywhere;
+line-break: strict;
+text-wrap: pretty;
+letter-spacing: 0;
 }
 
 .intl-article-toc {
@@ -122,9 +221,9 @@ color: var(--reading-text, #1e293b);
 .official-source-note {
 margin: 24px 0;
 padding: 18px 20px;
-border: 1px solid var(--reading-border, #dbe2ea);
+border: 0;
 border-left: 4px solid var(--article-accent);
-border-radius: 8px;
+border-radius: 0;
 background: var(--reading-soft, #f8fafc);
 }
 
@@ -169,11 +268,10 @@ text-decoration: underline;
 
 .intl-article-hub .intl-hub-intro {
 margin: 0 0 28px;
-padding: 18px 20px;
-border: 1px solid var(--reading-border, #dbe2ea);
-border-left: 4px solid var(--cocoon-nav-bg);
-border-radius: 8px;
-background: var(--reading-soft, #f8fafc);
+padding: 0;
+border: 0;
+border-radius: 0;
+background: transparent;
 font-size: 15px;
 }
 
@@ -242,6 +340,9 @@ border-radius: 0;
 border-left: none;
 border-right: none;
 }
+body .intl-layout-container .content > :is(.answer-box, .editorial-answer, .summary-box) { padding: 16px !important; }
+body .intl-layout-container .content h2 { font-size: 1.25rem !important; }
+body .intl-layout-container .hero h1 { font-size: 28px; }
 }
 `;
 

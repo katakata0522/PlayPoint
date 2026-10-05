@@ -5,6 +5,7 @@
   const buttons = Array.from(document.querySelectorAll('[data-guide-filter]'));
   const result = document.querySelector('[data-guide-result]');
   const empty = document.querySelector('[data-guide-empty]');
+  const start = document.querySelector('[data-guide-start]');
   if (!grid || !search || !buttons.length || !result || !empty) return;
   const locale = location.pathname.split('/')[1];
   const copy = {
@@ -35,6 +36,8 @@
   }
   function applyFilters() {
     const query = search.value.trim(), engine = window.PlayPointSearch; let visible = 0;
+    // 検索・分類の選択中は一致する結果を検索欄の直後に見せる。
+    if (start) start.hidden = Boolean(query) || activeCategory !== 'all';
     const byPath = new Map(articles.map(article => [article.path, article]));
     const ordered = cards.map(card => {
       const article = byPath.get(new URL(card.href).pathname);
