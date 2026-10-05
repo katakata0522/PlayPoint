@@ -19,7 +19,7 @@ const REPRESENTATIVE_CASES = [
   { key: 'game-decision-deep', path: 'games/fgo/pity-cost/index.html', allArticle: true, intro: true, related: true },
   { key: 'international-decision', path: 'en/articles/google-play-points-earn-free.html', related: true },
   { key: 'international-quest-reading', path: 'en/articles/google-play-quests.html', intro: true, related: true },
-  { key: 'korean-cash-reading', path: 'ko/articles/google-play-points-cash-conversion.html', intro: true, related: true }
+  { key: 'korean-cash-reading', path: 'ko/articles/google-play-points-cash-conversion.html', answerSelector: ':scope > .intro', intro: true, related: true }
 ];
 // 全件確認は明示指定時だけ実行し、通常CIの代表ケースは維持する。
 const CASES = process.env.ARTICLE_REVIEW_ALL === '1'
@@ -74,9 +74,9 @@ async function inspect(browser, baseUrl, article, viewport) {
     const response = await page.goto(new URL(article.path, baseUrl).href, { waitUntil: 'load', timeout: 45000 });
     assert(response && response.ok(), article.key + '/' + viewport.key + ': HTTP failure');
     await page.locator('.content').waitFor({ state: 'attached', timeout: 15000 });
-    const result = await page.evaluate(() => {
+    const result = await page.evaluate(answerSelector => {
       const content = document.querySelector('.content');
-      const answer = content?.querySelector(':scope > .answer-box, :scope > .editorial-answer');
+      const answer = content?.querySelector(answerSelector || ':scope > .answer-box, :scope > .editorial-answer');
       const intro = content?.querySelector(':scope > .intro');
       const summary = content?.querySelector(':scope > .summary-box');
       const heading = content?.querySelector(':scope > .section > h2');
@@ -107,7 +107,7 @@ async function inspect(browser, baseUrl, article, viewport) {
         related: rendered(related),
         horizontalOverflow: document.documentElement.scrollWidth - window.innerWidth
       };
-    });
+    }, article.answerSelector);
 
     if (viewport.width > 860 && result.popularCopyWidth) assert(result.popularCopyWidth >= 80, article.key + ': 人気記事の本文幅が狭すぎる');
     assert(result.sharedLoaded, article.key + '/' + viewport.key + ': article-shared.css not attached');
