@@ -190,6 +190,18 @@
       const focused = controls.querySelector(':focus');
       const restoreKey = focused?.dataset.readingFocus;
       controls.replaceChildren(); const state = store.read();
+      // 再訪時の入口は既存の履歴を使う。記録停止・空リストでは表示しない。
+      const resume = isHub && locale === 'ja' && document.querySelector('[data-reading-resume]');
+      if (resume) {
+        const previous = state.historyEnabled && state.recent[0];
+        resume.replaceChildren(); resume.hidden = !previous;
+        if (previous) {
+          const heading = element('p', '前回読んだ記事'), link = element('a', previous.title);
+          link.href = previous.path;
+          const library = element('a', '保存した記事・閲覧履歴を見る'); library.href = '#reading-library';
+          resume.append(heading, link, library);
+        }
+      }
       const label = element('label'), checkbox = element('input'); checkbox.type = 'checkbox'; checkbox.dataset.readingFocus = 'history'; checkbox.checked = state.historyEnabled;
       checkbox.addEventListener('change', () => attempt(() => { store.history(checkbox.checked); render(); }));
       label.append(checkbox, document.createTextNode(' ' + copy[9])); controls.append(label);

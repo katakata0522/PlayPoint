@@ -39,11 +39,16 @@ test('欠損・暫定・期間不一致・古いデータ・重複は前回順�
   }
 });
 
-test('同じ順位では更新せず、同数PVの順位はURL順で安定する', () => {
+test('同じ順位でも新しい集計期間を反映し、同じ期間の再実行は更新しない', () => {
   const input = fixture(); input.rows.forEach(row => row.pv = 1);
-  assert.equal(buildSnapshot(input, registry, previous, today), null);
+  const next = buildSnapshot(input, registry, previous, today);
+  assert.deepEqual(next.guides, previous.guides);
+  assert.equal(next.end, input.end);
+  assert.equal(buildSnapshot(input, registry, next, today), null);
   input.rows.reverse();
-  assert.equal(buildSnapshot(input, registry, previous, today), null);
+  assert.equal(buildSnapshot(input, registry, next, today), null);
+  const renamed = registry.map(article => ({ ...article, listTitle: article.title + '更新' }));
+  assert.match(buildSnapshot(input, renamed, next, today).guides[0][1], /更新$/);
 });
 
 test('dry-run・不正入力はファイルを保持し、明示的書込みだけで更新する', () => {

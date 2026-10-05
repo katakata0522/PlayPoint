@@ -1,10 +1,9 @@
-/* 日本語ガイドの表示契約。計算機トップには読み込まない。 */
 html[lang="ja"][data-reading-theme="light"] {
-  --reading-bg:#f8faf9; --reading-surface:#fff; --reading-soft:#edf4f1;
-  --reading-text:#193438; --reading-muted:#51686c; --reading-border:#d4e0db;
-  --reading-brand:#126458; --reading-brand-text:#126458; --reading-link:#126458;
-  --reading-action:#126458; --reading-on-action:#fff;
-  --reading-selected:#126458; --reading-on-selected:#fff; --reading-note-bg:#edf4f1;
+--reading-bg:#f8faf9; --reading-surface:#fff; --reading-soft:#edf4f1;
+--reading-text:#193438; --reading-muted:#51686c; --reading-border:#d4e0db;
+--reading-brand:#126458; --reading-brand-text:#126458; --reading-link:#126458;
+--reading-action:#126458; --reading-on-action:#fff;
+--reading-selected:#126458; --reading-on-selected:#fff; --reading-note-bg:#edf4f1;
 }
 html[lang="ja"] body .guide-header { background:var(--reading-surface); }
 html[lang="ja"] body .guide-header .site-header-inner { max-width:1160px; min-height:76px; }
@@ -31,7 +30,6 @@ html[lang="ja"] body .main-content-column .section { padding:0; margin-top:32px;
 html[lang="ja"] body .main-content-column h2 { margin-top:36px; font-size:24px; line-height:1.6; }
 html[lang="ja"] body .main-content-column h3 { font-size:19px; line-height:1.65; }
 html[lang="ja"] body .main-content-column .hero-badge { border:0; border-radius:4px; padding:4px 9px; color:var(--reading-link); background:var(--reading-soft); font-size:12px; }
-/* 旧共通CSSの強制指定を、日本語ガイド内の結論だけで上書きする。 */
 html[lang="ja"] body .main-content-column :is(.answer-box,.editorial-answer) { padding:22px 24px !important; margin:24px 0 32px !important; border:1px solid var(--reading-border) !important; border-left:4px solid var(--reading-link) !important; border-radius:6px !important; background:var(--reading-note-bg) !important; box-shadow:none !important; }
 html[lang="ja"] body .main-content-column :is(.answer-box,.editorial-answer)::before { display:none !important; }
 html[lang="ja"] body .main-content-column :is(.answer-box,.editorial-answer) h2 { padding:0 !important; margin:0 0 12px !important; border:0 !important; font-size:18px !important; line-height:1.7; background:none !important; }
@@ -96,51 +94,49 @@ html[lang="ja"] body.blog-index-compact .badge-new { padding:2px 5px; background
 html[lang="ja"] body .guide-dialog::backdrop { background:rgb(12 30 32 / .6); }
 html[lang="ja"] body .guide-toc-links a:hover { color:var(--reading-link); }
 @media(max-width:1000px) {
-  html[lang="ja"] body :is(.layout-container,.guide-hub-layout) { gap:28px; grid-template-columns:minmax(0,1fr) 240px; }
-  html[lang="ja"] body.blog-index-compact .article-card.article-card--visual { grid-template-columns:160px minmax(0,1fr); gap:18px; }
-  html[lang="ja"] body .guide-header .guide-brand-caption { font-size:11px; }
+html[lang="ja"] body :is(.layout-container,.guide-hub-layout) { gap:28px; grid-template-columns:minmax(0,1fr) 240px; }
+html[lang="ja"] body.blog-index-compact .article-card.article-card--visual { grid-template-columns:160px minmax(0,1fr); gap:18px; }
+html[lang="ja"] body .guide-header .guide-brand-caption { font-size:11px; }
 }
 @media(max-width:900px) {
-  html[lang="ja"] body :is(.layout-container,.guide-hub-layout) { max-width:760px; grid-template-columns:minmax(0,1fr); }
-  html[lang="ja"] body.blog-index-compact .article-card.article-card--visual { grid-template-columns:208px minmax(0,1fr); }
+html[lang="ja"] body :is(.layout-container,.guide-hub-layout) { max-width:760px; grid-template-columns:minmax(0,1fr); }
+html[lang="ja"] body.blog-index-compact .article-card.article-card--visual { grid-template-columns:208px minmax(0,1fr); }
 }
 @media(max-width:760px) {
-  html[lang="ja"] body .guide-header .guide-brand-full { display:none; }
-  html[lang="ja"] body .guide-header .site-header-inner { min-height:56px; }
-  html[lang="ja"] body :is(.layout-container,.guide-hub-layout) { width:calc(100% - 32px); margin:24px auto 40px; gap:28px; }
-  html[lang="ja"] body .breadcrumbs-wrapper { width:calc(100% - 32px); margin:16px auto; }
-  html[lang="ja"] body .main-content-column { padding:24px 20px; }
-  html[lang="ja"] body .main-content-column h1 { font-size:25px; }
-  html[lang="ja"] body .main-content-column :is(p,li) { font-size:16px; line-height:1.95; }
-  html[lang="ja"] body .main-content-column h2 { font-size:22px; }
-  html[lang="ja"] body .main-content-column :is(.answer-box,.editorial-answer) { padding:18px !important; }
-  html[lang="ja"] body .main-content-column :is(.answer-box,.editorial-answer) h2 { font-size:17px !important; }
-  html[lang="ja"] body.blog-index-compact .hero-section { margin-bottom:20px; }
-  html[lang="ja"] body.blog-index-compact .hero-title { font-size:25px; }
-  html[lang="ja"] body.blog-index-compact .guide-intro { font-size:13px; margin-top:8px; }
-  html[lang="ja"] body.blog-index-compact .search-pathways--primary { display:block; }
-  html[lang="ja"] body.blog-index-compact .search-pathways--primary .search-pathways-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  html[lang="ja"] body.blog-index-compact .search-pathways--primary .search-pathway-card { min-height:44px; padding:8px 10px; }
-  html[lang="ja"] body.blog-index-compact .search-pathways--primary :is(.pathway-desc,.pathway-icon) { display:none; }
-  html[lang="ja"] body.blog-index-compact .article-card { grid-template-columns:72px minmax(0,1fr); gap:16px; padding:20px 0; }
-  html[lang="ja"] body.blog-index-compact .article-card.article-card--visual { grid-template-columns:112px minmax(0,1fr); }
-  html[lang="ja"] body.blog-index-compact .article-card .card-content { padding:0; }
-  html[lang="ja"] body.blog-index-compact .article-card .card-content h3 { font-size:17px; line-height:1.7; margin:5px 0; }
-  html[lang="ja"] body.blog-index-compact .article-card .card-desc { font-size:13px; line-height:1.8; }
-  html[lang="ja"] body .ja-article-sidebar .sidebar-widget--popular { padding-top:4px; }
+html[lang="ja"] body .guide-header .guide-brand-full { display:none; }
+html[lang="ja"] body .guide-header .site-header-inner { min-height:56px; }
+html[lang="ja"] body :is(.layout-container,.guide-hub-layout) { width:calc(100% - 32px); margin:24px auto 40px; gap:28px; }
+html[lang="ja"] body .breadcrumbs-wrapper { width:calc(100% - 32px); margin:16px auto; }
+html[lang="ja"] body .main-content-column { padding:24px 20px; }
+html[lang="ja"] body .main-content-column h1 { font-size:25px; }
+html[lang="ja"] body .main-content-column :is(p,li) { font-size:16px; line-height:1.95; }
+html[lang="ja"] body .main-content-column h2 { font-size:22px; }
+html[lang="ja"] body .main-content-column :is(.answer-box,.editorial-answer) { padding:18px !important; }
+html[lang="ja"] body .main-content-column :is(.answer-box,.editorial-answer) h2 { font-size:17px !important; }
+html[lang="ja"] body.blog-index-compact .hero-section { margin-bottom:20px; }
+html[lang="ja"] body.blog-index-compact .hero-title { font-size:25px; }
+html[lang="ja"] body.blog-index-compact .guide-intro { font-size:13px; margin-top:8px; }
+html[lang="ja"] body.blog-index-compact .search-pathways--primary { display:block; }
+html[lang="ja"] body.blog-index-compact .search-pathways--primary .search-pathways-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+html[lang="ja"] body.blog-index-compact .search-pathways--primary .search-pathway-card { min-height:44px; padding:8px 10px; }
+html[lang="ja"] body.blog-index-compact .search-pathways--primary :is(.pathway-desc,.pathway-icon) { display:none; }
+html[lang="ja"] body.blog-index-compact .article-card { grid-template-columns:72px minmax(0,1fr); gap:16px; padding:20px 0; }
+html[lang="ja"] body.blog-index-compact .article-card.article-card--visual { grid-template-columns:112px minmax(0,1fr); }
+html[lang="ja"] body.blog-index-compact .article-card .card-content { padding:0; }
+html[lang="ja"] body.blog-index-compact .article-card .card-content h3 { font-size:17px; line-height:1.7; margin:5px 0; }
+html[lang="ja"] body.blog-index-compact .article-card .card-desc { font-size:13px; line-height:1.8; }
+html[lang="ja"] body .ja-article-sidebar .sidebar-widget--popular { padding-top:4px; }
 }
 @media(max-width:360px) {
-  html[lang="ja"] body.blog-index-compact .article-card.article-card--visual { grid-template-columns:92px minmax(0,1fr); gap:12px; }
-  html[lang="ja"] body .main-content-column { padding:20px 16px; }
-  html[lang="ja"] body.blog-index-compact .article-card .card-content h3 { font-size:16px; }
+html[lang="ja"] body.blog-index-compact .article-card.article-card--visual { grid-template-columns:92px minmax(0,1fr); gap:12px; }
+html[lang="ja"] body .main-content-column { padding:20px 16px; }
+html[lang="ja"] body.blog-index-compact .article-card .card-content h3 { font-size:16px; }
 }
 @media(prefers-reduced-motion:reduce) {
-  html[lang="ja"] body :is(.article-card,.search-pathway-card,.guide-nav-button) { transition:none; }
+html[lang="ja"] body :is(.article-card,.search-pathway-card,.guide-nav-button) { transition:none; }
 }
-/* 入力中も選べる、少数の質問の入口。 */
 .reader-question-links { display:flex; flex-wrap:wrap; gap:0 18px; margin:4px 0 8px; }
 .reader-question-links a { display:inline-flex; align-items:center; min-height:44px; color:var(--reading-link); font-size:13px; text-decoration:underline; text-underline-offset:3px; }
-/* 長い検索例は入力欄の中で折り返す。入力と同時に消え、操作は遮らない。 */
 .search-input-wrap { position:relative; }
 .search-example { position:absolute; inset:0 16px; display:none; align-items:center; color:var(--reading-muted); font-size:14px; line-height:1.5; pointer-events:none; }
 html[lang="ja"] body.blog-index-compact .search-input-wrap #search-input::placeholder { color:transparent; }
@@ -156,10 +152,26 @@ html[lang="ja"] body.blog-index-compact .search-input-wrap #search-input::placeh
 .reader-topic-return { margin:20px 0; padding:12px 0; border-top:1px solid var(--reading-border); }
 @media(max-width:760px) { .reader-question-links { gap:0 10px; } .reader-question-links a { font-size:12px; min-height:36px; } }
 @media(max-width:380px) {
-  .reader-question-links { margin:0; }
-  html[lang="ja"] body.blog-index-compact #article-filter-panel { margin-top:0; }
-  html[lang="ja"] body.blog-index-compact .guide-hub-layout .hub-heading { margin-bottom:0; }
-  html[lang="ja"] body.blog-index-compact .hub-result-toolbar { padding:4px 0; }
-  html[lang="ja"] body.blog-index-compact .guide-hub-layout .hub-result-toolbar .sort-container { display:flex; align-items:center; gap:6px; }
-  html[lang="ja"] body.blog-index-compact .guide-hub-layout .hub-result-toolbar label { margin:0; }
+.reader-question-links { margin:0; }
+html[lang="ja"] body.blog-index-compact #article-filter-panel { margin-top:0; }
+html[lang="ja"] body.blog-index-compact .guide-hub-layout .hub-heading { margin-bottom:0; }
+html[lang="ja"] body.blog-index-compact .hub-result-toolbar { padding:4px 0; }
+html[lang="ja"] body.blog-index-compact .guide-hub-layout .hub-result-toolbar .sort-container { display:flex; align-items:center; gap:6px; }
+html[lang="ja"] body.blog-index-compact .guide-hub-layout .hub-result-toolbar label { margin:0; }
 }
+.reader-hub-intro { color:var(--reading-muted); line-height:1.7; margin:8px 0 16px; }
+.reader-entry-questions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:0 0 16px; }
+.reader-entry-questions a { display:flex; flex-direction:column; gap:5px; padding:12px; border:1px solid var(--reading-border); border-radius:8px; background:var(--reading-surface); color:var(--reading-link); text-decoration:none; min-width:0; }
+.reader-entry-questions strong { font-size:15px; line-height:1.5; }
+.reader-entry-questions span { color:var(--reading-muted); font-size:13px; line-height:1.5; }
+.reader-entry-questions a:hover { background:var(--reading-soft); }
+.reader-entry-questions a:focus-visible { outline:2px solid var(--reading-link); outline-offset:3px; }
+.reading-resume { padding:12px; margin:0 0 16px; border-left:3px solid var(--reading-link); background:var(--reading-soft); }
+.reading-resume[hidden] { display:none; }
+.reading-resume p { margin:0 0 5px; color:var(--reading-muted); font-size:13px; }
+.reading-resume a { display:block; color:var(--reading-link); margin:6px 0; line-height:1.6; }
+.reader-followthrough { margin:24px 0; padding:18px 0; border-top:1px solid var(--reading-border); }
+.reader-followthrough h2 { font-size:20px; }
+.reader-followthrough a { color:var(--reading-link); }
+.reader-followthrough li { margin:10px 0; }
+@media(max-width:760px) { .reader-entry-questions { grid-template-columns:1fr; gap:6px; } .reader-entry-questions a { padding:8px 12px; gap:2px; } .reader-hub-intro { font-size:14px; margin:6px 0 12px; } }

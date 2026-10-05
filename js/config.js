@@ -133,7 +133,7 @@ export const CONFIGS = {
             btnGoogleCal: "Google カレンダーに登録",
             btnICal: "カレンダーアプリ（iCal）登録",
             linkLatest: { text: "🆕 最新情報", href: "latest/" },
-            linkArticles: { text: "📝 記事一覧", href: "blog/" },
+            linkArticles: { text: "📝 記事トップ", href: "blog/" },
             linkKatakata: { text: "🧪 KatakataLab", href: "https://katakatalab.com/" },
             linkPrivacy: { text: "プライバシーポリシー", href: "privacy.html" },
             linkTerms: { text: "利用規約", href: "terms.html" },

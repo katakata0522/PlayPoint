@@ -61,6 +61,8 @@ const { syncArticleAuthorSemantics } = require('./article-author-semantics.cjs')
 const { syncArticleTableOverflow, syncScrollableRegions } = require('./article-table-overflow-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
+const { syncMetadata, syncReaderFoundations } = require('./reader-foundations.cjs');
+syncMetadata(rootDir);
 
 const { assetVersion, indexHtml, todayStr } = syncIndexMetadata(rootDir);
 const locales = createLocales();
@@ -178,6 +180,8 @@ if (articleNavigationSummary.failures.length > 0) {
 console.log(`[build-html] synchronized article intent/navigation: ${articleNavigationSummary.stats.changed} updated`);
 
 const { syncArticleDiscovery } = require('./article-discovery-sync.cjs');
+// 説明・次の確認先を先に確定し、検索索引に最終本文を含める。
+syncReaderFoundations(rootDir);
 console.log('[build-html] synchronized article search and reading tools:', syncArticleDiscovery(rootDir));
 
 // Game SEO and later article finalizers run after the first hreflang pass.
@@ -190,6 +194,7 @@ const { syncSubmittedPageOgp } = require('./update-common-pages-ogp.cjs');
 const { syncTopicGuides } = require('./reader-topic-guides.cjs');
 const { syncBlogStaticPages } = require('./blog-static-pages.cjs');
 console.log('[build-html] synchronized purpose guides:', syncTopicGuides(rootDir));
+syncReaderFoundations(rootDir, { hubOnly: true });
 console.log('[build-html] synchronized crawlable article pages:', syncBlogStaticPages(rootDir));
 syncSitemap(rootDir);
 syncRegionSitemap(rootDir);

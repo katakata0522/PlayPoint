@@ -5,7 +5,7 @@ const LP_FOOTER_PROFILES = Object.freeze({
     links: Object.freeze([
       Object.freeze({ href: '/', label: 'トップ計算機' }),
       Object.freeze({ href: '/games/', label: 'ゲーム計算機' }),
-      Object.freeze({ href: '/blog/', label: '攻略記事一覧' }),
+      Object.freeze({ href: '/blog/', label: '記事トップ' }),
       Object.freeze({ href: '/author/katakata.html', label: '運営者・検証方針' }),
       Object.freeze({ href: '/privacy.html', label: 'プライバシーポリシー' }),
       Object.freeze({ href: '/terms.html', label: '利用規約' })
@@ -122,7 +122,7 @@ const CALCULATOR_HEADER_PROFILES = Object.freeze({
   'index.html': calculatorHeaderProfile('JP', 'Play の国または地域', [
     { href: 'attention.html', label: '⚠️ For users outside Japan', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
     { href: 'games/', label: '🎮 ゲーム別計算', langKey: 'linkGames' },
-    { href: 'blog/', label: '📝 記事一覧', langKey: 'linkArticles' },
+    { href: 'blog/', label: '📝 記事トップ', langKey: 'linkArticles' },
   ]),
   'en/index.html': calculatorHeaderProfile('US', 'Play country or region', [
     { href: '../attention.html', label: '⚠️ Country notes', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },

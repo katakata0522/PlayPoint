@@ -621,9 +621,12 @@ async function verifyBlogPage(browser, baseUrl) {
       if ([390, 768, 1280].includes(width)) await saveScreenshot(page, `blog-thumbnails-${width}.png`);
     }
 
-    // 最初の記事はスクロール前に読める。短いカードは全体、長いカードは160px以上と見出し・説明を確認する。
+    // 記事トップで疑問を選べる。記事一覧へ進んだ後は見出し・説明と画像を読む。
     await page.setViewportSize({ width:390, height:844 });
     await page.evaluate(() => scrollTo(0, 0));
+    assert(await page.locator('.reader-entry-questions a').count() === 3, 'Three introductory questions available');
+    await page.locator('.hub-skip-link').focus();
+    await page.keyboard.press('Enter');
     await page.waitForFunction(() => {
       const card = document.querySelector('.article-card');
       if (!card) return false;

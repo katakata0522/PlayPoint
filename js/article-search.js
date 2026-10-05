@@ -73,6 +73,7 @@
     [['現金'], '2026-07-24-play-points-cash-conversion.html'],
     [['ギフトカード'], '2025-12-25-gift-card.html'],
     [['Play Pass'], '2026-08-16-play-pass-worth-it.html'],
+    [['Pixel'], '2026-08-16-pixel-discount-coupon.html'],
     [['ゴールド', 'ランク'], '2026-08-16-fastest-gold.html'],
     [['無料', '貯める'], '2026-07-24-earn-play-points-free.html'],
     [['お得', '使い方'], '2025-12-25-best-use.html'],

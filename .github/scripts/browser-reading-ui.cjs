@@ -212,10 +212,11 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       }
       assert(state.discoveryFit,`Discovery controls must fit and remain tappable at ${width}`);
       if(width<=760) {
-        assert(state.firstArticleY<540,`Mobile first article is pushed too far below the initial view at ${width}: ${state.firstArticleY}`);
+        const entries = await page.locator('.reader-entry-questions a').evaluateAll(links=>links.map(link=>{const r=link.getBoundingClientRect();return {top:r.top,bottom:r.bottom,width:r.width};}));
+        assert(entries.length===3&&entries.every(entry=>entry.top>=0&&entry.bottom<=844&&entry.width>=44),`記事トップの疑問を最初の画面で選べる: ${width}`);
         assert(state.menuRight===true,`Mobile menu button must sit to the right of the centered brand at ${width}`);
       } else {
-        assert(state.firstArticleY<700,`First article is pushed below the initial screen at ${width}: ${state.firstArticleY}`);
+        assert(await page.locator('.reader-entry-questions a').count()===3,'PCでも疑問から読む入口を使える');
       }
       responsive.push({width,...state});
     }
@@ -273,8 +274,10 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.evaluate(()=>{scrollTo(0,0);document.activeElement.blur();});
     await page.keyboard.press('Tab');
     assert(await page.locator('.hub-skip-link').evaluate(el=>el===document.activeElement),'First keyboard stop bypasses repeated navigation');
+    await page.keyboard.press('Enter');
+    await page.waitForFunction(()=>document.activeElement?.id==='article-list-title');
     const firstTitle=await page.locator('.article-card h3').first().boundingBox();
-    assert(firstTitle.y+firstTitle.height<=552,'Full first headline fits a short desktop viewport');
+    assert(firstTitle.y+firstTitle.height<=552,'記事一覧へ進むと短いPC画面でも最初の見出しを読める');
     await page.setViewportSize({width:390,height:844}); await waitNavigationLayout(page);
     assert(await page.locator('#reading-library summary').isVisible(),'Saved articles are directly reachable on mobile');
     report.interactions.readerFlow={history:true,relevance:true,conditions:true,skip:true,mobileLibrary:true};
@@ -327,6 +330,15 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     assert.equal(await downloaded.failure(),null);
     report.interactions.followthrough={searchHistory:true,campaignArrival:true,guideThemes:true,guideAnchors:true,benefitFilter:true,calendarDownload:true};
     await goto(page,'blog/'); await cards(page);
+    await page.locator('.reader-entry-questions a').first().click();
+    await page.locator('#play-pass-basics').waitFor({state:'visible'});
+    assert.equal(new URL(page.url()).hash,'#play-pass-basics');
+    assert.equal(await page.locator('.breadcrumbs-wrapper a').first().getAttribute('href'),'/blog/');
+    await page.locator('.reader-followthrough a').first().click();
+    await page.locator('[data-reader-calendar]').waitFor({state:'visible'});
+    assert.equal(new URL(page.url()).hash,'#reader-calendar-title');
+    report.interactions.questionToAction=true;
+    await goto(page,'blog/'); await cards(page);
     const articleRequests = [];
     const recordArticleRequest = request => articleRequests.push(new URL(request.url()).pathname);
     page.on('request', recordArticleRequest);
@@ -349,8 +361,10 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await goto(page,'blog/#reading-library');
     await page.locator('#reading-library[open]').waitFor({state:'visible'});
     assert(await page.locator('#reading-library a[href="/games/fgo/pity-cost/"]').count()>0,'Saved game article discoverable');
+    assert(await page.locator('[data-reading-resume] a[href="/games/fgo/pity-cost/"]').isVisible(),'前回読んだ記事から再開できる');
     const prior=await page.evaluate(()=>JSON.parse(localStorage.getItem('playpoint_reading_library_v1')));
     await page.locator('#reading-library input[type=checkbox]').uncheck();
+    assert(await page.locator('[data-reading-resume]').isHidden(),'履歴停止中は再開欄を表示しない');
     const paused=await page.evaluate(()=>JSON.parse(localStorage.getItem('playpoint_reading_library_v1')));
     assert.deepEqual(paused.recent,prior.recent,'Stopping history does not erase past visits');
     const clearRecent=page.getByRole('button',{name:'すべて削除',exact:true}).nth(1);

@@ -2619,21 +2619,17 @@ max-width: 820px;
 text-align: center;
 padding: 0 16px;
 }
-
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+*,
+*::before,
+*::after {
+animation-duration: 0.01ms !important;
+animation-iteration-count: 1 !important;
+transition-duration: 0.01ms !important;
+scroll-behavior: auto !important;
 }
-
+}
 .week-row.is-current-week { outline: 2px solid #0891b2; outline-offset: 3px; }
-
-/* 計算機の補助リンクは国選択の下に独立した一段で表示する。 */
 .top-bar:has(> .region-switch) {
 flex-direction: column;
 align-items: center;
@@ -2665,11 +2661,9 @@ font-size: 0.8rem;
 .calculator-basis-note { font-size: .85rem; line-height: 1.6; }
 #main-calculator-inputs > #main-points-basis { order: 2; }
 @media (min-width: 641px) {
-  #main-calculator-inputs > #main-points-basis { order: 3; }
+#main-calculator-inputs > #main-points-basis { order: 3; }
 }
-
-/* 横スクロール領域のキーボードフォーカスを明示する。 */
 :is(.lp-table-wrap, .pack-table-wrap, .comparison-reference-table-wrap, .table-wrap, .table-card, .table-wrapper)[tabindex="0"]:focus-visible {
-  outline: 3px solid var(--reading-link, #0b57d0);
-  outline-offset: 3px;
+outline: 3px solid var(--reading-link, #0b57d0);
+outline-offset: 3px;
 }
