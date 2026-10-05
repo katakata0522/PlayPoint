@@ -35,7 +35,7 @@ var PLAYPOINT_P12_CONFIG = Object.freeze({
   gscTimezone: 'America/Los_Angeles',
   gscSearchType: 'web',
   gscRowLimit: 25000,
-  crossSheetMaxRows: 5000,
+  crossSheetMaxRows: 50000,
   urlInspectionMaxUrls: 30,
   urlInspectionLanguage: 'ja-JP',
   fixedInspectionUrls: Object.freeze([
@@ -68,6 +68,15 @@ function capturePlayPointAnalyticsP1P2(e) {
   summary.push(playPointP12RunStage_('SEARCH_CROSS', function() {
     return playPointP12CaptureSearchCross_(spreadsheet);
   }));
+
+  if (typeof capturePlayPointReaderOutcomes === 'function') {
+    try {
+      summary.push({ stage: 'READER_OUTCOMES', status: 'OK', result: capturePlayPointReaderOutcomes() });
+    } catch (readerError) {
+      playPointP12Log_('ERROR', 'READER_OUTCOMES', playPointP12ErrorText_(readerError));
+      summary.push({ stage: 'READER_OUTCOMES', status: 'ERROR', error: playPointP12ErrorText_(readerError) });
+    }
+  }
 
   summary.push(playPointP12RunStage_('URL_INSPECTION', function() {
     return playPointP12CaptureUrlInspection_(spreadsheet);

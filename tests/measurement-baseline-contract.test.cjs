@@ -649,7 +649,7 @@ test('P1 capture sends the same common window to every source and preserves GA4 
 });
 
 test('P1 search-cross caps sheet output while preserving totals and truthful health state', () => {
-  for (const count of [0, 5000, 5001]) {
+  for (const count of [0, 5313, 50000, 50001]) {
     const { context } = loadP12Runtime();
     const writes = stubAnalyticsSheet(context);
     context.playPointP12FindLatestGscFinalDate_ = () => '2026-09-25';
@@ -659,14 +659,14 @@ test('P1 search-cross caps sheet output while preserving totals and truthful hea
       ? Array.from({ length: count }, (_, i) => ['COUNTRY', `query-${i}`, 'jp', 1, 0, i, 0]) : [];
     const result = context.playPointP12CaptureSearchCross_({});
     assert.equal(result.crossRowsTotal, count);
-    assert.equal(result.crossRows, Math.min(5000, count));
-    assert.equal(result.truncated, count > 5000);
-    assert.equal(context.playPointP12ResultState_('SEARCH_CROSS', result), count > 5000 ? 'PARTIAL' : 'OK');
+    assert.equal(result.crossRows, Math.min(50000, count));
+    assert.equal(result.truncated, count > 50000);
+    assert.equal(context.playPointP12ResultState_('SEARCH_CROSS', result), count > 50000 ? 'PARTIAL' : 'OK');
     const status = writes.find(write => write.args[0] === 'F2').value;
-    assert.equal(status, count > 5000 ? 'PARTIAL (TRUNCATED 5000 / 5001)' : 'OK');
+    assert.equal(status, count > 50000 ? 'PARTIAL (TRUNCATED 50000 / 50001)' : 'OK');
     if (count > 0) {
-      const data = writes.find(write => write.args.length === 4 && write.args[2] === Math.min(5000, count));
-      assert.equal(data.value.length, Math.min(5000, count));
+      const data = writes.find(write => write.args.length === 4 && write.args[2] === Math.min(50000, count));
+      assert.equal(data.value.length, Math.min(50000, count));
     }
   }
 });

@@ -1,5 +1,207 @@
 'use strict';
 
+// GA4の同一期間・実メタデータを使う。追加トリガーや追加権限は不要。
+var PLAYPOINT_READER_OUTCOMES = Object.freeze({
+  sheet: '🧑読者行動・再訪',
+  events: Object.freeze(['page_view', 'article_navigation_click', 'article_to_calculator_clicked',
+    'reader_question_clicked', 'search', 'calculator_form_started', 'calculator_funnel_completed',
+    'calculator_validation_error', 'diary_tab_opened', 'diary_entry_saved'])
+});
+
+function playPointReaderFilter_(name, values) {
+  return { filter: { fieldName: name, inListFilter: { values: values, caseSensitive: true } } };
+}
+
+function playPointReaderReport_(propertyId, period, dimensions, metrics, filter) {
+  var body = { dateRanges: [{ startDate: period.start, endDate: period.end }],
+    dimensions: dimensions.map(function(name) { return { name: name }; }),
+    metrics: metrics.map(function(name) { return { name: name }; }), limit: '10000' };
+  if (filter) body.dimensionFilter = filter;
+  var report = playPointP12Ga4Report_(propertyId, body);
+  var metadata = report.metadata || {};
+  var rows = playPointP12ParseGa4Rows_(report, dimensions, metrics);
+  var parameterMissing = rows.some(function(row) {
+    return dimensions.some(function(name) { return name.indexOf('customEvent:') === 0 && (!row[name] || row[name] === '(not set)'); });
+  });
+  return { rows: rows, parameterMissing: parameterMissing,
+    restricted: !!(metadata.subjectToThresholding || metadata.dataLossFromOtherRow ||
+      (metadata.samplingMetadatas && metadata.samplingMetadatas.length)) };
+}
+
+function playPointReaderSource_(fn, required, definitions) {
+  var missing = (required || []).filter(function(name) { return !definitions[name]; });
+  if (missing.length) return { state: 'WAITING_DEFINITION', rows: [], detail: '未登録・反映待ち: ' + missing.join(', ') };
+  try {
+    var result = fn();
+    return { state: result.restricted ? 'RESTRICTED' : result.parameterMissing ? 'PARAMETER_PARTIAL' : 'OK', rows: result.rows,
+      detail: result.restricted ? 'しきい値・サンプリング・other集約あり。厳密な全数として扱わない' :
+        result.parameterMissing ? 'パラメータ未設定の行あり。登録前期間・計測の欠落を確認し、関心がないとは判断しない' : '取得成功（0行も実測）' };
+  } catch (error) {
+    return { state: 'ERROR', rows: [], detail: playPointP12ErrorText_(error) };
+  }
+}
+
+function playPointReaderCohorts_(propertyId, period) {
+  // 28日目まで確定した7つの獲得日を追跡。記事別コホートとは呼ばない。
+  var cohorts = [];
+  for (var i = 0; i < 7; i++) {
+    var day = playPointP12ShiftIsoDate_(period.end, -34 + i);
+    cohorts.push({ name: 'acquired_' + day.replace(/-/g, ''), dimension: 'firstSessionDate',
+      dateRange: { startDate: day, endDate: day } });
+  }
+  var report = playPointP12Ga4Report_(propertyId, {
+    cohortSpec: { cohorts: cohorts, cohortsRange: { granularity: 'DAILY', startOffset: 0, endOffset: 28 } },
+    dimensions: [{ name: 'cohort' }, { name: 'cohortNthDay' }],
+    metrics: [{ name: 'cohortActiveUsers' }, { name: 'cohortTotalUsers' }], limit: '10000', keepEmptyRows: true
+  });
+  var metadata = report.metadata || {};
+  return { rows: playPointP12ParseGa4Rows_(report, ['cohort', 'cohortNthDay'], ['cohortActiveUsers', 'cohortTotalUsers'])
+    .filter(function(row) { return [0, 7, 28].indexOf(Number(row.cohortNthDay)) !== -1; }),
+    restricted: !!(metadata.subjectToThresholding || metadata.dataLossFromOtherRow ||
+      (metadata.samplingMetadatas && metadata.samplingMetadatas.length)) };
+}
+
+function playPointReaderOrderedFunnel_(propertyId, period) {
+  // 独立したイベント人数の割り算ではなく、GA4が同一利用者の順序を評価する。
+  var report = playPointP12GoogleJson_('https://analyticsdata.googleapis.com/v1alpha/properties/' +
+    encodeURIComponent(propertyId) + ':runFunnelReport', { method: 'post', payload: {
+      dateRanges: [{ startDate: period.start, endDate: period.end }],
+      funnel: { isOpenFunnel: false, steps: [
+        { name: '計算開始', filterExpression: { funnelFieldFilter: { fieldName: 'eventName',
+          stringFilter: { matchType: 'EXACT', value: 'calculator_form_started', caseSensitive: true } } } },
+        { name: '開始後24時間以内の成功', withinDurationFromPriorStep: '86400s',
+          filterExpression: { funnelFieldFilter: { fieldName: 'eventName',
+            stringFilter: { matchType: 'EXACT', value: 'calculator_funnel_completed', caseSensitive: true } } } }
+      ] }, returnPropertyQuota: true
+    } });
+  var table = report.funnelTable;
+  if (!table || !Array.isArray(table.dimensionHeaders) || !Array.isArray(table.metricHeaders)) {
+    throw new Error('順序付きファネルの応答形式を確認できません。');
+  }
+  var dimensions = table.dimensionHeaders.map(function(header) { return header.name; });
+  var metrics = table.metricHeaders.map(function(header) { return header.name; });
+  if (dimensions.indexOf('funnelStepName') < 0 || metrics.indexOf('activeUsers') < 0) {
+    throw new Error('順序付きファネルの利用者指標がありません。');
+  }
+  return { rows: playPointP12ParseGa4Rows_(table, dimensions, metrics),
+    restricted: !!(table.metadata && (table.metadata.subjectToThresholding || table.metadata.dataLossFromOtherRow)) };
+}
+
+function playPointReaderBuildGrid_(period, inventory, sources, timestamp) {
+  var roles = {}, grid = [], width = 12;
+  inventory.forEach(function(article) { roles[playPointP12NormalizePage_(article.path)] = article; });
+  function add(row) {
+    while (row.length < width) row.push('');
+    grid.push(playPointP12LiteralRow_(row));
+  }
+  add(['読者行動・再訪', timestamp]);
+  add(['対象期間', period.start + ' ～ ' + period.end, '人数は各行内で重複除去。行を足して全体人数にしない']);
+  add(['目的', '記事の役割・導線・検索結果0件・入力エラー・再訪を同じ期間で確認']);
+  add(['再訪の定義', 'ページ別は期間内の再訪者の閲覧。最初に読んだ記事別の7日/28日再訪率ではない']);
+  add(['コホート', 'サイト全体の初回獲得日別。7日目・28日目のアクティブ率。期間内の任意再訪率ではない']);
+  add(['解決', 'クリック・計算成功は行動。疑問解決の主KPIを代用しない。記事別入口コホートは未取得']);
+  add(['計測開始', '新しいカスタム定義は登録後の利用可能期間のみ。過去未登録値の復元を保証しない']);
+  add(['種別', '状態', 'ページ／コホート', '言語', '記事の役割', '導線／端末', '遷移先／意図', 'イベント／日数', '回数／PV', '利用者', 'コホート母数', '補足']);
+  Object.keys(sources).forEach(function(type) {
+    var source = sources[type];
+    add([type, source.state, '', '', '', '', '', '', '', '', '', source.detail]);
+    source.rows.forEach(function(row) {
+      var page = row.pagePath ? playPointP12NormalizePage_(row.pagePath) : '';
+      var article = roles[page], locale = article ? article.locale : /^\/(en|ko|tw)(\/|$)/.test(page) ? page.split('/')[1].toUpperCase() : page ? 'JP' : '';
+      var comment = type === 'READING' ? '再訪の閲覧人数。初回記事への帰属ではない' :
+        type === 'SEARCH' ? (String(row['customEvent:results_count']) === '0' ? '検索結果0件' : '検索結果件数: ' + row['customEvent:results_count']) :
+        type === 'COHORT' ? (row.cohortTotalUsers > 0 ? '日次アクティブ率: ' + (row.cohortActiveUsers / row.cohortTotalUsers * 100).toFixed(2) + '%' : '母数なし') :
+        type === 'FUNNEL' ? '閉じたファネル・成功は開始後24時間以内。同じ計算内容・記事帰属までは保証しない' :
+        type === 'ERRORS' ? '入力値は収集せず原因の分類だけを表示' : '';
+      add([type, source.state, page || row.cohort || '', locale, article ? article.role : '',
+        row['customEvent:component'] || row.deviceCategory || row.newVsReturning || '',
+        row['customEvent:destination_type'] || row['customEvent:intent_id'] || row['customEvent:candidate_id'] || row['customEvent:calculation_mode'] || '',
+        row.eventName || row['customEvent:error_type'] || row.funnelStepName || row.cohortNthDay || '',
+        row.eventCount !== undefined ? row.eventCount : row.screenPageViews !== undefined ? row.screenPageViews : '',
+        row.totalUsers !== undefined ? row.totalUsers : row.activeUsers !== undefined ? row.activeUsers : row.cohortActiveUsers !== undefined ? row.cohortActiveUsers : '',
+        row.cohortTotalUsers !== undefined ? row.cohortTotalUsers : '', comment]);
+    });
+  });
+  return grid;
+}
+
+function capturePlayPointReaderOutcomes() {
+  withScriptLock_(function() { playPointP12HealthStart_('READER_OUTCOMES', playPointP12NowText_()); });
+  try { return playPointCaptureReaderOutcomes_(); }
+  catch (error) {
+    withScriptLock_(function() { playPointP12HealthError_('READER_OUTCOMES', playPointP12NowText_(), playPointP12ErrorText_(error)); });
+    throw error;
+  }
+}
+
+function playPointCaptureReaderOutcomes_() {
+  var ss = resolveAndRememberSpreadsheet_(), p1 = ss.getSheetByName('📊ページ価値ファネル');
+  if (!p1) throw new Error('P1の共通期間がありません。');
+  var label = String(p1.getRange('B2').getValue() || '');
+  if (!/^\d{4}-\d{2}-\d{2} ～ \d{4}-\d{2}-\d{2}$/.test(label)) throw new Error('P1の共通期間が不正です。');
+  var period = { start: label.slice(0, 10), end: label.slice(-10) };
+  var timestamp = playPointP12NowText_(), inventory = playPointMaintenanceLoadInventory_();
+  if (!playPointMaintenanceIsoDate_(period.start) || !playPointMaintenanceIsoDate_(period.end) ||
+      Date.parse(period.end) - Date.parse(period.start) !== 29 * 86400000 || period.end >= timestamp.slice(0, 10) ||
+      Date.parse(timestamp.slice(0, 10)) - Date.parse(period.end) > 9 * 86400000) {
+    throw new Error('読者行動の共通期間は実在する過去30日である必要があります。');
+  }
+  var propertyId = playPointP12GetGa4PropertyId_(), definitions = {}, sources = {};
+  try {
+    var metadata = playPointP12GoogleJson_('https://analyticsdata.googleapis.com/v1beta/properties/' + encodeURIComponent(propertyId) + '/metadata', { method: 'get' });
+    (metadata.dimensions || []).forEach(function(dimension) { definitions[dimension.apiName] = true; });
+  } catch (metadataError) {
+    sources.METADATA = { state: 'ERROR', rows: [], detail: playPointP12ErrorText_(metadataError) };
+  }
+  function report(type, dimensions, metrics, filter) {
+    sources[type] = playPointReaderSource_(function() { return playPointReaderReport_(propertyId, period, dimensions, metrics, filter); },
+      dimensions.filter(function(name) { return name.indexOf('customEvent:') === 0; }), definitions);
+  }
+  // 通信中に共通ロックを保持しない。本体の日次・リアルタイム更新を待たせない。
+  report('EVENTS', ['eventName'], ['eventCount', 'totalUsers'], playPointReaderFilter_('eventName', PLAYPOINT_READER_OUTCOMES.events));
+  report('READING', ['pagePath', 'newVsReturning'], ['screenPageViews', 'activeUsers'], playPointReaderFilter_('eventName', ['page_view']));
+  report('ERRORS', ['customEvent:error_type', 'deviceCategory', 'customEvent:calculation_mode'], ['eventCount', 'totalUsers'], playPointReaderFilter_('eventName', ['calculator_validation_error']));
+  report('NAVIGATION', ['pagePath', 'customEvent:component', 'customEvent:destination_type'], ['eventCount', 'totalUsers'], playPointReaderFilter_('eventName', ['article_navigation_click']));
+  report('QUESTIONS', ['pagePath', 'customEvent:candidate_id'], ['eventCount', 'totalUsers'], playPointReaderFilter_('eventName', ['reader_question_clicked']));
+  report('SEARCH', ['pagePath', 'customEvent:intent_id', 'customEvent:results_count'], ['eventCount', 'totalUsers'], playPointReaderFilter_('eventName', ['search']));
+  sources.COHORT = playPointReaderSource_(function() { return playPointReaderCohorts_(propertyId, period); }, [], definitions);
+  sources.FUNNEL = playPointReaderSource_(function() { return playPointReaderOrderedFunnel_(propertyId, period); }, [], definitions);
+  var starts = sources.EVENTS.rows.find(function(row) { return row.eventName === 'calculator_form_started'; });
+  if (sources.FUNNEL.state === 'OK' && starts && starts.totalUsers > 0 &&
+      !sources.FUNNEL.rows.some(function(row) { return row.activeUsers > 0; })) {
+    sources.FUNNEL.state = 'UNEXPECTED_ZERO';
+    sources.FUNNEL.detail = '開始イベントに利用者があるのに順序APIが全0。転換率として使用せずGA4探索・API条件を確認';
+    sources.FUNNEL.rows.forEach(function(row) { row.activeUsers = ''; });
+  }
+  if (Object.keys(sources).every(function(type) { return sources[type].state !== 'OK' && sources[type].state !== 'RESTRICTED'; })) {
+    throw new Error('読者行動の全sourceが未取得です。前回のシートを保持します。');
+  }
+  var grid = playPointReaderBuildGrid_(period, inventory, sources, timestamp);
+  var partial = Object.keys(sources).some(function(type) { return sources[type].state !== 'OK'; });
+  return withScriptLock_(function() {
+    var sheet = playPointP12EnsureSheet_(ss, PLAYPOINT_READER_OUTCOMES.sheet, 12);
+    var previous = String(sheet.getRange('B2').getValue() || '');
+    if (previous.slice(-10) > period.end && /^\d{4}-\d{2}-\d{2} ～/.test(previous)) throw new Error('より新しい読者集計を旧期間で置換しません。');
+    var oldRows = sheet.getLastRow();
+    playPointP12EnsureRows_(sheet, grid.length);
+    sheet.getRange(1, 1, grid.length, 12).setValues(grid);
+    if (oldRows > grid.length) sheet.getRange(grid.length + 1, 1, oldRows - grid.length, 12).clearContent();
+    sheet.setFrozenRows(8);
+    sheet.getRange(1, 1, 7, 12).breakApart();
+    sheet.getRange(1, 2, 7, 11).mergeAcross().setWrap(true);
+    sheet.getRange(8, 1, 1, 12).setFontWeight('bold');
+    sheet.setColumnWidth(3, 390); sheet.setColumnWidth(12, 440); sheet.setColumnWidth(2, 160);
+    sheet.getRange(9, 1, Math.max(1, grid.length - 8), 12).setWrap(true);
+    var states = Object.keys(sources).map(function(type) { return type + '=' + sources[type].state; }).join(' / ');
+    playPointP12UpsertHealth_('READER_OUTCOMES', { lastAttempt: timestamp, lastSuccess: playPointP12NowText_(), dataLatest: period.end,
+      state: partial ? 'PARTIAL' : 'OK', consecutiveFailures: 0, error: '', note: states + '。記事別入口コホート・疑問解決率は未取得。' });
+    Object.keys(sources).filter(function(type) { return sources[type].state !== 'OK'; }).forEach(function(type) {
+      playPointP12Log_('WARN', 'READER_' + type, sources[type].state + ': ' + sources[type].detail);
+    });
+    return { period: period, rows: grid.length, state: partial ? 'PARTIAL' : 'OK', sources: states };
+  });
+}
+
 // 既存P1週次処理から呼び出す。追加トリガー・追加権限は作らない。
 var PLAYPOINT_MAINTENANCE = Object.freeze({
   portfolio: '📚記事Portfolio', coverage: '📅ページ履歴取得範囲',
