@@ -193,6 +193,14 @@ function resumePlayPointPageHistoryAudit() {
   return result;
 }
 
+function playPointCoverageStyle_(sheet) {
+  if (sheet.getLastRow() > 1) {
+    sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).setNumberFormat('@');
+    sheet.getRange(2, 5, sheet.getLastRow() - 1, 1).setNumberFormat('yyyy-mm-dd hh:mm:ss');
+  }
+  setColumnWidths_(sheet, { 1: 115, 2: 120, 3: 130, 4: 255, 5: 185 });
+}
+
 function playPointPageHistoryAuditChunk_() {
   var ss = resolveAndRememberSpreadsheet_(), props = PropertiesService.getScriptProperties();
   var raw = props.getProperty(PLAYPOINT_MAINTENANCE.checkpoint), job = raw ? JSON.parse(raw) : null;
@@ -204,7 +212,10 @@ function playPointPageHistoryAuditChunk_() {
   if (job.nextEnd < job.start) {
     var saved = ss.getSheetByName(PLAYPOINT_MAINTENANCE.coverage);
     var verifiedDates = saved ? saved.getDataRange().getValues().slice(1).map(function(row) { return formatDateSafe_(row[0]); }).filter(function(day) { return day >= job.start && day <= job.end; }) : [];
-    if (new Set(verifiedDates).size === dateArrayInRange_(job.start, job.end).length) return { complete: true, coveredDays: job.coveredDays, start: job.start, end: job.end };
+    if (new Set(verifiedDates).size === dateArrayInRange_(job.start, job.end).length) {
+      playPointCoverageStyle_(saved);
+      return { complete: true, coveredDays: job.coveredDays, start: job.start, end: job.end };
+    }
     // 完了カーソルだけでは完了としない。確認表が欠けた場合は同じ日付窓を再検証する。
     job.nextEnd = job.end; job.coveredDays = 0;
     props.setProperty(PLAYPOINT_MAINTENANCE.checkpoint, JSON.stringify(job));
@@ -224,7 +235,7 @@ function playPointPageHistoryAuditChunk_() {
     existing.slice(1).forEach(function(row) { var day = formatDateSafe_(row[0]); if (day) { row[0] = day; byDate[day] = row; } });
     days.forEach(function(day) { byDate[day] = [day, counts[day] || 0, counts[day] ? 'API_ROWS' : 'API_NO_ROWS', start + ' ～ ' + end, currentTimestamp_()]; });
     replaceSheet_(coverage, ['日付', '取得ページ行数', 'API応答', '要求期間', '確認日時'], Object.keys(byDate).sort().map(function(day) { return byDate[day]; }), COLORS.BLUE);
-    coverage.getRange(2, 1, Object.keys(byDate).length, 1).setNumberFormat('@');
+    playPointCoverageStyle_(coverage);
     invalidateArchivedMonthsForRange_(start, end);
     job.coveredDays += days.length; job.nextEnd = shiftDateString_(start, -1);
     props.setProperty(PLAYPOINT_MAINTENANCE.checkpoint, JSON.stringify(job));
