@@ -101,7 +101,7 @@ function playPointReaderBuildGrid_(period, inventory, sources, timestamp) {
   add(['コホート', 'サイト全体の初回獲得日別。7日目・28日目のアクティブ率。期間内の任意再訪率ではない']);
   add(['解決', 'クリック・計算成功は行動。疑問解決の主KPIを代用しない。記事別入口コホートは未取得']);
   add(['計測開始', '新しいカスタム定義は登録後の利用可能期間のみ。過去未登録値の復元を保証しない']);
-  add(['種別', '状態', 'ページ／コホート', '言語', '記事の役割', '導線／端末', '遷移先／意図', 'イベント／日数', '回数／PV', '利用者', 'コホート母数', '補足']);
+  add(['種別', '状態', 'イベント／日数', '回数／PV', '利用者', 'コホート母数', 'ページ／コホート', '言語', '記事の役割', '導線／端末', '遷移先／意図', '補足']);
   Object.keys(sources).forEach(function(type) {
     var source = sources[type];
     add([type, source.state, '', '', '', '', '', '', '', '', '', source.detail]);
@@ -113,13 +113,14 @@ function playPointReaderBuildGrid_(period, inventory, sources, timestamp) {
         type === 'COHORT' ? (row.cohortTotalUsers > 0 ? '日次アクティブ率: ' + (row.cohortActiveUsers / row.cohortTotalUsers * 100).toFixed(2) + '%' : '母数なし') :
         type === 'FUNNEL' ? '閉じたファネル・成功は開始後24時間以内。同じ計算内容・記事帰属までは保証しない' :
         type === 'ERRORS' ? '入力値は収集せず原因の分類だけを表示' : '';
-      add([type, source.state, page || row.cohort || '', locale, article ? article.role : '',
-        row['customEvent:component'] || row.deviceCategory || row.newVsReturning || '',
-        row['customEvent:destination_type'] || row['customEvent:intent_id'] || row['customEvent:candidate_id'] || row['customEvent:calculation_mode'] || '',
+      add([type, source.state,
         row.eventName || row['customEvent:error_type'] || row.funnelStepName || row.cohortNthDay || '',
         row.eventCount !== undefined ? row.eventCount : row.screenPageViews !== undefined ? row.screenPageViews : '',
         row.totalUsers !== undefined ? row.totalUsers : row.activeUsers !== undefined ? row.activeUsers : row.cohortActiveUsers !== undefined ? row.cohortActiveUsers : '',
-        row.cohortTotalUsers !== undefined ? row.cohortTotalUsers : '', comment]);
+        row.cohortTotalUsers !== undefined ? row.cohortTotalUsers : '',
+        page || row.cohort || '', locale, article ? article.role : '',
+        row['customEvent:component'] || row.deviceCategory || row.newVsReturning || '',
+        row['customEvent:destination_type'] || row['customEvent:intent_id'] || row['customEvent:candidate_id'] || row['customEvent:calculation_mode'] || '', comment]);
     });
   });
   return grid;
@@ -184,13 +185,18 @@ function playPointCaptureReaderOutcomes_() {
     if (previous.slice(-10) > period.end && /^\d{4}-\d{2}-\d{2} ～/.test(previous)) throw new Error('より新しい読者集計を旧期間で置換しません。');
     var oldRows = sheet.getLastRow();
     playPointP12EnsureRows_(sheet, grid.length);
+    // 再実行時は結合を解除してから書き、説明文・取得日時を失わない。
+    sheet.getRange(1, 1, 7, 12).breakApart().setNumberFormat('@');
     sheet.getRange(1, 1, grid.length, 12).setValues(grid);
     if (oldRows > grid.length) sheet.getRange(grid.length + 1, 1, oldRows - grid.length, 12).clearContent();
     sheet.setFrozenRows(8);
-    sheet.getRange(1, 1, 7, 12).breakApart();
+    sheet.setFrozenColumns(2);
     sheet.getRange(1, 2, 7, 11).mergeAcross().setWrap(true);
     sheet.getRange(8, 1, 1, 12).setFontWeight('bold');
-    sheet.setColumnWidth(3, 390); sheet.setColumnWidth(12, 440); sheet.setColumnWidth(2, 160);
+    sheet.setColumnWidth(1, 110); sheet.setColumnWidth(2, 170);
+    sheet.setColumnWidth(3, 290); sheet.setColumnWidth(7, 390); sheet.setColumnWidth(12, 440);
+    sheet.setColumnWidths(4, 3, 110);
+    sheet.autoResizeRows(1, 8);
     sheet.getRange(9, 1, Math.max(1, grid.length - 8), 12).setWrap(true);
     var states = Object.keys(sources).map(function(type) { return type + '=' + sources[type].state; }).join(' / ');
     playPointP12UpsertHealth_('READER_OUTCOMES', { lastAttempt: timestamp, lastSuccess: playPointP12NowText_(), dataLatest: period.end,

@@ -30,8 +30,8 @@ test('公開台帳の言語・役割を結合し、ページ再訪と入口コ�
       READING:{state:'OK',detail:'ok',rows:[{pagePath:'/ko/articles/a.html',newVsReturning:'returning',screenPageViews:20,activeUsers:5}]},
       SEARCH:{state:'WAITING_DEFINITION',detail:'pending',rows:[]}
     },'2026-10-05 18:00');
-  assert.equal(grid[9][3],'KO');assert.equal(grid[9][4],'troubleshooting');assert.equal(grid[9][9],5);
-  assert.match(grid[9][11],/初回記事への帰属ではない/);assert.equal(grid[10][9],'');
+  assert.equal(grid[9][7],'KO');assert.equal(grid[9][8],'troubleshooting');assert.equal(grid[9][4],5);
+  assert.match(grid[9][11],/初回記事への帰属ではない/);assert.equal(grid[10][4],'');
   assert(grid.every(r=>r.length===12));
 });
 test('解決・行をまたぐユニーク数・空欄の誤解を避け、シート数式注入を防ぐ',()=>{
