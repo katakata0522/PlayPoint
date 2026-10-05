@@ -65,6 +65,9 @@ test('記事変換はI/Oなしで本文・既存アンカー・入力レコー�
   assert.deepEqual(prepareDiscoveryArticle(articleHtml, entry), first);
   assert.deepEqual(prepareDiscoveryArticle(first.html, entry).record, first.record);
   assert.deepEqual(entry.tags, ['reward']);
+  const heroHtml = articleHtml.replace('<article>', '<div class="hero"><h1>Guide</h1><p class="hero-meta">Verified date</p>\n  </div><article>');
+  const preparedHero = prepareDiscoveryArticle(heroHtml, entry);
+  assert.deepEqual(prepareDiscoveryArticle(preparedHero.html, entry), preparedHero, '静的な保存欄を日付情報の後に置いても再生成で空白を増減しない');
 });
 
 test('記事とハブは対象内だけを更新し、再実行で不要な再書き込みを増やさない', t => {

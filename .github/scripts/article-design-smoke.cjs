@@ -237,14 +237,28 @@ async function inspectIntlReading(browser, baseUrl) {
       await page.goto(new URL('/' + item.locale + '/articles/google-play-quests.html', baseUrl).href, { waitUntil: 'load' });
       const save = page.locator('.reading-tools button');
       await save.waitFor({ state: 'visible' });
+      assert(await page.locator('.hero').evaluate(el => {
+        const tools = el.querySelector('.reading-tools');
+        const metadata = el.querySelector('.reading-metadata');
+        return tools && metadata && !!(metadata.compareDocumentPosition(tools) & Node.DOCUMENT_POSITION_FOLLOWING);
+      }), item.locale + ': reading controls must follow article metadata inside the hero');
       const title = await page.locator('h1').evaluate(el => parseFloat(getComputedStyle(el).fontSize));
       const body = await page.locator('.content').evaluate(el => parseFloat(getComputedStyle(el).fontSize));
       assert(title >= body * 1.5, item.locale + ': article title must be visually distinct from body copy');
+      const headingFrame = await page.locator('.content h2').first().evaluate(el => {
+        const css = getComputedStyle(el);
+        return { border: parseFloat(css.borderLeftWidth), padding: parseFloat(css.paddingLeft), radius: parseFloat(css.borderRadius) };
+      });
+      assert(headingFrame.border === 0 && headingFrame.padding === 0 && headingFrame.radius === 0, item.locale + ': nested heading frame must be removed');
       await save.click();
       assert(await save.getAttribute('aria-pressed') === 'true', item.locale + ': saving failed');
       await page.locator('.reading-tools a').click();
       const library = page.locator('#reading-library');
       await library.waitFor({ state: 'visible' });
+      assert(await library.evaluate(el => {
+        const grid = document.querySelector('[data-guide-grid]');
+        return !!el.closest('[data-intl-reading-library-slot]') && !!(grid.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
+      }), item.locale + ': saved library must follow the guide results');
       const savedArticle = library.locator('a[href="/' + item.locale + '/articles/google-play-quests.html"]');
       // 静的な一覧枠の表示と、遷移後の保存データ描画完了を別に待つ。
       await savedArticle.first().waitFor({ state: 'visible', timeout: 15000 });
@@ -280,6 +294,14 @@ async function inspectIntlReading(browser, baseUrl) {
       }
       assert(errors.length === 0, item.locale + ': runtime errors: ' + errors.join('; '));
       console.log('[article-design-smoke] ' + item.locale + ': save, library, first-view search, results, zero results, categories, light/dark, reflow: OK');
+    } catch (error) {
+      // 保存欄の初期HTMLと読み込み後を区別できるよう、失敗画面も保管する。
+      try {
+        await page.screenshot({ path: path.join(ARTIFACT_DIR, 'intl-reading-' + item.locale + '-failed.png'), fullPage: true });
+        const state = await page.evaluate(() => ({ ready: document.readyState, libraryText: document.querySelector('#reading-library')?.innerText, linkCount: document.querySelectorAll('#reading-library a').length }));
+        fs.writeFileSync(path.join(ARTIFACT_DIR, 'intl-reading-' + item.locale + '-failed.json'), JSON.stringify({ error: error.message, url: page.url(), ...state }, null, 2));
+      } catch {}
+      throw error;
     } finally { await context.close(); }
   }
 }

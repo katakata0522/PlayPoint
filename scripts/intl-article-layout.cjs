@@ -99,7 +99,7 @@ border-radius: 0;
 background: transparent;
 color: var(--reading-muted, #526176);
 }
-body .intl-layout-container .content :is(h2, h3) {
+body .intl-layout-container .main-card .content :is(h2, h3) {
 display: block;
 background: none !important;
 color: var(--reading-text, #233044) !important;
@@ -110,8 +110,8 @@ padding: 0 !important;
 margin: 38px 0 16px !important;
 line-height: 1.5 !important;
 }
-body .intl-layout-container .content h2 { font-size: 1.4rem !important; }
-body .intl-layout-container .content h3 { font-size: 1.1rem !important; }
+body .intl-layout-container .main-card .content h2 { font-size: 1.4rem !important; }
+body .intl-layout-container .main-card .content h3 { font-size: 1.1rem !important; }
 body .intl-layout-container .content > :is(.answer-box, .editorial-answer, .summary-box) {
 background: var(--reading-note-bg, #eef5fb) !important;
 border: 0 !important;

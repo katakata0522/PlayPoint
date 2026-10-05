@@ -17,7 +17,7 @@ for (const [file, job, requiredName] of [
   ['mobile-performance.yml', 'lighthouse', 'lighthouse'],
 ]) {
   test(`${requiredName}: Draftは必須名を上書きせず、readyで実検証する`, () => {
-    const source = fs.readFileSync(path.join(__dirname, '../.github/workflows', file), 'utf8');
+    const source = fs.readFileSync(path.join(__dirname, '../.github/workflows', file), 'utf8').replace(/\r\n/g, '\n');
     const body = source.split(`\n  ${job}:\n`)[1];
     assert.ok(body);
     const condition = body.match(/^    if: \$\{\{ (.*?) \}\}$/m)[1];
