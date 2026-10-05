@@ -689,6 +689,65 @@ function installerRuntimes() {
   return [[loadP12Runtime().context, 'installPlayPointAnalyticsP1P2WeeklyTrigger', 'capturePlayPointAnalyticsP1P2'],
     [loadGscCaptureRuntime().context, 'installPlayPointGsc28dWeeklyTrigger', 'captureGscNonOverlapping28d']];
 }
+
+test('GA4 P1 fetch follows rowCount through offsets and refuses a missing page', () => {
+  const { context } = loadP12Runtime();
+  const requests = [];
+  context.playPointP12GoogleJson_ = (_url, request) => {
+    requests.push(JSON.parse(JSON.stringify(request.payload)));
+    return { rowCount: 3, rows: request.payload.offset ? [{id:3}] : [{id:1},{id:2}] };
+  };
+  assert.equal(context.playPointP12Ga4Report_('id', {limit:'2'}).rows.length, 3);
+  assert.deepEqual(requests.map(r=>r.offset || '0'), ['0','2']);
+  context.playPointP12GoogleJson_ = (_url, request) => ({rowCount:3,rows:request.payload.offset?[]:[{id:1},{id:2}]});
+  assert.throws(()=>context.playPointP12Ga4Report_('id',{limit:'2'}), /incomplete/);
+});
+
+test('Google transport retries 429 and server errors but stops on an authorization error', () => {
+  const { context } = loadP12Runtime();
+  let calls=0;
+  context.ScriptApp={getOAuthToken:()=> 'test-token'};
+  context.Utilities={sleep:()=>{}};
+  context.UrlFetchApp={fetch:()=>{calls++;const code=calls===1?429:200;return {getResponseCode:()=>code,getContentText:()=> '{}'};}};
+  context.playPointP12GoogleJson_('https://example.invalid',{});
+  assert.equal(calls,2);
+  calls=0;
+  context.UrlFetchApp={fetch:()=>{calls++;return {getResponseCode:()=>403,getContentText:()=> '{}'};}};
+  assert.throws(()=>context.playPointP12GoogleJson_('https://example.invalid',{}), /403/);
+  assert.equal(calls,1);
+});
+
+test('Extension stages and history writes reuse the core lock and preserve monitoring failures', () => {
+  const {context}=loadP12Runtime();
+  const events=[];
+  context.withScriptLock_=fn=>{events.push('lock');try{return fn();}finally{events.push('unlock');}};
+  context.playPointP12Log_=()=>{};context.playPointP12TryHealth_=()=>{};
+  context.playPointP12RunStage_('PAGE_VALUE',()=>{events.push('write');return {};});
+  assert.deepEqual(events,['lock','write','unlock']);
+  const gsc=loadGscCaptureRuntime().context;
+  gsc.withScriptLock_=context.withScriptLock_;
+  gsc.playPointGscCaptureUnlocked_=()=>({status:'SKIPPED_STALE_TRIGGER'});
+  assert.equal(gsc.captureGscNonOverlapping28d().status,'SKIPPED_STALE_TRIGGER');
+  assert.deepEqual(events.slice(-2),['lock','unlock']);
+});
+
+test('All-source failures preserve previous analytical reports before any sheet clear', () => {
+  const {context}=loadP12Runtime();
+  context.playPointP12GetGa4PropertyId_=()=> 'id';context.playPointP12GetSiteUrl_=()=> 'site';
+  context.playPointP12BuildGa4Period_=()=>({start:'2026-09-01',end:'2026-09-30'});
+  context.playPointP12FindLatestGscFinalDate_=()=> '2026-09-30';
+  context.playPointP12SafeSource_=()=>({ok:false,rows:[],error:'unavailable'});
+  context.playPointP12EnsureSheet_=()=>{throw Error('must not clear the old report');};
+  assert.throws(()=>context.playPointP12CapturePageValueFunnel_({}), /previous report preserved/);
+  assert.throws(()=>context.playPointP12CaptureSearchCross_({}), /previous report preserved/);
+});
+
+test('GSC manual periods reject nonexistent dates and query text cannot become a formula', () => {
+  const {context}=loadGscCaptureRuntime();
+  assert.throws(()=>context.playPointGscBuildWindows_('2026-02-31'), /date/);
+  assert.equal(context.playPointGscBuildWindows_('2024-02-29').current.end,'2024-02-29');
+  assert.deepEqual(JSON.parse(JSON.stringify(context.playPointGscLiteralRow_(['=IMPORTXML("x")',0]))), ["'=IMPORTXML(\"x\")",0]);
+});
 function stubTriggers(context, handler, existing = []) {
   const calls = [];
   const created = { getHandlerFunction: () => handler, getUniqueId: () => 'new-uid' };

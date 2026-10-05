@@ -62,6 +62,12 @@ var PLAYPOINT_REVENUE_DIAG_CONFIG = Object.freeze({
 });
 
 function capturePlayPointRevenueDiagnostics(input) {
+  return typeof withScriptLock_ === 'function'
+    ? withScriptLock_(function() { return playPointRevenueCaptureUnlocked_(input); })
+    : playPointRevenueCaptureUnlocked_(input);
+}
+
+function playPointRevenueCaptureUnlocked_(input) {
   var triggerEvent = input && typeof input === 'object' ? input : null;
   var requestedDate = typeof input === 'string' ? input : '';
 
@@ -129,6 +135,7 @@ function installPlayPointRevenueDiagnosticsDailyTrigger() {
       .timeBased()
       .everyDays(1)
       .atHour(7)
+      .inTimezone(PLAYPOINT_REVENUE_DIAG_CONFIG.timezone)
       .create();
 
     if (typeof playPointAutomationRegisterTrigger_ === 'function') {
@@ -216,8 +223,11 @@ function playPointRevenueAnalyze_(history, targetDate, config) {
     throw new Error('Target date is not reconciled: ' + targetDate + ' (' + target.dataState + ')');
   }
 
+  var baselineStartDate = new Date(targetDate + 'T00:00:00Z');
+  baselineStartDate.setUTCDate(baselineStartDate.getUTCDate() - config.baselineDays);
+  var baselineStartIso = baselineStartDate.toISOString().slice(0, 10);
   var baseline = history.filter(function(row) {
-    return row.dataState === 'RECONCILED' && row.date < targetDate;
+    return row.dataState === 'RECONCILED' && row.date >= baselineStartIso && row.date < targetDate;
   }).sort(function(a, b) {
     return a.date < b.date ? 1 : -1;
   }).slice(0, config.baselineDays);
@@ -496,6 +506,7 @@ function playPointRevenueGetAdSenseAccountName_() {
   var properties = PropertiesService.getScriptProperties();
   var configured = properties.getProperty(PLAYPOINT_REVENUE_DIAG_CONFIG.accountProperty);
   if (configured) return configured;
+  if (typeof resolveAdSenseAccountName_ === 'function') return resolveAdSenseAccountName_();
 
   if (typeof AdSense === 'undefined' ||
       !AdSense.Accounts ||
@@ -527,6 +538,7 @@ function playPointRevenueAssessSourceHealth_(spreadsheet, targetDate) {
     dailyReconcileState: '',
     dailyReconcileError: '',
     archiveErrorOnly: false,
+    driveState: '',
     note: ''
   };
 
@@ -534,6 +546,13 @@ function playPointRevenueAssessSourceHealth_(spreadsheet, targetDate) {
 
   var values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 8).getDisplayValues();
   values.forEach(function(row) {
+    if (String(row[0] || '') === 'Drive保存') {
+      result.driveState = String(row[4] || '');
+      if (result.driveState === 'ERROR') {
+        result.archiveErrorOnly = true;
+        result.note = 'Drive補助保存は保留。日次再照合・収益診断とは独立。';
+      }
+    }
     if (String(row[0] || '') !== '日次再照合') return;
     result.dailyReconcileState = String(row[4] || '');
     result.dailyReconcileError = String(row[6] || '');
@@ -576,7 +595,7 @@ function playPointRevenueWriteSheet_(spreadsheet, analysis, breakdowns, sourceHe
       '日次再照合',
       sourceHealth.dailyReconcileState || 'UNKNOWN',
       'Drive保存との分離',
-      sourceHealth.archiveErrorOnly ? 'ARCHIVE_ERROR_SEPARATED' : 'NO_DRIVEAPP_ERROR',
+      sourceHealth.archiveErrorOnly ? 'ARCHIVE_ERROR_SEPARATED' : (sourceHealth.driveState || 'NO_DRIVEAPP_ERROR'),
       '補足',
       sourceHealth.note || '',
       '取得日時',
