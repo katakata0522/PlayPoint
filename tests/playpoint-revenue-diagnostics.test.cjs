@@ -34,6 +34,24 @@ function daily(date, revenue, ga4Pv, adsensePv, impressions, clicks, pageCtr, pa
   };
 }
 
+test('診断基準は直前28暦日に限定し欠損を古い日で埋めない',()=>{
+  const context=load();
+  const history=Array.from({length:28},(_v,i)=>daily('2026-08-'+String(i+1).padStart(2,'0'),10,100,100,100,1,.01,100,.01,100));
+  history.push(daily('2026-09-29',10,100,100,100,1,.01,100,.01,100));
+  const result=context.playPointRevenueAnalyze_(history,'2026-09-29');
+  assert.equal(result.severity,'INSUFFICIENT_HISTORY');assert.equal(result.baselineCount,0);
+});
+
+test('既存コアのAdSense対象解決を再利用しDrive監視の失敗を分離する',()=>{
+  const context=load();
+  context.PropertiesService={getScriptProperties:()=>({getProperty:()=>null})};
+  context.resolveAdSenseAccountName_=()=> 'accounts/core';
+  assert.equal(context.playPointRevenueGetAdSenseAccountName_(),'accounts/core');
+  const values=[['日次再照合','','','','RECONCILED',0,'',''],['Drive保存','','','','ERROR',1,'Denied','']];
+  const health=context.playPointRevenueAssessSourceHealth_({getSheetByName:()=>({getLastRow:()=>3,getRange:()=>({getDisplayValues:()=>values})})},'2026-10-04');
+  assert.equal(health.archiveErrorOnly,true);assert.equal(health.dailyReconcileState,'RECONCILED');
+});
+
 test("収益診断モジュールは有効なJavaScriptと公開収集・導入入口を保つ", () => {
   const context = load();
   assert.equal(typeof context.capturePlayPointRevenueDiagnostics, 'function');

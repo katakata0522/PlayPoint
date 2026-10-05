@@ -1,0 +1,467 @@
+diff --git a/PlayPoint_Analytics_v11_6_2_Code.gs b/PlayPoint_Analytics_v11_6_2_Code.gs
+index 04065a9..b9a6402 100644
+--- a/PlayPoint_Analytics_v11_6_2_Code.gs
++++ b/PlayPoint_Analytics_v11_6_2_Code.gs
+@@ -1,6 +1,6 @@
+ /**
+  * 👑 PlayPoint Analytics
+- * AdSense × GA4 × Search Console 統合分析 v11.6.2
++ * AdSense × GA4 × Search Console 統合分析 v11.6.3
+  *
+  * 判明済み設定を反映済み:
+  * - GA4 Property ID: 489079798
+@@ -37,7 +37,7 @@
+
+ const CONFIG = Object.freeze({
+   APP_NAME: 'PlayPoint Analytics',
+-  VERSION: '11.6.2',
++  VERSION: '11.6.3',
+
+   // ===== 判明済みの接続先 =====
+   GA4_PROPERTY_ID: '489079798',
+@@ -123,7 +123,9 @@ const CONFIG = Object.freeze({
+     TODAY_PAGES: 360,
+     SEARCH_PROVISIONAL: 720,
+     DAILY_RECONCILE: 2160,
+-    WEEKLY_DETAIL: 12960
++    WEEKLY_DETAIL: 12960,
++    GSC_28D: 12960,
++    DRIVE_MAINTENANCE: 2160
+   }),
+
+   // メール通知を使う場合のみ true と宛先を設定。
+@@ -675,6 +677,10 @@ function runSyncCore_(options) {
+       const weekdayRows = buildWeekdayRows_(dailyRows);
+       writeDailySheet_(ss, dailyRows);
+       writeWeekdaySheet_(ss, weekdayRows);
++      getOrCreateSheet_(ss, CONFIG.SHEETS.WEEKDAY).getRange('A1').setNote(
++        '未再照合日数: ' + dailyRows.filter(function (r) { return String(r.status || '').indexOf('NO_ROW') >= 0; }).length +
++        '。NO_ROWは既存値を維持し、未取得値は平均・合計の0扱いを避けて日次シートで確認してください。'
++      );
+
+       // 通常同期ではページ単位の直近履歴も再取得して、修正値をupsertする。
+       // 365日バックフィル時は実行時間上限を避けるため省略する。
+@@ -729,13 +735,14 @@ function runSyncCore_(options) {
+       // RECONCILEDデータまでERRORへ巻き戻さない。
+       recordHealthSuccess_('DAILY_RECONCILE', {
+         dataThrough: dailyRange.endDate,
+-        dataState: DATA_STATE.RECONCILED,
++        dataState: ga4NoRowCount || adsenseNoRowCount ? DATA_STATE.PARTIAL : DATA_STATE.RECONCILED,
+         detail: 'NO_ROW GA4=' + ga4NoRowCount + '日 / AdSense=' + adsenseNoRowCount + '日'
+       });
+       updateHealthSheet_(ss);
+       writeLog_(logSheet, 'INFO', '日次データ再照合は正常終了しました: ' + dailyRange.endDate);
+
+       const driveMaintenanceWarnings = [];
++      recordHealthAttempt_('DRIVE_MAINTENANCE');
+       try {
+         maybeCreateMonthlyBackup_(ss, logSheet);
+       } catch (backupError) {
+@@ -750,6 +757,24 @@ function runSyncCore_(options) {
+         writeLog_(logSheet, 'WARN', '完了月Driveアーカイブを保留（分析本体は成功）: ' + errorMessage_(archiveError));
+       }
+
++      if (driveMaintenanceWarnings.length) {
++        recordHealthFailure_('DRIVE_MAINTENANCE', new Error(driveMaintenanceWarnings.join(' / ')));
++      } else {
++        recordHealthSuccess_('DRIVE_MAINTENANCE', {
++          dataThrough: dailyRange.endDate, dataState: DATA_STATE.RECONCILED,
++          detail: '今回の保存処理は正常（対象がない場合を含む）'
++        });
++      }
++      updateHealthSheet_(ss);
++
++      // 同じ日次更新に診断を接続し、追加トリガーや二重ロックを作らない。
++      if (typeof playPointRevenueCaptureUnlocked_ === 'function') {
++        try {
++          playPointRevenueCaptureUnlocked_();
++        } catch (diagnosticError) {
++          writeLog_(logSheet, 'WARN', '収益異常診断を保留（日次保存は成功）: ' + errorMessage_(diagnosticError));
++        }
++      }
+       const message = [
+         options.source + 'が正常に完了しました。',
+         '',
+@@ -763,7 +788,7 @@ function runSyncCore_(options) {
+         options.backfillDays ? 'ページ履歴背景補完: バックフィルでは省略' : 'ページ履歴背景補完: ' + pageBackfillStatus,
+         options.backfillDays ? '詳細分析: バックフィルでは省略（別メニューで更新可能）' : '詳細分析: 週次処理へ分離',
+         'Drive保存: ' + (driveMaintenanceWarnings.length ? '一部保留（実行ログWARNを確認）' : '正常または今回対象なし'),
+-        'データ状態: ' + DATA_STATE.RECONCILED,
++        'データ状態: ' + (ga4NoRowCount || adsenseNoRowCount ? DATA_STATE.PARTIAL : DATA_STATE.RECONCILED),
+         '取得行なし: GA4=' + ga4NoRowCount + '日 / AdSense=' + adsenseNoRowCount + '日',
+         '最終更新: ' + currentTimestamp_()
+       ].join('\n');
+@@ -884,7 +909,8 @@ function runDetailedAnalysisCore_(source) {
+     } else {
+       recordHealthSuccess_('WEEKLY_DETAIL', {
+         dataThrough: gaRange.endDate,
+-        dataState: DATA_STATE.PARTIAL
++        dataState: DATA_STATE.PARTIAL,
++        detail: results.filter(function (r) { return !r.success; }).map(function (r) { return r.label + ': ' + r.error; }).join(' / ')
+       });
+     }
+     updateHealthSheet_(ss);
+@@ -959,7 +985,7 @@ function resolveIncrementalRange_(existingMap) {
+   );
+
+   recoverDates.forEach(function (dateStr) {
+-    if (!existingMap[dateStr] && dateStr < startDate) startDate = dateStr;
++    if ((!existingMap[dateStr] || /NO_ROW/.test(String(existingMap[dateStr].status || ''))) && dateStr < startDate) startDate = dateStr;
+   });
+
+   return { startDate: startDate, endDate: endDate };
+@@ -1059,56 +1085,45 @@ function fetchAdSenseDaily_(startDate, endDate) {
+
+ function mergeDailyMaps_(existingMap, ga4Map, adsenseMap, range) {
+   const merged = {};
+-
+   Object.keys(existingMap).forEach(function (date) {
+     merged[date] = Object.assign({}, existingMap[date]);
+   });
+-
+   dateArrayInRange_(range.startDate, range.endDate).forEach(function (date) {
+-    const hasGa4Row = Object.prototype.hasOwnProperty.call(ga4Map, date);
+-    const hasAdSenseRow = Object.prototype.hasOwnProperty.call(adsenseMap, date);
+-    const ga4 = ga4Map[date] || { pv: 0, users: 0, engagementDurationSec: 0 };
+-    const adsense = adsenseMap[date] || {
+-      earnings: 0,
+-      pageViews: 0,
+-      impressions: 0,
+-      clicks: 0,
+-      pageCtr: 0,
+-      pageRpm: 0,
+-      impressionCtr: 0,
+-      impressionRpm: 0
+-    };
+-
++    const previous = existingMap[date] || {};
++    const ga4 = ga4Map[date];
++    const ads = adsenseMap[date];
+     const dateObj = parseYmd_(date);
+-    const avgEngagementSec = ga4.users > 0
+-      ? ga4.engagementDurationSec / ga4.users
+-      : 0;
+-
+-    merged[date] = {
+-      date: date,
+-      year: dateObj.getFullYear(),
+-      month: dateObj.getMonth() + 1,
+-      weekday: japaneseWeekday_(dateObj),
+-      ga4Pv: number_(ga4.pv),
+-      ga4Users: number_(ga4.users),
+-      avgEngagementSec: avgEngagementSec,
+-      earnings: number_(adsense.earnings),
+-      revenuePerGa4Pv: ga4.pv > 0 ? adsense.earnings / ga4.pv : 0,
+-      adsensePageViews: number_(adsense.pageViews),
+-      impressions: number_(adsense.impressions),
+-      clicks: number_(adsense.clicks),
+-      pageCtr: normalizeRatio_(adsense.pageCtr),
+-      pageRpm: number_(adsense.pageRpm),
+-      impressionCtr: normalizeRatio_(adsense.impressionCtr),
+-      impressionRpm: number_(adsense.impressionRpm),
+-      movingAvgPv: 0,
+-      movingAvgEarnings: 0,
+-      status: DATA_STATE.RECONCILED +
+-        (hasGa4Row ? '' : ' / GA4:' + DATA_STATE.NO_ROW) +
+-        (hasAdSenseRow ? '' : ' / AdSense:' + DATA_STATE.NO_ROW)
+-    };
++    const item = Object.assign({}, previous, {
++      date: date, year: dateObj.getFullYear(), month: dateObj.getMonth() + 1,
++      weekday: japaneseWeekday_(dateObj)
++    });
++    const gaFields = ['ga4Pv', 'ga4Users', 'avgEngagementSec'];
++    const adsFields = ['earnings', 'adsensePageViews', 'impressions', 'clicks',
++      'pageCtr', 'pageRpm', 'impressionCtr', 'impressionRpm'];
++    gaFields.concat(adsFields).forEach(function (key) {
++      if (item[key] === undefined) item[key] = null;
++    });
++    // API行なしは0の証拠ではない。既存値を維持し、新規の未取得値は空欄にする。
++    if (ga4) {
++      item.ga4Pv = number_(ga4.pv);
++      item.ga4Users = number_(ga4.users);
++      item.avgEngagementSec = ga4.users > 0 ? ga4.engagementDurationSec / ga4.users : 0;
++    }
++    if (ads) {
++      item.earnings = number_(ads.earnings);
++      item.adsensePageViews = number_(ads.pageViews);
++      ['impressions', 'clicks', 'pageRpm', 'impressionRpm'].forEach(function (key) {
++        item[key] = number_(ads[key]);
++      });
++      ['pageCtr', 'impressionCtr'].forEach(function (key) { item[key] = normalizeRatio_(ads[key]); });
++    }
++    item.revenuePerGa4Pv = item.ga4Pv === null || item.earnings === null
++      ? null : (item.ga4Pv > 0 ? item.earnings / item.ga4Pv : 0);
++    item.status = ga4 && ads ? DATA_STATE.RECONCILED : DATA_STATE.PARTIAL +
++      (ga4 ? '' : ' / GA4:' + DATA_STATE.NO_ROW) +
++      (ads ? '' : ' / AdSense:' + DATA_STATE.NO_ROW) + '（既存値維持／未取得は空欄）';
++    merged[date] = item;
+   });
+-
+   return merged;
+ }
+
+@@ -1168,6 +1183,17 @@ function readExistingDailyMap_(ss) {
+       movingAvgEarnings: number_(valueByAliases_(row, headerMap, DAILY_ALIASES.movingAvgEarnings, 14)),
+       status: String(valueByAliases_(row, headerMap, DAILY_ALIASES.status, -1) || '既存データ（未再取得）')
+     };
++    // 空欄を再読み込みした際にも未取得の意味を維持する。
++    const nullableFields = ['ga4Pv', 'ga4Users', 'avgEngagementSec', 'earnings',
++      'revenuePerGa4Pv', 'adsensePageViews', 'impressions', 'clicks', 'pageCtr',
++      'pageRpm', 'impressionCtr', 'impressionRpm', 'movingAvgPv', 'movingAvgEarnings'];
++    nullableFields.forEach(function (key) {
++      const aliases = DAILY_ALIASES[key];
++      if (!aliases) return;
++      const index = aliases.map(function (name) { return headerMap[name]; })
++        .find(function (value) { return value !== undefined; });
++      if (index !== undefined && (row[index] === '' || row[index] === null)) result[date][key] = null;
++    });
+   });
+
+   return result;
+@@ -1181,22 +1207,15 @@ function sortedDailyObjects_(dailyMap) {
+
+ function computeCalendarMovingAverages_(rows, dailyMap) {
+   rows.forEach(function (row) {
+-    let pvTotal = 0;
+-    let earningsTotal = 0;
+-    let count = 0;
+-
++    let pvTotal = 0, earningsTotal = 0, pvDays = 0, earningsDays = 0;
+     for (let offset = 6; offset >= 0; offset--) {
+-      const targetDate = shiftDateString_(row.date, -offset);
+-      const target = dailyMap[targetDate];
++      const target = dailyMap[shiftDateString_(row.date, -offset)];
+       if (!target) continue;
+-
+-      pvTotal += number_(target.ga4Pv);
+-      earningsTotal += number_(target.earnings);
+-      count++;
++      if (target.ga4Pv !== null && target.ga4Pv !== undefined) { pvTotal += number_(target.ga4Pv); pvDays++; }
++      if (target.earnings !== null && target.earnings !== undefined) { earningsTotal += number_(target.earnings); earningsDays++; }
+     }
+-
+-    row.movingAvgPv = count > 0 ? pvTotal / count : 0;
+-    row.movingAvgEarnings = count > 0 ? earningsTotal / count : 0;
++    row.movingAvgPv = pvDays ? pvTotal / pvDays : null;
++    row.movingAvgEarnings = earningsDays ? earningsTotal / earningsDays : null;
+   });
+ }
+
+@@ -1308,6 +1327,7 @@ function buildMonthlyRows_(dailyRows, monthlyActiveUsers) {
+     if (!groups[monthKey]) {
+       groups[monthKey] = {
+         days: 0,
++        partialDays: 0,
+         pv: 0,
+         dailyUsers: 0,
+         earnings: 0,
+@@ -1319,6 +1339,7 @@ function buildMonthlyRows_(dailyRows, monthlyActiveUsers) {
+
+     const group = groups[monthKey];
+     group.days++;
++    if (String(row.status || '').indexOf('NO_ROW') >= 0 || row.ga4Pv === null || row.earnings === null) group.partialDays++;
+     group.pv += row.ga4Pv;
+     group.dailyUsers += row.ga4Users;
+     group.earnings += row.earnings;
+@@ -1337,7 +1358,7 @@ function buildMonthlyRows_(dailyRows, monthlyActiveUsers) {
+         group.days,
+         group.pv,
+         group.dailyUsers,
+-        number_(monthlyActiveUsers[monthKey]),
++        Object.prototype.hasOwnProperty.call(monthlyActiveUsers, monthKey) ? number_(monthlyActiveUsers[monthKey]) : '',
+         group.earnings,
+         group.pv > 0 ? group.earnings / group.pv : 0,
+         group.pageViews,
+@@ -1346,7 +1367,9 @@ function buildMonthlyRows_(dailyRows, monthlyActiveUsers) {
+         group.pageViews > 0 ? group.clicks / group.pageViews : 0,
+         group.pageViews > 0 ? group.earnings / group.pageViews * 1000 : 0,
+         group.impressions > 0 ? group.clicks / group.impressions : 0,
+-        group.impressions > 0 ? group.earnings / group.impressions * 1000 : 0
++        group.impressions > 0 ? group.earnings / group.impressions * 1000 : 0,
++        group.partialDays || 0,
++        group.partialDays ? DATA_STATE.PARTIAL : DATA_STATE.RECONCILED
+       ];
+     });
+ }
+@@ -1358,6 +1381,8 @@ function buildWeekdayRows_(dailyRows) {
+   order.forEach(function (day) {
+     groups[day] = {
+       days: 0,
++      gaDays: 0,
++      adsDays: 0,
+       pv: 0,
+       users: 0,
+       earnings: 0,
+@@ -1372,6 +1397,8 @@ function buildWeekdayRows_(dailyRows) {
+     if (!group) return;
+
+     group.days++;
++    if (row.ga4Pv !== null) group.gaDays++;
++    if (row.earnings !== null) group.adsDays++;
+     group.pv += row.ga4Pv;
+     group.users += row.ga4Users;
+     group.earnings += row.earnings;
+@@ -1387,9 +1414,9 @@ function buildWeekdayRows_(dailyRows) {
+       return [
+         day,
+         group.days,
+-        group.pv / group.days,
+-        group.users / group.days,
+-        group.earnings / group.days,
++        group.gaDays ? group.pv / group.gaDays : '',
++        group.gaDays ? group.users / group.gaDays : '',
++        group.adsDays ? group.earnings / group.adsDays : '',
+         group.pv > 0 ? group.earnings / group.pv : 0,
+         group.pageViews > 0 ? group.clicks / group.pageViews : 0,
+         group.pageViews > 0 ? group.earnings / group.pageViews * 1000 : 0,
+@@ -1518,6 +1545,9 @@ function runLatestSnapshotCore_(source) {
+       statuses: statuses
+     };
+
++    const snapshotState = ga4 && adsense && pages !== null
++      ? (adsense.hasRow ? DATA_STATE.PROVISIONAL : DATA_STATE.NO_ROW)
++      : DATA_STATE.PARTIAL;
+     writeLatestSnapshotSheet_(ss, snapshot);
+     appendSnapshotHistory_(ss, snapshot);
+     updateHealthSheet_(ss);
+@@ -1531,7 +1561,7 @@ function runLatestSnapshotCore_(source) {
+         '取得日時: ' + fetchedAt,
+         '対象日: ' + today,
+         '更新間隔: 約' + CONFIG.INTRADAY_EVERY_HOURS + '時間',
+-        'データ状態: ' + provisionalState,
++        'データ状態: ' + snapshotState,
+         '',
+         statuses.join('\n')
+       ].join('\n')
+@@ -2544,7 +2574,7 @@ function fetchJsonWithRetry_(url, options, maxAttempts) {
+     Utilities.sleep(Math.pow(2, attempt - 1) * 1000);
+   }
+
+-  throw new Error('Search Console API通信失敗: ' + errorMessage_(lastError));
++  throw new Error('Google API通信失敗: ' + errorMessage_(lastError));
+ }
+
+ function extractApiErrorMessage_(responseText) {
+@@ -2573,7 +2603,7 @@ function writeDailySheet_(ss, dailyRows) {
+       row.weekday,
+       row.ga4Pv,
+       row.ga4Users,
+-      row.avgEngagementSec / 86400,
++      row.avgEngagementSec === null ? '' : row.avgEngagementSec / 86400,
+       row.earnings,
+       row.revenuePerGa4Pv,
+       row.adsensePageViews,
+@@ -2630,7 +2660,9 @@ function writeMonthlySheet_(ss, rows) {
+     'AdSenseページCTR',
+     'AdSenseページRPM（円）',
+     '広告インプレッションCTR',
+-    '広告インプレッションRPM（円）'
++    '広告インプレッションRPM（円）',
++    '未再照合日数',
++    'データ状態'
+   ];
+
+   const sheet = getOrCreateSheet_(ss, CONFIG.SHEETS.MONTHLY);
+@@ -2813,11 +2845,16 @@ function replaceSheet_(sheet, headers, rows, headerColor) {
+   const filter = sheet.getFilter();
+   if (filter) filter.remove();
+
+-  sheet.clear();
++  // 書き込み前の全消去を避け、API成功後も既存値を失わない。
++  const previousRows = sheet.getLastRow();
++  rows.forEach(function (row) { if (row.length !== headers.length) throw new Error('シート行の列数が不正です。'); });
+   ensureSheetSize_(sheet, Math.max(rows.length + 1, 2), headers.length);
+
++  sheet.getRange(1, 1, rows.length + 1, headers.length).setValues([headers].concat(rows).map(analyticsLiteralRow_));
++  if (previousRows > rows.length + 1) {
++    sheet.getRange(rows.length + 2, 1, previousRows - rows.length - 1, headers.length).clearContent();
++  }
+   sheet.getRange(1, 1, 1, headers.length)
+-    .setValues([headers])
+     .setFontWeight('bold')
+     .setBackground(headerColor)
+     .setFontColor(COLORS.WHITE)
+@@ -2826,9 +2863,7 @@ function replaceSheet_(sheet, headers, rows, headerColor) {
+     .setWrap(true);
+
+   if (rows.length) {
+-    sheet.getRange(2, 1, rows.length, headers.length)
+-      .setValues(rows)
+-      .setVerticalAlignment('middle');
++    sheet.getRange(2, 1, rows.length, headers.length).setVerticalAlignment('middle');
+     sheet.getRange(1, 1, rows.length + 1, headers.length).createFilter();
+   }
+
+@@ -2836,12 +2871,18 @@ function replaceSheet_(sheet, headers, rows, headerColor) {
+   sheet.setRowHeight(1, 42);
+
+   try {
+-    sheet.autoResizeColumns(1, headers.length);
++    if (previousRows <= 1) sheet.autoResizeColumns(1, headers.length);
+   } catch (ignore) {
+     // autoResize不可でもデータには影響しない。
+   }
+ }
+
++function analyticsLiteralRow_(row) {
++  return row.map(function (cell) {
++    return typeof cell === 'string' && /^=/.test(cell) ? "'" + cell : cell;
++  });
++}
++
+ function ensureSheetSize_(sheet, requiredRows, requiredColumns) {
+   const currentRows = sheet.getMaxRows();
+   const currentColumns = sheet.getMaxColumns();
+@@ -3939,7 +3980,9 @@ function updateHealthSheet_(ss) {
+     ['ページ履歴バックフィル', 'PAGE_HISTORY_BACKFILL'],
+     ['Search Console速報', 'SEARCH_PROVISIONAL'],
+     ['日次再照合', 'DAILY_RECONCILE'],
+-    ['週次詳細', 'WEEKLY_DETAIL']
++    ['週次詳細', 'WEEKLY_DETAIL'],
++    ['GSC 非重複28日', 'GSC_28D'],
++    ['Drive保存', 'DRIVE_MAINTENANCE']
+   ];
+
+   const rows = components.map(function (pair) {
+@@ -3998,6 +4041,15 @@ function updateHealthSheet_(ss) {
+     PropertiesService.getScriptProperties().getProperty(SCRIPT_KEYS.DATA_ROOT_FOLDER_ID) || '初回実行アカウントのMy Driveに自動作成'
+   ]);
+
++  const portfolio = ss.getSheetByName('📚記事Portfolio');
++  if (portfolio && portfolio.getLastRow()) {
++    const stamp = String(portfolio.getRange('B1').getDisplayValue() || '');
++    const match = /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}) JST$/.exec(stamp);
++    const epoch = match ? Date.parse(match[1] + 'T' + match[2] + ':00+09:00') : NaN;
++    rows.push(['記事Portfolio（判断用資料）', '', stamp, match ? match[1] : '',
++      !Number.isFinite(epoch) ? 'UNVERIFIED' : Date.now() - epoch > 7 * 86400000 ? DATA_STATE.STALE : 'MANUAL_SNAPSHOT',
++      0, '', '自動収集対象外。分類・優先順位は資料日時を確認し、最新のP1/GSC集計と合わせて再評価。']);
++  }
+   const headers = [
+     'コンポーネント', '最終試行', '最終成功', 'データ最新',
+     '状態', '連続失敗', '最終エラー', '補足'
+@@ -4016,6 +4068,7 @@ function updateHealthSheet_(ss) {
+         const name = String(row[0] || '').trim();
+         if (name && !ownedNames[name]) {
+           while (row.length < 8) row.push('');
++          row[4] = effectiveExtensionHealthState_(row);
+           extensionRows.push(row.slice(0, 8));
+         }
+       });
+@@ -4029,6 +4082,17 @@ function updateHealthSheet_(ss) {
+   });
+ }
+
++function effectiveExtensionHealthState_(row) {
++  if ((!/^P[12] /.test(String(row[0] || '')) && row[0] !== '収益異常診断') || row[4] === DATA_STATE.ERROR) return row[4];
++  const stamp = row[4] === 'RUNNING' ? row[1] : row[2];
++  const epoch = stamp instanceof Date ? stamp.getTime()
++    : Date.parse(String(stamp || '').replace(/\//g, '-').replace(' ', 'T') + '+09:00');
++  if (!Number.isFinite(epoch)) return row[4];
++  const maxAge = row[4] === 'RUNNING' ? 45 * 60 * 1000
++    : (row[0] === '収益異常診断' ? 36 * 60 * 60 * 1000 : 9 * 24 * 60 * 60 * 1000);
++  return Date.now() - epoch > maxAge ? DATA_STATE.STALE : row[4];
++}
++
+ function captureGa4Quota_(category, response) {
+   if (!response || !response.propertyQuota) return;
+   const quota = response.propertyQuota;

@@ -1,6 +1,6 @@
 # PlayPoint 収益異常診断 運用手順
 
-最終更新: 2026-09-30
+最終更新: 2026-10-05
 
 ## 目的
 
@@ -20,7 +20,7 @@ AdSense_GA4日次データ の確定済み日次データから、アクセス�
 
 ## 検知方法
 
-過去28日の RECONCILED データを基準に、中央値と MAD (median absolute deviation) で robust Z-score を計算する。
+直前28暦日内の RECONCILED データを基準に、中央値と MAD (median absolute deviation) で robust Z-score を計算する。欠損を28日より古いデータで埋めない。
 MAD が0のときだけ標準偏差 Z-score へフォールバックする。
 
 - NORMAL: |Z| < 2.5
@@ -99,7 +99,11 @@ prefix: [REVENUE_DIAG]
 5. 実行ログに [REVENUE_DIAG] が残ることを確認。
 6. 🩺データ鮮度・システム状態に 収益異常診断 が追加されることを確認。
 7. 国・端末・入札方式の各 breakdown が取得できることを確認。
-8. 正常なら一度だけ installPlayPointRevenueDiagnosticsDailyTrigger() を実行。
+8. v11.6.3本体では既存の日次同期に診断を接続するため、専用トリガーを追加しない。単体運用時だけ installPlayPointRevenueDiagnosticsDailyTrigger() を使う。
+
+## 2026-10-05の全体確認
+
+稼働プロジェクトには本モジュールがなく、シートの診断は9月29日の調査結果で停止していた。v11.6.3では本体の日次同期からロック内の診断関数を呼び出す。手動の公開入口は同じロックを取得する。既存本体のAdSenseアカウント解決と、独立した「Drive保存」監視行を再利用する。詳細は [全体確認記録](PLAYPOINT_ANALYTICS_INTEGRITY_2026-10-05.md)。
 
 ## 現在の DriveApp エラーについて
 
