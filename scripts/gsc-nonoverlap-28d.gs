@@ -56,6 +56,31 @@ var PLAYPOINT_GSC_28D_CONFIG = Object.freeze({
 });
 
 function captureGscNonOverlapping28d(input) {
+  var capture = function() {
+    if (typeof recordHealthAttempt_ === 'function') recordHealthAttempt_('GSC_28D');
+    try {
+      var result = playPointGscCaptureUnlocked_(input);
+      if (result.status !== 'SKIPPED_STALE_TRIGGER' && typeof recordHealthSuccess_ === 'function') {
+        recordHealthSuccess_('GSC_28D', {
+          dataThrough: result.current.end,
+          dataState: 'FINAL',
+          detail: result.status + ' / ' + result.pairId + ' / query rows are API-visible rows, not all searches'
+        });
+        updateHealthSheet_(playPointGscGetSpreadsheet_());
+      }
+      return result;
+    } catch (error) {
+      if (typeof recordHealthFailure_ === 'function') {
+        recordHealthFailure_('GSC_28D', error);
+        updateHealthSheet_(playPointGscGetSpreadsheet_());
+      }
+      throw error;
+    }
+  };
+  return typeof withScriptLock_ === 'function' ? withScriptLock_(capture) : capture();
+}
+
+function playPointGscCaptureUnlocked_(input) {
   var event = input && typeof input === 'object' ? input : null;
   var finalEndDateText = typeof input === 'string' ? input : '';
 
@@ -392,7 +417,7 @@ function playPointGscQueryApi_(siteUrl, body) {
     encodeURIComponent(siteUrl) +
     '/searchAnalytics/query';
 
-  var response = UrlFetchApp.fetch(endpoint, {
+  var options = {
     method: 'post',
     contentType: 'application/json',
     headers: {
@@ -400,7 +425,15 @@ function playPointGscQueryApi_(siteUrl, body) {
     },
     payload: JSON.stringify(body),
     muteHttpExceptions: true
-  });
+  };
+  if (typeof fetchJsonWithRetry_ === 'function') return fetchJsonWithRetry_(endpoint, options, 3);
+  var response;
+  for (var attempt = 0; attempt < 3; attempt += 1) {
+    response = UrlFetchApp.fetch(endpoint, options);
+    var status = response.getResponseCode();
+    if ((status !== 429 && status < 500) || attempt === 2) break;
+    Utilities.sleep(Math.pow(2, attempt) * 1000);
+  }
 
   var code = response.getResponseCode();
   var text = response.getContentText();
@@ -678,7 +711,8 @@ function playPointGscAppendRows_(sheet, values) {
     sheet.insertRowsAfter(sheet.getMaxRows(), requiredLastRow - sheet.getMaxRows());
   }
 
-  sheet.getRange(startRow, 1, values.length, PLAYPOINT_GSC_28D_CONFIG.headers.length).setValues(values);
+  sheet.getRange(startRow, 1, values.length, PLAYPOINT_GSC_28D_CONFIG.headers.length)
+    .setValues(values.map(playPointGscLiteralRow_));
 }
 
 function playPointGscRebuildComparisonViews_(spreadsheet, historyRows, pairId) {
@@ -744,6 +778,7 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
     ['previous_28d'].concat(playPointGscTotalSummaryCells_(propertyPrevious)),
     ['判断', ready ? '3層×2期間が揃っている' : '不足レイヤーあり。SEO変更に進まない', '', '', '', '']
   ]);
+  sheet.getRange('G13').setValue('検索語明細はAPIで取得可能な上位行。匿名検索などを含む総量はProperty Totalを参照。');
 
   var headers = [
     '検索クエリ',
@@ -819,7 +854,7 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
     if (requiredLastRow > sheet.getMaxRows()) {
       sheet.insertRowsAfter(sheet.getMaxRows(), requiredLastRow - sheet.getMaxRows());
     }
-    sheet.getRange(16, 1, output.length, headers.length).setValues(output);
+    sheet.getRange(16, 1, output.length, headers.length).setValues(output.map(playPointGscLiteralRow_));
   }
 
   sheet.setFrozenRows(15);
@@ -858,9 +893,16 @@ function playPointGscFirstDataRow_(rows) {
 }
 
 function playPointGscAssertIsoDate_(value) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ''))) {
+  var text = String(value || '');
+  var date = new Date(text + 'T00:00:00Z');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(text) || isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== text) {
     throw new Error('Expected YYYY-MM-DD date, got: ' + value);
   }
+}
+
+function playPointGscLiteralRow_(row) {
+  if (typeof analyticsLiteralRow_ === 'function') return analyticsLiteralRow_(row);
+  return row.map(function(cell) { return typeof cell === 'string' && /^=/.test(cell) ? "'" + cell : cell; });
 }
 
 function playPointGscShiftIsoDate_(iso, days) {

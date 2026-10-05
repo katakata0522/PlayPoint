@@ -126,6 +126,14 @@ function installPlayPointAnalyticsP1P2WeeklyTrigger() {
 }
 
 function playPointP12RunStage_(stage, fn) {
+  // 本体のシート置換・健康状態更新と同じロックを使い、監視行の消失を防ぐ。
+  if (typeof withScriptLock_ === 'function') {
+    return withScriptLock_(function() { return playPointP12RunStageUnlocked_(stage, fn); });
+  }
+  return playPointP12RunStageUnlocked_(stage, fn);
+}
+
+function playPointP12RunStageUnlocked_(stage, fn) {
   var started = new Date();
   playPointP12Log_('INFO', stage, 'started');
   playPointP12TryHealth_(stage, function() {
@@ -208,6 +216,9 @@ function playPointP12CapturePageValueFunnel_(spreadsheet) {
   var revenue = playPointP12SafeSource_(function() {
     return playPointP12FetchPageRevenue_(propertyId, period);
   });
+  if ([gsc, organic, articleClicks, attributed, revenue].every(function(source) { return !source.ok; })) {
+    throw new Error('All page-value sources unavailable; previous report preserved.');
+  }
 
   var rows = playPointP12BuildPageValueRows_({
     gscRows: gsc.rows,
@@ -334,6 +345,9 @@ function playPointP12CaptureSearchCross_(spreadsheet) {
   var queryDevice = playPointP12SafeSource_(function() {
     return playPointP12FetchGscCrossPair_(siteUrl, gscPeriods, ['query', 'device']);
   });
+  if ([engines, queryCountry, queryDevice].every(function(source) { return !source.ok; })) {
+    throw new Error('All search-cross sources unavailable; previous report preserved.');
+  }
 
   var sheet = playPointP12EnsureSheet_(spreadsheet, PLAYPOINT_P12_CONFIG.searchCrossSheet, 16);
   sheet.clearContents();
@@ -426,7 +440,8 @@ function playPointP12CaptureSearchCross_(spreadsheet) {
 
   if (crossRows.length) {
     playPointP12EnsureRows_(sheet, crossHeaderRow + crossRows.length);
-    sheet.getRange(crossHeaderRow + 1, 1, crossRows.length, crossHeaders.length).setValues(crossRows);
+    sheet.getRange(crossHeaderRow + 1, 1, crossRows.length, crossHeaders.length)
+      .setValues(crossRows.map(playPointP12LiteralRow_));
   }
 
   playPointP12StyleSearchCrossSheet_(sheet, engineHeaderRow, engineRows.length, crossHeaderRow, crossRows.length);
@@ -1005,12 +1020,27 @@ function playPointP12FetchOrganicEngines_(propertyId, period) {
 }
 
 function playPointP12Ga4Report_(propertyId, body) {
-  return playPointP12GoogleJson_(
-    'https://analyticsdata.googleapis.com/v1beta/properties/' +
-    encodeURIComponent(propertyId) +
-    ':runReport',
-    { method: 'post', payload: body }
-  );
+  var endpoint = 'https://analyticsdata.googleapis.com/v1beta/properties/' +
+    encodeURIComponent(propertyId) + ':runReport';
+  var request = Object.assign({}, body, { returnPropertyQuota: true });
+  var response = playPointP12GoogleJson_(endpoint, { method: 'post', payload: request });
+  var rows = (response.rows || []).slice();
+  var expected = Number(response.rowCount || rows.length);
+  // 不完全な集計をOKにしない。APIが申告する総行数まで取得する。
+  if (expected > 100000) throw new Error('GA4 result exceeds safe capture size: ' + expected);
+  if (typeof captureGa4Quota_ === 'function') captureGa4Quota_('core', response);
+  while (rows.length < expected) {
+    request.offset = String(rows.length);
+    var page = playPointP12GoogleJson_(endpoint, { method: 'post', payload: request });
+    if (typeof captureGa4Quota_ === 'function') captureGa4Quota_('core', page);
+    var next = page.rows || [];
+    if (!next.length || Number(page.rowCount || expected) !== expected) {
+      throw new Error('GA4 capture incomplete or changed while paging: ' + rows.length + ' / ' + expected);
+    }
+    rows = rows.concat(next);
+  }
+  response.rows = rows;
+  return response;
 }
 
 function playPointP12ParseGa4Rows_(body, dimensionNames, metricNames) {
@@ -1163,7 +1193,7 @@ function playPointP12InspectUrl_(siteUrl, inspectionUrl) {
 
 function playPointP12GoogleJson_(url, options) {
   options = options || {};
-  var response = UrlFetchApp.fetch(url, {
+  var request = {
     method: options.method || 'get',
     contentType: 'application/json',
     headers: {
@@ -1171,7 +1201,17 @@ function playPointP12GoogleJson_(url, options) {
     },
     payload: options.payload === undefined ? undefined : JSON.stringify(options.payload),
     muteHttpExceptions: true
-  });
+  };
+
+  // 本体の限定再試行を共有。単体利用でも429/5xxだけを3回まで再試行する。
+  if (typeof fetchJsonWithRetry_ === 'function') return fetchJsonWithRetry_(url, request, 3);
+  var response;
+  for (var attempt = 0; attempt < 3; attempt += 1) {
+    response = UrlFetchApp.fetch(url, request);
+    var status = response.getResponseCode();
+    if ((status !== 429 && status < 500) || attempt === 2) break;
+    Utilities.sleep(Math.pow(2, attempt) * 1000);
+  }
 
   var code = response.getResponseCode();
   var text = response.getContentText();
@@ -1265,6 +1305,11 @@ function playPointP12EnsureSheet_(spreadsheet, title, columns) {
     sheet.insertColumnsAfter(sheet.getMaxColumns(), columns - sheet.getMaxColumns());
   }
   return sheet;
+}
+
+function playPointP12LiteralRow_(row) {
+  if (typeof analyticsLiteralRow_ === 'function') return analyticsLiteralRow_(row);
+  return row.map(function(cell) { return typeof cell === 'string' && /^=/.test(cell) ? "'" + cell : cell; });
 }
 
 function playPointP12EnsureRows_(sheet, requiredRows) {
