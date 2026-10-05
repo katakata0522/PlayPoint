@@ -108,8 +108,8 @@ function playPointReaderBuildGrid_(period, inventory, sources, timestamp) {
     grid.push(playPointP12LiteralRow_(row));
   }
   add(['読者行動・再訪', timestamp]);
-  add(['対象期間', period.start + ' ～ ' + period.end + '。人数は各行内で重複除去。行を足して全体人数にしない']);
-  add(['目的', '記事の役割・導線・検索結果0件・入力エラー・再訪を同じ期間で確認']);
+  add(['対象期間', period.start + ' ～ ' + period.end]);
+  add(['目的', '記事の役割・導線・検索結果0件・入力エラー・再訪を同じ期間で確認。人数は各行内で重複除去。行を足して全体人数にしない']);
   add(['再訪の定義', 'ページ別は期間内の再訪者の閲覧。最初に読んだ記事別の7日/28日再訪率ではない']);
   add(['コホート', 'サイト全体の初回獲得日別。7日目・28日目のアクティブ率。期間内の任意再訪率ではない']);
   add(['解決', 'クリック・計算成功は行動。疑問解決の主KPIを代用しない。記事別入口コホートは未取得']);
