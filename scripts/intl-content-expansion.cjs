@@ -39,7 +39,7 @@ const TOPICS = [
     slug: "google-play-points-balance-history-progress.html",
     lastmodByLocale: {
       en: "2026-09-12",
-      ko: "2026-09-19",
+      ko: "2026-10-05",
       tw: "2026-09-12"
     },
     labels: {

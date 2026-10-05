@@ -107,7 +107,8 @@
     }
 
     function setupCalculatorPrompt() {
-        if (getLocale() === 'ja' && document.querySelector('[data-article-role]')?.dataset.articleRole !== 'calculator_bridge') return;
+        if (getLocale() !== 'ja') return;
+        if (document.querySelector('[data-article-role]')?.dataset.articleRole !== 'calculator_bridge') return;
         if (document.querySelector('.article-calculator-prompt')) return;
         const content = document.querySelector('.content');
         if (!content) return;
@@ -337,6 +338,10 @@
         script.async = true;
         script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455';
         script.crossOrigin = 'anonymous';
+        // 対象記事ではGoogle公式の設定で大型アンカーの展開を抑える。
+        if (document.querySelector('meta[name="playpoint:anchor-ads"]')?.content === 'collapsed-bottom') {
+            script.setAttribute('data-overlays', 'collapsed-bottom');
+        }
         script.onerror = () => {
             articleAdsenseLoaded = false;
             console.error('AdSense load failed');

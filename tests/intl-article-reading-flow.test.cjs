@@ -8,6 +8,7 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const {
   INTL_PROMPT_COPY,
+  CASH_CONVERSION_PROMPT_COPY,
   TW_CONTEXTUAL_PROMPT_COPY,
   insertIntlArticlePrompt,
   shouldGenerateIntlArticlePrompt
@@ -154,6 +155,8 @@ test('記事固有の手動CTAはRole正規化で汎用promptへ置き換えな�
 });
 
 const contextualPublishedPrompts = Object.freeze({
+  'en/articles/google-play-points-cash-conversion.html': CASH_CONVERSION_PROMPT_COPY.en,
+  'ko/articles/google-play-points-cash-conversion.html': CASH_CONVERSION_PROMPT_COPY.ko,
   'tw/articles/google-play-points-coupon-not-applied.html': TW_CONTEXTUAL_PROMPT_COPY.couponNotApplied,
   'tw/articles/google-play-points-platinum-diamond-cost.html': TW_CONTEXTUAL_PROMPT_COPY.platinumDiamond
 });

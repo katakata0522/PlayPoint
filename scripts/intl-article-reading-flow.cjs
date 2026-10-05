@@ -30,6 +30,25 @@ const INTL_PROMPT_COPY = Object.freeze({
   })
 });
 
+const CASH_CONVERSION_PROMPT_COPY = Object.freeze({
+  en: Object.freeze({
+    aria: 'Estimate points from a purchase you already planned',
+    label: 'If you already have a purchase planned',
+    heading: 'How many points would that purchase earn?',
+    body: 'Enter the amount you already intended to spend and the earn rate shown on your account. This estimates new points; it does not calculate a cash-out value or the value of a redeemed reward.',
+    cta: 'Estimate points from planned spending',
+    href: '/en/?mode=reverse'
+  }),
+  ko: Object.freeze({
+    aria: '예정된 구매로 받을 포인트 예상',
+    label: '이미 구매할 계획이 있다면',
+    heading: '예정된 구매로 몇 포인트를 받을까요?',
+    body: '원래 결제하려던 금액과 내 계정에 표시된 적립률로 받을 포인트를 예상해 보세요. 새로 적립할 포인트를 계산하는 기능이며, 현금화 금액이나 리워드의 교환 가치를 계산하지는 않습니다.',
+    cta: '예정된 결제액으로 포인트 계산',
+    href: '/ko/?mode=reverse'
+  })
+});
+
 const TW_CONTEXTUAL_PROMPT_COPY = Object.freeze({
   couponNotApplied: Object.freeze({
     aria: '問題排解後反推原定消費可獲得的點數',
@@ -256,13 +275,15 @@ function insertIntlArticlePrompt(mainHtml, localeKey, options = {}) {
     ? contextualAnchorEnd
     : (cashConversionAnchorEnd >= 0 ? cashConversionAnchorEnd : findPromptAnchorEnd(withoutPrompt));
   if (anchorEnd < 0) return withoutPrompt;
-  const copy = twContextKey ? TW_CONTEXTUAL_PROMPT_COPY[twContextKey] : null;
+  const copy = twContextKey ? TW_CONTEXTUAL_PROMPT_COPY[twContextKey]
+    : (CONTEXTUAL_PROMPT_PATHS[relativePath] === 'cashConversion' ? CASH_CONVERSION_PROMPT_COPY[localeKey] : null);
   return withoutPrompt.slice(0, anchorEnd)
     + renderIntlArticlePrompt(localeKey, copy)
     + withoutPrompt.slice(anchorEnd);
 }
 
 module.exports = {
+  CASH_CONVERSION_PROMPT_COPY,
   CASH_CONVERSION_H1_PATTERNS,
   CONTEXTUAL_PROMPT_PATHS,
   GENERATED_PROMPT_ATTRIBUTE,
