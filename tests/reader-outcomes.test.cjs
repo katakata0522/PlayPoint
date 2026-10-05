@@ -37,7 +37,8 @@ test('公開台帳の言語・役割を結合し、ページ再訪と入口コ�
 test('解決・行をまたぐユニーク数・空欄の誤解を避け、シート数式注入を防ぐ',()=>{
   const c=runtime(); const grid=c.playPointReaderBuildGrid_({start:'2026-09-03',end:'2026-10-02'},[],{
     ERRORS:{state:'ERROR',detail:'=IMPORTXML("bad")',rows:[]}},'2026-10-05');
-  assert.match(grid[5][1],/代用しない/);assert.match(grid[1][2],/足して全体人数にしない/);
+  assert.match(grid[5][1],/代用しない/);assert.match(grid[2][1],/足して全体人数にしない/);
+  assert.equal(grid[1][1],'2026-09-03 ～ 2026-10-02');
   assert.equal(grid[8][11].charAt(0),"'");assert.equal(grid[8][9],'');
 });
 test('28日が経過した獲得日だけを追跡し、日次7・28日の率を取得する',()=>{
@@ -68,4 +69,19 @@ test('実APIの重複ヘッダーと短い値配列で実測人数を0に上書�
   assert.throws(()=>c.playPointReaderOrderedFunnel_('p',{}),/欠落・競合/);
   table.rows[0].metricValues=[];
   assert.throws(()=>c.playPointReaderOrderedFunnel_('p',{}),/欠落・競合/);
+});
+test('旧期間欄の補足文を移行でき、より新しい集計は上書きしない',()=>{
+  function run(previous) {
+    const c=runtime({withScriptLock_:fn=>fn(),playPointP12NowText_:()=> '2026-10-05 20:00:00',
+      resolveAndRememberSpreadsheet_:()=>({getSheetByName:()=>({getRange:()=>({getValue:()=> '2026-09-03 ～ 2026-10-02'})})}),
+      playPointP12GetGa4PropertyId_:()=> 'p',playPointP12GoogleJson_:()=>({}),
+      playPointP12EnsureSheet_:()=>({getRange:()=>({getValue:()=>previous}),getLastRow:()=>0}),
+      playPointP12EnsureRows_:()=>{throw Error('write reached');}});
+    c.playPointMaintenanceLoadInventory_=()=>[];
+    c.playPointReaderReport_=c.playPointReaderCohorts_=c.playPointReaderOrderedFunnel_=()=>({rows:[]});
+    return ()=>c.playPointCaptureReaderOutcomes_();
+  }
+  assert.throws(run('2026-09-03 ～ 2026-10-02。人数の補足'),/write reached/);
+  assert.throws(run('2026-09-03 ～ 2026-10-02'),/write reached/);
+  assert.throws(run('2026-09-04 ～ 2026-10-03。人数の補足'),/より新しい/);
 });

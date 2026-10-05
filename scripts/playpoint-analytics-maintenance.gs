@@ -108,8 +108,8 @@ function playPointReaderBuildGrid_(period, inventory, sources, timestamp) {
     grid.push(playPointP12LiteralRow_(row));
   }
   add(['読者行動・再訪', timestamp]);
-  add(['対象期間', period.start + ' ～ ' + period.end, '人数は各行内で重複除去。行を足して全体人数にしない']);
-  add(['目的', '記事の役割・導線・検索結果0件・入力エラー・再訪を同じ期間で確認']);
+  add(['対象期間', period.start + ' ～ ' + period.end]);
+  add(['目的', '記事の役割・導線・検索結果0件・入力エラー・再訪を同じ期間で確認。人数は各行内で重複除去。行を足して全体人数にしない']);
   add(['再訪の定義', 'ページ別は期間内の再訪者の閲覧。最初に読んだ記事別の7日/28日再訪率ではない']);
   add(['コホート', 'サイト全体の初回獲得日別。7日目・28日目のアクティブ率。期間内の任意再訪率ではない']);
   add(['解決', 'クリック・計算成功は行動。疑問解決の主KPIを代用しない。記事別入口コホートは未取得']);
@@ -195,7 +195,8 @@ function playPointCaptureReaderOutcomes_() {
   return withScriptLock_(function() {
     var sheet = playPointP12EnsureSheet_(ss, PLAYPOINT_READER_OUTCOMES.sheet, 12);
     var previous = String(sheet.getRange('B2').getValue() || '');
-    if (previous.slice(-10) > period.end && /^\d{4}-\d{2}-\d{2} ～/.test(previous)) throw new Error('より新しい読者集計を旧期間で置換しません。');
+    var previousPeriod = previous.match(/^\d{4}-\d{2}-\d{2} ～ (\d{4}-\d{2}-\d{2})(?:$|。)/);
+    if (previousPeriod && previousPeriod[1] > period.end) throw new Error('より新しい読者集計を旧期間で置換しません。');
     var oldRows = sheet.getLastRow();
     playPointP12EnsureRows_(sheet, grid.length);
     // 再実行時は結合を解除してから書き、説明文・取得日時を失わない。
