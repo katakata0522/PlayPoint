@@ -245,7 +245,10 @@ async function inspectIntlReading(browser, baseUrl) {
       await page.locator('.reading-tools a').click();
       const library = page.locator('#reading-library');
       await library.waitFor({ state: 'visible' });
-      assert(await library.locator('a[href="/' + item.locale + '/articles/google-play-quests.html"]').count() >= 1, item.locale + ': saved article missing from library');
+      const savedArticle = library.locator('a[href="/' + item.locale + '/articles/google-play-quests.html"]');
+      // 静的な一覧枠の表示と、遷移後の保存データ描画完了を別に待つ。
+      await savedArticle.first().waitFor({ state: 'visible', timeout: 15000 });
+      assert(await savedArticle.count() >= 1, item.locale + ': saved article missing from library');
       await page.goto(new URL('/' + item.locale + '/articles/', baseUrl).href, { waitUntil: 'load' });
       const search = page.locator('[data-guide-search]');
       await search.waitFor({ state: 'visible' });
