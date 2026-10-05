@@ -158,7 +158,7 @@ function renderChrome(localeKey, title, section, variant, newline) {
     '<a class="skip-link" href="#main-content">' + escapeHtml(copy.skip) + '</a>',
     '<header class="site-header intl-article-site-header">',
     '  <div class="site-header-inner">',
-    '    <a class="site-logo" href="' + homeHref + '"><span aria-hidden="true">🎮</span><span class="site-logo-text">' + escapeHtml(locale.siteName) + '</span></a>',
+    '    <a class="site-logo" href="' + homeHref + '"><span class="site-logo-text">PlayPoint</span><span class="site-logo-description">' + escapeHtml(locale.siteName) + '</span></a>',
     '    <div class="site-header-tools">',
     '      <a class="site-about-link" href="' + policyHref + '">' + escapeHtml(copy.about) + '</a>',
     ...renderRegionSwitcher(localeKey, copy),
@@ -201,7 +201,7 @@ function renderPopularWidget(localeKey, currentPath, newline) {
   const popular = getPopularGuides(localeKey, currentPath, 5);
   return [
     '  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="' + escapeHtml(POPULAR_GUIDES_SNAPSHOT) + '">',
-    '    <h2 class="sidebar-widget-title">🔥 ' + escapeHtml(copy.popularTitle) + '</h2>',
+    '    <h2 class="sidebar-widget-title">' + escapeHtml(copy.popularTitle) + '</h2>',
     '    <div class="sidebar-widget-body">',
     '      <p class="sidebar-widget-note">' + escapeHtml(copy.popularNote) + '</p>',
     '      <ol class="sidebar-popular-list">',
@@ -221,7 +221,7 @@ function renderRelatedWidget(localeKey, relatedArticles, newline) {
   const copy = COPY[localeKey];
   return [
     '  <section class="sidebar-widget sidebar-widget--related" id="related-guides">',
-    '    <h2 class="sidebar-widget-title">🔗 ' + escapeHtml(copy.relatedTitle) + '</h2>',
+    '    <h2 class="sidebar-widget-title">' + escapeHtml(copy.relatedTitle) + '</h2>',
     '    <div class="sidebar-widget-body"><ul class="sidebar-related-list">',
     ...relatedArticles.map(([href, label]) => '      <li class="sidebar-related-item"><a class="sidebar-related-link" href="' + escapeHtml(href) + '">' + escapeHtml(label) + '</a></li>'),
     '    </ul></div>',
@@ -234,7 +234,7 @@ function renderAuthorWidget(localeKey, newline) {
   const policyHref = '/' + localeKey + '/author/katakata.html';
   return [
     '  <section class="sidebar-widget sidebar-widget--author">',
-    '    <h2 class="sidebar-widget-title">👤 ' + escapeHtml(copy.authorTitle) + '</h2>',
+    '    <h2 class="sidebar-widget-title">' + escapeHtml(copy.authorTitle) + '</h2>',
     '    <div class="sidebar-widget-body sidebar-author-card">',
     '      <div class="sidebar-author-avatar" aria-hidden="true">K</div>',
     '      <div><p class="sidebar-author-name">Katakata</p><p class="sidebar-author-role">' + escapeHtml(copy.authorRole) + '</p></div>',
@@ -253,7 +253,7 @@ function renderBrowseWidget(localeKey, section, newline) {
   const items = ['account', 'earn', 'levels', 'troubleshooting'];
   return [
     '  <section class="sidebar-widget sidebar-widget--browse">',
-    '    <h2 class="sidebar-widget-title">📁 ' + escapeHtml(copy.browseTitle) + '</h2>',
+    '    <h2 class="sidebar-widget-title">' + escapeHtml(copy.browseTitle) + '</h2>',
     '    <div class="sidebar-widget-body"><div class="sidebar-browse-grid">',
     ...items.map(key => '      <a class="sidebar-browse-link' + (section === key ? ' is-current' : '') + '" href="' + categoryHref(localeKey, key) + '">' + escapeHtml(copy.nav[key]) + '</a>'),
     '    </div></div>',
@@ -264,13 +264,13 @@ function renderBrowseWidget(localeKey, section, newline) {
 function renderSidebar(localeKey, relativePath, section, role, relatedArticles, variant, newline) {
   const copy = COPY[localeKey];
   const widgets = [];
-  const next = renderNextWidget(localeKey, role, variant, newline);
-  if (next) widgets.push(next);
-  widgets.push(renderPopularWidget(localeKey, '/' + String(relativePath).replace(/^\//, ''), newline));
   if (variant === 'article') {
     const related = renderRelatedWidget(localeKey, relatedArticles, newline);
     if (related) widgets.push(related);
   }
+  const next = renderNextWidget(localeKey, role, variant, newline);
+  if (next) widgets.push(next);
+  widgets.push(renderPopularWidget(localeKey, '/' + String(relativePath).replace(/^\//, ''), newline));
   if (variant !== 'policy') widgets.push(renderAuthorWidget(localeKey, newline));
   widgets.push(renderBrowseWidget(localeKey, section, newline));
   return ['<aside class="sidebar-column intl-article-sidebar" aria-label="' + escapeHtml(copy.sidebar) + '">', ...widgets, '</aside>'].join(newline);

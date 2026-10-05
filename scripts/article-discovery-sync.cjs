@@ -155,6 +155,13 @@ function buildDiscoveryAssets(root) {
 }
 
 function applyDiscoveryAssets(html, assets) {
+  // 海外版は通常の下部アンカーだけに揃える。既存の明示設定は優先する。
+  // 広告ローダーの共有契約を使い、第三者の広告DOMをCSSで隠さない。
+  if (/<html\b[^>]*\blang="(?:en|ko|zh-TW)"/i.test(html)
+    && /intl-layout-container/.test(html)
+    && !/<meta\b[^>]*\bname="playpoint:anchor-ads"/i.test(html)) {
+    html = html.replace(/<\/head>/i, '<meta name="playpoint:anchor-ads" content="collapsed-bottom">\n</head>');
+  }
   // JSが遮断されても共通の読みやすいlight配色を使う。通常時は同期theme scriptが保存/OS設定を優先する。
   html = html.replace(/<html\b([^>]*)>/i, (_tag, attributes) =>
     '<html' + attributes.replace(/\sdata-reading-theme=(?:"[^"]*"|'[^']*')/gi, '') + ' data-reading-theme="light">');

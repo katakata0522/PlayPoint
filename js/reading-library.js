@@ -175,7 +175,12 @@
       button.addEventListener('click', () => attempt(() => { store.toggle(current); updateButton(); buttonStatus.textContent = copy[button.getAttribute('aria-pressed') === 'true' ? 11 : 12]; if (localLibrary) render(); }));
       const link = element('a', copy[2]); link.href = (localLibrary ? '' : hub) + '#reading-library';
       tools.replaceChildren(button, link, buttonStatus);
-      if (!tools.isConnected) { const header = h1.closest('header'); (header && !header.classList.contains('site-header') ? header : h1).after(tools); }
+      if (!tools.isConnected) {
+        const intlHero = locale !== 'ja' && h1.closest('.hero');
+        const header = h1.closest('header');
+        if (intlHero) intlHero.append(tools);
+        else (header && !header.classList.contains('site-header') ? header : h1).after(tools);
+      }
       attempt(() => { store.visit(current); updateButton(); });
       root.addEventListener('storage', event => { if (event.key === KEY || event.key === null) attempt(updateButton); });
       if (!localLibrary) return;
@@ -184,7 +189,13 @@
     panel.replaceChildren(element('summary', copy[2]), element('p', copy[8]));
     const controls = element('div'); panel.append(controls, status);
     const mount = document.querySelector('[data-intl-guide-controls], #article-grid, #articles-grid, #blog-grid, .articles-grid');
-    if (!panel.isConnected) { if (!isHub && localLibrary) document.querySelector('aside.ja-article-sidebar').append(panel); else if (mount) mount.before(panel); else (document.querySelector('main') || document.body).append(panel); }
+    if (!panel.isConnected) {
+      const intlLibrarySlot = document.querySelector('[data-intl-reading-library-slot]');
+      if (!isHub && localLibrary) document.querySelector('aside.ja-article-sidebar').append(panel);
+      else if (intlLibrarySlot) intlLibrarySlot.append(panel);
+      else if (mount) mount.before(panel);
+      else (document.querySelector('main') || document.body).append(panel);
+    }
     function render() {
       updateButton?.();
       const focused = controls.querySelector(':focus');

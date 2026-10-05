@@ -123,7 +123,15 @@ function renderHubBody(localeKey, links) {
     })
   ].join('\n        ');
 
-  return `<section class="intl-hub-start" aria-labelledby="intl-hub-start">
+  return `<div class="intl-guide-controls" data-intl-guide-controls>
+      <label for="intl-guide-search">${escapeHtml(copy.searchLabel)}</label>
+      <input id="intl-guide-search" type="search" autocomplete="off" placeholder="${escapeHtml(copy.searchPlaceholder)}" data-guide-search>
+      <div class="intl-guide-filters" role="group" aria-label="${escapeHtml(copy.browse)}">
+        ${filterButtons}
+      </div>
+    </div>
+    <p class="intl-guide-result" data-guide-result aria-live="polite">${escapeHtml(copy.result(links.length))}</p>
+    <section class="intl-hub-start" aria-labelledby="intl-hub-start" data-guide-start>
       <div class="intl-hub-section-heading">
         <div><h2 id="intl-hub-start">${escapeHtml(copy.start)}</h2><p>${escapeHtml(copy.startLead)}</p></div>
       </div>
@@ -133,19 +141,12 @@ function renderHubBody(localeKey, links) {
     </section>
     <section class="intl-hub-browser" aria-labelledby="intl-hub-browse">
       <div class="intl-hub-section-heading"><h2 id="intl-hub-browse">${escapeHtml(copy.browse)}</h2></div>
-      <div class="intl-guide-controls" data-intl-guide-controls>
-        <label for="intl-guide-search">${escapeHtml(copy.searchLabel)}</label>
-        <input id="intl-guide-search" type="search" autocomplete="off" placeholder="${escapeHtml(copy.searchPlaceholder)}" data-guide-search>
-        <div class="intl-guide-filters" role="group" aria-label="${escapeHtml(copy.browse)}">
-          ${filterButtons}
-        </div>
-      </div>
-      <p class="intl-guide-result" data-guide-result aria-live="polite">${escapeHtml(copy.result(links.length))}</p>
       <div class="intl-guide-grid" data-guide-grid data-result-template="${escapeHtml(copy.result('{count}'))}">
         ${links.map(link => renderCard(link, labels)).join('\n        ')}
       </div>
       <p class="intl-guide-empty" data-guide-empty hidden>${escapeHtml(copy.empty)}</p>
-    </section>`;
+    </section>
+    <div data-intl-reading-library-slot></div>`;
 }
 
 function synchronizeHubFile(rootDir, localeKey) {
