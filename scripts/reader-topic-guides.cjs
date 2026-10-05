@@ -65,7 +65,7 @@ function syncTopicGuides(root) {
   if (!html.includes('class="search-input-wrap"')) html = html.replace(/(<input\b[^>]*id="search-input"[^>]*>)/, '<div class="search-input-wrap">$1<span class="search-example" aria-hidden="true">' + searchExample + '</span></div>');
   html = html.replace(/(<span class="search-example" aria-hidden="true">)[^<]*/, '$1' + searchExample);
   html = html.replace(/<!-- reader-questions:start -->[\s\S]*?<!-- reader-questions:end -->\s*/g, '');
-  const questions = '<!-- reader-questions:start --><nav class="reader-question-links" aria-label="気になることから読む"><a href="/latest/#next-campaign-title" data-reader-question="current_benefits">次の増量はいつ？</a><a href="/articles/2025-12-25-best-use.html" data-reader-question="use_points">お得な交換先は？</a></nav><!-- reader-questions:end -->\n';
+  const questions = '<!-- reader-questions:start --><nav class="reader-question-links" aria-label="気になることから読む"><a href="/latest/#next-campaign-title" data-reader-question="current_benefits">次の増量はいつ？</a><a href="/articles/2025-12-25-best-use.html" data-reader-question="use_points">お得な交換先は？</a><a href="/articles/2026-07-31-google-play-quests.html#article-section-9" data-reader-question="troubleshooting">クエストが反映されない</a></nav><!-- reader-questions:end -->\n';
   html = html.replace(/(<details\b[^>]*class="[^"]*article-filter-panel)/, questions + '$1');
   fs.writeFileSync(file, html);
   // 記事の一覧件数とページ送りは保ち、案内・開催情報は別の検索候補として渡す。
