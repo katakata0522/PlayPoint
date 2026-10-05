@@ -34,8 +34,11 @@ test('月別アーカイブを既存の上限で追随し、確定待ちに手�
 test('既存週次P1からPortfolioを更新し、失敗も実行エラーとして伝える',()=>{
   const c=runtime();vm.runInContext(fs.readFileSync(path.join(__dirname,'../scripts/playpoint-analytics-p1p2.gs'),'utf8'),c);
   c.playPointP12GetSpreadsheet_=()=>({});c.playPointP12RunStage_=stage=>({stage,status:'OK'});c.playPointP12Log_=()=>{};
+  c.capturePlayPointReaderOutcomes=()=>({state:'OK'});
   let calls=0;c.refreshPlayPointArticlePortfolio=()=>{calls++;return {rows:241};};assert.equal(c.capturePlayPointAnalyticsP1P2().at(-1).stage,'PORTFOLIO');assert.equal(calls,1);
   c.refreshPlayPointArticlePortfolio=()=>{throw Error('inventory unavailable');};assert.throws(()=>c.capturePlayPointAnalyticsP1P2(),/PORTFOLIO=.*inventory unavailable/);
+  c.refreshPlayPointArticlePortfolio=()=>({rows:241});c.capturePlayPointReaderOutcomes=()=>{throw Error('reader source unavailable');};
+  assert.throws(()=>c.capturePlayPointAnalyticsP1P2(),/READER_OUTCOMES=.*reader source unavailable/);
 });
 
 test('完了カーソルでも実確認表が欠けた場合は再検証する',()=>{const {c,props}=auditRuntime();props.set(c.PLAYPOINT_MAINTENANCE.checkpoint,JSON.stringify({start:'2025-10-05',end:'2026-10-04',nextEnd:'2025-10-04',coveredDays:365}));const r=c.playPointPageHistoryAuditChunk_();assert.equal(r.complete,false);assert.equal(r.coveredDays,14);});
