@@ -89,7 +89,12 @@
     async function loadAdsense() {
         if (adsLoaded) return;
         try {
-            await loadScript(ADSENSE_SCRIPT_SRC, { crossorigin: 'anonymous' });
+            const attrs = { crossorigin: 'anonymous' };
+            // 対象記事ではGoogle公式の設定で大型アンカーの展開を抑える。
+            if (document.querySelector('meta[name="playpoint:anchor-ads"]')?.content === 'collapsed-bottom') {
+                attrs['data-overlays'] = 'collapsed-bottom';
+            }
+            await loadScript(ADSENSE_SCRIPT_SRC, attrs);
             adsLoaded = true;
         } catch (error) {
             console.error('AdSense load failed:', error);
