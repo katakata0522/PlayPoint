@@ -70,3 +70,18 @@ test('実APIの重複ヘッダーと短い値配列で実測人数を0に上書�
   table.rows[0].metricValues=[];
   assert.throws(()=>c.playPointReaderOrderedFunnel_('p',{}),/欠落・競合/);
 });
+test('旧期間欄の補足文を移行でき、より新しい集計は上書きしない',()=>{
+  function run(previous) {
+    const c=runtime({withScriptLock_:fn=>fn(),playPointP12NowText_:()=> '2026-10-05 20:00:00',
+      resolveAndRememberSpreadsheet_:()=>({getSheetByName:()=>({getRange:()=>({getValue:()=> '2026-09-03 ～ 2026-10-02'})})}),
+      playPointP12GetGa4PropertyId_:()=> 'p',playPointP12GoogleJson_:()=>({}),
+      playPointP12EnsureSheet_:()=>({getRange:()=>({getValue:()=>previous}),getLastRow:()=>0}),
+      playPointP12EnsureRows_:()=>{throw Error('write reached');}});
+    c.playPointMaintenanceLoadInventory_=()=>[];
+    c.playPointReaderReport_=c.playPointReaderCohorts_=c.playPointReaderOrderedFunnel_=()=>({rows:[]});
+    return ()=>c.playPointCaptureReaderOutcomes_();
+  }
+  assert.throws(run('2026-09-03 ～ 2026-10-02。人数の補足'),/write reached/);
+  assert.throws(run('2026-09-03 ～ 2026-10-02'),/write reached/);
+  assert.throws(run('2026-09-04 ～ 2026-10-03。人数の補足'),/より新しい/);
+});
