@@ -24,8 +24,8 @@ test('Portfolioの取得失敗を独立した監視状態へ記録する',()=>{l
 function auditRuntime(fail = false) {
   const props = new Map(); let stored = [['日付']], writes=0;
   const coverage = {getLastRow:()=>stored.length,getDataRange:()=>({getValues:()=>stored.map(row=>row.slice())}),getRange:()=>({setNumberFormat:()=>{}})};
-  const c=runtime({PropertiesService:{getScriptProperties:()=>({getProperty:k=>props.get(k),setProperty:(k,v)=>{props.set(k,v);},deleteProperty:k=>props.delete(k)})},resolveAndRememberSpreadsheet_:()=>({getSheetByName:()=>coverage}),formatDateSafe_:v=>v instanceof Date?v.toISOString().slice(0,10):String(v||''),relativeDateString_:n=>new Date(Date.UTC(2026,9,5+n)).toISOString().slice(0,10),shiftDateString_:(d,n)=>new Date(Date.parse(d+'T00:00:00Z')+n*86400000).toISOString().slice(0,10),dateArrayInRange_:(a,b)=>{const r=[];for(let x=a;x<=b;x=new Date(Date.parse(x+'T00:00:00Z')+86400000).toISOString().slice(0,10))r.push(x);return r;},recordHealthAttempt_:()=>{},recordHealthSuccess_:()=>{},recordHealthFailure_:()=>{},updateHealthSheet_:()=>{},fetchGa4PageDailyRows_:()=>[],upsertPageDailyHistory_:()=>{writes++;if(fail)throw Error('write failed');},getOrCreateSheet_:()=>coverage,setColumnWidths_:()=>{},replaceSheet_:(_s,h,rows)=>{c.coverageRows=rows;stored=[h,...rows.map(row=>[new Date(row[0]+'T00:00:00Z'),...row.slice(1)])];},invalidateArchivedMonthsForRange_:()=>{},currentTimestamp_:()=> '2026-10-05 14:00:00',COLORS:{BLUE:'#123'},DATA_STATE:{RECONCILED:'RECONCILED'},SCRIPT_KEYS:{PAGE_HISTORY_BACKFILL_NEXT_END_DATE:'oldCursor',PAGE_HISTORY_BACKFILL_COMPLETED_AT:'oldComplete'}});
-  return {c,props,writes:()=>writes};
+  const c=runtime({SpreadsheetApp:{flush:()=>{}},PropertiesService:{getScriptProperties:()=>({getProperty:k=>props.get(k),setProperty:(k,v)=>{props.set(k,v);},deleteProperty:k=>props.delete(k)})},resolveAndRememberSpreadsheet_:()=>({getSheetByName:()=>coverage}),formatDateSafe_:v=>v instanceof Date?v.toISOString().slice(0,10):String(v||''),relativeDateString_:n=>new Date(Date.UTC(2026,9,5+n)).toISOString().slice(0,10),shiftDateString_:(d,n)=>new Date(Date.parse(d+'T00:00:00Z')+n*86400000).toISOString().slice(0,10),dateArrayInRange_:(a,b)=>{const r=[];for(let x=a;x<=b;x=new Date(Date.parse(x+'T00:00:00Z')+86400000).toISOString().slice(0,10))r.push(x);return r;},recordHealthAttempt_:()=>{},recordHealthSuccess_:()=>{},recordHealthFailure_:()=>{},updateHealthSheet_:()=>{},fetchGa4PageDailyRows_:()=>[],upsertPageDailyHistory_:()=>{writes++;if(fail)throw Error('write failed');},getOrCreateSheet_:()=>coverage,setColumnWidths_:()=>{},replaceSheet_:(_s,h,rows)=>{c.coverageRows=rows;stored=[h,...rows.map(row=>[new Date(row[0]+'T00:00:00Z'),...row.slice(1)])];},invalidateArchivedMonthsForRange_:()=>{},currentTimestamp_:()=> '2026-10-05 14:00:00',COLORS:{BLUE:'#123'},DATA_STATE:{RECONCILED:'RECONCILED'},SCRIPT_KEYS:{PAGE_HISTORY_BACKFILL_NEXT_END_DATE:'oldCursor',PAGE_HISTORY_BACKFILL_COMPLETED_AT:'oldComplete'}});
+  return {c,props,writes:()=>writes,setCoverage:rows=>{stored=rows;}};
 }
 test('空のAPI応答も取得範囲として記録するがPV=0と断定しない',()=>{const {c,props}=auditRuntime();const r=c.playPointPageHistoryAuditChunk_();assert.equal(r.coveredDays,14);assert.equal(c.coverageRows.length,14);assert.equal(c.coverageRows[0][2],'API_NO_ROWS');assert.equal(JSON.parse(props.get(c.PLAYPOINT_MAINTENANCE.checkpoint)).nextEnd,'2026-09-20');});
 test('書込失敗時は履歴カーソルを進めない',()=>{const {c,props}=auditRuntime(true);assert.throws(()=>c.playPointPageHistoryAuditChunk_(),/write failed/);assert.equal(JSON.parse(props.get(c.PLAYPOINT_MAINTENANCE.checkpoint)).nextEnd,'2026-10-04');assert.equal(props.has('oldComplete'),false);});
@@ -39,3 +39,63 @@ test('既存週次P1からPortfolioを更新し、失敗も実行エラーとし
 });
 
 test('完了カーソルでも実確認表が欠けた場合は再検証する',()=>{const {c,props}=auditRuntime();props.set(c.PLAYPOINT_MAINTENANCE.checkpoint,JSON.stringify({start:'2025-10-05',end:'2026-10-04',nextEnd:'2025-10-04',coveredDays:365}));const r=c.playPointPageHistoryAuditChunk_();assert.equal(r.complete,false);assert.equal(r.coveredDays,14);});
+
+test('検索索引にだけ残る日本語記事と継承プロパティのroleを拒否する', () => {
+  const c = runtime(), a = indexes();
+  a.ja.articles.push({path:'/articles/orphan.html',role:'reference'});
+  assert.throws(() => c.playPointMaintenanceInventory_([{file:'../articles/a.html'}],a), /一致/);
+  const b = indexes(); b.en.articles[0].role = 'constructor';
+  assert.throws(() => c.playPointMaintenanceInventory_([{file:'../articles/a.html'}],b), /役割/);
+});
+
+test('未来・逆転・存在しない日付・30日以外のP1窓を拒否する', () => {
+  const c = runtime();
+  for (const period of ['2026-09-03 ～ 2026-10-20','2026-10-02 ～ 2026-09-03','2026-02-31 ～ 2026-03-29','2026-09-04 ～ 2026-10-02']) {
+    const data = p1(); data[1][1] = period;
+    assert.throws(() => c.playPointMaintenanceBuildPortfolio_([item],old(),data,'2026-10-05 14:00 JST'), /対象期間/);
+  }
+});
+
+test('未計測の新規・未レビュー行はUNASSESSEDとし、旧編集判断を保持する', () => {
+  const c = runtime(), absent = {...item,path:'/articles/absent.html'};
+  const first = c.playPointMaintenanceBuildPortfolio_([item,absent],old(),p1(),'2026-10-05 14:00 JST');
+  assert.equal(first.grid[12][2], 'UNASSESSED');
+  first.grid[12][2] = 'PROVE';
+  const second = c.playPointMaintenanceBuildPortfolio_([item,absent],first.grid,p1(),'2026-10-05 15:00 JST');
+  assert.equal(second.grid[12][2], 'UNASSESSED');
+  assert.equal(second.grid[11][2], 'GROWTH');
+  assert.match(second.grid[4][2], /記録あり 1件/);
+  assert.match(second.grid[9][1], /NO_MATCH 1/);
+});
+
+test('壊れた履歴カーソルはAPI取得前に監視へ失敗を残す', () => {
+  for (const raw of ['{broken', JSON.stringify({start:'2025-10-05',end:'2026-10-04',nextEnd:'2026-02-31',coveredDays:14}), JSON.stringify({start:'2025-10-05',end:'2026-10-04',nextEnd:'2026-10-04',coveredDays:'0'})]) {
+    const {c,props,writes} = auditRuntime(); let failures = 0;
+    props.set(c.PLAYPOINT_MAINTENANCE.checkpoint,raw); c.recordHealthFailure_ = () => failures++;
+    assert.throws(() => c.playPointPageHistoryAuditChunk_());
+    assert.equal(failures,1); assert.equal(writes(),0);
+  }
+});
+
+test('日付があっても失敗応答・空の行数・対象外期間を取得済みと数えない', () => {
+  const c = runtime(), row = ['2026-10-04',0,'API_NO_ROWS','2026-09-21 ～ 2026-10-04','2026-10-05 14:00:00'];
+  assert.equal(Object.keys(c.playPointCoverageMap_([[],row])).length,1);
+  for (const invalid of [[...row.slice(0,2),'ERROR',...row.slice(3)], [row[0],'',...row.slice(2)], [row[0],0,'API_NO_ROWS','2026-09-01 ～ 2026-09-14',row[4]]]) {
+    assert.equal(Object.keys(c.playPointCoverageMap_([[],invalid])).length,0);
+  }
+});
+
+test('中断中の取得範囲が欠けても続きへ進めず同じ窓を再検証する', () => {
+  const {c,props,setCoverage} = auditRuntime(); c.playPointPageHistoryAuditChunk_();
+  setCoverage([['日付']]);
+  const next = c.playPointPageHistoryAuditChunk_();
+  assert.equal(next.coveredDays,14);
+  assert.equal(JSON.parse(props.get(c.PLAYPOINT_MAINTENANCE.checkpoint)).nextEnd,'2026-09-20');
+});
+
+test('保存のflush失敗時も再開カーソルを進めない', () => {
+  const {c,props} = auditRuntime(); c.SpreadsheetApp.flush = () => {throw Error('flush failed');};
+  assert.throws(() => c.playPointPageHistoryAuditChunk_(), /flush failed/);
+  assert.equal(JSON.parse(props.get(c.PLAYPOINT_MAINTENANCE.checkpoint)).coveredDays,0);
+  assert.equal(props.has('oldComplete'),false);
+});

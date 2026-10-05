@@ -731,6 +731,54 @@ test('Extension stages and history writes reuse the core lock and preserve monit
   assert.deepEqual(events.slice(-2),['lock','unlock']);
 });
 
+test('URL Inspection releases the common lock during network calls and locks only sheet access', () => {
+  const {context} = loadP12Runtime(); const writes = stubAnalyticsSheet(context);
+  let depth = 0, otherUpdated = false;
+  context.withScriptLock_ = fn => { assert.equal(depth,0); depth++; try {return fn();} finally {depth--;} };
+  context.playPointP12BuildInspectionPriority_ = () => {assert.equal(depth,1);return [{url:'https://playpoint-sim.com/',source:'fixed'}];};
+  context.playPointP12InspectUrl_ = () => {
+    assert.equal(depth,0);
+    context.withScriptLock_(() => {otherUpdated = true;});
+    return {inspectionResult:{indexStatusResult:{verdict:'PASS'}}};
+  };
+  context.playPointP12StyleUrlInspectionSheet_ = () => assert.equal(depth,1);
+  assert.equal(context.playPointP12CaptureUrlInspection_({}).inspected,1);
+  assert.equal(otherUpdated,true); assert.ok(writes.length > 0); assert.equal(depth,0);
+});
+
+test('URL Inspection lease rejects overlap, recovers expiry, and releases on failure', () => {
+  const {context} = loadP12Runtime(); const props = new Map(); let depth = 0;
+  context.PropertiesService = {getScriptProperties:()=>({getProperty:key=>props.get(key),setProperty:(key,value)=>props.set(key,value),deleteProperty:key=>props.delete(key)})};
+  context.withScriptLock_ = fn => {assert.equal(depth,0);depth++;try{return fn();}finally{depth--;}};
+  context.playPointP12Log_ = () => assert.equal(depth,1);
+  context.playPointP12TryHealth_ = (_stage,fn) => fn();
+  for (const name of ['playPointP12HealthStart_','playPointP12HealthSuccess_','playPointP12HealthError_']) context[name] = () => assert.equal(depth,1);
+  const result = context.playPointP12RunStage_('URL_INSPECTION',()=>{
+    assert.equal(depth,0);
+    assert.throws(()=>context.playPointP12RunStage_('URL_INSPECTION',()=>({errors:0})), /別の実行/);
+    return {errors:0};
+  });
+  assert.equal(result.status,'OK'); assert.equal(props.size,0);
+  props.set('PLAYPOINT_P12_INSPECTION_LEASE',JSON.stringify({until:Date.now()-1}));
+  const failed = context.playPointP12RunStage_('URL_INSPECTION',()=>{throw Error('inspection failed');});
+  assert.equal(failed.status,'ERROR'); assert.equal(props.size,0); assert.equal(depth,0);
+  props.set('PLAYPOINT_P12_INSPECTION_LEASE','{broken');
+  assert.equal(context.playPointP12RunStage_('URL_INSPECTION',()=>({errors:0})).status,'OK');
+  assert.equal(props.size,0);
+});
+
+test('All URL Inspection failures or empty responses preserve the previous inspection report', () => {
+  for (const empty of [false,true]) {
+    const {context} = loadP12Runtime();
+    context.playPointP12NowText_ = () => '2026-10-05 14:00:00';
+    context.playPointP12GetSiteUrl_ = () => 'sc-domain:playpoint-sim.com';
+    context.playPointP12BuildInspectionPriority_ = () => [{url:'https://playpoint-sim.com/',source:'fixed'}];
+    context.playPointP12InspectUrl_ = () => {if (empty) return {};throw Error('permission failed');};
+    context.playPointP12EnsureSheet_ = () => {throw Error('must not replace the old report');};
+    assert.throws(()=>context.playPointP12CaptureUrlInspection_({}), /全対象.*前回/);
+  }
+});
+
 test('All-source failures preserve previous analytical reports before any sheet clear', () => {
   const {context}=loadP12Runtime();
   context.playPointP12GetGa4PropertyId_=()=> 'id';context.playPointP12GetSiteUrl_=()=> 'site';
