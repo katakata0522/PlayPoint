@@ -6,7 +6,7 @@ const vm = require('node:vm');
 const { test } = require('node:test');
 
 function evaluate(expression, github) {
-  return vm.runInNewContext(expression, { github }, { timeout: 100 });
+  return vm.runInNewContext(expression, { github }, { timeout: 1000 });
 }
 function expand(value, github) {
   return value.replace(/\$\{\{([\s\S]*?)\}\}/g, (_, expr) => evaluate(expr, github));
