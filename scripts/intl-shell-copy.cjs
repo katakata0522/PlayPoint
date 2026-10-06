@@ -15,6 +15,7 @@ const COPY = Object.freeze({
     authorTitle: 'Who runs PlayPoint?', authorRole: 'PlayPoint operator & editor',
     authorTrust: 'Google first-party sources are checked first, and calculation examples are verified against this site before publication.',
     authorCta: 'About Katakata', labCta: 'KatakataLab ↗', browseTitle: 'Browse guides', reading: 'Reading now',
+    searchTitle: 'Find a guide', searchLabel: 'Search guides', searchButton: 'Search', allGuides: 'See all guides', countUnit: 'guides', themeLabel: 'Switch theme', brandCaption: 'Google Play Points Guide',
     hub: Object.freeze({ kicker: 'Play Points guide', title: 'Use the guide, then calculate', body: 'Browse the topic you need first, then use the calculator with the conditions shown for your own account.', cta: 'Open calculator', target: 'calculator' }),
     role: Object.freeze({
       calculator_bridge: Object.freeze({ kicker: 'Next step', title: 'Calculate with your own numbers', body: 'Turn the guide into a personal estimate using your remaining points and the final earn rate shown in Google Play.', cta: 'Open calculator', target: 'calculator' }),
@@ -36,6 +37,7 @@ const COPY = Object.freeze({
     authorTitle: 'PlayPoint 운영자', authorRole: 'PlayPoint 운영·편집',
     authorTrust: 'Google 공식 1차 정보를 먼저 확인하고, 계산 예시는 사이트 계산 결과와 대조한 뒤 공개합니다.',
     authorCta: 'Katakata 소개', labCta: 'KatakataLab ↗', browseTitle: '가이드 찾아보기', reading: '읽는 중',
+    searchTitle: '가이드 찾기', searchLabel: '가이드 검색', searchButton: '검색', allGuides: '모든 가이드 보기', countUnit: '개', themeLabel: '테마 전환', brandCaption: 'Google Play Points 가이드',
     hub: Object.freeze({ kicker: 'Play Points 가이드', title: '가이드 확인 후 직접 계산', body: '먼저 필요한 주제를 확인한 뒤, 실제 계정에 표시된 조건으로 계산기를 사용하세요.', cta: '계산기 열기', target: 'calculator' }),
     role: Object.freeze({
       calculator_bridge: Object.freeze({ kicker: '다음 단계', title: '내 조건으로 직접 계산하기', body: '남은 포인트와 Google Play에 표시된 최종 적립률을 넣어 개인별 예상치로 바꿔 보세요.', cta: '계산기 열기', target: 'calculator' }),
@@ -57,6 +59,7 @@ const COPY = Object.freeze({
     authorTitle: '誰在維護 PlayPoint？', authorRole: 'PlayPoint 營運與編輯',
     authorTrust: '優先核對 Google 官方第一手資訊，計算範例也會和本站計算結果互相確認後再發布。',
     authorCta: '關於 Katakata', labCta: 'KatakataLab ↗', browseTitle: '瀏覽指南', reading: '正在閱讀',
+    searchTitle: '尋找指南', searchLabel: '搜尋指南', searchButton: '搜尋', allGuides: '查看所有指南', countUnit: '篇', themeLabel: '切換主題', brandCaption: 'Google Play Points 指南',
     hub: Object.freeze({ kicker: 'Play Points 指南', title: '先看指南，再用自己的條件計算', body: '先找到最接近問題的主題，再依實際帳號顯示的條件使用計算機。', cta: '開啟計算機', target: 'calculator' }),
     role: Object.freeze({
       calculator_bridge: Object.freeze({ kicker: '下一步', title: '換成自己的條件計算', body: '輸入尚缺點數與 Google Play 顯示的最終積點率，把文章資訊轉成個人估算。', cta: '開啟計算機', target: 'calculator' }),

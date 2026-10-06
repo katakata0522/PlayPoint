@@ -245,11 +245,11 @@ async function inspectIntlReading(browser, baseUrl) {
       const title = await page.locator('h1').evaluate(el => parseFloat(getComputedStyle(el).fontSize));
       const body = await page.locator('.content').evaluate(el => parseFloat(getComputedStyle(el).fontSize));
       assert(title >= body * 1.5, item.locale + ': article title must be visually distinct from body copy');
-      const headingFrame = await page.locator('.content h2').first().evaluate(el => {
+      const headingFrame = await page.locator('.content h2:not(.intl-article-toc h2)').first().evaluate(el => {
         const css = getComputedStyle(el);
         return { border: parseFloat(css.borderLeftWidth), padding: parseFloat(css.paddingLeft), radius: parseFloat(css.borderRadius) };
       });
-      assert(headingFrame.border === 0 && headingFrame.padding === 0 && headingFrame.radius === 0, item.locale + ': nested heading frame must be removed');
+      assert(headingFrame.border >= 4 && headingFrame.padding >= 10 && headingFrame.radius >= 6, item.locale + ': heading frame must match editorial design');
       await save.click();
       assert(await save.getAttribute('aria-pressed') === 'true', item.locale + ': saving failed');
       await page.locator('.reading-tools a').click();

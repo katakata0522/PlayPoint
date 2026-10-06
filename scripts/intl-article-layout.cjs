@@ -37,10 +37,10 @@ flex: 1;
 min-width: 0;
 max-width: none;
 margin: 0;
-background: var(--cocoon-main-bg);
-border: 0;
-border-radius: 0;
-padding: 32px 36px;
+background: var(--reading-surface, #ffffff);
+border: 1px solid var(--reading-border, #d7e3df);
+border-radius: 12px;
+padding: 28px 32px;
 box-shadow: none;
 overflow: visible;
 }
@@ -54,13 +54,13 @@ text-align: left;
 .intl-layout-container .hero-badge {
 display: inline-block;
 border: 0;
-color: var(--reading-muted, #64748b);
-font-size: 11px;
+color: var(--reading-brand, #126458);
+font-size: 12px;
 font-weight: 700;
-padding: 0;
-border-radius: 0;
+padding: 4px 9px;
+border-radius: 4px;
 margin-bottom: 8px;
-background: transparent;
+background: var(--reading-soft, #edf4f1);
 letter-spacing: normal;
 }
 
@@ -91,41 +91,69 @@ padding: 0;
 max-width: 72ch;
 }
 
-/* 共通記事CSSの強調装飾は、この読み物用テンプレートで簡素化する。 */
 body .intl-layout-container .hero .hero-badge {
-padding: 0;
+padding: 4px 9px;
 border: 0;
-border-radius: 0;
-background: transparent;
-color: var(--reading-muted, #526176);
+border-radius: 4px;
+background: var(--reading-soft, #edf4f1);
+color: var(--reading-brand, #126458);
 }
-body .intl-layout-container .main-card .content :is(h2, h3) {
+body .intl-layout-container .main-card .content :is(h2) {
 display: block;
-background: none !important;
-color: var(--reading-text, #233044) !important;
-border: 0 !important;
-border-radius: 0 !important;
-box-shadow: none !important;
-padding: 0 !important;
-margin: 38px 0 16px !important;
-line-height: 1.5 !important;
+background: linear-gradient(90deg, var(--article-accent-soft, var(--reading-note-bg, #f0f7fa)) 0%, var(--reading-surface, #ffffff) 100%);
+color: var(--article-ds-text, #193438);
+border: 1px solid var(--article-ds-border, #d7e3df);
+border-left: 5px solid var(--article-accent, #164e63);
+border-radius: 8px;
+box-shadow: none;
+padding: 11px 14px;
+margin: 38px 0 18px;
+font-size: 1.25rem;
+line-height: 1.5;
+text-wrap: balance;
+scroll-margin-top: 24px;
 }
-body .intl-layout-container .main-card .content h2 { font-size: 1.4rem !important; }
-body .intl-layout-container .main-card .content h3 { font-size: 1.1rem !important; }
-body .intl-layout-container .content > :is(.answer-box, .editorial-answer, .summary-box) {
-background: var(--reading-note-bg, #eef5fb) !important;
-border: 0 !important;
-border-left: 3px solid var(--reading-brand-text, #164e63) !important;
-border-radius: 0 !important;
-padding: 20px 22px !important;
-margin: 20px 0 28px !important;
-box-shadow: none !important;
+body .intl-layout-container .main-card .content :is(h3) {
+display: block;
+background: transparent;
+color: var(--article-ds-text, #193438);
+border: 0;
+border-left: 3px solid var(--article-accent, #164e63);
+border-radius: 0;
+box-shadow: none;
+padding: 3px 0 3px 12px;
+margin: 28px 0 14px;
+font-size: 1.1rem;
+line-height: 1.5;
+}
+body .intl-layout-container .content > :is(.answer-box, .editorial-answer) {
+position: relative;
+background: linear-gradient(135deg, var(--article-accent-soft, var(--reading-note-bg, #f0f7fa)) 0%, var(--reading-surface, #ffffff) 82%);
+border: 1px solid var(--article-ds-border, #d7e3df);
+border-left: 5px solid var(--article-accent, #164e63);
+border-radius: 10px;
+padding: 18px 20px 18px 54px;
+margin: 20px 0 28px;
+color: var(--reading-text, #1f2937);
+box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
 font-size: 1rem;
+text-align: left;
 }
-body .intl-layout-container .content > :is(.answer-box, .editorial-answer)::before { content: none !important; }
+body .intl-layout-container .content > :is(.answer-box, .editorial-answer)::before {
+content: "💡";
+position: absolute;
+left: 18px;
+top: 18px;
+font-size: 24px;
+line-height: 1;
+}
 body .intl-layout-container .content > :is(.answer-box, .editorial-answer, .summary-box) > h2 {
-margin: 0 0 12px !important;
-font-size: 1.1rem !important;
+margin: 0 0 12px;
+font-size: 1.15rem;
+background: none;
+border: 0;
+padding: 0;
+color: var(--reading-brand, #164e63);
 }
 body .intl-layout-container .content > .intro {
 border: 0 !important;
@@ -335,13 +363,12 @@ min-height: 60px;
 @media (max-width: 860px) {
 .intl-layout-container .main-card {
 width: 100%;
-padding: 24px 16px;
-border-radius: 0;
-border-left: none;
-border-right: none;
+padding: 20px 16px;
+border-radius: 10px;
 }
-body .intl-layout-container .content > :is(.answer-box, .editorial-answer, .summary-box) { padding: 16px !important; }
-body .intl-layout-container .content h2 { font-size: 1.25rem !important; }
+body .intl-layout-container .content > :is(.answer-box, .editorial-answer) { padding: 16px 16px 16px 44px; }
+body .intl-layout-container .content > :is(.answer-box, .editorial-answer)::before { left: 12px; top: 16px; font-size: 20px; }
+body .intl-layout-container .content h2 { font-size: 1.25rem; }
 body .intl-layout-container .hero h1 { font-size: 28px; }
 }
 `;
