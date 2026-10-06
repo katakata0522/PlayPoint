@@ -11,7 +11,7 @@ background:var(--reading-bg);
 html[data-reading-theme="dark"] {
 --reading-bg:#111923; --reading-surface:#1c2836; --reading-soft:#253446;
 --reading-text:#ebf0f7; --reading-muted:#b4c2d3; --reading-border:#52647a;
---reading-brand-text:#99d9e7; --reading-link:#9bc6ff;
+--reading-brand:#99d9e7; --reading-brand-text:#99d9e7; --reading-link:#9bc6ff;
 --reading-action:#a0ddb6; --reading-on-action:#132e1d;
 --reading-note-bg:#203549; --reading-warning-bg:#3c3120; --reading-warning:#f4ce8d;
 --reading-selected:#9bc6ff; --reading-on-selected:#112840;

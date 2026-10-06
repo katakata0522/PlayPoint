@@ -41,7 +41,7 @@ grid-template-columns: 30px 62px minmax(0, 1fr);
 gap: 8px; align-items: center; padding: 4px 0 11px;
 }
 :is(.ja-article-sidebar, .intl-article-sidebar) .sidebar-popular-item:is(.sidebar-popular-item--featured, :has(.sidebar-popular-thumb)) .sidebar-popular-rank {
-align-self: start; padding-top: 2px; color: var(--reading-brand, #176773); font-size: 18px;
+align-self: start; padding-top: 2px; color: var(--reading-link, #176773); font-size: 18px;
 }
 :is(.ja-article-sidebar, .intl-article-sidebar) .sidebar-popular-thumb {
 width: 62px; aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid var(--reading-border, #dbe2ea);
