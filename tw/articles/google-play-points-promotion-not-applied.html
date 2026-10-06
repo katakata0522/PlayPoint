@@ -16,8 +16,8 @@
     <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-promotion-not-applied.html">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/articles/article-shared.css?v=86f4c481d9">
-  <link rel="stylesheet" href="/articles/intl-article.css?v=c5333418c1">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=2183521200">
+  <link rel="stylesheet" href="/articles/intl-article.css?v=77a15bb5e3">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=54e34d3fe2">
 <meta property="og:type" content="article">
     <meta property="og:site_name" content="Google Play Points 計算器">
     <meta property="og:title" content="Google Play Points 活動未套用確認">
@@ -90,12 +90,15 @@
   ]
 }
     </script>
+<link rel="stylesheet" href="/articles/japanese-shell.css?v=d181c50417">
+<link rel="stylesheet" href="/articles/guide-navigation.css?v=0890758075">
+<link rel="stylesheet" href="/articles/guide-editorial.css?v=1a63e35551">
 <script type="application/ld+json" data-intl-breadcrumbs>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"計算機","item":"https://playpoint-sim.com/tw/"},{"@type":"ListItem","position":2,"name":"指南","item":"https://playpoint-sim.com/tw/articles/"},{"@type":"ListItem","position":3,"name":"問題排解","item":"https://playpoint-sim.com/tw/articles/#intl-hub-trouble"},{"@type":"ListItem","position":4,"name":"Google Play Points 活動未套用確認","item":"https://playpoint-sim.com/tw/articles/google-play-points-promotion-not-applied.html"}]}</script>
 <meta name="playpoint:anchor-ads" content="collapsed-bottom">
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=879011fb4b">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=b47d85c57d">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -103,10 +106,10 @@
 <body>
 <!-- INTL_ARTICLE_CHROME_START -->
 <a class="skip-link" href="#main-content">跳到主要內容</a>
-<header class="site-header intl-article-site-header">
+<header class="site-header guide-header intl-article-site-header">
   <div class="site-header-inner">
-    <a class="site-logo" href="/tw/"><span class="site-logo-text">PlayPoint</span><span class="site-logo-description">Google Play Points 計算器</span></a>
-    <div class="site-header-tools">
+    <a class="site-logo" href="/tw/articles/"><span class="guide-brand-full"><span class="guide-wordmark">PlayPoint<span class="guide-brand-points" aria-hidden="true"><i></i><i></i><i></i></span></span><span class="guide-brand-caption">Google Play Points 指南</span></span><span class="guide-brand-short">PlayPoint<span>指南</span></span></a>
+    <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/tw/author/katakata.html">關於 Katakata</a>
     <details class="site-region-switcher">
       <summary aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
@@ -120,6 +123,7 @@
         <a href="/in/">印度</a>
       </div>
     </details>
+      <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="切換主題">☀️</button>
     </div>
   </div>
 </header>
@@ -127,7 +131,7 @@
   <div class="global-nav-inner">
     <a class="nav-item" href="/tw/"><span>計算機</span><span class="nav-sub">所需金額估算</span></a>
     <a class="nav-item" href="/tw/articles/"><span>指南</span><span class="nav-sub">Play Points 指南</span></a>
-    <a class="nav-item active" href="/tw/articles/#intl-hub-trouble"><span>問題排解</span><span class="nav-sub">未入帳與錯誤確認</span></a>
+    <a class="nav-item active" href="/tw/articles/#intl-hub-trouble" aria-current="page"><span>問題排解</span><span class="nav-sub">未入帳與錯誤確認</span></a>
     <a class="nav-item" href="/tw/articles/#intl-hub-earn"><span>積點與使用</span><span class="nav-sub">購買、優惠與兌換</span></a>
     <a class="nav-item" href="/tw/articles/#intl-hub-levels"><span>等級與回饋</span><span class="nav-sub">進度與每週福利</span></a>
     <a class="nav-item" href="/tw/articles/#intl-hub-account"><span>帳號與基本</span><span class="nav-sub">地區與帳號設定</span></a>
@@ -243,7 +247,26 @@
         <p class="small article-note-spacing">本頁是一般指南與計算機入口。請在 Google Play 官方說明與 App 畫面確認最新精確規則。</p>
     </footer>
 </main>
-<aside class="sidebar-column intl-article-sidebar" aria-label="文章側欄">
+<aside class="sidebar-column intl-article-sidebar" aria-label="文章側欄" data-article-role="troubleshooting" data-article-category="troubleshooting">
+  <section class="sidebar-widget sidebar-widget--search">
+    <h2 class="sidebar-widget-title">尋找指南</h2>
+    <div class="sidebar-widget-body">
+      <form class="sidebar-search-form" action="/tw/articles/" method="get" role="search">
+        <input class="sidebar-search-input" type="search" name="q" aria-label="搜尋指南">
+        <button class="sidebar-search-button" type="submit">搜尋</button>
+      </form>
+      <div class="sidebar-search-footer"><a class="sidebar-browse-link" href="/tw/articles/">查看所有指南</a></div>
+    </div>
+  </section>
+  <section class="sidebar-widget sidebar-widget--browse">
+    <h2 class="sidebar-widget-title">瀏覽指南</h2>
+    <div class="sidebar-widget-body sidebar-browse-grid"><ul class="sidebar-browse-list">
+      <li class="sidebar-browse-item"><a class="sidebar-browse-category" href="/tw/articles/#intl-hub-account"><span>帳號與基本</span><span class="sidebar-browse-count" aria-label="9篇">9</span></a></li>
+      <li class="sidebar-browse-item"><a class="sidebar-browse-category" href="/tw/articles/#intl-hub-earn"><span>積點與使用</span><span class="sidebar-browse-count" aria-label="32篇">32</span></a></li>
+      <li class="sidebar-browse-item"><a class="sidebar-browse-category" href="/tw/articles/#intl-hub-levels"><span>等級與回饋</span><span class="sidebar-browse-count" aria-label="6篇">6</span></a></li>
+      <li class="sidebar-browse-item is-current-topic"><a class="sidebar-browse-category" href="/tw/articles/#intl-hub-trouble"><span>問題排解</span><span class="sidebar-browse-count" aria-label="4篇">4</span></a></li>
+    </ul></div>
+  </section>
   <section class="sidebar-widget sidebar-widget--related" id="related-guides">
     <h2 class="sidebar-widget-title">和這篇一起看</h2>
     <div class="sidebar-widget-body"><ul class="sidebar-related-list">
@@ -251,6 +274,19 @@
       <li class="sidebar-related-item"><a class="sidebar-related-link" href="/tw/articles/google-play-points-not-showing.html">Google Play Points 沒有顯示時要確認什麼</a></li>
       <li class="sidebar-related-item"><a class="sidebar-related-link" href="/tw/articles/google-play-points-play-credit-not-working.html">Google Play 抵用金無法使用？先檢查這 5 項</a></li>
     </ul></div>
+  </section>
+  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="2026-09-02">
+    <h2 class="sidebar-widget-title">熱門指南</h2>
+    <div class="sidebar-widget-body">
+      <p class="sidebar-widget-note">依近期閱讀資料排序</p>
+      <ol class="sidebar-popular-list">
+        <li class="sidebar-popular-item"><span class="sidebar-popular-rank">01</span><div class="sidebar-popular-thumb"><img src="/ogp.png" alt="" loading="lazy" decoding="async"></div><div class="sidebar-popular-feature-copy"><a class="sidebar-popular-link" href="/tw/articles/google-play-points-coupon-not-applied.html">優惠券沒有套用時</a></div></li>
+        <li class="sidebar-popular-item"><span class="sidebar-popular-rank">02</span><div><a class="sidebar-popular-link" href="/tw/articles/google-play-points-platinum-diamond-cost.html">白金／鑽石需要多少消費</a></div></li>
+        <li class="sidebar-popular-item"><span class="sidebar-popular-rank">03</span><div><a class="sidebar-popular-link" href="/tw/articles/google-play-points-levels.html">台灣 Play Points 等級</a></div></li>
+        <li class="sidebar-popular-item"><span class="sidebar-popular-rank">04</span><div><a class="sidebar-popular-link" href="/tw/articles/google-play-points-weekly-reward.html">每週回饋</a></div></li>
+        <li class="sidebar-popular-item"><span class="sidebar-popular-rank">05</span><div><a class="sidebar-popular-link" href="/tw/articles/google-play-quests.html">Google Play Quests</a></div></li>
+      </ol>
+    </div>
   </section>
   <section class="sidebar-widget sidebar-widget--next sidebar-widget--role-troubleshooting">
     <h2 class="sidebar-widget-title">問題排解</h2>
@@ -260,39 +296,16 @@
       <a class="sidebar-next-link" href="/tw/articles/#intl-hub-trouble">查看問題排解</a>
     </div>
   </section>
-  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="2026-09-02">
-    <h2 class="sidebar-widget-title">熱門指南</h2>
-    <div class="sidebar-widget-body">
-      <p class="sidebar-widget-note">依近期閱讀資料排序</p>
-      <ol class="sidebar-popular-list">
-        <li class="sidebar-popular-item"><span class="sidebar-popular-rank">01</span><a class="sidebar-popular-link" href="/tw/articles/google-play-points-coupon-not-applied.html">優惠券沒有套用時</a></li>
-        <li class="sidebar-popular-item"><span class="sidebar-popular-rank">02</span><a class="sidebar-popular-link" href="/tw/articles/google-play-points-platinum-diamond-cost.html">白金／鑽石需要多少消費</a></li>
-        <li class="sidebar-popular-item"><span class="sidebar-popular-rank">03</span><a class="sidebar-popular-link" href="/tw/articles/google-play-points-levels.html">台灣 Play Points 等級</a></li>
-        <li class="sidebar-popular-item"><span class="sidebar-popular-rank">04</span><a class="sidebar-popular-link" href="/tw/articles/google-play-points-weekly-reward.html">每週回饋</a></li>
-        <li class="sidebar-popular-item"><span class="sidebar-popular-rank">05</span><a class="sidebar-popular-link" href="/tw/articles/google-play-quests.html">Google Play Quests</a></li>
-      </ol>
-    </div>
-  </section>
   <section class="sidebar-widget sidebar-widget--author">
     <h2 class="sidebar-widget-title">誰在維護 PlayPoint？</h2>
     <div class="sidebar-widget-body sidebar-author-card">
       <div class="sidebar-author-avatar" aria-hidden="true">K</div>
-      <div><p class="sidebar-author-name">Katakata</p><p class="sidebar-author-role">PlayPoint 營運與編輯</p></div>
-      <p class="sidebar-author-trust">優先核對 Google 官方第一手資訊，計算範例也會和本站計算結果互相確認後再發布。</p>
+      <div><p class="sidebar-author-name">Katakata</p><p class="sidebar-author-copy">優先核對 Google 官方第一手資訊，計算範例也會和本站計算結果互相確認後再發布。</p></div>
       <div class="sidebar-author-links">
         <a href="/tw/author/katakata.html">關於 Katakata</a>
         <a href="https://katakatalab.com/who-is-katakata.html" target="_blank" rel="me noopener noreferrer">KatakataLab ↗</a>
       </div>
     </div>
-  </section>
-  <section class="sidebar-widget sidebar-widget--browse">
-    <h2 class="sidebar-widget-title">瀏覽指南</h2>
-    <div class="sidebar-widget-body"><div class="sidebar-browse-grid">
-      <a class="sidebar-browse-link" href="/tw/articles/#intl-hub-account">帳號與基本</a>
-      <a class="sidebar-browse-link" href="/tw/articles/#intl-hub-earn">積點與使用</a>
-      <a class="sidebar-browse-link" href="/tw/articles/#intl-hub-levels">等級與回饋</a>
-      <a class="sidebar-browse-link is-current" href="/tw/articles/#intl-hub-trouble">問題排解</a>
-    </div></div>
   </section>
 </aside>
 </div>

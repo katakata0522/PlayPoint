@@ -11,7 +11,7 @@ background:var(--reading-bg);
 html[data-reading-theme="dark"] {
 --reading-bg:#111923; --reading-surface:#1c2836; --reading-soft:#253446;
 --reading-text:#ebf0f7; --reading-muted:#b4c2d3; --reading-border:#52647a;
---reading-brand-text:#99d9e7; --reading-link:#9bc6ff;
+--reading-brand:#99d9e7; --reading-brand-text:#99d9e7; --reading-link:#9bc6ff;
 --reading-action:#a0ddb6; --reading-on-action:#132e1d;
 --reading-note-bg:#203549; --reading-warning-bg:#3c3120; --reading-warning:#f4ce8d;
 --reading-selected:#9bc6ff; --reading-on-selected:#112840;
@@ -54,7 +54,7 @@ html[data-reading-theme] :is(a,button,input,select,summary,[tabindex]):focus-vis
 #reading-theme-notice { font-size:.8rem; max-width:24rem; }
 @media print { html[data-reading-theme] { --reading-bg:#fff; --reading-surface:#fff; --reading-soft:#fff; --reading-text:#111; --reading-muted:#333; --reading-brand-text:#111; --reading-link:#111; color-scheme:light; } .reading-theme-toggle,.theme-toggle { display:none; } }
 html[data-reading-theme] .article-game-calc-info p { color:#b4c2d3; }
-html[data-reading-theme] .ja-article-sidebar .sidebar-widget-title { background:var(--reading-soft); color:var(--reading-text); border-bottom:1px solid var(--reading-border); }
+html[data-reading-theme] :is(.ja-article-sidebar, .intl-article-sidebar) .sidebar-widget-title { background:var(--reading-soft); color:var(--reading-text); border-bottom:1px solid var(--reading-border); }
 html[data-reading-theme] .sidebar-next-link { color:var(--reading-action); border-color:var(--reading-action); }
 html[data-reading-theme] .reading-tools button[aria-pressed=true] { background:var(--reading-selected); color:var(--reading-on-selected); }
 html[data-reading-theme] .reading-metadata > :is(.hero-meta,.article-post-meta,.article-meta) { color:var(--reading-muted); margin-bottom:.4rem; }
@@ -66,7 +66,7 @@ html[data-reading-theme] .site-header-inner { gap:4px 10px; }
 html[data-reading-theme] .site-logo { font-size:15px; line-height:1.4; flex:0 1 auto; }
 html[data-reading-theme] .site-header-links { gap:6px 10px; font-size:12px; }
 html[data-reading-theme] .site-tagline { display:none; }
-html[data-reading-theme] .ja-global-nav .nav-item { padding:7px 4px; min-height:38px; font-size:11.5px; }
+html[data-reading-theme] :is(.ja-global-nav, .intl-global-nav) .nav-item { padding:7px 4px; min-height:38px; font-size:11.5px; }
 html[data-reading-theme] .breadcrumbs-wrapper { margin-top:8px; font-size:12px; }
 html[data-reading-theme] .layout-container { margin-top:10px; }
 html[data-reading-theme] .main-content-column { padding:20px 16px; }

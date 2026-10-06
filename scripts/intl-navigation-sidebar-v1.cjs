@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { createHash } = require('node:crypto');
 const { LOCALES } = require('./intl-seo-content.cjs');
 const { getIntlGuideCategory } = require('./intl-guide-taxonomy.cjs');
 const { selectRelatedArticles } = require('./intl-related-guides.cjs');
@@ -15,6 +16,22 @@ const SHELL_STYLESHEET = '/articles/intl-shell-v1.css';
 const SECTION_ORDER = ['home', 'guides', 'troubleshooting', 'earn', 'levels', 'account'];
 const SECTION_ANCHORS = Object.freeze({ account: 'intl-hub-account', earn: 'intl-hub-earn', levels: 'intl-hub-levels', troubleshooting: 'intl-hub-trouble' });
 const REGION_PATHS = Object.freeze({ ja: '/', en: '/en/', ko: '/ko/', tw: '/tw/', hk: '/hk/', in: '/in/' });
+
+function publicThumbnail(value, rootDir = path.resolve(__dirname, '..')) {
+  const relative = String(value || '').replace(/^\.\.\//, '');
+  if (!/^(?:articles\/ogp\/[^/?#]+\.png|articles\/thumbnails\/[a-z0-9-]+\.webp|images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp)|ogp\.png)$/i.test(relative)) return '';
+  const original = '/' + relative;
+  const sourcePath = path.join(rootDir, relative);
+  if (!fs.existsSync(sourcePath)) return original;
+  const digest = createHash('sha256').update(fs.readFileSync(sourcePath)).digest('hex').slice(0, 16);
+  const thumbnail = `images/navigation-thumbnails/${digest}-186.webp`;
+  return fs.existsSync(path.join(rootDir, thumbnail)) ? '/' + thumbnail : original;
+}
+
+function isSquareThumbnail(value) {
+  const relative = String(value || '').replace(/^\.\.\//, '');
+  return /^(?:articles\/thumbnails\/[a-z0-9-]+\.webp|images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp))$/i.test(relative);
+}
 
 function escapeHtml(value) {
   return String(value)
@@ -156,12 +173,13 @@ function renderChrome(localeKey, title, section, variant, newline) {
   return [
     CHROME_START,
     '<a class="skip-link" href="#main-content">' + escapeHtml(copy.skip) + '</a>',
-    '<header class="site-header intl-article-site-header">',
+    '<header class="site-header guide-header intl-article-site-header">',
     '  <div class="site-header-inner">',
-    '    <a class="site-logo" href="' + homeHref + '"><span class="site-logo-text">PlayPoint</span><span class="site-logo-description">' + escapeHtml(locale.siteName) + '</span></a>',
-    '    <div class="site-header-tools">',
+    '    <a class="site-logo" href="' + guidesHref + '"><span class="guide-brand-full"><span class="guide-wordmark">PlayPoint<span class="guide-brand-points" aria-hidden="true"><i></i><i></i><i></i></span></span><span class="guide-brand-caption">' + escapeHtml(copy.brandCaption) + '</span></span><span class="guide-brand-short">PlayPoint<span>' + escapeHtml(locale.blog) + '</span></span></a>',
+    '    <div class="site-header-links site-header-tools">',
     '      <a class="site-about-link" href="' + policyHref + '">' + escapeHtml(copy.about) + '</a>',
     ...renderRegionSwitcher(localeKey, copy),
+    '      <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="' + escapeHtml(copy.themeLabel) + '">☀️</button>',
     '    </div>',
     '  </div>',
     '</header>',
@@ -170,12 +188,29 @@ function renderChrome(localeKey, title, section, variant, newline) {
     ...SECTION_ORDER.map(key => {
       const [href, label, sub] = navLinks[key];
       const active = section === key ? ' active' : '';
-      return '    <a class="nav-item' + active + '" href="' + href + '"><span>' + escapeHtml(label) + '</span><span class="nav-sub">' + escapeHtml(sub) + '</span></a>';
+      const ariaCurrent = section === key ? ' aria-current="page"' : '';
+      return '    <a class="nav-item' + active + '" href="' + href + '"' + ariaCurrent + '><span>' + escapeHtml(label) + '</span><span class="nav-sub">' + escapeHtml(sub) + '</span></a>';
     }),
     '  </div>',
     '</nav>',
     ...renderBreadcrumbs(localeKey, title, section, variant, copy),
     CHROME_END
+  ].join(newline);
+}
+
+function renderSearchWidget(localeKey, newline) {
+  const copy = COPY[localeKey];
+  return [
+    '  <section class="sidebar-widget sidebar-widget--search">',
+    '    <h2 class="sidebar-widget-title">' + escapeHtml(copy.searchTitle) + '</h2>',
+    '    <div class="sidebar-widget-body">',
+    '      <form class="sidebar-search-form" action="/' + localeKey + '/articles/" method="get" role="search">',
+    '        <input class="sidebar-search-input" type="search" name="q" aria-label="' + escapeHtml(copy.searchLabel) + '">',
+    '        <button class="sidebar-search-button" type="submit">' + escapeHtml(copy.searchButton) + '</button>',
+    '      </form>',
+    '      <div class="sidebar-search-footer"><a class="sidebar-browse-link" href="/' + localeKey + '/articles/">' + escapeHtml(copy.allGuides) + '</a></div>',
+    '    </div>',
+    '  </section>'
   ].join(newline);
 }
 
@@ -196,9 +231,10 @@ function renderNextWidget(localeKey, role, variant, newline) {
   ].join(newline);
 }
 
-function renderPopularWidget(localeKey, currentPath, newline) {
+function renderPopularWidget(localeKey, currentPath, catalog = [], rootDir = path.resolve(__dirname, '..'), newline = '\n') {
   const copy = COPY[localeKey];
   const popular = getPopularGuides(localeKey, currentPath, 5);
+  const byHref = new Map(catalog.map(item => [item.href, item]));
   return [
     '  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="' + escapeHtml(POPULAR_GUIDES_SNAPSHOT) + '">',
     '    <h2 class="sidebar-widget-title">' + escapeHtml(copy.popularTitle) + '</h2>',
@@ -207,8 +243,18 @@ function renderPopularWidget(localeKey, currentPath, newline) {
     '      <ol class="sidebar-popular-list">',
     ...popular.map(item => {
       const rank = String(item.rank).padStart(2, '0');
-      if (item.isCurrent) return '        <li class="sidebar-popular-item is-current"><span class="sidebar-popular-rank">' + rank + '</span><div><span class="sidebar-popular-current-title">' + escapeHtml(item.label) + '</span><span class="sidebar-popular-reading">' + escapeHtml(copy.reading) + '</span></div></li>';
-      return '        <li class="sidebar-popular-item"><span class="sidebar-popular-rank">' + rank + '</span><a class="sidebar-popular-link" href="' + escapeHtml(item.href) + '">' + escapeHtml(item.label) + '</a></li>';
+      const meta = byHref.get(item.href);
+      const featured = item.rank === 1;
+      const thumbSrc = featured ? publicThumbnail(meta?.thumbnail, rootDir) : '';
+      const square = thumbSrc && isSquareThumbnail(meta?.thumbnail);
+      const isCurrentClass = item.isCurrent ? ' is-current' : '';
+      const title = item.isCurrent
+        ? '<span class="sidebar-popular-current-title">' + escapeHtml(item.label) + '</span><span class="sidebar-popular-reading">' + escapeHtml(copy.reading) + '</span>'
+        : '<a class="sidebar-popular-link" href="' + escapeHtml(item.href) + '">' + escapeHtml(item.label) + '</a>';
+      if (featured && thumbSrc) {
+        return '        <li class="sidebar-popular-item' + isCurrentClass + '"><span class="sidebar-popular-rank">' + rank + '</span><div class="sidebar-popular-thumb' + (square ? ' sidebar-popular-thumb--square' : '') + '"><img src="' + escapeHtml(thumbSrc) + '" alt="" loading="lazy" decoding="async"></div><div class="sidebar-popular-feature-copy">' + title + '</div></li>';
+      }
+      return '        <li class="sidebar-popular-item' + isCurrentClass + '"><span class="sidebar-popular-rank">' + rank + '</span><div>' + title + '</div></li>';
     }),
     '      </ol>',
     '    </div>',
@@ -237,8 +283,7 @@ function renderAuthorWidget(localeKey, newline) {
     '    <h2 class="sidebar-widget-title">' + escapeHtml(copy.authorTitle) + '</h2>',
     '    <div class="sidebar-widget-body sidebar-author-card">',
     '      <div class="sidebar-author-avatar" aria-hidden="true">K</div>',
-    '      <div><p class="sidebar-author-name">Katakata</p><p class="sidebar-author-role">' + escapeHtml(copy.authorRole) + '</p></div>',
-    '      <p class="sidebar-author-trust">' + escapeHtml(copy.authorTrust) + '</p>',
+    '      <div><p class="sidebar-author-name">Katakata</p><p class="sidebar-author-copy">' + escapeHtml(copy.authorTrust) + '</p></div>',
     '      <div class="sidebar-author-links">',
     '        <a href="' + policyHref + '">' + escapeHtml(copy.authorCta) + '</a>',
     '        <a href="https://katakatalab.com/who-is-katakata.html" target="_blank" rel="me noopener noreferrer">' + escapeHtml(copy.labCta) + '</a>',
@@ -248,39 +293,61 @@ function renderAuthorWidget(localeKey, newline) {
   ].join(newline);
 }
 
-function renderBrowseWidget(localeKey, section, newline) {
+function renderBrowseWidget(localeKey, section, catalog = [], newline = '\n') {
   const copy = COPY[localeKey];
   const items = ['account', 'earn', 'levels', 'troubleshooting'];
+  const counts = new Map(items.map(k => [k, 0]));
+  for (const article of catalog) {
+    const cat = article.section || 'account';
+    if (counts.has(cat)) counts.set(cat, counts.get(cat) + 1);
+  }
   return [
     '  <section class="sidebar-widget sidebar-widget--browse">',
     '    <h2 class="sidebar-widget-title">' + escapeHtml(copy.browseTitle) + '</h2>',
-    '    <div class="sidebar-widget-body"><div class="sidebar-browse-grid">',
-    ...items.map(key => '      <a class="sidebar-browse-link' + (section === key ? ' is-current' : '') + '" href="' + categoryHref(localeKey, key) + '">' + escapeHtml(copy.nav[key]) + '</a>'),
-    '    </div></div>',
+    '    <div class="sidebar-widget-body sidebar-browse-grid"><ul class="sidebar-browse-list">',
+    ...items.map(key => {
+      const count = counts.get(key) || 0;
+      const isCurrent = section === key;
+      return '      <li class="sidebar-browse-item' + (isCurrent ? ' is-current-topic' : '') + '"><a class="sidebar-browse-category" href="' + categoryHref(localeKey, key) + '"><span>' + escapeHtml(copy.nav[key]) + '</span><span class="sidebar-browse-count" aria-label="' + count + escapeHtml(copy.countUnit) + '">' + count + '</span></a></li>';
+    }),
+    '    </ul></div>',
     '  </section>'
   ].join(newline);
 }
 
-function renderSidebar(localeKey, relativePath, section, role, relatedArticles, variant, newline) {
+function renderSidebar(localeKey, relativePath, section, role, relatedArticles, variant, catalog = [], rootDir = path.resolve(__dirname, '..'), newline = '\n') {
   const copy = COPY[localeKey];
   const widgets = [];
+  widgets.push(renderSearchWidget(localeKey, newline));
+  widgets.push(renderBrowseWidget(localeKey, section, catalog, newline));
   if (variant === 'article') {
     const related = renderRelatedWidget(localeKey, relatedArticles, newline);
     if (related) widgets.push(related);
   }
+  widgets.push(renderPopularWidget(localeKey, '/' + String(relativePath).replace(/^\//, ''), catalog, rootDir, newline));
   const next = renderNextWidget(localeKey, role, variant, newline);
   if (next) widgets.push(next);
-  widgets.push(renderPopularWidget(localeKey, '/' + String(relativePath).replace(/^\//, ''), newline));
   if (variant !== 'policy') widgets.push(renderAuthorWidget(localeKey, newline));
-  widgets.push(renderBrowseWidget(localeKey, section, newline));
-  return ['<aside class="sidebar-column intl-article-sidebar" aria-label="' + escapeHtml(copy.sidebar) + '">', ...widgets, '</aside>'].join(newline);
+  return ['<aside class="sidebar-column intl-article-sidebar" aria-label="' + escapeHtml(copy.sidebar) + '" data-article-role="' + (role || 'reference') + '" data-article-category="' + section + '">', ...widgets, '</aside>'].join(newline);
 }
 
 function ensureStylesheet(html, newline) {
-  if (String(html).includes(SHELL_STYLESHEET)) return html;
-  const intlCss = /<link\b[^>]*href=["'][^"']*\/articles\/intl-article\.css(?:\?[^"']*)?["'][^>]*>/i;
-  if (intlCss.test(html)) return String(html).replace(intlCss, match => match + newline + '<link rel="stylesheet" href="' + SHELL_STYLESHEET + '">');
-  return String(html).replace(/<\/head>/i, '<link rel="stylesheet" href="' + SHELL_STYLESHEET + '">' + newline + '</head>');
+  let next = html;
+  if (!next.includes(SHELL_STYLESHEET)) {
+    const intlCss = /<link\b[^>]*href=["'][^"']*\/articles\/intl-article\.css(?:\?[^"']*)?["'][^>]*>/i;
+    if (intlCss.test(next)) next = next.replace(intlCss, match => match + newline + '<link rel="stylesheet" href="' + SHELL_STYLESHEET + '">');
+    else next = next.replace(/<\/head>/i, '<link rel="stylesheet" href="' + SHELL_STYLESHEET + '">' + newline + '</head>');
+  }
+  if (!next.includes('/articles/japanese-shell.css')) {
+    next = next.replace(/<\/head>/i, '<link rel="stylesheet" href="/articles/japanese-shell.css">' + newline + '</head>');
+  }
+  if (!next.includes('/articles/guide-navigation.css')) {
+    next = next.replace(/<\/head>/i, '<link rel="stylesheet" href="/articles/guide-navigation.css">' + newline + '</head>');
+  }
+  if (!next.includes('/articles/guide-editorial.css')) {
+    next = next.replace(/<\/head>/i, '<link rel="stylesheet" href="/articles/guide-editorial.css">' + newline + '</head>');
+  }
+  return next;
 }
 
 function ensureMainTarget(html) {
@@ -307,12 +374,12 @@ function replaceChrome(html, rendered) {
 }
 
 function replaceSidebar(html, rendered) {
-  const pattern = /<aside\b[^>]*class=["'][^"']*\bsidebar-column\b[^"']*\bintl-article-sidebar\b[^"']*["'][^>]*>[\s\S]*?<\/aside>/i;
-  if (!pattern.test(html)) throw new Error('international shell sidebar is missing');
+  const pattern = /<aside\b[^>]*class=["'][^"']*\bsidebar-column\b[^"']*(?:intl-article-sidebar|ja-article-sidebar)[^"']*["'][^>]*>[\s\S]*?<\/aside>/i;
+  if (!pattern.test(html)) throw new Error('sidebar column is missing');
   return String(html).replace(pattern, rendered);
 }
 
-function syncPage({ rootDir, localeKey, relativePath, section, role = null, relatedArticles = null, variant }) {
+function syncPage({ rootDir, localeKey, relativePath, section, role = null, relatedArticles = null, variant, catalog = [] }) {
   const absolutePath = path.join(rootDir, relativePath);
   if (!fs.existsSync(absolutePath)) return false;
   const before = fs.readFileSync(absolutePath, 'utf8');
@@ -321,12 +388,24 @@ function syncPage({ rootDir, localeKey, relativePath, section, role = null, rela
   let after = ensureStylesheet(before, newline);
   after = replaceChrome(after, renderChrome(localeKey, title, section, variant, newline));
   after = upsertBreadcrumbSchema(after, localeKey, title, section, variant, relativePath, newline);
-  after = replaceSidebar(after, renderSidebar(localeKey, relativePath, section, role, relatedArticles, variant, newline));
+  after = replaceSidebar(after, renderSidebar(localeKey, relativePath, section, role, relatedArticles, variant, catalog, rootDir, newline));
   after = ensureMainTarget(after);
   if (variant === 'article') after = enhanceAuthorBox(after, localeKey);
   if (after === before) return false;
   fs.writeFileSync(absolutePath, after, 'utf8');
   return true;
+}
+
+function extractThumbnail(html) {
+  const match = String(html).match(/<meta\b[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i);
+  if (!match) return '';
+  const url = match[1];
+  try {
+    const parsed = new URL(url);
+    return parsed.pathname.replace(/^\//, '');
+  } catch {
+    return url.replace(/^\//, '');
+  }
 }
 
 function buildCatalog(rootDir, localeKey) {
@@ -338,7 +417,13 @@ function buildCatalog(rootDir, localeKey) {
     .map(file => {
       const relativePath = path.posix.join(localeKey, 'articles', file);
       const html = fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
-      return { path: relativePath, href: '/' + relativePath, label: extractTitle(html, relativePath) };
+      return {
+        path: relativePath,
+        href: '/' + relativePath,
+        label: extractTitle(html, relativePath),
+        section: getIntlGuideCategory(relativePath) || 'guides',
+        thumbnail: extractThumbnail(html)
+      };
     });
 }
 
@@ -348,22 +433,22 @@ function syncIntlNavigationSidebarV1(rootDir) {
     const catalog = buildCatalog(rootDir, localeKey);
     for (const article of catalog) {
       const relatedArticles = selectRelatedArticles(catalog, article.path, 3);
-      const section = getIntlGuideCategory(article.path) || 'guides';
+      const section = article.section || 'guides';
       const role = classifyArticleRole(article.path) || 'reference';
       summary.checked++;
-      if (syncPage({ rootDir, localeKey, relativePath: article.path, section, role, relatedArticles, variant: 'article' })) summary.changed++;
+      if (syncPage({ rootDir, localeKey, relativePath: article.path, section, role, relatedArticles, variant: 'article', catalog })) summary.changed++;
     }
 
     const hubPath = path.posix.join(localeKey, 'articles', 'index.html');
     if (fs.existsSync(path.join(rootDir, hubPath))) {
       summary.checked++;
-      if (syncPage({ rootDir, localeKey, relativePath: hubPath, section: 'guides', variant: 'hub' })) summary.changed++;
+      if (syncPage({ rootDir, localeKey, relativePath: hubPath, section: 'guides', variant: 'hub', catalog })) summary.changed++;
     }
 
     const policyPath = path.posix.join(localeKey, 'author', 'katakata.html');
     if (fs.existsSync(path.join(rootDir, policyPath))) {
       summary.checked++;
-      if (syncPage({ rootDir, localeKey, relativePath: policyPath, section: 'policy', variant: 'policy' })) summary.changed++;
+      if (syncPage({ rootDir, localeKey, relativePath: policyPath, section: 'policy', variant: 'policy', catalog })) summary.changed++;
     }
   }
   return summary;
