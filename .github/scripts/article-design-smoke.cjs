@@ -147,7 +147,10 @@ async function inspect(browser, baseUrl, article, viewport) {
       assert(result.related, article.key + '/' + viewport.key + ': related navigation missing');
     }
     if (viewport.width <= 860) assert(result.horizontalOverflow <= 1, article.key + '/mobile: horizontal overflow ' + result.horizontalOverflow + 'px');
-    const focusTarget = page.locator('.content a').first();
+    // Mobile article openings may intentionally hide secondary utility links.
+    // Check the first actually rendered content link so the focus contract follows what a keyboard user can reach.
+    const focusTarget = page.locator('.content a:visible').first();
+    assert(await focusTarget.count() === 1, article.key + '/' + viewport.key + ': visible focus target missing');
     await page.keyboard.press('Tab');
     await focusTarget.focus();
     const focus = await focusTarget.evaluate(element => ({ visible: element.matches(':focus-visible'), width: parseFloat(getComputedStyle(element).outlineWidth), style: getComputedStyle(element).outlineStyle }));
