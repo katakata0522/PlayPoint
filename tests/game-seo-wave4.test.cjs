@@ -134,7 +134,8 @@ test('Wave 4 deep guides are discoverable and use verified editorial dates', () 
   const guides = [
     'games/hbr/google-play-vs-webshop/index.html',
     'games/honkai3rd/google-play-vs-charge-center/index.html',
-    'games/phantomparade/google-play-vs-webshop/index.html'
+    'games/phantomparade/google-play-vs-webshop/index.html',
+    'games/reverse1999/index.html'
   ];
   const sitemap = read('sitemap.xml');
   for (const file of guides) {
@@ -142,7 +143,6 @@ test('Wave 4 deep guides are discoverable and use verified editorial dates', () 
     assert.equal(getGeneratedGamePageContentDate(file), modified);
     assert.ok(sitemap.includes(`/${file.replace(/index\.html$/, '')}`), `${file} should be in sitemap`);
   }
-  assert.equal(getGeneratedGamePageContentDate('games/reverse1999/index.html'), VERIFIED_AT);
 });
 
 

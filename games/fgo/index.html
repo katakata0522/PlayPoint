@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="2026-09-13" />
+  <meta name="last-modified" content="2026-10-07" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>Fate/Grand Order (FGO) - Playポイント計算機</title>
@@ -33,7 +33,7 @@
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
   <link rel="stylesheet" href="../../articles/article-shared.css?v=86f4c481d9" />
-  <link rel="stylesheet" href="../../games/games.css?v=56f8cf7a1a" />
+  <link rel="stylesheet" href="../../games/games.css?v=49b3e1e683" />
 
   <script type="application/ld+json">
   {
@@ -150,7 +150,15 @@
           <p>聖晶石を何パック買うか、福袋の予算をどうするか。FGOの購入額を選んで、貯まるPlayポイントを計算できます。福袋や確定召喚までの聖晶石・購入額の考え方は、関連記事で詳しく紹介しています。</p>
 
           <!-- シミュレーター操作パネル -->
-          <section class="game-sim-card">
+          <section class="game-offers" aria-labelledby="game-offers-title">
+            <div class="game-offers-heading"><div><span class="game-offers-eyebrow">課金する前に、こちらもチェック</span><h2 id="game-offers-title">FGOのパス・特別商品</h2></div><a href="#game-calculator" class="game-offers-skip">計算へ進む ↓</a></div>
+            <p class="game-offers-lead">FGOは有償石を使う召喚の条件から。福袋は開催期間があるので、普段買える月額パスのようには扱いません。</p>
+            <div class="game-offers-grid"><article class="game-offer-card"><span class="game-offer-kind">開催時のみ・有償石で召喚</span><h3>福袋などの有償限定召喚</h3><p>2026年11周年の福袋は開催終了。次の開催時は有償石の必要数と対象を確認し、今ある有償石を差し引いて購入額を考えましょう。</p><div class="game-offer-bottom"><strong>購入画面の金額で計算</strong><a class="game-offer-action" href="#game-calculator" data-offer-input="amount" aria-label="福袋などの有償限定召喚の購入額で計算">購入額を入力して計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://news.fate-go.jp/2026/08/11th_luckybag/" target="_blank" rel="noopener noreferrer">公式情報</a></div></article></div>
+
+            <p class="game-offers-note">今回の公開情報調査では、常設の月額パスは確認できませんでした。聖晶石の商品表は下で選べます。</p>
+            <p class="game-offers-reviewed">公開情報の確認：<time datetime="2026-10-07">2026/10/07</time> · 商品内容とGoogle Play価格は分けて確認しています。</p>
+          </section>
+          <section class="game-sim-card" id="game-calculator">
               <h2 class="game-sim-title">🧮 FGO</h2>
 
               <p class="preset-heading">金額をすぐ入力：</p>
@@ -550,6 +558,6 @@
 
   <script src="../../js/analytics-core.js?v=e63a4a63f7"></script>
   <script src="../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../games/game-sim.js?v=97f6161d33"></script>
+  <script src="../../games/game-sim.js?v=3ed507fa19"></script>
 </body>
 </html>

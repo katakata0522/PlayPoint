@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="2026-08-18" />
+  <meta name="last-modified" content="2026-10-07" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>メメントモリ (MementoMori) - Playポイント計算機</title>
@@ -33,7 +33,7 @@
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
   <link rel="stylesheet" href="../../articles/article-shared.css?v=86f4c481d9" />
-  <link rel="stylesheet" href="../../games/games.css?v=56f8cf7a1a" />
+  <link rel="stylesheet" href="../../games/games.css?v=49b3e1e683" />
 
   <script type="application/ld+json">
   {
@@ -150,7 +150,15 @@
           <p>ダイヤを買い足す前に、今回の予算で貯まるPlayポイントを見ておきましょう。購入予定額を直接入力するか、予算ボタンで試せます。</p>
 
           <!-- シミュレーター操作パネル -->
-          <section class="game-sim-card">
+          <section class="game-offers" aria-labelledby="game-offers-title">
+            <div class="game-offers-heading"><div><span class="game-offers-eyebrow">課金する前に、こちらもチェック</span><h2 id="game-offers-title">メメントモリのパス・特別商品</h2></div><a href="#game-calculator" class="game-offers-skip">計算へ進む ↓</a></div>
+            <p class="game-offers-lead">毎日の報酬なら月間ブースト、便利機能なら盟約特権、クエストを進めているなら達成パックから。名前や契約期間も分けて選びましょう。</p>
+            <div class="game-offers-grid"><article class="game-offer-card"><span class="game-offer-kind">30日間・毎日報酬と特権</span><h3>月間ブースト</h3><p>購入時の報酬に加え、30日間専用の毎日報酬と特権が有効に。前日に受け取らなかった報酬はプレゼントボックスへ届きます。</p><div class="game-offer-bottom"><strong>購入画面の金額で計算</strong><a class="game-offer-action" href="#game-calculator" data-offer-input="amount" aria-label="月間ブーストの購入額で計算">購入額を入力して計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://mementomori.zendesk.com/hc/ja/articles/44102448913049-月間ブーストについて" target="_blank" rel="noopener noreferrer">公式情報</a></div></article><article class="game-offer-card"><span class="game-offer-kind">7日間・自動更新</span><h3>盟約特権（1週間）</h3><p>全ワールド共通の特権。1か月版と同時加入はできません。VIP経験値やゲーム内チャージイベントの達成には加算されない別契約です。</p><div class="game-offer-bottom"><strong>購入画面の金額で計算</strong><a class="game-offer-action" href="#game-calculator" data-offer-input="amount" data-offer-subscription="true" aria-label="盟約特権（1週間）の購入額で計算">購入額を入力して計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://mementomori.zendesk.com/hc/ja/articles/44102609445785-盟約特権について-iOS-Android" target="_blank" rel="noopener noreferrer">公式情報</a></div></article></div>
+            <details class="game-offers-more"><summary>ほかの特別商品も見る（2件）</summary><div class="game-offers-grid"><article class="game-offer-card"><span class="game-offer-kind">30日間・自動更新</span><h3>盟約特権（1か月）</h3><p>1週間版より長い契約期間。同じ期間で自動更新され、初回3日無料体験もあります。無料期間で終える場合は終了24時間以上前の解約が必要です。</p><div class="game-offer-bottom"><strong>購入画面の金額で計算</strong><a class="game-offer-action" href="#game-calculator" data-offer-input="amount" data-offer-subscription="true" aria-label="盟約特権（1か月）の購入額で計算">購入額を入力して計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://mementomori.zendesk.com/hc/ja/articles/44102609445785-盟約特権について-iOS-Android" target="_blank" rel="noopener noreferrer">公式情報</a></div></article><article class="game-offer-card"><span class="game-offer-kind">クエスト進行報酬</span><h3>達成パック</h3><p>クエストの達成状況に応じて報酬を受け取るタイプ。自分の進行度で、どこまで回収できるかを見て選びましょう。</p><div class="game-offer-bottom"><strong>購入画面の金額で計算</strong><a class="game-offer-action" href="#game-calculator" data-offer-input="amount" aria-label="達成パックの購入額で計算">購入額を入力して計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://altema.jp/mememori/osusumepack" target="_blank" rel="noopener noreferrer">アルテマの商品比較</a></div></article></div></details>
+            <p class="game-offers-note">Google Playの購入画面の金額を入れて、貯まるポイントを確認できます。</p>
+            <p class="game-offers-reviewed">公開情報の確認：<time datetime="2026-10-07">2026/10/07</time> · 商品内容とGoogle Play価格は分けて確認しています。</p>
+          </section>
+          <section class="game-sim-card" id="game-calculator">
               <h2 class="game-sim-title">🧮 メメントモリ</h2>
 
               <p class="preset-heading">金額をすぐ入力：</p>
@@ -523,6 +531,6 @@
 
   <script src="../../js/analytics-core.js?v=e63a4a63f7"></script>
   <script src="../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../games/game-sim.js?v=97f6161d33"></script>
+  <script src="../../games/game-sim.js?v=3ed507fa19"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="2026-09-13" />
+  <meta name="last-modified" content="2026-10-07" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>パズル＆ドラゴンズ (Puzzle & Dragons) - Playポイント計算機</title>
@@ -33,7 +33,7 @@
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
   <link rel="stylesheet" href="../../articles/article-shared.css?v=86f4c481d9" />
-  <link rel="stylesheet" href="../../games/games.css?v=56f8cf7a1a" />
+  <link rel="stylesheet" href="../../games/games.css?v=49b3e1e683" />
 
   <script type="application/ld+json">
   {
@@ -158,7 +158,15 @@
           <p>魔法石を買い足すときも、パズドラパスを続けるときも。購入額から貯まるPlayポイントを計算できます。月額パスは商品欄から、魔法石の購入は実際の金額を入力して使ってください。</p>
 
           <!-- シミュレーター操作パネル -->
-          <section class="game-sim-card">
+          <section class="game-offers" aria-labelledby="game-offers-title">
+            <div class="game-offers-heading"><div><span class="game-offers-eyebrow">課金する前に、こちらもチェック</span><h2 id="game-offers-title">パズドラのパス・特別商品</h2></div><a href="#game-calculator" class="game-offers-skip">計算へ進む ↓</a></div>
+            <p class="game-offers-lead">魔法石を買い足す前に、毎日の専用ダンジョンや便利機能を使いたいかでパズドラパスも検討。単品の魔法石購入とは別の商品です。</p>
+            <div class="game-offers-grid"><article class="game-offer-card"><span class="game-offer-kind">月額・自動更新</span><h3>パズドラパス</h3><p>自動更新の月額サービス。毎日の専用ダンジョン、チーム枠5枠追加、ランク経験値5％増、高速モードなど。魔法石の単品購入とは別です。</p><div class="game-offer-bottom"><strong>月額 980円</strong><a class="game-offer-action" href="#game-calculator" data-offer-product="pad-pass" data-offer-subscription="true" aria-label="パズドラパスの購入額で計算">この料金で計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://pad.gungho.jp/member/pdpass/" target="_blank" rel="noopener noreferrer">公式情報</a></div></article></div>
+
+            <p class="game-offers-note">Google Playでの購入額から計算できます。自動更新の商品は通常率で計算します。</p>
+            <p class="game-offers-reviewed">公開情報の確認：<time datetime="2026-10-07">2026/10/07</time> · 商品内容とGoogle Play価格は分けて確認しています。</p>
+          </section>
+          <section class="game-sim-card" id="game-calculator">
               <h2 class="game-sim-title">🧮 パズドラ</h2>
 
               <p class="preset-heading">金額をすぐ入力：</p>
@@ -553,6 +561,6 @@
 
   <script src="../../js/analytics-core.js?v=e63a4a63f7"></script>
   <script src="../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../games/game-sim.js?v=97f6161d33"></script>
+  <script src="../../games/game-sim.js?v=3ed507fa19"></script>
 </body>
 </html>

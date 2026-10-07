@@ -10,6 +10,7 @@ const { getLatestHubVerificationDate } = require('./latest-hub-audit.cjs');
 const { VERIFIED_AT: GAME_SEO_VERIFIED_AT } = require('./game-seo-data.cjs');
 const { VERIFIED_AT: GAME_SEO_WAVE5_VERIFIED_AT } = require('./game-seo-wave5-data.cjs');
 const { GAME_GUIDE_ARTICLES } = require('./game-guide-article-catalog.cjs');
+const { SPECIAL_OFFERS, REVIEWED_AT: SPECIAL_OFFERS_REVIEWED_AT } = require('./game-special-offers.cjs');
 
 // Content dates only change when the corresponding page receives a meaningful
 // editorial update. Build timestamps and asset cache versions are kept separate.
@@ -89,7 +90,8 @@ const GAME_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
   'ko/games/efootball/index.html': GAME_SEO_WAVE5_VERIFIED_AT,
   'tw/games/efootball/index.html': GAME_SEO_WAVE5_VERIFIED_AT,
   'games/efootball/google-play-points-vs-efootball-points/index.html': GAME_SEO_WAVE5_VERIFIED_AT,
-  ...Object.fromEntries(GAME_GUIDE_ARTICLES.map(article => [article.file.slice(3), article.modified]))
+  ...Object.fromEntries(GAME_GUIDE_ARTICLES.map(article => [article.file.slice(3), article.modified])),
+  ...Object.fromEntries(Object.keys(SPECIAL_OFFERS).map(id => [`games/${id}/index.html`, SPECIAL_OFFERS_REVIEWED_AT]))
 });
 const LATEST_HUB_VERIFICATION_DATE = getLatestHubVerificationDate(rootDir);
 

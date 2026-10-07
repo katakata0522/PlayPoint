@@ -108,6 +108,31 @@ function generatedFiles(script, initial={}) {
 let gameOutputs;
 function generatedGames(){return gameOutputs ||= generatedFiles('scripts/generate-game-simulators.cjs',{'blog/articles.json':read('blog/articles.json')});}
 
+test('全24ゲームで特別商品の出典と価格の確認状態を計算前に案内する', () => {
+  const { SPECIAL_OFFERS } = require('../scripts/game-special-offers.cjs');
+  const { getJapaneseCalculator } = require('../scripts/game-calculator-presentation.cjs');
+  const ids = Object.keys(SPECIAL_OFFERS);
+  assert.equal(ids.length, 24);
+  for (const id of ids) {
+    const file = `games/${id}/index.html`;
+    for (const html of [generatedGames().get(file), read(file)].filter(Boolean)) {
+      assert.ok(html.indexOf('class="game-offers"') >= 0, file);
+      assert.ok(html.indexOf('class="game-offers"') < html.indexOf('id="game-calculator"'), file);
+      const sourceLinks = openingTags(html).filter(tag => tag.attrs.class === 'game-offer-source');
+      assert.ok(sourceLinks.length, file);
+      for (const link of sourceLinks) assert.equal(new URL(link.attrs.href).protocol, 'https:', file);
+    }
+    const offers = getJapaneseCalculator({ id, presets: { ja: [] } }).offers;
+    for (const offer of offers.items) {
+      assert.ok(offer.name && offer.detail && offer.source.url, `${id}/${offer.id}`);
+      if (!offer.productId) assert.equal(offer.price, undefined, '未確認・別ストア価格を計算へ入れない');
+    }
+  }
+  assert.match(read('games/mementomori/index.html'), /盟約特権（1週間）/);
+  assert.match(read('games/mementomori/index.html'), /盟約特権（1か月）/);
+  assert.match(read('games/efootball/index.html'), /従来のマッチパスはv5.0.0でキャンペーンハブへ変更済み/);
+});
+
 test('初回生成で商品と予算を区別し、商品がない操作欄は出さない', () => {
   const output = generatedGames();
   const pad = output.get('games/pad/index.html');

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="2026-09-13" />
+  <meta name="last-modified" content="2026-10-07" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>モンスターストライク (モンスト) - Playポイント計算機</title>
@@ -33,7 +33,7 @@
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
   <link rel="stylesheet" href="../../articles/article-shared.css?v=86f4c481d9" />
-  <link rel="stylesheet" href="../../games/games.css?v=56f8cf7a1a" />
+  <link rel="stylesheet" href="../../games/games.css?v=49b3e1e683" />
 
   <script type="application/ld+json">
   {
@@ -150,7 +150,15 @@
           <p>オーブを買う前に、今回の課金で何ポイント貯まるかチェック。パックや購入額を選んで計算できます。すぐオーブが欲しいときの商品選びと、Webショップとの比較は、購入前のガイドへ。</p>
 
           <!-- シミュレーター操作パネル -->
-          <section class="game-sim-card">
+          <section class="game-offers" aria-labelledby="game-offers-title">
+            <div class="game-offers-heading"><div><span class="game-offers-eyebrow">課金する前に、こちらもチェック</span><h2 id="game-offers-title">モンストのパス・特別商品</h2></div><a href="#game-calculator" class="game-offers-skip">計算へ進む ↓</a></div>
+            <p class="game-offers-lead">オーブを買い足す前に、モンパスの便利機能が自分に必要かもチェック。プレミアムの月額料金と会員限定パックの代金は別です。</p>
+            <div class="game-offers-grid"><article class="game-offer-card"><span class="game-offer-kind">月額・自動更新</span><h3>モンパス</h3><p>自動更新。1日1回のスタミナ全回復、モンスポットのパワー＋など。</p><div class="game-offer-bottom"><strong>月額 480円</strong><a class="game-offer-action" href="#game-calculator" data-offer-product="monpass" data-offer-subscription="true" aria-label="モンパスの購入額で計算">この料金で計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://www.monster-strike.com/news/20250807_3.html" target="_blank" rel="noopener noreferrer">公式情報</a></div></article><article class="game-offer-card"><span class="game-offer-kind">月額・自動更新</span><h3>モンパスプレミアム</h3><p>モンパスの特典に追加。入会時・1か月継続ごとにCMスキップ券30枚、使用後2週間ごとの対象クエストでラッキーリザルト確定発動など。</p><div class="game-offer-bottom"><strong>月額 1,980円</strong><a class="game-offer-action" href="#game-calculator" data-offer-product="monpass-premium" data-offer-subscription="true" aria-label="モンパスプレミアムの購入額で計算">この料金で計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://www.monster-strike.com/news/20250807_3.html" target="_blank" rel="noopener noreferrer">公式情報</a></div></article></div>
+            <details class="game-offers-more"><summary>ほかの特別商品も見る（5件）</summary><div class="game-offers-grid"><article class="game-offer-card"><span class="game-offer-kind">パック購入</span><h3>プレミアム会員限定 月イチお得パック</h3><p>プレミアム会員が月1回、別料金で買うパック。オーブ10個、CMスキップ券30枚、育成アイテム。月額料金に含まれません。</p><div class="game-offer-bottom"><strong>980円</strong><a class="game-offer-action" href="#game-calculator" data-offer-product="premium-monthly-pack" aria-label="プレミアム会員限定 月イチお得パックの購入額で計算">この料金で計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://www.monster-strike.com/news/20250807_3.html" target="_blank" rel="noopener noreferrer">公式情報</a></div></article><article class="game-offer-card"><span class="game-offer-kind">パック購入</span><h3>初心者応援パック プレミアム</h3><p>獣神化★6確定ガチャ1回とオーブ8個、育成アイテム。</p><div class="game-offer-bottom"><strong>1,000円</strong><a class="game-offer-action" href="#game-calculator" data-offer-product="starter-premium" aria-label="初心者応援パック プレミアムの購入額で計算">この料金で計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式情報</a></div></article><article class="game-offer-card"><span class="game-offer-kind">パック購入</span><h3>初獲得パック</h3><p>初獲得★6確定ガチャ1回とオーブ10個など。排出対象を全て獲得済みなら重複があります。</p><div class="game-offer-bottom"><strong>1,800円</strong><a class="game-offer-action" href="#game-calculator" data-offer-product="first-acquisition" aria-label="初獲得パックの購入額で計算">この料金で計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式情報</a></div></article><article class="game-offer-card"><span class="game-offer-kind">パック購入</span><h3>選べる！アビリティパック</h3><p>選べるのはアビリティ。キャラを指名する商品ではありません。</p><div class="game-offer-bottom"><strong>3,800円</strong><a class="game-offer-action" href="#game-calculator" data-offer-product="ability" aria-label="選べる！アビリティパックの購入額で計算">この料金で計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式情報</a></div></article><article class="game-offer-card"><span class="game-offer-kind">パック購入</span><h3>コラボスターターパック</h3><p>コラボ開催時の商品。対象キャラ・内容・販売期間は開催ごとに異なります。</p><div class="game-offer-bottom"><strong>1,000円</strong><a class="game-offer-action" href="#game-calculator" data-offer-product="collab-starter" aria-label="コラボスターターパックの購入額で計算">この料金で計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式情報</a></div></article></div></details>
+            <p class="game-offers-note">Google Playでの購入額から計算できます。自動更新の商品は通常率で計算します。</p>
+            <p class="game-offers-reviewed">公開情報の確認：<time datetime="2026-10-07">2026/10/07</time> · 商品内容とGoogle Play価格は分けて確認しています。</p>
+          </section>
+          <section class="game-sim-card" id="game-calculator">
               <h2 class="game-sim-title">🧮 モンスト</h2>
 
               <p class="preset-heading">金額をすぐ入力：</p>
@@ -569,6 +577,6 @@
 
   <script src="../../js/analytics-core.js?v=e63a4a63f7"></script>
   <script src="../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../games/game-sim.js?v=97f6161d33"></script>
+  <script src="../../games/game-sim.js?v=3ed507fa19"></script>
 </body>
 </html>

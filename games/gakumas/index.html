@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="2026-09-13" />
+  <meta name="last-modified" content="2026-10-07" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>学園アイドルマスター (学マス) - Playポイント計算機</title>
@@ -33,7 +33,7 @@
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
   <link rel="stylesheet" href="../../articles/article-shared.css?v=86f4c481d9" />
-  <link rel="stylesheet" href="../../games/games.css?v=56f8cf7a1a" />
+  <link rel="stylesheet" href="../../games/games.css?v=49b3e1e683" />
 
   <script type="application/ld+json">
   {
@@ -150,7 +150,15 @@
           <p>欲しいアイドルのために、今回はいくら使う？学マスのジュエル購入予定額からPlayポイントを計算できます。ランクや獲得率を切り替えると、同じ予算で貯まるポイントの違いが分かります。</p>
 
           <!-- シミュレーター操作パネル -->
-          <section class="game-sim-card">
+          <section class="game-offers" aria-labelledby="game-offers-title">
+            <div class="game-offers-heading"><div><span class="game-offers-eyebrow">課金する前に、こちらもチェック</span><h2 id="game-offers-title">学マスのパス・特別商品</h2></div><a href="#game-calculator" class="game-offers-skip">計算へ進む ↓</a></div>
+            <p class="game-offers-lead">学マスで継続して遊ぶなら、まずプレミアムミッションパスの進み具合を確認。ジュエルだけでなく、衣装や育成素材が欲しい人にも候補になります。</p>
+            <div class="game-offers-grid"><article class="game-offer-card"><span class="game-offer-kind">月ごとのミッション報酬</span><h3>プレミアムミッションパス</h3><p>ミッションを進めてジュエル、衣装パーツ、育成素材などを受け取ります。買った時点で全報酬がもらえる商品ではありません。</p><div class="game-offer-bottom"><strong>購入画面の金額で計算</strong><a class="game-offer-action" href="#game-calculator" data-offer-input="amount" aria-label="プレミアムミッションパスの購入額で計算">購入額を入力して計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://game8.jp/gakuen-idolmaster/797151" target="_blank" rel="noopener noreferrer">Game8の解説</a></div></article></div>
+
+            <p class="game-offers-note">Google Playの購入画面の金額を入れて、貯まるポイントを確認できます。</p>
+            <p class="game-offers-reviewed">公開情報の確認：<time datetime="2026-10-07">2026/10/07</time> · 商品内容とGoogle Play価格は分けて確認しています。</p>
+          </section>
+          <section class="game-sim-card" id="game-calculator">
               <h2 class="game-sim-title">🧮 学マス</h2>
 
 
@@ -513,6 +521,6 @@
 
   <script src="../../js/analytics-core.js?v=e63a4a63f7"></script>
   <script src="../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../games/game-sim.js?v=97f6161d33"></script>
+  <script src="../../games/game-sim.js?v=3ed507fa19"></script>
 </body>
 </html>
