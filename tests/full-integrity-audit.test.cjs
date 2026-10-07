@@ -15,7 +15,7 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 test('ゲーム生成物は確認範囲と出典を明示し保留記事を推薦しない', () => {
   const withheld = ['articles/2026-08-17-tgs-google-play-vip.html', 'articles/2026-08-17-diamond-valley-festival-guide.html']
     .filter(file => openingTags(read(file)).some(node => node.tag === 'meta' && node.attrs.name === 'robots' && /noindex/.test(node.attrs.content || '')));
-  for (const [prefix, phrase] of [['', '参考値'], ['en/', 'reference inputs'], ['ko/', '참고값'], ['tw/', '僅作參考']]) {
+  for (const [prefix, phrase] of [['', '参考値'], ['en/', 'Product contents and checkout prices are checked separately'], ['ko/', '상품 내용과 결제 가격은 따로 확인합니다'], ['tw/', '商品內容與結帳價格分開核對']]) {
     const file = prefix + 'games/genshin/index.html', html = read(file), tags = openingTags(html);
     const section = tags.find(node => node.tag === 'section' && (node.attrs.class || '').split(/\s+/).includes('game-source-section'));
     assert.ok(section, file + ': sources section missing');

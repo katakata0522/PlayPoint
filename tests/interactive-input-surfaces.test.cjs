@@ -44,7 +44,9 @@ test("海外ゲーム計算機も課金予定額入力を残している", () =>
   const games=jaGameDirs();assert.ok(games.length>0);
   for(const locale of ['en','ko','tw'])for(const game of games){
     const file=path.join(locale,'games',game,'index.html');const tags=openingTags(read(file));
-    for(const id of ['sim-custom-amount','sim-pack-count']){const matches=tags.filter(tag=>tag.tag==='input'&&tag.attrs.id===id);assert.equal(matches.length,1,file);assert.equal(matches[0].attrs.type,'number',file);}
+    assert.ok(tags.some(tag=>tag.tag==='form'&&tag.attrs['data-input-mode']==='amount'),file);
+    const matches=tags.filter(tag=>tag.tag==='input'&&tag.attrs.id==='sim-custom-amount');assert.equal(matches.length,1,file);assert.equal(matches[0].attrs.type,'number',file);
+    assert.equal(tags.some(tag=>['sim-pack-count','sim-pack-select'].includes(tag.attrs.id)),false,file);
   }
 });
 
