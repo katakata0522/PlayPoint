@@ -1,7 +1,7 @@
 'use strict';
 
 const { read, writeIfChanged, replaceDescriptionsAcrossGamePages, createGuideShell, createRequiredEdits } = require('./game-seo-common.cjs');
-const { replaceRequired, replaceRegexRequired, insertBeforeRequired } = createRequiredEdits('game-seo-wave3');
+const { insertBeforeRequired } = createRequiredEdits('game-seo-wave3');
 
 const {
   VERIFIED_AT,
@@ -23,14 +23,9 @@ const guideShell = createGuideShell({
   verificationPolicy: '価格・定額商品・ガチャ仕様は変更されることがあります。公開一次情報で確認できないGoogle Play価格は推測で補わず、購入直前のゲーム内表示とGoogle Playの獲得予定ポイント表示を購入前に確認してください。'
 });
 
-function syncVerifiedInputOnly(rootDir, config) {
+function syncParentGuide(rootDir, config) {
   const file = config.file;
   let html = read(rootDir, file);
-  html = replaceRegexRequired(html, /<div class="preset-buttons">[\s\S]*?<\/div>/, `<div class="preset-buttons">\n                  <button type="button" class="preset-btn active" data-amount="0" data-mult="1" aria-pressed="true">${config.presetLabel}</button>\n              </div>`, config.presetLabel, `${file} preset`);
-  html = replaceRegexRequired(html, /(<select id="sim-pack-select">)[\s\S]*?(<\/select>)/, `$1\n                              <option value="custom" selected>${config.optionLabel}</option>\n                          $2`, config.optionLabel, `${file} pack select`);
-  html = html.replace(/<input type="number" id="sim-custom-amount" value="[^"]*" min="0" step="any" inputmode="decimal">/, '<input type="number" id="sim-custom-amount" value="0" min="0" step="any" inputmode="decimal">');
-  html = replaceRegexRequired(html, /(<table class="pack-table">[\s\S]*?<tbody>)[\s\S]*?(<\/tbody>)/, `$1\n<tr><td colspan="4">${config.tableMessage}</td></tr>\n                      $2`, config.tableMessage, `${file} table`);
-  html = html.replace(/<p class="game-meta">[^<]*<\/p>/, `<p class="game-meta">${config.gameMeta}</p>`);
   if (config.descriptionBefore && config.descriptionAfter) html = html.replaceAll(config.descriptionBefore, config.descriptionAfter);
   for (const [before, after] of config.replacements || []) html = html.replaceAll(before, after);
   if (config.guideBlock) html = insertBeforeRequired(html, '<section class="section game-source-section">', config.guideBlock, config.guideMarker, `${file} guide block`);
@@ -105,18 +100,14 @@ function syncWave3(rootDir) {
 
   const configs = [
     {
-      file: 'games/pokepoke/index.html', presetLabel: 'Google Playの表示額を入力', optionLabel: '現行価格をGoogle Playで確認して入力',
-      tableMessage: 'プレミアムパスの定期購入仕様は公式確認済みですが、現行日本円価格・ポケゴールド価格は公開公式FAQで固定されていません。購入画面の実額を入力してください。',
-      gameMeta: `ポケポケ定期購入・Play Points確認：${VERIFIED_AT}（価格は購入画面で確認） ｜ Google Play Points`,
+      file: 'games/pokepoke/index.html',
       descriptionBefore: 'ポケポケ（Pokémon TCG Pocket）のポケゴールド購入、プレミアムパス、パック開封で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。課金前のシミュレーションにぜひ役立ててみてくださいね。',
       descriptionAfter: 'ポケポケのGoogle Play課金予定額からPlay Pointsを計算。プレミアムパスは月額定期購入・初回14日無料体験を公式確認し、現行価格は購入画面で確認します。',
       replacements: [['はい。Android端末から購入するとPlay Pointsが貯まります。', 'Google Play上の対象購入として処理される場合にポイントが計算されます。購入前のGoogle Play画面に表示される獲得予定ポイントを確認してください。']],
       guideBlock: `<section class="section" data-game-seo-guide="pokepoke"><h2>プレミアムパスの無料体験・更新・Play Pointsを分離</h2><p>公式サポートで1か月の定期購入、初回14日無料体験、Googleアカウントとの紐付けを確認しています。現行価格は推測せず購入画面で確認します。</p><p><a href="./premium-pass-guide/">プレミアムパスの課金ルールを詳しく見る ➔</a></p></section>`, guideMarker: 'data-game-seo-guide="pokepoke"'
     },
     {
-      file: 'games/arknights/index.html', presetLabel: 'Google Playの表示額を入力', optionLabel: '現行価格をGoogle Playで確認して入力',
-      tableMessage: '月パスの内容と限定300回の仕組みは公式確認済みですが、現行Google Play価格は公開一次情報で固定できません。購入画面の実額を入力してください。',
-      gameMeta: `アークナイツ月パス・限定スカウト・Play Points確認：${VERIFIED_AT}（価格は購入画面で確認）`,
+      file: 'games/arknights/index.html',
       descriptionBefore: 'アークナイツの純正源石購入、月パス、月間スカウトパック、300連天井・潜在MAX課金で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。人材発掘前の計画にぜひ使ってみてくださいね。',
       descriptionAfter: 'アークナイツのGoogle Play課金予定額からPlay Pointsを計算。月パス内容と限定300回の仕様は公式確認し、現行商品価格は購入画面で確認します。',
       replacements: [
@@ -126,18 +117,14 @@ function syncWave3(rootDir) {
       guideBlock: `<section class="section" data-game-seo-guide="arknights"><h2>月パス内容と限定300回を、価格と分けて確認</h2><p>月パスの有償純正源石6個・30日間の合成玉200個/日など、仕様は公式確認できます。現行Google Play価格は固定せず、限定300回も現金9万円と断定しません。</p><p><a href="./monthly-pass-limited-scout/">月パスと限定300回の確認結果を見る ➔</a></p></section>`, guideMarker: 'data-game-seo-guide="arknights"'
     },
     {
-      file: 'games/dokkan/index.html', presetLabel: 'Google Playの表示額を入力', optionLabel: '現行価格をGoogle Playで確認して入力',
-      tableMessage: '龍石・デイリー商品・セールは時期で変わります。Google Play購入画面の支払額と受け取れる龍石の個数を確認してください。公式Web StoreはGoogle Playとは別決済です。',
-      gameMeta: `ドッカン Google Play・Web Store・Play Points確認：${VERIFIED_AT}（価格は購入画面で確認）`,
+      file: 'games/dokkan/index.html',
       descriptionBefore: 'ドラゴンボールZ ドッカンバトルの龍石購入、デイリーカプセル、フェスコイン交換・虹凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表や使い道も比較できます。ガシャ前のシミュレーションにぜひ役立ててみてくださいね。',
       descriptionAfter: 'ドッカンバトルのGoogle Play課金予定額からPlay Pointsを計算。公式Web Storeは別決済として分離し、変動する龍石・セール価格は購入画面で確認します。',
       replacements: [['はい。龍石パックやデイリーカプセルの購入時にPlay Pointsが付与されます。', 'Google Play上の対象購入として処理される場合にポイントが計算されます。公式Web StoreはGoogle Play決済と分けて確認してください。']],
       guideBlock: `<section class="section" data-game-seo-guide="dokkan"><h2>Google Playと公式Web Storeを別軸で比較</h2><p>Web Storeは公式の購入経路ですがGoogle Play決済ではありません。変動する龍石価格を固定せず、Play Points対象経路と商品内容を分けて判断します。</p><p><a href="./google-play-vs-webstore/">Google PlayとWeb Storeの違いを見る ➔</a></p></section>`, guideMarker: 'data-game-seo-guide="dokkan"'
     },
     {
-      file: 'games/wutheringwaves/index.html', presetLabel: 'Google Playの表示額を入力', optionLabel: '現行価格をGoogle Playで確認して入力',
-      tableMessage: '鳴潮はAndroid対応・ゲーム内課金ありを公式確認していますが、現行日本Google Play商品価格を公開一次情報で固定できません。購入画面の実額を入力してください。',
-      gameMeta: `鳴潮 Google Play価格・Play Points確認：${VERIFIED_AT}（価格は購入画面で確認）`,
+      file: 'games/wutheringwaves/index.html',
       descriptionBefore: '鳴潮（Wuthering Waves）の月相購入、月相観測パス、先駆ラジオ、80連/160連天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表やお得な使い道も比較できます。集音前のポイント確認にぜひ使ってみてくださいね。',
       descriptionAfter: '鳴潮のGoogle Play課金予定額からPlay Pointsを計算。現行商品価格や天井の現金額を推測で固定せず、購入画面の実際の支払額から確認できます。',
       replacements: [
@@ -148,7 +135,7 @@ function syncWave3(rootDir) {
     }
   ];
 
-  for (const config of configs) if (syncVerifiedInputOnly(rootDir, config)) changedFiles.push(config.file);
+  for (const config of configs) if (syncParentGuide(rootDir, config)) changedFiles.push(config.file);
   if (syncPad(rootDir)) changedFiles.push('games/pad/index.html');
 
   const guides = [

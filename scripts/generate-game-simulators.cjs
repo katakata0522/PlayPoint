@@ -1,5 +1,6 @@
 'use strict';
 
+const { DESCRIPTIONS, getJapaneseCalculator } = require('./game-calculator-presentation.cjs');
 const fs = require('fs');
 const path = require('path');
 
@@ -428,22 +429,12 @@ const GAMES_DATA = [
     names: { ja: '原神 (Genshin Impact)', en: 'Genshin Impact', ko: '원신 (Genshin Impact)', tw: '原神 (Genshin Impact)' },
     shortNames: { ja: '原神', en: 'Genshin', ko: '원신', tw: '原神' },
     descs: {
-      ja: '原神の創世結晶購入、空月の祝福、天空紀行、180連確定天井・完凸課金で貯まるGoogle Play Pointsをパッと計算！パック別の還元早見表やお得な使い道も比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。',
+      ja: DESCRIPTIONS['genshin'],
       en: 'Calculate Google Play Points earned on Genesis Crystals, Blessing of the Welkin Moon, Gnostic Hymn, 180-pull hard pity, and C6 character summons in Genshin Impact!',
       ko: '창세의 결정 패키지, 공월 축복, 진주 기행, 180연차 확천, 풀돌(6돌) 과금 시 적립되는 Play Points와 달성 등급을 시뮬레이션하세요!',
       tw: '試算創世結晶、空月祝福、珍珠紀行、180抽大保底、滿命(6命)課金可獲得的 Play Points 與等級進度！'
     },
     packs: {
-      ja: [
-        { name: '空月の祝福 (610円)', price: 610 },
-        { name: '天空紀行 (1,220円)', price: 1220 },
-        { name: '創世結晶 60個 (120円)', price: 120 },
-        { name: '創世結晶 300+30個 (610円)', price: 610 },
-        { name: '創世結晶 980+110個 (1,220円)', price: 1220 },
-        { name: '創世結晶 1980+260個 (3,680円)', price: 3680 },
-        { name: '創世結晶 3280+600個 (6,100円)', price: 6100 },
-        { name: '創世結晶 6480+1600個 (12,000円)', price: 12000 }
-      ],
       en: [
         { name: 'Blessing of the Welkin Moon ($4.99)', price: 4.99 },
         { name: 'Gnostic Hymn ($9.99)', price: 9.99 },
@@ -476,13 +467,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: '空月の祝福 (610円)', amount: 610, mult: 1 },
-        { label: '10連分 (約3,000円)', amount: 3000, mult: 1 },
-        { label: '仮天井 90連 (約27,000円)', amount: 27000, mult: 1 },
-        { label: '確定天井 180連 (約54,000円)', amount: 54000, mult: 1 },
-        { label: '完凸目安 (約250,000円)', amount: 250000, mult: 1 }
-      ],
       en: [
         { label: 'Welkin Moon ($4.99)', amount: 4.99, mult: 1 },
         { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
@@ -528,22 +512,12 @@ const GAMES_DATA = [
     names: { ja: '崩壊：スターレイル (Honkai: Star Rail)', en: 'Honkai: Star Rail', ko: '붕괴: 스타레일', tw: '崩壞：星穹鐵道' },
     shortNames: { ja: 'スターレイル', en: 'Star Rail', ko: '붕스', tw: '星鐵' },
     descs: {
-      ja: '崩壊スターレイルの往日の夢華、列車補給標章、ナナシビトの褒章、180連確定天井・完凸で貯まるPlayポイントを即時計算！パック別還元早見表やポイントの使い道も比較できます。ガチャ前のシミュレーションにぜひ役立ててみてくださいね。',
+      ja: DESCRIPTIONS['starrail'],
       en: 'Calculate Play Points earned on Oneiric Shards, Express Supply Pass, Nameless Honor, 180-pull hard pity, and E6 character summons in Honkai: Star Rail!',
       ko: '오래된 꿈, 열차보급허가증, 무명의 공훈, 180연차 확천, 풀돌(6돌) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算古老夢華、列車補給憑證、無名客的榮勳、180抽大保底、滿魂(6魂)課金可獲得的 Play Points！'
     },
     packs: {
-      ja: [
-        { name: '列車補給標章 (610円)', price: 610 },
-        { name: 'ナナシビトの褒章 (1,220円)', price: 1220 },
-        { name: '往日の夢華 60個 (120円)', price: 120 },
-        { name: '往日の夢華 300+30個 (610円)', price: 610 },
-        { name: '往日の夢華 980+110個 (1,220円)', price: 1220 },
-        { name: '往日の夢華 1980+260個 (3,680円)', price: 3680 },
-        { name: '往日の夢華 3280+600個 (6,100円)', price: 6100 },
-        { name: '往日の夢華 6480+1600個 (12,000円)', price: 12000 }
-      ],
       en: [
         { name: 'Express Supply Pass ($4.99)', price: 4.99 },
         { name: 'Nameless Glory ($9.99)', price: 9.99 },
@@ -576,12 +550,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: '列車補給標章 (610円)', amount: 610, mult: 1 },
-        { label: '10連分 (約3,000円)', amount: 3000, mult: 1 },
-        { label: '仮天井 90連 (約27,000円)', amount: 27000, mult: 1 },
-        { label: '確定天井 180連 (約54,000円)', amount: 54000, mult: 1 }
-      ],
       en: [
         { label: 'Express Supply Pass ($4.99)', amount: 4.99, mult: 1 },
         { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
@@ -622,22 +590,12 @@ const GAMES_DATA = [
     names: { ja: 'ゼンレスゾーンゼロ (Zenless Zone Zero)', en: 'Zenless Zone Zero', ko: '젠레스 존 제로', tw: '絕區零 (Zenless Zone Zero)' },
     shortNames: { ja: 'ゼンゼロ', en: 'ZZZ', ko: '젠존제', tw: '絕區零' },
     descs: {
-      ja: 'ゼンレスゾーンゼロ（ゼンゼロ）のモノクローム購入、インターノット会員、成長プラン、180連天井で貯まるPlayポイントをサクッと計算！パック別還元早見表や使い道もまとめているので、課金前の確認にぜひ使ってみてくださいね。',
+      ja: DESCRIPTIONS['zzz'],
       en: 'Calculate Play Points earned on Monochrome bundles, Inter-Knot Membership, New Eridu City Fund, and S-Rank Agent M6 summons in ZZZ!',
       ko: '모노크롬, 로프넷 회원, 뉴에리두 펀드, 180연차 확천, 풀돌(6돌) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算絕區零菲林底片、繩網會員、麗都城募、180抽大保底、滿影(6影)課金可獲得的 Play Points！'
     },
     packs: {
-      ja: [
-        { name: 'インターノット会員 (610円)', price: 610 },
-        { name: 'エリドゥファンド 成長プラン (1,220円)', price: 1220 },
-        { name: 'モノクローム 60個 (120円)', price: 120 },
-        { name: 'モノクローム 300+30個 (610円)', price: 610 },
-        { name: 'モノクローム 980+110個 (1,220円)', price: 1220 },
-        { name: 'モノクローム 1980+260個 (3,680円)', price: 3680 },
-        { name: 'モノクローム 3280+600個 (6,100円)', price: 6100 },
-        { name: 'モノクローム 6480+1600個 (12,000円)', price: 12000 }
-      ],
       en: [
         { name: 'Inter-Knot Membership ($4.99)', price: 4.99 },
         { name: 'New Eridu City Fund ($9.99)', price: 9.99 },
@@ -670,12 +628,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: 'インターノット会員 (610円)', amount: 610, mult: 1 },
-        { label: '10連分 (約3,000円)', amount: 3000, mult: 1 },
-        { label: '仮天井 90連 (約27,000円)', amount: 27000, mult: 1 },
-        { label: '確定天井 180連 (約54,000円)', amount: 54000, mult: 1 }
-      ],
       en: [
         { label: 'Inter-Knot Membership ($4.99)', amount: 4.99, mult: 1 },
         { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
@@ -716,21 +668,12 @@ const GAMES_DATA = [
     names: { ja: 'ブルーアーカイブ (Blue Archive)', en: 'Blue Archive', ko: '블루 아카이브', tw: '蔚藍檔案 (Blue Archive)' },
     shortNames: { ja: 'ブルアカ', en: 'Blue Archive', ko: '블아', tw: '蔚藍檔案' },
     descs: {
-      ja: 'ブルーアーカイブ（ブルアカ）の青輝石購入、マンスリーパッケージ、200連天井・固有武器完凸で貯まるPlayポイントをパッと計算！パック別早見表やポイント使い道も比較できます。生徒募集前の計画にぜひ役立ててみてくださいね。',
+      ja: DESCRIPTIONS['bluearchive'],
       en: 'Calculate Play Points earned on Pyroxenes, Monthly Packages, and 200-pull Sparking recruitment in Blue Archive!',
       ko: '청휘석 패키지, 월간 청휘석 패키지, 200연차 모집 포인트 교환(천장) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算蔚藍檔案青輝石禮包、月卡、200抽招募點數兌換(保底)課金可獲得的 Play Points！'
     },
     packs: {
-      ja: [
-        { name: 'マンスリーパッケージ (480円)', price: 480 },
-        { name: '青輝石 76個 (160円)', price: 160 },
-        { name: '青輝石 240個 (480円)', price: 480 },
-        { name: '青輝石 530個 (1,000円)', price: 1000 },
-        { name: '青輝石 1700個 (3,000円)', price: 3000 },
-        { name: '青輝石 2900個 (5,000円)', price: 5000 },
-        { name: '青輝石 6600個 (10,000円)', price: 10000 }
-      ],
       en: [
         { name: 'Monthly Pyroxene Pack ($3.99)', price: 3.99 },
         { name: '76 Pyroxenes ($0.99)', price: 0.99 },
@@ -760,11 +703,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: 'マンスリーパック (480円)', amount: 480, mult: 1 },
-        { label: '10連分 (約3,000円)', amount: 3000, mult: 1 },
-        { label: '天井 200連 (約48,000円)', amount: 48000, mult: 1 }
-      ],
       en: [
         { label: 'Monthly Pack ($3.99)', amount: 3.99, mult: 1 },
         { label: '10-pulls ($24.00)', amount: 24.0, mult: 1 },
@@ -802,21 +740,12 @@ const GAMES_DATA = [
     names: { ja: 'Pokémon TCG Pocket (ポケポケ)', en: 'Pokémon TCG Pocket', ko: '포켓몬 카드 게임 Pocket', tw: '寶可夢 TCG Pocket' },
     shortNames: { ja: 'ポケポケ', en: 'PTCGP', ko: '포케포케', tw: '寶可夢卡牌' },
     descs: {
-      ja: 'ポケポケ（Pokémon TCG Pocket）のポケゴールド購入、プレミアムパス、パック開封で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。課金前のシミュレーションにぜひ役立ててみてくださいね。',
+      ja: DESCRIPTIONS['pokepoke'],
       en: 'Calculate Google Play Points earned on Poké Gold, Premium Pass, and pack openings in Pokémon TCG Pocket!',
       ko: '포켓골드 및 프리미엄 패스 결제 시 적립되는 Google Play Points를 계산하세요!',
       tw: '計算寶可金塊與特級護照課金可獲得的 Google Play Points！'
     },
     packs: {
-      ja: [
-        { name: 'プレミアムパス (980円)', price: 980 },
-        { name: 'ポケゴールド 5個 (140円)', price: 140 },
-        { name: 'ポケゴールド 15個 (420円)', price: 420 },
-        { name: 'ポケゴールド 31個 (840円)', price: 840 },
-        { name: 'ポケゴールド 105個 (2,800円)', price: 2800 },
-        { name: 'ポケゴールド 215個 (5,600円)', price: 5600 },
-        { name: 'ポケゴールド 550個 (13,800円)', price: 13800 }
-      ],
       en: [
         { name: 'Premium Pass ($9.99)', price: 9.99 },
         { name: '5 Poké Gold ($0.99)', price: 0.99 },
@@ -846,10 +775,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: 'プレミアムパス (980円)', amount: 980, mult: 1 },
-        { label: 'ポケゴールド 550個 (13,800円)', amount: 13800, mult: 1 }
-      ],
       en: [
         { label: 'Premium Pass ($9.99)', amount: 9.99, mult: 1 },
         { label: '550 Poké Gold ($99.99)', amount: 99.99, mult: 1 }
@@ -884,20 +809,12 @@ const GAMES_DATA = [
     names: { ja: 'Fate/Grand Order (FGO)', en: 'Fate/Grand Order (FGO)', ko: '페이트/그랜드 오더 (FGO)', tw: '命運-冠位指定 (FGO)' },
     shortNames: { ja: 'FGO', en: 'FGO', ko: '페그오', tw: 'FGO' },
     descs: {
-      ja: 'Fate/Grand Order（FGO）の聖晶石購入、福袋召喚、確定召喚（330連天井）・宝具5完凸で貯まるPlayポイントをパッと計算！パック別早見表やお得な使い道も比較できます。ガチャ前のポイント確認にぜひ使ってみてくださいね。',
+      ja: DESCRIPTIONS['fgo'],
       en: 'Calculate Play Points earned on Saint Quartz, Lucky Bag GSSR summons, 330-summon pity, and NP5 in FGO!',
       ko: '성정석, 복주머니 GSSR, 330연차 확정소환(천장), 보5 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '試算聖晶石禮包、福袋召喚(GSSR)、330抽確定召喚(保底)、寶5課金可獲得的 Play Points！'
     },
     packs: {
-      ja: [
-        { name: '聖晶石 1個 (160円)', price: 160 },
-        { name: '聖晶石 4+1個 (480円)', price: 480 },
-        { name: '聖晶石 12+6個 (1,400円)', price: 1400 },
-        { name: '聖晶石 25+16個 (2,900円)', price: 2900 },
-        { name: '聖晶石 42+34個 (4,900円)', price: 4900 },
-        { name: '聖晶石 86+82個 (10,000円)', price: 10000 }
-      ],
       en: [
         { name: '1 Saint Quartz ($0.99)', price: 0.99 },
         { name: '4+1 Saint Quartz ($3.99)', price: 3.99 },
@@ -924,11 +841,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: '福袋目安 (約1,900円)', amount: 1900, mult: 1 },
-        { label: '10連分 (約3,000円)', amount: 3000, mult: 1 },
-        { label: '天井 330連 (約55,000円)', amount: 55000, mult: 1 }
-      ],
       en: [
         { label: 'Lucky Bag GSSR (~$15.00)', amount: 15.0, mult: 1 },
         { label: '10-pulls ($24.00)', amount: 24.0, mult: 1 },
@@ -966,22 +878,12 @@ const GAMES_DATA = [
     names: { ja: 'ウマ娘 プリティーダービー', en: 'Umamusume: Pretty Derby', ko: '우마무스메 프리티 더비', tw: '賽馬娘 Pretty Derby' },
     shortNames: { ja: 'ウマ娘', en: 'Umamusume', ko: '우마무스메', tw: '賽馬娘' },
     descs: {
-      ja: 'ウマ娘のジュエル購入、デイリージュエルパック、200連天井・完凸課金で貯まるGoogle Play Pointsを即時シミュレーション！パック別還元早見表やポイント使い道もまとめているので、育成前の課金計画にぜひ役立ててみてくださいね。',
+      ja: DESCRIPTIONS['umamusume'],
       en: 'Calculate Google Play Points earned on Jewels, Daily Packs, 200-pull spark pity, and MLB Support Cards in Umamusume!',
       ko: '쥬얼, 먼슬리 우마(데일리 쥬얼), 200연차 교환 Pt 천장, 서포트 4돌(풀돌) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算賽馬娘寶石、每日寶石包、200抽兌換Pt保底、支援卡4凸(滿凸)課金可獲得的 Play Points！'
     },
     packs: {
-      ja: [
-        { name: 'デイリージュエルパック (1,000円)', price: 1000 },
-        { name: 'ジュエル 60個 (160円)', price: 160 },
-        { name: 'ジュエル 210個 (480円)', price: 480 },
-        { name: 'ジュエル 350個 (800円)', price: 800 },
-        { name: 'ジュエル 700個 (1,500円)', price: 1500 },
-        { name: 'ジュエル 1,500個 (3,000円)', price: 3000 },
-        { name: 'ジュエル 2,500個 (5,000円)', price: 5000 },
-        { name: 'ジュエル 5,000個 (10,000円)', price: 10000 }
-      ],
       en: [
         { name: 'Daily Jewel Pack ($7.99)', price: 7.99 },
         { name: '50 Jewels ($0.99)', price: 0.99 },
@@ -1011,11 +913,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: 'デイリージュエル (1,000円)', amount: 1000, mult: 1 },
-        { label: '10連分 (3,000円)', amount: 3000, mult: 1 },
-        { label: '1天井 200連 (60,000円)', amount: 60000, mult: 1 }
-      ],
       en: [
         { label: 'Daily Jewel ($7.99)', amount: 7.99, mult: 1 },
         { label: '10-pulls ($24.00)', amount: 24.0, mult: 1 },
@@ -1053,7 +950,7 @@ const GAMES_DATA = [
     names: { ja: 'モンスターストライク (モンスト)', en: 'Monster Strike', ko: '몬스터 스트라이크', tw: '怪物彈珠 (Monster Strike)' },
     shortNames: { ja: 'モンスト', en: 'Monst', ko: '몬스', tw: '怪物彈珠' },
     descs: {
-      ja: 'モンスターストライク（モンスト）のオーブ購入、モンパス、超獣神祭・コラボガチャ課金で貯まるGoogle Play Pointsをサクッと計算！パック別還元早見表やポイント使い道も掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。',
+      ja: DESCRIPTIONS['monst'],
       en: 'Calculate Play Points earned on Orbs, Monpass, Hoshitama summons, and Max Luck units in Monster Strike!',
       ko: '오브 구매, 몬패스, 호시타마, 초수신제, 운극 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '計算寶珠、怪彈會員、星玉、超獸神祭、極運課金可獲得的 Play Points！'
@@ -1135,22 +1032,12 @@ const GAMES_DATA = [
     names: { ja: '学園アイドルマスター (学マス)', en: 'Gakuen Idolmaster', ko: '학원 아이돌마스터', tw: '學園偶像大師' },
     shortNames: { ja: '学マス', en: 'Gakumas', ko: '학마스', tw: '學馬仕' },
     descs: {
-      ja: '学園アイドルマスター（学マス）の有償ジュエル、プレミアムミッションパス、200連天井・4凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表やお得な使い道も比較できます。プロデュース前の計画にぜひ役立ててみてくださいね。',
+      ja: DESCRIPTIONS['gakumas'],
       en: 'Calculate Play Points earned on Jewels, Premium Mission Pass, and 200 Gacha Pts pity in Gakuen Idolmaster!',
       ko: '쥬얼 패키지, 프리미엄 미션 패스, 200 가챠 Pt 천장, 4돌(풀돌) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '試算學園偶像大師寶石、高級任務通行證、200 轉蛋Pt 保底、4凸(滿凸)課金可獲得的 Play Points！'
     },
     packs: {
-      ja: [
-        { name: 'プレミアムミッションパス (1,980円)', price: 1980 },
-        { name: 'ジュエル 80個 (120円)', price: 120 },
-        { name: 'ジュエル 360個 (480円)', price: 480 },
-        { name: 'ジュエル 600個 (800円)', price: 800 },
-        { name: 'ジュエル 1,200個 (1,500円)', price: 1500 },
-        { name: 'ジュエル 2,500個 (3,000円)', price: 3000 },
-        { name: 'ジュエル 4,000個 (4,800円)', price: 4800 },
-        { name: 'ジュエル 8,200個 (9,800円)', price: 9800 }
-      ],
       en: [
         { name: '60 Jewels ($0.99)', price: 0.99 },
         { name: '180 Jewels ($3.99)', price: 3.99 },
@@ -1171,11 +1058,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: 'プレミアムミッションパス (1,980円)', amount: 1980, mult: 1 },
-        { label: '10連分 (約3,000円)', amount: 3000, mult: 1 },
-        { label: '天井 200連 (約60,000円)', amount: 60000, mult: 1 }
-      ],
       en: [
         { label: '10-pulls ($24.00)', amount: 24.0, mult: 1 },
         { label: '200-pull Pity ($480.00)', amount: 480.0, mult: 1 }
@@ -1210,22 +1092,12 @@ const GAMES_DATA = [
     names: { ja: 'プロジェクトセカイ (プロセカ)', en: 'HATSUNE MIKU: COLORFUL STAGE!', ko: '프로젝트 세카이 컬러풀 스테이지!', tw: '世界計畫 繽紛舞台！' },
     shortNames: { ja: 'プロセカ', en: 'PJSK', ko: '프세카', tw: '世界計畫' },
     descs: {
-      ja: 'プロジェクトセカイ（プロセカ）の有償クリスタル、カラフルパス、プレパス、天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や使い道も掲載しています。ガチャ前のポイント確認にぜひ役立ててみてくださいね。',
+      ja: DESCRIPTIONS['proseka'],
       en: 'Calculate Play Points earned on Crystals, Colorful Pass, Premium Mission Pass, and 300 Gacha Stickers spark in Project SEKAI!',
       ko: '유료 크리스탈, 컬러풀 패스, 프리미엄 미션 패스, 가챠 스티커 300장 천장, 마스터 랭크 5 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算世界計畫付費水晶、彩色通行證、高階任務通行證、轉蛋貼紙300張保底、大師等級5課金可獲得的 Play Points！'
     },
     packs: {
-      ja: [
-        { name: 'カラフルパス (480円)', price: 480 },
-        { name: 'プレミアムミッションパス (2,000円)', price: 2000 },
-        { name: 'クリスタル 100個 (160円)', price: 160 },
-        { name: 'クリスタル 300個 (480円)', price: 480 },
-        { name: 'クリスタル 650個 (1,000円)', price: 1000 },
-        { name: 'クリスタル 2000個 (3,000円)', price: 3000 },
-        { name: 'クリスタル 3400個 (5,000円)', price: 5000 },
-        { name: 'クリスタル 7000個 (10,000円)', price: 10000 }
-      ],
       en: [
         { name: 'Colorful Pass ($3.99)', price: 3.99 },
         { name: 'Premium Mission Pass ($15.99)', price: 15.99 },
@@ -1249,11 +1121,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: 'カラパス+プレパス (2,480円)', amount: 2480, mult: 1 },
-        { label: '10連分 (3,000円)', amount: 3000, mult: 1 },
-        { label: 'シール天井 300連 (90,000円)', amount: 90000, mult: 1 }
-      ],
       en: [
         { label: 'Passes Combo ($19.98)', amount: 19.98, mult: 1 },
         { label: '10-pulls ($24.00)', amount: 24.0, mult: 1 },
@@ -1291,22 +1158,12 @@ const GAMES_DATA = [
     names: { ja: '勝利の女神：NIKKE', en: 'Goddess of Victory: NIKKE', ko: '승리의 여신: 니케', tw: '勝利女神：妮姬' },
     shortNames: { ja: 'ニケ', en: 'NIKKE', ko: '니케', tw: '妮姬' },
     descs: {
-      ja: '勝利の女神：NIKKEのジュエル購入、30日補給品、イベントパス、マイレージ200連天井で貯まるPlayポイントをサクッと計算！パック別還元早見表やポイント使い道も比較できます。隊員募集前の課金計画にぜひ役立ててみてくださいね。',
+      ja: DESCRIPTIONS['nikke'],
       en: 'Calculate Play Points earned on 30-Day Supply, Mission Pass, 200 Gold Mileage pity, and Max Core summons in NIKKE!',
       ko: '30일 보급품, 미션 패스, 골드 마일리지 200장 천장, 코어 MAX(3돌+7) 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '計算妮姬30天補給品、任務Pass、金色積分券200張保底、核心MAX(3突+7)課金可獲得的 Play Points！'
     },
     packs: {
-      ja: [
-        { name: '30-DAY補給品 (800円)', price: 800 },
-        { name: 'ミッションパス (3,200円)', price: 3200 },
-        { name: 'ジュエル 60個 (160円)', price: 160 },
-        { name: 'ジュエル 320個 (800円)', price: 800 },
-        { name: 'ジュエル 1020個 (2,400円)', price: 2400 },
-        { name: 'ジュエル 1980個 (4,800円)', price: 4800 },
-        { name: 'ジュエル 3300個 (8,000円)', price: 8000 },
-        { name: 'ジュエル 6200個 (15,800円)', price: 15800 }
-      ],
       en: [
         { name: '30-Day Supply ($4.99)', price: 4.99 },
         { name: 'Mission Pass ($19.99)', price: 19.99 },
@@ -1339,13 +1196,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: '30-DAY補給品 (800円)', amount: 800, mult: 1 },
-        { label: 'ミッションパス (3,200円)', amount: 3200, mult: 1 },
-        { label: '10連分 (約3,800円)', amount: 3800, mult: 1 },
-        { label: '金票天井 200連 (約76,000円)', amount: 76000, mult: 1 },
-        { label: '3凸MLB (約200,000円)', amount: 200000, mult: 1 }
-      ],
       en: [
         { label: '30-Day Supply ($4.99)', amount: 4.99, mult: 1 },
         { label: 'Mission Pass ($19.99)', amount: 19.99, mult: 1 },
@@ -1387,23 +1237,12 @@ const GAMES_DATA = [
     names: { ja: '鳴潮 (Wuthering Waves)', en: 'Wuthering Waves', ko: '명조: 워더링 웨이브', tw: '鳴潮 (Wuthering Waves)' },
     shortNames: { ja: '鳴潮', en: 'WuWa', ko: '명조', tw: '鳴潮' },
     descs: {
-      ja: '鳴潮（Wuthering Waves）の月相購入、月相観測パス、先駆ラジオ、80連/160連天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表やお得な使い道も比較できます。集音前のポイント確認にぜひ使ってみてくださいね。',
+      ja: DESCRIPTIONS['wutheringwaves'],
       en: 'Calculate Play Points earned on Lunite, Lunite Subscription, Pioneer Podcast, 160-pull hard pity, and S6 Resonance Chain in Wuthering Waves!',
       ko: '월상 패키지, 월상 관측 카드, 선구 라디오, 160연차 확천, 공명 체인 6단계(풀돌/S6) 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '計算鳴潮月相、月相觀測卡、先驅電台、160抽大保底、共鳴鏈6(滿鏈/S6)課金可獲得的 Play Points！'
     },
     packs: {
-      ja: [
-        { name: '月相観測パス (610円)', price: 610 },
-        { name: '先駆ラジオ ユニバース (1,220円)', price: 1220 },
-        { name: '先駆ラジオ 豪華特約 (2,440円)', price: 2440 },
-        { name: '月相 60個 (120円)', price: 120 },
-        { name: '月相 300+30個 (610円)', price: 610 },
-        { name: '月相 980+110個 (1,220円)', price: 1220 },
-        { name: '月相 1980+260個 (3,680円)', price: 3680 },
-        { name: '月相 3280+600個 (6,100円)', price: 6100 },
-        { name: '月相 6480+1600個 (12,000円)', price: 12000 }
-      ],
       en: [
         { name: 'Lunite Subscription ($4.99)', price: 4.99 },
         { name: 'Pioneer Podcast Insider ($9.99)', price: 9.99 },
@@ -1439,13 +1278,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: '月相観測パス (610円)', amount: 610, mult: 1 },
-        { label: '10連分 (約3,000円)', amount: 3000, mult: 1 },
-        { label: '仮天井 80連 (約24,000円)', amount: 24000, mult: 1 },
-        { label: '確定天井 160連 (約48,000円)', amount: 48000, mult: 1 },
-        { label: '完凸S6 (約200,000円)', amount: 200000, mult: 1 }
-      ],
       en: [
         { label: 'Lunite Subscription ($4.99)', amount: 4.99, mult: 1 },
         { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
@@ -1487,22 +1319,12 @@ const GAMES_DATA = [
     names: { ja: 'ドラゴンボールZ ドッカンバトル', en: 'DRAGON BALL Z DOKKAN BATTLE', ko: '드래곤볼 Z 폭렬격전', tw: '七龍珠爆裂激戰' },
     shortNames: { ja: 'ドッカン', en: 'Dokkan', ko: '폭렬격전', tw: '爆裂激戰' },
     descs: {
-      ja: 'ドラゴンボールZ ドッカンバトルの龍石購入、デイリーカプセル、フェスコイン交換・虹凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表や使い道も比較できます。ガシャ前のシミュレーションにぜひ役立ててみてくださいね。',
+      ja: DESCRIPTIONS['dokkan'],
       en: 'Calculate Play Points earned on Dragon Stones, Daily Capsules, Dokkan Festival Coins, and 100% Rainbow units in Dokkan Battle!',
       ko: '용석 패키지, 데일리 캡슐, 돗칸 축제 코인 교환, 잠재능력 100% 해방(무지개) 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '計算七龍珠爆裂激戰龍石、每日膠囊、Dokkan祭硬幣兌換、潛在能力100%解放(彩星)課金可獲得的 Play Points！'
     },
     packs: {
-      ja: [
-        { name: 'デイリーカプセル 30日 (1,200円)', price: 1200 },
-        { name: '龍石 1個 (120円)', price: 120 },
-        { name: '龍石 6個 (480円)', price: 480 },
-        { name: '龍石 12個 (980円)', price: 980 },
-        { name: '龍石 30個 (2,000円)', price: 2000 },
-        { name: '龍石 60個 (3,800円)', price: 3800 },
-        { name: '龍石 91個 (5,400円)', price: 5400 },
-        { name: '龍石 セール100個 (4,000円)', price: 4000 }
-      ],
       en: [
         { name: 'Daily Capsule 30-Day ($9.99)', price: 9.99 },
         { name: '1 Dragon Stone ($0.99)', price: 0.99 },
@@ -1532,11 +1354,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: 'デイリー龍石 15日 (1,000円)', amount: 1000, mult: 1 },
-        { label: '10連分 50個 (約3,000円)', amount: 3000, mult: 1 },
-        { label: '周年・Wフェス (50,000円)', amount: 50000, mult: 1 }
-      ],
       en: [
         { label: 'Daily Capsule ($9.99)', amount: 9.99, mult: 1 },
         { label: '10-pulls 50 Stones ($25.00)', amount: 25.0, mult: 1 },
@@ -1574,19 +1391,12 @@ const GAMES_DATA = [
     names: { ja: 'パズル＆ドラゴンズ (Puzzle & Dragons)', en: 'Puzzle & Dragons', ko: '퍼즐앤드래곤 (Puzzle & Dragons)', tw: '龍族拼圖 (Puzzle & Dragons)' },
     shortNames: { ja: 'パズドラ', en: 'PAD', ko: '퍼드', tw: '龍族拼圖' },
     descs: {
-      ja: 'パズドラパス（月額980円）や、ゲーム内で現在表示されている購入額からGoogle Play Pointsの獲得目安を計算できます。商品価格は変わる可能性があるため、購入前にゲーム内とGoogle Playの表示を確認してください。',
+      ja: DESCRIPTIONS['pad'],
       en: 'Estimate Google Play Points for Puzzle & Dragons from the PAD Pass and the purchase amount currently shown in the game. Store prices can change, so verify the purchase screen before paying.',
       ko: '퍼즐앤드래곤의 월정액 패스와 게임 내 현재 표시 금액을 기준으로 Google Play Points 적립 예상치를 계산합니다. 상품 가격은 바뀔 수 있으므로 결제 전 화면을 확인하세요.',
       tw: '依龍族拼圖通行證與遊戲內目前顯示的購買金額，試算 Google Play Points。商品價格可能調整，付款前請以遊戲內與 Google Play 畫面為準。'
     },
     packs: {
-      ja: [
-        { name: 'パズドラパス (月額980円)', price: 980 },
-        { name: '購入額を1,000円として試算', price: 1000 },
-        { name: '購入額を5,000円として試算', price: 5000 },
-        { name: '購入額を10,000円として試算', price: 10000 },
-        { name: '購入額を30,000円として試算', price: 30000 }
-      ],
       en: [
         { name: 'PAD Pass example ($8.99)', price: 8.99 },
         { name: 'Example spend ($10)', price: 10 },
@@ -1608,12 +1418,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: 'パズドラパス (980円)', amount: 980, mult: 1 },
-        { label: '課金予定 5,000円', amount: 5000, mult: 1 },
-        { label: '課金予定 10,000円', amount: 10000, mult: 1 },
-        { label: '課金予定 30,000円', amount: 30000, mult: 1 }
-      ],
       en: [
         { label: 'Planned spend $10', amount: 10, mult: 1 },
         { label: 'Planned spend $25', amount: 25, mult: 1 },
@@ -1655,22 +1459,12 @@ const GAMES_DATA = [
     names: { ja: 'アークナイツ (Arknights)', en: 'Arknights', ko: '명일방주', tw: '明日方舟 (Arknights)' },
     shortNames: { ja: 'アクナイ', en: 'Arknights', ko: '명방', tw: '明日方舟' },
     descs: {
-      ja: 'アークナイツの純正源石購入、月パス、月間スカウトパック、300連天井・潜在MAX課金で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。人材発掘前の計画にぜひ使ってみてくださいね。',
+      ja: DESCRIPTIONS['arknights'],
       en: 'Calculate Play Points earned on Originite Prime, Monthly Card, Headhunting Packs, 300-pull spark pity, and Pot 6 in Arknights!',
       ko: '순수한 원석, 월정액, 월간 헤드헌팅 패키지, 한정 300연차 천장, 풀잠(잠재6) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算明日方舟至純源石、月卡、每月尋訪組合包、限定300抽保底、滿潛(潛能6)課金可獲得的 Play Points！'
     },
     packs: {
-      ja: [
-        { name: '月パス (610円)', price: 610 },
-        { name: '月間スカウトパック (2,440円)', price: 2440 },
-        { name: '純正源石 1個 (120円)', price: 120 },
-        { name: '純正源石 4個 (490円)', price: 490 },
-        { name: '純正源石 12個 (1,480円)', price: 1480 },
-        { name: '純正源石 24個 (2,940円)', price: 2940 },
-        { name: '純正源石 40個 (4,900円)', price: 4900 },
-        { name: '純正源石 90個 (10,000円)', price: 10000 }
-      ],
       en: [
         { name: 'Monthly Card ($4.99)', price: 4.99 },
         { name: 'Monthly Headhunting Pack ($24.99)', price: 24.99 },
@@ -1703,12 +1497,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: '月パス (610円)', amount: 610, mult: 1 },
-        { label: '月間スカウトパック (2,440円)', amount: 2440, mult: 1 },
-        { label: '10連分 (約3,000円)', amount: 3000, mult: 1 },
-        { label: '限定フェス天井 300連 (約90,000円)', amount: 90000, mult: 1 }
-      ],
       en: [
         { label: 'Monthly Card ($4.99)', amount: 4.99, mult: 1 },
         { label: 'Monthly Headhunting Pack ($24.99)', amount: 24.99, mult: 1 },
@@ -1749,21 +1537,12 @@ const GAMES_DATA = [
     names: { ja: 'ヘブンバーンズレッド (ヘブバン)', en: 'Heaven Burns Red', ko: '헤븐 번즈 레드 (HBR)', tw: '緋染天空 (Heaven Burns Red)' },
     shortNames: { ja: 'ヘブバン', en: 'HBR', ko: 'HBR', tw: '緋染天空' },
     descs: {
-      ja: 'ヘブンバーンズレッド（ヘブバン）のクォーツ購入、ライト/プレミアムパス、200連天井ガチャで貯まるGoogle Play Pointsをパッと計算！パック別還元早見表や使い道も掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。',
+      ja: DESCRIPTIONS['hbr'],
       en: 'Calculate Google Play Points earned on Quartz, HBR Pass, and 200-pull Spark pity in Heaven Burns Red.',
       ko: '헤븐 번즈 레드(HBR)의 쿼츠 구매, 패스, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다.',
       tw: '計算緋染天空（Heaven Burns Red）購買石英、月卡通行證與200抽保底時可獲得的 Google Play Points。'
     },
     packs: {
-      ja: [
-        { name: 'クォーツ 120個 (160円)', price: 160 },
-        { name: 'クォーツ 420個 (490円)', price: 490 },
-        { name: 'クォーツ 850個 (980円)', price: 980 },
-        { name: 'クォーツ 1,350個 (1,480円)', price: 1480 },
-        { name: 'クォーツ 2,750個 (2,940円)', price: 2940 },
-        { name: 'クォーツ 4,750個 (4,900円)', price: 4900 },
-        { name: 'クォーツ 10,000個 (10,000円)', price: 10000 }
-      ],
       en: [
         { name: '120 Quartz ($0.99)', price: 0.99 },
         { name: '420 Quartz ($3.99)', price: 3.99 },
@@ -1790,13 +1569,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: 'ライトパス (600円)', amount: 600, mult: 1 },
-        { label: 'プレミアムパス (2,900円)', amount: 2900, mult: 1 },
-        { label: '10連分 3,000個 (約3,000円)', amount: 3000, mult: 1 },
-        { label: '天井 200連 60,000個 (約60,000円)', amount: 60000, mult: 1 },
-        { label: '完凸目安 (約240,000円)', amount: 240000, mult: 1 }
-      ],
       en: [
         { label: 'Light Pass ($4.99)', amount: 4.99, mult: 1 },
         { label: 'Premium Pass ($24.99)', amount: 24.99, mult: 1 },
@@ -1840,21 +1612,12 @@ const GAMES_DATA = [
     names: { ja: 'メメントモリ (MementoMori)', en: 'MementoMori: AFKRPG', ko: '메멘토 모리 (MementoMori)', tw: 'MementoMori' },
     shortNames: { ja: 'メメントモリ', en: 'MementoMori', ko: '메멘토모리', tw: 'MementoMori' },
     descs: {
-      ja: 'メメントモリ（メメモリ）のダイヤ購入、月間ブースト、ピックアップ100連天井・LR進化で貯まるPlayポイントを即時シミュレーション！パック別還元早見表や使い道も比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。',
+      ja: DESCRIPTIONS['mementomori'],
       en: 'Calculate Google Play Points earned on Diamonds, Monthly Boosts, and 100-pull Pity in MementoMori.',
       ko: '메멘토 모리의 다이아 결제, 월간 부스트 및 100연차 천장 결제 시 적립되는 Play Points를 계산합니다.',
       tw: '計算 MementoMori 購買鑽石、月間特權及100抽保底時可獲得的 Google Play Points。'
     },
     packs: {
-      ja: [
-        { name: 'ダイヤ 80個 (160円)', price: 160 },
-        { name: 'ダイヤ 325個 (650円)', price: 650 },
-        { name: 'ダイヤ 500個 (1,000円)', price: 1000 },
-        { name: 'ダイヤ 750個 (1,500円)', price: 1500 },
-        { name: 'ダイヤ 1,500個 (3,000円)', price: 3000 },
-        { name: 'ダイヤ 3,000個 (6,000円)', price: 6000 },
-        { name: 'ダイヤ 5,900個 (11,800円)', price: 11800 }
-      ],
       en: [
         { name: '80 Diamonds ($0.99)', price: 0.99 },
         { name: '325 Diamonds ($4.99)', price: 4.99 },
@@ -1881,12 +1644,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: '月間ブースト (1,000円)', amount: 1000, mult: 1 },
-        { label: '10連分 3,000個 (約6,000円)', amount: 6000, mult: 1 },
-        { label: 'ピックアップ天井 100連 (約30,000円)', amount: 30000, mult: 1 },
-        { label: 'LR進化目安 (約150,000円)', amount: 150000, mult: 1 }
-      ],
       en: [
         { label: 'Monthly Boost ($7.99)', amount: 7.99, mult: 1 },
         { label: '10-pulls ($48.00)', amount: 48.0, mult: 1 },
@@ -1927,22 +1684,12 @@ const GAMES_DATA = [
     names: { ja: '呪術廻戦 ファントムパレード (ファンパレ)', en: 'Jujutsu Kaisen Phantom Parade', ko: '주술회전 팬텀 퍼레이드', tw: '咒術迴戰 幻影夜行 (Phantom Parade)' },
     shortNames: { ja: 'ファンパレ', en: 'Phantom Parade', ko: '팬텀퍼레이드', tw: '幻影夜行' },
     descs: {
-      ja: '呪術廻戦ファントムパレード（ファンパレ）の有償廻珠、ファンパレパス、250連天井ガチャで貯まるPlayポイントをサクッと計算！パック別還元早見表やポイント使い道も比較できます。ガチャ前のシミュレーションにぜひ使ってみてくださいね。',
+      ja: DESCRIPTIONS['phantomparade'],
       en: 'Calculate Google Play Points earned on Kaishu, Battle Pass, and 250-pull Pity in Jujutsu Kaisen Phantom Parade.',
       ko: '주술회전 팬텀 퍼레이드의 유료 회주, 패스 및 250연차 천장 결제 시 적립되는 Play Points를 계산합니다.',
       tw: '計算咒術迴戰 幻影夜行購買有償迴珠、通行證及250抽保底時可獲得的 Google Play Points。'
     },
     packs: {
-      ja: [
-        { name: 'ファンパレパス (1,000円)', price: 1000 },
-        { name: '廻珠 140個 (160円)', price: 160 },
-        { name: '廻珠 430個 (480円)', price: 480 },
-        { name: '廻珠 930個 (1,000円)', price: 1000 },
-        { name: '廻珠 1,430個 (1,500円)', price: 1500 },
-        { name: '廻珠 3,000個 (3,000円)', price: 3000 },
-        { name: '廻珠 5,000個 (5,000円)', price: 5000 },
-        { name: '廻珠 10,000個 (10,000円)', price: 10000 }
-      ],
       en: [
         { name: '60 Kaishu ($0.99)', price: 0.99 },
         { name: '190 Kaishu ($3.99)', price: 3.99 },
@@ -1969,12 +1716,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: 'ファンパレパス (1,000円)', amount: 1000, mult: 1 },
-        { label: '10連分 (3,000円)', amount: 3000, mult: 1 },
-        { label: '天井 250連 (約75,000円)', amount: 75000, mult: 1 },
-        { label: '完凸目安 (約300,000円)', amount: 300000, mult: 1 }
-      ],
       en: [
         { label: 'Battle Pass ($7.99)', amount: 7.99, mult: 1 },
         { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
@@ -2015,20 +1756,12 @@ const GAMES_DATA = [
     names: { ja: 'リバース：1999 (Reverse: 1999)', en: 'Reverse: 1999', ko: '리버스: 1999 (Reverse: 1999)', tw: '重返未來：1999 (Reverse: 1999)' },
     shortNames: { ja: 'リバース1999', en: 'Reverse: 1999', ko: '리버스1999', tw: '重返未來1999' },
     descs: {
-      ja: 'リバース：1999の純雨の雫パック、咆哮のひと月（月パス）、70連/140連天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や使い道も比較できます。召喚前のポイント確認にぜひ役立ててみてくださいね。',
+      ja: DESCRIPTIONS['reverse1999'],
       en: 'Calculate Google Play Points earned on Clear Drops, Roaring Month, and 70/140-pull Pity in Reverse: 1999.',
       ko: '리버스: 1999의 순수한 빗방울 구매, 포효의 이달(월정액), 70/140연차 천장 결제 시 적립되는 Play Points를計算합니다.',
       tw: '計算重返未來：1999購買獨享雨滴、咆哮之月（月卡）及70/140抽保底時可獲得的 Google Play Points。'
     },
     packs: {
-      ja: [
-        { name: '純雨の雫 60個 (160円)', price: 160 },
-        { name: '純雨の雫 300個 (610円)', price: 610 },
-        { name: '純雨の雫 900個 (1,800円)', price: 1800 },
-        { name: '純雨の雫 1,500個 (3,000円)', price: 3000 },
-        { name: '純雨の雫 3,050個 (6,100円)', price: 6100 },
-        { name: '純雨の雫 5,000個 (10,000円)', price: 10000 }
-      ],
       en: [
         { name: '60 Clear Drops ($0.99)', price: 0.99 },
         { name: '300 Clear Drops ($4.99)', price: 4.99 },
@@ -2055,12 +1788,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: '咆哮のひと月 (610円)', amount: 610, mult: 1 },
-        { label: '10連分 1,800個 (約3,600円)', amount: 3600, mult: 1 },
-        { label: '仮天井 70連 (約25,200円)', amount: 25200, mult: 1 },
-        { label: '確定天井 140連 (約50,400円)', amount: 50400, mult: 1 }
-      ],
       en: [
         { label: 'Roaring Month ($4.99)', amount: 4.99, mult: 1 },
         { label: '10-pulls ($28.00)', amount: 28.0, mult: 1 },
@@ -2101,21 +1828,12 @@ const GAMES_DATA = [
     names: { ja: '崩壊3rd (Honkai Impact 3rd)', en: 'Honkai Impact 3rd', ko: '붕괴3rd (Honkai Impact 3rd)', tw: '崩壞3rd (Honkai Impact 3rd)' },
     shortNames: { ja: '崩壊3rd', en: 'Honkai 3rd', ko: '붕괴3rd', tw: '崩壞3rd' },
     descs: {
-      ja: '崩壊3rdの水晶購入、ギフトコイン、月パス、90連キャラ確定天井で貯まるGoogle Play Pointsをパッと計算！パック別ポイント還元早見表や使い道も一覧で比較できます。補給前の課金シミュレーションにぜひ使ってみてくださいね。',
+      ja: DESCRIPTIONS['honkai3rd'],
       en: 'Calculate Google Play Points earned on Crystals, Monthly Cards, and 90-pull Character Pity in Honkai Impact 3rd.',
       ko: '붕괴3rd의 수정 구매, 월정액, 90연차 캐릭터 천장 결제 시 적립되는 Play Points를 계산합니다.',
       tw: '計算崩壞3rd購買水晶、月卡及90抽角色保底時可獲得的 Google Play Points。'
     },
     packs: {
-      ja: [
-        { name: '水晶 70個 (150円)', price: 150 },
-        { name: '水晶 350個 (760円)', price: 760 },
-        { name: '水晶 720個 (1,500円)', price: 1500 },
-        { name: '水晶 1,200個 (2,600円)', price: 2600 },
-        { name: '水晶 1,800個 (3,800円)', price: 3800 },
-        { name: '水晶 3,000個 (6,200円)', price: 6200 },
-        { name: '水晶 6,000個 (12,000円)', price: 12000 }
-      ],
       en: [
         { name: '70 Crystals ($0.99)', price: 0.99 },
         { name: '350 Crystals ($4.99)', price: 4.99 },
@@ -2142,12 +1860,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: '水晶月パス (600円)', amount: 600, mult: 1 },
-        { label: '10連分 2,800個 (約5,600円)', amount: 5600, mult: 1 },
-        { label: '確定天井 90連 (約50,400円)', amount: 50400, mult: 1 },
-        { label: '装備一式目安 (約70,000円)', amount: 70000, mult: 1 }
-      ],
       en: [
         { label: 'Monthly Card ($4.99)', amount: 4.99, mult: 1 },
         { label: '10-pulls ($45.00)', amount: 45.0, mult: 1 },
@@ -2188,20 +1900,12 @@ const GAMES_DATA = [
     names: { ja: 'シャドウバース ワールズビヨンド', en: 'Shadowverse: Worlds Beyond', ko: '섀도우버스 월즈 비욘드', tw: '闇影詩章：凌駕世界 (Shadowverse: WB)' },
     shortNames: { ja: 'シャドバWB', en: 'Shadowverse: WB', ko: '섀도우버스 WB', tw: '闇影詩章WB' },
     descs: {
-      ja: 'シャドウバース ワールズビヨンド（シャドバWB）のクリスタル購入、プレパス、天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表や使い道も掲載しています。カードパック購入前の確認にぜひ役立ててみてくださいね。',
+      ja: DESCRIPTIONS['shadowversewb'],
       en: 'Calculate Google Play Points earned on Crystals, Premium Battle Pass, and Pack Points in Shadowverse: Worlds Beyond.',
       ko: '섀도우버스 월즈 비욘드의 크리스탈 구매, 프리미엄 패스 및 팩 포인트 결제 시 적립되는 Play Points를 계산합니다.',
       tw: '計算闇影詩章：凌駕世界購買水晶、尊享通行證及卡包點數保底時可獲得的 Google Play Points。'
     },
     packs: {
-      ja: [
-        { name: 'クリスタル 50個 (160円)', price: 160 },
-        { name: 'クリスタル 150個 (480円)', price: 480 },
-        { name: 'クリスタル 320個 (1,000円)', price: 1000 },
-        { name: 'クリスタル 1,000個 (3,000円)', price: 3000 },
-        { name: 'クリスタル 1,750個 (5,000円)', price: 5000 },
-        { name: 'クリスタル 3,600個 (10,000円)', price: 10000 }
-      ],
       en: [
         { name: '50 Crystals ($0.99)', price: 0.99 },
         { name: '150 Crystals ($3.99)', price: 3.99 },
@@ -2228,12 +1932,6 @@ const GAMES_DATA = [
       ]
     },
     presets: {
-      ja: [
-        { label: 'プレミアムパス (1,200円)', amount: 1200, mult: 1 },
-        { label: '10パック分 (2,000円)', amount: 2000, mult: 1 },
-        { label: '新弾50パック (10,000円)', amount: 10000, mult: 1 },
-        { label: '天井交換目安 (約50,000円)', amount: 50000, mult: 1 }
-      ],
       en: [
         { label: 'Battle Pass ($9.99)', amount: 9.99, mult: 1 },
         { label: '10 Packs ($16.00)', amount: 16.0, mult: 1 },
@@ -2270,6 +1968,9 @@ const GAMES_DATA = [
   }
 ];
 
+// 紹介文は本文・検索説明・一覧カードで共有する。
+for (const game of GAMES_DATA) game.descs.ja = DESCRIPTIONS[game.id];
+
 function generateGamePageHtml(game, localeKey) {
   const loc = LOCALES[localeKey];
   const langPrefix = loc.dir ? `/${loc.dir}` : '';
@@ -2294,19 +1995,22 @@ function generateGamePageHtml(game, localeKey) {
   const gameTitle = game.names[localeKey] || game.names.ja;
   const gameShort = game.shortNames[localeKey] || game.shortNames.ja;
   const gameDesc = game.descs[localeKey] || game.descs.ja;
-  const gamePacks = game.packs[localeKey] || game.packs.ja;
-  const gamePresets = game.presets[localeKey] || game.presets.ja;
+  const presentation = localeKey === 'ja' ? getJapaneseCalculator(game) : null;
+  const gamePacks = presentation ? presentation.packs : (game.packs[localeKey] || game.packs.ja);
+  const gamePresets = presentation ? presentation.presets : (game.presets[localeKey] || game.presets.ja);
+  const amountOnly = presentation?.mode === 'amount';
+  const initialAmount = presentation ? presentation.initialAmount : gamePresets[0].amount;
   const gameFaq = game.faq[localeKey] || game.faq.ja;
 
   const packOptions = gamePacks.map(p => `<option value="${p.price}">${p.name}</option>`).join('\n                  ');
-  const presetButtons = gamePresets.map((p, idx) => `<button type="button" class="preset-btn ${idx === 0 ? 'active' : ''}" data-amount="${p.amount}" data-mult="${p.mult}" aria-pressed="${idx === 0 ? 'true' : 'false'}">${p.label}</button>`).join('\n              ');
+  const presetButtons = gamePresets.map((p, idx) => `<button type="button" class="preset-btn ${idx === 0 ? 'active' : ''}" data-amount="${p.amount}"${p.kind === 'budget' ? ' data-input-kind="budget"' : ` data-mult="${p.mult}"`} aria-pressed="${idx === 0 ? 'true' : 'false'}">${p.label}</button>`).join('\n              ');
   const faqHtml = gameFaq.map(f => `<h3>${f.q}</h3>\n<p>${f.a}</p>`).join('\n');
   
   const packTableRows = gamePacks.map(p => {
     const normalPts = Math.round(p.price / loc.unitSpend);
     const cpPts = Math.round((p.price / loc.unitSpend) * 5);
     const formattedPrice = `${loc.currencyPrefix}${p.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}${loc.currencySuffix}`;
-    return `<tr><td>${p.name}</td><td>${formattedPrice}</td><td>${loc.approxText}${normalPts.toLocaleString()} pt</td><td>${loc.approxText}${cpPts.toLocaleString()} pt</td></tr>`;
+    return `<tr><td>${p.tableName || p.name}</td><td>${formattedPrice}</td><td>${loc.approxText}${normalPts.toLocaleString()} pt</td><td>${loc.approxText}${cpPts.toLocaleString()} pt</td></tr>`;
   }).join('\n');
 
   const faqSchema = {
@@ -2454,7 +2158,7 @@ function generateGamePageHtml(game, localeKey) {
           <header class="game-header">
               <span class="game-badge">${game.icon} ${loc.badgeText}</span>
               <h1 class="game-title">${gameTitle}</h1>
-              <p class="game-meta">${loc.verifiedDate} ｜ Google Play Points (${loc.rateText})</p>
+              <p class="game-meta">${amountOnly ? 'Google Playでの購入額からPlayポイントを計算' : `${loc.verifiedDate} ｜ Google Play Points (${loc.rateText})`}</p>
           </header>
 
           <p>${gameDesc}</p>
@@ -2463,29 +2167,28 @@ function generateGamePageHtml(game, localeKey) {
           <section class="game-sim-card">
               <h2 class="game-sim-title">🧮 ${gameShort}</h2>
 
-              <p class="preset-heading">${loc.presetHeading}</p>
+${gamePresets.length ? `              <p class="preset-heading">${localeKey === 'ja' ? '金額をすぐ入力：' : loc.presetHeading}</p>
               <div class="preset-buttons">
                   ${presetButtons}
-              </div>
-
-              <form id="game-sim-form">
+              </div>` : ''}
+${amountOnly ? '              <p class="game-sim-lead">Google Play購入画面の金額を入力すると、貯まるポイントが分かります。</p>' : ''}
+              <form id="game-sim-form"${amountOnly ? ' data-input-mode="amount"' : ''}>
                   <div class="input-grid">
-                      <div class="input-field">
-                          <label for="sim-pack-select">${loc.packSelectLabel}</label>
+${amountOnly ? '' : `                      <div class="input-field">
+                          <label for="sim-pack-select">${localeKey === 'ja' ? '商品を選ぶ：' : loc.packSelectLabel}</label>
                           <select id="sim-pack-select">
                               ${packOptions}
                               <option value="custom">${loc.customOption}</option>
                           </select>
                       </div>
-
                       <div class="input-field">
                           <label for="sim-pack-count">${loc.packCountLabel}</label>
                           <input type="number" id="sim-pack-count" value="1" min="1" max="999" inputmode="numeric">
-                      </div>
+                      </div>`}
 
                       <div class="input-field">
                           <label for="sim-custom-amount">${loc.customAmountLabel}</label>
-                          <input type="number" id="sim-custom-amount" value="${gamePresets[0].amount}" min="0" step="any" inputmode="decimal">
+                          <input type="number" id="sim-custom-amount" value="${initialAmount}" min="0" step="any" inputmode="decimal">
                       </div>
 
                       <div class="input-field">
@@ -2568,24 +2271,20 @@ function generateGamePageHtml(game, localeKey) {
               </div>
           </section>
 
-          <!-- パック早見表 -->
-          <section class="section">
-              <h2>${gameShort} ${loc.tableTitle}</h2>
+          <section class="section${gamePacks.length || presentation?.budgets.length ? '' : ' game-ad-section'}">
+${gamePacks.length ? `              <h2>${gameShort} ${localeKey === 'ja' ? '商品の購入額とポイント' : loc.tableTitle}</h2>
               <div class="pack-table-wrap">
-                  <table class="pack-table">
-                      <thead>
-                          <tr>
-                              <th>${loc.tableThPack}</th>
-                              <th>${loc.tableThPrice}</th>
-                              <th>${loc.tableThNormal}</th>
-                              <th>${loc.tableThCp}</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          ${packTableRows}
-                      </tbody>
+                  <table class="pack-table"${localeKey === 'ja' ? ' data-table-kind="products"' : ''}>
+                      <thead><tr><th>${localeKey === 'ja' ? '商品' : loc.tableThPack}</th><th>${loc.tableThPrice}</th><th>${loc.tableThNormal}</th><th>${loc.tableThCp}</th></tr></thead>
+                      <tbody>${packTableRows}</tbody>
                   </table>
-              </div>
+              </div>` : ''}
+${presentation?.budgets.length ? `              <h2>予算別のポイント目安</h2>
+              <p>以下は商品価格ではなく、購入額を変えた計算例です。天井や進化までに必要な費用を示すものではありません。</p>
+              <div class="pack-table-wrap"><table class="pack-table" data-table-kind="budgets">
+                <thead><tr><th>予算（計算例）</th><th>${loc.tableThNormal}</th><th>${loc.tableThCp}</th></tr></thead>
+                <tbody>${presentation.budgets.map(amount => `<tr><td>${amount.toLocaleString('ja-JP')}円</td><td>約 ${Math.round(amount / loc.unitSpend).toLocaleString('ja-JP')} pt</td><td>約 ${Math.round(amount / loc.unitSpend * 5).toLocaleString('ja-JP')} pt</td></tr>`).join('')}</tbody>
+              </table></div>` : ''}
 
               <!-- 広告枠（レスポンシブ） -->
               <div class="game-ad-container">

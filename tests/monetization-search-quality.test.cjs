@@ -98,12 +98,35 @@ function generatedFiles(script, initial={}) {
     }
   };
   vm.runInNewContext(read(script),{__dirname:path.join(root,'scripts'),require(id){
-    if(id==='fs')return io;if(id==='path')return path;throw Error('Unexpected dependency '+id);
+    if(id==='fs')return io;if(id==='path')return path;
+    // 操作モデルと紹介文はI/Oを持たない。生成先の隔離は維持する。
+    if(id==='./game-calculator-presentation.cjs')return require('../scripts/game-calculator-presentation.cjs');
+    throw Error('Unexpected dependency '+id);
   },console:{log(){}}},{filename:script,timeout:5000});
   return writes;
 }
 let gameOutputs;
 function generatedGames(){return gameOutputs ||= generatedFiles('scripts/generate-game-simulators.cjs',{'blog/articles.json':read('blog/articles.json')});}
+
+test('初回生成で商品と予算を区別し、商品がない操作欄は出さない', () => {
+  const output = generatedGames();
+  const pad = output.get('games/pad/index.html');
+  const productSelect = pad.match(/<select id="sim-pack-select">([\s\S]*?)<\/select>/)[1];
+  const values = openingTags(productSelect).filter(node => node.tag === 'option').map(node => node.attrs.value);
+  assert.deepEqual(values, ['980', 'custom']);
+  assert.match(pad, /data-table-kind="products"/);
+  assert.match(pad, /data-table-kind="budgets"/);
+  assert.match(pad, /商品価格ではなく/);
+  for (const slug of ['genshin', 'bluearchive', 'mementomori', 'shadowversewb']) {
+    const html = output.get(`games/${slug}/index.html`);
+    assert.match(html, /data-input-mode="amount"/);
+    assert.doesNotMatch(html, /id="sim-pack-select"|id="sim-pack-count"|data-table-kind="products"/);
+    if (['genshin', 'bluearchive'].includes(slug)) assert.doesNotMatch(html, /preset-heading|pack-table/);
+  }
+  const memento = output.get('games/mementomori/index.html');
+  assert.match(memento, /data-amount="30000"[^>]*>予算 30,000円/);
+  assert.doesNotMatch(memento, /ピックアップ天井 100連|LR進化目安/);
+});
 function assertAdUnits(html,label) {
   const units=openingTags(html).filter(node=>node.tag==='ins' && (node.attrs.class||'').split(/\s+/).includes('adsbygoogle'));
   assert.ok(units.length>0,label+': 広告要素がない');

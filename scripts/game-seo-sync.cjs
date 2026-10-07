@@ -1,9 +1,7 @@
 'use strict';
 
-const { syncVerifiedInputOnly } = require('./game-seo-safety-sync.cjs');
-
 const { read, writeIfChanged, requireGuideMetadata, createRequiredEdits } = require('./game-seo-common.cjs');
-const { replaceRequired, replaceRegexRequired, insertBeforeRequired } = createRequiredEdits('game-seo');
+const { insertBeforeRequired } = createRequiredEdits('game-seo');
 
 const {
   VERIFIED_AT,
@@ -149,12 +147,6 @@ function renderMonstGuide() {
 function syncFgo(rootDir) {
   const file = 'games/fgo/index.html';
   let html = read(rootDir, file);
-  const options = `                              <option value="480">聖晶石 有償4+無償1個（計5個 / 480円）</option>\n                              <option value="1600">聖晶石 有償13+無償8個（計21個 / 1,600円）</option>\n                              <option value="3000">聖晶石 有償25+無償16個（計41個 / 3,000円）</option>\n                              <option value="4900">聖晶石 有償42+無償35個（計77個 / 4,900円）</option>\n                              <option value="10000">聖晶石 有償86+無償82個（計168個 / 10,000円）</option>\n                              <option value="custom">自由入力（カスタム金額）</option>`;
-  html = replaceRegexRequired(html, /(<select id="sim-pack-select">)[\s\S]*?(<\/select>)/, `$1\n${options}\n                          $2`, '有償13+無償8個（計21個', 'FGO pack select');
-  const rows = GAME_SEO.fgo.packsJa.map(pack => `<tr><td>聖晶石 有償${pack.paid}+無償${pack.free}個（計${pack.total}個）</td><td>${yen(pack.price)}</td><td>約 ${roundedPointsForYen(pack.price, 1)} pt</td><td>約 ${roundedPointsForYen(pack.price, 5)} pt</td></tr>`).join('\n');
-  html = replaceRegexRequired(html, /(<table class="pack-table">[\s\S]*?<tbody>)[\s\S]*?(<\/tbody>)/, `$1\n${rows}\n                      $2`, '有償13+無償8個（計21個）</td>', 'FGO pack table');
-  const presets = `<div class="preset-buttons">\n                  <button type="button" class="preset-btn active" data-amount="1920" data-mult="1" aria-pressed="true">福袋 有償15個をゼロから用意（1,920円）</button>\n                  <button type="button" class="preset-btn" data-amount="10000" data-mult="1" aria-pressed="false">最大パック1回（10,000円）</button>\n                  <button type="button" class="preset-btn" data-amount="54600" data-mult="1" aria-pressed="false">確定召喚330回・石0から（54,600円）</button>\n              </div>`;
-  html = replaceRegexRequired(html, /<div class="preset-buttons">[\s\S]*?<\/div>/, presets, '福袋 有償15個をゼロから用意', 'FGO presets');
   html = html.replaceAll('FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？', 'FGOの確定召喚330回を石0から用意するといくら？');
   html = html.replaceAll('通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。', '確認済みの現行価格だけで聖晶石900個以上を最安にそろえる例は54,600円・902個です。ブロンズ通常獲得率なら税込額ベースの概算で約546pt、5pt/100円の特別獲得率なら約2,730ptです。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。');
   html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `FGO価格・確定召喚・Play Points確認：${VERIFIED_AT}`);
@@ -165,13 +157,6 @@ function syncFgo(rootDir) {
 
 function syncGenshin(rootDir) {
   const file = 'games/genshin/index.html';
-  const inputChanged = syncVerifiedInputOnly(rootDir, {
-    file,
-    presetLabel: '購入画面の金額を入力',
-    optionLabel: 'Google Playの購入予定額（自由入力）',
-    tableMessage: 'Google Playの購入画面で確認した金額を入力してください。商品価格は購入経路・地域・時期で異なる場合があります。',
-    gameMeta: '月パスの商品内容確認：2026-09-27／Google Play価格は購入画面で確認'
-  });
   let html = read(rootDir, file);
   html = html.replaceAll('原神で確定天井（180連）まで課金すると何ポイント貯まりますか？', '原神の90連・180連は何円ですか？');
   html = html.replaceAll('180連（約54,000円）課金した場合、通常時（1pt/100円）で約540pt、Google Playに100円あたり4〜7ptの特別獲得率が表示され、その購入が対象なら約2,160pt〜3,780pt貯まります。', '90連は最大14,400原石、180連は最大28,800原石が目安ですが、所持原石・空月・初回2倍・配布分で実際の課金額が変わるため固定の円額は断定しません。購入予定額を計算機へ入力し、Google Playの獲得予定ポイント表示を最終確認してください。');
@@ -179,7 +164,7 @@ function syncGenshin(rootDir) {
   const block = `<section class="section" data-game-seo-guide="genshin"><h2>空月の祝福と通常チャージを比較する</h2><p>空月の祝福は30日すべて受け取れば創世結晶300個と原石2,700個、最大3,000原石相当です。即時チャージとは受取速度が違います。価格はGoogle Playの購入画面で確認してください。</p><p><a href="./welkin-value/">空月の祝福の受取条件とPlay Pointsを詳しく見る ➔</a></p></section>`;
   html = html.replace(/<section class="section" data-game-seo-guide="genshin">[\s\S]*?<\/section>/, block);
   html = insertBeforeRequired(html, '<section class="section game-source-section">', block, 'data-game-seo-guide="genshin"', 'Genshin guide block');
-  return writeIfChanged(rootDir, file, html) || inputChanged;
+  return writeIfChanged(rootDir, file, html);
 }
 
 function syncMonst(rootDir) {

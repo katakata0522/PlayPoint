@@ -178,7 +178,6 @@
                               <option value="custom">직접 입력 (자유 금액)</option>
                           </select>
                       </div>
-
                       <div class="input-field">
                           <label for="sim-pack-count">구매 수량:</label>
                           <input type="number" id="sim-pack-count" value="1" min="1" max="999" inputmode="numeric">
@@ -264,31 +263,22 @@
               </div>
           </section>
 
-          <!-- パック早見表 -->
           <section class="section">
               <h2>원신 패키지별 Play Points 적립 비교표</h2>
               <div class="pack-table-wrap" tabindex="0" role="region" aria-label="원신 패키지별 Play Points 적립 비교표: 비교표 (왼쪽 및 오른쪽 화살표 키로 스크롤)">
                   <table class="pack-table">
-                      <thead>
-                          <tr>
-                              <th>패키지 / 아이템명</th>
-                              <th>가격 (KRW)</th>
-                              <th>기본 적립률 (1,000원당 1pt)</th>
-                              <th>특별 적립률 (1,000원당 5pt)</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <tr><td>공월 축복 (₩5,900)</td><td>₩5,900원</td><td>약 6 pt</td><td>약 30 pt</td></tr>
+                      <thead><tr><th>패키지 / 아이템명</th><th>가격 (KRW)</th><th>기본 적립률 (1,000원당 1pt)</th><th>특별 적립률 (1,000원당 5pt)</th></tr></thead>
+                      <tbody><tr><td>공월 축복 (₩5,900)</td><td>₩5,900원</td><td>약 6 pt</td><td>약 30 pt</td></tr>
 <tr><td>진주 기행 (₩12,000)</td><td>₩12,000원</td><td>약 12 pt</td><td>약 60 pt</td></tr>
 <tr><td>창세의 결정 60개 (₩1,200)</td><td>₩1,200원</td><td>약 1 pt</td><td>약 6 pt</td></tr>
 <tr><td>창세의 결정 300+30개 (₩5,900)</td><td>₩5,900원</td><td>약 6 pt</td><td>약 30 pt</td></tr>
 <tr><td>창세의 결정 980+110개 (₩19,000)</td><td>₩19,000원</td><td>약 19 pt</td><td>약 95 pt</td></tr>
 <tr><td>창세의 결정 1980+260개 (₩37,000)</td><td>₩37,000원</td><td>약 37 pt</td><td>약 185 pt</td></tr>
 <tr><td>창세의 결정 3280+600개 (₩65,000)</td><td>₩65,000원</td><td>약 65 pt</td><td>약 325 pt</td></tr>
-<tr><td>창세의 결정 6480+1600개 (₩119,000)</td><td>₩119,000원</td><td>약 119 pt</td><td>약 595 pt</td></tr>
-                      </tbody>
+<tr><td>창세의 결정 6480+1600개 (₩119,000)</td><td>₩119,000원</td><td>약 119 pt</td><td>약 595 pt</td></tr></tbody>
                   </table>
               </div>
+
 
               <!-- 広告枠（レスポンシブ） -->
               <div class="game-ad-container">
@@ -556,6 +546,6 @@
 
   <script src="../../../js/analytics-core.js?v=e63a4a63f7"></script>
   <script src="../../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../../games/game-sim.js?v=f9f51d4eb6"></script>
+  <script src="../../../games/game-sim.js?v=49f19cf105"></script>
 </body>
 </html>

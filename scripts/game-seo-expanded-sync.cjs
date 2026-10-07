@@ -1,9 +1,7 @@
 'use strict';
 
-const { syncVerifiedInputOnly } = require('./game-seo-safety-sync.cjs');
-
 const { read, writeIfChanged, createGuideShell, createRequiredEdits } = require('./game-seo-common.cjs');
-const { replaceRequired, replaceAllRequired, replaceRegexRequired, insertBeforeRequired } = createRequiredEdits('game-seo-expanded');
+const { replaceAllRequired, insertBeforeRequired } = createRequiredEdits('game-seo-expanded');
 
 const {
   VERIFIED_AT,
@@ -112,36 +110,22 @@ function renderProsekaGuide() {
 
 function syncStarrail(rootDir) {
   const file = 'games/starrail/index.html';
-  const inputChanged = syncVerifiedInputOnly(rootDir, {
-    file,
-    presetLabel: '購入画面の金額を入力',
-    optionLabel: 'Google Playの購入予定額（自由入力）',
-    tableMessage: 'Google Playの購入画面で確認した金額を入力してください。商品価格は購入経路・地域・時期で異なる場合があります。',
-    gameMeta: '月パスの商品内容確認：2026-09-27／Google Play価格は購入画面で確認'
-  });
   let html = read(rootDir, file);
   html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `スタレ価格・列車補給標章・Play Points確認：${VERIFIED_AT}`);
   const block = `<section class="section" data-game-seo-guide="starrail"><h2>列車補給標章と通常チャージを比較する</h2><p>列車補給標章は購入時の往日の夢華300個と、30日間のログインで得る星玉を合わせて最大3,000星玉相当です。価格はGoogle Playの購入画面で確認し、実際の支払予定額で計算してください。</p><p><a href="./supply-pass-value/">列車補給標章の受取条件とPlay Pointsを詳しく見る ➔</a></p></section>`;
   html = html.replace(/<section class="section" data-game-seo-guide="starrail">[\s\S]*?<\/section>/, block);
   html = insertBeforeRequired(html, '<section class="section game-source-section">', block, 'data-game-seo-guide="starrail"', 'Star Rail guide block');
-  return writeIfChanged(rootDir, file, html) || inputChanged;
+  return writeIfChanged(rootDir, file, html);
 }
 
 function syncZzz(rootDir) {
   const file = 'games/zzz/index.html';
-  const inputChanged = syncVerifiedInputOnly(rootDir, {
-    file,
-    presetLabel: '購入画面の金額を入力',
-    optionLabel: 'Google Playの購入予定額（自由入力）',
-    tableMessage: 'Google Playの購入画面で確認した金額を入力してください。商品価格は購入経路・地域・時期で異なる場合があります。',
-    gameMeta: '月パスの商品内容確認：2026-09-27／Google Play価格は購入画面で確認'
-  });
   let html = read(rootDir, file);
   html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `ゼンゼロ価格・インターノット会員・Play Points確認：${VERIFIED_AT}`);
   const block = `<section class="section" data-game-seo-guide="zzz"><h2>インターノット会員と通常チャージを比較する</h2><p>インターノット会員は購入時のモノクローム300個と、30日間のログインで得るポリクロームを合わせて最大3,000ポリクローム相当です。価格はGoogle Playの購入画面で確認してください。</p><p><a href="./membership-value/">インターノット会員の受取条件とPlay Pointsを詳しく見る ➔</a></p></section>`;
   html = html.replace(/<section class="section" data-game-seo-guide="zzz">[\s\S]*?<\/section>/, block);
   html = insertBeforeRequired(html, '<section class="section game-source-section">', block, 'data-game-seo-guide="zzz"', 'ZZZ guide block');
-  return writeIfChanged(rootDir, file, html) || inputChanged;
+  return writeIfChanged(rootDir, file, html);
 }
 
 function syncUmamusume(rootDir) {
@@ -157,12 +141,6 @@ function syncUmamusume(rootDir) {
 
   const file = 'games/umamusume/index.html';
   let html = read(rootDir, file);
-  const presets = `<div class="preset-buttons">\n                  <button type="button" class="preset-btn active" data-amount="980" data-mult="1" aria-pressed="true">ウマスク（980円）</button>\n                  <button type="button" class="preset-btn" data-amount="1980" data-mult="1" aria-pressed="false">ウマプラン（1,980円）</button>\n              </div>`;
-  html = replaceRegexRequired(html, /<div class="preset-buttons">[\s\S]*?<\/div>/, presets, 'ウマスク（980円）', 'Uma presets');
-  const options = `                              <option value="980">ウマスク（980円）</option>\n                              <option value="1980">ウマプラン（1,980円）</option>\n                              <option value="custom">自由入力（カスタム金額）</option>`;
-  html = replaceRegexRequired(html, /(<select id="sim-pack-select">)[\s\S]*?(<\/select>)/, `$1\n${options}\n                          $2`, 'ウマスク（980円）</option>', 'Uma verified select');
-  html = replaceRegexRequired(html, /(<table class="pack-table">[\s\S]*?<tbody>)[\s\S]*?(<\/tbody>)/, `$1\n<tr><td>ウマスク（月額）</td><td>980 円</td><td>約 10 pt</td><td>約 49 pt</td></tr>\n<tr><td>ウマプラン（月額・機能系）</td><td>1,980 円</td><td>約 20 pt</td><td>約 99 pt</td></tr>\n                      $2`, 'ウマスク（月額）', 'Uma verified table');
-  html = html.replace('id="sim-custom-amount" value="1000"', 'id="sim-custom-amount" value="980"');
   html = replaceAllRequired(html, 'ウマ娘の天井（200連=6万円）で何ポイント貯まりますか？', 'ウマ娘の200連は固定で6万円ですか？', 'Uma FAQ question');
   html = replaceAllRequired(html, '通常時で約600ポイント、Google Playポイント5倍キャンペーン時なら約3,000ポイント貯まります。', '200連には通常30,000ジュエルが必要ですが、所持ジュエル・有償/無償・期間限定商品・購入経路で実際の現金負担が変わるため、固定6万円とは断定しません。', 'Uma FAQ answer');
   html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `ウマスク・ウマプラン・Play Points確認：${VERIFIED_AT}`);
