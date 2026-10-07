@@ -237,11 +237,8 @@ async function main() {
       });
       assert(response && response.ok(), `${gamePath} HTTP failure`);
       await page.locator('#game-sim-form').waitFor({ state: 'attached', timeout: 30000 });
-      if (gamePath === 'games/genshin/') {
-        assert(await page.locator('#sim-pack-select').count() === 0, '日本語の金額入力ページに不要な商品欄がない');
-      } else {
-        await page.locator('#sim-pack-select').selectOption('custom');
-      }
+      assert(await page.locator('#game-sim-form').getAttribute('data-input-mode') === 'amount', `${gamePath} 金額入力を使用する`);
+      assert(await page.locator('#sim-pack-select').count() === 0, `${gamePath} 不要な商品欄がない`);
       await page.locator('#sim-custom-amount').fill(gamePath.startsWith('en/') ? '10' : '1000');
       await page.locator('#sim-custom-amount').dispatchEvent('input');
       await page.waitForFunction(() => {
