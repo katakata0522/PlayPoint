@@ -103,7 +103,7 @@ function prepareDiscoveryArticle(html, entry) {
   html = html.replace(/<script\b[^>]*\bsrc=["'][^"']*(?:js\/(?:analytics-core|intent-tracking|third-party)|blog\/article)\.js(?:\?[^"']*)?["'][^>]*>/gi,
     tag => /\b(?:defer|async|type)\s*(?:=|\s|>)/i.test(tag) ? tag : tag.replace('<script', '<script defer'));
   html = withoutReadingMount(html);
-  html = html.replace(/\s*<p class="article-region-scope">[\s\S]*?<\/p>/g, '');
+  html = html.replace(/\s*<p\b[^>]*class="[^"]*\barticle-region-scope\b[^"]*"[^>]*>[\s\S]*?<\/p>/g, '');
   if (entry.locale !== 'ja') {
     const compactScope = /\/articles\/google-play-points-cash-conversion\.html$/.test(entry.path) ? compactScopeCopy[entry.locale] : null;
     const scope = compactScope
