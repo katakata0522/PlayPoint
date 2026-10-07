@@ -105,6 +105,21 @@ test('ウマスク深掘りはSSOTの現行公式特典と未受取仕様を説�
   assert.match(html, /Google Play.*Cygames WebStore|Cygames WebStore.*Google Play/);
 });
 
+test('月額サービスはゲームごとの特典と別料金の商品を分けて案内する', () => {
+  const monst = read('games/monst/index.html');
+  const productRow = (html, id) => html.match(new RegExp(`<tr data-product-id="${id}">[\\s\\S]*?</tr>`))?.[0] || '';
+  assert.match(productRow(monst, 'monpass'), /月額480円[\s\S]*スタミナ全回復/);
+  assert.match(productRow(monst, 'monpass-premium'), /月額1,980円[\s\S]*CMスキップ券30枚/);
+  assert.match(productRow(monst, 'premium-monthly-pack'), /980円[\s\S]*月額料金に含まれません/);
+  assert.match(productRow(monst, 'monpass'), /通常率で計算/);
+  assert.match(productRow(monst, 'orbs-6'), /オーブ 6個 \(480円\)/);
+  assert.match(monst, /通常オーブ購入はアプリ内の商品[\s\S]*Webショップの増量商品とは別/);
+  assert.match(productRow(read('games/pad/index.html'), 'pad-pass'), /専用ダンジョン[\s\S]*魔法石の単品購入とは別/);
+  const uma = read('games/umamusume/index.html');
+  assert.match(productRow(uma, 'umasuku'), /有償ジュエル500個/);
+  assert.match(productRow(uma, 'umaplan'), /継承因子[\s\S]*ウマスクとは別契約/);
+});
+
 test('他ゲームのカードにも終了済みウマ娘説明を残さない', () => {
   const stale = 'ウマ娘のジュエル購入、デイリージュエルパック、200連天井・完凸課金で貯まるGoogle Play Pointsを即時シミュレーション！';
   for (const file of getGamePageHtmlFiles(root)) {

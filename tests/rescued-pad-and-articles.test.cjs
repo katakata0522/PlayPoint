@@ -56,7 +56,7 @@ test('PAD is published for every generated game locale and linked from each port
 
   // 確認済み月額商品は予算例に混ぜず、商品選択欄に残す。
   const japanesePage = read('games/pad/index.html');
-  assert.ok(japanesePage.includes('<option value="' + GAME_SEO.pad.pass.price + '">パズドラパス (月額' + GAME_SEO.pad.pass.price + '円)</option>'));
+  assert.match(japanesePage, new RegExp(`<option value="${GAME_SEO.pad.pass.price}"[^>]*>パズドラパス \\(月額${GAME_SEO.pad.pass.price}円\\)</option>`));
   assert.ok(japanesePage.includes('data-table-kind="products"'));
   assert.ok(japanesePage.includes('data-table-kind="budgets"'));
 });

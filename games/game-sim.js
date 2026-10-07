@@ -400,7 +400,7 @@
         // 共有URLも手入力と同じ検証へ通す。parseFloatによる部分読み・切捨てはしない。
         try {
             const params = new URLSearchParams(window.location.search);
-            hasUrlAmount = params.has('amount') || params.has('pack');
+            hasUrlAmount = params.has('amount') || params.has('pack') || params.has('product');
             const readParam = (param, key, max) => {
                 if (!params.has(param) || !fields[key]) return;
                 const raw = params.get(param);
@@ -418,11 +418,24 @@
             }
             if (packSelect && hasUrlAmount) {
                 const pack = params.has('pack') ? numericValue(params.get('pack')) : numericValue(params.get('amount'));
-                const option = [...packSelect.options].find(o => numericValue(o.value) === pack);
-                packSelect.value = option ? option.value : 'custom';
-                if (params.has('pack') && !option) urlErrors.set('pack', { field: 'pack', max: limits.amount });
+                const product = params.get('product');
+                const options = [...packSelect.options];
+                const candidates = options.filter(o => numericValue(o.value) === pack);
+                // 新しい共有URLは商品IDで復元。金額だけの旧URLは、同額商品を推測しない。
+                const option = params.get('input') === 'amount' ? null : product
+                    ? options.find(o => o.dataset.productId === product && (!params.has('pack') || numericValue(o.value) === pack))
+                    : candidates.length === 1 ? candidates[0] : null;
+                packSelect.selectedIndex = option ? options.indexOf(option) : options.findIndex(o => o.value === 'custom');
+                if ((params.has('product') && !option) || (params.has('pack') && !candidates.length)) urlErrors.set('pack', { field: 'pack', max: limits.amount });
+                if (!option && candidates.length > 1 && !params.has('product') && customAmountInput && !params.has('amount')) {
+                    customAmountInput.value = String(pack * (params.has('count') ? numericValue(params.get('count')) : 1));
+                }
+                if (!option && params.has('pack') && params.has('count')) {
+                    const count = numericValue(params.get('count'));
+                    if (!Number.isInteger(count) || count < 1 || count > limits.count) urlErrors.set('amount', { field: 'amount', max: limits.amount });
+                }
                 if (countInput) setPackCountVisibility(Boolean(option));
-            } else if (!packSelect && params.has('pack')) {
+            } else if (!packSelect && (params.has('pack') || params.has('product'))) {
                 // 商品を持たないページへ旧商品指定が来たら、見える金額欄で訂正できるようにする。
                 urlErrors.set('amount', { field: 'amount', max: limits.amount });
             }
@@ -431,7 +444,10 @@
         }
 
         // 初期ロード時の双方向同期判定
-        if (customAmountInput && packSelect && !hasUrlAmount) {
+        if (packSelect && !hasUrlAmount && form.dataset.initialInputKind === 'budget') {
+            packSelect.value = 'custom';
+            setPackCountVisibility(false);
+        } else if (customAmountInput && packSelect && !hasUrlAmount) {
             const initVal = parseFloat(customAmountInput.value) || 0;
             const currentPackVal = parseFloat(packSelect.value);
             const currentCount = Math.max(1, parseInt(countInput?.value, 10) || 1);
@@ -487,6 +503,10 @@
             if (calculation.isPack && packSelect) {
                 params.set('pack', String(res.amountPerPurchase));
                 params.set('count', String(res.purchaseCount));
+                const product = packSelect.options[packSelect.selectedIndex]?.dataset.productId;
+                if (product) params.set('product', product);
+            } else {
+                params.set('input', 'amount');
             }
             if (res.usesEligibleAmount) params.set('eligible', String(res.eligibleAmountPerPurchase));
             return `${window.location.origin}${window.location.pathname}?${params.toString()}`;

@@ -15,11 +15,14 @@ const SOURCES = {
   monstMonthlyWeb: 'https://www.monster-strike.com/news/20240929_1.html',
   monstWebLaunch: 'https://www.monster-strike.com/news/20240808_10.html',
   monstWebCurrent: 'https://webshop.monster-strike.com/transaction',
+  monstAppProducts: 'https://www.monster-strike.com/transaction/',
+  monstPremium: 'https://www.monster-strike.com/news/20250807_3.html',
   starrailSupplyPassReference: 'https://store.epicgames.com/p/honkai-star-rail-express-supply-pass-b72410',
   zzzMembershipReference: 'https://store.playstation.com/en-nz/product/EP7711-PPSA20599_00-NAPPS5VIPUSD0499',
   umamusumeUmasuku: 'https://webstore.cygames.com/umamusume/subscriptions/detail/umapack/',
   umamusumeUmasukuLaunch: 'https://umamusume.jp/steam-news/detail?id=2264',
   umamusumeUmaplan: 'https://umamusume.jp/news/detail?id=3097',
+  umamusumeUmaplanDetails: 'https://webstore.cygames.com/umamusume/subscriptions/detail/umaboost/',
   prosekaWebStore: 'https://pjsekai.sega.jp/webstore',
   prosekaFaq: 'https://pjsekai.sega.jp/faq/index.html',
   nikkeCommerceLaw: 'https://nikke-jp.com/lawts/',
@@ -119,7 +122,19 @@ const GAME_SEO = {
     sources: [SOURCES.monstMonthlyWeb, SOURCES.monstWebLaunch, SOURCES.monstWebCurrent, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
     appStoreReference: { price: 10000, orbs: 180 },
     webStore: { price: 10000, orbs: 190 },
-    monthlyWebStore: { price: 10000, orbs: 200, limitPerMonth: 1 }
+    monthlyWebStore: { price: 10000, orbs: 200, limitPerMonth: 1 },
+    productsVerifiedAt: '2026-10-07',
+    // アプリ内の商品。Webショップの増量オーブや予算例は含めない。
+    packsJa: [
+      { id: 'starter-premium', name: '初心者応援パック プレミアム (1,000円)', price: 1000, detail: '獣神化★6確定ガチャ1回とオーブ8個、育成アイテム。' },
+      { id: 'collab-starter', name: 'コラボスターターパック (1,000円)', price: 1000, detail: 'コラボ開催時の商品。対象キャラ・内容・販売期間は開催ごとに異なります。' },
+      { id: 'first-acquisition', name: '初獲得パック (1,800円)', price: 1800, detail: '初獲得★6確定ガチャ1回とオーブ10個など。排出対象を全て獲得済みなら重複があります。' },
+      { id: 'ability', name: '選べる！アビリティパック (3,800円)', price: 3800, detail: '選べるのはアビリティ。キャラを指名する商品ではありません。' },
+      { id: 'monpass', name: 'モンパス (月額480円)', price: 480, billing: 'subscription', detail: '自動更新。1日1回のスタミナ全回復、モンスポットのパワー＋など。' },
+      { id: 'monpass-premium', name: 'モンパスプレミアム (月額1,980円)', price: 1980, billing: 'subscription', detail: 'モンパスの特典に追加。入会時・1か月継続ごとにCMスキップ券30枚、使用後2週間ごとの対象クエストでラッキーリザルト確定発動など。' },
+      { id: 'premium-monthly-pack', name: 'プレミアム会員限定 月イチお得パック (980円)', price: 980, detail: 'プレミアム会員が月1回、別料金で買うパック。オーブ10個、CMスキップ券30枚、育成アイテム。月額料金に含まれません。' },
+      ...[[2, 160], [6, 480], [14, 1000], [33, 2200], [60, 3800], [82, 4900], [180, 10000]].map(([orbs, price]) => ({ id: `orbs-${orbs}`, name: `オーブ ${orbs}個 (${price.toLocaleString('ja-JP')}円)`, price }))
+    ]
   },
   bluearchive: {
     verifiedAt: VERIFIED_AT,
@@ -214,7 +229,8 @@ const GAME_SEO = {
         rankExpBonusPercent: 5,
         alwaysAvailableDungeonSets: true,
         passBadge: true,
-        eventQuestExtraRewardsWhenAvailable: true
+        eventQuestExtraRewardsWhenAvailable: true,
+        highSpeedModeWithoutExtraStamina: true
       }
     }
   },
