@@ -79,6 +79,11 @@ html:lang(zh-TW) .article-opening-v2 .hero h1 {
   font-size: 0.75rem;
 }
 
+.article-opening-v2 .content a:focus-visible {
+  outline: 3px solid var(--reading-link, #0b57d0) !important;
+  outline-offset: 3px;
+}
+
 .article-opening-v2 .article-opening-answer,
 .article-opening-v2 .content > .intro.article-opening-answer {
   margin: 18px 0 28px !important;
