@@ -40,6 +40,11 @@ const scopeCopy = {
   ko: '표시 언어: 한국어 · 대한민국 기준. 혜택은 Google Play 국가와 계정에 따라 달라집니다.',
   tw: '顯示語言：繁體中文 · 台灣條件。優惠依 Google Play 國家／地區與帳號而定。'
 };
+const compactScopeCopy = {
+  en: ['United States', 'United States reference. Offers depend on your Google Play country and account.'],
+  ko: ['대한민국', '대한민국 기준입니다. 혜택은 Google Play 국가와 계정에 따라 달라집니다.'],
+  tw: ['台灣', '台灣條件。優惠依 Google Play 國家／地區與帳號而定。']
+};
 const diaryCopy = {
   ja: ['受け取った結果を今週の日記に残す', '受取後のポイントや賞品を記録できます。記録はこの端末に保存され、Google Playとは連携しません。', '今週の日記を開く'],
   en: ['Keep a record of this week’s reward', 'After claiming in Google Play, record the points or prize here. Your diary stays on this device and does not connect to your Google account.', 'Open this week’s diary'],
@@ -100,7 +105,11 @@ function prepareDiscoveryArticle(html, entry) {
   html = withoutReadingMount(html);
   html = html.replace(/\s*<p class="article-region-scope">[\s\S]*?<\/p>/g, '');
   if (entry.locale !== 'ja') {
-    html = html.replace(/(<h1\b[^>]*>[\s\S]*?<\/h1>)/i, '$1\n<p class="article-region-scope">' + scopeCopy[entry.locale] + '</p>');
+    const compactScope = /\/articles\/google-play-points-cash-conversion\.html$/.test(entry.path) ? compactScopeCopy[entry.locale] : null;
+    const scope = compactScope
+      ? '<p class="article-region-scope" aria-label="' + compactScope[1] + '">' + compactScope[0] + '</p>'
+      : '<p class="article-region-scope">' + scopeCopy[entry.locale] + '</p>';
+    html = html.replace(/(<h1\b[^>]*>[\s\S]*?<\/h1>)/i, '$1\n' + scope);
   }
   html = html.replace(/<h1\b([^>]*)>/i, (tag, attrs) => /\bid\s*=/.test(attrs) ? tag : '<h1' + attrs + ' id="article-title">');
   // 既存アンカーを維持し、見出しへ安定した直リンク先を補う。
