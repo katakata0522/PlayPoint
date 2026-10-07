@@ -33,7 +33,7 @@
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
   <link rel="stylesheet" href="../../articles/article-shared.css?v=86f4c481d9" />
-  <link rel="stylesheet" href="../../games/games.css?v=332cbfe45d" />
+  <link rel="stylesheet" href="../../games/games.css?v=56f8cf7a1a" />
 
   <script type="application/ld+json">
   {
@@ -160,16 +160,16 @@
               <button type="button" class="preset-btn " data-amount="54600" data-input-kind="budget" aria-pressed="false">予算 54,600円</button>
               </div>
 
-              <form id="game-sim-form">
+              <form id="game-sim-form" data-initial-input-kind="budget">
                   <div class="input-grid">
                       <div class="input-field">
                           <label for="sim-pack-select">商品を選ぶ：</label>
                           <select id="sim-pack-select">
-                              <option value="480">聖晶石 有償4+無償1個（計5個 / 480円）</option>
-                  <option value="1600">聖晶石 有償13+無償8個（計21個 / 1,600円）</option>
-                  <option value="3000">聖晶石 有償25+無償16個（計41個 / 3,000円）</option>
-                  <option value="4900">聖晶石 有償42+無償35個（計77個 / 4,900円）</option>
-                  <option value="10000">聖晶石 有償86+無償82個（計168個 / 10,000円）</option>
+                              <option value="480" data-product-id="quartz-4">聖晶石 有償4+無償1個（計5個 / 480円）</option>
+                  <option value="1600" data-product-id="quartz-13">聖晶石 有償13+無償8個（計21個 / 1,600円）</option>
+                  <option value="3000" data-product-id="quartz-25">聖晶石 有償25+無償16個（計41個 / 3,000円）</option>
+                  <option value="4900" data-product-id="quartz-42">聖晶石 有償42+無償35個（計77個 / 4,900円）</option>
+                  <option value="10000" data-product-id="quartz-86">聖晶石 有償86+無償82個（計168個 / 10,000円）</option>
                               <option value="custom">自由入力（カスタム金額）</option>
                           </select>
                       </div>
@@ -263,16 +263,18 @@
 
           <section class="section">
               <h2>FGO 商品の購入額とポイント</h2>
+
               <div class="pack-table-wrap" tabindex="0" role="region" aria-label="FGO 商品の購入額とポイント: 比較表（左右矢印キーでスクロール）">
                   <table class="pack-table" data-table-kind="products">
                       <thead><tr><th>商品</th><th>価格 (税込)</th><th>基本獲得率（100円あたり1pt）</th><th>特別獲得率 5pt/100円時</th></tr></thead>
-                      <tbody><tr><td>聖晶石 有償4+無償1個（計5個）</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
-<tr><td>聖晶石 有償13+無償8個（計21個）</td><td>1,600 円</td><td>約 16 pt</td><td>約 80 pt</td></tr>
-<tr><td>聖晶石 有償25+無償16個（計41個）</td><td>3,000 円</td><td>約 30 pt</td><td>約 150 pt</td></tr>
-<tr><td>聖晶石 有償42+無償35個（計77個）</td><td>4,900 円</td><td>約 49 pt</td><td>約 245 pt</td></tr>
-<tr><td>聖晶石 有償86+無償82個（計168個）</td><td>10,000 円</td><td>約 100 pt</td><td>約 500 pt</td></tr></tbody>
+                      <tbody><tr data-product-id="quartz-4"><td>聖晶石 有償4+無償1個（計5個）</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
+<tr data-product-id="quartz-13"><td>聖晶石 有償13+無償8個（計21個）</td><td>1,600 円</td><td>約 16 pt</td><td>約 80 pt</td></tr>
+<tr data-product-id="quartz-25"><td>聖晶石 有償25+無償16個（計41個）</td><td>3,000 円</td><td>約 30 pt</td><td>約 150 pt</td></tr>
+<tr data-product-id="quartz-42"><td>聖晶石 有償42+無償35個（計77個）</td><td>4,900 円</td><td>約 49 pt</td><td>約 245 pt</td></tr>
+<tr data-product-id="quartz-86"><td>聖晶石 有償86+無償82個（計168個）</td><td>10,000 円</td><td>約 100 pt</td><td>約 500 pt</td></tr></tbody>
                   </table>
               </div>
+
               <h2>予算別のポイント目安</h2>
               <p>以下は商品価格ではなく、購入額を変えた計算例です。天井や進化までに必要な費用を示すものではありません。</p>
               <div class="pack-table-wrap" tabindex="0" role="region" aria-label="予算別のポイント目安: 比較表（左右矢印キーでスクロール）"><table class="pack-table" data-table-kind="budgets">
@@ -548,6 +550,6 @@
 
   <script src="../../js/analytics-core.js?v=e63a4a63f7"></script>
   <script src="../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../games/game-sim.js?v=49f19cf105"></script>
+  <script src="../../games/game-sim.js?v=6882af3faf"></script>
 </body>
 </html>

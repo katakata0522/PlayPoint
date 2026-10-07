@@ -96,6 +96,49 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
           }
         }
         // 共通エンジンの境界を4言語の実フォーム・共有URLでも検証する。
+        if (target.pathname === '/games/monst/') {
+          await page.goto(new URL(target.pathname, baseUrl).href, { waitUntil: 'load' });
+          await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+          assert.equal(await page.locator('#sim-pack-select').inputValue(), 'custom', '初期の予算例から商品を推測しない');
+          const selectedProduct = () => page.locator('#sim-pack-select').evaluate(el => el.options[el.selectedIndex].dataset.productId);
+          const copyUrl = async () => {
+            await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async value => { window.__copiedGameUrl = value; } } }));
+            await page.locator('#btn-copy-link').click();
+            return page.evaluate(() => window.__copiedGameUrl);
+          };
+          for (const id of ['monpass', 'orbs-6', 'starter-premium', 'collab-starter', 'orbs-14', 'ability', 'orbs-60', 'monpass-premium', 'premium-monthly-pack']) {
+            const index = await page.locator('#sim-pack-select').evaluate((el, product) => [...el.options].findIndex(o => o.dataset.productId === product), id);
+            assert.ok(index >= 0);
+            await page.locator('#sim-pack-select').selectOption({ index });
+            await page.locator('#sim-pack-count').fill('2');
+            const url = await copyUrl();
+            assert.equal(new URL(url).searchParams.get('product'), id);
+            await page.goto(url, { waitUntil: 'load' });
+            await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+            assert.equal(await selectedProduct(), id, '同額でも共有前と同じ商品へ戻る');
+            assert.equal(await page.locator('#sim-pack-count').inputValue(), '2');
+            assert.equal(await page.locator('.game-result-container').isVisible(), true);
+          }
+          await page.locator('.preset-btn[data-amount="480"]').click();
+          const budgetUrl = await copyUrl();
+          await page.goto(budgetUrl, { waitUntil: 'load' });
+          await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+          assert.equal(await page.locator('#sim-pack-select').inputValue(), 'custom');
+          assert.equal(await page.locator('#sim-custom-amount').inputValue(), '480');
+          for (const query of ['pack=480&count=2', 'amount=960&pack=480&count=2']) {
+            await page.goto(new URL(`${target.pathname}?${query}`, baseUrl).href, { waitUntil: 'load' });
+            await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+            assert.equal(await page.locator('#sim-pack-select').inputValue(), 'custom');
+            assert.equal(await page.locator('#sim-custom-amount').inputValue(), '960');
+            assert.equal(await page.locator('.game-result-container').isVisible(), true);
+          }
+          await page.goto(new URL(`${target.pathname}?amount=480&pack=480&product=missing`, baseUrl).href, { waitUntil: 'load' });
+          await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+          assert.equal(await page.locator('.game-result-container').isVisible(), false);
+          await page.locator('#sim-pack-select').selectOption({ label: 'モンパス (月額480円)' });
+          assert.equal(await page.locator('.game-result-container').isVisible(), true);
+          row.distinctProductsAndBudgetSharing = true;
+        }
         if (/\/games\/nikke\/$/.test(target.pathname)) {
           await page.setViewportSize({ width: 390, height: 844 });
           for (const bad of ['', '1e308']) {

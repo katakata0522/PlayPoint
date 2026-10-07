@@ -352,6 +352,16 @@ font-weight: 700;
 color: #334155;
 white-space: nowrap;
 }
+.game-product-detail {
+    display: block;
+    min-width: 14rem;
+    max-width: 28rem;
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    white-space: normal;
+}
+
 .pack-table tbody tr:hover {
 background: #f8fafc;
 }

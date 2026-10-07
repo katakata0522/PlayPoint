@@ -33,7 +33,7 @@
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
   <link rel="stylesheet" href="../../articles/article-shared.css?v=86f4c481d9" />
-  <link rel="stylesheet" href="../../games/games.css?v=332cbfe45d" />
+  <link rel="stylesheet" href="../../games/games.css?v=56f8cf7a1a" />
 
   <script type="application/ld+json">
   {
@@ -161,24 +161,25 @@
               <button type="button" class="preset-btn " data-amount="100000" data-input-kind="budget" aria-pressed="false">予算 100,000円</button>
               </div>
 
-              <form id="game-sim-form">
+              <form id="game-sim-form" data-initial-input-kind="budget">
                   <div class="input-grid">
                       <div class="input-field">
                           <label for="sim-pack-select">商品を選ぶ：</label>
                           <select id="sim-pack-select">
-                              <option value="1000">初心者応援パック プレミアム (1,000円)</option>
-                  <option value="1000">コラボスターターパック (1,000円)</option>
-                  <option value="1800">初獲得パック (1,800円)</option>
-                  <option value="3800">選べる！アビリティパック (3,800円)</option>
-                  <option value="480">モンパス (480円)</option>
-                  <option value="1980">モンパスプレミアム (1,980円)</option>
-                  <option value="160">オーブ 2個 (160円)</option>
-                  <option value="480">オーブ 6個 (480円)</option>
-                  <option value="1000">オーブ 14個 (1,000円)</option>
-                  <option value="2200">オーブ 33個 (2,200円)</option>
-                  <option value="3800">オーブ 60個 (3,800円)</option>
-                  <option value="4900">オーブ 82個 (4,900円)</option>
-                  <option value="10000">オーブ 180個 (10,000円)</option>
+                              <option value="1000" data-product-id="starter-premium">初心者応援パック プレミアム (1,000円)</option>
+                  <option value="1000" data-product-id="collab-starter">コラボスターターパック (1,000円)</option>
+                  <option value="1800" data-product-id="first-acquisition">初獲得パック (1,800円)</option>
+                  <option value="3800" data-product-id="ability">選べる！アビリティパック (3,800円)</option>
+                  <option value="480" data-product-id="monpass">モンパス (月額480円)</option>
+                  <option value="1980" data-product-id="monpass-premium">モンパスプレミアム (月額1,980円)</option>
+                  <option value="980" data-product-id="premium-monthly-pack">プレミアム会員限定 月イチお得パック (980円)</option>
+                  <option value="160" data-product-id="orbs-2">オーブ 2個 (160円)</option>
+                  <option value="480" data-product-id="orbs-6">オーブ 6個 (480円)</option>
+                  <option value="1000" data-product-id="orbs-14">オーブ 14個 (1,000円)</option>
+                  <option value="2200" data-product-id="orbs-33">オーブ 33個 (2,200円)</option>
+                  <option value="3800" data-product-id="orbs-60">オーブ 60個 (3,800円)</option>
+                  <option value="4900" data-product-id="orbs-82">オーブ 82個 (4,900円)</option>
+                  <option value="10000" data-product-id="orbs-180">オーブ 180個 (10,000円)</option>
                               <option value="custom">自由入力（カスタム金額）</option>
                           </select>
                       </div>
@@ -272,24 +273,27 @@
 
           <section class="section">
               <h2>モンスト 商品の購入額とポイント</h2>
+              <p>通常オーブ購入はアプリ内の商品です。Webショップの増量商品とは別です。<a href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式の商品表</a>も確認できます。</p>
               <div class="pack-table-wrap" tabindex="0" role="region" aria-label="モンスト 商品の購入額とポイント: 比較表（左右矢印キーでスクロール）">
                   <table class="pack-table" data-table-kind="products">
                       <thead><tr><th>商品</th><th>価格 (税込)</th><th>基本獲得率（100円あたり1pt）</th><th>特別獲得率 5pt/100円時</th></tr></thead>
-                      <tbody><tr><td>初心者応援パック プレミアム (1,000円)</td><td>1,000 円</td><td>約 10 pt</td><td>約 50 pt</td></tr>
-<tr><td>コラボスターターパック (1,000円)</td><td>1,000 円</td><td>約 10 pt</td><td>約 50 pt</td></tr>
-<tr><td>初獲得パック (1,800円)</td><td>1,800 円</td><td>約 18 pt</td><td>約 90 pt</td></tr>
-<tr><td>選べる！アビリティパック (3,800円)</td><td>3,800 円</td><td>約 38 pt</td><td>約 190 pt</td></tr>
-<tr><td>モンパス (480円)</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
-<tr><td>モンパスプレミアム (1,980円)</td><td>1,980 円</td><td>約 20 pt</td><td>約 99 pt</td></tr>
-<tr><td>オーブ 2個 (160円)</td><td>160 円</td><td>約 2 pt</td><td>約 8 pt</td></tr>
-<tr><td>オーブ 6個 (480円)</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
-<tr><td>オーブ 14個 (1,000円)</td><td>1,000 円</td><td>約 10 pt</td><td>約 50 pt</td></tr>
-<tr><td>オーブ 33個 (2,200円)</td><td>2,200 円</td><td>約 22 pt</td><td>約 110 pt</td></tr>
-<tr><td>オーブ 60個 (3,800円)</td><td>3,800 円</td><td>約 38 pt</td><td>約 190 pt</td></tr>
-<tr><td>オーブ 82個 (4,900円)</td><td>4,900 円</td><td>約 49 pt</td><td>約 245 pt</td></tr>
-<tr><td>オーブ 180個 (10,000円)</td><td>10,000 円</td><td>約 100 pt</td><td>約 500 pt</td></tr></tbody>
+                      <tbody><tr data-product-id="starter-premium"><td>初心者応援パック プレミアム (1,000円)<small class="game-product-detail">獣神化★6確定ガチャ1回とオーブ8個、育成アイテム。 <a href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式詳細</a></small></td><td>1,000 円</td><td>約 10 pt</td><td>約 50 pt</td></tr>
+<tr data-product-id="collab-starter"><td>コラボスターターパック (1,000円)<small class="game-product-detail">コラボ開催時の商品。対象キャラ・内容・販売期間は開催ごとに異なります。 <a href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式詳細</a></small></td><td>1,000 円</td><td>約 10 pt</td><td>約 50 pt</td></tr>
+<tr data-product-id="first-acquisition"><td>初獲得パック (1,800円)<small class="game-product-detail">初獲得★6確定ガチャ1回とオーブ10個など。排出対象を全て獲得済みなら重複があります。 <a href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式詳細</a></small></td><td>1,800 円</td><td>約 18 pt</td><td>約 90 pt</td></tr>
+<tr data-product-id="ability"><td>選べる！アビリティパック (3,800円)<small class="game-product-detail">選べるのはアビリティ。キャラを指名する商品ではありません。 <a href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式詳細</a></small></td><td>3,800 円</td><td>約 38 pt</td><td>約 190 pt</td></tr>
+<tr data-product-id="monpass"><td>モンパス (月額480円)<small class="game-product-detail">自動更新。1日1回のスタミナ全回復、モンスポットのパワー＋など。 <a href="https://www.monster-strike.com/news/20250807_3.html" target="_blank" rel="noopener noreferrer">公式詳細</a></small></td><td>月額 480 円</td><td>約 5 pt</td><td>通常率で計算</td></tr>
+<tr data-product-id="monpass-premium"><td>モンパスプレミアム (月額1,980円)<small class="game-product-detail">モンパスの特典に追加。入会時・1か月継続ごとにCMスキップ券30枚、使用後2週間ごとの対象クエストでラッキーリザルト確定発動など。 <a href="https://www.monster-strike.com/news/20250807_3.html" target="_blank" rel="noopener noreferrer">公式詳細</a></small></td><td>月額 1,980 円</td><td>約 20 pt</td><td>通常率で計算</td></tr>
+<tr data-product-id="premium-monthly-pack"><td>プレミアム会員限定 月イチお得パック (980円)<small class="game-product-detail">プレミアム会員が月1回、別料金で買うパック。オーブ10個、CMスキップ券30枚、育成アイテム。月額料金に含まれません。 <a href="https://www.monster-strike.com/news/20250807_3.html" target="_blank" rel="noopener noreferrer">公式詳細</a></small></td><td>980 円</td><td>約 10 pt</td><td>約 49 pt</td></tr>
+<tr data-product-id="orbs-2"><td>オーブ 2個 (160円)</td><td>160 円</td><td>約 2 pt</td><td>約 8 pt</td></tr>
+<tr data-product-id="orbs-6"><td>オーブ 6個 (480円)</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
+<tr data-product-id="orbs-14"><td>オーブ 14個 (1,000円)</td><td>1,000 円</td><td>約 10 pt</td><td>約 50 pt</td></tr>
+<tr data-product-id="orbs-33"><td>オーブ 33個 (2,200円)</td><td>2,200 円</td><td>約 22 pt</td><td>約 110 pt</td></tr>
+<tr data-product-id="orbs-60"><td>オーブ 60個 (3,800円)</td><td>3,800 円</td><td>約 38 pt</td><td>約 190 pt</td></tr>
+<tr data-product-id="orbs-82"><td>オーブ 82個 (4,900円)</td><td>4,900 円</td><td>約 49 pt</td><td>約 245 pt</td></tr>
+<tr data-product-id="orbs-180"><td>オーブ 180個 (10,000円)</td><td>10,000 円</td><td>約 100 pt</td><td>約 500 pt</td></tr></tbody>
                   </table>
               </div>
+              <p>月額サービスはGoogle Playで支払う1回分の料金で計算します。更新時は通常のステータス別獲得率が基本です。初回・請求時の個別特典がある場合だけ、その条件に合わせて獲得率を選んでください。Webショップ・iOSなどでの支払いはPlayポイントの対象になりません。</p>
               <h2>予算別のポイント目安</h2>
               <p>以下は商品価格ではなく、購入額を変えた計算例です。天井や進化までに必要な費用を示すものではありません。</p>
               <div class="pack-table-wrap" tabindex="0" role="region" aria-label="予算別のポイント目安: 比較表（左右矢印キーでスクロール）"><table class="pack-table" data-table-kind="budgets">
@@ -565,6 +569,6 @@
 
   <script src="../../js/analytics-core.js?v=e63a4a63f7"></script>
   <script src="../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../games/game-sim.js?v=49f19cf105"></script>
+  <script src="../../games/game-sim.js?v=6882af3faf"></script>
 </body>
 </html>

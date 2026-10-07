@@ -1,6 +1,6 @@
 'use strict';
 
-const { GAME_SEO } = require('./game-seo-data.cjs');
+const { GAME_SEO, SOURCES } = require('./game-seo-data.cjs');
 
 // 日本語の計算機と一覧カードで、実際に使える機能を同じ文章で案内する。
 const DESCRIPTIONS = {
@@ -36,20 +36,20 @@ function getJapaneseCalculator(game) {
   let presets = [];
   let budgets = [];
   if (game.id === 'fgo') {
-    packs = GAME_SEO.fgo.packsJa.map(p => ({ name: `聖晶石 有償${p.paid}+無償${p.free}個（計${p.total}個 / ${p.price.toLocaleString('ja-JP')}円）`, tableName: `聖晶石 有償${p.paid}+無償${p.free}個（計${p.total}個）`, price: p.price }));
+    packs = GAME_SEO.fgo.packsJa.map(p => ({ id: `quartz-${p.paid}`, name: `聖晶石 有償${p.paid}+無償${p.free}個（計${p.total}個 / ${p.price.toLocaleString('ja-JP')}円）`, tableName: `聖晶石 有償${p.paid}+無償${p.free}個（計${p.total}個）`, price: p.price }));
     // 複数購入の組み合わせは記事で説明し、ここでは支払額の入力ショートカットにする。
     budgets = [GAME_SEO.fgo.luckyBag.cheapestVerifiedSpendFromZero, 10000, GAME_SEO.fgo.pity.cheapestVerifiedSpendFromZero];
   } else if (game.id === 'umamusume') {
     packs = [
-      { name: `ウマスク（${GAME_SEO.umamusume.umasuku.price}円）`, tableName: 'ウマスク（月額）', price: GAME_SEO.umamusume.umasuku.price },
-      { name: `ウマプラン（${GAME_SEO.umamusume.umaplan.price.toLocaleString('ja-JP')}円）`, tableName: 'ウマプラン（月額・機能系）', price: GAME_SEO.umamusume.umaplan.price }
+      { id: 'umasuku', name: `ウマスク（${GAME_SEO.umamusume.umasuku.price}円）`, tableName: 'ウマスク（月額）', price: GAME_SEO.umamusume.umasuku.price, billing: 'subscription', detail: '自動更新。購入・更新時に有償ジュエル500個＋無償50個、毎日無償50個。育成報酬2倍など。', source: SOURCES.umamusumeUmasuku },
+      { id: 'umaplan', name: `ウマプラン（${GAME_SEO.umamusume.umaplan.price.toLocaleString('ja-JP')}円）`, tableName: 'ウマプラン（月額・機能系）', price: GAME_SEO.umamusume.umaplan.price, billing: 'subscription', detail: '自動更新。継承因子を2候補から選ぶ機能、継承専用ウマ娘の獲得など。ウマスクとは別契約で、併用できます。', source: SOURCES.umamusumeUmaplanDetails }
     ];
     presets = packs.map(p => ({ label: p.name, amount: p.price, mult: 1 }));
   } else if (game.id === 'pad') {
-    packs = [{ name: `パズドラパス (月額${GAME_SEO.pad.pass.price}円)`, price: GAME_SEO.pad.pass.price }];
+    packs = [{ id: 'pad-pass', name: `パズドラパス (月額${GAME_SEO.pad.pass.price}円)`, price: GAME_SEO.pad.pass.price, billing: 'subscription', detail: '自動更新の月額サービス。毎日の専用ダンジョン、チーム枠5枠追加、ランク経験値5％増、高速モードなど。魔法石の単品購入とは別です。', source: SOURCES.padPass }];
     budgets = [1000, 5000, 10000, 30000];
   } else if (game.id === 'monst') {
-    packs = game.packs.ja;
+    packs = GAME_SEO.monst.packsJa.map(p => ({ ...p, source: p.id.includes('monpass') || p.id === 'premium-monthly-pack' ? SOURCES.monstPremium : SOURCES.monstAppProducts }));
     budgets = game.presets.ja.map(p => p.amount);
   } else if (game.id === 'mementomori') {
     budgets = [1000, 6000, 30000, 150000];

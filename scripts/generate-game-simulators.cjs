@@ -956,21 +956,6 @@ const GAMES_DATA = [
       tw: '計算寶珠、怪彈會員、星玉、超獸神祭、極運課金可獲得的 Play Points！'
     },
     packs: {
-      ja: [
-        { name: '初心者応援パック プレミアム (1,000円)', price: 1000 },
-        { name: 'コラボスターターパック (1,000円)', price: 1000 },
-        { name: '初獲得パック (1,800円)', price: 1800 },
-        { name: '選べる！アビリティパック (3,800円)', price: 3800 },
-        { name: 'モンパス (480円)', price: 480 },
-        { name: 'モンパスプレミアム (1,980円)', price: 1980 },
-        { name: 'オーブ 2個 (160円)', price: 160 },
-        { name: 'オーブ 6個 (480円)', price: 480 },
-        { name: 'オーブ 14個 (1,000円)', price: 1000 },
-        { name: 'オーブ 33個 (2,200円)', price: 2200 },
-        { name: 'オーブ 60個 (3,800円)', price: 3800 },
-        { name: 'オーブ 82個 (4,900円)', price: 4900 },
-        { name: 'オーブ 180個 (10,000円)', price: 10000 }
-      ],
       en: [
         { name: 'Monpass ($3.99)', price: 3.99 },
         { name: '1 Orb ($0.99)', price: 0.99 },
@@ -2002,7 +1987,7 @@ function generateGamePageHtml(game, localeKey) {
   const initialAmount = presentation ? presentation.initialAmount : gamePresets[0].amount;
   const gameFaq = game.faq[localeKey] || game.faq.ja;
 
-  const packOptions = gamePacks.map(p => `<option value="${p.price}">${p.name}</option>`).join('\n                  ');
+  const packOptions = gamePacks.map(p => `<option value="${p.price}"${p.id ? ` data-product-id="${p.id}"` : ''}>${p.name}</option>`).join('\n                  ');
   const presetButtons = gamePresets.map((p, idx) => `<button type="button" class="preset-btn ${idx === 0 ? 'active' : ''}" data-amount="${p.amount}"${p.kind === 'budget' ? ' data-input-kind="budget"' : ` data-mult="${p.mult}"`} aria-pressed="${idx === 0 ? 'true' : 'false'}">${p.label}</button>`).join('\n              ');
   const faqHtml = gameFaq.map(f => `<h3>${f.q}</h3>\n<p>${f.a}</p>`).join('\n');
   
@@ -2010,7 +1995,9 @@ function generateGamePageHtml(game, localeKey) {
     const normalPts = Math.round(p.price / loc.unitSpend);
     const cpPts = Math.round((p.price / loc.unitSpend) * 5);
     const formattedPrice = `${loc.currencyPrefix}${p.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}${loc.currencySuffix}`;
-    return `<tr><td>${p.tableName || p.name}</td><td>${formattedPrice}</td><td>${loc.approxText}${normalPts.toLocaleString()} pt</td><td>${loc.approxText}${cpPts.toLocaleString()} pt</td></tr>`;
+    const detail = p.detail ? `<small class="game-product-detail">${p.detail} <a href="${p.source}" target="_blank" rel="noopener noreferrer">公式詳細</a></small>` : '';
+    const specialPoints = p.billing === 'subscription' ? '通常率で計算' : `${loc.approxText}${cpPts.toLocaleString()} pt`;
+    return `<tr${p.id ? ` data-product-id="${p.id}"` : ''}><td>${p.tableName || p.name}${detail}</td><td>${p.billing === 'subscription' ? '月額 ' : ''}${formattedPrice}</td><td>${loc.approxText}${normalPts.toLocaleString()} pt</td><td>${specialPoints}</td></tr>`;
   }).join('\n');
 
   const faqSchema = {
@@ -2172,7 +2159,7 @@ ${gamePresets.length ? `              <p class="preset-heading">${localeKey === 
                   ${presetButtons}
               </div>` : ''}
 ${amountOnly ? '              <p class="game-sim-lead">Google Play購入画面の金額を入力すると、貯まるポイントが分かります。</p>' : ''}
-              <form id="game-sim-form"${amountOnly ? ' data-input-mode="amount"' : ''}>
+              <form id="game-sim-form"${amountOnly ? ' data-input-mode="amount"' : ''}${presentation?.presets[0]?.kind === 'budget' ? ' data-initial-input-kind="budget"' : ''}>
                   <div class="input-grid">
 ${amountOnly ? '' : `                      <div class="input-field">
                           <label for="sim-pack-select">${localeKey === 'ja' ? '商品を選ぶ：' : loc.packSelectLabel}</label>
@@ -2273,12 +2260,14 @@ ${amountOnly ? '' : `                      <div class="input-field">
 
           <section class="section${gamePacks.length || presentation?.budgets.length ? '' : ' game-ad-section'}">
 ${gamePacks.length ? `              <h2>${gameShort} ${localeKey === 'ja' ? '商品の購入額とポイント' : loc.tableTitle}</h2>
+${localeKey === 'ja' && game.id === 'monst' ? '              <p>通常オーブ購入はアプリ内の商品です。Webショップの増量商品とは別です。<a href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式の商品表</a>も確認できます。</p>' : ''}
               <div class="pack-table-wrap">
                   <table class="pack-table"${localeKey === 'ja' ? ' data-table-kind="products"' : ''}>
                       <thead><tr><th>${localeKey === 'ja' ? '商品' : loc.tableThPack}</th><th>${loc.tableThPrice}</th><th>${loc.tableThNormal}</th><th>${loc.tableThCp}</th></tr></thead>
                       <tbody>${packTableRows}</tbody>
                   </table>
-              </div>` : ''}
+              </div>
+${gamePacks.some(p => p.billing === 'subscription') ? '              <p>月額サービスはGoogle Playで支払う1回分の料金で計算します。更新時は通常のステータス別獲得率が基本です。初回・請求時の個別特典がある場合だけ、その条件に合わせて獲得率を選んでください。Webショップ・iOSなどでの支払いはPlayポイントの対象になりません。</p>' : ''}` : ''}
 ${presentation?.budgets.length ? `              <h2>予算別のポイント目安</h2>
               <p>以下は商品価格ではなく、購入額を変えた計算例です。天井や進化までに必要な費用を示すものではありません。</p>
               <div class="pack-table-wrap"><table class="pack-table" data-table-kind="budgets">
