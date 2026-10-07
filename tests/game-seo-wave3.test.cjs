@@ -43,7 +43,9 @@ test('wave 3 sources stay on the intended official domains', () => {
 
 test('Pokepoke parent fails closed on current prices and links to the verified pass guide', () => {
   const html = read('games/pokepoke/index.html');
-  assert.ok(html.includes('Google Playの表示額を入力'));
+  assert.match(html, /data-input-mode="amount"/);
+  assert.match(html, /id="sim-custom-amount" value="0"/);
+  assert.doesNotMatch(html, /id="sim-pack-select"|data-amount=/);
   assert.ok(html.includes('./premium-pass-guide/'));
   assert.ok(!html.includes('プレミアムパス (980円)'));
   assert.ok(!html.includes('ポケゴールド 550個 (13,800円)'));
@@ -72,7 +74,9 @@ test('PAD keeps the SSOT-verified pass and explains trial and persistent benefit
 
 test('Arknights preserves SSOT-verified mechanics but removes unverified price and fixed cash pity claims', () => {
   const html = read('games/arknights/index.html');
-  assert.ok(html.includes('Google Playの表示額を入力'));
+  assert.match(html, /data-input-mode="amount"/);
+  assert.match(html, /id="sim-custom-amount" value="0"/);
+  assert.doesNotMatch(html, /id="sim-pack-select"|data-amount=/);
   assert.ok(html.includes('./monthly-pass-limited-scout/'));
   assert.ok(!html.includes('月パス (610円)'));
   assert.ok(!html.includes('月間スカウトパック (2,440円)'));
@@ -89,7 +93,9 @@ test('Arknights preserves SSOT-verified mechanics but removes unverified price a
 
 test('Dokkan separates official Web Store from Google Play and drops changing fixed pack prices', () => {
   const html = read('games/dokkan/index.html');
-  assert.ok(html.includes('Google Playの表示額を入力'));
+  assert.match(html, /data-input-mode="amount"/);
+  assert.match(html, /id="sim-custom-amount" value="0"/);
+  assert.doesNotMatch(html, /id="sim-pack-select"|data-amount=/);
   assert.ok(html.includes('./google-play-vs-webstore/'));
   assert.ok(!html.includes('デイリーカプセル 30日 (1,200円)'));
   assert.ok(!html.includes('龍石 セール100個 (4,000円)'));
@@ -103,7 +109,9 @@ test('Dokkan separates official Web Store from Google Play and drops changing fi
 
 test('Wuthering Waves removes unverifiable prices, fixed cash pity, and unconditional Points claims', () => {
   const html = read('games/wutheringwaves/index.html');
-  assert.ok(html.includes('Google Playの表示額を入力'));
+  assert.match(html, /data-input-mode="amount"/);
+  assert.match(html, /id="sim-custom-amount" value="0"/);
+  assert.doesNotMatch(html, /id="sim-pack-select"|data-amount=/);
   assert.ok(!html.includes('月相観測パス (610円)'));
   assert.ok(!html.includes('確定天井 160連 (約48,000円)'));
   assert.ok(!html.includes('完凸S6 (約200,000円)'));

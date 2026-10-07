@@ -50,7 +50,9 @@ test('Wave 4 official sources are pinned to intended domains and paths', () => {
 
 test('HBR parent fails closed while the guide reflects the Web Shop SSOT', () => {
   const html = read('games/hbr/index.html');
-  assert.ok(html.includes('Google Playの表示額を入力'));
+  assert.match(html, /data-input-mode="amount"/);
+  assert.match(html, /id="sim-custom-amount" value="0"/);
+  assert.doesNotMatch(html, /id="sim-pack-select"|data-amount=/);
   assert.ok(html.includes('./google-play-vs-webshop/'));
   for (const stale of ['ライトパス (600円)', 'プレミアムパス (2,900円)', '天井 200連 60,000個 (約60,000円)', '完凸目安 (約240,000円)', 'クォーツ 10,000個 (10,000円)']) {
     assert.ok(!html.includes(stale), `HBR should drop stale fixed value: ${stale}`);
@@ -68,7 +70,9 @@ test('HBR parent fails closed while the guide reflects the Web Shop SSOT', () =>
 
 test('Honkai Impact 3rd removes cash pity guesses and reflects Charge Center SSOT boundaries', () => {
   const html = read('games/honkai3rd/index.html');
-  assert.ok(html.includes('Google Playの表示額を入力'));
+  assert.match(html, /data-input-mode="amount"/);
+  assert.match(html, /id="sim-custom-amount" value="0"/);
+  assert.doesNotMatch(html, /id="sim-pack-select"|data-amount=/);
   assert.ok(html.includes('./google-play-vs-charge-center/'));
   for (const stale of ['水晶月パス (600円)', '10連分 2,800個 (約5,600円)', '確定天井 90連 (約50,400円)', '装備一式目安 (約70,000円)', '水晶 6,000個 (12,000円)']) {
     assert.ok(!html.includes(stale), `HI3 should drop stale fixed value: ${stale}`);
@@ -84,7 +88,9 @@ test('Honkai Impact 3rd removes cash pity guesses and reflects Charge Center SSO
 
 test('Phantom Parade fails closed for Google Play while reflecting Web Shop SSOT', () => {
   const html = read('games/phantomparade/index.html');
-  assert.ok(html.includes('Google Playの表示額を入力'));
+  assert.match(html, /data-input-mode="amount"/);
+  assert.match(html, /id="sim-custom-amount" value="0"/);
+  assert.doesNotMatch(html, /id="sim-pack-select"|data-amount=/);
   assert.ok(html.includes('./google-play-vs-webshop/'));
   for (const stale of ['ファンパレパス (1,000円)', '天井 250連 (約75,000円)', '完凸目安 (約300,000円)', '廻珠 10,000個 (10,000円)']) {
     assert.ok(!html.includes(stale), `Phantom Parade should drop stale fixed value: ${stale}`);
@@ -101,11 +107,13 @@ test('Phantom Parade fails closed for Google Play while reflecting Web Shop SSOT
 
 test('Reverse 1999 removes fixed product and pity cash data because official prices are purchase-page based', () => {
   const html = read('games/reverse1999/index.html');
-  assert.ok(html.includes('Google Playの表示額を入力'));
+  assert.match(html, /data-input-mode="amount"/);
+  assert.match(html, /id="sim-custom-amount" value="0"/);
+  assert.doesNotMatch(html, /id="sim-pack-select"|data-amount=/);
   for (const stale of ['咆哮のひと月 (610円)', '仮天井 70連 (約25,200円)', '確定天井 140連 (約50,400円)', '純雨の雫 5,000個 (10,000円)', 'すべてポイントが還元されます']) {
     assert.ok(!html.includes(stale), `Reverse 1999 should drop stale/unconditional copy: ${stale}`);
   }
-  assert.ok(html.includes('公式が価格を購入ページ表示としている'));
+  assert.match(html, /Google Play購入画面の金額を入力/);
 });
 
 test('stale Wave 4 fixed-price claims do not survive across Japanese game pages', () => {
