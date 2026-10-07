@@ -223,6 +223,9 @@ background: var(--reading-soft, #f8fafc);
 .decision-box strong {
 color: var(--article-accent-dark);
 }
+.article-source-details { margin: 28px 0; padding-top: 16px; border-top: 1px solid var(--reading-border, #cbd5e1); font-size: .9rem; color: var(--reading-muted, #526176); }
+.article-source-details summary { cursor: pointer; min-height: 44px; font-weight: 600; }
+.article-source-details a { overflow-wrap: anywhere; }
 .number-note,
 .small {
 font-size: 0.88rem;

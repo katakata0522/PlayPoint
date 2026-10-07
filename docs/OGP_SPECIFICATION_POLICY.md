@@ -37,3 +37,8 @@
 - 一般記事の一覧サムネイルは `articles/thumbnails/<article-id>-square-v1.webp`（256×256 WebP）、ゲーム記事は22種のGoogle Play公式アプリアイコン（`images/game-icons/*.webp`、128×128）を使う。これらは記事専用OGPとは別の一覧画像である。
 - `blog/articles.json` は生成済み記事の役割マニフェスト、`scripts/article-image-assets.json` は画像役割レジストリとし、`scripts/article-image-assets.cjs` を `scripts/build-html.js` から実行してマニフェスト・HTMLメタタグ・JSON-LDを同期する。
 - 画像を再生成・差し替えた場合は、役割レジストリと実体を揃えてからビルドを再実行し、`tests/ogp-standardization.test.cjs` と `tests/ogp-mime-contract.test.cjs` で専用OGPの一意性、寸法、JPEG実体、一覧画像との分離を確認する。
+
+## 7. 海外個別記事
+- 英語・韓国語・繁体字の個別記事は `articles/ogp/<locale>-<slug>.png` を専用画像とする。画像実体は共通のJPEG契約に従う。
+- `scripts/generate-intl-article-ogp.cjs` は公開記事の見出し・地域・ゲームアイコンから1200×630の画像を生成する。タイトル改稿時は画像も再生成して視認する。
+- `scripts/intl-article-images.cjs` がビルド中にhead・Article JSON-LDを同期し、既存のSEO最終同期で実体・補助タグを照合する。画像が無い場合に共通画像へ戻さない。

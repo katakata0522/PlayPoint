@@ -7,6 +7,8 @@ const test = require('node:test');
 
 const { openingTags } = require('./helpers/markup-contract.cjs');
 const { createHash } = require('node:crypto');
+const { articleImages } = require('../scripts/intl-article-images.cjs');
+const { extractArticleStructuredData } = require('../scripts/article-date-contract.cjs');
 const meta = (html, key) => openingTags(html).filter(node => node.tag === 'meta' && (node.attrs.property === key || node.attrs.name === key));
 const value = (html, key) => { const nodes = meta(html, key); assert.equal(nodes.length, 1, key + ': exactly one meta'); return nodes[0].attrs.content; };
 
@@ -155,6 +157,28 @@ test('共通ページは用途に合う1200x630の画像と統一メタタグを
   assert.equal(rootDim.type, 'png', 'root ogp.png がPNG実体であること');
   assert.equal(rootDim.width, 1200, 'root ogp.png の幅が1200pxであること');
   assert.equal(rootDim.height, 630, 'root ogp.png の高さが630pxであること');
+});
+
+test('海外の全個別記事も専用画像・地域メタ・Article画像が一致し、画像実体を重複しない', () => {
+  const urls = new Set(), hashes = new Set();
+  const locales = { en: 'en_US', ko: 'ko_KR', tw: 'zh_TW' };
+  const pages = articleImages(root);
+  assert.ok(pages.length > 0);
+  for (const page of pages) {
+    const html = fs.readFileSync(path.join(root, page.file), 'utf8');
+    const image = value(html, 'og:image');
+    assert.equal(image, siteOrigin + '/' + page.image);
+    assert.ok(!urls.has(image), page.file); urls.add(image);
+    const hash = createHash('sha256').update(fs.readFileSync(localPathForPublicUrl(image))).digest('hex');
+    assert.ok(!hashes.has(hash), page.file); hashes.add(hash);
+    assert.equal(value(html, 'twitter:image'), image);
+    assert.equal(value(html, 'og:locale'), locales[page.locale]);
+    assert.equal(value(html, 'og:image:type'), 'image/jpeg');
+    assert.equal(value(html, 'og:image:width'), '1200');
+    assert.equal(value(html, 'og:image:height'), '630');
+    assert.ok(value(html, 'og:image:alt').trim());
+    assert.equal(extractArticleStructuredData(html)?.image, image, page.file);
+  }
 });
 
 test('多言語トップページは1200x630のogp.pngと各言語メタタグを持つ', () => {
