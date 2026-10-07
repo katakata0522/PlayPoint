@@ -147,10 +147,13 @@ async function verifyDiaryBoundaries(browser, baseUrl, locales, blockExternalReq
     await page.clock.setFixedTime(new Date('2026-10-30T12:00:00+09:00'));
     await page.goto(new URL('',baseUrl).href,{waitUntil:'load'});
     await page.waitForFunction(()=>document.querySelector('#currentStatus')?.options.length>1);
+    // 他の日記ケースと同様に、遅延読み込みの装飾が起動してから操作する。
+    await page.waitForFunction(()=>Boolean(document.querySelector('style[data-weekly-reward-ui]')));
     await page.locator('#tab-diary').click();
     const row=page.locator('#weekInputs .is-weekly-current');
     await row.locator('input[type="number"]').fill('50');
     await row.locator('.diary-save-btn').click();
+    await page.waitForFunction(()=>JSON.parse(localStorage.getItem('hokuhokuDiaryData'))?.[2026]?.[10]?.[5]?.points==='50');
     await row.locator('.weekly-achievement-panel').waitFor({state:'visible'});
     const colors=['rgb(66, 133, 244)','rgb(234, 67, 53)','rgb(251, 188, 4)','rgb(52, 168, 83)','rgb(138, 180, 248)'];
     const mini=await row.locator('.weekly-mini-item.is-current-month .weekly-week-segment').evaluateAll(nodes=>nodes.map(el=>({color:getComputedStyle(el).backgroundColor,grow:Number(getComputedStyle(el).flexGrow),animation:getComputedStyle(el).animationName,visible:el.getBoundingClientRect().height>0})));
