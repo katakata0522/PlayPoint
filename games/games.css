@@ -610,3 +610,32 @@ scroll-behavior: auto !important;
 }
 .site-footer .site-footer-trademark { color: inherit; }
 .input-field[hidden] { display: none; }
+
+/* 金額入力だけの計算機は、最初に入力する欄を広く見せる。 */
+.game-sim-lead { margin: 0 0 20px; color: #475569; line-height: 1.8; }
+#game-sim-form[data-input-mode="amount"] .input-field:has(#sim-custom-amount) {
+grid-column: 1 / -1;
+padding: 16px;
+border: 1px solid #bfdbfe;
+border-radius: 12px;
+background: #eff6ff;
+}
+#game-sim-form[data-input-mode="amount"] #sim-custom-amount {
+font-size: 1.3rem;
+font-weight: 700;
+}
+.game-reading-guides ul { padding: 0; list-style: none; display: grid; gap: 12px; }
+.game-reading-guides li { margin: 0; }
+.game-reading-guides a {
+display: block;
+padding: 16px 20px;
+border: 1px solid #cbd5e1;
+border-radius: 12px;
+background: #f8fafc;
+color: #1d4ed8;
+font-weight: 600;
+text-decoration: none;
+line-height: 1.7;
+}
+.game-reading-guides a:hover { background: #eff6ff; border-color: #93c5fd; }
+.game-reading-guides a:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }

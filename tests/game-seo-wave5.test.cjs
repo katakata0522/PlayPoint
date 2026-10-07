@@ -69,9 +69,14 @@ test('every Wave 5 parent calculator exists in every canonical game locale', () 
       const html = read(file);
       assert.match(html, /id="game-sim-form"/);
       assert.match(html, /id="sim-custom-amount"/);
-      const packSelect = selectInner(html, 'sim-pack-select');
-      assert.match(packSelect, /<option value="custom" selected>/);
-      assert.doesNotMatch(packSelect, /<option value="\d/, `${file} must not expose a hard-coded current product price`);
+      if (locale === 'ja') {
+        assert.match(html, /data-input-mode="amount"/);
+        assert.doesNotMatch(html, /id="sim-pack-select"|data-amount=/, `${file} must not expose a hard-coded current product price`);
+      } else {
+        const packSelect = selectInner(html, 'sim-pack-select');
+        assert.match(packSelect, /<option value="custom" selected>/);
+        assert.doesNotMatch(packSelect, /<option value="\d/, `${file} must not expose a hard-coded current product price`);
+      }
       assert.match(html, new RegExp(`<meta name="last-modified" content="${VERIFIED_AT}"`));
       assert.equal(getGeneratedGamePageContentDate(file), VERIFIED_AT);
       assert.doesNotMatch(html, /hb\.afl\.rakuten\.co\.jp/, `${file} should not introduce rights-risk affiliate routing`);

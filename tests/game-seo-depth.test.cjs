@@ -84,11 +84,10 @@ test('FGO深掘り記事はSSOTの確定召喚・福袋値と公式根拠を同�
 test('原神は未確認の固定価格を使わず、購入予定額を自由入力できる', () => {
   const html = genshin();
   assert.equal(GAME_SEO.genshin.publishGooglePlayPrices, false);
-  const select = html.match(/<select id="sim-pack-select">([\s\S]*?)<\/select>/)[1];
-  assert.deepEqual([...select.matchAll(/<option value="([^"]+)"/g)].map(match => match[1]), ['custom']);
-  assert.match(select, /value="custom" selected/);
+  assert.match(html, /data-input-mode="amount"/);
+  assert.doesNotMatch(html, /id="sim-pack-select"|id="sim-pack-count"|class="pack-table"/);
   assert.match(html, /id="sim-custom-amount" value="0"/);
-  assert.deepEqual([...html.matchAll(/data-amount="([^"]+)"/g)].map(match => Number(match[1])), [0]);
+  assert.doesNotMatch(html, /data-amount=/);
   assert.ok(html.includes('./welkin-value/'));
 });
 
@@ -115,8 +114,9 @@ test('ブルアカは現行価格未確認時に固定価格へfail-openしな�
   const html = bluearchive();
   assert.ok(html.includes('100チャージ'));
   assert.ok(html.includes('200チャージ'));
-  assert.ok(html.includes('現行価格をGoogle Playで確認して入力'));
-  assert.ok(html.includes('一次表示の再確認中'));
+  assert.match(html, /data-input-mode="amount"/);
+  assert.match(html, /id="sim-custom-amount" value="0"/);
+  assert.doesNotMatch(html, /id="sim-pack-select"|data-amount=/);
   assert.ok(!html.includes('天井 200連 (約48,000円)'));
   assert.ok(!html.includes('青輝石 6600個 (10,000円)'));
 });

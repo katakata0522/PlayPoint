@@ -34,7 +34,9 @@ test("日本語ゲーム計算機は課金予定額を自分で打てる", () =>
   const games=jaGameDirs();assert.ok(games.length>0);
   for(const locale of [''])for(const game of games){
     const file=path.join(locale,'games',game,'index.html');const tags=openingTags(read(file));
-    for(const id of ['sim-custom-amount','sim-pack-count']){const matches=tags.filter(tag=>tag.tag==='input'&&tag.attrs.id===id);assert.equal(matches.length,1,file);assert.equal(matches[0].attrs.type,'number',file);}
+    const amountOnly = tags.some(tag => tag.tag === 'form' && tag.attrs['data-input-mode'] === 'amount');
+    for(const id of ['sim-custom-amount', ...(amountOnly ? [] : ['sim-pack-count'])]){const matches=tags.filter(tag=>tag.tag==='input'&&tag.attrs.id===id);assert.equal(matches.length,1,file);assert.equal(matches[0].attrs.type,'number',file);}
+    if (amountOnly) assert.equal(tags.some(tag => tag.attrs.id === 'sim-pack-count' || tag.attrs.id === 'sim-pack-select'), false, file);
   }
 });
 

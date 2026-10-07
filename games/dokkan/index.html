@@ -8,7 +8,7 @@
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>ドラゴンボールZ ドッカンバトル - Playポイント計算機</title>
-  <meta name="description" content="ドッカンバトルのGoogle Play課金予定額からPlay Pointsを計算。公式Web Storeは別決済として分離し、変動する龍石・セール価格は購入画面で確認します。" />
+  <meta name="description" content="ドッカンバトルで龍石を買う前に、貯まるPlayポイントを計算してみましょう。購入予定額を入れて、ランクやキャンペーンを切り替えると、同じ金額でどれだけポイントが変わるか分かります。" />
   <link rel="canonical" href="https://playpoint-sim.com/games/dokkan/" />
   <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/dokkan/" />
   <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/dokkan/" />
@@ -19,7 +19,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Playポイント計算機" />
   <meta property="og:title" content="ドラゴンボールZ ドッカンバトル - Playポイント計算機" />
-  <meta property="og:description" content="ドッカンバトルのGoogle Play課金予定額からPlay Pointsを計算。公式Web Storeは別決済として分離し、変動する龍石・セール価格は購入画面で確認します。" />
+  <meta property="og:description" content="ドッカンバトルで龍石を買う前に、貯まるPlayポイントを計算してみましょう。購入予定額を入れて、ランクやキャンペーンを切り替えると、同じ金額でどれだけポイントが変わるか分かります。" />
   <meta property="og:url" content="https://playpoint-sim.com/games/dokkan/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
     <meta property="og:image:width" content="1200">
@@ -29,11 +29,11 @@
     <meta property="og:locale" content="ja_JP">
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ドラゴンボールZ ドッカンバトル - Playポイント計算機" />
-  <meta name="twitter:description" content="ドッカンバトルのGoogle Play課金予定額からPlay Pointsを計算。公式Web Storeは別決済として分離し、変動する龍石・セール価格は購入画面で確認します。" />
+  <meta name="twitter:description" content="ドッカンバトルで龍石を買う前に、貯まるPlayポイントを計算してみましょう。購入予定額を入れて、ランクやキャンペーンを切り替えると、同じ金額でどれだけポイントが変わるか分かります。" />
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
   <link rel="stylesheet" href="../../articles/article-shared.css?v=86f4c481d9" />
-  <link rel="stylesheet" href="../../games/games.css?v=3df15b112d" />
+  <link rel="stylesheet" href="../../games/games.css?v=332cbfe45d" />
 
   <script type="application/ld+json">
   {
@@ -108,7 +108,7 @@
               <span class="site-logo-icon">🎮</span>
               <span class="site-logo-text">Playポイント計算機</span>
           </a>
-          <p class="site-tagline">原神・スタレ・ブルアカ・ウマ娘・ヘブバン・ファンパレなど人気ゲームの課金パックや天井ガチャで貯まるPlayポイントをパッと計算！各ゲームの課金アイテム価格や還元早見表、お得な使い道を掲載しています。ガチャ前の計画にぜひ役立ててくださいね。</p>
+          <p class="site-tagline">いつものゲームで課金する前に、貯まるPlayポイントをチェック。原神・スタレ・ブルアカ・ウマ娘など、ゲーム別の計算機と購入前に読みたい記事をまとめました。</p>
       </div>
   </header>
 
@@ -144,33 +144,18 @@
           <header class="game-header">
               <span class="game-badge">💥 人気ゲーム別シミュレーター</span>
               <h1 class="game-title">ドラゴンボールZ ドッカンバトル</h1>
-              <p class="game-meta">ドッカン Google Play・Web Store・Play Points確認：2026-09-13（価格は購入画面で確認）</p>
+              <p class="game-meta">Google Playでの購入額からPlayポイントを計算</p>
           </header>
 
-          <p>ドッカンバトルのGoogle Play課金予定額からPlay Pointsを計算。公式Web Storeは別決済として分離し、変動する龍石・セール価格は購入画面で確認します。</p>
+          <p>ドッカンバトルで龍石を買う前に、貯まるPlayポイントを計算してみましょう。購入予定額を入れて、ランクやキャンペーンを切り替えると、同じ金額でどれだけポイントが変わるか分かります。</p>
 
           <!-- シミュレーター操作パネル -->
           <section class="game-sim-card">
               <h2 class="game-sim-title">🧮 ドッカン</h2>
 
-              <p class="preset-heading">▼ 目標プリセット：</p>
-              <div class="preset-buttons">
-                  <button type="button" class="preset-btn active" data-amount="0" data-mult="1" aria-pressed="true">Google Playの表示額を入力</button>
-              </div>
-
-              <form id="game-sim-form">
+              <p class="game-sim-lead">Google Play購入画面の金額を入力。ランクやキャンペーンを切り替えて、貯まるポイントを比べてみましょう。</p>
+              <form id="game-sim-form" data-input-mode="amount">
                   <div class="input-grid">
-                      <div class="input-field">
-                          <label for="sim-pack-select">課金パックを選択：</label>
-                          <select id="sim-pack-select">
-                              <option value="custom" selected>現行価格をGoogle Playで確認して入力</option>
-                          </select>
-                      </div>
-
-                      <div class="input-field">
-                          <label for="sim-pack-count">購入回数：</label>
-                          <input type="number" id="sim-pack-count" value="1" min="1" max="999" inputmode="numeric">
-                      </div>
 
                       <div class="input-field">
                           <label for="sim-custom-amount">課金予定合計額（円）：</label>
@@ -255,24 +240,7 @@
               </div>
           </section>
 
-          <!-- パック早見表 -->
-          <section class="section">
-              <h2>ドッカン 課金パック別 Playポイント還元早見表</h2>
-              <div class="pack-table-wrap" tabindex="0" role="region" aria-label="ドッカン 課金パック別 Playポイント還元早見表: 比較表（左右矢印キーでスクロール）">
-                  <table class="pack-table">
-                      <thead>
-                          <tr>
-                              <th>課金パック名</th>
-                              <th>価格 (税込)</th>
-                              <th>基本獲得率（100円あたり1pt）</th>
-                              <th>特別獲得率 5pt/100円時</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-<tr><td colspan="4">龍石・デイリー商品・セールは時期で変わります。Google Play購入画面の支払額と受け取れる龍石の個数を確認してください。公式Web StoreはGoogle Playとは別決済です。</td></tr>
-                      </tbody>
-                  </table>
-              </div>
+          <section class="section game-ad-section">
 
               <!-- 広告枠（レスポンシブ） -->
               <div class="game-ad-container">
@@ -335,7 +303,7 @@
                       <div>
                           <div class="game-card-icon">✨</div>
                           <h3 class="game-card-title">原神 (Genshin Impact)</h3>
-                          <p class="game-card-desc">原神の創世結晶購入、空月の祝福、天空紀行、180連確定天井・完凸課金で貯まるGoogle Play Pointsをパッと計算！パック別の還元早見表やお得な使い道も比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。</p>
+                          <p class="game-card-desc">空月の祝福にするか、創世結晶をまとめて買うか。原神の購入予定額を入れると、貯まるPlayポイントを計算できます。空月の受け取り方や通常チャージとの違いは、購入前の記事で詳しく紹介しています。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -343,7 +311,7 @@
                       <div>
                           <div class="game-card-icon">🚂</div>
                           <h3 class="game-card-title">崩壊：スターレイル (Honkai: Star Rail)</h3>
-                          <p class="game-card-desc">崩壊スターレイルの往日の夢華、列車補給標章、ナナシビトの褒章、180連確定天井・完凸で貯まるPlayポイントを即時計算！パック別還元早見表やポイントの使い道も比較できます。ガチャ前のシミュレーションにぜひ役立ててみてくださいね。</p>
+                          <p class="game-card-desc">列車補給標章を買うときも、往日の夢華をチャージするときも。スタレの購入予定額から、貯まるPlayポイントを計算できます。補給標章で何がいつ手に入るかも、関連記事で確認できます。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -351,7 +319,7 @@
                       <div>
                           <div class="game-card-icon">⚡</div>
                           <h3 class="game-card-title">ゼンレスゾーンゼロ (Zenless Zone Zero)</h3>
-                          <p class="game-card-desc">ゼンレスゾーンゼロ（ゼンゼロ）のモノクローム購入、インターノット会員、成長プラン、180連天井で貯まるPlayポイントをサクッと計算！パック別還元早見表や使い道もまとめているので、課金前の確認にぜひ使ってみてくださいね。</p>
+                          <p class="game-card-desc">インターノット会員にするか、モノクロームをチャージするか。ゼンゼロで使う予定の金額から、貯まるPlayポイントを計算できます。毎日の受け取りと、すぐ使える分の違いも関連記事で紹介しています。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -359,7 +327,7 @@
                       <div>
                           <div class="game-card-icon">🎯</div>
                           <h3 class="game-card-title">ブルーアーカイブ (Blue Archive)</h3>
-                          <p class="game-card-desc">ブルーアーカイブ（ブルアカ）の青輝石購入、マンスリーパッケージ、200連天井・固有武器完凸で貯まるPlayポイントをパッと計算！パック別早見表やポイント使い道も比較できます。生徒募集前の計画にぜひ役立ててみてくださいね。</p>
+                          <p class="game-card-desc">ブルアカで青輝石を買う前に、今回の予算で何ポイント貯まるか見てみましょう。購入予定額とランクを入れて計算できます。月額商品と通常チャージの選び方は、関連記事へ。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -367,7 +335,7 @@
                       <div>
                           <div class="game-card-icon">🎴</div>
                           <h3 class="game-card-title">Pokémon TCG Pocket (ポケポケ)</h3>
-                          <p class="game-card-desc">ポケポケのGoogle Play課金予定額からPlay Pointsを計算。プレミアムパスは月額定期購入・初回14日無料体験を公式確認し、現行価格は購入画面で確認します。</p>
+                          <p class="game-card-desc">ポケゴールドを買う前に、Playポイントもチェック。ポケポケの購入予定額から、貯まるポイントを計算できます。プレミアムパスとの違いや選び方は、関連記事で紹介しています。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -375,7 +343,7 @@
                       <div>
                           <div class="game-card-icon">⚔️</div>
                           <h3 class="game-card-title">Fate/Grand Order (FGO)</h3>
-                          <p class="game-card-desc">Fate/Grand Order（FGO）の聖晶石購入、福袋召喚、確定召喚（330連天井）・宝具5完凸で貯まるPlayポイントをパッと計算！パック別早見表やお得な使い道も比較できます。ガチャ前のポイント確認にぜひ使ってみてくださいね。</p>
+                          <p class="game-card-desc">聖晶石を何パック買うか、福袋の予算をどうするか。FGOの購入額を選んで、貯まるPlayポイントを計算できます。福袋や確定召喚までの聖晶石・購入額の考え方は、関連記事で詳しく紹介しています。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -383,7 +351,7 @@
                       <div>
                           <div class="game-card-icon">🐴</div>
                           <h3 class="game-card-title">ウマ娘 プリティーダービー</h3>
-                          <p class="game-card-desc">ウマ娘の現行月額「ウマスク」や課金予定額で貯まるGoogle Play Pointsを計算。終了済みデイリージュエルパックを除外し、WebStoreとの購入経路差も確認できます。</p>
+                          <p class="game-card-desc">ウマスク・ウマプランの購入額を選んで、貯まるPlayポイントを計算できます。ジュエル購入の金額を直接入れることもできます。月額サービスの特典や受け取り方は、関連記事で詳しく紹介しています。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -391,7 +359,7 @@
                       <div>
                           <div class="game-card-icon">🐉</div>
                           <h3 class="game-card-title">モンスターストライク (モンスト)</h3>
-                          <p class="game-card-desc">モンスターストライク（モンスト）のオーブ購入、モンパス、超獣神祭・コラボガチャ課金で貯まるGoogle Play Pointsをサクッと計算！パック別還元早見表やポイント使い道も掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。</p>
+                          <p class="game-card-desc">オーブを買う前に、今回の課金で何ポイント貯まるかチェック。パックや購入額を選んで計算できます。すぐオーブが欲しいときの商品選びと、Webショップとの比較は、購入前のガイドへ。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -399,7 +367,7 @@
                       <div>
                           <div class="game-card-icon">🌟</div>
                           <h3 class="game-card-title">学園アイドルマスター (学マス)</h3>
-                          <p class="game-card-desc">学園アイドルマスター（学マス）のGoogle Play課金予定額からPlay Pointsを計算。現行商品価格を一次情報で固定できない間は、購入画面の金額を自由入力して確認できます。</p>
+                          <p class="game-card-desc">学マスでジュエルを買う前に、今回の予算で何ポイント貯まるか計算してみましょう。Google Playの購入予定額を入力するだけで、ランクやキャンペーンによる違いを見られます。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -407,7 +375,7 @@
                       <div>
                           <div class="game-card-icon">🎵</div>
                           <h3 class="game-card-title">プロジェクトセカイ (プロセカ)</h3>
-                          <p class="game-card-desc">プロセカのGoogle Play課金予定額からPlay Pointsを計算。公式WebStoreは別決済として分離し、Google Playの現行商品価格は購入画面を正本として確認できます。</p>
+                          <p class="game-card-desc">プロセカでクリスタルやパスを買う前に、貯まるPlayポイントをチェック。Google Playの購入予定額を入れて計算できます。公式WebStoreとどちらで買うか迷ったら、関連記事も読んでみてください。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -415,7 +383,7 @@
                       <div>
                           <div class="game-card-icon">🔫</div>
                           <h3 class="game-card-title">勝利の女神：NIKKE</h3>
-                          <p class="game-card-desc">NIKKEのGoogle Play課金予定額からPlay Pointsを計算。現行商品価格は購入画面を正本とし、200連や凸に必要な現金額を固定値として推測しません。</p>
+                          <p class="game-card-desc">ジュエルやパスを買う前に、今回の予算で貯まるPlayポイントをチェック。NIKKEの購入予定額を入れて計算できます。通常時とキャンペーン中を比べて、購入のタイミングを考えてみましょう。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -423,7 +391,7 @@
                       <div>
                           <div class="game-card-icon">🌊</div>
                           <h3 class="game-card-title">鳴潮 (Wuthering Waves)</h3>
-                          <p class="game-card-desc">鳴潮のGoogle Play課金予定額からPlay Pointsを計算。現行商品価格や天井の現金額を推測で固定せず、購入画面の実際の支払額から確認できます。</p>
+                          <p class="game-card-desc">鳴潮で月相を買うとき、月額商品を選ぶときに。購入予定額から、貯まるPlayポイントを計算できます。欲しい分をすぐ買うか、毎日受け取るかを考えるときにも使ってみてください。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -431,7 +399,7 @@
                       <div>
                           <div class="game-card-icon">🐉</div>
                           <h3 class="game-card-title">パズル＆ドラゴンズ (Puzzle & Dragons)</h3>
-                          <p class="game-card-desc">パズドラパス（月額980円）や、ゲーム内で現在表示されている購入額からGoogle Play Pointsの獲得目安を計算できます。商品価格は変わる可能性があるため、購入前にゲーム内とGoogle Playの表示を確認してください。</p>
+                          <p class="game-card-desc">パズドラの魔法石購入やパズドラパスで、何ポイント貯まるか計算できます。パスや試したい金額を選ぶか、今回の購入額を直接入力してみてください。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -439,7 +407,7 @@
                       <div>
                           <div class="game-card-icon">🛡️</div>
                           <h3 class="game-card-title">アークナイツ (Arknights)</h3>
-                          <p class="game-card-desc">アークナイツのGoogle Play課金予定額からPlay Pointsを計算。月パス内容と限定300回の仕様は公式確認し、現行商品価格は購入画面で確認します。</p>
+                          <p class="game-card-desc">アークナイツで純正源石や月パスを買う前に、今回の購入で貯まるPlayポイントをチェック。購入予定額を入力して、通常時とキャンペーン中のポイントを比べられます。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -447,7 +415,7 @@
                       <div>
                           <div class="game-card-icon">⚔️</div>
                           <h3 class="game-card-title">ヘブンバーンズレッド (ヘブバン)</h3>
-                          <p class="game-card-desc">ヘブバンのGoogle Play課金予定額からPlay Pointsを計算。公式WEB SHOPの5%OFF・独自ポイントは別決済として分離し、Google Play価格は購入画面で確認します。</p>
+                          <p class="game-card-desc">ヘブバンでクォーツを買う前に、今回の予算で貯まるPlayポイントを見てみましょう。購入予定額とランクを入れて、通常時とキャンペーン中のポイントを比べられます。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -455,7 +423,7 @@
                       <div>
                           <div class="game-card-icon">🎵</div>
                           <h3 class="game-card-title">メメントモリ (MementoMori)</h3>
-                          <p class="game-card-desc">メメントモリ（メメモリ）のダイヤ購入、月間ブースト、ピックアップ100連天井・LR進化で貯まるPlayポイントを即時シミュレーション！パック別還元早見表や使い道も比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。</p>
+                          <p class="game-card-desc">メメントモリでダイヤを買う前に、Playポイントも計算してみましょう。パックや試したい金額を選んで、通常時とキャンペーン中のポイントを比べられます。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -463,7 +431,7 @@
                       <div>
                           <div class="game-card-icon">🌀</div>
                           <h3 class="game-card-title">呪術廻戦 ファントムパレード (ファンパレ)</h3>
-                          <p class="game-card-desc">ファンパレのGoogle Play課金予定額からPlay Pointsを計算。公式WEBショップの増量・マイル・パス商品は別決済として分離し、Google Play価格は購入画面で確認します。</p>
+                          <p class="game-card-desc">ファンパレで廻珠を買う前に、貯まるPlayポイントをチェック。購入予定額を入れると計算できます。通常時とキャンペーン中を切り替えて、今回の予算でどれだけ違うか比べてみましょう。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -471,7 +439,7 @@
                       <div>
                           <div class="game-card-icon">⏳</div>
                           <h3 class="game-card-title">リバース：1999 (Reverse: 1999)</h3>
-                          <p class="game-card-desc">リバース：1999のGoogle Play課金予定額からPlay Pointsを計算。公式が価格を購入ページ表示としているため、固定価格や固定天井額を推測せず実際の支払額を確認します。</p>
+                          <p class="game-card-desc">リバース：1999で雨の雫や月額商品を買う前に、Playポイントも計算してみましょう。購入予定額を入力して、ランクやキャンペーンによるポイントの違いを比べられます。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -479,7 +447,7 @@
                       <div>
                           <div class="game-card-icon">🚀</div>
                           <h3 class="game-card-title">崩壊3rd (Honkai Impact 3rd)</h3>
-                          <p class="game-card-desc">崩壊3rdのGoogle Play課金予定額からPlay Pointsを計算。HoYoverse公式チャージセンターの2倍特典共有や月パス条件と分けて比較できます。</p>
+                          <p class="game-card-desc">崩壊3rdでチャージや月パスを買う前に、貯まるPlayポイントをチェック。Google Playの購入予定額を入れて計算できます。公式チャージセンターと購入先を比べるときは、関連記事へ。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -487,7 +455,7 @@
                       <div>
                           <div class="game-card-icon">🃏</div>
                           <h3 class="game-card-title">シャドウバース ワールズビヨンド</h3>
-                          <p class="game-card-desc">シャドウバース ワールズビヨンド（シャドバWB）のクリスタル購入、プレパス、天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表や使い道も掲載しています。カードパック購入前の確認にぜひ役立ててみてくださいね。</p>
+                          <p class="game-card-desc">シャドバWBでクリスタルやパスを買う前に、貯まるPlayポイントを計算できます。パックや試したい金額を選んで、カード購入に使う予算とポイントを一緒に見てみましょう。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -542,6 +510,6 @@
 
   <script src="../../js/analytics-core.js?v=e63a4a63f7"></script>
   <script src="../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../games/game-sim.js?v=2325ebf133"></script>
+  <script src="../../games/game-sim.js?v=f9f51d4eb6"></script>
 </body>
 </html>

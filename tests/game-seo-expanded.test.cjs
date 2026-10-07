@@ -43,11 +43,10 @@ test('第2波の商品内容の一次情報URLは想定ホストとパスを厳�
 
 test('スタレは未確認の固定価格を使わず、購入予定額を自由入力できる', () => {
   const html = read('games/starrail/index.html');
-  const select = html.match(/<select id="sim-pack-select">([\s\S]*?)<\/select>/)[1];
-  assert.deepEqual([...select.matchAll(/<option value="([^"]+)"/g)].map(match => match[1]), ['custom']);
-  assert.match(select, /value="custom" selected/);
+  assert.match(html, /data-input-mode="amount"/);
+  assert.doesNotMatch(html, /id="sim-pack-select"|id="sim-pack-count"|class="pack-table"/);
   assert.match(html, /id="sim-custom-amount" value="0"/);
-  assert.deepEqual([...html.matchAll(/data-amount="([^"]+)"/g)].map(match => Number(match[1])), [0]);
+  assert.doesNotMatch(html, /data-amount=/);
   assert.doesNotMatch(html, /data-amount="27000"/);
   assert.doesNotMatch(html, /data-amount="54000"/);
   assert.match(html, /supply-pass-value\//);
@@ -66,11 +65,10 @@ test('スタレ深掘りはSSOTの列車補給標章の総量・速度・Play Po
 
 test('ゼンゼロは未確認の固定価格を使わず、購入予定額を自由入力できる', () => {
   const html = read('games/zzz/index.html');
-  const select = html.match(/<select id="sim-pack-select">([\s\S]*?)<\/select>/)[1];
-  assert.deepEqual([...select.matchAll(/<option value="([^"]+)"/g)].map(match => match[1]), ['custom']);
-  assert.match(select, /value="custom" selected/);
+  assert.match(html, /data-input-mode="amount"/);
+  assert.doesNotMatch(html, /id="sim-pack-select"|id="sim-pack-count"|class="pack-table"/);
   assert.match(html, /id="sim-custom-amount" value="0"/);
-  assert.deepEqual([...html.matchAll(/data-amount="([^"]+)"/g)].map(match => Number(match[1])), [0]);
+  assert.doesNotMatch(html, /data-amount=/);
   assert.doesNotMatch(html, /data-amount="27000"/);
   assert.doesNotMatch(html, /data-amount="54000"/);
   assert.match(html, /membership-value\//);
@@ -129,7 +127,7 @@ test('プロセカはSSOTのWebStore価格をGoogle Play価格へ流用せず自
 
 test('NIKKEは公開テキストで現行価格を固定できないため旧価格と固定課金額を出さない', () => {
   const html = read('games/nikke/index.html');
-  assert.match(html, /現行価格をGoogle Playで確認して入力/);
+  assert.match(html, /Google Play購入画面の金額を入力/);
   assert.doesNotMatch(html, /data-amount="76000"/);
   assert.doesNotMatch(html, /data-amount="200000"/);
   assert.doesNotMatch(html, /200連（約7\.6万円）課金した場合/);
@@ -139,7 +137,7 @@ test('NIKKEは公開テキストで現行価格を固定できないため旧価
 
 test('学マスは未確認Google Play価格と誤ったゴールド到達断定をfail closedする', () => {
   const html = read('games/gakumas/index.html');
-  assert.match(html, /現行価格をGoogle Playで確認して入力/);
+  assert.match(html, /Google Play購入画面の金額を入力/);
   assert.doesNotMatch(html, /data-amount="60000"/);
   assert.doesNotMatch(html, /学マスの天井課金（6万円）/);
   assert.doesNotMatch(html, /ゴールド（1,000pt）に到達可能/);

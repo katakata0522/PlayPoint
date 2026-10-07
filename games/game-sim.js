@@ -27,7 +27,7 @@
             basisExact: '入力した税を除く商品価格をポイント計算対象額として使用しています。',
             perPurchaseBasis: (points, count) => `1回あたり ${points.toLocaleString('ja-JP')} pt × ${count.toLocaleString('ja-JP')}回で計算しています。`,
             officialRuleText: 'Google Play公式では、税金を除いた商品の価格に獲得率を掛け、購入ごとに最も近い整数へ丸めます。購入前はGoogle Play画面の獲得予定ポイントを最優先で確認してください。',
-            presetDisclaimer: '天井・完凸などのプリセットは、所持数や現在のガチャ回数、保証状態を判定するガチャシミュレーターではありません。表示した参考支出額をPlay Pointsへ換算するためのショートカットです。',
+            presetDisclaimer: 'ボタンで購入額を入力できます。天井などの金額は、手持ちの通貨やガチャの進み具合によって変わります。',
             verificationText: 'Play Points獲得率はGoogle公式情報を基準にしています。ゲーム内価格・天井/完凸の必要額は参考値です。',
             ranks: [
                 { name: 'ブロンズ', points: 0, rate: 1.0 },
@@ -352,7 +352,7 @@
 
 
         const meta = document.querySelector('.game-meta');
-        if (meta && cfg.verificationText) meta.textContent = cfg.verificationText;
+        if (meta && cfg.verificationText && document.documentElement.lang !== 'ja') meta.textContent = cfg.verificationText;
 
         const presetHeading = document.querySelector('.preset-heading');
         if (presetHeading && cfg.presetDisclaimer && !document.getElementById('game-preset-disclaimer')) {
@@ -422,6 +422,9 @@
                 packSelect.value = option ? option.value : 'custom';
                 if (params.has('pack') && !option) urlErrors.set('pack', { field: 'pack', max: limits.amount });
                 if (countInput) setPackCountVisibility(Boolean(option));
+            } else if (!packSelect && params.has('pack')) {
+                // 商品を持たないページへ旧商品指定が来たら、見える金額欄で訂正できるようにする。
+                urlErrors.set('amount', { field: 'amount', max: limits.amount });
             }
         } catch (error) {
             console.error('Failed to parse URL query params', error);

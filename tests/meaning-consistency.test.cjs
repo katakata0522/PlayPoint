@@ -26,7 +26,7 @@ test('generated international top pages carry the corrected earn-rate meaning', 
 
 test('game comparison tables label point earning rates, not cashback or 1x multipliers', () => {
   const samples = [
-    ['games/genshin/index.html', '基本獲得率（100円あたり1pt）', ['通常時還元 (1%)']],
+    ['games/fgo/index.html', '基本獲得率（100円あたり1pt）', ['通常時還元 (1%)']],
     ['en/games/genshin/index.html', 'Base earn rate (1 pt / $1)', ['Standard (1x)']],
     ['ko/games/genshin/index.html', '기본 적립률 (1,000원당 1pt)', []],
     ['tw/games/genshin/index.html', '基本獲點率（每 NT$30 1點）', []]

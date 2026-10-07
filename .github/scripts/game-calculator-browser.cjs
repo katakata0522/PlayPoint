@@ -130,6 +130,14 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
           await page.goto(new URL(target.pathname + '?amount=1000&eligible=&count=invalid', baseUrl).href, { waitUntil: 'load' });
           await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
           assert.equal(await page.locator('.game-result-container').isVisible(), true, '任意対象額の空欄と自由金額モードの未使用回数は計算を妨げない');
+          if (target.pathname === '/games/nikke/') {
+            await page.goto(new URL(target.pathname + '?amount=1000&pack=invalid', baseUrl).href, { waitUntil: 'load' });
+            await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+            assert.equal(await page.locator('.game-result-container').isVisible(), false, '使えない商品指定を含む共有URLは計算しない');
+            assert.equal(await page.locator('#sim-custom-amount').getAttribute('aria-invalid'), 'true');
+            await page.locator('#sim-custom-amount').fill('1200');
+            assert.equal(await page.locator('.game-result-container').isVisible(), true, '商品欄がなくても金額訂正で再開できる');
+          }
         }
         row.passed = true;
       } catch (error) {

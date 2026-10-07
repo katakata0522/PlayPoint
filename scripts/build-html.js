@@ -55,6 +55,7 @@ const { syncGameSeoWave3 } = require('./game-seo-wave3-sync.cjs');
 const { syncGameSeoWave4 } = require('./game-seo-wave4-sync.cjs');
 const { syncGameSeoWave5 } = require('./game-seo-wave5-sync.cjs');
 const { syncGameSeoWave5RegionalRates } = require('./game-seo-wave5-regional-sync.cjs');
+const { syncGameCalculatorPresentation } = require('./game-calculator-presentation.cjs');
 const { syncGameGuideArticleHub } = require('./game-guide-article-hub-sync.cjs');
 const { syncArticleImageRoles } = require('./article-image-assets.cjs');
 const { syncArticleAuthorSemantics } = require('./article-author-semantics.cjs');
@@ -116,6 +117,7 @@ const gameSeoWave5Summary = syncGameSeoWave5(rootDir);
 console.log(`[build-html] synchronized game SEO wave 5: ${gameSeoWave5Summary.changedFiles.length}/${gameSeoWave5Summary.checked} updated`);
 const gameSeoWave5RegionalSummary = syncGameSeoWave5RegionalRates(rootDir);
 console.log(`[build-html] synchronized game SEO wave 5 regional rates: ${gameSeoWave5RegionalSummary.changedFiles.length}/${gameSeoWave5RegionalSummary.checked} updated`);
+console.log('[build-html] synchronized Japanese calculator presentation:', syncGameCalculatorPresentation(rootDir));
 
 // 地域レート補正に記事登録を隠さず、全ゲーム生成後の独立した引き渡しにする。
 const gameArticleHubSummary = syncGameGuideArticleHub(rootDir);
