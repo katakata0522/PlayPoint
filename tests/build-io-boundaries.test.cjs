@@ -186,21 +186,25 @@ test('地域レート補正は記事ハブがない環境でも完了し、対�
   assert.throws(() => syncGameSeoWave5RegionalRates(root), /not found/);
 });
 
-test('価格安全補正は対象だけを変更し、再実行で冪等かつ欠損契約を失敗させる', t => {
+test('FAQ安全補正は対象だけを変更し、操作欄に触れず冪等かつ欠損契約を失敗させる', t => {
   const root = fixture(t);
   const parents = ['fgo', 'bluearchive', 'nikke', 'gakumas', 'proseka'];
   for (const slug of parents) write(root, `games/${slug}/index.html`, '<html><input type="number" id="sim-custom-amount" value="1900" min="0" step="any" inputmode="decimal"></html>');
+  write(root, 'games/nikke/index.html', '<html><h3>NIKKEのゴールドマイレージ（金票200枚）で何ポイント還元されますか？</h3><input type="number" id="sim-custom-amount" value="0" min="0" step="any" inputmode="decimal"></html>');
   write(root, 'games/fgo/guide/index.html', '<html>Read-only guide</html>');
   const io = ioCounts(t, root);
 
   syncGameSeoSafety(root);
   assert.equal(io.writes.has('games/fgo/guide/index.html'), false);
-  assert.match(fs.readFileSync(path.join(root, 'games/fgo/index.html'), 'utf8'), /value="1920"/);
+  assert.deepEqual([...io.writes.keys()], ['games/nikke/index.html']);
+  assert.match(fs.readFileSync(path.join(root, 'games/nikke/index.html'), 'utf8'), /NIKKEの200連分に必要な現金額は固定ですか？/);
+  assert.match(fs.readFileSync(path.join(root, 'games/nikke/index.html'), 'utf8'), /value="0"/);
+  assert.match(fs.readFileSync(path.join(root, 'games/fgo/index.html'), 'utf8'), /value="1900"/, '初期購入額は生成元が担当し、FAQ同期で書き換えない');
 
   io.reset();
   syncGameSeoSafety(root);
   assert.equal(io.writes.size, 0, 'second safety sync must be byte-idempotent');
 
-  fs.rmSync(path.join(root, 'games/fgo/index.html'));
+  fs.rmSync(path.join(root, 'games/nikke/index.html'));
   assert.throws(() => syncGameSeoSafety(root), /ENOENT/);
 });
