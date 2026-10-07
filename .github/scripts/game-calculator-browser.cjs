@@ -125,6 +125,7 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
           await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
           assert.equal(await page.locator('#sim-pack-select').inputValue(), 'custom');
           assert.equal(await page.locator('#sim-custom-amount').inputValue(), '480');
+          assert.equal(await page.locator('.preset-btn[aria-pressed="true"]').count(), 0, '共有条件に初期の予算ボタンの選択表示を残さない');
           for (const query of ['pack=480&count=2', 'amount=960&pack=480&count=2']) {
             await page.goto(new URL(`${target.pathname}?${query}`, baseUrl).href, { waitUntil: 'load' });
             await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });

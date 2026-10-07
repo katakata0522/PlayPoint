@@ -442,6 +442,11 @@
         } catch (error) {
             console.error('Failed to parse URL query params', error);
         }
+        // 共有条件を表示しているときは、初期予算ボタンを選択済みに見せない。
+        if (hasUrlAmount) presetBtns.forEach(btn => {
+            btn.classList.remove('active');
+            btn.setAttribute('aria-pressed', 'false');
+        });
 
         // 初期ロード時の双方向同期判定
         if (packSelect && !hasUrlAmount && form.dataset.initialInputKind === 'budget') {
