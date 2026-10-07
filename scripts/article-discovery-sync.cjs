@@ -24,6 +24,7 @@ function articleEntries(root) {
 function extractSections(html) {
   const article = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1] || '';
   const body = article.split(/<div\b[^>]*class=["'][^"']*\bauthor-profile-box\b/i)[0].replace(/<header\b[^>]*>[\s\S]*?<\/header>/gi, ' ').replace(/<details class="reading-metadata">[\s\S]*?<\/details>/g, ' ')
+    .replace(/<details\b[^>]*class=["'][^"']*\breader-toc(?:--intl)?\b[^"']*["'][^>]*>[\s\S]*?<\/details>/gi, ' ')
     .replace(/<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->/g, ' ')
     .replace(/<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '')
     .replace(/<details\b[^>]*class=["'][^"']*\breader-toc--intl\b[^"']*["'][^>]*>[\s\S]*?<\/details>/gi, ' ')
