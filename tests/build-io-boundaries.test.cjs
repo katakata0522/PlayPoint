@@ -71,6 +71,9 @@ test('記事変換はI/Oなしで本文・既存アンカー・入力レコー�
   const withOptionalToc = articleHtml.replace('</header>', '</header><details class="reader-toc reader-toc--intl"><summary>On this page</summary><nav><a href="#article-section-1">First</a></nav></details>');
   const preparedToc = prepareDiscoveryArticle(withOptionalToc, entry);
   assert.equal(preparedToc.record.sections.some(section => section.text.includes('On this page')), false, '折りたたみ目次のラベルを検索本文へ混ぜない');
+  const withLegacyToc = articleHtml.replace('</header>', '</header><details class="inpage-toc"><summary>目次を開く</summary><ol><li><a href="#article-section-1">First</a></li></ol></details>');
+  const preparedLegacyToc = prepareDiscoveryArticle(withLegacyToc, entry);
+  assert.equal(preparedLegacyToc.record.sections.some(section => section.text.includes('目次を開く')), false, '既存の日本語目次ラベルも検索本文へ混ぜない');
   const optionalToc = articleHtml.replace('<article>', '<article><div class="intro">Direct answer</div><details class="reader-toc reader-toc--intl"><summary>On this page</summary><nav><h2>Contents</h2></nav></details>');
   const tocPrepared = prepareDiscoveryArticle(optionalToc, entry);
   assert.equal(tocPrepared.record.sections[0].text, 'Direct answer', '折りたたみ目次のラベルを検索用の冒頭文へ混ぜない');
