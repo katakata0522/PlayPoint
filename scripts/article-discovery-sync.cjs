@@ -26,7 +26,7 @@ function extractSections(html) {
   const body = article.split(/<div\b[^>]*class=["'][^"']*\bauthor-profile-box\b/i)[0].replace(/<header\b[^>]*>[\s\S]*?<\/header>/gi, ' ').replace(/<details class="reading-metadata">[\s\S]*?<\/details>/g, ' ')
     .replace(/<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->/g, ' ')
     .replace(/<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '')
-    .replace(/<details\b[^>]*class=["'][^"']*\breader-toc\b[^"']*["'][^>]*>[\s\S]*?<\/details>/gi, ' ')
+    .replace(/<details\b[^>]*class=["'][^"']*\breader-toc--intl\b[^"']*["'][^>]*>[\s\S]*?<\/details>/gi, ' ')
     .replace(/<aside\b[^>]*>[\s\S]*?<\/aside>/gi, '').replace(/<nav\b[^>]*>[\s\S]*?<\/nav>/gi, '');
   const headings = [...body.matchAll(/<h([23])\b([^>]*)>([\s\S]*?)<\/h\1>/gi)];
   const sections = headings.map((m, i) => ({ id: m[2].match(/\bid=["']([^"']+)/)?.[1] || '', heading: text(m[3]),
