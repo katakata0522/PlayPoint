@@ -24,8 +24,10 @@ function articleEntries(root) {
 function extractSections(html) {
   const article = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1] || '';
   const body = article.split(/<div\b[^>]*class=["'][^"']*\bauthor-profile-box\b/i)[0].replace(/<header\b[^>]*>[\s\S]*?<\/header>/gi, ' ').replace(/<details class="reading-metadata">[\s\S]*?<\/details>/g, ' ')
+    .replace(/<details\b[^>]*class=["'][^"']*\b(?:reader-toc(?:--intl)?|inpage-toc)\b[^"']*["'][^>]*>[\s\S]*?<\/details>/gi, ' ')
     .replace(/<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->/g, ' ')
     .replace(/<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '')
+    .replace(/<details\b[^>]*class=["'][^"']*\breader-toc--intl\b[^"']*["'][^>]*>[\s\S]*?<\/details>/gi, ' ')
     .replace(/<aside\b[^>]*>[\s\S]*?<\/aside>/gi, '').replace(/<nav\b[^>]*>[\s\S]*?<\/nav>/gi, '');
   const headings = [...body.matchAll(/<h([23])\b([^>]*)>([\s\S]*?)<\/h\1>/gi)];
   const sections = headings.map((m, i) => ({ id: m[2].match(/\bid=["']([^"']+)/)?.[1] || '', heading: text(m[3]),
@@ -39,6 +41,11 @@ const scopeCopy = {
   en: 'Language: English · US reference. Offers depend on your Google Play country and account.',
   ko: '표시 언어: 한국어 · 대한민국 기준. 혜택은 Google Play 국가와 계정에 따라 달라집니다.',
   tw: '顯示語言：繁體中文 · 台灣條件。優惠依 Google Play 國家／地區與帳號而定。'
+};
+const compactScopeCopy = {
+  en: ['United States', 'United States reference. Offers depend on your Google Play country and account.'],
+  ko: ['대한민국', '대한민국 기준입니다. 혜택은 Google Play 국가와 계정에 따라 달라집니다.'],
+  tw: ['台灣', '台灣條件。優惠依 Google Play 國家／地區與帳號而定。']
 };
 const diaryCopy = {
   ja: ['受け取った結果を今週の日記に残す', '受取後のポイントや賞品を記録できます。記録はこの端末に保存され、Google Playとは連携しません。', '今週の日記を開く'],
@@ -98,9 +105,13 @@ function prepareDiscoveryArticle(html, entry) {
   html = html.replace(/<script\b[^>]*\bsrc=["'][^"']*(?:js\/(?:analytics-core|intent-tracking|third-party)|blog\/article)\.js(?:\?[^"']*)?["'][^>]*>/gi,
     tag => /\b(?:defer|async|type)\s*(?:=|\s|>)/i.test(tag) ? tag : tag.replace('<script', '<script defer'));
   html = withoutReadingMount(html);
-  html = html.replace(/\s*<p class="article-region-scope">[\s\S]*?<\/p>/g, '');
+  html = html.replace(/\s*<p\b[^>]*class="[^"]*\barticle-region-scope\b[^"]*"[^>]*>[\s\S]*?<\/p>/g, '');
   if (entry.locale !== 'ja') {
-    html = html.replace(/(<h1\b[^>]*>[\s\S]*?<\/h1>)/i, '$1\n<p class="article-region-scope">' + scopeCopy[entry.locale] + '</p>');
+    const compactScope = /\/articles\/google-play-points-cash-conversion\.html$/.test(entry.path) ? compactScopeCopy[entry.locale] : null;
+    const scope = compactScope
+      ? '<p class="article-region-scope" aria-label="' + compactScope[1] + '">' + compactScope[0] + '</p>'
+      : '<p class="article-region-scope">' + scopeCopy[entry.locale] + '</p>';
+    html = html.replace(/(<h1\b[^>]*>[\s\S]*?<\/h1>)/i, '$1\n' + scope);
   }
   html = html.replace(/<h1\b([^>]*)>/i, (tag, attrs) => /\bid\s*=/.test(attrs) ? tag : '<h1' + attrs + ' id="article-title">');
   // 既存アンカーを維持し、見出しへ安定した直リンク先を補う。

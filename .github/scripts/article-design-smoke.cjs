@@ -19,7 +19,10 @@ const REPRESENTATIVE_CASES = [
   { key: 'game-decision-deep', path: 'games/fgo/pity-cost/index.html', allArticle: true, intro: true, related: true },
   { key: 'international-decision', path: 'en/articles/google-play-points-earn-free.html', related: true },
   { key: 'international-quest-reading', path: 'en/articles/google-play-quests.html', intro: true, related: true },
-  { key: 'korean-cash-reading', path: 'ko/articles/google-play-points-cash-conversion.html', answerSelector: ':scope > .intro', intro: true, related: true },
+  { key: 'cash-opening-ja', path: 'articles/2026-07-24-play-points-cash-conversion.html', related: true, openingV2: true },
+  { key: 'cash-opening-en', path: 'en/articles/google-play-points-cash-conversion.html', answerSelector: ':scope > .intro', intro: true, related: true, openingV2: true, compactScope: true, collapsedToc: true },
+  { key: 'cash-opening-ko', path: 'ko/articles/google-play-points-cash-conversion.html', answerSelector: ':scope > .intro', intro: true, related: true, openingV2: true, compactScope: true, collapsedToc: true },
+  { key: 'cash-opening-tw', path: 'tw/articles/google-play-points-cash-conversion.html', answerSelector: ':scope > .intro', intro: true, related: true, openingV2: true, compactScope: true, collapsedToc: true },
   { key: 'traditional-chinese-use', path: 'tw/articles/google-play-points-use-coupons.html', related: true }
 ];
 // 全件確認は明示指定時だけ実行し、通常CIの代表ケースは維持する。
@@ -106,6 +109,10 @@ async function inspect(browser, baseUrl, article, viewport) {
         heading: rendered(heading),
         marker: rendered(marker),
         related: rendered(related),
+        openingStylesheet: [...document.querySelectorAll('link[rel="stylesheet"]')].some(link => link.href.includes('article-opening-v2.css')),
+        openingAnswerTextLength: answer?.textContent?.replace(/\\s+/g, ' ').trim().length || 0,
+        compactScopeText: document.querySelector('.article-region-scope')?.textContent?.trim() || '',
+        collapsedToc: Boolean(content?.querySelector(':scope > details.reader-toc--intl > nav.intl-article-toc')),
         horizontalOverflow: document.documentElement.scrollWidth - window.innerWidth
       };
     }, article.answerSelector);
@@ -130,11 +137,20 @@ async function inspect(browser, baseUrl, article, viewport) {
       assert(result.summary, article.key + '/' + viewport.key + ': summary missing');
     }
     if (article.marker) assert(result.marker, article.key + '/' + viewport.key + ': important emphasis missing');
+    if (article.openingV2) {
+      assert(result.openingStylesheet, article.key + '/' + viewport.key + ': opening v2 stylesheet missing');
+      assert(result.openingAnswerTextLength > 0 && result.openingAnswerTextLength <= 260, article.key + '/' + viewport.key + ': first answer is too long');
+    }
+    if (article.compactScope) assert(result.compactScopeText.length > 0 && result.compactScopeText.length <= 20, article.key + '/' + viewport.key + ': region scope is not compact');
+    if (article.collapsedToc) assert(result.collapsedToc, article.key + '/' + viewport.key + ': long article navigation must be optional');
     if (article.related) {
       assert(result.related, article.key + '/' + viewport.key + ': related navigation missing');
     }
     if (viewport.width <= 860) assert(result.horizontalOverflow <= 1, article.key + '/mobile: horizontal overflow ' + result.horizontalOverflow + 'px');
-    const focusTarget = page.locator('.content a').first();
+    // Mobile article openings may intentionally hide secondary utility links.
+    // Check the first actually rendered content link so the focus contract follows what a keyboard user can reach.
+    const focusTarget = page.locator('.content a:visible').first();
+    assert(await focusTarget.count() === 1, article.key + '/' + viewport.key + ': visible focus target missing');
     await page.keyboard.press('Tab');
     await focusTarget.focus();
     const focus = await focusTarget.evaluate(element => ({ visible: element.matches(':focus-visible'), width: parseFloat(getComputedStyle(element).outlineWidth), style: getComputedStyle(element).outlineStyle }));
