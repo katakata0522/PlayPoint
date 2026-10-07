@@ -66,6 +66,105 @@ line-break: strict;
 font-size: 0.85rem;
 color: var(--game-text-sub);
 }
+.game-offers {
+background: linear-gradient(145deg, #f0f9ff, #f8fafc 55%, #fffbeb);
+border: 1px solid #bae6fd;
+border-radius: 16px;
+padding: 24px;
+margin: 24px 0 32px;
+overflow-wrap: anywhere;
+}
+.game-offers-heading {
+display: flex;
+gap: 16px;
+justify-content: space-between;
+align-items: flex-start;
+flex-wrap: wrap;
+}
+.game-offers-eyebrow {
+font-size: 0.8rem;
+font-weight: 700;
+color: #075985;
+}
+.game-offers h2 {
+margin: 4px 0 0;
+font-size: 1.3rem;
+line-height: 1.5;
+}
+.game-offers-skip {
+font-size: 0.85rem;
+padding: 10px 0;
+color: #075985;
+}
+.game-offers-lead {
+margin: 14px 0 20px;
+font-size: 0.95rem;
+}
+.game-offers-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 14px;
+}
+.game-offer-card {
+display: flex;
+flex-direction: column;
+background: #fff;
+border: 1px solid #dbeafe;
+border-radius: 12px;
+padding: 20px;
+min-width: 0;
+box-shadow: 0 3px 10px rgba(15, 23, 42, 0.03);
+}
+.game-offer-kind {
+align-self: flex-start;
+background: #e0f2fe;
+color: #075985;
+padding: 3px 8px;
+border-radius: 4px;
+font-size: 0.75rem;
+font-weight: 700;
+}
+.game-offer-card h3 {
+font-size: 1.05rem;
+margin: 12px 0 8px;
+line-height: 1.5;
+}
+.game-offer-card p {
+font-size: 0.88rem;
+line-height: 1.8;
+margin: 0 0 18px;
+}
+.game-offer-bottom {
+display: flex;
+flex-direction: column;
+gap: 8px;
+margin-top: auto;
+}
+.game-offer-bottom strong { font-size: 0.85rem; }
+.game-offer-action {
+display: block;
+text-align: center;
+background: #0369a1;
+color: #fff;
+border-radius: 7px;
+padding: 12px 8px;
+font-size: 0.85rem;
+font-weight: 700;
+text-decoration: none;
+}
+.game-offer-action:hover { background: #075985; }
+.game-offer-source { font-size: 0.8rem; padding: 8px 0; color: #075985; }
+.game-offers-more { margin-top: 18px; }
+.game-offers-more summary { cursor: pointer; padding: 12px 0; color: #075985; font-weight: 700; font-size: 0.9rem; }
+.game-offers-note, .game-offers-reviewed { font-size: 0.8rem; margin: 16px 0 0; color: #475569; }
+.game-offers-reviewed { font-size: 0.75rem; margin-top: 8px; }
+.game-offers a:focus-visible, .game-offers summary:focus-visible { outline: 3px solid #b45309; outline-offset: 4px; }
+#game-calculator { scroll-margin-top: 24px; }
+@media (max-width: 600px) {
+.game-offers { padding: 18px 14px; }
+.game-offers-grid { grid-template-columns: minmax(0, 1fr); }
+.game-offer-card { padding: 18px; }
+}
 .game-sim-card {
 background: #f1f5f9;
 border: 1.5px solid #cbd5e1;

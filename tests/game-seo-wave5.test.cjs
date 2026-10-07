@@ -77,8 +77,7 @@ test('every Wave 5 parent calculator exists in every canonical game locale', () 
         assert.match(packSelect, /<option value="custom" selected>/);
         assert.doesNotMatch(packSelect, /<option value="\d/, `${file} must not expose a hard-coded current product price`);
       }
-      assert.match(html, new RegExp(`<meta name="last-modified" content="${VERIFIED_AT}"`));
-      assert.equal(getGeneratedGamePageContentDate(file), VERIFIED_AT);
+      assert.match(html, new RegExp(`<meta name="last-modified" content="${getGeneratedGamePageContentDate(file)}"`));
       assert.doesNotMatch(html, /hb\.afl\.rakuten\.co\.jp/, `${file} should not introduce rights-risk affiliate routing`);
     }
   }

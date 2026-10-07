@@ -1,6 +1,7 @@
 'use strict';
 
 const { GAME_SEO, SOURCES } = require('./game-seo-data.cjs');
+const { getSpecialOffers } = require('./game-special-offers.cjs');
 
 // 日本語の計算機と一覧カードで、実際に使える機能を同じ文章で案内する。
 const DESCRIPTIONS = {
@@ -57,7 +58,26 @@ function getJapaneseCalculator(game) {
     budgets = [1200, 2000, 10000, 50000];
   }
   presets.push(...budgets.map(amount => ({ label: `予算 ${amount.toLocaleString('ja-JP')}円`, amount, mult: 1, kind: 'budget' })));
-  return { packs, presets, budgets, mode: packs.length ? 'products' : 'amount', initialAmount: presets[0]?.amount || 0 };
+  return { packs, presets, budgets, mode: packs.length ? 'products' : 'amount', initialAmount: presets[0]?.amount || 0, offers: getSpecialOffers(game.id, packs) };
 }
 
-module.exports = { DESCRIPTIONS, getJapaneseCalculator };
+function renderSpecialOffers(offers, gameShort) {
+  const escapeReadingText = value => String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+  const offerCard = offer => {
+    const text = escapeReadingText;
+    const amount = offer.price == null ? '購入画面の金額で計算' : `${offer.kind.startsWith('月額') ? '月額 ' : ''}${offer.price.toLocaleString('ja-JP')}円`;
+    const action = offer.productId ? `data-offer-product="${text(offer.productId)}"` : 'data-offer-input="amount"';
+    const subscription = offer.kind.includes('自動更新') ? ' data-offer-subscription="true"' : '';
+    return `<article class="game-offer-card"><span class="game-offer-kind">${text(offer.kind)}</span><h3>${text(offer.name)}</h3><p>${text(offer.detail)}</p><div class="game-offer-bottom"><strong>${amount}</strong><a class="game-offer-action" href="#game-calculator" ${action}${subscription} aria-label="${text(offer.name)}の購入額で計算">${offer.productId ? 'この料金で計算' : '購入額を入力して計算'}<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="${text(offer.source.url)}" target="_blank" rel="noopener noreferrer">${text(offer.source.label)}</a></div></article>`;
+  };
+  return offers ? `<section class="game-offers" aria-labelledby="game-offers-title">
+            <div class="game-offers-heading"><div><span class="game-offers-eyebrow">課金する前に、こちらもチェック</span><h2 id="game-offers-title">${escapeReadingText(gameShort)}のパス・特別商品</h2></div><a href="#game-calculator" class="game-offers-skip">計算へ進む ↓</a></div>
+            <p class="game-offers-lead">${escapeReadingText(offers.lead)}</p>
+            <div class="game-offers-grid">${offers.items.slice(0, 2).map(offerCard).join('')}</div>
+${offers.items.length > 2 ? `            <details class="game-offers-more"><summary>ほかの特別商品も見る（${offers.items.length - 2}件）</summary><div class="game-offers-grid">${offers.items.slice(2).map(offerCard).join('')}</div></details>` : ''}
+            <p class="game-offers-note">${escapeReadingText(offers.note || (offers.items.every(item => item.price != null) ? 'Google Playでの購入額から計算できます。自動更新の商品は通常率で計算します。' : 'Google Playの購入画面の金額を入れて、貯まるポイントを確認できます。'))}${offers.officialSource ? ` <a href="${escapeReadingText(offers.officialSource.url)}" target="_blank" rel="noopener noreferrer">公式情報も確認</a>` : ''}</p>
+            <p class="game-offers-reviewed">公開情報の確認：<time datetime="${offers.reviewedAt}">${offers.reviewedAt.replaceAll('-', '/')}</time> · 商品内容とGoogle Play価格は分けて確認しています。</p>
+          </section>` : '';
+}
+
+module.exports = { DESCRIPTIONS, getJapaneseCalculator, renderSpecialOffers };

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="2026-09-13" />
+  <meta name="last-modified" content="2026-10-07" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>Pokémon GO - Google Play Points Calculator | PlayPoint</title>
@@ -29,7 +29,7 @@
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="../../articles/article-shared.css?v=86f4c481d9" />
-  <link rel="stylesheet" href="../../games/games.css?v=56f8cf7a1a" />
+  <link rel="stylesheet" href="../../games/games.css?v=49b3e1e683" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Pokémon GO Google Play Points Calculator","url":"https://playpoint-sim.com/games/pokemon-go/","applicationCategory":"UtilityApplication","operatingSystem":"All","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"author":{"@type":"Person","name":"かたかた","url":"https://playpoint-sim.com/author/katakata.html"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://playpoint-sim.com/"},{"@type":"ListItem","position":2,"name":"ゲーム別計算","item":"https://playpoint-sim.com/games/"},{"@type":"ListItem","position":3,"name":"Pokémon GO","item":"https://playpoint-sim.com/games/pokemon-go/"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"このゲームの課金でGoogle Play Pointsは貯まりますか？","acceptedAnswer":{"@type":"Answer","text":"Google Play上の対象購入として処理され、購入画面に獲得予定ポイントが表示される場合に計算対象として確認できます。Webストアなど別決済はGoogle Play Pointsと分けてください。"}}]}</script>
@@ -42,7 +42,15 @@
     <header class="game-header"><span class="game-badge">🔎 公式情報を基準に検証</span><h1 class="game-title">Pokémon GO</h1><p class="game-meta">Google Playでの購入額からPlayポイントを計算</p></header>
     <p>レイドやイベント前のポケコイン購入で、何ポイント貯まる？Google Playの購入予定額を入れて計算できます。Webストアのボーナスポケコインと迷ったら、関連記事もどうぞ。</p>
     <p>Androidのアプリ内購入はGoogle PlayまたはGalaxy Storeで完了します。Play Pointsを数えるのはGoogle Play決済として表示される購入だけです。</p>
-    <section class="game-sim-card"><h2 class="game-sim-title">🧮 Pokémon GO</h2>
+<section class="game-offers" aria-labelledby="game-offers-title">
+            <div class="game-offers-heading"><div><span class="game-offers-eyebrow">課金する前に、こちらもチェック</span><h2 id="game-offers-title">Pokémon GOのパス・特別商品</h2></div><a href="#game-calculator" class="game-offers-skip">計算へ進む ↓</a></div>
+            <p class="game-offers-lead">今月のタスクを進めるならGOパスデラックス、レイド中心なら開催中のチケットを先にチェック。GOポイントはPlayポイントとは別です。</p>
+            <div class="game-offers-grid"><article class="game-offer-card"><span class="game-offer-kind">期間制・進行報酬</span><h3>GOパスデラックス</h3><p>無料GOパスの追加報酬を解放。2026年10月版は10月6日〜11月3日で、報酬受取は11月5日10時まで。</p><div class="game-offer-bottom"><strong>購入画面の金額で計算</strong><a class="game-offer-action" href="#game-calculator" data-offer-input="amount" aria-label="GOパスデラックスの購入額で計算">購入額を入力して計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://pokemongo.com/ja/news/go-pass-october-2026" target="_blank" rel="noopener noreferrer">公式情報</a></div></article><article class="game-offer-card"><span class="game-offer-kind">期間制・進行を補助</span><h3>GOパスデラックス ＋10ランク</h3><p>有料枠の解放に加え、10ランク分のGOポイントが付く商品。通常のデラックス、レイド用のプレミアムバトルパスとは別です。</p><div class="game-offer-bottom"><strong>購入画面の金額で計算</strong><a class="game-offer-action" href="#game-calculator" data-offer-input="amount" aria-label="GOパスデラックス ＋10ランクの購入額で計算">購入額を入力して計算<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="https://pokemongo.com/ja/news/go-pass-october-2026" target="_blank" rel="noopener noreferrer">公式情報</a></div></article></div>
+
+            <p class="game-offers-note">公式告知の米ドル表記を円へ換算して固定しません。日本のGoogle Play支払額で計算し、Web Store限定特典は別に比較してください。</p>
+            <p class="game-offers-reviewed">公開情報の確認：<time datetime="2026-10-07">2026/10/07</time> · 商品内容とGoogle Play価格は分けて確認しています。</p>
+          </section>
+    <section class="game-sim-card" id="game-calculator"><h2 class="game-sim-title">🧮 Pokémon GO</h2>
       <p class="game-sim-lead">Google Play購入画面の金額を入力すると、貯まるポイントが分かります。</p>
       <form id="game-sim-form" data-input-mode="amount"><div class="input-grid">
 
@@ -66,6 +74,6 @@
   <footer class="site-footer"><p>© 2026 PlayPoint / Independent unofficial calculator.</p></footer>
   <script src="../../js/analytics-core.js?v=e63a4a63f7"></script>
   <script src="../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../games/game-sim.js?v=97f6161d33"></script>
+  <script src="../../games/game-sim.js?v=3ed507fa19"></script>
 </body>
 </html>

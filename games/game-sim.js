@@ -692,6 +692,32 @@
             });
         }
 
+        // 特別商品の紹介から、価格ではなく商品IDで計算へ進む。
+        document.querySelectorAll('[data-offer-product], [data-offer-input]').forEach(link => {
+            link.addEventListener('click', event => {
+                if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+                const productId = link.dataset.offerProduct;
+                const index = productId && packSelect ? Array.from(packSelect.options).findIndex(option => option.dataset.productId === productId) : -1;
+                if (productId && index < 0) return;
+                event.preventDefault();
+                urlErrors.clear();
+                if (countInput) countInput.value = '1';
+                if (eligibleAmountInput) eligibleAmountInput.value = '';
+                if (link.dataset.offerSubscription && multSelect) multSelect.value = '1';
+                if (packSelect) {
+                    if (index >= 0) packSelect.selectedIndex = index;
+                    else packSelect.value = 'custom';
+                    packSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                } else {
+                    presetBtns.forEach(btn => { btn.classList.remove('active'); btn.setAttribute('aria-pressed', 'false'); });
+                    refreshEligibleField();
+                    update(true);
+                }
+                document.getElementById('game-calculator')?.scrollIntoView({ block: 'start' });
+                (index >= 0 ? packSelect : customAmountInput)?.focus({ preventScroll: true });
+            });
+        });
+
         // カスタム金額手入力
         if (customAmountInput) {
             customAmountInput.addEventListener('input', () => {

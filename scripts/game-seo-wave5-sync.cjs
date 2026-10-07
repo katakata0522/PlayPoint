@@ -1,6 +1,6 @@
 'use strict';
 
-const { DESCRIPTIONS } = require('./game-calculator-presentation.cjs');
+const { DESCRIPTIONS, getJapaneseCalculator, renderSpecialOffers } = require('./game-calculator-presentation.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
 const { VERIFIED_AT, SOURCES, GAME_SEO_WAVE5 } = require('./game-seo-wave5-data.cjs');
@@ -188,7 +188,8 @@ function parentPage(slug, locale) {
     <header class="game-header"><span class="game-badge">${c.badge}</span><h1 class="game-title">${g.name}</h1><p class="game-meta">${locale === 'ja' ? 'Google Playでの購入額からPlayポイントを計算' : `${c.verified}: ${VERIFIED_AT} ｜ Google Play Points`}</p></header>
     <p>${g.description}</p>
     <p>${g.note}</p>
-    <section class="game-sim-card"><h2 class="game-sim-title">🧮 ${g.short}</h2>
+${locale === 'ja' ? renderSpecialOffers(getJapaneseCalculator({ id: slug }).offers, g.short) : ''}
+    <section class="game-sim-card" id="game-calculator"><h2 class="game-sim-title">🧮 ${g.short}</h2>
 ${locale === 'ja' ? '      <p class="game-sim-lead">Google Play購入画面の金額を入力すると、貯まるポイントが分かります。</p>' : `      <p class="preset-heading">▼ ${c.input}</p>
       <div class="preset-buttons"><button type="button" class="preset-btn active" data-amount="0" data-mult="1" aria-pressed="true">${c.input}</button></div>
 `}

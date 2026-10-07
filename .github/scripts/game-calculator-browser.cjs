@@ -47,11 +47,36 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
           assert.ok(accessible.name && accessible.text && accessible.value >= 0 && accessible.value <= 100, '進捗の名前・値・説明');
           row.progress = accessible;
         }
+        if (/^\/games\/[^/]+\/$/.test(target.pathname)) {
+          const offers = page.locator('.game-offers');
+          assert.equal(await offers.count(), 1, '全ゲームで特別商品から選べる');
+          assert.ok(await page.evaluate(() => Boolean(document.querySelector('.game-offers').compareDocumentPosition(document.querySelector('#game-calculator')) & Node.DOCUMENT_POSITION_FOLLOWING)), '商品紹介は計算より前');
+          const more = offers.locator('summary');
+          if (await more.count()) await more.click();
+          for (const link of await offers.locator('[data-offer-product], [data-offer-input]').all()) {
+            const product = await link.getAttribute('data-offer-product');
+            await link.click();
+            if (product) {
+              assert.equal(await page.locator('#sim-pack-select').evaluate(el => el.options[el.selectedIndex].dataset.productId), product, '同額の別商品を取り違えない');
+              assert.equal(await page.locator('#sim-pack-count').inputValue(), '1');
+              assert.equal(await page.locator('#sim-pack-select').evaluate(el => document.activeElement === el), true);
+              assert.equal(await page.locator('.game-result-container').isVisible(), true);
+            } else {
+              assert.equal(await page.locator('#sim-custom-amount').evaluate(el => document.activeElement === el), true, '未確認価格は金額入力へ');
+              if (await page.locator('#sim-pack-select').count()) assert.equal(await page.locator('#sim-pack-select').inputValue(), 'custom');
+            }
+            if (await link.getAttribute('data-offer-subscription')) assert.equal(await page.locator('#sim-multiplier').inputValue(), '1', '自動更新は通常率');
+          }
+          row.specialOffers = await offers.locator('.game-offer-card').count();
+          // 後続の予算・共有ケースは通常商品向けの開始条件に戻す。
+          await page.locator('#sim-multiplier').selectOption('3');
+          await page.locator('#sim-custom-amount').fill('1000');
+        }
         for (const width of WIDTHS) {
           await page.setViewportSize({ width, height: 844 });
           await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
           const geometry = await page.evaluate(() => {
-            const selectors = '.game-main-content, .game-portal-card, .game-sim-card, .game-result-container, .input-field input, .input-field select, .result-stat-box, .game-giftcard-cta-btn';
+            const selectors = '.game-main-content, .game-portal-card, .game-offers, .game-offer-card, .game-offer-action, .game-sim-card, .game-result-container, .input-field input, .input-field select, .result-stat-box, .game-giftcard-cta-btn';
             const out = [...document.querySelectorAll(selectors)].filter(el => el.getClientRects().length).map(el => {
               const r = el.getBoundingClientRect();
               return { element: el.id || el.className, left: r.left, right: r.right };
