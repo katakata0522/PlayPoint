@@ -54,10 +54,11 @@ test('PAD is published for every generated game locale and linked from each port
     assert.match(portal, /href="\.\/pad\/"/, `${prefix}games/index.html should link to PAD`);
   }
 
-  // Protect the user-visible preset rather than the generator's internal array syntax.
+  // 確認済み月額商品は予算例に混ぜず、商品選択欄に残す。
   const japanesePage = read('games/pad/index.html');
-  assert.ok(japanesePage.includes('data-amount="' + GAME_SEO.pad.pass.price + '"'));
-  assert.ok(japanesePage.includes('パズドラパス (' + GAME_SEO.pad.pass.price + '円)'));
+  assert.ok(japanesePage.includes('<option value="' + GAME_SEO.pad.pass.price + '">パズドラパス (月額' + GAME_SEO.pad.pass.price + '円)</option>'));
+  assert.ok(japanesePage.includes('data-table-kind="products"'));
+  assert.ok(japanesePage.includes('data-table-kind="budgets"'));
 });
 
 test('the rescued Japanese articles are listed with author, source and related navigation', () => {

@@ -64,7 +64,8 @@ test('FGO公開計算機はSSOTの確認済み価格と深掘り導線を使う'
   const pack = GAME_SEO.fgo.packsJa.find(item => item.total === 21);
   assert.ok(pack, 'FGO 21-quartz pack is missing from SSOT');
   assert.ok(html.includes('有償' + pack.paid + '+無償' + pack.free + '個（計' + pack.total + '個 / ' + formatNumber(pack.price) + '円）'));
-  assert.ok(html.includes('確定召喚' + GAME_SEO.fgo.pity.guaranteedSummonCount + '回・石0から（' + formatNumber(GAME_SEO.fgo.pity.cheapestVerifiedSpendFromZero) + '円）'));
+  assert.ok(html.includes('予算 ' + formatNumber(GAME_SEO.fgo.pity.cheapestVerifiedSpendFromZero) + '円'));
+  assert.ok(html.includes('石0から確定召喚の上限まで用意する例は' + formatNumber(GAME_SEO.fgo.pity.cheapestVerifiedSpendFromZero) + '円'));
   assert.ok(html.includes('value="' + GAME_SEO.fgo.luckyBag.cheapestVerifiedSpendFromZero + '" min="0"'));
   assert.ok(html.includes('./pity-cost/'));
   assert.ok(!html.includes('聖晶石 1個 (160円)'));

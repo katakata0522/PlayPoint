@@ -27,7 +27,7 @@
             basisExact: '入力した税を除く商品価格をポイント計算対象額として使用しています。',
             perPurchaseBasis: (points, count) => `1回あたり ${points.toLocaleString('ja-JP')} pt × ${count.toLocaleString('ja-JP')}回で計算しています。`,
             officialRuleText: 'Google Play公式では、税金を除いた商品の価格に獲得率を掛け、購入ごとに最も近い整数へ丸めます。購入前はGoogle Play画面の獲得予定ポイントを最優先で確認してください。',
-            presetDisclaimer: 'ボタンで購入額を入力できます。天井などの金額は、手持ちの通貨やガチャの進み具合によって変わります。',
+            presetDisclaimer: 'ボタンを押すと、その金額でポイントを試算できます。',
             verificationText: 'Play Points獲得率はGoogle公式情報を基準にしています。ゲーム内価格・天井/完凸の必要額は参考値です。',
             ranks: [
                 { name: 'ブロンズ', points: 0, rate: 1.0 },
@@ -620,7 +620,8 @@
 
                     if (packSelect) {
                         let matched = false;
-                        for (let i = 0; i < packSelect.options.length; i++) {
+                        // 同額の商品があっても、予算例は合計額の自由入力として扱う。
+                        for (let i = 0; btn.getAttribute('data-input-kind') !== 'budget' && i < packSelect.options.length; i++) {
                             if (parseFloat(packSelect.options[i].value) === targetAmount) {
                                 packSelect.selectedIndex = i;
                                 matched = true;
@@ -634,7 +635,10 @@
                             }
                         } else {
                             packSelect.value = 'custom';
-                            if (countInput) setPackCountVisibility(false);
+                            if (countInput) {
+                                countInput.value = '1';
+                                setPackCountVisibility(false);
+                            }
                         }
                     }
 

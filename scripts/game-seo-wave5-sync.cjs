@@ -1,5 +1,6 @@
 'use strict';
 
+const { DESCRIPTIONS } = require('./game-calculator-presentation.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
 const { VERIFIED_AT, SOURCES, GAME_SEO_WAVE5 } = require('./game-seo-wave5-data.cjs');
@@ -74,6 +75,9 @@ const GAME_COPY = Object.freeze({
     tw: { name: 'eFootball™', short: 'eFootball', description: '以 eFootball 金幣的 Google Play 實際課金金額估算 Play Points，並明確區分 KONAMI 的 eFootball 點數與 Google Play Points。', note: '官方已確認 eFootball 金幣存在 Google Play 購買路徑；eFootball 點數是 KONAMI 自有制度，並非 Google Play Points。' }
   }
 });
+
+// 本文と一覧カードに同じ日本語紹介文を使う。
+for (const slug of GAME_ORDER) GAME_COPY[slug].ja.description = DESCRIPTIONS[slug];
 
 const GUIDE_PATHS = Object.freeze({
   'prospi-a': 'google-play-vs-konami-store',
@@ -181,15 +185,17 @@ function parentPage(slug, locale) {
   <nav class="global-nav" aria-label="${c.games}"><div class="global-nav-inner"><a class="nav-item" href="${root}"><span>${c.home}</span></a><a class="nav-item active" href="../"><span>${c.games}</span></a><a class="nav-item" href="${root}${locale === 'ja' ? 'blog/' : `${locale}/articles/`}"><span>${c.guides}</span></a><a class="nav-item" href="${root}${locale === 'ja' ? 'author/katakata.html' : `${locale}/author/katakata.html`}"><span>${c.operator}</span></a></div></nav>
   <div class="breadcrumbs-wrapper"><nav aria-label="Breadcrumb"><a href="${root}">${c.home}</a> <span>&gt;</span> <a href="../">${c.games}</a> <span>&gt;</span> <span>${g.name}</span></nav></div>
   <div class="game-page-container"><main class="game-main-content">
-    <header class="game-header"><span class="game-badge">${c.badge}</span><h1 class="game-title">${g.name}</h1><p class="game-meta">${c.verified}: ${VERIFIED_AT} ｜ Google Play Points</p></header>
+    <header class="game-header"><span class="game-badge">${c.badge}</span><h1 class="game-title">${g.name}</h1><p class="game-meta">${locale === 'ja' ? 'Google Playでの購入額からPlayポイントを計算' : `${c.verified}: ${VERIFIED_AT} ｜ Google Play Points`}</p></header>
     <p>${g.description}</p>
     <p>${g.note}</p>
     <section class="game-sim-card"><h2 class="game-sim-title">🧮 ${g.short}</h2>
-      <p class="preset-heading">▼ ${c.input}</p>
+${locale === 'ja' ? '      <p class="game-sim-lead">Google Play購入画面の金額を入力すると、貯まるポイントが分かります。</p>' : `      <p class="preset-heading">▼ ${c.input}</p>
       <div class="preset-buttons"><button type="button" class="preset-btn active" data-amount="0" data-mult="1" aria-pressed="true">${c.input}</button></div>
-      <form id="game-sim-form"><div class="input-grid">
-        <div class="input-field"><label for="sim-pack-select">${c.pack}:</label><select id="sim-pack-select"><option value="custom" selected>${c.currentAmount}</option></select></div>
+`}
+      <form id="game-sim-form"${locale === 'ja' ? ' data-input-mode="amount"' : ''}><div class="input-grid">
+${locale === 'ja' ? '' : `        <div class="input-field"><label for="sim-pack-select">${c.pack}:</label><select id="sim-pack-select"><option value="custom" selected>${c.currentAmount}</option></select></div>
         <div class="input-field"><label for="sim-pack-count">${c.count}:</label><input type="number" id="sim-pack-count" value="1" min="1" max="999" inputmode="numeric"></div>
+`}
         <div class="input-field"><label for="sim-custom-amount">${c.amount}:</label><input type="number" id="sim-custom-amount" value="0" min="0" step="any" inputmode="decimal"></div>
         <div class="input-field"><label for="sim-multiplier">${c.earnRate}:</label><select id="sim-multiplier">${earnRateOptions(locale)}</select></div>
         <div class="input-field"><label for="sim-status">${c.status}:</label><select id="sim-status">${statusOptions(locale)}</select></div>

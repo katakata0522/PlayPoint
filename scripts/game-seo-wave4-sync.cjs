@@ -1,7 +1,7 @@
 'use strict';
 
 const { read, writeIfChanged, replaceDescriptionsAcrossGamePages, createGuideShell, createRequiredEdits } = require('./game-seo-common.cjs');
-const { replaceRegexRequired, insertBeforeRequired } = createRequiredEdits('game-seo-wave4');
+const { insertBeforeRequired } = createRequiredEdits('game-seo-wave4');
 
 const { VERIFIED_AT, SOURCES, GAME_SEO_WAVE4 } = require('./game-seo-wave4-data.cjs');
 
@@ -11,13 +11,8 @@ const guideShell = createGuideShell({
   verificationPolicy: 'Google Playと公式Web決済は別の購入経路です。現行Google Play価格を公開一次情報で確認できない場合は推測で補わず、ゲーム内・Google Playの購入画面を購入前に確認してください。'
 });
 
-function syncCustomOnly(rootDir, config) {
+function syncParentGuide(rootDir, config) {
   let html = read(rootDir, config.file);
-  html = replaceRegexRequired(html, /<div class="preset-buttons">[\s\S]*?<\/div>/, `<div class="preset-buttons">\n                  <button type="button" class="preset-btn active" data-amount="0" data-mult="1" aria-pressed="true">Google Playの表示額を入力</button>\n              </div>`, 'Google Playの表示額を入力', `${config.file} preset`);
-  html = replaceRegexRequired(html, /(<select id="sim-pack-select">)[\s\S]*?(<\/select>)/, `$1\n                              <option value="custom" selected>現行価格をGoogle Playで確認して入力</option>\n                          $2`, '現行価格をGoogle Playで確認して入力', `${config.file} pack select`);
-  html = html.replace(/<input type="number" id="sim-custom-amount" value="[^"]*" min="0" step="any" inputmode="decimal">/, '<input type="number" id="sim-custom-amount" value="0" min="0" step="any" inputmode="decimal">');
-  html = replaceRegexRequired(html, /(<table class="pack-table">[\s\S]*?<tbody>)[\s\S]*?(<\/tbody>)/, `$1\n<tr><td colspan="4">${config.tableMessage}</td></tr>\n                      $2`, config.tableMessage, `${config.file} table`);
-  html = html.replace(/<p class="game-meta">[^<]*<\/p>/, `<p class="game-meta">${config.gameMeta}</p>`);
   html = html.replaceAll(config.descriptionBefore, config.descriptionAfter);
   for (const [before, after] of config.replacements || []) html = html.replaceAll(before, after);
   if (config.guideBlock) html = insertBeforeRequired(html, '<section class="section game-source-section">', config.guideBlock, config.guideMarker, `${config.file} guide block`);
@@ -73,8 +68,6 @@ function syncGameSeoWave4(rootDir) {
   const configs = [
     {
       file: 'games/hbr/index.html',
-      tableMessage: 'プレミアム/ライトパスの存在と公式WEB SHOPは確認済みですが、現行Google Playのパス・クォーツ価格を公開一次情報で固定できません。購入画面の実額を入力してください。',
-      gameMeta: `ヘブバン Google Play・WEB SHOP・Play Points確認：${VERIFIED_AT}（Google Play価格は購入画面で確認）`,
       descriptionBefore: 'ヘブンバーンズレッド（ヘブバン）のクォーツ購入、ライト/プレミアムパス、200連天井ガチャで貯まるGoogle Play Pointsをパッと計算！パック別還元早見表や使い道も掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。',
       descriptionAfter: 'ヘブバンのGoogle Play課金予定額からPlay Pointsを計算。公式WEB SHOPの5%OFF・独自ポイントは別決済として分離し、Google Play価格は購入画面で確認します。',
       replacements: [
@@ -86,8 +79,6 @@ function syncGameSeoWave4(rootDir) {
     },
     {
       file: 'games/honkai3rd/index.html',
-      tableMessage: '公式チャージセンターの仕組みは確認済みですが、現行日本Google Playの水晶・月パス価格を公開一次情報で固定できません。購入画面の実額を入力してください。',
-      gameMeta: `崩壊3rd Google Play・公式チャージセンター確認：${VERIFIED_AT}（Google Play価格は購入画面で確認）`,
       descriptionBefore: '崩壊3rdの水晶購入、ギフトコイン、月パス、90連キャラ確定天井で貯まるGoogle Play Pointsをパッと計算！パック別ポイント還元早見表や使い道も一覧で比較できます。補給前の課金シミュレーションにぜひ使ってみてくださいね。',
       descriptionAfter: '崩壊3rdのGoogle Play課金予定額からPlay Pointsを計算。HoYoverse公式チャージセンターの2倍特典共有や月パス条件と分けて比較できます。',
       replacements: [
@@ -99,8 +90,6 @@ function syncGameSeoWave4(rootDir) {
     },
     {
       file: 'games/phantomparade/index.html',
-      tableMessage: '公式WEBショップの商品・増量は確認済みですが、Google Play側の現行商品価格として流用しません。Google Play購入画面の実額を入力してください。',
-      gameMeta: `ファンパレ Google Play・公式WEBショップ確認：${VERIFIED_AT}（Google Play価格は購入画面で確認）`,
       descriptionBefore: '呪術廻戦ファントムパレード（ファンパレ）の有償廻珠、ファンパレパス、250連天井ガチャで貯まるPlayポイントをサクッと計算！パック別還元早見表やポイント使い道も比較できます。ガチャ前のシミュレーションにぜひ使ってみてくださいね。',
       descriptionAfter: 'ファンパレのGoogle Play課金予定額からPlay Pointsを計算。公式WEBショップの増量・マイル・パス商品は別決済として分離し、Google Play価格は購入画面で確認します。',
       replacements: [
@@ -112,8 +101,6 @@ function syncGameSeoWave4(rootDir) {
     },
     {
       file: 'games/reverse1999/index.html',
-      tableMessage: '公式は販売価格を購入ページ表示としており、チャージセンターも提供しています。現行Google Play価格を固定せず、購入画面の実額を入力してください。',
-      gameMeta: `リバース1999 Google Play・公式チャージセンター確認：${VERIFIED_AT}（価格は購入ページで確認）`,
       descriptionBefore: 'リバース：1999の純雨の雫パック、咆哮のひと月（月パス）、70連/140連天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や使い道も比較できます。召喚前のポイント確認にぜひ役立ててみてくださいね。',
       descriptionAfter: 'リバース：1999のGoogle Play課金予定額からPlay Pointsを計算。公式が価格を購入ページ表示としているため、固定価格や固定天井額を推測せず実際の支払額を確認します。',
       replacements: [
@@ -122,7 +109,7 @@ function syncGameSeoWave4(rootDir) {
     }
   ];
 
-  for (const config of configs) if (syncCustomOnly(rootDir, config)) changedFiles.push(config.file);
+  for (const config of configs) if (syncParentGuide(rootDir, config)) changedFiles.push(config.file);
 
   const guides = [
     ['games/hbr/google-play-vs-webshop/index.html', renderHbrGuide()],

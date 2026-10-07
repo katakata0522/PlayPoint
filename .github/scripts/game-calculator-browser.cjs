@@ -88,6 +88,12 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
           assert.equal(await page.locator('#sim-pack-count').inputValue(), '2');
           assert.equal(await page.locator('.game-result-container').isVisible(), true);
           row.packCountAndShareRestoration = true;
+          if (target.pathname === '/games/fgo/') {
+            await page.locator('.preset-btn[data-amount="10000"]').click();
+            assert.equal(await page.locator('#sim-pack-select').inputValue(), 'custom', '商品と同額でも予算例は自由入力を使う');
+            assert.equal(await page.locator('#sim-pack-count').isVisible(), false);
+            assert.equal(await page.locator('#sim-custom-amount').inputValue(), '10000');
+          }
         }
         // 共通エンジンの境界を4言語の実フォーム・共有URLでも検証する。
         if (/\/games\/nikke\/$/.test(target.pathname)) {
@@ -138,6 +144,37 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
             await page.locator('#sim-custom-amount').fill('1200');
             assert.equal(await page.locator('.game-result-container').isVisible(), true, '商品欄がなくても金額訂正で再開できる');
           }
+        }
+        if (target.pathname === '/games/pad/') {
+          assert.deepEqual(await page.locator('#sim-pack-select').evaluate(el => [...el.options].map(o => o.value)), ['980', 'custom']);
+          await page.locator('#sim-multiplier').selectOption('1');
+          await page.locator('#sim-pack-select').selectOption('980');
+          await page.locator('#sim-pack-count').fill('3');
+          assert.equal((await page.locator('#res-total-amount').innerText()).replace(/[^0-9]/g, ''), '2940');
+          assert.equal((await page.locator('#res-earned-points').innerText()).replace(/[^0-9]/g, ''), '30', '商品ごとに丸めて3回分を計算する');
+          await page.locator('.preset-btn[data-amount="5000"]').click();
+          assert.equal(await page.locator('#sim-pack-select').inputValue(), 'custom');
+          assert.equal(await page.locator('#sim-pack-count').isVisible(), false);
+          assert.equal((await page.locator('#res-total-amount').innerText()).replace(/[^0-9]/g, ''), '5000');
+        }
+        if (target.pathname === '/games/mementomori/' || target.pathname === '/games/shadowversewb/') {
+          assert.equal(await page.locator('#sim-pack-select, #sim-pack-count').count(), 0);
+          const amount = target.pathname.includes('mementomori') ? 150000 : 50000;
+          await page.locator(`.preset-btn[data-amount="${amount}"]`).click();
+          assert.equal(await page.locator('#sim-custom-amount').inputValue(), String(amount));
+          assert.equal(await page.locator('#sim-multiplier').inputValue(), '3', '予算ボタンで選択済みの獲得率を変えない');
+          assert.equal((await page.locator('#res-earned-points').innerText()).replace(/[^0-9]/g, ''), String(amount / 100 * 3));
+          await page.evaluate(() => {
+            window.__copiedBudgetUrl = '';
+            Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async value => { window.__copiedBudgetUrl = value; } } });
+          });
+          await page.locator('#btn-copy-link').click();
+          const copied = await page.evaluate(() => window.__copiedBudgetUrl);
+          assert.ok(new URL(copied).searchParams.get('amount') === String(amount));
+          assert.equal(new URL(copied).searchParams.has('pack'), false);
+          await page.goto(copied, { waitUntil: 'load' });
+          await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+          assert.equal(await page.locator('#sim-custom-amount').inputValue(), String(amount));
         }
         row.passed = true;
       } catch (error) {

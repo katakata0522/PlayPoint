@@ -8,7 +8,7 @@
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>eFootball™ - Google Play Points Calculator | PlayPoint</title>
-  <meta name="description" content="eFootballコインを買う前に、今回の購入で貯まるPlayポイントをチェック。Google Playの購入予定額から計算できます。eFootballポイントとの違いや購入経路は、関連記事で紹介しています。" />
+  <meta name="description" content="欲しい選手に向けたコイン購入で、Playポイントも計算できます。Google Playで支払う予定の金額を入力してください。名前が似ているeFootballポイントとの違いは、関連記事で紹介しています。" />
   <link rel="canonical" href="https://playpoint-sim.com/games/efootball/" />
   <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/efootball/" />
   <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/efootball/" />
@@ -18,7 +18,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Playポイント計算機" />
   <meta property="og:title" content="eFootball™ - Google Play Points Calculator" />
-  <meta property="og:description" content="eFootballコインを買う前に、今回の購入で貯まるPlayポイントをチェック。Google Playの購入予定額から計算できます。eFootballポイントとの違いや購入経路は、関連記事で紹介しています。" />
+  <meta property="og:description" content="欲しい選手に向けたコイン購入で、Playポイントも計算できます。Google Playで支払う予定の金額を入力してください。名前が似ているeFootballポイントとの違いは、関連記事で紹介しています。" />
   <meta property="og:url" content="https://playpoint-sim.com/games/efootball/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
     <meta property="og:image:width" content="1200">
@@ -40,11 +40,12 @@
   <div class="breadcrumbs-wrapper"><nav aria-label="Breadcrumb"><a href="../../">ホーム</a> <span>&gt;</span> <a href="../">ゲーム別計算</a> <span>&gt;</span> <span>eFootball™</span></nav></div>
   <div class="game-page-container"><main class="game-main-content">
     <header class="game-header"><span class="game-badge">🔎 公式情報を基準に検証</span><h1 class="game-title">eFootball™</h1><p class="game-meta">Google Playでの購入額からPlayポイントを計算</p></header>
-    <p>eFootballコインを買う前に、今回の購入で貯まるPlayポイントをチェック。Google Playの購入予定額から計算できます。eFootballポイントとの違いや購入経路は、関連記事で紹介しています。</p>
+    <p>欲しい選手に向けたコイン購入で、Playポイントも計算できます。Google Playで支払う予定の金額を入力してください。名前が似ているeFootballポイントとの違いは、関連記事で紹介しています。</p>
     <p>AndroidのeFootball™コイン購入でGoogle Playが利用されることは公式確認済みです。eFootball™ポイントはKONAMI独自制度で、Google Play Pointsとは別物です。</p>
     <section class="game-sim-card"><h2 class="game-sim-title">🧮 eFootball</h2>
-      <p class="game-sim-lead">Google Play購入画面の金額を入力。ランクやキャンペーンを切り替えて、貯まるポイントを比べてみましょう。</p>
-              <form id="game-sim-form" data-input-mode="amount"><div class="input-grid">
+      <p class="game-sim-lead">Google Play購入画面の金額を入力すると、貯まるポイントが分かります。</p>
+      <form id="game-sim-form" data-input-mode="amount"><div class="input-grid">
+
         <div class="input-field"><label for="sim-custom-amount">課金予定合計額（円）:</label><input type="number" id="sim-custom-amount" value="0" min="0" step="any" inputmode="decimal"></div>
         <div class="input-field"><label for="sim-multiplier">キャンペーン特別獲得率:</label><select id="sim-multiplier"><option value="1">通常 / 100円あたり1pt</option><option value="2">特別獲得率: 100円あたり2pt</option><option value="3">特別獲得率: 100円あたり3pt</option><option value="4">特別獲得率: 100円あたり4pt</option><option value="5">特別獲得率: 100円あたり5pt</option><option value="7">特別獲得率: 100円あたり7pt</option></select></div>
         <div class="input-field"><label for="sim-status">現在の会員ランク:</label><select id="sim-status"><option value="1">ブロンズ（100円=1pt）</option><option value="1.25">シルバー（100円=1.25pt）</option><option value="1.5">ゴールド（100円=1.5pt）</option><option value="1.75">プラチナ（100円=1.75pt）</option><option value="2">ダイヤモンド（100円=2pt）</option></select></div>
@@ -65,6 +66,6 @@
   <footer class="site-footer"><p>© 2026 PlayPoint / Independent unofficial calculator.</p></footer>
   <script src="../../js/analytics-core.js?v=e63a4a63f7"></script>
   <script src="../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../games/game-sim.js?v=f9f51d4eb6"></script>
+  <script src="../../games/game-sim.js?v=49f19cf105"></script>
 </body>
 </html>
