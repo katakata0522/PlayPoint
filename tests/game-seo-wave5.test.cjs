@@ -7,6 +7,7 @@ const test = require('node:test');
 const { GAME_SEO_WAVE5, SOURCES, VERIFIED_AT } = require('../scripts/game-seo-wave5-data.cjs');
 const { GAME_ORDER, GUIDE_PATHS, LOCALES } = require('../scripts/game-seo-wave5-sync.cjs');
 const { REGION } = require('../scripts/game-seo-wave5-regional-sync.cjs');
+const { isReference } = require('../scripts/intl-game-evidence.cjs');
 const { getGeneratedGamePageContentDate } = require('../scripts/content-dates.cjs');
 
 const root = path.resolve(__dirname, '..');
@@ -69,14 +70,8 @@ test('every Wave 5 parent calculator exists in every canonical game locale', () 
       const html = read(file);
       assert.match(html, /id="game-sim-form"/);
       assert.match(html, /id="sim-custom-amount"/);
-      if (locale === 'ja') {
-        assert.match(html, /data-input-mode="amount"/);
-        assert.doesNotMatch(html, /id="sim-pack-select"|data-amount=/, `${file} must not expose a hard-coded current product price`);
-      } else {
-        const packSelect = selectInner(html, 'sim-pack-select');
-        assert.match(packSelect, /<option value="custom" selected>/);
-        assert.doesNotMatch(packSelect, /<option value="\d/, `${file} must not expose a hard-coded current product price`);
-      }
+      assert.match(html, /data-input-mode="amount"/);
+      assert.doesNotMatch(html, /id="sim-pack-select"|data-amount=/, `${file} must not expose a hard-coded current product price`);
       assert.match(html, new RegExp(`<meta name="last-modified" content="${getGeneratedGamePageContentDate(file)}"`));
       assert.doesNotMatch(html, /hb\.afl\.rakuten\.co\.jp/, `${file} should not introduce rights-risk affiliate routing`);
     }
@@ -160,7 +155,8 @@ test('all locale game portals discover every Wave 5 parent page exactly once', (
   for (const locale of LOCALES) {
     const portal = read(`${localePrefix(locale)}games/index.html`);
     for (const slug of GAME_ORDER) {
-      const matches = portal.match(new RegExp(`href="\\./${slug}/"`, 'g')) || [];
+      const href = locale === 'ja' ? `./${slug}/` : isReference(locale, slug) ? `/games/${slug}/` : `/${locale}/games/${slug}/`;
+      const matches = portal.match(new RegExp(`href="${href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g')) || [];
       assert.equal(matches.length, 1, `${locale} portal should link ${slug} once`);
     }
     assert.equal((portal.match(/data-game-seo-wave5="true"/g) || []).length, 1, `${locale} Wave 5 portal marker must stay idempotent`);

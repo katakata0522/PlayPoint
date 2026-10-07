@@ -116,6 +116,8 @@ const gameSeoWave5Summary = syncGameSeoWave5(rootDir);
 console.log(`[build-html] synchronized game SEO wave 5: ${gameSeoWave5Summary.changedFiles.length}/${gameSeoWave5Summary.checked} updated`);
 const gameSeoWave5RegionalSummary = syncGameSeoWave5RegionalRates(rootDir);
 console.log(`[build-html] synchronized game SEO wave 5 regional rates: ${gameSeoWave5RegionalSummary.changedFiles.length}/${gameSeoWave5RegionalSummary.checked} updated`);
+const { syncIntlGameEvidence } = require('./intl-game-evidence-sync.cjs');
+console.log('[build-html] synchronized regional game evidence:', syncIntlGameEvidence(rootDir));
 
 // 地域レート補正に記事登録を隠さず、全ゲーム生成後の独立した引き渡しにする。
 const gameArticleHubSummary = syncGameGuideArticleHub(rootDir);

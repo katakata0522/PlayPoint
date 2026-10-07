@@ -352,7 +352,7 @@
 
 
         const meta = document.querySelector('.game-meta');
-        if (meta && cfg.verificationText && document.documentElement.lang !== 'ja') meta.textContent = cfg.verificationText;
+        if (meta && cfg.verificationText && document.documentElement.lang !== 'ja' && !document.querySelector('.game-source-section time')) meta.textContent = cfg.verificationText;
 
         const presetHeading = document.querySelector('.preset-heading');
         if (presetHeading && cfg.presetDisclaimer && !document.getElementById('game-preset-disclaimer')) {

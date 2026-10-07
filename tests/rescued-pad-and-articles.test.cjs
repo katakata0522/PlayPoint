@@ -51,7 +51,7 @@ test('PAD is published for every generated game locale and linked from each port
 
     const prefix = localeDirectory ? `${localeDirectory}/` : '';
     const portal = read(`${prefix}games/index.html`);
-    assert.match(portal, /href="\.\/pad\/"/, `${prefix}games/index.html should link to PAD`);
+    assert.ok(portal.includes(`href="${localeDirectory ? `/${localeDirectory}/games/pad/` : './pad/'}"`), `${prefix}games/index.html should link to PAD`);
   }
 
   // 確認済み月額商品は予算例に混ぜず、商品選択欄に残す。

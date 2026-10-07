@@ -102,7 +102,7 @@ font-size: 0.95rem;
 }
 .game-offers-grid {
 display: grid;
-grid-template-columns: repeat(2, minmax(0, 1fr));
+grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr));
 gap: 14px;
 }
 .game-offer-card {
@@ -158,6 +158,9 @@ text-decoration: none;
 .game-offers-more summary { cursor: pointer; padding: 12px 0; color: #075985; font-weight: 700; font-size: 0.9rem; }
 .game-offers-note, .game-offers-reviewed { font-size: 0.8rem; margin: 16px 0 0; color: #475569; }
 .game-offers-reviewed { font-size: 0.75rem; margin-top: 8px; }
+.game-reference-label { display: block; color: #64748b; font-size: .8rem; padding-top: 10px; }
+.game-source-section li { margin-bottom: 12px; }
+.game-reference-note { padding: 16px; border-left: 4px solid #64748b; background: #f8fafc; }
 .game-offers a:focus-visible, .game-offers summary:focus-visible { outline: 3px solid #b45309; outline-offset: 4px; }
 #game-calculator { scroll-margin-top: 24px; }
 @media (max-width: 600px) {

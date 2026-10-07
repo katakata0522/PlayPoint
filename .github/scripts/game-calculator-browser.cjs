@@ -47,7 +47,7 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
           assert.ok(accessible.name && accessible.text && accessible.value >= 0 && accessible.value <= 100, '進捗の名前・値・説明');
           row.progress = accessible;
         }
-        if (/^\/games\/[^/]+\/$/.test(target.pathname)) {
+        if (/^\/games\/[^/]+\/$/.test(target.pathname) || await page.locator('.game-offers').count()) {
           const offers = page.locator('.game-offers');
           assert.equal(await offers.count(), 1, '全ゲームで特別商品から選べる');
           assert.ok(await page.evaluate(() => Boolean(document.querySelector('.game-offers').compareDocumentPosition(document.querySelector('#game-calculator')) & Node.DOCUMENT_POSITION_FOLLOWING)), '商品紹介は計算より前');
@@ -90,7 +90,7 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
           }
         }
         // 実際にパックを提供するFGOで回数を検証する。NIKKE日本語版へ架空のパックを作らない。
-        if (/\/games\/fgo\/$/.test(target.pathname)) {
+        if (target.pathname === '/games/fgo/') {
           const firstPack = await page.locator('#sim-pack-select').evaluate(el => [...el.options].find(o => o.value !== 'custom')?.value);
           assert.ok(firstPack, 'FGOの既存パックが必要です');
           await page.locator('#sim-pack-select').selectOption(firstPack);

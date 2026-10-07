@@ -9,6 +9,7 @@ const { getIntlAmountHumanSitemapLabels, getIntlSitemapEntries } = require('./in
 const { ALL_GUIDES, MODIFIED_AT: INTL_GAME_GUIDE_MODIFIED_AT, hrefFor: intlGameGuideHrefFor } = require('./intl-game-guide-expansion.cjs');
 const { createLocales } = require('./locale-config.cjs');
 const { CONTENT_DATE_OVERRIDES, TOP_PAGE_CONTENT_DATES } = require('./content-dates.cjs');
+const { referenceFiles } = require('./intl-game-evidence.cjs');
 
 const SITE_ORIGIN = 'https://playpoint-sim.com';
 
@@ -307,6 +308,7 @@ function syncSitemap(rootDir) {
     ...NON_PLAYPOINT_URLS,
     ...RETIRED_CONTENT_URLS,
     ...SEARCH_QUALITY_HOLD_URLS,
+    ...referenceFiles().map(toPublicUrl),
     ...getDedicatedSitemapUrls(rootDir)
   ]);
   content = removeSitemapEntries(content, excludedUrls);
