@@ -84,7 +84,7 @@ html:lang(zh-TW) .article-opening-v2 .hero h1 {
   outline-offset: 3px;
 }
 
-html[lang] body.article-opening-v2 .main-content-column > .article-opening-answer,
+html[lang] body.article-opening-v2 .main-content-column .content > .article-opening-answer,
 .article-opening-v2 .content > .intro.article-opening-answer {
   margin: 18px 0 28px !important;
   padding: 0 0 0 16px !important;
@@ -97,8 +97,9 @@ html[lang] body.article-opening-v2 .main-content-column > .article-opening-answe
   font-size: 1rem;
   line-height: 1.75;
 }
-html[lang] body.article-opening-v2 .main-content-column > .article-opening-answer::before {
+html[lang] body.article-opening-v2 .main-content-column .content > .article-opening-answer::before {
   display: none !important;
+  content: none !important;
 }
 
 .article-opening-v2 .article-opening-answer__title,
