@@ -68,6 +68,9 @@ test('記事変換はI/Oなしで本文・既存アンカー・入力レコー�
   const compactScope = prepareDiscoveryArticle(articleHtml, Object.freeze({ path: 'en/articles/google-play-points-cash-conversion.html', locale: 'en' }));
   assert.match(compactScope.html, /article-region-scope" aria-label="United States reference[^"]*">United States<\/p>/, '冒頭を整理した現金化記事は地域表示を短くする');
   assert.deepEqual(prepareDiscoveryArticle(compactScope.html, Object.freeze({ path: 'en/articles/google-play-points-cash-conversion.html', locale: 'en' })), compactScope, '注釈付きの短い地域表示も再生成で重複しない');
+  const optionalToc = articleHtml.replace('<article>', '<article><div class="intro">Direct answer</div><details class="reader-toc reader-toc--intl"><summary>On this page</summary><nav><h2>Contents</h2></nav></details>');
+  const tocPrepared = prepareDiscoveryArticle(optionalToc, entry);
+  assert.equal(tocPrepared.record.sections[0].text, 'Direct answer', '折りたたみ目次のラベルを検索用の冒頭文へ混ぜない');
   assert.deepEqual(entry.tags, ['reward']);
   const heroHtml = articleHtml.replace('<article>', '<div class="hero"><h1>Guide</h1><p class="hero-meta">Verified date</p>\n  </div><article>');
   const preparedHero = prepareDiscoveryArticle(heroHtml, entry);
