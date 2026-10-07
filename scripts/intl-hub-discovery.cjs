@@ -3,6 +3,7 @@ const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { LABELS: GAME_LABELS, metadata: gameMetadata } = require('./intl-game-article-discovery.cjs');
 const {
   CATEGORY_KEYS,
   getCategoryLabels,
@@ -97,16 +98,21 @@ function extractHubLinks(articleHtml) {
 
 function renderCard(link, labels, featured = false) {
   const categoryLabel = labels[link.category];
-  const search = `${link.title} ${categoryLabel}`.toLocaleLowerCase();
+  const game = gameMetadata(link.href);
+  const tags = game ? game.tags.map(tag => GAME_LABELS[game.locale][tag]) : [];
+  const search = `${link.title} ${categoryLabel} ${game?.name || ''} ${tags.join(' ')}`.toLocaleLowerCase();
   return `<a class="intl-guide-card${featured ? ' intl-guide-card--featured' : ''}" href="${escapeHtml(link.href)}" data-guide-card data-category="${escapeHtml(link.category)}" data-search="${escapeHtml(search)}">
-        <span class="intl-guide-card__category">${escapeHtml(categoryLabel)}</span>
+        ${game ? `<span class="intl-guide-card__game"><img src="/images/game-icons/${game.id}.webp" width="40" height="40" loading="lazy" alt=""><span>${escapeHtml(game.name)}</span></span>` : ''}
+        <span class="intl-guide-card__category"${game ? ` data-game="${game.id}" data-topics="${game.tags.join(' ')}"` : ''}>${escapeHtml(game ? tags.join(' · ') : categoryLabel)}</span>
         <span class="intl-guide-card__title">${escapeHtml(link.title)}</span>
-      </a>`;
+      </a>`.replace(/[ \t]+$/gm, '');
 }
 
 function renderHubBody(localeKey, links) {
   const copy = HUB_COPY[localeKey] || HUB_COPY.en;
   const labels = getCategoryLabels(localeKey);
+  const gameCopy = GAME_LABELS[localeKey];
+  const games = [...new Map(links.map(link => gameMetadata(link.href)).filter(Boolean).map(game => [game.id, game])).values()];
   const byHref = new Map(links.map(link => [link.href, link]));
   const start = getStartHereHrefs(localeKey).map(href => byHref.get(href)).filter(Boolean).slice(0, 5);
   for (const link of links) {
@@ -124,6 +130,7 @@ function renderHubBody(localeKey, links) {
   ].join('\n        ');
 
   return `<div class="intl-guide-controls" data-intl-guide-controls>
+      <div class="intl-game-discovery" id="intl-hub-games"><div><label for="intl-guide-game">${escapeHtml(gameCopy.game)}</label><select id="intl-guide-game" data-guide-game><option value="all">${escapeHtml(gameCopy.all)}</option><option value="games">${escapeHtml(gameCopy.games)}</option>${games.map(game => `<option value="${game.id}">${escapeHtml(game.name)}</option>`).join('')}</select></div><div><label for="intl-guide-topic">${escapeHtml(gameCopy.topic)}</label><select id="intl-guide-topic" data-guide-topic><option value="all">${escapeHtml(gameCopy.any)}</option>${['pass', 'trial', 'shop', 'rewards', 'version'].map(tag => `<option value="${tag}">${escapeHtml(gameCopy[tag])}</option>`).join('')}</select></div></div>
       <label for="intl-guide-search">${escapeHtml(copy.searchLabel)}</label>
       <input id="intl-guide-search" type="search" autocomplete="off" placeholder="${escapeHtml(copy.searchPlaceholder)}" data-guide-search>
       <div class="intl-guide-filters" role="group" aria-label="${escapeHtml(copy.browse)}">

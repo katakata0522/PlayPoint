@@ -65,7 +65,8 @@ test('プラチナ・ダイヤモンド比較は地域別公式数値と計算�
     assert.ok(html.includes(`CountryCode%3D${page.sourceCountry}`), page.file);
     assert.ok(html.includes('support.google.com/googleplay/answer/9080348'), page.file);
     assert.ok(html.includes('support.google.com/googleplay/answer/9077192'), page.file);
-    assert.ok(html.includes('articles/ogp/diamond-worth-it.png'), page.file);
+    const image = page.key === 'ja' ? 'diamond-worth-it.png' : `${page.key}-google-play-points-platinum-diamond-cost.png`;
+    assert.ok(html.includes('articles/ogp/' + image), page.file);
     assert.ok(html.includes('/author/katakata.html'), page.file);
     assert.strictEqual((html.match(/<h1\b/g) || []).length, 1, page.file);
 

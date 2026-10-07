@@ -6,6 +6,8 @@
   const result = document.querySelector('[data-guide-result]');
   const empty = document.querySelector('[data-guide-empty]');
   const start = document.querySelector('[data-guide-start]');
+  const gameFilter = document.querySelector('[data-guide-game]');
+  const topicFilter = document.querySelector('[data-guide-topic]');
   if (!grid || !search || !buttons.length || !result || !empty) return;
   const locale = location.pathname.split('/')[1];
   const copy = {
@@ -26,7 +28,7 @@
   function recover() {
     recovery.replaceChildren();
     if (activeCategory !== 'all') addButton(copy[0], () => selectCategory('all'));
-    addButton(copy[1], () => { search.value = ''; selectCategory('all'); search.focus(); });
+    addButton(copy[1], () => { search.value = ''; if (gameFilter) gameFilter.value = 'all'; if (topicFilter) topicFilter.value = 'all'; selectCategory('all'); search.focus(); });
     const suggestions = window.PlayPointSearch?.suggest(articles, search.value, locale) || [];
     const heading = document.createElement('p'); heading.textContent = copy[suggestions.length ? 2 : 3]; recovery.append(heading);
     const list = document.createElement('ul');
@@ -37,17 +39,21 @@
   function applyFilters() {
     const query = search.value.trim(), engine = window.PlayPointSearch; let visible = 0;
     // 検索・分類の選択中は一致する結果を検索欄の直後に見せる。
-    if (start) start.hidden = Boolean(query) || activeCategory !== 'all';
+    if (start) start.hidden = Boolean(query) || activeCategory !== 'all' || Boolean(gameFilter && gameFilter.value !== 'all') || Boolean(topicFilter && topicFilter.value !== 'all');
     const byPath = new Map(articles.map(article => [article.path, article]));
     const ordered = cards.map(card => {
-      const article = byPath.get(new URL(card.href).pathname);
+      const sourceArticle = byPath.get(new URL(card.href).pathname);
+      const article = { ...sourceArticle, description: (sourceArticle?.description || '') + ' ' + card.dataset.search };
       return { card, article, score: query && engine ? engine.score(article, query, locale) : 0 };
     });
     if (query && engine) ordered.sort((a, b) => b.score - a.score);
     for (const { card, article } of ordered) {
       const categoryMatches = activeCategory === 'all' || card.dataset.category === activeCategory;
+      const game = card.querySelector('[data-game]');
+      const gameMatches = !gameFilter || gameFilter.value === 'all' || (gameFilter.value === 'games' ? Boolean(game) : game?.dataset.game === gameFilter.value);
+      const topicMatches = !topicFilter || topicFilter.value === 'all' || (game?.dataset.topics || '').split(' ').includes(topicFilter.value);
       const queryMatches = !query || (engine ? engine.matches(article, query, locale) : card.dataset.search.toLowerCase().includes(query.toLowerCase()));
-      card.hidden = !(categoryMatches && queryMatches);
+      card.hidden = !(categoryMatches && queryMatches && gameMatches && topicMatches);
       card.setAttribute('href', originalHrefs.get(card)); card.querySelector('.intl-guide-card__excerpt')?.remove();
       if (!card.hidden) {
         visible++;
@@ -68,6 +74,7 @@
     applyFilters();
   }
   buttons.forEach(button => button.addEventListener('click', () => selectCategory(button.dataset.guideFilter)));
+  [gameFilter, topicFilter].filter(Boolean).forEach(select => select.addEventListener('change', applyFilters));
   search.addEventListener('focus', loadBodySearch, { once: true });
   search.addEventListener('input', () => { applyFilters(); if (search.value.trim()) loadBodySearch(); });
   function applyHash() {

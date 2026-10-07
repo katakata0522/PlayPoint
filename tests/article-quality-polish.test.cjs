@@ -37,15 +37,20 @@ test('韓国語・繁体字ゲーム記事の共通UIを各言語で表示する
   }
 });
 
-test('ゲーム記事は共通Play Points説明を補助UIへ寄せ、本文の判断軸を重複させない', () => {
+test('ゲーム記事は購入説明の後にPlay Pointsの条件を一度示し、結論を重複させない', () => {
   for (const localeKey of Object.keys(LOCALES)) {
     for (const guide of ALL_GUIDES) {
       const html = renderGuide(localeKey, guide);
-      assert.match(html, /class="decision-box article-common-rule"/);
-      const toc = html.match(/<nav class="intl-article-toc"[\s\S]*?<\/nav>/)?.[0] || '';
-      assert.doesNotMatch(toc, /#google-play-rule/);
+      assert.equal((html.match(/id="play-points"/g) || []).length, 1);
+      const pointsIndex = html.indexOf('id="play-points"');
+      assert.ok(html.indexOf('id="decision-guide"') < pointsIndex);
+      assert.ok(html.indexOf('id="product-detail-1"') < pointsIndex);
+      const pointsSection = html.match(/<section class="section" id="play-points">([\s\S]*?)<\/section>/)?.[1] || '';
+      assert.match(pointsSection, /Google Play/);
+      assert.ok(pointsSection.includes(`href="/${localeKey}/games/${guide.gameId}/"`));
       const decisionSection = html.match(/<section class="section" id="decision-guide">([\s\S]*?)<\/section>/)?.[1] || '';
-      assert.equal((decisionSection.match(/<li>/g) || []).length, guide.content[localeKey].decisions.length - 1, String(localeKey) + '/' + guide.slug + ': decision list still repeats the lead decision');
+      const encodedAnswer = guide.content[localeKey].answer.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+      assert.ok(!decisionSection.includes(encodedAnswer), String(localeKey) + '/' + guide.slug + ': decision section repeats the answer');
     }
   }
 });

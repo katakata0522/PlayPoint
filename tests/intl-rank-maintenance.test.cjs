@@ -57,7 +57,8 @@ test('ランク維持記事は4言語で相互接続され公式条件とSEO要�
     assert.strictEqual((html.match(/<h1\b/g) || []).length, 1, page.file);
     assert.ok(html.includes('support.google.com/googleplay/answer/9080348'), page.file);
     assert.ok(html.includes('support.google.com/googleplay/answer/9077192'), page.file);
-    assert.ok(html.includes('articles/ogp/playpoints-rank-maintenance.png'), page.file);
+    const image = page.key === 'ja' ? 'playpoints-rank-maintenance.png' : `${page.key}-google-play-points-level-maintenance-reset.png`;
+    assert.ok(html.includes('articles/ogp/' + image), page.file);
     assert.ok(html.includes('/author/katakata.html'), page.file);
     assert.ok(parsed.some(schema => schema['@type'] === 'Article'), page.file);
     assert.ok(parsed.some(schema => schema['@type'] === 'FAQPage'), page.file);

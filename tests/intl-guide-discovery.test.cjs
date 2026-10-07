@@ -14,6 +14,8 @@ const {
   renderHubBody
 } = require('../scripts/intl-hub-discovery.cjs');
 const { INTERNATIONAL_LOCALES } = require('../scripts/locale-ids.cjs');
+const { metadata } = require('../scripts/intl-game-article-discovery.cjs');
+const { ALL_GUIDES } = require('../scripts/intl-game-guide-expansion.cjs');
 
 const root = path.resolve(__dirname, '..');
 
@@ -129,4 +131,24 @@ test('hub anchors and article active navigation share the taxonomy categories', 
   assert.match(coupons, /class="nav-item active" href="\/en\/articles\/#intl-hub-earn"/);
   const missing = read('en/articles/google-play-points-not-showing.html');
   assert.match(missing, /class="nav-item active" href="\/en\/articles\/#intl-hub-trouble"/);
+});
+
+test('ゲーム入口は全ゲームの実記事に対応し、地域固有の購入目的を表示する', () => {
+  for (const locale of INTERNATIONAL_LOCALES) {
+    const html = read(`${locale}/articles/index.html`);
+    assert.match(html, /data-guide-game/);
+    assert.match(html, /data-guide-topic/);
+    for (const guide of ALL_GUIDES) {
+      const entry = metadata(`/${locale}/articles/${guide.slug}.html`);
+      assert.equal(entry.id, guide.gameId);
+      assert.ok(entry.name);
+      assert.ok(html.includes(`value="${entry.id}"`), entry.id);
+      assert.ok(html.includes(`data-game="${entry.id}"`), entry.id);
+      assert.ok(fs.existsSync(path.join(root, 'images/game-icons', entry.id + '.webp')));
+    }
+  }
+  assert.ok(metadata('/en/articles/pokemon-tcg-pocket-premium-pass.html').tags.includes('trial'));
+  assert.ok(!metadata('/tw/articles/puzzle-and-dragons-pass.html').tags.includes('trial'));
+  assert.ok(metadata('/en/articles/monster-strike-google-play-vs-web-shop.html').tags.includes('version'));
+  assert.equal(metadata('/en/articles/google-play-points-gift-cards.html'), null);
 });

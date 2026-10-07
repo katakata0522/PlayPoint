@@ -165,6 +165,8 @@ console.log(`[build-html] synchronized Japanese complete-guide brand: ${guideBra
 
 const articleDateSummary = syncArticleDateContract(rootDir);
 console.log(`[build-html] synchronized article dates: ${articleDateSummary.changed}/${articleDateSummary.checked} updated`);
+const { syncIntlArticleImages } = require('./intl-article-images.cjs');
+console.log('[build-html] synchronized international article images:', syncIntlArticleImages(rootDir));
 
 const strippedFontFiles = stripExternalGoogleFonts(rootDir);
 console.log(`[build-html] stripped external Google Fonts: ${strippedFontFiles}`);

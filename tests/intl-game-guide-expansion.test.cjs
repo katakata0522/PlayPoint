@@ -41,7 +41,8 @@ test('SSOTの全多言語ゲーム記事がgame_decisionで公式Googleソース
       assert.match(html, /<main id="main-content" class="main-card">/);
       assert.match(html, /support\.google\.com\/googleplay\/answer\/9077192/);
       assert.match(html, /support\.google\.com\/googleplay\/answer\/9080348/);
-      assert.ok(html.includes(guide.source[1]), `${relative}: game official source`);
+      assert.ok(html.includes(guide.content[locale].edition.replaceAll('&', '&amp;')), `${relative}: regional game official source`);
+      for (const offer of guide.content[locale].offers) assert.ok(html.includes(offer.evidence.url.replaceAll('&', '&amp;')), `${relative}: regional product source`);
       assert.ok(html.includes(`hreflang="ja" href="https://playpoint-sim.com${guide.jaPath}"`), `${relative}: ja hreflang`);
       assert.ok(html.includes(`hreflang="en" href="https://playpoint-sim.com${hrefFor('en', guide.slug)}"`), `${relative}: en hreflang`);
       assert.ok(html.includes(`hreflang="ko" href="https://playpoint-sim.com${hrefFor('ko', guide.slug)}"`), `${relative}: ko hreflang`);
@@ -123,7 +124,8 @@ test('地域固有の価格・公式用語を日本語版から機械換算し�
   assert.match(genshinTw, /創世結晶/);
 
   const umaEn = renderGuide('en', bySlug('umamusume-umasuku-google-play-vs-webstore'));
-  assert.match(umaEn, /Japan-version/);
+  assert.match(umaEn, /Daily Carat Pack/);
+  assert.match(umaEn, /Japan.*Umasuku/);
   assert.doesNotMatch(umaEn, /US\$9\.80|US\$6\./);
 });
 
@@ -142,4 +144,28 @@ test('生成入口は一時ディレクトリへSSOT全記事を再現できる'
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
+});
+
+test('全地域のゲーム記事は個別の回答を先に示し、導入を本文で重複させない', () => {
+  for (const locale of Object.keys(LOCALES)) for (const guide of ALL_GUIDES) {
+    const html = renderGuide(locale, guide);
+    const body = html.match(/<article class="content">([\s\S]*?)<\/article>/)[1];
+    assert.ok(body.indexOf('id="purchase-answer"') < body.indexOf('class="intl-article-toc"'), guide.slug);
+    assert.equal((body.match(/class="intro"/g) || []).length, 1);
+    assert.doesNotMatch(body, /article-common-rule|official-source-note/);
+    assert.ok(guide.content[locale].chapters.length > 0);
+    assert.ok(guide.content[locale].answer.length > 0);
+    assert.match(body, /<details class="article-source-details">/);
+    const data = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match => JSON.parse(match[1]));
+    const faq = data.find(item => item['@type'] === 'FAQPage');
+    assert.equal(faq.mainEntity[0].name, guide.content[locale].faqQ);
+    assert.equal(faq.mainEntity[0].acceptedAnswer.text, guide.content[locale].faqA);
+  }
+});
+
+test('結論は200文字を超えても編集した回答を全文保持する', () => {
+  const guide = ALL_GUIDES[0];
+  const answer = 'This is a deliberate purchase decision with conditions, not a compressed summary. '.repeat(6);
+  const html = renderGuide('en', { ...guide, content: { ...guide.content, en: { ...guide.content.en, answer } } });
+  assert.ok(html.includes(`<p>${answer}</p>`));
 });
