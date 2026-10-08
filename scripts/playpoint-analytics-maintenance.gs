@@ -223,6 +223,159 @@ function playPointCaptureReaderOutcomes_() {
   });
 }
 
+// GSCの確定待ちから切り離し、既存GA4イベントだけを日付別に記録する。
+var PLAYPOINT_EVENT_DAILY = Object.freeze({
+  sheet: '📈GA4イベント日次',
+  historyDays: 35,
+  events: Object.freeze(['page_view', 'article_navigation_click', 'article_to_calculator_clicked',
+    'calculator_form_started', 'calculator_funnel_completed', 'calculator_validation_error',
+    'reader_question_clicked', 'search'])
+});
+
+function playPointEventDailyIso_(raw) {
+  var text = String(raw || '');
+  if (!/^\d{8}$/.test(text)) throw new Error('GA4日付が不正です: ' + text);
+  var iso = text.slice(0, 4) + '-' + text.slice(4, 6) + '-' + text.slice(6);
+  var parsed = new Date(iso + 'T00:00:00Z');
+  if (isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== iso) {
+    throw new Error('GA4日付が実在しません: ' + text);
+  }
+  return iso;
+}
+
+function playPointEventDailyWeeks_(lastDate) {
+  // 水曜～火曜に揃える。10/8実行時は9/23～29と9/30～10/6を比較する。
+  var dow = new Date(lastDate + 'T00:00:00Z').getUTCDay();
+  var currentEnd = playPointP12ShiftIsoDate_(lastDate, -(dow - 2 + 7) % 7);
+  return [
+    { label: '前週', start: playPointP12ShiftIsoDate_(currentEnd, -13), end: playPointP12ShiftIsoDate_(currentEnd, -7) },
+    { label: '直近完了週', start: playPointP12ShiftIsoDate_(currentEnd, -6), end: currentEnd }
+  ];
+}
+
+function playPointEventDailySource_(propertyId, period, dimensions, eventNames, definitions) {
+  return playPointReaderSource_(function() {
+    var result = playPointReaderReport_(propertyId, period, dimensions,
+      ['eventCount', 'totalUsers'], playPointReaderFilter_('eventName', eventNames));
+    result.rows.forEach(function(row) {
+      row.isoDate = playPointEventDailyIso_(row.date);
+      if (row.isoDate < period.start || row.isoDate > period.end ||
+          !isFinite(row.eventCount) || !isFinite(row.totalUsers)) {
+        throw new Error('GA4日次結果が期間外・不正値です。');
+      }
+    });
+    return result;
+  }, dimensions.filter(function(dim) { return dim.indexOf('customEvent:') === 0; }), definitions);
+}
+
+function playPointEventDailyGrid_(period, timestamp, sources) {
+  var width = 8, grid = [], primary = sources.EVENTS;
+  function add(row) {
+    while (row.length < width) row.push('');
+    grid.push(playPointP12LiteralRow_(row));
+  }
+  add(['📈GA4イベント日次', timestamp]);
+  add(['対象期間', period.start + ' ～ ' + period.end]);
+  add(['注意', 'GA4の日別イベント回数を比較。日内ユーザー数は週合計・同一人物の経路転換率にしない。直近数日は後日再集計で変動する。']);
+  add(['判定', 'GSCの確定期間とは独立。記事別の帰属と計算成功は同一人物の順序付きファネルではない。']);
+  add(['取得状態', Object.keys(sources).map(function(name) { return name + '=' + sources[name].state; }).join(' / ')]);
+  add(['種別', '日付／期間', 'イベント', 'イベント回数', '日内ユーザー', '記事／帰属元', '状態', '補足']);
+  playPointEventDailyWeeks_(period.end).forEach(function(week) {
+    PLAYPOINT_EVENT_DAILY.events.forEach(function(eventName) {
+      var covered = week.start >= period.start && week.end <= period.end;
+      var ok = covered && primary.state === 'OK';
+      var total = ok ? primary.rows.filter(function(row) {
+        return row.eventName === eventName && row.isoDate >= week.start && row.isoDate <= week.end;
+      }).reduce(function(sum, row) { return sum + row.eventCount; }, 0) : '';
+      add([week.label, week.start + ' ～ ' + week.end, eventName, total, '', '',
+        ok ? 'OBSERVED' : (!covered ? 'NOT_COVERED' : primary.state),
+        'イベント回数の合計。週のユニーク利用者数ではない']);
+    });
+  });
+  // 取得できた期間のみ0件を実測0として表示。欠損したAPI結果は0で埋めない。
+  var date = period.start;
+  while (date <= period.end) {
+    PLAYPOINT_EVENT_DAILY.events.forEach(function(eventName) {
+      var ok = primary.state === 'OK';
+      var found = ok ? primary.rows.filter(function(row) {
+        return row.isoDate === date && row.eventName === eventName;
+      }) : [];
+      if (found.length > 1) throw new Error('GA4日別イベントの重複行: ' + date + ' ' + eventName);
+      add(['EVENTS', date, eventName,
+        ok ? (found.length ? found[0].eventCount : 0) : '',
+        ok ? (found.length ? found[0].totalUsers : 0) : '', '',
+        ok ? 'OBSERVED' : primary.state, ok ? '日内ユーザー。直近日は変動あり' : primary.detail]);
+    });
+    date = playPointP12ShiftIsoDate_(date, 1);
+  }
+  [['ARTICLE', '記事から計算機へ', 'pagePath'], ['ATTRIBUTION', '計算開始／初回成功', 'customEvent:entry_source_path']].forEach(function(section) {
+    var source = sources[section[0]];
+    add([section[0], '', '', '', '', '', source.state, source.detail]);
+    source.rows.forEach(function(row) {
+      add([section[0], row.isoDate, row.eventName || section[1],
+        row.eventCount, row.totalUsers, row[section[2]] || '(not set)', source.state,
+        section[0] === 'ATTRIBUTION' ? '帰属元が未設定の行は未帰属。経路転換率とはしない' : 'クリック発生元のページ']);
+    });
+  });
+  return grid;
+}
+
+function capturePlayPointEventDailyReview() {
+  var timestamp = playPointP12NowText_();
+  try {
+    var end = playPointP12ShiftIsoDate_(timestamp.slice(0, 10), -1);
+    var period = { start: playPointP12ShiftIsoDate_(end, 1 - PLAYPOINT_EVENT_DAILY.historyDays), end: end };
+    var propertyId = playPointP12GetGa4PropertyId_();
+    var definitions = {}, sources = {};
+    sources.EVENTS = playPointEventDailySource_(propertyId, period, ['date', 'eventName'], PLAYPOINT_EVENT_DAILY.events, definitions);
+    if (sources.EVENTS.state !== 'OK') throw new Error('GA4の日別イベント総量が未取得: ' + sources.EVENTS.detail);
+    sources.ARTICLE = playPointEventDailySource_(propertyId, period, ['date', 'pagePath'], ['article_to_calculator_clicked'], definitions);
+    // 計算開始・成功の入口帰属は登録済みカスタム定義がある時だけ取得する。
+    try {
+      var metadata = playPointP12GoogleJson_('https://analyticsdata.googleapis.com/v1beta/properties/' +
+        encodeURIComponent(propertyId) + '/metadata', { method: 'get' });
+      (metadata.dimensions || []).forEach(function(dim) { definitions[dim.apiName] = true; });
+      sources.ATTRIBUTION = playPointEventDailySource_(propertyId, period,
+        ['date', 'eventName', 'customEvent:entry_source_path'],
+        ['calculator_form_started', 'calculator_funnel_completed'], definitions);
+    } catch (error) {
+      sources.ATTRIBUTION = { state: 'ERROR', rows: [], detail: playPointP12ErrorText_(error) };
+    }
+    var grid = playPointEventDailyGrid_(period, timestamp, sources);
+    var partial = sources.ARTICLE.state !== 'OK' || sources.ATTRIBUTION.state !== 'OK';
+    return withScriptLock_(function() {
+      var ss = resolveAndRememberSpreadsheet_();
+      var sheet = playPointP12EnsureSheet_(ss, PLAYPOINT_EVENT_DAILY.sheet, 8);
+      var old = String(sheet.getRange('B2').getValue() || '');
+      var match = old.match(/^\d{4}-\d{2}-\d{2} ～ (\d{4}-\d{2}-\d{2})$/);
+      if (match && match[1] > period.end) throw new Error('より新しい日次イベントを上書きしません。');
+      var previousRows = sheet.getLastRow();
+      playPointP12EnsureRows_(sheet, grid.length);
+      sheet.getRange(1, 1, grid.length, 8).setValues(grid);
+      if (previousRows > grid.length) sheet.getRange(grid.length + 1, 1, previousRows - grid.length, 8).clearContent();
+      sheet.setFrozenRows(6); sheet.setFrozenColumns(2);
+      sheet.getRange(1, 1, 1, 8).setFontWeight('bold');
+      sheet.getRange(6, 1, 1, 8).setFontWeight('bold');
+      sheet.setColumnWidths(1, 2, 190); sheet.setColumnWidth(3, 250);
+      sheet.setColumnWidths(4, 2, 120); sheet.setColumnWidth(6, 470);
+      sheet.setColumnWidth(7, 170); sheet.setColumnWidth(8, 370);
+      playPointP12UpsertHealth_('EVENT_DAILY', {
+        lastAttempt: timestamp, lastSuccess: playPointP12NowText_(), dataLatest: period.end,
+        state: partial ? 'PARTIAL' : 'OK', consecutiveFailures: 0, error: '',
+        note: 'GA4日別イベントのみ。' + Object.keys(sources).map(function(key) {
+          return key + '=' + sources[key].state;
+        }).join(' / ')
+      });
+      return { period: period, rows: grid.length, state: partial ? 'PARTIAL' : 'OK' };
+    });
+  } catch (error) {
+    withScriptLock_(function() {
+      playPointP12HealthError_('EVENT_DAILY', timestamp, playPointP12ErrorText_(error));
+    });
+    throw error;
+  }
+}
+
 // 既存P1週次処理から呼び出す。追加トリガー・追加権限は作らない。
 var PLAYPOINT_MAINTENANCE = Object.freeze({
   portfolio: '📚記事Portfolio', coverage: '📅ページ履歴取得範囲',
