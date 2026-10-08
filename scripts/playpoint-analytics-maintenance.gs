@@ -697,7 +697,7 @@ function syncPlayPointPageHistoryArchives() {
       var ss = resolveAndRememberSpreadsheet_();
       recordHealthAttempt_('DRIVE_MAINTENANCE');
       try {
-        var result = maybeArchiveCompletedMonths_(ss, ss.getSheetByName(CONFIG.SHEETS.LOG));
+        var result = maybeArchiveCompletedMonths_(ss, getOrCreateLogSheet_(ss));
         recordHealthSuccess_('DRIVE_MAINTENANCE', { dataThrough: relativeDateString_(-1), dataState: DATA_STATE.RECONCILED, detail: '履歴再取得後の月次アーカイブ追随: 今回' + result.length + '件。確定待ちの月は通常処理へ保留。' });
         updateHealthSheet_(ss); return result;
       } catch (error) { recordHealthFailure_('DRIVE_MAINTENANCE', error); updateHealthSheet_(ss); throw error; }
