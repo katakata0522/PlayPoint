@@ -89,17 +89,22 @@ function playPointAdChangeCohortGrid_(stableEnd, groups, timestamp) {
       var name = 'acquired_' + day.replace(/-/g, '');
       var first = source.rows.filter(function(row) { return row.cohort === name && Number(row.cohortNthDay) === 0; });
       var seventh = source.rows.filter(function(row) { return row.cohort === name && Number(row.cohortNthDay) === 7; });
-      var ready = due <= stableEnd && source.state === 'OK' && first.length === 1 && seventh.length === 1;
-      var total = ready ? seventh[0].cohortTotalUsers : '', active = ready ? seventh[0].cohortActiveUsers : '';
-      if (ready && (total !== first[0].cohortTotalUsers || active > total || active < 0)) ready = false;
+      var mature = due <= stableEnd && source.state === 'OK' && first.length === 1;
+      // 実APIはkeepEmptyRowsでも活動0日の行を省く。完全取得・成熟・D0母数確認時だけ0人と解釈する。
+      var noActivity = mature && seventh.length === 0 && first[0].cohortTotalUsers > 0 &&
+        first[0].cohortActiveUsers === first[0].cohortTotalUsers;
+      var ready = mature && (seventh.length === 1 || noActivity);
+      var total = ready ? first[0].cohortTotalUsers : '';
+      var active = ready ? noActivity ? 0 : seventh[0].cohortActiveUsers : '';
+      if (ready && ((!noActivity && seventh[0].cohortTotalUsers !== total) || active > total || active < 0)) ready = false;
       grid.push([group.label, day, due, ready ? total : '', ready ? active : '',
         ready && total > 0 ? active / total : '', due > stableEnd ? '集計待ち' : ready ?
-          (total > 0 ? 'OK' : '母数なし') : source.state === 'OK' ? '欠測・不整合' : source.state]);
+          (total > 0 ? noActivity ? 'OK（7日目の活動行なし）' : 'OK' : '母数なし') : source.state === 'OK' ? '欠測・不整合' : source.state]);
     });
   });
   ['変更前', '変更後'].forEach(function(label) {
     var rows = grid.slice(5).filter(function(row) { return row[0] === label; });
-    var ready = rows.length === 7 && rows.every(function(row) { return row[6] === 'OK' || row[6] === '母数なし'; });
+    var ready = rows.length === 7 && rows.every(function(row) { return /^OK(?:$|（)/.test(row[6]) || row[6] === '母数なし'; });
     var total = ready ? rows.reduce(function(sum, row) { return sum + row[3]; }, 0) : '';
     var active = ready ? rows.reduce(function(sum, row) { return sum + row[4]; }, 0) : '';
     grid.push([label + '合計', '', '', total, active, ready && total > 0 ? active / total : '', ready ? 'OK' : '集計待ち']);
