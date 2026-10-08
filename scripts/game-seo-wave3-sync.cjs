@@ -20,7 +20,7 @@ function pointTableHtml(amount) {
 const guideShell = createGuideShell({
   verifiedAt: VERIFIED_AT,
   badge: '🔎 公式情報を基準に検証',
-  verificationPolicy: '価格・定額商品・ガチャ仕様は変更されることがあります。公開一次情報で確認できないGoogle Play価格は推測で補わず、購入直前のゲーム内表示とGoogle Playの獲得予定ポイント表示を購入前に確認してください。'
+  verificationPolicy: '価格・定額商品・ガチャ仕様は変更されることがあります。公式情報で確認できないGoogle Play価格は推測で補っていません。購入前に、ゲーム内の最新価格・内容とGoogle Playの獲得予定ポイントを確認してください。'
 });
 
 function syncParentGuide(rootDir, config) {
@@ -75,15 +75,15 @@ function renderArknightsGuide() {
 
 function renderDokkanGuide() {
   const body = `
-    <section class="section answer-box" data-editorial-flow="2026-10"><h2>同じ金額の龍石数と、使う予定の特典で選ぶ</h2><p>今すぐ龍石を多く受け取りたいなら、まずGoogle Playと公式Web Storeで同じ支払額の個数を比べます。Play Pointsやクーポンを使いたいなら、Google Play側の条件も確認します。公式Web StoreはGoogle Play決済とは別の購入経路です。</p><p><span class="marker-yellow">Web Storeの購入に、Google Play Pointsは加算しません。</span> 商品の増量・割引と、ポイントの使い道を別に評価すると、購入先を選びやすくなります。</p><p class="reader-source">出典：<a href="${SOURCES.dokkanWebStoreUsage}" target="_blank" rel="noopener noreferrer">バンダイナムコ公式FAQ：Web Store購入</a> ／ <a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Playの獲得条件</a></p></section>
+    <section class="section answer-box" data-editorial-flow="2026-10"><h2>同じ金額の龍石数と、使う予定の特典で選ぶ</h2><p>今すぐ龍石を多く受け取りたいなら、まずGoogle Playと公式Web Storeで同じ支払額の個数を比べます。Play Pointsやクーポンを使いたいなら、Google Play側の条件も確認します。公式Web StoreはGoogle Play決済とは別の購入経路です。</p><p><span class="marker-yellow">Web Storeでの購入は、Google Play Pointsの獲得対象にはなりません。</span> 商品の増量・割引と、ポイントの使い道を別に評価すると、購入先を選びやすくなります。</p><p class="reader-source">出典：<a href="${SOURCES.dokkanWebStoreUsage}" target="_blank" rel="noopener noreferrer">バンダイナムコ公式FAQ：Web Store購入</a> ／ <a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Playの獲得条件</a></p></section>
     <section class="section reader-comparison"><h2>1,000円で100個と110個なら、どう比べる？</h2><p>以下は<strong>比較方法を説明する仮の例</strong>です。現在販売されている商品の価格・個数ではありません。</p><div class="pack-table-wrap"><table class="pack-table"><caption>同じ支払額で比較する例</caption><thead><tr><th scope="col">購入先</th><th scope="col">支払額</th><th scope="col">龍石</th><th scope="col">1個あたり</th><th scope="col">Play Points</th></tr></thead><tbody><tr><th scope="row">Google Play</th><td>1,000円</td><td>100個</td><td>10円</td><td>対象購入なら獲得予定数を確認</td></tr><tr><th scope="row">公式Web Store</th><td>1,000円</td><td>110個</td><td>約9.09円</td><td>加算しない</td></tr></tbody></table></div><p>この例なら、龍石だけではWebが10個多くなります。ただしGoogle Playに使う予定の割引クーポンがあるなら、割引後の支払額で比較し直します。Playポイントを龍石1個と同じものとして足すことはできません。</p><p>現在の商品価格は購入画面を確認してください。初回・回数限定・販売期間などの条件も揃えて比べます。</p></section>
-    <section class="section"><h2>デイリー商品は、ガチャ終了までに受け取れる分で</h2><p>購入時に受け取る龍石と、毎日受け取る龍石は使える時期が違います。合計が多くても、欲しいガチャの終了後に届く分は、そのガチャの不足分には含めません。</p><p>商品そのものの選び方やコインの違いは、<a href="/articles/2026-08-25-dokkan-battle-dragon-ball-play-points.html">詳しくはこちら</a>で整理しています。ここでは購入先の比較を先に進めましょう。</p></section>
+    <section class="section"><h2>デイリー商品は、ガチャ終了までに受け取れる分で</h2><p>購入時に受け取る龍石と、毎日受け取る龍石は使える時期が違います。合計が多くても、欲しいガチャの終了後に届く分は、そのガチャの不足分には含めません。</p><p>商品そのものの選び方やコインの違いは、<a href="/articles/2026-08-25-dokkan-battle-dragon-ball-play-points.html">詳しくはこちら</a>で整理しています。</p></section>
     <section class="section"><h2>Web Storeで買った龍石はどこに反映される？</h2><p>公式FAQでは、Web Storeでの購入後にアプリのホーム画面へ戻ると反映されると案内しています。<strong>龍石はプレゼントBOXではなく、所持数へ直接加算</strong>されます。アイテムはプレゼントBOXへの反映です。</p><p>アプリ内の「履歴」→「アプリ外購入受け取り履歴」で、過去3か月分の情報を確認できます。見つからないときは、受取場所と履歴を確認してから問い合わせると整理しやすくなります。</p><p class="reader-source">出典：<a href="${SOURCES.dokkanWebStoreReflection}" target="_blank" rel="noopener noreferrer">バンダイナムコ公式FAQ：反映先と受け取り履歴</a></p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.dokkanWebStoreUsage}" target="_blank" rel="noopener noreferrer">バンダイナムコ公式FAQ：Web Store購入</a></li><li><a href="${SOURCES.dokkanWebStoreReflection}" target="_blank" rel="noopener noreferrer">バンダイナムコ公式FAQ：Web Store反映</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ドッカンバトル Play Points計算機へ戻る ➔</a></p>`;
   return guideShell({ gameId: 'dokkan', slug: 'google-play-vs-webstore', lead: 'ドッカンバトルではGoogle Playと公式Web Storeが別の購入経路です。龍石の個数だけでなく、Play Points対象かどうかも分けて比較します。', body, faq: [
     { q: 'ドッカンのWeb Store購入でもGoogle Play Pointsは貯まりますか？', a: 'Web StoreはGoogle Play上の購入ではないため、Google Play Pointsの獲得を前提にしません。Google Play PointsはGoogle Play上の対象購入で確認してください。' },
-    { q: 'ドッカンの龍石価格は固定ですか？', a: '通常商品やセールは時期で変わるため、PlayPointでは公開一次情報で現行値を固定できない価格を推測掲載しません。' }
+    { q: 'ドッカンの龍石価格は固定ですか？', a: '通常商品やセールは時期によって変わるため、このページでは確認できない価格を推測で掲載していません。購入前に最新の価格をゲーム内や公式Web Storeで確認してください。' }
   ] });
 }
 
