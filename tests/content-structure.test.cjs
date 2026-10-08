@@ -185,7 +185,9 @@ test('公開記事のknowledge boundaryは見出しと説明を持つ', () => {
     if (!note) continue;
     boundaries += 1;
     assert.match(note, /<h2\b[^>]*>[^<]+<\/h2>/, article.file);
-    assert.match(note, /<p\b[^>]*>[^<]+<\/p>/, article.file);
+    const paragraphs = [...note.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/g)]
+      .map(match => match[1].replace(/<[^>]*>/g, '').trim());
+    assert.ok(paragraphs.some(text => text.length >= 20), article.file + ': 説明本文が必要です');
   }
   assert.ok(boundaries > 0, 'knowledge-boundary coverage must not be empty');
 });

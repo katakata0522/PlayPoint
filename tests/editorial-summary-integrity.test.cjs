@@ -47,21 +47,20 @@ test('壊れた平文マーカーと複数の正規ブロックをまとめて�
 
 // 空行の完全一致は利用者向け契約ではない。本文保持と冪等性は上の検査が担当。
 
-test('自動生成対象の記事はeditorial summaryを1ブロックだけ持つ', () => {
-  const automaticTargets = Object.entries(EDITORIAL_TARGETS)
-    .filter(([, config]) => !config.manualStructure)
-    .map(([relativePath]) => relativePath);
+test('編集対象の記事は生成・個別編集どちらでも壊れたマーカーと重複IDを持たない', () => {
+  const targets = Object.entries(EDITORIAL_TARGETS);
+  assert.ok(targets.length > 0, 'editorial targets missing');
 
-  assert.ok(automaticTargets.length > 0, 'automatic editorial targets missing');
-
-  for (const relativePath of automaticTargets) {
+  for (const [relativePath, config] of targets) {
     const html = fs.readFileSync(path.join(root, relativePath), 'utf8');
     const withoutCanonicalMarkers = html
       .replaceAll(COMMENT_START, '')
       .replaceAll(COMMENT_END, '');
 
-    assert.equal(count(html, COMMENT_START), 1, `${relativePath}: editorial-summary:start must appear once`);
-    assert.equal(count(html, COMMENT_END), 1, `${relativePath}: editorial-summary:end must appear once`);
+    const starts = count(html, COMMENT_START);
+    assert.equal(count(html, COMMENT_END), starts, `${relativePath}: マーカーは対になる必要があります`);
+    if (config.manualStructure) assert.ok(starts <= 1, `${relativePath}: 個別編集の旧ブロックは重複させません`);
+    else assert.equal(starts, 1, `${relativePath}: 生成ブロックは1つです`);
     assert.doesNotMatch(
       withoutCanonicalMarkers,
       /editorial-summary:(?:start|end)/,

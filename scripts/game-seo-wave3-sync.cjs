@@ -34,8 +34,9 @@ function syncParentGuide(rootDir, config) {
 
 function renderPokepokeGuide() {
   const body = `
+    <section class="section answer-box" data-editorial-flow="2026-10"><h2>毎日の追加パックと、プレミアムミッションが選ぶ理由</h2><p>プレミアムパスでは<strong>1日あたり1パックを追加で開封</strong>できます。プレミアムミッションも利用でき、報酬やプレミアムチケットの交換でプロモカード・周辺グッズを受け取る仕組みです。</p><p><span class="marker-yellow">加入しただけで、カードやグッズが自動的に届くわけではありません。</span> ミッションの達成・報酬受取と、ショップの交換条件を確認します。追加開封や欲しい交換品を利用するかで、月額に見合うかを考えましょう。</p><p class="reader-source">出典：<a href="https://apps.apple.com/jp/mac/story/id1764210956" target="_blank" rel="noopener noreferrer">App Store：追加パックとプレミアムミッション</a> ／ <a href="https://app-ptcgp.pokemon-support.com/hc/ja/articles/39085452917785" target="_blank" rel="noopener noreferrer">ポケポケ公式：カード・周辺グッズの受取方法</a>（2026年10月8日確認）</p></section>
     <section class="section"><h2>プレミアムパスは月額型、初回無料体験は14日</h2><p>ポケポケ公式サポートでは、プレミアムパスは<strong>1か月単位の定期購入</strong>として案内され、初めて利用するプラットフォームアカウントでは<strong>14日間の無料体験</strong>が利用できます。Google Playでは選択したGoogleアカウントに購入権利が結びつくため、複数アカウント利用時は購入先の確認が重要です。</p></section>
-    <section class="section"><h2>現行月額・ポケゴールド価格は購入画面で確認する</h2><p>公式サポートの公開ページでは、プレミアムパスの現行日本円月額や各ポケゴールド商品の現在価格を固定表示していません。月額と更新日、ポケゴールドの個数を購入直前に確認し、Google Play画面の支払額からPlay Pointsを計算してください。無料体験の終了後は有料で更新されるため、解約期限も確認します。</p></section>
+    <section class="section"><h2>現行月額・ポケゴールド価格は購入画面で確認する</h2><p>公式サポートの公開ページでは、プレミアムパスの現行日本円月額や各ポケゴールド商品の現在価格を固定表示していません。月額と更新日、ポケゴールドの個数を購入直前に確認し、Google Play画面の支払額からPlay Pointsを計算してください。無料体験の終了後は有料で更新されます。継続しない場合は、公式案内のとおり終了の24時間前までに自動更新を解除してください。Google Playの「お支払いと定期購入」→「定期購入」で、契約と終了日を確認できます。</p></section>
     <section class="section"><h2>Play Pointsで見るときの注意点</h2><p>無料体験中は支払いが発生しないため、その時点の購入額からPlay Pointsを見積もる対象にはしません。有料更新やポケゴールド購入をGoogle Play上で行う場合は、購入確認画面に表示される支払額と獲得予定ポイントを優先してください。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.pokepokePremiumPass}" target="_blank" rel="noopener noreferrer">ポケポケ公式サポート：プレミアムパス</a></li><li><a href="${SOURCES.pokepokePremiumMechanics}" target="_blank" rel="noopener noreferrer">Pokémon Support：購入・Premium Pass FAQ</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ポケポケ Play Points計算機へ戻る ➔</a></p>`;
@@ -48,10 +49,10 @@ function renderPokepokeGuide() {
 function renderPadGuide() {
   const pass = GAME_SEO.pad.pass;
   const body = `
-    <section class="section"><h2>パズドラパスは月額980円の自動更新サービス</h2><p>パズドラ公式は、パズドラパスを<strong>月額980円</strong>・1か月単位の自動更新サービスとして案内しています。Android版ではGoogle Playの定期購入として管理され、初回は<strong>1週間の無料トライアル</strong>があります。</p></section>
+    <section class="section answer-box" data-editorial-flow="2026-10"><h2>パズドラパスは月額980円の自動更新サービス</h2><p>パズドラ公式は、パズドラパスを<strong>月額980円</strong>・1か月単位の自動更新サービスとして案内しています。Android版ではGoogle Playの定期購入として管理され、初回は<strong>1週間の無料トライアル</strong>があります。</p><p class="reader-source">出典：<a href="${SOURCES.padPass}" target="_blank" rel="noopener noreferrer">パズドラ公式：パスの内容</a></p></section>
     <section class="section"><h2>毎日ダンジョン以外の常設メリットもある</h2><p>公式ページでは、専用の毎日ダンジョンに加え、チーム枠+5、獲得ランク経験値5%アップ、対象ダンジョンの常時解放、専用バッジなどが案内されています。イベントによってはクエスト報酬の追加特典もあります。</p></section>
     <section class="section"><h2>980円をGoogle Playで支払ったときのPlay Points目安</h2>${pointTableHtml(pass.price)}<p>無料トライアル期間中は支払いが発生しないため、その期間の利用自体を980円購入として数えません。有料更新時はGoogle Playの購入確認画面に表示される獲得予定ポイントを優先してください。</p></section>
-    <section class="section"><h2>誰に向く？</h2><p>毎日ログインして専用ダンジョンや常設特典を継続的に使う人ほど価値を取りやすい商品です。反対に、特典を使う頻度が低い場合は「980円で何個の魔法石」という単純比較では判断できません。Play Pointsも含め、継続利用する機能の価値を分けて考えるのが安全です。</p></section>
+    <section class="section"><h2>誰に向く？</h2><p>毎日ダンジョンを遊び、チーム枠や経験値アップも使うなら、月額980円の候補になります。たとえば編成枠が足りない人と、週末に少し遊ぶだけの人では、同じ特典でも役立ち方が違います。<strong>自分が使う特典を先に選び、そのために980円を払いたいか</strong>で比較しましょう。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.padPass}" target="_blank" rel="noopener noreferrer">パズドラ公式：パズドラパス</a></li><li><a href="${SOURCES.padPassFaq}" target="_blank" rel="noopener noreferrer">パズドラ公式：パズドラパスFAQ</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">パズドラ Play Points計算機へ戻る ➔</a></p>`;
   return guideShell({ gameId: 'pad', slug: 'pad-pass-value', pageDescription: 'パズドラパスの月額980円、1週間無料トライアル、毎日ダンジョン、チーム枠、ランク経験値などの公式特典とGoogle Play Pointsを整理します。', lead: 'パズドラパスは魔法石だけで価値を測る商品ではありません。月額、無料体験、毎日・常設特典、Play Pointsを分けて確認します。', body, faq: [
@@ -62,7 +63,8 @@ function renderPadGuide() {
 
 function renderArknightsGuide() {
   const body = `
-    <section class="section"><h2>月パスの中身は公式確認できる</h2><p>アークナイツ公式サポートでは、月パス購入時に<strong>有償純正源石6個</strong>を受け取り、その後30日間、毎日<strong>合成玉200個 + 理性回復剤1個</strong>を受け取る仕様が案内されています。</p></section>
+    <section class="section answer-box" data-editorial-flow="2026-10"><h2>月パスは源石6個と、30日間の合成玉・理性回復剤</h2><p>アークナイツ公式サポートでは、月パス購入時に<strong>有償純正源石6個</strong>を受け取り、その後30日間、毎日<strong>合成玉200個 + 理性回復剤1個</strong>を受け取る仕様が案内されています。</p><p class="reader-source">出典：<a href="${SOURCES.arknightsMonthlyPass}" target="_blank" rel="noopener noreferrer">アークナイツ公式：月パスの内容</a></p></section>
+    <section class="section reader-comparison"><h2>10日・20日・30日で、合成玉はどれくらい？</h2><div class="pack-table-wrap"><table class="pack-table"><caption>毎日の200合成玉を、その日数分すべて受け取った場合</caption><thead><tr><th scope="col">受け取った日数</th><th scope="col">毎日分の合成玉</th></tr></thead><tbody><tr><th scope="row">10日</th><td>200×10＝2,000個</td></tr><tr><th scope="row">20日</th><td>200×20＝4,000個</td></tr><tr><th scope="row">30日</th><td>200×30＝6,000個</td></tr></tbody></table></div><p>購入時の源石6個は、合成玉とは別の通貨として数えます。<span class="marker-yellow">期限までに10日分を受け取るなら、その期間に使える毎日分は2,000合成玉</span>です。残りの日数分は後のスカウトに備える分として考えましょう。</p></section>
     <section class="section"><h2>月パスと源石パックの価格を購入前に確認する</h2><p>月パスは毎日の受け取り、源石パックは購入直後に使える個数を比べてください。現在の日本Google Play価格は購入画面で確認し、表示された支払額からPlay Pointsを計算します。</p></section>
     <section class="section"><h2>リミテッドスカウトの「300回」は現金9万円ではない</h2><p>2026年の公式リミテッドスカウトでも、1回のスカウトにつきリミテッドスカウト契約証を1枚獲得し、<strong>300回スカウト時の追加限定オペレーター</strong>が案内されています。ただし、合成玉・スカウト券・無料分・所持資源があるため、「300回=9万円」のような固定現金額にはしません。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.arknightsMonthlyPass}" target="_blank" rel="noopener noreferrer">アークナイツ公式サポート：月パス内容</a></li><li><a href="${SOURCES.arknightsLimited2026}" target="_blank" rel="noopener noreferrer">アークナイツ公式：2026年リミテッドスカウト</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
