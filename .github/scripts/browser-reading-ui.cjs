@@ -377,14 +377,14 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     report.interactions.modal = report.interactions.pagination = report.interactions.urlNormalization = report.interactions.savedRoundTrip = true;
 
     if (await page.locator('html').getAttribute('data-reading-theme') === 'dark') await chooseTheme(page);
-    // 計算機トップの9月22日表示はガイド用メニューと独立する。
+    // 主計算機の目的別モードと地域選択を、ガイド用メニューから独立して確認する。
     await goto(page,'');
     for (const width of [320,390,1280]) {
       await page.setViewportSize({width,height:844});
       await page.locator('#calculateButton').waitFor({state:'visible'});
       assert.equal(await page.locator('#guide-menu,.guide-calculator-header').count(),0,'Calculator has no guide menu');
-      assert.equal(await page.locator('#tab-main').innerText(),'通常計算');
-      assert.equal(await page.locator('#tab-reverse').innerText(),'逆算モード');
+      assert.equal(await page.locator('#tab-main').innerText(),'必要額を知る');
+      assert.equal(await page.locator('#tab-reverse').innerText(),'金額からポイント');
       assert(await page.locator('.top-bar .region-switch').isVisible(),'Region selector remains on the page');
       assert(await page.locator('.top-bar .header-links a[href$="blog/"]').isVisible(),'Article link remains on the page');
     }
