@@ -21,6 +21,17 @@ test('既存Sheetのdurationシリアル値を秒で解釈し、空欄は未取�
  assert.equal(c.playPointRevenueDurationSeconds_('not set'),null);
 });
 
+test('照合済み収益の空欄・不正値を0円にしないが、実測0円は受け入れる',()=>{
+ const c=runtime(), headers=['日付','PV数（GA4）','推定収益（円）','AdSenseページビュー','広告インプレッション数','広告クリック数',
+ 'AdSenseページCTR','AdSenseページRPM（円）','広告インプレッションCTR','広告インプレッションRPM（円）','データ状態'];
+ const row=['2026-10-08',100,0,110,300,0,0,0,0,0,'RECONCILED'];
+ const ss={getSheetByName:()=>({getLastRow:()=>2,getDataRange:()=>({getValues:()=>[headers,row]})})};
+ assert.equal(c.playPointRevenueReadDailyHistory_(ss)[0].revenue,0);
+ row[2]='';assert.throws(()=>c.playPointRevenueReadDailyHistory_(ss),/数値が欠落/);
+ row[2]='bad';assert.throws(()=>c.playPointRevenueReadDailyHistory_(ss),/数値が欠落/);
+ row[10]='PARTIAL';assert.equal(c.playPointRevenueReadDailyHistory_(ss)[0].dataState,'PARTIAL');
+});
+
 test('2つの完全週は9月23〜29日と9月30日〜10月6日。収益中央値で単発上振れを分離',()=>{
  const c=runtime();
  const a=[91,52,78,43,37,42,194];

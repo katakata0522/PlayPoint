@@ -1103,8 +1103,18 @@ function playPointP12Ga4Report_(propertyId, body) {
     if (!next.length || Number(page.rowCount || expected) !== expected) {
       throw new Error('GA4 capture incomplete or changed while paging: ' + rows.length + ' / ' + expected);
     }
+    // 後続ページの品質制限も全レポートへ伝える。
+    response.metadata = response.metadata || {};
+    var pageMeta = page.metadata || {};
+    ['subjectToThresholding', 'dataLossFromOtherRow'].forEach(function(key) {
+      if (pageMeta[key]) response.metadata[key] = true;
+    });
+    if (pageMeta.samplingMetadatas && pageMeta.samplingMetadatas.length) {
+      response.metadata.samplingMetadatas = (response.metadata.samplingMetadatas || []).concat(pageMeta.samplingMetadatas);
+    }
     rows = rows.concat(next);
   }
+  if (rows.length !== expected) throw new Error('GA4 capture incomplete: rowCount mismatch');
   response.rows = rows;
   return response;
 }
@@ -1120,9 +1130,11 @@ function playPointP12ParseGa4Rows_(body, dimensionNames, metricNames) {
     });
 
     metricNames.forEach(function(name, index) {
-      result[name] = row.metricValues && row.metricValues[index]
-        ? Number(row.metricValues[index].value || 0)
-        : 0;
+      var raw = row.metricValues && row.metricValues[index] ? row.metricValues[index].value : undefined;
+      if (raw === undefined || raw === null || String(raw).trim() === '' || !isFinite(Number(raw))) {
+        throw new Error('GA4 metric missing or invalid: ' + name);
+      }
+      result[name] = Number(raw);
     });
 
     return result;

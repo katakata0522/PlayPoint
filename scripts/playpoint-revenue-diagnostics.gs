@@ -200,6 +200,13 @@ function playPointRevenueReadDailyHistory_(spreadsheet) {
 
   var durationColumn = headers.indexOf('平均エンゲージメント時間／ユーザー');
   return values.slice(1).map(function(row) {
+    // 照合済みでも手動編集・書込欠落の空欄を0円/0PVにしない。
+    if (String(row[index['データ状態']] || '').trim() === 'RECONCILED') {
+      ['PV数（GA4）', '推定収益（円）', 'AdSenseページビュー', '広告インプレッション数', '広告クリック数'].forEach(function(name) {
+        var raw = row[index[name]], clean = raw === null || raw === undefined ? '' : String(raw).replace(/[¥$,%\s,]/g, '');
+        if (clean === '' || !isFinite(Number(clean))) throw new Error('照合済み日次の数値が欠落・不正: ' + name);
+      });
+    }
     return {
       date: playPointRevenueIsoDate_(row[index['日付']]),
       avgEngagementSec: durationColumn < 0 ? null : playPointRevenueDurationSeconds_(row[durationColumn]),
