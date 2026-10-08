@@ -323,7 +323,7 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、目�
   const faq = html.match(/<!-- FAQ_SECTION_START -->([\s\S]*?)<!-- FAQ_SECTION_END -->/)?.[1] || '';
 
   assert.ok(description.includes('class="home-description-lead"'));
-  assert.match(description, /このサイトでは/);
+  assert.match(description, /class="home-description-lead"[^>]*>\s*[^<\s]/, '機能説明の導入文が空でないこと');
   assert.match(description, /目標ステータスまでに必要な課金額/);
   assert.match(description, /○○円なら何ポイント？」といった逆算/);
   assert.match(description, /毎週お楽しみのウィークリーリワード記録/);

@@ -151,7 +151,8 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   // 6. JSON-LD の置換
   // SoftwareApplication
   output = output.replace(/"name": "(?:Playポイント計算機|Google Play Points 計算機)"/g, `"name": "${config.appName}"`);
-  output = output.replace(/"alternateName": "Playポイント計算機"/g, `"alternateName": "${config.alternateName || config.appName}"`);
+  // 日本語版の別名が配列でも、各言語版にはその言語の別名を出力する。
+  output = output.replace(/"alternateName":\s*(?:"Playポイント計算機"|\[[^\]]*\])/g, `"alternateName": "${config.alternateName || config.appName}"`);
   // gフラグ付きで全descriptionを置換（SoftwareApplicationのdescriptionが対象）
   output = output.replace(/"description": "[^"]+"/g, `"description": "${config.appDesc}"`);
   output = output.replace(/"priceCurrency": "JPY"/, `"priceCurrency": "${config.currency}"`);
