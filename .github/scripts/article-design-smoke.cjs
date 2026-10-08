@@ -263,9 +263,10 @@ async function inspectIntlReading(browser, baseUrl) {
       assert(title >= body * 1.5, item.locale + ': article title must be visually distinct from body copy');
       const headingFrame = await page.locator('.content h2:not(.intl-article-toc h2)').first().evaluate(el => {
         const css = getComputedStyle(el);
-        return { border: parseFloat(css.borderLeftWidth), padding: parseFloat(css.paddingLeft), radius: parseFloat(css.borderRadius) };
+        return { border: parseFloat(css.borderLeftWidth), padding: parseFloat(css.paddingLeft), radius: parseFloat(css.borderRadius), size: parseFloat(css.fontSize), weight: Number(css.fontWeight), inAnswer: Boolean(el.closest('.answer-box,.editorial-answer')) };
       });
-      assert(headingFrame.border >= 4 && headingFrame.padding >= 10 && headingFrame.radius >= 6, item.locale + ': heading frame must match editorial design');
+      assert(headingFrame.size >= body && headingFrame.weight >= 600, item.locale + ': section heading must be distinct from body copy');
+      if (headingFrame.inAnswer) assert(headingFrame.border === 0 && headingFrame.padding === 0 && headingFrame.radius === 0, item.locale + ': answer heading must not add a second frame');
       await save.click();
       assert(await save.getAttribute('aria-pressed') === 'true', item.locale + ': saving failed');
       await page.locator('.reading-tools a').click();
