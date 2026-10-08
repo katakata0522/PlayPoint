@@ -24,6 +24,36 @@ test('しきい値で制限された値は完全取得とはしない',()=>{
   assert.equal(c.playPointReaderSource_(()=>{throw Error('quota');},[],{}).state,'ERROR');
   assert.equal(c.playPointReaderSource_(()=>({rows:[{eventCount:4}],parameterMissing:true}),[],{}).state,'PARAMETER_PARTIAL');
 });
+
+test('パラメータ取得割合は行数や人数でなく返却イベント回数を分母にする',()=>{
+  const c=runtime({playPointP12Ga4Report_:()=>({}),playPointP12ParseGa4Rows_:()=>[
+    {'customEvent:component':'menu',eventCount:80,totalUsers:10},
+    {'customEvent:component':'(not set)',eventCount:20,totalUsers:15}]});
+  const r=c.playPointReaderSource_(()=>c.playPointReaderReport_('p',{},['customEvent:component'],['eventCount','totalUsers']),[],{});
+  assert.equal(r.state,'PARAMETER_PARTIAL'); assert.equal(r.coverage.available,80);
+  assert.match(r.detail,/80\/100回（80.0%）/); assert.match(r.detail,/人数の割合ではない/);
+});
+
+test('抽出された順序ファネルを全数の完了率として使わない',()=>{
+  const c=runtime({playPointP12GoogleJson_:()=>({funnelTable:{dimensionHeaders:[{name:'funnelStepName'}],
+    metricHeaders:[{name:'activeUsers'}],metadata:{samplingMetadatas:[{samplesReadCount:'10',samplingSpaceSize:'100'}]},rows:[]}}),
+    playPointP12ParseGa4Rows_:()=>[]});
+  assert.equal(c.playPointReaderSource_(()=>c.playPointReaderOrderedFunnel_('p',{}),[],{}).state,'RESTRICTED');
+});
+
+test('記事台帳取得の障害でも読者のGA4計測を止めず、役割ラベルを未取得と示す',()=>{
+  const c=runtime({resolveAndRememberSpreadsheet_:()=>({}),playPointP12BuildGa4Period_:()=>({start:'2026-09-07',end:'2026-10-06'}),
+    playPointP12NowText_:()=> '2026-10-09 09:00:00',playPointP12GetGa4PropertyId_:()=> 'p',
+    playPointP12GoogleJson_:()=>({}),formatDateSafe_:v=>v});
+  c.playPointMaintenanceLoadInventory_=()=>{throw Error('GitHub unavailable');};
+  let calls=0;
+  c.playPointReaderReport_=c.playPointReaderCohorts_=c.playPointReaderOrderedFunnel_=()=>{calls++;return {rows:[]};};
+  c.playPointReaderBuildGrid_=(_period,inventory,sources)=>{
+    assert.equal(inventory.length,0);assert.equal(sources.INVENTORY.state,'ERROR');
+    assert.equal(sources.EVENTS.state,'OK'); assert.equal(sources.FUNNEL.state,'OK');throw Error('metrics reached');
+  };
+  assert.throws(()=>c.playPointCaptureReaderOutcomes_(),/metrics reached/);assert(calls>=4);
+});
 test('公開台帳の言語・役割を結合し、ページ再訪と入口コホートを区別する',()=>{
   const c=runtime();const grid=c.playPointReaderBuildGrid_({start:'2026-09-03',end:'2026-10-02'},
     [{path:'/ko/articles/a.html',role:'troubleshooting',locale:'KO'}],{

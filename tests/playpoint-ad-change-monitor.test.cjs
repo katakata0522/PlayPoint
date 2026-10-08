@@ -136,3 +136,15 @@ test('日次更新へ補助集計を接続し、補助障害は成功した収�
   const r=c.capturePlayPointAdChangeMonitor();assert.equal(r.state,'OK');assert.deepEqual(calls,['event','reader']);
   assert.equal(r.maintenance[0].state,'ERROR');assert.equal(r.maintenance[1].state,'OK');
 });
+
+test('収益比較とその監視記録が失敗しても独立したGA4更新を実行し、元の障害を返す', () => {
+  const calls=[]; const c=runtime({console:{error:()=>{}},withScriptLock_:fn=>fn(),
+    playPointP12NowText_:()=> 'now',playPointP12ErrorText_:e=>e.message,
+    playPointP12HealthError_:()=>{throw Error('health write failed');},
+    capturePlayPointEventDailyReview:()=>{calls.push('event');return {state:'OK'};},
+    capturePlayPointReaderOutcomes:()=>{calls.push('reader');return {state:'OK'};}});
+  c.playPointCaptureAdChangeMonitor_=()=>{throw Error('revenue missing');};
+  c.playPointCaptureChangeQuality_=()=>{calls.push('quality');throw Error('quality unavailable');};
+  assert.throws(()=>c.capturePlayPointAdChangeMonitor(),/revenue missing/);
+  assert.deepEqual(calls,['quality','event','reader']);
+});

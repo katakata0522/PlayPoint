@@ -716,6 +716,26 @@ test('GA4後続ページの品質制限を保持し、欠落した数値をゼ�
   assert.equal(context.playPointP12ParseGa4Rows_({rows:[{metricValues:[{value:'0'}]}]},[],['sessions'])[0].sessions,0);
 });
 
+test('編集候補の全GA4取得経路は制限されたレポートをOKとして返さない', () => {
+  const {context}=loadP12Runtime();
+  for(const metadata of [{subjectToThresholding:true},{dataLossFromOtherRow:true},{samplingMetadatas:[{}]}]) {
+    context.playPointP12Ga4Report_=()=>({metadata,rows:[]});
+    for(const name of ['OrganicLandings','ArticleClicks','AttributedFunnel','PageRevenue','OrganicEngines']) {
+      assert.throws(()=>context['playPointP12Fetch'+name+'_']('p',{start:'2026-09-01',end:'2026-09-30'}),/sourceを保留/);
+    }
+  }
+  context.playPointP12Ga4Report_=()=>({rows:[]});
+  assert.equal(context.playPointP12FetchOrganicLandings_('p',{}).length,0);
+});
+
+test('ページ広告収益は明示した円通貨で取得し、異なる通貨を円として表示しない', () => {
+  const {context}=loadP12Runtime();let request;
+  context.playPointP12Ga4Report_=(_p,body)=>{request=body;return {metadata:{currencyCode:'JPY'},rows:[]};};
+  context.playPointP12FetchPageRevenue_('p',{});assert.equal(request.currencyCode,'JPY');
+  context.playPointP12Ga4Report_=()=>({metadata:{currencyCode:'USD'},rows:[]});
+  assert.throws(()=>context.playPointP12FetchPageRevenue_('p',{}),/通貨/);
+});
+
 test('日次拡張の鮮度は36時間、週次は9日で判定し、ERRORを消さない', () => {
   const patch=read('docs/patches/playpoint-analytics-v11.6.4-health.patch');
   const after=patch.split(/\r?\n/).filter(line=>line.startsWith(' ')||(line.startsWith('+')&&!line.startsWith('+++')))

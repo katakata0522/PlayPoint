@@ -1,0 +1,190 @@
+diff --git a/コード.gs b/コード.gs
+index cc24cf3..17a310b 100644
+--- a/コード.gs
++++ b/コード.gs
+@@ -994,32 +994,34 @@ function resolveIncrementalRange_(existingMap) {
+ function fetchGa4Daily_(startDate, endDate) {
+   const request = AnalyticsData.newRunReportRequest();
+   request.dateRanges = [{ startDate: startDate, endDate: endDate }];
+   request.dimensions = [{ name: 'date' }];
+   request.metrics = [
+     { name: 'screenPageViews' },
+     { name: 'activeUsers' },
+     { name: 'userEngagementDuration' }
+   ];
+   request.orderBys = [{
+     dimension: { dimensionName: 'date' },
+     desc: false
+   }];
+   request.limit = 10000;
+ 
+   const response = runGa4Report_(request, 'GA4日次データ');
++  assertGa4ReportNotTruncated_(response, 'GA4日次データ');
+   const result = {};
+ 
+   (response.rows || []).forEach(function (row) {
+     const raw = dimensionValue_(row, 0);
+-    if (!/^\d{8}$/.test(raw)) return;
++    if (!/^\d{8}$/.test(raw)) throw new Error('GA4日次の日付が不正です。');
+ 
+     const date = raw.substring(0, 4) + '-' + raw.substring(4, 6) + '-' + raw.substring(6, 8);
++    validateApiDailyDate_(date, startDate, endDate, result, 'GA4日次');
+     result[date] = {
+       pv: metricNumber_(row, 0),
+       users: metricNumber_(row, 1),
+       engagementDurationSec: metricNumber_(row, 2)
+     };
+   });
+ 
+   return result;
+ }
+@@ -1027,58 +1029,70 @@ function fetchGa4Daily_(startDate, endDate) {
+ function fetchAdSenseDaily_(startDate, endDate) {
+   const accountName = resolveAdSenseAccountName_();
+   const start = startDate;
+   const end = endDate;
+ 
+   const domainFilters = CONFIG.ADSENSE_SITE_DOMAINS
+     .map(normalizeDomain_)
+     .filter(Boolean)
+     .map(function (domain) {
+       return 'OWNED_SITE_DOMAIN_NAME==' + escapeAdSenseFilterParameter_(domain);
+     });
+ 
+   const options = Object.assign({
+     dimensions: ['DATE'],
+     metrics: [
+       'ESTIMATED_EARNINGS',
+       'PAGE_VIEWS',
+       'IMPRESSIONS',
+       'CLICKS',
+       'PAGE_VIEWS_CTR',
+       'PAGE_VIEWS_RPM',
+       'IMPRESSIONS_CTR',
+       'IMPRESSIONS_RPM'
+     ],
+     filters: [domainFilters.join(',')],
+     orderBy: ['+DATE'],
+     languageCode: 'ja',
+     currencyCode: CONFIG.CURRENCY_CODE,
+     limit: 100000
+   }, adsenseDateParameters_('startDate', start), adsenseDateParameters_('endDate', end));
+ 
+   let report;
+   try {
+     report = AdSense.Accounts.Reports.generate(accountName, options);
+   } catch (error) {
+     throw new Error('AdSense日次データ取得失敗: ' + errorMessage_(error));
+   }
+ 
++  assertAdSenseReportNotTruncated_(report, 'AdSense日次データ');
++  const expectedHeaders = options.dimensions.concat(options.metrics);
++  if (!Array.isArray(report.headers) || report.headers.length !== expectedHeaders.length ||
++      report.headers.some(function (header, i) { return header.name !== expectedHeaders[i]; })) {
++    throw new Error('AdSense日次の列構成を確認できません。');
++  }
++  if (report.headers[1].currencyCode && report.headers[1].currencyCode !== CONFIG.CURRENCY_CODE) {
++    throw new Error('AdSense日次の通貨が設定と一致しません。');
++  }
+   const result = {};
+   (report.rows || []).forEach(function (row) {
+     const cells = row.cells || [];
+     const date = adSenseCell_(cells, 0);
+-    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
++    validateApiDailyDate_(date, startDate, endDate, result, 'AdSense日次');
++    const values = options.metrics.map(function (metric, index) {
++      return apiMetricNumber_(adSenseCell_(cells, index + 1), 'AdSense日次 ' + metric);
++    });
+ 
+     result[date] = {
+-      earnings: number_(adSenseCell_(cells, 1)),
+-      pageViews: number_(adSenseCell_(cells, 2)),
+-      impressions: number_(adSenseCell_(cells, 3)),
+-      clicks: number_(adSenseCell_(cells, 4)),
+-      pageCtr: normalizeRatio_(adSenseCell_(cells, 5)),
+-      pageRpm: number_(adSenseCell_(cells, 6)),
+-      impressionCtr: normalizeRatio_(adSenseCell_(cells, 7)),
+-      impressionRpm: number_(adSenseCell_(cells, 8))
++      earnings: values[0],
++      pageViews: values[1],
++      impressions: values[2],
++      clicks: values[3],
++      pageCtr: normalizeRatio_(values[4]),
++      pageRpm: values[5],
++      impressionCtr: normalizeRatio_(values[6]),
++      impressionRpm: values[7]
+     };
+   });
+ 
+   return result;
+ }
+@@ -1929,30 +1943,39 @@ function runGa4Report_(request, label) {
+ }
+ 
+ function assertGa4ReportNotTruncated_(response, label) {
+-  const totalRows = number_(response && response.rowCount);
++  const metadata = response && response.metadata || {};
++  if (metadata.subjectToThresholding || metadata.dataLossFromOtherRow ||
++      (metadata.samplingMetadatas && metadata.samplingMetadatas.length)) {
++    throw new Error(label + 'はしきい値・サンプリング・other集約あり。完全な履歴として保存しません。');
++  }
++  const totalRows = response && response.rowCount !== undefined
++    ? apiMetricNumber_(response.rowCount, label + ' rowCount') : 0;
++  if (!Number.isInteger(totalRows) || totalRows < 0) throw new Error(label + 'の総行数が不正です。');
+   const returnedRows = response && response.rows ? response.rows.length : 0;
+   if (totalRows > returnedRows) {
+     throw new Error(
+       label + 'はAPI上で' + totalRows + '行ありますが、' + returnedRows +
+       '行しか取得できませんでした。部分データを履歴へ保存しないため更新を中止します。' +
+       ' CONFIGの取得上限を引き上げてください。'
+     );
+   }
+ }
+ 
+ function assertAdSenseReportNotTruncated_(report, label) {
+-  const totalRows = number_(report && report.totalMatchedRows);
++  const totalRows = report && report.totalMatchedRows !== undefined
++    ? apiMetricNumber_(report.totalMatchedRows, label + ' totalMatchedRows') : 0;
++  if (!Number.isInteger(totalRows) || totalRows < 0) throw new Error(label + 'の総行数が不正です。');
+   const returnedRows = report && report.rows ? report.rows.length : 0;
+   if (totalRows > returnedRows) {
+     throw new Error(
+       label + 'はAPI上で' + totalRows + '行ありますが、' + returnedRows +
+       '行しか取得できませんでした。部分データを履歴へ保存しないため更新を中止します。' +
+       ' CONFIGの取得上限を引き上げてください。'
+     );
+   }
+ }
+ 
+ 
+ /* ========================================================================== */
+ /* ページ日次履歴・ページ価値・ランディング分析                               */
+ /* ========================================================================== */
+@@ -4462,9 +4485,24 @@ function dimensionValue_(row, index) {
+ }
+ 
+ function metricNumber_(row, index) {
+-  return row && row.metricValues && row.metricValues[index]
+-    ? number_(row.metricValues[index].value)
+-    : 0;
++  const raw = row && row.metricValues && row.metricValues[index]
++    ? row.metricValues[index].value : undefined;
++  return apiMetricNumber_(raw, 'GA4 metric[' + index + ']');
++}
++
++function apiMetricNumber_(raw, label) {
++  if ((typeof raw !== 'string' && typeof raw !== 'number') || String(raw).trim() === '' || !Number.isFinite(Number(raw))) {
++    throw new Error(label + 'の数値が欠落・不正です。0として保存しません。');
++  }
++  return Number(raw);
++}
++
++function validateApiDailyDate_(date, start, end, seen, label) {
++  const epoch = /^\d{4}-\d{2}-\d{2}$/.test(date) ? Date.parse(date + 'T00:00:00Z') : NaN;
++  if (!Number.isFinite(epoch) || new Date(epoch).toISOString().slice(0, 10) !== date || date < start || date > end) {
++    throw new Error(label + 'の日付が不正・要求期間外です。');
++  }
++  if (Object.prototype.hasOwnProperty.call(seen, date)) throw new Error(label + 'の日付が重複しています。');
+ }
+ 
+ 
