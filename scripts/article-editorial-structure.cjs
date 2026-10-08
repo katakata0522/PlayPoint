@@ -10,7 +10,7 @@ const EDITORIAL_MODIFIED_DATE = '2026-09-12';
 const EDITORIAL_TARGETS = Object.freeze({
   'articles/2026-03-10-play-points-reflection-timing.html': {
     manualStructure: true,
-    modifiedDate: '2026-09-27',
+    modifiedDate: '2026-10-08',
     answer: '購入が完了しているのにポイントが見えない場合は、注文状態、Play Points履歴、購入したGoogleアカウント、キャンペーン条件の順で確認します。待ち時間だけでは原因を切り分けられません。',
     known: [
       '注文が完了・保留・キャンセル・返金のどれかは購入履歴で確認できます。',
@@ -22,9 +22,10 @@ const EDITORIAL_TARGETS = Object.freeze({
     ]
   },
   'articles/2026-07-24-play-points-1-value.html': {
+    manualStructure: true,
+    modifiedDate: '2026-10-08',
     contextHeading: "獲得する1ポイントと、使う1ポイントを分ける",
     contextParagraphs: ["日本の通常獲得率は100円あたり1～2ポイントですが、これは購入で貯まる割合です。交換時に1ポイントを何円分として使えるかとは分けて考えます。","獲得ポイントは税金を除いた対象アイテム価格から計算し、最も近い整数へ丸めます。購入前はGoogle Playに表示された対象条件と獲得予定ポイントを、購入後は実際の付与数を確認してください。"],
-    modifiedDate: '2026-09-12',
     boundaryHeading: '公式で確認できること／Google Play画面で確認すること',
     knownHeading: '公式で確認できること',
     unknownHeading: 'Google Play画面で確認すること',
@@ -40,6 +41,8 @@ const EDITORIAL_TARGETS = Object.freeze({
     comparisonLabel: 'ステータス別獲得率の比較表を見る'
   },
   'articles/2026-07-24-play-points-100-value.html': {
+    manualStructure: true,
+    modifiedDate: '2026-10-08',
     contextHeading: "100ポイントの「貯め方」と「使い道」は別に比べる",
     contextParagraphs: ["100ポイントを貯める概算は、通常獲得率と対象商品の価格から求められます。一方、100ポイントを何円分として使えるかは、表示される交換先と条件で変わります。","ランクを目指すときは、使えるポイント残高ではなく年間のランク進捗を確認します。交換に使った残高と、ランク判定のために貯めたポイントを混同しないことが大切です。個別キャンペーンの対象可否はGoogle Playの表示で確かめてください。"],
     known: [
@@ -54,6 +57,8 @@ const EDITORIAL_TARGETS = Object.freeze({
     comparisonLabel: '100円ごとの獲得率を比較表で確認する'
   },
   'articles/2026-07-24-play-points-500-1000-value.html': {
+    manualStructure: true,
+    modifiedDate: '2026-10-08',
     contextHeading: "概算を自分の購入予定に当てはめる",
     contextParagraphs: ["通常時の概算と特別獲得率での概算は分けて比べます。2pt/100円・3pt/100円などは、その最終獲得率がGoogle Playに表示された対象購入にだけ使う数値です。","次回キャンペーンや自分が対象になることを前提に購入予定を増やさず、今表示されている条件で判断します。商品ごとにポイントが丸められるため、合計額だけの計算とは数ポイントずれる場合もあります。"],
     known: [
@@ -65,7 +70,7 @@ const EDITORIAL_TARGETS = Object.freeze({
       '商品ごとの丸めにより、合計額だけの計算とは数ポイントずれる場合があります。'
     ],
     comparisonHref: '/compare/earning-rates/#campaign-comparison',
-    comparisonLabel: '通常獲得率・特別獲得率の引用用比較表を見る'
+    comparisonLabel: '通常獲得率・特別獲得率の比較表を見る'
   },
   'articles/2026-07-24-play-points-cash-conversion.html': {
     manualStructure: true,
@@ -81,6 +86,8 @@ const EDITORIAL_TARGETS = Object.freeze({
     ]
   },
   'articles/2026-07-25-play-credit-not-working.html': {
+    manualStructure: true,
+    modifiedDate: '2026-10-08',
     contextHeading: "交換の前後で、確認する残高が変わる",
     contextParagraphs: ["交換前ならPlay Pointsの残高と必要ポイントを、交換済みならGoogle Playクレジットの残高を確認します。ポイントが減っていても、それだけでクレジットが支払いに適用されたとは判断できません。","交換後のクレジットには期限や利用条件が表示される場合があります。対象購入、利用アカウント、国・通貨を順に照合し、画面の条件が合うかを確認してください。このサイトから個別アカウントの残高やエラー原因を読み取ることはできません。"],
     answer: '交換できない場合はポイント残高と交換条件を、交換後に使えない場合は期限、対象購入、利用アカウント、国・通貨を順に確認します。',
@@ -134,7 +141,7 @@ const EDITORIAL_TARGETS = Object.freeze({
       'Google Playに表示されていない特別獲得率を確定情報として扱うことはできません。'
     ],
     comparisonHref: '/compare/earning-rates/#campaign-comparison',
-    comparisonLabel: '通常獲得率・特別獲得率の引用用比較表を見る'
+    comparisonLabel: '通常獲得率・特別獲得率の比較表を見る'
   }
 });
 
