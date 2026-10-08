@@ -229,7 +229,7 @@ function transformArticle(html, article, catalog) {
   const trail = [{ name: '記事トップ', href: '/blog/' },
     { name: topic, href: '/blog/?topic=' + encodeURIComponent(topic) }];
   const label = (article.listTitle || article.title).split('｜').join('：');
-  const breadcrumb = `<div class="breadcrumbs-wrapper"><nav aria-label="パンくずリスト">${trail.map(item => `<a href="${item.href}">${escapeHtml(item.name)}</a> <span aria-hidden="true">&gt;</span> `).join('')}<span aria-current="page">${escapeHtml(label)}</span></nav></div>`;
+  const breadcrumb = `<div class="breadcrumbs-wrapper"><nav aria-label="パンくずリスト">${trail.map(item => `<a href="${item.href}">${escapeHtml(item.name)}</a> <span aria-hidden="true">&gt;</span> `).join('')}<span aria-current="page">この記事</span></nav></div>`;
   after = after.replace(/<div class="breadcrumbs-wrapper">[\s\S]*?<\/div>/, breadcrumb);
   after = after.replace(/(<script\b[^>]*type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/g, (whole, start, json, end) => {
     const data = JSON.parse(json);

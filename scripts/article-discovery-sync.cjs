@@ -53,7 +53,10 @@ const diaryCopy = {
   ko: ['이번 주에 받은 혜택을 기록해 두세요', 'Google Play에서 받은 포인트나 경품을 기록할 수 있습니다. 기록은 이 기기에 저장되며 Google 계정과 연결되지 않습니다.', '이번 주 기록 열기'],
   tw: ['記下這週領到的獎勵', '在 Google Play 領取後，可以在這裡記錄點數或獎品。紀錄只儲存在此裝置，不會連結 Google 帳戶。', '開啟本週紀錄']
 };
-function withoutReadingMount(html) { return html.replace(/\s*<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->[ \t]*(?:\r?\n)?/g, ''); }
+function withoutReadingMount(html) {
+  return html.replace(/\s*<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->[ \t]*(?:\r?\n)?/g, '')
+    .replace(/<div class="article-header-meta">\s*(<details class="reading-metadata">[\s\S]*?<\/details>)\s*<\/div>/g, '$1');
+}
 function readingMount(html, locale, isHub) {
   const copy = readingCopy[locale], hub = locale === 'ja' ? '/blog/' : '/' + locale + '/articles/';
   html = withoutReadingMount(html);
@@ -72,7 +75,13 @@ function readingMount(html, locale, isHub) {
     if (hero) return html.replace(hero[0], hero[1].trimEnd() + block + hero[2]);
   }
   const header = [...html.matchAll(/<header\b[^>]*>[\s\S]*?<\/header>/gi)].find(match => /<h1\b/i.test(match[0]));
-  if (header) return html.replace(header[0], tag => tag + block);
+  if (header) {
+    if (locale === 'ja' && header[0].includes('<details class="reading-metadata">')) {
+      return html.replace(header[0], tag => tag.replace(/<details class="reading-metadata">[\s\S]*?<\/details>/,
+        metadata => '<div class="article-header-meta">' + metadata + block + '</div>'));
+    }
+    return html.replace(header[0], tag => tag + block);
+  }
   return html.replace(/<h1\b[^>]*>[\s\S]*?<\/h1>/i, tag => tag + block);
 }
 // 本文変換と検索レコードを同じHTMLから作る。ファイルI/Oは呼び出し側だけで行う。
@@ -92,8 +101,7 @@ function compactReadingMetadata(html, locale) {
     const modified = inner.match(/data-article-date="modified" datetime="(\d{4}-\d{2}-\d{2})"/)?.[1];
     if (!published) return whole;
     const updated = modified && modified > published;
-    const verified = inner.match(/data-article-date="official-verified" datetime="(\d{4}-\d{2}-\d{2})"/)?.[1];
-    return `<details class="reading-metadata"><summary>${copy[updated ? 1 : 0]} ${updated ? modified : published}${locale === 'ja' && verified ? ` · 公式確認 ${verified}` : ''} <span>${copy[2]}</span></summary>${whole}</details>`;
+    return `<details class="reading-metadata"><summary>${copy[updated ? 1 : 0]} ${updated ? modified : published} <span>${copy[2]}</span></summary>${whole}</details>`;
   });
 }
 
@@ -105,6 +113,11 @@ function prepareDiscoveryArticle(html, entry) {
   html = html.replace(/<script\b[^>]*\bsrc=["'][^"']*(?:js\/(?:analytics-core|intent-tracking|third-party)|blog\/article)\.js(?:\?[^"']*)?["'][^>]*>/gi,
     tag => /\b(?:defer|async|type)\s*(?:=|\s|>)/i.test(tag) ? tag : tag.replace('<script', '<script defer'));
   html = withoutReadingMount(html);
+  if (entry.locale === 'ja') {
+    // タイトル前の定型バッジを省き、確認日と根拠は既存の詳細・出典に残す。
+    html = html.replace(/\s*<span\b[^>]*class="[^"]*\bhero-badge\b[^"]*"[^>]*>[\s\S]*?<\/span>/g,
+      badge => /終了|期限|未確定|開催中|非公開/.test(text(badge)) ? badge : '');
+  }
   html = html.replace(/\s*<p\b[^>]*class="[^"]*\barticle-region-scope\b[^"]*"[^>]*>[\s\S]*?<\/p>/g, '');
   if (entry.locale !== 'ja') {
     const compactScope = /\/articles\/google-play-points-cash-conversion\.html$/.test(entry.path) ? compactScopeCopy[entry.locale] : null;
@@ -129,7 +142,7 @@ function prepareDiscoveryArticle(html, entry) {
     const articleBody = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1] || '';
     const headings = [...articleBody.matchAll(/<h2\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)]
       .map(match => ({ id: match[1], label: text(match[2]) }))
-      .filter(heading => !/公式ソース|出典|次にやること|あわせて|よくある質問|関連|運営者|この記事の著者/.test(heading.label));
+      .filter(heading => !/公式ソース|出典|次にやること|別の疑問|あわせて|よくある質問|関連|運営者|この記事の著者/.test(heading.label));
     if (headings.length > 1) {
       const toc = '<!-- reader-toc:start --><details class="inpage-toc reader-toc"><summary class="inpage-toc-title">目次を開く</summary><nav aria-label="この記事の目次"><ol>' + headings.map(heading => `<li><a href="#${heading.id}">${heading.label}</a></li>`).join('') + '</ol></nav></details><!-- reader-toc:end -->';
       html = html.replace(/(<section\b[^>]*class="[^"]*answer-box[^"]*"[^>]*>[\s\S]*?<\/section>)/, '$1\n' + toc);

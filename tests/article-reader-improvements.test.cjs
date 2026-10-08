@@ -72,7 +72,9 @@ test('ゲーム記事は先に回答を読み、全端末で本文目次と主�
     assert.ok(toc, article.id);
     for (const match of toc.matchAll(/href="#([^"]+)"/g)) assert.ok(html.includes(`id="${match[1]}"`), article.id + ': ' + match[1]);
     const summary = html.match(/<details class="reading-metadata"><summary>([\s\S]*?)<\/summary>/)?.[1] || '';
-    assert.match(summary, /公式確認 \d{4}-\d{2}-\d{2}/, article.id);
+    assert.match(summary, /(?:公開|更新) \d{4}-\d{2}-\d{2}/, article.id);
+    assert.equal(summary.includes('公式確認'), false, article.id);
+    assert.match(html, /data-article-date="official-verified" datetime="\d{4}-\d{2}-\d{2}"/, article.id);
     assert.equal(/旧固定価格|旧PlayPoint|最終正本|現行正本|結帳/.test(html), false, article.id);
   }
 });

@@ -102,7 +102,7 @@ function syncReaderImprovements(root) {
   let changed = 0;
   for (const article of GAME_GUIDE_ARTICLES) {
     const file = path.join(root, article.file.slice(3)), before = fs.readFileSync(file, 'utf8');
-    const after = updateDate(improveGameGuide(before, article), '2026-10-08');
+    const after = updateDate(improveGameGuide(before, article), article.modified);
     if (after !== before) { fs.writeFileSync(file, after); changed++; }
   }
   for (const [name, transform] of [['2026-08-16-points-disappeared.html', improveDiagnostic], ['2025-12-25-getting-started.html', improveBeginner]]) {
@@ -126,7 +126,8 @@ function syncReaderImprovements(root) {
 </section><!-- reader-calendar:end -->\n`;
   calendarAfter = calendarAfter.replace(/(<section class="section">\s*<h2 id="article-section-11">購入・受け取り前に確認すること<\/h2>)/, calendar + '$1');
   if (!calendarAfter.includes('/js/reader-calendar.js')) calendarAfter = calendarAfter.replace('</head>', '<script defer src="/js/reader-calendar.js"></script>\n</head>');
-  calendarAfter = calendarAfter.replace(/(<meta\b[^>]*name="last-modified"[^>]*content=")[^"]*/, '$12026-10-08');
+  const calendarModified = calendarBefore.match(/<meta\b[^>]*name="last-modified"[^>]*content="([^"]+)"/)?.[1] || '2026-10-08';
+  calendarAfter = calendarAfter.replace(/(<meta\b[^>]*name="last-modified"[^>]*content=")[^"]*/, '$1' + calendarModified);
   if (calendarAfter !== calendarBefore) { fs.writeFileSync(calendarFile, calendarAfter); changed++; }
   const file = path.join(root, 'blog/articles.json'), manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
   const byId = new Map(manifest.map(article => [article.id, article]));
@@ -135,9 +136,9 @@ function syncReaderImprovements(root) {
     const after = improveReaderLinks(before, article, byId);
     if (after !== before) { fs.writeFileSync(articleFile, after); changed++; }
   }
-  for (const article of manifest) if (article.source === 'game-guide' || ['getting-started', 'points-disappeared'].includes(article.id)) article.modified = article.source === 'game-guide' || article.id === 'points-disappeared' ? '2026-10-08' : modified;
+  for (const article of manifest) if (article.source === 'game-guide' || ['getting-started', 'points-disappeared'].includes(article.id)) article.modified = article.source === 'game-guide' ? GAME_GUIDE_ARTICLES.find(guide => guide.id === article.id).modified : article.id === 'points-disappeared' ? '2026-10-08' : modified;
   const calendarEntry = manifest.find(article => article.id === 'play-points-calendar-schedule-guide-2026');
-  if (calendarEntry) calendarEntry.modified = '2026-10-08';
+  if (calendarEntry) calendarEntry.modified = calendarModified;
   fs.writeFileSync(file, JSON.stringify(manifest, null, 2) + '\n');
   return changed;
 }

@@ -363,11 +363,22 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     assert.equal(await page.locator('html').getAttribute('data-reading-theme'),'dark','Theme carried into game article');
     for(const sample of await palette(page,['h1','.breadcrumbs-wrapper span:last-child','.reading-metadata summary','.pack-table tbody td','.cta-btn'])) assert(sample.ratio>=4.5,JSON.stringify(sample));
     await page.locator('.reading-table-compact').first().waitFor({state:'attached'});
-    for(const width of [320,390]) {
+    assert.equal(await page.locator('.breadcrumbs-wrapper span:last-child').innerText(),'この記事');
+    for(const width of [320,390,768,1280]) {
       await page.setViewportSize({width,height:844});
       const tables=await page.locator('.pack-table').evaluateAll(tables=>tables.map(table=>({w:table.getBoundingClientRect().width,available:table.parentElement.clientWidth,scroll:table.parentElement.scrollWidth})));
       assert(tables.every(t=>t.scroll<=t.available+2),`All three columns visible at ${width}: ${JSON.stringify(tables)}`);
+      const intro = await page.locator('.article-header-meta').evaluate(el => {
+        const date = el.querySelector('summary').getBoundingClientRect(), save = el.querySelector('button').getBoundingClientRect();
+        return { date: {top:date.top,right:date.right}, save: {top:save.top,left:save.left}, scroll:el.scrollWidth, available:el.clientWidth };
+      });
+      assert(Math.abs(intro.date.top-intro.save.top)<=4 && intro.date.right<=intro.save.left+1,`Date and save fit one row at ${width}: ${JSON.stringify(intro)}`);
+      assert(intro.scroll<=intro.available+2,`Article header fits at ${width}`);
     }
+    await page.setViewportSize({width:390,height:844});
+    await page.locator('.reading-metadata summary').click();
+    assert(await page.locator('.reading-metadata [data-article-date="official-verified"]').isVisible(),'Official verification date remains accessible');
+    await page.locator('.reading-metadata summary').click();
     await page.screenshot({path:path.join(artifactDir,'reading-game-390.png')});
     const save=page.locator('[data-reading-tools] button'); await save.click();
     assert.equal(await save.getAttribute('aria-pressed'),'true');
