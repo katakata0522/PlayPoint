@@ -370,6 +370,7 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
       const result = document.querySelector('#reverseResult');
       return {
         earnedPoints: Number(result?.dataset.earnedPoints),
+        earnedPointsRaw: Number(result?.dataset.earnedPointsRaw),
         amount: Number(result?.dataset.amountYen)
       };
     });
@@ -382,9 +383,11 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     await page.locator('#reverseEligibleAmount').press('Enter');
     await page.waitForFunction(() => document.querySelector('#reverseResult')?.dataset.eligibleAmount === '909');
     const eligibleResult = await page.locator('#reverseResult').evaluate(el => ({
-      amount: el.dataset.amountYen, eligible: el.dataset.eligibleAmount, points: Number(el.dataset.earnedPoints), share: el.dataset.shareUrl
+      amount: el.dataset.amountYen, eligible: el.dataset.eligibleAmount, points: Number(el.dataset.earnedPoints), pointsRaw: Number(el.dataset.earnedPointsRaw), share: el.dataset.shareUrl
     }));
-    assert(eligibleResult.amount === '1000' && eligibleResult.points < reverseResult.earnedPoints, '支払額を保持して税抜対象額から計算');
+    // 小額の地域では四捨五入後のポイントが同じでも、計算対象は税抜額になる。
+    assert(eligibleResult.amount === '1000' && eligibleResult.pointsRaw < reverseResult.earnedPointsRaw
+      && eligibleResult.points === Math.round(reverseResult.earnedPointsRaw * 909 / 1000), '支払額を保持して税抜対象額から計算');
     assert(new URL(eligibleResult.share).searchParams.get('eligible') === '909', '共有URLに対象額を保存');
     await page.goto(eligibleResult.share, {waitUntil:'domcontentloaded'});
     await page.waitForFunction(() => document.querySelector('#reverseResult')?.dataset.eligibleAmount === '909');

@@ -302,6 +302,8 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.waitForFunction(()=>document.querySelector('#search-input').value==='');
     await page.goForward();
     await page.waitForFunction(()=>document.querySelector('#search-input').value==='ポイント 有効期限');
+    await page.locator('.filter-reset-inline').click();
+    assert(await page.locator('.reader-question-links').isVisible(),'解除するとおすすめ記事への入口を戻す');
     await page.getByRole('link',{name:'次の増量はいつ？',exact:true}).click();
     await page.evaluate(()=>document.fonts.ready);
     await page.waitForFunction(()=>{const r=document.querySelector('#next-campaign-title')?.getBoundingClientRect();return r && r.top>=document.querySelector('.guide-header').getBoundingClientRect().bottom && r.top<innerHeight/2;});
