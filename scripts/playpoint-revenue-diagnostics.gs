@@ -64,9 +64,19 @@ var PLAYPOINT_REVENUE_DIAG_CONFIG = Object.freeze({
 });
 
 function capturePlayPointRevenueDiagnostics(input) {
-  return typeof withScriptLock_ === 'function'
+  // 既存の7時トリガーを再利用。GA4集計の失敗はAdSense診断の成功を巻き戻さない。
+  var result = typeof withScriptLock_ === 'function'
     ? withScriptLock_(function() { return playPointRevenueCaptureUnlocked_(input); })
     : playPointRevenueCaptureUnlocked_(input);
+  if (result.status === 'SKIPPED_STALE_TRIGGER' || typeof capturePlayPointEventDailyReview !== 'function') return result;
+  try {
+    result.eventDaily = capturePlayPointEventDailyReview();
+  } catch (error) {
+    result.eventDaily = { state: 'ERROR', detail: playPointRevenueErrorText_(error) };
+    playPointRevenueLog_(playPointRevenueGetSpreadsheet_(), 'WARN',
+      'GA4イベント日次の更新を独立して保留: ' + result.eventDaily.detail);
+  }
+  return result;
 }
 
 function playPointRevenueCaptureUnlocked_(input) {
