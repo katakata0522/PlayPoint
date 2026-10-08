@@ -156,10 +156,25 @@ function playPointCaptureAdChangeMonitor_() {
   var windows = [['変更前14日', '2026-09-25', '2026-10-08'], ['変更後7日', '2026-10-10', '2026-10-16'],
     ['変更後14日', '2026-10-10', '2026-10-23'], ['後半14日', '2026-10-24', '2026-11-06'],
     ['変更後28日', '2026-10-10', '2026-11-06']];
+  var results = [];
   windows.forEach(function(window) {
     var r = playPointAdChangePeriod_(window[1], window[2], stableEnd, history, sources);
+    results.push(r);
     grid.push([window[0], window[1], window[2], r.state, r.days, r.revenueDaily, r.pvDaily, r.ga4Rpm,
       r.adRpm, r.adsPerPv, r.median, r.returningShare, r.sessions, r.articleCta, r.success, r.note]);
+  });
+  [2, 4].forEach(function(index) {
+    var baseline = results[0], after = results[index];
+    var ready = baseline.revenueDaily !== undefined && after.revenueDaily !== undefined;
+    function change(key) {
+      return ready && typeof baseline[key] === 'number' && baseline[key] > 0 && typeof after[key] === 'number'
+        ? after[key] / baseline[key] - 1 : '';
+    }
+    grid.push([index === 2 ? '14日変化' : '28日変化', '', '', ready ? '前後比較' : '集計待ち', '',
+      change('revenueDaily'), change('pvDaily'), change('ga4Rpm'), change('adRpm'), change('adsPerPv'), change('median'),
+      ready && typeof baseline.returningShare === 'number' && typeof after.returningShare === 'number'
+        ? after.returningShare - baseline.returningShare : '', '', change('articleCta'), change('success'),
+      '再訪比率はポイント差。他は増減率。旧実験・異常日を含む観測比較']);
   });
   grid.push(['日次記録（元表連動）', '元の実測は除外・修正しない。未来日は未取得、直近日は暫定']);
   grid.push(['日付', '区分', '照合状態', '収益(円)', 'GA4 PV', 'AdSense PV', '広告表示', '収益/1000 GA4 PV', 'メモ']);
@@ -186,12 +201,13 @@ function playPointCaptureAdChangeMonitor_() {
     sheet.setFrozenRows(12); sheet.setFrozenColumns(1);
     sheet.setColumnWidth(1, 170); sheet.setColumnWidths(2, 2, 115); sheet.setColumnWidth(4, 190);
     sheet.setColumnWidths(5, 11, 125); sheet.setColumnWidth(16, 330);
-    sheet.getRange(12, 1, 6, 16).setWrap(true);
+    sheet.getRange(12, 1, 8, 16).setWrap(true);
     sheet.getRange(12, 1, 1, 16).setFontWeight('bold').setBackground('#eeeeee');
     sheet.getRange(13, 6, 5, 6).setNumberFormat('0.00');
     sheet.getRange(13, 12, 5, 1).setNumberFormat('0.00%');
     sheet.getRange(13, 14, 5, 2).setNumberFormat('0.00');
-    sheet.autoResizeRows(1, 17);
+    sheet.getRange(18, 6, 2, 10).setNumberFormat('0.00%');
+    sheet.autoResizeRows(1, 19);
     var cohortSheet = playPointP12EnsureSheet_(ss, PLAYPOINT_AD_CHANGE.cohortSheet, 7);
     cohortSheet.getRange(1, 1, 4, 7).breakApart();
     cohortSheet.getRange(1, 1, cohortGrid.length, 7).setValues(cohortGrid);
