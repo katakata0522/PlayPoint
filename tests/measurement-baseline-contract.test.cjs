@@ -716,6 +716,21 @@ test('GA4後続ページの品質制限を保持し、欠落した数値をゼ�
   assert.equal(context.playPointP12ParseGa4Rows_({rows:[{metricValues:[{value:'0'}]}]},[],['sessions'])[0].sessions,0);
 });
 
+test('日次拡張の鮮度は36時間、週次は9日で判定し、ERRORを消さない', () => {
+  const patch=read('docs/patches/playpoint-analytics-v11.6.4-health.patch');
+  const after=patch.split(/\r?\n/).filter(line=>line.startsWith(' ')||(line.startsWith('+')&&!line.startsWith('+++')))
+    .map(line=>line.slice(1)).join('\n');
+  const fn=after.match(/function effectiveExtensionHealthState_\(row\) \{[\s\S]*?\n\}/)[0];
+  class Clock extends Date { static now(){return Date.parse('2026-10-09T08:00:00+09:00');} }
+  const c=vm.createContext({Date:Clock,DATA_STATE:{ERROR:'ERROR',STALE:'STALE'}});vm.runInContext(fn,c);
+  const row=['P1P2 EVENT_DAILY','','2026-10-07 00:00:00','','OK'];
+  assert.equal(c.effectiveExtensionHealthState_(row),'STALE');
+  row[0]='P1 ページ価値ファネル';assert.equal(c.effectiveExtensionHealthState_(row),'OK');
+  row[0]='P1P2 READER_OUTCOMES';row[2]='2026-10-08 08:00:00';assert.equal(c.effectiveExtensionHealthState_(row),'OK');
+  row[4]='ERROR';assert.equal(c.effectiveExtensionHealthState_(row),'ERROR');
+  row[4]='RUNNING';row[1]='2026-10-09 06:00:00';assert.equal(c.effectiveExtensionHealthState_(row),'STALE');
+});
+
 test('Google transport retries 429 and server errors but stops on an authorization error', () => {
   const { context } = loadP12Runtime();
   let calls=0;

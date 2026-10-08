@@ -1,0 +1,22 @@
+diff --git a/コード.gs b/コード.gs
+index 5bda70e5..cc24cf3d 100644
+--- a/コード.gs
++++ b/コード.gs
+@@ -4085,13 +4085,15 @@ function updateHealthSheet_(ss) {
+ }
+ 
+ function effectiveExtensionHealthState_(row) {
+-  if ((!/^P[12] /.test(String(row[0] || '')) && row[0] !== '収益異常診断') || row[4] === DATA_STATE.ERROR) return row[4];
++  const name = String(row[0] || '');
++  if ((!/^(?:P[12] |P1P2 )/.test(name) && name !== '収益異常診断') || row[4] === DATA_STATE.ERROR) return row[4];
+   const stamp = row[4] === 'RUNNING' ? row[1] : row[2];
+   const epoch = stamp instanceof Date ? stamp.getTime()
+     : Date.parse(String(stamp || '').replace(/\//g, '-').replace(' ', 'T') + '+09:00');
+   if (!Number.isFinite(epoch)) return row[4];
+   const maxAge = row[4] === 'RUNNING' ? 45 * 60 * 1000
+-    : (row[0] === '収益異常診断' ? 36 * 60 * 60 * 1000 : 9 * 24 * 60 * 60 * 1000);
++    : (name === '収益異常診断' || /^P1P2 (?:READER_OUTCOMES|EVENT_DAILY|AD_CHANGE_MONITOR|CHANGE_QUALITY)$/.test(name)
++      ? 36 * 60 * 60 * 1000 : 9 * 24 * 60 * 60 * 1000);
+   return Date.now() - epoch > maxAge ? DATA_STATE.STALE : row[4];
+ }
+ 
