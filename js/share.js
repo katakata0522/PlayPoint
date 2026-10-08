@@ -70,6 +70,12 @@ export const SHARE = {
         url.searchParams.set('status', dom.reverseStatus.value);
         url.searchParams.set('amount', String(amount));
         url.searchParams.set('multiplier', String(multiplier));
+        const eligibleInput = dom.reverseEligibleAmount;
+        if (eligibleInput && String(eligibleInput.value ?? '').trim()) {
+            const eligible = CALC.getValidNumberInput(eligibleInput, 0);
+            if (eligible === null || eligible > amount) return '';
+            url.searchParams.set('eligible', String(eligible));
+        }
         return url.toString();
     },
 
@@ -86,6 +92,12 @@ export const SHARE = {
             if (this.isAllowedStatusValue(dom.reverseStatus, status)) dom.reverseStatus.value = String(status);
             CALC.updateReverseBaseRate();
             if (amount !== null && dom.amountYen) dom.amountYen.value = String(amount);
+            if (dom.reverseEligibleAmount) {
+                const eligible = this.getNumber(params, 'eligible', 0, amount ?? 0);
+                dom.reverseEligibleAmount.value = amount !== null && params.get('eligible')?.trim() && eligible !== null ? String(eligible) : '';
+                const settings = dom.reverseEligibleAmount.closest?.('details');
+                if (settings) settings.open = dom.reverseEligibleAmount.value !== '';
+            }
             if (multiplier !== null && dom.reverseMultiplier) dom.reverseMultiplier.value = String(multiplier);
             UI.switchMode(CONSTANTS.MODE_REVERSE);
 

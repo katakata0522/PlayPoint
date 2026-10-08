@@ -375,6 +375,30 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     });
     assert(Number.isFinite(reverseResult.earnedPoints) && reverseResult.earnedPoints > 0, `${locale.key} reverse points are invalid`);
     assert(reverseResult.amount === 1000, `${locale.key} reverse amount changed`);
+    assert(!(await page.locator('#reverse-basis-settings').evaluate(el => el.open)), '税抜対象額は任意の折りたたみ');
+    assert(!(await page.locator('#reverseResult .result-basis-details').evaluate(el => el.open)), '詳しい計算説明は折りたたみ');
+    await page.locator('#reverse-basis-settings summary').click();
+    await page.locator('#reverseEligibleAmount').fill('909');
+    await page.locator('#reverseEligibleAmount').press('Enter');
+    await page.waitForFunction(() => document.querySelector('#reverseResult')?.dataset.eligibleAmount === '909');
+    const eligibleResult = await page.locator('#reverseResult').evaluate(el => ({
+      amount: el.dataset.amountYen, eligible: el.dataset.eligibleAmount, points: Number(el.dataset.earnedPoints), share: el.dataset.shareUrl
+    }));
+    assert(eligibleResult.amount === '1000' && eligibleResult.points < reverseResult.earnedPoints, '支払額を保持して税抜対象額から計算');
+    assert(new URL(eligibleResult.share).searchParams.get('eligible') === '909', '共有URLに対象額を保存');
+    await page.goto(eligibleResult.share, {waitUntil:'domcontentloaded'});
+    await page.waitForFunction(() => document.querySelector('#reverseResult')?.dataset.eligibleAmount === '909');
+    assert(await page.locator('#reverseEligibleAmount').inputValue() === '909', '共有URLから対象額を復元');
+    assert(Number(await page.locator('#reverseResult').getAttribute('data-earned-points')) === eligibleResult.points, '共有後も同じポイント');
+    assert(await page.locator('#reverse-basis-settings').evaluate(el => el.open), '復元した対象額は見える状態にする');
+    await page.locator('#reverseEligibleAmount').fill('1001');
+    await page.locator('#reverseCalculateButton').click();
+    assert(await page.locator('#reverseResult .error-text').isVisible(), '支払額を超える対象額はエラー');
+    await page.locator('#reverseEligibleAmount').fill('');
+    await page.locator('#reverseCalculateButton').click();
+    await page.waitForFunction(() => document.querySelector('#reverseResult')?.dataset.eligibleAmount === '');
+    assert(Number(await page.locator('#reverseResult').getAttribute('data-earned-points')) === reverseResult.earnedPoints, '対象額を消すと元の概算へ戻る');
+    reverseResult.eligible = eligibleResult;
 
     if (locale.shareRestore) {
       const shared = new URL(locale.path, baseUrl);

@@ -123,7 +123,7 @@ export function renderMainResult({ config, neededPoints, totalAmountNeeded, rema
     return { resultContent, resultDetailsContent };
 }
 
-export function renderReverseResult({ config, earnedPoints, finalRate, rateSourceLabel, purchaseCheckContent = '' }) {
+export function renderReverseResult({ config, earnedPoints, finalRate, rateSourceLabel, hasEligibleAmount = false, purchaseCheckContent = '' }) {
     const texts = config.uiText;
     return `
             ${renderResultHero({
@@ -132,7 +132,11 @@ export function renderReverseResult({ config, earnedPoints, finalRate, rateSourc
                 amountHtml: renderPointsAmount(earnedPoints)
             })}
             <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
-            <p class="rounding-assumption-note">${texts.pointsBasisNote}<br>${texts.roundingNoteReverse}</p>
+            <p class="result-basis-label">${hasEligibleAmount ? texts.resultBasisEligible : texts.resultBasisEstimate}</p>
+            <details class="result-basis-details">
+                <summary>${texts.resultDetailsSummary}</summary>
+                <p class="rounding-assumption-note">${texts.purchasePointsCheck}<br>${texts.roundingNoteReverse}</p>
+            </details>
             ${purchaseCheckContent}
         `;
 

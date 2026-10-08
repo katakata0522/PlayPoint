@@ -16,10 +16,10 @@ const { GAME_EVIDENCE, REVIEWED_AT: INTL_GAME_REVIEWED_AT, locales: INTL_GAME_LO
 // Content dates only change when the corresponding page receives a meaningful
 // editorial update. Build timestamps and asset cache versions are kept separate.
 const TOP_PAGE_CONTENT_DATES = Object.freeze({
-  ja: '2026-09-19',
-  en: '2026-09-19',
-  ko: '2026-09-19',
-  tw: '2026-09-19'
+  ja: '2026-10-08',
+  en: '2026-10-08',
+  ko: '2026-10-08',
+  tw: '2026-10-08'
 });
 
 const rootDir = path.resolve(__dirname, '..');

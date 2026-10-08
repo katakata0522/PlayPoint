@@ -160,6 +160,8 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.waitForFunction(() => new URL(location.href).searchParams.get('game') === 'FGO');
     await cards(page);
     assert.equal(await gameFilter.inputValue(), 'FGO', 'Game selection matches the URL');
+    assert.equal(await page.locator('.reader-entry-questions').isVisible(), false, 'ゲーム絞り込み中は入門案内を畳む');
+    assert.equal(await page.locator('.hub-access-row').isVisible(), false, 'ゲーム絞り込み中は上部の再訪案内を畳む');
     const stableArticle = await page.locator('.article-card').first().elementHandle();
     releaseCalculators();
     await page.locator('.game-search-links a[href="/games/fgo/"]').waitFor({ state: 'visible', timeout: 10000 });
@@ -263,6 +265,15 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.locator('#search-input').fill('ニケ 月パス');
     await page.waitForFunction(()=>document.querySelector('#sort-toggle')?.value==='relevance');
     assert.equal(await page.locator('#article-filter-panel').evaluate(el=>el.open),false,'Search leaves the collapsed category panel closed');
+    assert.equal(await page.locator('.reader-entry-questions').isVisible(),false,'検索中は入門案内を畳む');
+    assert.equal(await page.locator('.reader-question-links').isVisible(),false,'検索結果前のおすすめを畳む');
+    await page.reload({waitUntil:'domcontentloaded'}); await cards(page);
+    assert.equal(await page.locator('.reader-entry-questions').isVisible(),false,'再読込でも絞り込み表示を復元');
+    await page.locator('.filter-reset-inline').click();
+    assert(await page.locator('.reader-entry-questions').isVisible(),'解除すると入門案内を戻す');
+    assert(await page.locator('#reading-library summary').isVisible(),'解除すると保存記事への入口を戻す');
+    await page.locator('#search-input').fill('ニケ 月パス');
+    await page.waitForFunction(()=>document.querySelector('#sort-toggle')?.value==='relevance');
     await page.setViewportSize({width:1264,height:552}); await waitNavigationLayout(page);
     await page.locator('#game-title-filter').selectOption({label:'NIKKE'});
     const facet=page.locator('.guide-hub-sidebar .sidebar-browse-category[data-topic="ゲーム別課金"]');
