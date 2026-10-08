@@ -149,11 +149,8 @@ function capturePlayPointReaderOutcomes() {
 }
 
 function playPointCaptureReaderOutcomes_() {
-  var ss = resolveAndRememberSpreadsheet_(), p1 = ss.getSheetByName('📊ページ価値ファネル');
-  if (!p1) throw new Error('P1の共通期間がありません。');
-  var label = String(p1.getRange('B2').getValue() || '');
-  if (!/^\d{4}-\d{2}-\d{2} ～ \d{4}-\d{2}-\d{2}$/.test(label)) throw new Error('P1の共通期間が不正です。');
-  var period = { start: label.slice(0, 10), end: label.slice(-10) };
+  // 検索の確定待ち・週次P1障害から独立した、GA4の直近確定待ち30日を使う。
+  var ss = resolveAndRememberSpreadsheet_(), period = playPointP12BuildGa4Period_();
   var timestamp = playPointP12NowText_(), inventory = playPointMaintenanceLoadInventory_();
   if (!playPointMaintenanceIsoDate_(period.start) || !playPointMaintenanceIsoDate_(period.end) ||
       Date.parse(period.end) - Date.parse(period.start) !== 29 * 86400000 || period.end >= timestamp.slice(0, 10) ||

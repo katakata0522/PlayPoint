@@ -703,6 +703,19 @@ test('GA4 P1 fetch follows rowCount through offsets and refuses a missing page',
   assert.throws(()=>context.playPointP12Ga4Report_('id',{limit:'2'}), /incomplete/);
 });
 
+test('GA4後続ページの品質制限を保持し、欠落した数値をゼロにしない', () => {
+  const {context}=loadP12Runtime();
+  context.playPointP12GoogleJson_=(_url,request)=>request.payload.offset?
+    {rowCount:2,rows:[{id:2}],metadata:{subjectToThresholding:true,samplingMetadatas:[{samplesReadCount:'1'}]}}:
+    {rowCount:2,rows:[{id:1}]};
+  const r=context.playPointP12Ga4Report_('id',{limit:'1'});
+  assert.equal(r.metadata.subjectToThresholding,true);assert.equal(r.metadata.samplingMetadatas.length,1);
+  for(const value of [undefined,'','not-a-number']) {
+    assert.throws(()=>context.playPointP12ParseGa4Rows_({rows:[{metricValues:[{value}]}]},[],['sessions']),/missing or invalid/);
+  }
+  assert.equal(context.playPointP12ParseGa4Rows_({rows:[{metricValues:[{value:'0'}]}]},[],['sessions'])[0].sessions,0);
+});
+
 test('Google transport retries 429 and server errors but stops on an authorization error', () => {
   const { context } = loadP12Runtime();
   let calls=0;

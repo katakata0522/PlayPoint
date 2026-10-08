@@ -74,6 +74,7 @@ test('旧期間欄の補足文を移行でき、より新しい集計は上書�
   function run(previous) {
     const c=runtime({withScriptLock_:fn=>fn(),playPointP12NowText_:()=> '2026-10-05 20:00:00',
       resolveAndRememberSpreadsheet_:()=>({getSheetByName:()=>({getRange:()=>({getValue:()=> '2026-09-03 ～ 2026-10-02'})})}),
+      playPointP12BuildGa4Period_:()=>({start:'2026-09-03',end:'2026-10-02'}),
       playPointP12GetGa4PropertyId_:()=> 'p',playPointP12GoogleJson_:()=>({}),
       playPointP12EnsureSheet_:()=>({getRange:()=>({getValue:()=>previous}),getLastRow:()=>0}),
       playPointP12EnsureRows_:()=>{throw Error('write reached');}});

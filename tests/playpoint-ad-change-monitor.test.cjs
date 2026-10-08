@@ -8,6 +8,8 @@ function runtime(extra = {}) {
   const c = vm.createContext({
     playPointP12ShiftIsoDate_: (day, offset) => new Date(Date.parse(day + 'T00:00:00Z') + offset * 86400000).toISOString().slice(0, 10),
     playPointP12LiteralRow_: row => row,
+    playPointP12NormalizePage_: value => value.replace(/index\.html$/, ''),
+    playPointEventDailyIso_: value => value.replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3'),
     playPointReaderSource_: fn => ({ state: 'OK', ...fn() }), ...extra
   });
   vm.runInContext(fs.readFileSync(path.join(__dirname, '../scripts/playpoint-ad-change-monitor.gs'), 'utf8'), c);
@@ -18,7 +20,8 @@ function history(c, start, end) {
     revenue: 50, ga4Pv: 100, adsensePv: 120, impressions: 400 }));
 }
 function sources() {
-  return { DAILY: { state: 'OK', rows: [{ date: '20261010', sessions: 10 }] },
+  const rows = Array.from({length:14}, (_,i)=>({date:'202610'+String(10+i).padStart(2,'0'),screenPageViews:100,sessions:i===0?10:0}));
+  return { DAILY: { state: 'OK', rows },
     RETURNING: { state: 'OK', rows: [{ date: '20261010', sessions: 3 }] },
     EVENTS: { state: 'OK', rows: [{ date: '20261010', eventName: 'article_to_calculator_clicked', eventCount: 2 }] } };
 }
@@ -92,4 +95,44 @@ test('日次トリガーの再実行で重複せず、他のトリガーを変�
   const c = runtime({ ScriptApp: { getProjectTriggers: () => triggers, newTrigger: () => builder } });
   c.installPlayPointAdChangeMonitorDailyTrigger(); c.installPlayPointAdChangeMonitorDailyTrigger();
   assert.equal(created, 1); assert.equal(triggers.length, 2);
+});
+
+test('日次PV欠測・再照合差異から再訪率を作らない', () => {
+  const c=runtime(), h=history(c,'2026-10-10','2026-10-23'), s=sources();
+  s.DAILY.rows[0].screenPageViews=99;
+  const r=c.playPointAdChangePeriod_('2026-10-10','2026-10-23','2026-10-23',h,s);
+  assert.equal(r.returningShare,''); assert.match(r.note,/再照合差異/);
+});
+test('記事CTAは記事PV分母で端末を分け、他ページとユーザー人数を合算しない', () => {
+  const c=runtime(), w=['前','2026-10-10','2026-10-10'];
+  const pages={state:'OK',rows:[{date:'20261010',pagePath:'/articles/a.html',deviceCategory:'mobile',screenPageViews:20,userEngagementDuration:200},
+    {date:'20261010',pagePath:'/',deviceCategory:'mobile',screenPageViews:80,userEngagementDuration:100}]};
+  const events={state:'OK',rows:[{date:'20261010',pagePath:'/articles/a.html',deviceCategory:'mobile',eventName:'article_to_calculator_clicked',eventCount:2}]};
+  const rows=c.playPointChangeQualitySegments_(w,'2026-10-10',pages,events);
+  const article=rows.find(r=>r[1]==='記事'&&r[2]==='mobile');
+  assert.equal(article[4],20); assert.equal(article[6],10); assert.equal(article[7],10);
+  assert.equal(rows.find(r=>r[1]==='Play Points計算機')[6],'');
+  events.state='RESTRICTED'; assert.equal(c.playPointChangeQualitySegments_(w,'2026-10-10',pages,events)[0][6],'');
+  assert.equal(c.playPointChangeQualitySegments_(w,'2026-10-09',pages,events)[0][3],'集計待ち');
+});
+test('計算完了は順序APIだけで作り、欠測・人数逆転・0母数では率を作らない', () => {
+  const c=runtime(), source={state:'OK',rows:[{funnelStepName:'1. 計算開始',activeUsers:20},{funnelStepName:'2. 開始後24時間以内の成功',activeUsers:15}]};
+  assert.equal(c.playPointChangeQualityFunnel_(source).rate,.75);
+  source.rows[1].activeUsers=21; assert.equal(c.playPointChangeQualityFunnel_(source).rate,'');
+  source.rows.splice(1); assert.equal(c.playPointChangeQualityFunnel_(source).state,'欠測・順序不整合');
+  assert.equal(c.playPointChangeQualityFunnel_({state:'ERROR',rows:[]}).rate,'');
+});
+test('再訪0人でも参考区間は0幅とせず、小さい母数の不確かさを表示する', () => {
+  const c=runtime(), zero=c.playPointChangeQualityWilson_(0,10), one=c.playPointChangeQualityWilson_(1,100);
+  assert(Math.abs(zero[0])<1e-12); assert(zero[1]>.27&&zero[1]<.29);
+  assert(one[0]<.01&&one[1]>.01); assert.equal(c.playPointChangeQualityWilson_(1,0)[0],'');
+});
+test('日次更新へ補助集計を接続し、補助障害は成功した収益比較を巻き戻さない', () => {
+  const calls=[];const c=runtime({playPointP12NowText_:()=> 'now',playPointP12ErrorText_:e=>e.message,
+    withScriptLock_:fn=>fn(),playPointP12HealthError_:()=>{},
+    capturePlayPointEventDailyReview:()=>{calls.push('event');throw Error('quota');},
+    capturePlayPointReaderOutcomes:()=>{calls.push('reader');return {state:'OK'};}});
+  c.playPointCaptureAdChangeMonitor_=()=>({state:'OK'});c.playPointCaptureChangeQuality_=()=>({state:'OK'});
+  const r=c.capturePlayPointAdChangeMonitor();assert.equal(r.state,'OK');assert.deepEqual(calls,['event','reader']);
+  assert.equal(r.maintenance[0].state,'ERROR');assert.equal(r.maintenance[1].state,'OK');
 });
