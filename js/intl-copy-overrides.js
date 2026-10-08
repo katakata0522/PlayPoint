@@ -13,6 +13,6 @@ if (CONFIGS.KR?.uiText) {
 }
 
 if (CONFIGS.TW?.uiText) {
-    CONFIGS.TW.uiText.tabReverse = '逆算模式';
-    CONFIGS.TW.uiText.sectionTitleReverse = '反推模式';
+    CONFIGS.TW.uiText.tabReverse = '依金額反推點數';
+    CONFIGS.TW.uiText.sectionTitleReverse = '依金額反推點數';
 }

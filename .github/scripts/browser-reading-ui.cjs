@@ -377,14 +377,14 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     report.interactions.modal = report.interactions.pagination = report.interactions.urlNormalization = report.interactions.savedRoundTrip = true;
 
     if (await page.locator('html').getAttribute('data-reading-theme') === 'dark') await chooseTheme(page);
-    // 計算機トップの9月22日表示はガイド用メニューと独立する。
+    // 主計算機の目的別モードと地域選択を、ガイド用メニューから独立して確認する。
     await goto(page,'');
     for (const width of [320,390,1280]) {
       await page.setViewportSize({width,height:844});
       await page.locator('#calculateButton').waitFor({state:'visible'});
       assert.equal(await page.locator('#guide-menu,.guide-calculator-header').count(),0,'Calculator has no guide menu');
-      assert.equal(await page.locator('#tab-main').innerText(),'通常計算');
-      assert.equal(await page.locator('#tab-reverse').innerText(),'逆算モード');
+      assert.equal(await page.locator('#tab-main').innerText(),'必要額を知る');
+      assert.equal(await page.locator('#tab-reverse').innerText(),'金額からポイント');
       assert(await page.locator('.top-bar .region-switch').isVisible(),'Region selector remains on the page');
       assert(await page.locator('.top-bar .header-links a[href$="blog/"]').isVisible(),'Article link remains on the page');
     }
@@ -560,10 +560,21 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await game.selectOption('pokepoke');await topic.selectOption('trial');
       assert.equal(await visibleGuides.count(),1,locale+': game + trial');
       assert.match(await visibleGuides.first().getAttribute('href'),/pokemon-tcg-pocket-premium-pass/);
+      assert.equal(new URL(ip.url()).searchParams.get('game'),'pokepoke');
+      assert.equal(new URL(ip.url()).searchParams.get('topic'),'trial');
+      await ip.reload({waitUntil:'domcontentloaded'});
+      await ip.waitForFunction(()=>document.querySelector('[data-guide-game]').value==='pokepoke');
+      assert.equal(await topic.inputValue(),'trial');
+      assert.equal(await visibleGuides.count(),1,locale+': reload restores filters');
       await game.selectOption('umamusume');
       assert.equal(await visibleGuides.count(),0,locale+': unrelated trial must not match');
       assert.equal(await ip.locator('[data-guide-empty]').isVisible(),true);
-      await ip.locator('.search-recovery button').first().click();
+      await ip.locator('.search-recovery button').filter({hasText: /other guides|다른 가이드|其他指南/}).click();
+      assert.equal(await game.inputValue(),'umamusume');
+      assert.equal(await topic.inputValue(),'all');
+      assert.equal(await visibleGuides.count(),1,locale+': recovery preserves current game');
+      await topic.selectOption('trial');
+      await ip.locator('.search-recovery button').filter({hasText: /Reset search|검색·분류 초기화|清除搜尋與篩選/}).click();
       assert.equal(await game.inputValue(),'all');assert.equal(await topic.inputValue(),'all');
       assert.equal(await visibleGuides.count(),initialCount,locale+': reset restores all guides');
       await game.selectOption('umamusume');
@@ -572,6 +583,11 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await ip.waitForFunction(()=>document.querySelector('[data-guide-grid] .intl-guide-card__excerpt'));
       assert.equal(await visibleGuides.count(),1,locale+': full-text search with game filter');
       assert.match(await visibleGuides.first().getAttribute('href'),/umamusume-umasuku/);
+      assert.equal(new URL(ip.url()).searchParams.get('q'),query);
+      await ip.reload({waitUntil:'domcontentloaded'});
+      await ip.waitForFunction(()=>document.querySelector('[data-guide-grid] .intl-guide-card__excerpt'));
+      assert.equal(await ip.locator('[data-guide-search]').inputValue(),query);
+      assert.equal(await visibleGuides.count(),1,locale+': shared URL restores text and game');
       report.interactions.internationalResources.at(-1).gameDiscovery=true;
     }
     fs.writeFileSync(path.join(artifactDir,'reading-ui-report.json'),JSON.stringify(report,null,2));

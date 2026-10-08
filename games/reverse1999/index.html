@@ -32,8 +32,8 @@
   <meta name="twitter:description" content="雨の雫をまとめて買うときも、月額商品を使うときも。リバース：1999の購入予定額からPlayポイントを計算できます。商品の内容と受け取れる時期は、関連記事で紹介しています。" />
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-  <link rel="stylesheet" href="../../articles/article-shared.css?v=86f4c481d9" />
-  <link rel="stylesheet" href="../../games/games.css?v=20139252c9" />
+  <link rel="stylesheet" href="../../articles/article-shared.css?v=8bdc6c2128" />
+  <link rel="stylesheet" href="../../games/games.css?v=72c1acbf8e" />
 
   <script type="application/ld+json">
   {
@@ -106,7 +106,7 @@
       <div class="site-header-inner">
           <a class="site-logo" href="../../">
               <span class="site-logo-icon">🎮</span>
-              <span class="site-logo-text">Playポイント計算機</span>
+              <span class="site-logo-text">PlayPoint · Playポイント計算機</span>
           </a>
           <p class="site-tagline">いつものゲームで課金する前に、貯まるPlayポイントをチェック。原神・スタレ・ブルアカ・ウマ娘など、ゲーム別の計算機と購入前に読みたい記事をまとめました。</p>
       </div>
@@ -198,6 +198,7 @@
                       <div class="result-stat-box">
                           <span class="result-stat-label">獲得予定 Playポイント</span>
                           <strong id="res-earned-points" class="result-stat-value highlight">- pt</strong>
+                          <span id="res-calculation-basis" class="game-basis-badge"></span>
                       </div>
                       <div class="result-stat-box">
                           <span class="result-stat-label">交換価値（Play画面で確認）</span>
@@ -236,12 +237,12 @@
                           <div class="game-giftcard-cta-title">💳 課金前にチェック！さらにお得にする裏技</div>
                           <p class="game-giftcard-cta-text">楽天市場のGoogle Play ギフトコード認定店では、楽天側のキャンペーンや会員条件に応じてポイント還元が付く場合があります。購入前に当日の還元条件・上限を確認してください。 <span id="cta-dynamic-savings" class="dynamic-savings-badge" style="display:none;"></span></p>
                       </div>
-                      
+
                       <div class="game-giftcard-cta-actions">
                           <a class="game-giftcard-cta-btn rakuten-primary-btn" href="https://hb.afl.rakuten.co.jp/hgc/56983677.8efa0dbe.56983678.1b999667/?pc=https%3A%2F%2Fwww.rakuten.co.jp%2Fgpgiftcard%2F&link_type=hybrid_url&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJoeWJyaWRfdXJsIiwiY29sIjoxLCJjYXQiOjEsImJhbiI6MTcxMDEwMCwiY1W1wIjp1YWxYODQ%3D" target="_blank" rel="sponsored noopener noreferrer">🛒 楽天市場 認定店でギフトコードを見る ➔</a>
                           <a class="game-giftcard-cta-sublink" href="../../articles/2026-06-20-discount-gift-cards.html">📖 お得な買い方・注意点ガイド ➔</a>
                       </div>
-                      
+
                   </div>
 
                   <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
@@ -255,14 +256,13 @@
 
 
               <!-- 広告枠（レスポンシブ） -->
-              <div class="game-ad-container">
+              <div class="game-ad-container" tabindex="0" role="region" aria-label="スポンサーリンク">
                   <span class="game-ad-label">スポンサーリンク</span>
                   <ins class="adsbygoogle"
                        style="display:block"
                        data-ad-client="ca-pub-3845885843809455"
                        data-ad-slot="8250492620"
-                       data-ad-format="auto"
-                       data-full-width-responsive="true"></ins>
+                       data-full-width-responsive="false"></ins>
               </div>
           </section>
 
@@ -305,10 +305,10 @@
           </section>
 
           <!-- 他のゲーム計算機 -->
-          <section class="section">
-              <h2>他の人気ゲームの課金シミュレーター</h2>
+          <details class="section other-game-directory">
+              <summary>他の人気ゲームの課金シミュレーター</summary>
               <div class="games-grid">
-                  
+
                   <a class="game-portal-card" href="../genshin/">
                       <div>
                           <div class="game-card-icon">✨</div>
@@ -470,7 +470,7 @@
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
               </div>
-          </section>
+          </details>
 
           <!-- 汎用CTA -->
           <aside class="cta-box" style="margin-top:40px;">
@@ -518,8 +518,9 @@
       <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
   </footer>
 
-  <script src="../../js/analytics-core.js?v=e63a4a63f7"></script>
-  <script src="../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../games/game-sim.js?v=8b798c4f8b"></script>
+  <script src="../../js/analytics-core.js?v=fde7412e57"></script>
+  <script src="../../js/third-party.js?v=91b8bfe5c5"></script>
+  <script src="../../games/game-sim.js?v=5343b1c9e0"></script>
+<script src="/js/site-reader-tools.js?v=04636b5ced" defer data-site-reader-tools></script>
 </body>
 </html>

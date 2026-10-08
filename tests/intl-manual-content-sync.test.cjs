@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
-const { getLocalizedGameGuideLinks } = require('../scripts/intl-game-guide-expansion.cjs');
+const { getLocalizedGameGuideLinks, ALL_GUIDES } = require('../scripts/intl-game-guide-expansion.cjs');
 const { HUB_CONTENT, syncIntlManualContent } = require('../scripts/intl-manual-content-sync.cjs');
 
 function fixture(locale) {
@@ -51,7 +51,8 @@ test('manual multilingual guide links survive regeneration exactly once without 
     const html = fs.readFileSync(path.join(root, locale, 'articles', 'index.html'), 'utf8');
     assert.equal(html, once.get(locale), `${locale}: synchronization must be idempotent`);
     assert.ok(html.includes(`content="${config.description}"`), `${locale}: description was not synchronized`);
-    assert.ok(html.includes(`content="${config.modifiedAt}"`), `${locale}: update date was not synchronized`);
+    const modifiedAt = ALL_GUIDES.map(guide => guide.modifiedAt[locale]).concat(config.modifiedAt).sort().at(-1);
+    assert.ok(html.includes(`content="${modifiedAt}"`), `${locale}: update date was not synchronized`);
 
     for (const [href, label] of [...getLocalizedGameGuideLinks(locale), ...config.links]) {
       assert.equal((html.match(new RegExp(href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length, 1, `${locale}: duplicate ${href}`);

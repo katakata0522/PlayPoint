@@ -111,6 +111,20 @@ const EDITORIAL = {
   }
 };
 
+// 開封数を購入判断へ結び付ける。価格はAndroidの現地表示を使う。
+EDITORIAL.pokepoke.answers = t(
+  'If you want an extra pack every day, start with the 14-day Premium Pass trial. The Google Play introduction describes one extra daily pack: 10 days of use means 10 extra openings, while 30 days means 30. Keep it only if those openings and the current premium missions are worth the monthly price to you.',
+  '매일 팩을 하나 더 열고 싶다면 먼저 14일 프리미엄 패스 체험을 이용해 보세요. Google Play 소개의 하루 추가 1팩을 기준으로, 10일 이용하면 10팩, 30일이면 30팩을 더 열 수 있습니다. 이번 달 미션과 실제 이용 일수를 월 요금과 비교해 유지할지 결정하세요.',
+  '想每天多開一包，就先用14天高級通行證試用。依Google Play介紹的每日追加1包計算，用10天就是多開10包，用30天就是30包。再把本期任務、實際開包天數與月費一起比較，決定是否續訂。');
+EDITORIAL.pokepoke.descriptions = t(
+  'Compare Premium Pass extra daily packs and mission rewards, the 14-day trial, monthly renewal and cancellation in Pokémon TCG Pocket. Use your local Android price.',
+  '포켓몬 카드 게임 Pocket 프리미엄 패스의 하루 추가 개봉, 미션 보상, 14일 체험과 자동 갱신·해지를 비교합니다. 한국 Android 표시 요금으로 판단하세요.',
+  '比較Pokémon TCG Pocket高級通行證的每日追加開包、任務獎勵、14天試用與續訂取消。使用台灣Android顯示的月費判斷。');
+EDITORIAL.pokepoke.chapters.unshift(chapter(t('How many extra packs will you actually open?', '이번 달에 추가 팩을 몇 개 열까?', '這個月實際多開幾包？'), t(
+  ['At one extra pack per day, 10 days gives 10 extra openings and 30 days gives 30. These are usage examples, not an immediate bundle of packs. For a pack-only comparison, divide the monthly price shown on Android by the extra openings you will use. Count premium mission items separately.', 'Google Play’s product introduction describes the extra daily pack. The current in-game Premium Pass screen lists the benefits for your account; use that screen when planning openings and claim missions before their own deadline.'],
+  ['하루 추가 1팩이면 10일은 10팩, 30일은 30팩입니다. 가입 즉시 그 수량을 한꺼번에 받는 상품은 아닙니다. 개봉만 비교한다면 Android에 표시된 월 요금을 내가 이용할 추가 개봉 수로 나누세요. 프리미엄 미션 아이템은 별도로 평가합니다.', '하루 추가 개봉은 Google Play 상품 소개에 안내되어 있습니다. 현재 계정의 혜택은 게임 내 프리미엄 패스 화면을 기준으로 하고, 미션 보상은 해당 종료일까지 직접 받으세요.'],
+  ['每天追加1包，10天就是10包、30天就是30包。這是使用天數的例子，不是訂閱當下整批拿到。只比較開包時，以Android月費除以會使用的追加開包次數；高級任務道具另外評價。', '每日追加開包出自Google Play的商品介紹。規劃時使用遊戲內高級通行證顯示的當期內容，任務獎勵則要在各自期限內領取。'])));
+
 const FAQ = {
   umamusume: t(['Should I count all later pack rewards for a banner ending tomorrow?', 'No. Include only rewards available before that banner closes. Later Carats can help a future banner, but not the current shortfall.'], ['먼슬리 우마의 로그인 쥬얼을 하루 놓치면 사라지나요?', '카카오게임즈 FAQ는 미수령 무료 쥬얼을 다음 로그인 때 한꺼번에 지급한다고 안내합니다.'], ['每日寶石包可以套用日版ウマスク的特典嗎？', '不能，兩者屬不同服務的商品，請用繁中客戶端的明細。']),
   pad: t(['Where do I find the current Android P&D Pass price?', 'Open Shop → P&D PASS in the US Android client. The publisher FAQ lists US$8.99 as its published reference, while your checkout shows the actual charge.'], ['북미판 무료 체험을 한국판에도 적용할 수 있나요?', '북미 FAQ의 한 주 체험은 북미판 조건입니다. 한국 퍼드패스는 한국 구매 화면의 조건을 사용하세요.'], ['美版試用條件就是香港／台灣版條件嗎？', '不是。本頁未確認香港／台灣服務的本地通行證條款，不能以美版代替。']),
@@ -126,6 +140,7 @@ function enrichGuide(guide) {
     const base = guide.content[locale];
     return [locale, { ...base, title: editorial.titles?.[locale] || base.title,
       market: editorial.intros?.[locale] || base.market,
+      description: editorial.descriptions?.[locale],
       answer: editorial.answers[locale],
       chapters: editorial.chapters.map(item => ({ title: item.headings[locale], paragraphs: item.paragraphs[locale] })),
       offers: game.offers[locale],
@@ -135,7 +150,7 @@ function enrichGuide(guide) {
       reference: (game.referenceLocales || []).includes(locale)
     }];
   }));
-  return { ...guide, content, modifiedAt: t('2026-10-08', '2026-10-08', '2026-10-08'), verifiedAt: REVIEWED_AT };
+  return { ...guide, content, modifiedAt: t('2026-10-08', '2026-10-08', '2026-10-08'), verifiedAt: guide.gameId === 'pokepoke' ? '2026-10-08' : REVIEWED_AT };
 }
 
 module.exports = { EDITORIAL, enrichGuide };

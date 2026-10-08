@@ -7,7 +7,7 @@ const { LOCALES } = require('./intl-seo-content.cjs');
 const { getIntlGuideCategory } = require('./intl-guide-taxonomy.cjs');
 const { selectRelatedArticles } = require('./intl-related-guides.cjs');
 const { classifyArticleRole } = require('./article-role-registry.cjs');
-const { getPopularGuides, POPULAR_GUIDES_SNAPSHOT } = require('./intl-popular-guides.cjs');
+const { getPopularGuides, POPULAR_GUIDES_SNAPSHOT, POPULAR_GUIDES_WINDOW_START } = require('./intl-popular-guides.cjs');
 const { COPY } = require('./intl-shell-copy.cjs');
 
 const CHROME_START = '<!-- INTL_ARTICLE_CHROME_START -->';
@@ -214,10 +214,12 @@ function renderSearchWidget(localeKey, newline) {
   ].join(newline);
 }
 
-function renderNextWidget(localeKey, role, variant, newline) {
+function renderNextWidget(localeKey, role, variant, newline, relativePath = '') {
   const copy = COPY[localeKey];
   const config = variant === 'article' ? (copy.role[role] || copy.role.reference) : (variant === 'hub' ? copy.hub : null);
   if (!config) return '';
+  const game = require('./intl-game-article-discovery.cjs').metadata('/' + relativePath.replace(/^\//, ''));
+  const target = game ? `/${localeKey}/games/${game.id}/` : resolveTarget(localeKey, config.target);
   const roleClass = variant === 'article' ? ' sidebar-widget--role-' + (role || 'reference') : '';
   return [
     '  <section class="sidebar-widget sidebar-widget--next' + roleClass + '">',
@@ -225,7 +227,7 @@ function renderNextWidget(localeKey, role, variant, newline) {
     '    <div class="sidebar-widget-body">',
     '      <p class="sidebar-next-title">' + escapeHtml(config.title) + '</p>',
     '      <p class="sidebar-next-copy">' + escapeHtml(config.body) + '</p>',
-    '      <a class="sidebar-next-link" href="' + escapeHtml(resolveTarget(localeKey, config.target)) + '">' + escapeHtml(config.cta) + '</a>',
+    '      <a class="sidebar-next-link" href="' + escapeHtml(target) + '">' + escapeHtml(game ? game.name + ' · ' + config.cta : config.cta) + '</a>',
     '    </div>',
     '  </section>'
   ].join(newline);
@@ -239,7 +241,7 @@ function renderPopularWidget(localeKey, currentPath, catalog = [], rootDir = pat
     '  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="' + escapeHtml(POPULAR_GUIDES_SNAPSHOT) + '">',
     '    <h2 class="sidebar-widget-title">' + escapeHtml(copy.popularTitle) + '</h2>',
     '    <div class="sidebar-widget-body">',
-    '      <p class="sidebar-widget-note">' + escapeHtml(copy.popularNote) + '</p>',
+    '      <p class="sidebar-widget-note">' + escapeHtml(({ en: 'Readership: ', ko: '읽기 집계: ', tw: '閱讀統計：' })[localeKey] + POPULAR_GUIDES_WINDOW_START + '–' + POPULAR_GUIDES_SNAPSHOT) + '</p>',
     '      <ol class="sidebar-popular-list">',
     ...popular.map(item => {
       const rank = String(item.rank).padStart(2, '0');
@@ -293,13 +295,24 @@ function renderAuthorWidget(localeKey, newline) {
   ].join(newline);
 }
 
-function renderBrowseWidget(localeKey, section, catalog = [], newline = '\n') {
+function renderBrowseWidget(localeKey, section, catalog = [], newline = '\n', rootDir = path.resolve(__dirname, '..')) {
   const copy = COPY[localeKey];
   const items = ['account', 'earn', 'levels', 'troubleshooting'];
   const counts = new Map(items.map(k => [k, 0]));
   for (const article of catalog) {
     const cat = article.section || 'account';
     if (counts.has(cat)) counts.set(cat, counts.get(cat) + 1);
+  }
+  // 一覧の最終カードから同じ範囲を集計し、紹介カードの重複は除く。
+  const hub = path.join(rootDir, localeKey, 'articles', 'index.html');
+  if (fs.existsSync(hub)) {
+    const cards = new Map();
+    for (const match of fs.readFileSync(hub, 'utf8').matchAll(/<a\b(?=[^>]*\bdata-guide-card)[^>]*>/g)) {
+      const href = match[0].match(/\bhref="([^"]+)"/)?.[1];
+      const category = match[0].match(/\bdata-category="([^"]+)"/)?.[1];
+      if (href && counts.has(category)) cards.set(href, category);
+    }
+    if (cards.size) { for (const key of items) counts.set(key, 0); for (const category of cards.values()) counts.set(category, counts.get(category) + 1); }
   }
   return [
     '  <section class="sidebar-widget sidebar-widget--browse">',
@@ -318,15 +331,15 @@ function renderBrowseWidget(localeKey, section, catalog = [], newline = '\n') {
 function renderSidebar(localeKey, relativePath, section, role, relatedArticles, variant, catalog = [], rootDir = path.resolve(__dirname, '..'), newline = '\n') {
   const copy = COPY[localeKey];
   const widgets = [];
+  const next = renderNextWidget(localeKey, role, variant, newline, relativePath);
+  if (next) widgets.push(next);
   widgets.push(renderSearchWidget(localeKey, newline));
-  widgets.push(renderBrowseWidget(localeKey, section, catalog, newline));
+  widgets.push(renderBrowseWidget(localeKey, section, catalog, newline, rootDir));
   if (variant === 'article') {
     const related = renderRelatedWidget(localeKey, relatedArticles, newline);
     if (related) widgets.push(related);
   }
   widgets.push(renderPopularWidget(localeKey, '/' + String(relativePath).replace(/^\//, ''), catalog, rootDir, newline));
-  const next = renderNextWidget(localeKey, role, variant, newline);
-  if (next) widgets.push(next);
   if (variant !== 'policy') widgets.push(renderAuthorWidget(localeKey, newline));
   return ['<aside class="sidebar-column intl-article-sidebar" aria-label="' + escapeHtml(copy.sidebar) + '" data-article-role="' + (role || 'reference') + '" data-article-category="' + section + '">', ...widgets, '</aside>'].join(newline);
 }

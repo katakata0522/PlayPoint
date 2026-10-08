@@ -13,13 +13,15 @@ const NAMES = {
 };
 // ゲーム名はカタログ順ではなくIDと結び付け、順序変更時に別ゲームへずれない。
 const IDS = ['fgo', 'genshin', 'monst', 'starrail', 'zzz', 'umamusume', 'proseka', 'pokepoke', 'pad', 'arknights', 'dokkan', 'hbr', 'honkai3rd', 'phantomparade', 'prospi-a', 'pokemon-go', 'efootball'];
+// 商品名ではなく、確認済みの商品種別とサービス地域を管理する。
+const PASS_LOCALES = Object.freeze({ genshin: ['en', 'ko', 'tw'], starrail: ['en', 'ko', 'tw'], zzz: ['en', 'ko', 'tw'], umamusume: ['en', 'ko', 'tw'], proseka: ['en', 'ko', 'tw'], pokepoke: ['en', 'ko', 'tw'], pad: ['en', 'ko'], arknights: ['en', 'tw'], monst: ['tw'], hbr: ['en', 'ko', 'tw'], phantomparade: ['en'], 'pokemon-go': ['en', 'ko', 'tw'] });
 function metadata(href) {
   const match = String(href).match(/^\/(en|ko|tw)\/articles\/([^/]+)\.html$/);
   const guide = match && ALL_GUIDES.find(item => item.slug === match[2]);
   if (!guide) return null;
   const locale = match[1], content = guide.content[locale], tags = [];
   if (content.reference) tags.push('version');
-  if (content.offers.length && guide.gameId !== 'pokemon-go') tags.push('pass');
+  if (PASS_LOCALES[guide.gameId]?.includes(locale)) tags.push('pass');
   if (guide.gameId === 'pokepoke' || guide.gameId === 'pad' && locale === 'en') tags.push('trial');
   if (['dokkan', 'honkai3rd', 'pokemon-go', 'prospi-a'].includes(guide.gameId) || guide.gameId === 'monst' || guide.gameId === 'hbr' && locale === 'tw') tags.push('shop');
   if (!tags.length || ['fgo', 'efootball', 'pokemon-go'].includes(guide.gameId)) tags.push('rewards');

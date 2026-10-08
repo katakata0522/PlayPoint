@@ -22,13 +22,12 @@ function renderGuideBody(localeKey, guide, locale) {
   if (!['umamusume', 'phantomparade'].includes(guide.gameId) && !(guide.gameId === 'hbr' && localeKey !== 'tw')) sources.set(guide.source[1], guide.source[0]);
   sources.set(locale.googleUrl, locale.earningRuleLink);
   sources.set(locale.levelsUrl, locale.levelsRuleLink);
-  return `<div class="intro"><p>${escape(content.market)}</p></div>
-<section class="section answer-box" id="purchase-answer"><h2>${escape(c.answer)}</h2><p>${escape(content.answer)}</p></section>
+  return `<section class="section answer-box" id="purchase-answer"><h2>${escape(c.answer)}</h2><p>${escape(content.answer)}</p><p><a class="cta-btn" href="${parent}">${escape(c.calculate)}</a></p></section>
 <nav class="intl-article-toc" aria-label="${escape(locale.toc)}"><h2>${escape(locale.toc)}</h2><ol>${content.offers.length ? `<li><a href="#official-source-scope">${escape(c.product)}</a></li>` : ''}${content.chapters.map((item, i) => `<li><a href="#product-detail-${i + 1}">${escape(item.title)}</a></li>`).join('')}<li><a href="#decision-guide">${escape(c.compare)}</a></li><li><a href="#play-points">${escape(c.points)}</a></li></ol></nav>
 ${content.offers.length ? `<section class="section" id="official-source-scope"><h2>${escape(c.product)}</h2>${offerMarkup}</section>` : ''}
 ${chapters}
 <section class="section" id="decision-guide"><h2>${escape(c.compare)}</h2><p>${escape(c.budget)}</p><p id="before-paying">${escape(c.price)}</p></section>
-<section class="section" id="play-points"><h2>${escape(c.points)}</h2><p>${escape(c.rule)}</p><p><a class="cta-btn" href="${parent}">${escape(c.calculate)}</a></p></section>
+<section class="section" id="play-points"><h2>${escape(c.points)}</h2><p>${escape(c.rule)}</p></section>
 <section class="section"><h2>${escape(locale.faq)}</h2><h3>${escape(content.faqQ)}</h3><p>${escape(content.faqA)}</p></section>
 <details class="article-source-details"><summary>${escape(c.sources)}</summary><ul>${[...sources].map(([url, title]) => `<li>${sourceAnchor(url, title)}</li>`).join('')}</ul><p>${escape(c.scope)}</p><p>${escape(locale.verified)}: ${escape(guide.verifiedAt)}</p></details>
 <section class="section related-links-section"><h2>${escape(locale.related)}</h2><ul><li><a href="/${localeKey}/articles/">${escape(locale.back)}</a></li><li><a href="/${localeKey}/articles/google-play-points-promotion-stacking.html">Google Play Points</a></li><li><a href="${parent}">${escape(c.calculate)}</a></li></ul></section>`;

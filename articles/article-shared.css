@@ -689,12 +689,12 @@ margin-top: 0;
 margin-bottom: 1.25rem;
 overflow-wrap: anywhere;
 }
-.content a:not(.article-calculator-prompt__button):not(.rakuten-action-button):not(.sidebar-calc-btn) {
+.content a:not(.article-calculator-prompt__button):not(.rakuten-action-button):not(.sidebar-calc-btn):not(.cta-btn) {
 color: var(--cocoon-link);
 text-decoration: underline;
 text-underline-offset: 0.18em;
 }
-.content a:hover {
+.content a:not(.cta-btn):hover {
 color: var(--reading-link, #0369a1);
 }
 .article-numbered-list, .article-bullet-list, .content ul, .content ol {
@@ -1278,8 +1278,8 @@ max-width: 820px;
 text-align: center;
 padding: 0 16px;
 }
-body[data-article-category] .main-content-column > .hero .article-title,
-body[data-article-category] .main-content-column > .hero h1 {
+body[data-article-category] .main-content-column .hero .article-title,
+body[data-article-category] .main-content-column .hero h1 {
 color: var(--cocoon-heading);
 }
 :root {

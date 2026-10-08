@@ -182,11 +182,11 @@ async function inspectArticle(browser, baseUrl, article, viewport) {
       timeout: 45_000
     });
     assert(response && response.ok(), `${article.key}/${viewport.key}: HTTP ${response?.status() || 'no response'}`);
-    await page.locator('.main-content-column > .hero').waitFor({ state: 'attached', timeout: 15_000 });
+    await page.locator('.main-content-column .hero').waitFor({ state: 'attached', timeout: 15_000 });
     await waitForArticleStylesReady(page, article, viewport);
 
     const result = await page.evaluate(({ compatibility }) => {
-      const hero = document.querySelector('.main-content-column > .hero');
+      const hero = document.querySelector('.main-content-column .hero');
       const title = hero?.querySelector('h1');
       const main = document.querySelector('.main-content-column');
       const heroStyle = hero ? getComputedStyle(hero) : null;

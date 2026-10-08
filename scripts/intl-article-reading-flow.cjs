@@ -32,20 +32,20 @@ const INTL_PROMPT_COPY = Object.freeze({
 
 const CASH_CONVERSION_PROMPT_COPY = Object.freeze({
   en: Object.freeze({
-    aria: 'Estimate points from a purchase you already planned',
-    label: 'If you already have a purchase planned',
-    heading: 'How many points would that purchase earn?',
-    body: 'Enter the amount you already intended to spend and the earn rate shown on your account. This estimates new points; it does not calculate a cash-out value or the value of a redeemed reward.',
-    cta: 'Estimate points from planned spending',
-    href: '/en/?mode=reverse'
+    aria: 'Choose a use for the points you already have',
+    label: 'Use your current points',
+    heading: 'What can you redeem instead?',
+    body: 'Compare Google Play credit, coupons and in-game items in the Use tab. Pick a reward you will use before it expires, then check its purchase conditions.',
+    cta: 'Browse ways to use points',
+    href: '/en/articles/?category=earn'
   }),
   ko: Object.freeze({
-    aria: '예정된 구매로 받을 포인트 예상',
-    label: '이미 구매할 계획이 있다면',
-    heading: '예정된 구매로 몇 포인트를 받을까요?',
-    body: '원래 결제하려던 금액과 내 계정에 표시된 적립률로 받을 포인트를 예상해 보세요. 새로 적립할 포인트를 계산하는 기능이며, 현금화 금액이나 리워드의 교환 가치를 계산하지는 않습니다.',
-    cta: '예정된 결제액으로 포인트 계산',
-    href: '/ko/?mode=reverse'
+    aria: '보유 포인트의 사용처 고르기',
+    label: '지금 가진 포인트 사용하기',
+    heading: '현금 대신 무엇으로 교환할까?',
+    body: '사용 탭에서 Play 크레딧, 쿠폰, 게임 아이템을 비교하세요. 기한 안에 사용할 보상을 고른 뒤 구매 조건을 살펴보면 됩니다.',
+    cta: '포인트 사용 가이드 보기',
+    href: '/ko/articles/?category=earn'
   })
 });
 

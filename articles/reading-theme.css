@@ -70,8 +70,8 @@ html[data-reading-theme] :is(.ja-global-nav, .intl-global-nav) .nav-item { paddi
 html[data-reading-theme] .breadcrumbs-wrapper { margin-top:8px; font-size:12px; }
 html[data-reading-theme] .layout-container { margin-top:10px; }
 html[data-reading-theme] .main-content-column { padding:20px 16px; }
-html[data-reading-theme] .main-content-column > .hero { padding:0; margin-bottom:12px; }
-html[data-reading-theme] .main-content-column > .hero .hero-badge { margin-bottom:6px; padding:2px 7px; font-size:11px; }
+html[data-reading-theme] .main-content-column .hero { padding:0; margin-bottom:12px; }
+html[data-reading-theme] .main-content-column .hero .hero-badge { margin-bottom:6px; padding:2px 7px; font-size:11px; }
 html[data-reading-theme] .reading-tools a { max-width:14em; }
 }
 html[data-reading-theme] .site-footer { background:var(--reading-soft); color:var(--reading-muted); }

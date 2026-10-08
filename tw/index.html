@@ -43,11 +43,11 @@
 
     <link rel="modulepreload" href="../js/main.js?v=be586224d8">
     <link rel="modulepreload" href="../js/config.js">
-    <link rel="modulepreload" href="../js/analytics-core.js?v=e63a4a63f7">
+    <link rel="modulepreload" href="../js/analytics-core.js?v=fde7412e57">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=74c380ec5c">
+    <link rel="stylesheet" href="../style.css?v=274a4487cd">
     <link rel="stylesheet" href="../visitor-thanks.css?v=d8a0258873">
     <script type="speculationrules">
     {
@@ -206,6 +206,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 </style>
         <script id="playpoint-first-view-state">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&Number(p.get('multiplier'))>1){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>
 <link rel="stylesheet" href="/region-selector.css?v=2a70477346" data-region-selector-style="true">
+<meta name="playpoint:anchor-ads" content="collapsed-bottom">
 </head>
 <body>
 <main class="calculator-wrapper">
@@ -223,7 +224,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         </div>
     </div>
 
-    <h1 id="main-title" data-lang-key="mainTitle">Google Play Points 計算器</h1>
+    <span class="calculator-brand">PlayPoint</span>
+<h1 id="main-title" data-lang-key="mainTitle">Google Play Points 計算器</h1>
     <p id="site-description" class="site-description" data-lang-key="siteDescription">請先輸入目前等級、目標等級，以及距離目標還需要的點數。<br>此工具會估算達成等級所需消費金額，以及消費金額可獲得的點數。</p>
 
     <div class="visitor-thanks" role="note" aria-label="感謝訊息">
@@ -233,8 +235,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     </div>
 
     <div class="tab-switch" role="tablist">
-        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">一般計算</button>
-        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">逆算模式</button>
+        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">估算所需金額</button>
+        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">依金額反推點數</button>
         <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">每週獎勵日記</button>
     </div>
 
@@ -303,7 +305,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 
     <div id="reverseMode" class="hidden" hidden role="tabpanel" aria-labelledby="tab-reverse" aria-hidden="true">
         <div class="section">
-            <h2 data-lang-key="sectionTitleReverse">反推模式</h2>
+            <h2 data-lang-key="sectionTitleReverse">依金額反推點數</h2>
             <label for="amountYen" class="label-with-tooltip">
                 <span data-lang-key="labelAmountYen">消費金額 (NT$)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
@@ -467,9 +469,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/intl-copy-overrides.js?v=9ce9a93354"></script>
+<script type="module" src="../js/intl-copy-overrides.js?v=ca73e89485"></script>
 <script type="module" src="../js/main.js?v=be586224d8"></script>
-<script src="../js/third-party.js?v=e69ec57888" defer></script>
+<script src="../js/third-party.js?v=91b8bfe5c5" defer></script>
 
 </body>
 </html>

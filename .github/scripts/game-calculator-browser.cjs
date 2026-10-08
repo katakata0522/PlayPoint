@@ -32,6 +32,8 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
           await page.locator('#sim-custom-amount').fill('1000');
           const expected = target.pathname.startsWith('/en/') ? 3000 : target.pathname.startsWith('/ko/') ? 3 : target.pathname.startsWith('/tw/') ? 100 : 30;
           const points = await page.locator('#res-earned-points').innerText();
+          assert.ok((await page.locator('#res-calculation-basis').innerText()).length > 0, '概算の前提を結果のそばに表示');
+          assert.equal(await page.locator('.game-rank-reference').evaluate(el => el.open), false, '年間0ptからのランク表示は補足として開ける');
           assert.equal(Number(points.replace(/[^0-9]/g, '')), expected, '1000 × 特別獲得率3の地域別ポイント');
           await page.locator('#sim-custom-amount').fill('-1');
           assert.equal(await page.locator('#sim-custom-amount').getAttribute('aria-invalid'), 'true');

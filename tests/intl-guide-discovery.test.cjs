@@ -148,6 +148,9 @@ test('ゲーム入口は全ゲームの実記事に対応し、地域固有の�
     }
   }
   assert.ok(metadata('/en/articles/pokemon-tcg-pocket-premium-pass.html').tags.includes('trial'));
+  assert.ok(!metadata('/en/articles/fgo-guaranteed-summon-play-points.html').tags.includes('pass'));
+  assert.ok(metadata('/en/articles/pokemon-go-google-play-vs-web-store.html').tags.includes('pass'));
+  assert.ok(!metadata('/tw/articles/puzzle-and-dragons-pass.html').tags.includes('pass'));
   assert.ok(!metadata('/tw/articles/puzzle-and-dragons-pass.html').tags.includes('trial'));
   assert.ok(metadata('/en/articles/monster-strike-google-play-vs-web-shop.html').tags.includes('version'));
   assert.equal(metadata('/en/articles/google-play-points-gift-cards.html'), null);

@@ -10,6 +10,7 @@
  * ordering together when the demand baseline is refreshed.
  */
 const POPULAR_GUIDES_SNAPSHOT = '2026-09-02';
+const POPULAR_GUIDES_WINDOW_START = '2026-08-04';
 
 const INTL_POPULAR_GUIDES = Object.freeze({
   en: Object.freeze([
@@ -55,5 +56,6 @@ function getPopularGuides(localeKey, currentPath = '', limit = 5) {
 module.exports = {
   INTL_POPULAR_GUIDES,
   POPULAR_GUIDES_SNAPSHOT,
+  POPULAR_GUIDES_WINDOW_START,
   getPopularGuides
 };

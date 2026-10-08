@@ -3,14 +3,14 @@
 const { LOCALES } = require('./intl-seo-content.cjs');
 const { renderArticleChrome, renderSidebar } = require('./intl-article-layout.cjs');
 
-const UPDATED_AT = '2026-09-19';
+const UPDATED_AT = '2026-10-08';
 
 const AUTHOR_CONTENT = Object.freeze({
   en: {
     title: 'About Katakata & editorial standards',
     eyebrow: 'Operator profile',
     lead: 'Katakata operates the Google Play Points Calculator and edits guides about Play Points calculations, usage, regional differences, and troubleshooting.',
-    verificationTitle: 'How guides are verified',
+    purposeTitle: 'Make the purchase decision easier', purposeBody: 'PlayPoint brings the product, its timing, and the points calculation into one flow. A monthly pack can work well for rewards you will collect over time; a top-up may fit a deadline today. The guides help you compare those choices before you enter a spending amount.', verificationTitle: 'How guides are verified',
     verification: [
       'Google Play Help and other first-party sources are checked first.',
       'Rules that can vary by country, account, or time are described with those limits instead of being presented as universal.',
@@ -40,7 +40,7 @@ const AUTHOR_CONTENT = Object.freeze({
     title: '운영자 Katakata와 기사 검증 기준',
     eyebrow: '운영자 프로필',
     lead: 'Katakata는 Google Play Points 계산기를 운영하며 Play Points 계산, 사용법, 국가별 차이, 문제 해결 가이드를 편집합니다.',
-    verificationTitle: '기사 검증 원칙',
+    purposeTitle: '구매 결정을 더 쉽게', purposeBody: 'PlayPoint는 상품 내용, 보상 시점, 포인트 계산을 한 흐름으로 연결합니다. 앞으로 받을 보상에는 월간 상품이 맞을 수 있고 오늘 마감하는 목표에는 즉시 충전이 맞을 수 있습니다. 결제 금액을 입력하기 전에 이 차이를 비교할 수 있도록 안내합니다.', verificationTitle: '기사 검증 원칙',
     verification: [
       'Google Play 공식 도움말 등 1차 정보를 우선 확인합니다.',
       '국가·계정·시기에 따라 달라질 수 있는 조건은 공통 규칙처럼 단정하지 않습니다.',
@@ -70,7 +70,7 @@ const AUTHOR_CONTENT = Object.freeze({
     title: '營運者 Katakata 與文章驗證標準',
     eyebrow: '營運者簡介',
     lead: 'Katakata 維護 Google Play Points 計算器，並編輯 Play Points 計算、使用方式、地區差異與問題排解指南。',
-    verificationTitle: '文章驗證原則',
+    purposeTitle: '讓消費選擇更容易', purposeBody: 'PlayPoint 把商品內容、獎勵時間與點數計算放在同一條閱讀路線。能慢慢領取的獎勵可以比較月卡；今天就要達成的目標，可能需要立即儲值。指南先幫你比較這些差別，再帶入消費金額。', verificationTitle: '文章驗證原則',
     verification: [
       '優先確認 Google Play 官方說明等第一手資訊。',
       '會因國家、帳號或時間改變的條件，不會寫成所有人都相同的固定規則。',
@@ -176,6 +176,7 @@ ${chrome}
     <p>${escapeHtml(content.lead)}</p>
   </header>
   <article class="content">
+    <section class="section"><h2>${escapeHtml(content.purposeTitle)}</h2><p>${escapeHtml(content.purposeBody)}</p></section>
     <section class="section"><h2>${escapeHtml(content.verificationTitle)}</h2>${renderList(content.verification)}</section>
     <section class="section"><h2>${escapeHtml(content.calculatorTitle)}</h2><p>${escapeHtml(content.calculatorBody)}</p></section>
     <section class="section"><h2>${escapeHtml(content.workflowTitle)}</h2><ol>${content.workflow.map(item => '<li>' + escapeHtml(item) + '</li>').join('')}</ol></section>

@@ -49,7 +49,11 @@ function scoreRelatedArticle(currentPath, candidate) {
   const sharedTopics = intersectionSize(topicTags(currentSlug), topicTags(candidateSlug));
 
   // 具体語の一致を最優先し、同じ問題領域・利用目的の一致を次点にする。
-  return (sharedTokens * 12) + (sharedTopics * 5);
+  const subscriptionContext = /premium-pass|monthly|welkin|supply-pass|membership|umasuku|colorful|pad-pass/.test(currentSlug);
+  const cashContext = /cash-conversion/.test(currentSlug);
+  const contextual = subscriptionContext && /subscriptions|rounding-tax|promotion-stacking/.test(candidateSlug) ? 80
+    : cashContext && /credit|coupon|balance-history|best-use/.test(candidateSlug) ? 80 : 0;
+  return contextual + (sharedTokens * 12) + (sharedTopics * 5);
 }
 
 function selectRelatedArticles(catalog, currentPath, limit = 4) {

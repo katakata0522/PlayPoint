@@ -28,8 +28,8 @@
     <meta property="og:locale" content="ko_KR">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="../../../articles/article-shared.css?v=86f4c481d9" />
-  <link rel="stylesheet" href="../../../games/games.css?v=20139252c9" />
+  <link rel="stylesheet" href="../../../articles/article-shared.css?v=8bdc6c2128" />
+  <link rel="stylesheet" href="../../../games/games.css?v=72c1acbf8e" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"eFootball™ — Google Play Points (대한민국 · KRW)","url":"https://playpoint-sim.com/ko/games/efootball/","applicationCategory":"UtilityApplication","operatingSystem":"All","inLanguage":"ko-KR","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"author":{"@type":"Person","name":"かたかた","url":"https://playpoint-sim.com/author/katakata.html"},"description":"eFootball™ 구매 전 확인과 한국 원화 Google Play Points 계산. 공식 출처, 결제 경로 차이, 실제 결제액으로 포인트를 확인하세요.","dateModified":"2026-10-07"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://playpoint-sim.com/ko/"},{"@type":"ListItem","position":2,"name":"게임별 계산","item":"https://playpoint-sim.com/ko/games/"},{"@type":"ListItem","position":3,"name":"eFootball™","item":"https://playpoint-sim.com/ko/games/efootball/"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"구매 전에 어떤 내용을 확인하면 되나요?","acceptedAnswer":{"@type":"Answer","text":"기존 매치 패스는 캠페인 허브로 변경됐습니다. 앱의 현재 상품을 확인하세요. eFootball 포인트는 Google Play Points와 다른 제도입니다."}},{"@type":"Question","name":"어떤 결제 금액으로 Google Play Points를 계산하나요?","acceptedAnswer":{"@type":"Answer","text":"한국 Play 계정의 적격 Google Play 거래를 사용하세요. 확인할 수 있다면 세금과 프로모션 Play 크레딧 결제액을 제외합니다. 이미 보유한 게임 재화의 사용은 새로운 결제가 아닙니다. 구독 갱신은 기본 적립률로 계산하되 첫 구독·특정 구독 보너스는 Google Play의 개별 조건을 확인하세요."}}]}</script>
@@ -55,20 +55,21 @@
       </div></form>
       <div class="game-result-container"><div class="result-main-grid">
         <div class="result-stat-box"><span class="result-stat-label">총 결제 금액</span><strong id="res-total-amount" class="result-stat-value">-</strong></div>
-        <div class="result-stat-box"><span class="result-stat-label">예상 Play Points</span><strong id="res-earned-points" class="result-stat-value highlight">- pt</strong></div>
+        <div class="result-stat-box"><span class="result-stat-label">예상 Play Points</span><strong id="res-earned-points" class="result-stat-value highlight">- pt</strong><span id="res-calculation-basis" class="game-basis-badge"></span></div>
         <div class="result-stat-box"><span class="result-stat-label">교환 가치(Play에서 확인)</span><strong id="res-point-value-yen" class="result-stat-value">-</strong></div>
         <div class="result-stat-box"><span class="result-stat-label">0pt 기준 참고 등급</span><strong id="res-reached-rank" class="result-stat-value">-</strong></div>
       </div><div class="rank-progress-wrapper"><div class="rank-progress-header"><span id="res-progress-label">0pt 기준 참고 진행도</span><span id="res-next-progress">-</span></div><div class="rank-bar-bg"><div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-labelledby="res-progress-label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div></div>
       <div class="game-share-actions"><button type="button" id="btn-share-x" class="game-share-btn x-btn"><span>𝕏에 결과 공유</span></button><button type="button" id="btn-copy-link" class="game-share-btn copy-btn"><span>🔗 결과 링크 복사</span></button></div></div>
     </section>
-
+<div class="game-ad-container" tabindex="0" role="region" aria-label="광고"><span class="game-ad-label">광고</span><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455" data-ad-slot="8250492620" data-full-width-responsive="false"></ins></div>
 <section class="section game-reading-guides"><h2>구매 전 읽어볼 가이드</h2><ul><li><a href="/ko/articles/efootball-google-play-points-vs-efootball-points.html">Google Play 포인트 vs eFootball™ 포인트: 서로 다른 포인트를 구분해서 계산</a></li></ul></section>
 <section class="section"><h2>FAQ</h2><details><summary>구매 전에 어떤 내용을 확인하면 되나요?</summary><p>기존 매치 패스는 캠페인 허브로 변경됐습니다. 앱의 현재 상품을 확인하세요. eFootball 포인트는 Google Play Points와 다른 제도입니다.</p></details><details><summary>어떤 결제 금액으로 Google Play Points를 계산하나요?</summary><p>한국 Play 계정의 적격 Google Play 거래를 사용하세요. 확인할 수 있다면 세금과 프로모션 Play 크레딧 결제액을 제외합니다. 이미 보유한 게임 재화의 사용은 새로운 결제가 아닙니다. 구독 갱신은 기본 적립률로 계산하되 첫 구독·특정 구독 보너스는 Google Play의 개별 조건을 확인하세요.</p></details></section>
 <section class="section game-source-section"><h2>출처와 지역별 확인 범위</h2><p>상품 내용과 결제 가격은 따로 확인합니다. 공식 Web Store·Epic·콘솔·Apple에서 같은 상품을 판매해도 Google Play Points가 적립되는 거래라는 뜻은 아닙니다.</p><ul><li><a href="https://www.konami.com/efootball/ko/" target="_blank" rel="noopener noreferrer">지역별 운영사·서비스 안내</a> — 한국판</li><li><a href="https://www.konami.com/efootball/en-us/page/v5/versioninfo_v5-00" target="_blank" rel="noopener noreferrer">공식 공지</a> — 국제판</li><li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DKR&amp;hl=ko" target="_blank" rel="noopener noreferrer">Google Play Points — 대한민국 · KRW</a></li></ul><p>공개 정보 확인: <time datetime="2026-10-07">2026-10-07</time></p></section>
 <p><a href="/ko/games/">다른 게임 계산기 →</a></p></main></div>
   <footer class="site-footer"><p>© 2026 PlayPoint / Independent unofficial calculator.</p></footer>
-  <script src="../../../js/analytics-core.js?v=e63a4a63f7"></script>
-  <script src="../../../js/third-party.js?v=e69ec57888"></script>
-  <script src="../../../games/game-sim.js?v=8b798c4f8b"></script>
+  <script src="../../../js/analytics-core.js?v=fde7412e57"></script>
+  <script src="../../../js/third-party.js?v=91b8bfe5c5"></script>
+  <script src="../../../games/game-sim.js?v=5343b1c9e0"></script>
+<script src="/js/site-reader-tools.js?v=04636b5ced" defer data-site-reader-tools></script>
 </body>
 </html>
