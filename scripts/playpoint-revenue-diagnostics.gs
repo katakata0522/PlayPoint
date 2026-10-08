@@ -15,6 +15,8 @@
 
 var PLAYPOINT_REVENUE_DIAG_CONFIG = Object.freeze({
   sourceSheet: 'AdSense_GA4日次データ',
+  pageHistorySheet: '📚ページ日次履歴',
+  integrityDays: 35,
   outputSheet: '💰収益異常分析',
   healthSheet: '🩺データ鮮度・システム状態',
   healthComponent: '収益異常診断',
@@ -62,9 +64,19 @@ var PLAYPOINT_REVENUE_DIAG_CONFIG = Object.freeze({
 });
 
 function capturePlayPointRevenueDiagnostics(input) {
-  return typeof withScriptLock_ === 'function'
+  // 既存の7時トリガーを再利用。GA4集計の失敗はAdSense診断の成功を巻き戻さない。
+  var result = typeof withScriptLock_ === 'function'
     ? withScriptLock_(function() { return playPointRevenueCaptureUnlocked_(input); })
     : playPointRevenueCaptureUnlocked_(input);
+  if (result.status === 'SKIPPED_STALE_TRIGGER' || typeof capturePlayPointEventDailyReview !== 'function') return result;
+  try {
+    result.eventDaily = capturePlayPointEventDailyReview();
+  } catch (error) {
+    result.eventDaily = { state: 'ERROR', detail: playPointRevenueErrorText_(error) };
+    playPointRevenueLog_(playPointRevenueGetSpreadsheet_(), 'WARN',
+      'GA4イベント日次の更新を独立して保留: ' + result.eventDaily.detail);
+  }
+  return result;
 }
 
 function playPointRevenueCaptureUnlocked_(input) {
@@ -91,8 +103,9 @@ function playPointRevenueCaptureUnlocked_(input) {
     var analysis = playPointRevenueAnalyze_(history, targetDate, PLAYPOINT_REVENUE_DIAG_CONFIG);
     var breakdowns = playPointRevenueFetchBreakdowns_(targetDate, analysis.severity);
     var sourceHealth = playPointRevenueAssessSourceHealth_(spreadsheet, targetDate);
+    var integrity = playPointRevenueInspectIntegrity_(spreadsheet, history, targetDate);
 
-    playPointRevenueWriteSheet_(spreadsheet, analysis, breakdowns, sourceHealth);
+    playPointRevenueWriteSheet_(spreadsheet, analysis, breakdowns, sourceHealth, integrity);
     playPointRevenueHealthSuccess_(spreadsheet, analysis, breakdowns, sourceHealth);
     playPointRevenueLog_(
       spreadsheet,
@@ -113,7 +126,8 @@ function playPointRevenueCaptureUnlocked_(input) {
       cause: analysis.cause,
       analysis: analysis,
       breakdowns: breakdowns,
-      sourceHealth: sourceHealth
+      sourceHealth: sourceHealth,
+      integrity: integrity
     };
   } catch (error) {
     var message = playPointRevenueErrorText_(error);
@@ -184,9 +198,11 @@ function playPointRevenueReadDailyHistory_(spreadsheet) {
     index[name] = found;
   });
 
+  var durationColumn = headers.indexOf('平均エンゲージメント時間／ユーザー');
   return values.slice(1).map(function(row) {
     return {
       date: playPointRevenueIsoDate_(row[index['日付']]),
+      avgEngagementSec: durationColumn < 0 ? null : playPointRevenueDurationSeconds_(row[durationColumn]),
       ga4Pv: playPointRevenueNumber_(row[index['PV数（GA4）']]),
       revenue: playPointRevenueNumber_(row[index['推定収益（円）']]),
       adsensePv: playPointRevenueNumber_(row[index['AdSenseページビュー']]),
@@ -569,7 +585,7 @@ function playPointRevenueAssessSourceHealth_(spreadsheet, targetDate) {
   return result;
 }
 
-function playPointRevenueWriteSheet_(spreadsheet, analysis, breakdowns, sourceHealth) {
+function playPointRevenueWriteSheet_(spreadsheet, analysis, breakdowns, sourceHealth, integrity) {
   var sheet = spreadsheet.getSheetByName(PLAYPOINT_REVENUE_DIAG_CONFIG.outputSheet);
   if (!sheet) sheet = spreadsheet.insertSheet(PLAYPOINT_REVENUE_DIAG_CONFIG.outputSheet);
   sheet.clearContents();
@@ -685,6 +701,8 @@ function playPointRevenueWriteSheet_(spreadsheet, analysis, breakdowns, sourceHe
     startRow += Math.max(5, rows.length + 4);
   });
 
+  if (integrity) playPointRevenueWriteIntegrity_(sheet, integrity, startRow + 1);
+
   sheet.setFrozenRows(6);
   sheet.getRange('A1').setFontWeight('bold').setFontSize(14);
   sheet.getRange(6, 1, 1, 8).setFontWeight('bold');
@@ -700,6 +718,135 @@ function playPointRevenueWriteSheet_(spreadsheet, analysis, breakdowns, sourceHe
   sheet.setColumnWidth(6, 140);
   sheet.setColumnWidth(7, 170);
   sheet.setColumnWidth(8, 220);
+}
+
+// 日次実測値を勝手に補正せず、異常な比率と指標間の矛盾を別欄に残す。
+function playPointRevenueDurationSeconds_(raw) {
+  if (raw === null || raw === undefined || raw === '') return null;
+  if (typeof raw === 'number') return isFinite(raw) && raw >= 0 ? raw * 86400 : null;
+  var match = String(raw).match(/^(\d+)時間(\d+)分(\d+)秒$/);
+  return match ? Number(match[1]) * 3600 + Number(match[2]) * 60 + Number(match[3]) : null;
+}
+
+function playPointRevenueShiftIso_(iso, delta) {
+  var d = new Date(iso + 'T00:00:00Z');
+  if (isNaN(d.getTime())) throw new Error('Invalid ISO date: ' + iso);
+  d.setUTCDate(d.getUTCDate() + delta);
+  return d.toISOString().slice(0, 10);
+}
+
+function playPointRevenueWeeklyComparison_(history, endDate) {
+  // 同じ曜日の完全な7日間だけを比較。日別人数は合算しない。
+  var day = new Date(endDate + 'T00:00:00Z').getUTCDay();
+  var tuesday = playPointRevenueShiftIso_(endDate, -((day - 2 + 7) % 7));
+  return [
+    { label: '前週', start: playPointRevenueShiftIso_(tuesday, -13), end: playPointRevenueShiftIso_(tuesday, -7) },
+    { label: '直近完了週', start: playPointRevenueShiftIso_(tuesday, -6), end: tuesday }
+  ].map(function(week) {
+    var rows = history.filter(function(row) {
+      return row.date >= week.start && row.date <= week.end && row.dataState === 'RECONCILED';
+    });
+    if (rows.length !== 7 || new Set(rows.map(function(row) { return row.date; })).size !== 7) {
+      return { label: week.label, start: week.start, end: week.end, state: 'PARTIAL', count: rows.length };
+    }
+    var total = function(key) { return rows.reduce(function(sum, row) { return sum + row[key]; }, 0); };
+    var revenues = rows.map(function(row) { return row.revenue; }).sort(function(a, b) { return a - b; });
+    return { label: week.label, start: week.start, end: week.end, state: 'RECONCILED', count: 7,
+      ga4Pv: total('ga4Pv'), revenue: total('revenue'), impressions: total('impressions'),
+      revenuePerGa4Pv: total('ga4Pv') > 0 ? total('revenue') / total('ga4Pv') : null,
+      medianDailyRevenue: playPointRevenueMedian_(revenues) };
+  });
+}
+
+function playPointRevenueInspectIntegrity_(spreadsheet, history, targetDate) {
+  var start = playPointRevenueShiftIso_(targetDate, 1 - PLAYPOINT_REVENUE_DIAG_CONFIG.integrityDays);
+  var days = history.filter(function(row) {
+    return row.date >= start && row.date <= targetDate && row.dataState === 'RECONCILED';
+  });
+  var peers = days.filter(function(row) {
+    return row.ga4Pv >= 20 && row.adsensePv > 0;
+  }).map(function(row) { return row.adsensePv / row.ga4Pv; }).sort(function(a, b) { return a - b; });
+  var medianRatio = peers.length >= 14 ? playPointRevenueMedian_(peers) : null;
+  var pageState = 'NOT_AVAILABLE', nonzeroPageDays = {};
+  var sheet = spreadsheet.getSheetByName(PLAYPOINT_REVENUE_DIAG_CONFIG.pageHistorySheet);
+  if (sheet && sheet.getLastRow() > 1) {
+    try {
+      // 約1年分の7列以下だけを読み、ページ別の非0秒が存在したかを照合する。
+      var pageRows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 6).getValues();
+      pageRows.forEach(function(row) {
+        var date = playPointRevenueIsoDate_(row[0]);
+        if (date < start || date > targetDate || String(row[5]) !== 'RECONCILED') return;
+        if (playPointRevenueNumber_(row[2]) > 0 && playPointRevenueDurationSeconds_(row[4]) > 0) {
+          nonzeroPageDays[date] = (nonzeroPageDays[date] || 0) + 1;
+        }
+      });
+      pageState = 'CHECKED';
+    } catch (error) {
+      pageState = 'ERROR: ' + playPointRevenueErrorText_(error).slice(0, 160);
+    }
+  }
+  var issues = [];
+  days.forEach(function(row) {
+    var ratio = row.ga4Pv > 0 ? row.adsensePv / row.ga4Pv : null;
+    var positivePages = nonzeroPageDays[row.date] || 0;
+    if (medianRatio !== null && row.ga4Pv >= 20 && ratio >= 3 && ratio >= medianRatio * 2) {
+      issues.push({ date: row.date, code: 'ADSENSE_GA4_PV_RATIO_WATCH', row: row, ratio: ratio,
+        positivePages: positivePages, note: '計測定義が異なるため要照合。AdSenseを誤値として削除しない' });
+    }
+    if (pageState === 'CHECKED' && row.ga4Pv >= 20 && row.avgEngagementSec === 0 && positivePages >= 3) {
+      issues.push({ date: row.date, code: 'GA4_DAILY_ZERO_PAGE_NONZERO', row: row, ratio: ratio,
+        positivePages: positivePages, note: '日次0秒とページ別非0秒が不一致。取得元を確認し自動補正しない' });
+    }
+    // 既存の堅牢なMAD判定で収益単価の上振れを説明し、PV比率異常と混同しない。
+    var analysis = playPointRevenueAnalyze_(history, row.date, PLAYPOINT_REVENUE_DIAG_CONFIG);
+    if (analysis.severity === 'HIGH' && analysis.cause === 'UNIT_VALUE_SPIKE') {
+      issues.push({ date: row.date, code: 'REVENUE_UNIT_VALUE_SPIKE', row: row, ratio: ratio,
+        positivePages: positivePages, note: '収益の上振れ。週合計と日次中央値を併記して影響を確認' });
+    }
+  });
+  return { start: start, end: targetDate, pageState: pageState, medianRatio: medianRatio,
+    issues: issues, weeks: playPointRevenueWeeklyComparison_(history, targetDate) };
+}
+
+function playPointRevenueWriteIntegrity_(sheet, integrity, firstRow) {
+  var rows = [
+    ['📋 日次整合性・週次比較（元データ変更なし）', '', '', '', '', '', '', ''],
+    ['照合期間', integrity.start + ' ～ ' + integrity.end, 'ページ履歴', integrity.pageState,
+      '参考PV比率中央値', integrity.medianRatio === null ? '' : integrity.medianRatio,
+      '要確認件数', integrity.issues.length],
+    ['収益の中央値は日別7件の中央値。2つの週は水曜～火曜。AdSenseとGA4のPV定義は異なり、比率警告だけでは誤計測と断定できない', '', '', '', '', '', '', ''],
+    ['週', '対象期間', 'GA4 PV', '推定収益（円）', '広告表示', '収益/GA4 PV', '日次収益中央値', '状態']
+  ];
+  integrity.weeks.forEach(function(week) {
+    rows.push([week.label, week.start + ' ～ ' + week.end,
+      week.state === 'RECONCILED' ? week.ga4Pv : '',
+      week.state === 'RECONCILED' ? week.revenue : '',
+      week.state === 'RECONCILED' ? week.impressions : '',
+      week.state === 'RECONCILED' ? week.revenuePerGa4Pv : '',
+      week.state === 'RECONCILED' ? week.medianDailyRevenue : '', week.state]);
+  });
+  rows.push(['要確認日', '検査コード', 'GA4 PV', 'AdSense PV', 'AdSense/GA4比', '日次eng秒', 'ページeng非0件', '補足']);
+  integrity.issues.forEach(function(issue) {
+    rows.push([issue.date, issue.code, issue.row.ga4Pv, issue.row.adsensePv,
+      issue.ratio === null ? '' : issue.ratio,
+      issue.row.avgEngagementSec === null ? '' : issue.row.avgEngagementSec,
+      issue.positivePages, issue.note]);
+  });
+  if (!integrity.issues.length) {
+    rows.push(['要確認なし', '', '', '', '', '', '', '日次・ページ別の取得状態を確認。未取得は問題なしと断定しない']);
+  }
+  if (sheet.getMaxRows() < firstRow + rows.length - 1) {
+    sheet.insertRowsAfter(sheet.getMaxRows(), firstRow + rows.length - 1 - sheet.getMaxRows());
+  }
+  sheet.getRange(firstRow, 1, rows.length, 8).setValues(rows);
+  sheet.getRange(firstRow, 1, 1, 8).setFontWeight('bold');
+  sheet.getRange(firstRow + 3, 1, 1, 8).setFontWeight('bold');
+  sheet.getRange(firstRow + 6, 1, 1, 8).setFontWeight('bold');
+  sheet.getRange(firstRow + 4, 6, 2, 1).setNumberFormat('0.0000');
+  if (integrity.issues.length) {
+    sheet.getRange(firstRow + 7, 5, integrity.issues.length, 1).setNumberFormat('0.00');
+    sheet.getRange(firstRow + 7, 6, integrity.issues.length, 1).setNumberFormat('0.0');
+  }
 }
 
 function playPointRevenueGetSpreadsheet_() {
