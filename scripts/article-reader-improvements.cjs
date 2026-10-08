@@ -52,7 +52,8 @@ function improveGameGuide(html, article) {
   html = html.replace(/(<section class="section)(">\s*<h2\b)/, '$1 answer-box$2');
   const game = article.file.split('/')[2];
   if (['pokemon-go', 'dokkan'].includes(game)) html = html.replace(/(<section class="section answer-box">[\s\S]*?<\/section>)/, '$1\n' + comparisonTable(game));
-  // 出典一覧に登録された一次情報を、主張の近くへ戻す。広告・FAQ・関連記事は対象外。
+  // 主張に必要な一次情報だけを近くへ置き、同じ出典の再掲を抑える。
+  const cited = new Set();
   html = html.replace(/(<section\b[^>]*class="(?:section|section answer-box|section reader-comparison)"[^>]*>)([\s\S]*?)(<\/section>)/g, (whole, start, body, end) => {
     const heading = plain(body.match(/<h2\b[^>]*>([\s\S]*?)<\/h2>/)?.[1] || '');
     if (!heading || /公式|出典|次にやること|あわせて|よくある質問/.test(heading) && !/結論|Web/.test(heading)) return whole;
@@ -60,14 +61,18 @@ function improveGameGuide(html, article) {
     let source = rule && sources.find(item => rule[1].test(item.label));
     if (rule && !source) throw new Error(article.id + ': 見出しに対応する公式出典がありません: ' + heading);
     source ||= sources.find(item => !/Google Play/.test(item.label)) || sources[0];
+    if (cited.has(source.href)) return start + body + end;
+    cited.add(source.href);
     const extra = source.href !== EARN_SOURCE && /Play Points|Playポイント|購入先/.test(body) ? ` ／ <a href="${EARN_SOURCE}" target="_blank" rel="noopener noreferrer">Google Playの獲得条件</a>` : '';
     const additional = sources.find(item => item.href !== source.href && (game === 'fgo' && /円/.test(body) && /販売価格/.test(item.label) || game === 'pokemon-go' && /Reward Road/.test(body) && /Reward Road/.test(item.label)));
     const more = additional ? ` ／ <a href="${additional.href}" target="_blank" rel="noopener noreferrer">${escape(additional.label)}</a>` : '';
-    return start + body + `<p class="reader-source">確認する公式情報：<a href="${source.href}" target="_blank" rel="noopener noreferrer">${escape(source.label)}</a>${extra}${more}</p>` + end;
+    return start + body + `<p class="reader-source">出典：<a href="${source.href}" target="_blank" rel="noopener noreferrer">${escape(source.label)}</a>${extra}${more}</p>` + end;
   });
   // 回答を先に読み、要約・目次は必要なときに開ける。
   const intro = html.match(/<div class="intro">[\s\S]*?<\/div>/)?.[0];
-  if (intro) html = html.replace(intro, '').replace(/(<section class="section answer-box">[\s\S]*?<\/section>)/, '$1\n' + intro);
+  if (intro) html = html.replace(intro, '');
+  const action = `<p class="reader-game-action"><a class="cta-btn" href="/games/${game}/">このゲームの購入額とポイントを計算する</a></p>`;
+  html = html.replace(/<p class="reader-game-action">[\s\S]*?<\/p>/g, '').replace(/(<section class="section answer-box">[\s\S]*?)(<\/section>)/, '$1' + action + '$2');
   return html;
 }
 
@@ -90,12 +95,12 @@ function improveBeginner(html) {
 
 function syncReaderImprovements(root) {
   const modified = '2026-10-04';
-  const updateDate = html => html.replace(/(<meta\b[^>]*name="last-modified"[^>]*content=")[^"]*(")/, '$1' + modified + '$2')
-    .replace(/("dateModified"\s*:\s*")[^"]*(")/g, '$1' + modified + '$2');
+  const updateDate = (html, date = modified) => html.replace(/(<meta\b[^>]*name="last-modified"[^>]*content=")[^"]*(")/, '$1' + date + '$2')
+    .replace(/("dateModified"\s*:\s*")[^"]*(")/g, '$1' + date + '$2');
   let changed = 0;
   for (const article of GAME_GUIDE_ARTICLES) {
     const file = path.join(root, article.file.slice(3)), before = fs.readFileSync(file, 'utf8');
-    const after = updateDate(improveGameGuide(before, article));
+    const after = updateDate(improveGameGuide(before, article), '2026-10-08');
     if (after !== before) { fs.writeFileSync(file, after); changed++; }
   }
   for (const [name, transform] of [['2026-08-16-points-disappeared.html', improveDiagnostic], ['2025-12-25-getting-started.html', improveBeginner]]) {
@@ -128,7 +133,7 @@ function syncReaderImprovements(root) {
     const after = improveReaderLinks(before, article, byId);
     if (after !== before) { fs.writeFileSync(articleFile, after); changed++; }
   }
-  for (const article of manifest) if (article.source === 'game-guide' || ['getting-started', 'points-disappeared'].includes(article.id)) article.modified = modified;
+  for (const article of manifest) if (article.source === 'game-guide' || ['getting-started', 'points-disappeared'].includes(article.id)) article.modified = article.source === 'game-guide' ? '2026-10-08' : modified;
   const calendarEntry = manifest.find(article => article.id === 'play-points-calendar-schedule-guide-2026');
   if (calendarEntry) calendarEntry.modified = '2026-10-05';
   fs.writeFileSync(file, JSON.stringify(manifest, null, 2) + '\n');

@@ -377,10 +377,28 @@ test('計算機遷移判定は公開中の6地域だけを同一オリジンで�
     assert.equal(analytics.isCalculatorDestination(calculatorPath), true, calculatorPath);
   }
   assert.equal(analytics.isCalculatorDestination('/games/'), false);
+  assert.equal(analytics.isCalculatorDestination('/en/games/pokepoke/'), true);
+  assert.equal(analytics.isCalculatorDestination('/games/monst/'), true);
+  assert.equal(analytics.isCalculatorDestination('/games/monst/google-play-vs-webshop/'), false);
   assert.equal(analytics.isCalculatorDestination('https://example.com/'), false);
 
   assert.equal(analytics.rememberCalculatorEntry('/hk/?mode=main', {
     source_path: '/campaign/2x/',
     link_context: 'hero_cta'
   }), true);
+});
+
+test('ゲーム計算と記事絞り込みは同意と固定選択肢を守り、金額・自由入力を送らない', () => {
+  const { context } = createRuntime('granted');
+  context.PlayPointAnalytics.markAnalyticsReady();
+  context.PlayPointAnalytics.track('game_calculation_completed', { game_id: 'monst', region: 'JP', amount_bucket: '10_to_99_units', calculation_basis: 'eligible_price', amount: 909.09, query: 'private input' });
+  assert.deepEqual(eventCalls(context, 'game_calculation_completed')[0], { game_id: 'monst', region: 'JP', amount_bucket: '10_to_99_units', calculation_basis: 'eligible_price' });
+  context.PlayPointAnalytics.track('game_calculation_completed', { game_id: 'private input', region: 'JP', amount_bucket: '909.09', calculation_basis: 'eligible_price' });
+  assert.equal(eventCalls(context, 'game_calculation_completed').length, 1);
+  context.PlayPointAnalytics.track('guide_filter_changed', { locale: 'en', game_id: 'fgo', purchase_topic: 'pass', category_name: 'earn', query: 'private input' });
+  assert.deepEqual(eventCalls(context, 'guide_filter_changed')[0], { locale: 'en', game_id: 'fgo', purchase_topic: 'pass', category_name: 'earn' });
+  const denied = createRuntime('denied').context;
+  denied.PlayPointAnalytics.markAnalyticsReady();
+  denied.PlayPointAnalytics.track('game_form_started', { game_id: 'monst', region: 'JP' });
+  assert.equal(eventCalls(denied, 'game_form_started').length, 0);
 });

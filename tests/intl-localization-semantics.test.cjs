@@ -73,13 +73,13 @@ test('韓国トップと台湾トップは自然な地域表現を静的HTMLと�
   assert.match(ko, /js\/intl-copy-overrides\.js/);
 
   const tw = read('tw/index.html');
-  assert.match(tw, /逆算模式/);
+  assert.match(tw, /依金額反推點數/);
   assert.doesNotMatch(tw, /這筆消費有幾點？/);
   assert.match(tw, /js\/intl-copy-overrides\.js/);
 
   const runtime = read('js/intl-copy-overrides.js');
   assert.match(runtime, /다음 등급까지 얼마가 필요할까\?/);
-  assert.match(runtime, /逆算模式/);
+  assert.match(runtime, /依金額反推點數/);
   assert.match(runtime, /Weekly Rewards Diary/);
 });
 

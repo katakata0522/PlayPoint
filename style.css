@@ -2667,3 +2667,8 @@ font-size: 0.8rem;
 outline: 3px solid var(--reading-link, #0b57d0);
 outline-offset: 3px;
 }
+.calculator-brand { display:block; text-align:center; margin:12px 0 0; font-size:14px; font-weight:800; letter-spacing:.04em; color:#176773; }
+html { scroll-padding-bottom:140px; }
+body { padding-bottom:110px; }
+.calculator-wrapper .tab-switch { scroll-margin-top:16px; }
+.calculator-wrapper :is(input,button,.result-box) { scroll-margin-bottom:150px; }

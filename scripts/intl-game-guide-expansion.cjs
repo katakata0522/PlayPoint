@@ -203,10 +203,8 @@ function escapeHtml(value) {
   return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 function descriptionFor(content, localeKey) {
-  const market = String(content.market || '').replace(/\\s+/g, ' ').trim();
-  if (localeKey === 'en') return market;
-  const prefix = localeKey === 'ko' ? '지역별 공식 조건을 확인하는 게임 결제 가이드. ' : '依地區官方條件整理的遊戲消費指南。';
-  return prefix + market;
+  if (content.description) return content.description;
+  return String(content.answer || content.market || '').replace(/\s+/g, ' ').trim();
 }
 function hrefFor(localeKey, slug) { return `/${localeKey}/articles/${slug}.html`; }
 function getLocalizedGameGuideLinks(localeKey) { return ALL_GUIDES.map(guide => [hrefFor(localeKey, guide.slug), guide.content[localeKey].title]); }

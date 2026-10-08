@@ -2205,6 +2205,7 @@ ${amountOnly ? '' : `                      <div class="input-field">
                       <div class="result-stat-box">
                           <span class="result-stat-label">${loc.resEarnedLabel}</span>
                           <strong id="res-earned-points" class="result-stat-value highlight">- pt</strong>
+                          <span id="res-calculation-basis" class="game-basis-badge"></span>
                       </div>
                       <div class="result-stat-box">
                           <span class="result-stat-label">${loc.resValueLabel}</span>
@@ -2264,6 +2265,7 @@ ${gamePacks.length ? `              <h2>${gameShort} ${localeKey === 'ja' ? '商
 ${localeKey === 'ja' && game.id === 'monst' ? '              <p>通常オーブ購入はアプリ内の商品です。Webショップの増量商品とは別です。<a href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式の商品表</a>も確認できます。</p>' : ''}
               <div class="pack-table-wrap">
                   <table class="pack-table"${localeKey === 'ja' ? ' data-table-kind="products"' : ''}>
+                      <caption>${({ ja: '支払額による参考値（税は未調整）。税抜対象額を指定した計算結果とは前提が異なります。', en: 'Payment-based estimates before tax adjustment. Enter an eligible pre-tax price in the calculator for that basis.', ko: '세금 미조정 결제액 기준 참고값. 세전 대상 금액을 입력한 계산 결과와 기준이 다릅니다.', 'zh-TW': '以付款金額估算，尚未調整稅額；與輸入不含稅商品價格的計算結果使用不同前提。' })[loc.lang]}</caption>
                       <thead><tr><th>${localeKey === 'ja' ? '商品' : loc.tableThPack}</th><th>${loc.tableThPrice}</th><th>${loc.tableThNormal}</th><th>${loc.tableThCp}</th></tr></thead>
                       <tbody>${packTableRows}</tbody>
                   </table>
@@ -2277,14 +2279,13 @@ ${presentation?.budgets.length ? `              <h2>予算別のポイント目�
               </table></div>` : ''}
 
               <!-- 広告枠（レスポンシブ） -->
-              <div class="game-ad-container">
+              <div class="game-ad-container" tabindex="0" role="region" aria-label="${loc.adLabel}">
                   <span class="game-ad-label">${loc.adLabel}</span>
                   <ins class="adsbygoogle"
                        style="display:block"
                        data-ad-client="ca-pub-3845885843809455"
                        data-ad-slot="8250492620"
-                       data-ad-format="auto"
-                       data-full-width-responsive="true"></ins>
+                       data-full-width-responsive="false"></ins>
               </div>
           </section>
 
@@ -2326,8 +2327,8 @@ ${readingGuidesHtml}          <section class="section game-source-section">
           </section>
 
           <!-- 他のゲーム計算機 -->
-          <section class="section">
-              <h2>${loc.otherGamesHeading}</h2>
+          <details class="section other-game-directory">
+              <summary>${loc.otherGamesHeading}</summary>
               <div class="games-grid">
                   ${GAMES_DATA.filter(g => g.id !== game.id).map(g => `
                   <a class="game-portal-card" href="../${g.id}/">
@@ -2339,7 +2340,7 @@ ${readingGuidesHtml}          <section class="section game-source-section">
                       <div class="game-card-action">${loc.openCalc}</div>
                   </a>`).join('')}
               </div>
-          </section>
+          </details>
 
           <!-- 汎用CTA -->
           <aside class="cta-box" style="margin-top:40px;">

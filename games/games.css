@@ -422,8 +422,10 @@ background: #f8fafc;
 border-radius: 8px;
 border: 1px dashed #cbd5e1;
 padding: 12px;
-overflow: hidden;
+/* 幅変更後の既配信広告も、切り取らず枠内で全体を閲覧できる。 */
+overflow-x: auto;
 }
+.game-ad-container > ins.adsbygoogle { display:block; width:100%; height:100px; }
 .game-ad-label {
 font-size: 0.72rem;
 color: #475569;
@@ -751,3 +753,16 @@ line-height: 1.7;
 }
 .game-reading-guides a:hover { background: #eff6ff; border-color: #93c5fd; }
 .game-reading-guides a:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+.game-basis-badge { display:block; margin-top:8px; font-size:13px; line-height:1.5; color:var(--reading-muted, #475569); }
+.pack-table caption { text-align:left; font-size:13px; line-height:1.6; margin:0 0 12px; color:var(--reading-muted, #475569); }
+.game-rank-reference { margin:16px 0; border-top:1px solid var(--reading-border, #d7e3df); padding-top:12px; }
+.game-rank-reference > summary { cursor:pointer; font-size:14px; color:var(--reading-link, #176773); }
+.game-search { margin:16px 0 24px; max-width:620px; }
+.game-search label { display:block; font-weight:700; margin-bottom:8px; }
+.game-search input { box-sizing:border-box; width:100%; padding:12px; font:inherit; border:1px solid var(--reading-border, #cbd5e1); border-radius:8px; }
+.game-search-count { font-size:14px; color:var(--reading-muted, #475569); }
+.game-edition-badge { display:inline-block; padding:4px 8px; margin-bottom:8px; font-size:12px; border-radius:5px; background:var(--reading-soft, #edf4f1); color:var(--reading-link, #176773); }
+.games-grid .game-card-desc { font-size:14px; line-height:1.65; }
+.other-game-directory .game-card-desc { display:none; }
+.other-game-directory > summary { cursor:pointer; font-size:18px; font-weight:700; padding:8px 0; }
+.game-portal-card[hidden] { display:none !important; }

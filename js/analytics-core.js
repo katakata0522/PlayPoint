@@ -28,6 +28,22 @@
         destination_type: new Set(['internal', 'external', 'official_google_support'])
     });
     const ENUM_PARAM_VALUES = Object.freeze({
+        game_form_started: Object.freeze({
+            game_id: new Set(['genshin', 'starrail', 'zzz', 'bluearchive', 'pokepoke', 'fgo', 'umamusume', 'monst', 'gakumas', 'proseka', 'nikke', 'wutheringwaves', 'dokkan', 'pad', 'arknights', 'hbr', 'mementomori', 'phantomparade', 'reverse1999', 'honkai3rd', 'shadowversewb', 'prospi-a', 'pokemon-go', 'efootball']),
+            region: new Set(['JP', 'US', 'KR', 'TW'])
+        }),
+        game_calculation_completed: Object.freeze({
+            game_id: new Set(['genshin', 'starrail', 'zzz', 'bluearchive', 'pokepoke', 'fgo', 'umamusume', 'monst', 'gakumas', 'proseka', 'nikke', 'wutheringwaves', 'dokkan', 'pad', 'arknights', 'hbr', 'mementomori', 'phantomparade', 'reverse1999', 'honkai3rd', 'shadowversewb', 'prospi-a', 'pokemon-go', 'efootball']),
+            region: new Set(['JP', 'US', 'KR', 'TW']),
+            amount_bucket: new Set(['under_10_units', '10_to_99_units', '100_to_999_units', '1000_units_or_more']),
+            calculation_basis: new Set(['payment_estimate', 'eligible_price'])
+        }),
+        guide_filter_changed: Object.freeze({
+            locale: new Set(['en', 'ko', 'tw']),
+            game_id: new Set(['all', 'games', 'fgo', 'genshin', 'monst', 'starrail', 'zzz', 'umamusume', 'proseka', 'pokepoke', 'pad', 'arknights', 'dokkan', 'hbr', 'honkai3rd', 'phantomparade', 'prospi-a', 'pokemon-go', 'efootball']),
+            purchase_topic: new Set(['all', 'pass', 'trial', 'shop', 'rewards', 'version']),
+            category_name: new Set(['all', 'account', 'earn', 'levels', 'troubleshooting', 'guides'])
+        }),
         benefit_filter_changed: Object.freeze({
             rank_filter: new Set(['all', 'bronze', 'silver', 'gold', 'platinum', 'diamond']),
             pass_filter: new Set(['all', 'yes', 'no']),
@@ -44,6 +60,9 @@
         result_decision_link_clicked: RESULT_LINK_PARAM_VALUES
     });
     const REQUIRED_PARAMS = Object.freeze({
+        game_form_started: Object.freeze(['game_id', 'region']),
+        game_calculation_completed: Object.freeze(['game_id', 'region', 'amount_bucket', 'calculation_basis']),
+        guide_filter_changed: Object.freeze(['locale', 'game_id', 'purchase_topic', 'category_name']),
         article_navigation_click: Object.freeze(['source_path', 'component', 'locale', 'article_role', 'article_category', 'destination_type'])
     });
     const ALLOWED_PARAMS = Object.freeze({
@@ -76,7 +95,10 @@
         reader_calendar_download: ['results_count'],
         category_filter: ['category_name'],
         theme_change: ['theme_mode'],
-        points_cost_calculation_completed: ['region', 'status', 'point_bucket']
+        points_cost_calculation_completed: ['region', 'status', 'point_bucket'],
+        game_form_started: ['game_id', 'region'],
+        game_calculation_completed: ['game_id', 'region', 'amount_bucket', 'calculation_basis'],
+        guide_filter_changed: ['locale', 'game_id', 'purchase_topic', 'category_name']
     });
 
     const pendingEvents = [];
@@ -167,7 +189,7 @@
     function isCalculatorDestination(link) {
         try {
             const url = resolveUrl(link);
-            return url.origin === window.location.origin && CALCULATOR_PATHS.has(url.pathname) && url.searchParams.get('mode') !== 'diary';
+            return url.origin === window.location.origin && (CALCULATOR_PATHS.has(url.pathname) || /^\/(?:en\/|ko\/|tw\/)?games\/[a-z0-9-]+\/$/.test(url.pathname)) && url.searchParams.get('mode') !== 'diary';
         } catch (error) {
             return false;
         }

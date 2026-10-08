@@ -19,6 +19,27 @@
   const originalHrefs = new Map(cards.map(card => [card, card.getAttribute('href')]));
   let articles = cards.map(card => ({ path: new URL(card.href).pathname, title: card.querySelector('.intl-guide-card__title')?.textContent || '', description: '', sections: [] }));
   let activeCategory = 'all';
+  let searchTimer;
+  const categories = new Set(buttons.map(button => button.dataset.guideFilter));
+  function readUrl() {
+    const params = new URLSearchParams(location.search);
+    search.value = params.get('q') || '';
+    for (const [select, key] of [[gameFilter, 'game'], [topicFilter, 'topic']]) {
+      if (select) select.value = [...select.options].some(option => option.value === params.get(key)) ? params.get(key) : 'all';
+    }
+    activeCategory = categories.has(params.get('category')) ? params.get('category') : 'all';
+  }
+  function writeUrl(push = false) {
+    const url = new URL(location.href);
+    for (const [key, value] of [['q', search.value.trim()], ['game', gameFilter?.value], ['topic', topicFilter?.value], ['category', activeCategory]]) {
+      if (value && value !== 'all') url.searchParams.set(key, value); else url.searchParams.delete(key);
+    }
+    url.hash = '';
+    if (url.href !== location.href) history[push ? 'pushState' : 'replaceState'](null, '', url);
+  }
+  function trackFilter() {
+    window.PlayPointAnalytics?.track('guide_filter_changed', { locale, game_id: gameFilter?.value || 'all', purchase_topic: topicFilter?.value || 'all', category_name: activeCategory });
+  }
   const recovery = document.createElement('div'); recovery.className = 'search-recovery'; recovery.hidden = true; empty.after(recovery);
   function updateResult(count) {
     result.textContent = (grid.dataset.resultTemplate || '{count}').replace('{count}', String(count));
@@ -27,12 +48,15 @@
   function addButton(label, action) { const button = document.createElement('button'); button.type = 'button'; button.textContent = label; button.addEventListener('click', action); recovery.append(button); }
   function recover() {
     recovery.replaceChildren();
-    if (activeCategory !== 'all') addButton(copy[0], () => selectCategory('all'));
-    addButton(copy[1], () => { search.value = ''; if (gameFilter) gameFilter.value = 'all'; if (topicFilter) topicFilter.value = 'all'; selectCategory('all'); search.focus(); });
-    const suggestions = window.PlayPointSearch?.suggest(articles, search.value, locale) || [];
+    const selectedGame = gameFilter && !['all', 'games'].includes(gameFilter.value) ? gameFilter.value : null;
+    if (selectedGame && (topicFilter?.value !== 'all' || search.value.trim())) addButton({ en: 'Show other guides for this game', ko: '이 게임의 다른 가이드 보기', tw: '查看此遊戲的其他指南' }[locale], () => { search.value = ''; topicFilter.value = 'all'; selectCategory('all'); writeUrl(true); trackFilter(); });
+    if (activeCategory !== 'all') addButton(copy[0], () => { selectCategory('all'); writeUrl(true); trackFilter(); });
+    addButton(copy[1], () => { search.value = ''; if (gameFilter) gameFilter.value = 'all'; if (topicFilter) topicFilter.value = 'all'; selectCategory('all'); writeUrl(true); trackFilter(); search.focus(); });
+    const candidates = selectedGame ? articles.filter(article => cards.some(card => new URL(card.href).pathname === article.path && card.querySelector('[data-game]')?.dataset.game === selectedGame)) : articles;
+    const suggestions = window.PlayPointSearch?.suggest(candidates, search.value, locale) || [];
     const heading = document.createElement('p'); heading.textContent = copy[suggestions.length ? 2 : 3]; recovery.append(heading);
     const list = document.createElement('ul');
-    const choices = suggestions.length ? suggestions : articles.slice(0, 3);
+    const choices = suggestions.length ? suggestions : candidates.slice(0, 3);
     choices.forEach(article => { const li = document.createElement('li'), link = document.createElement('a'); link.href = article.path; link.textContent = article.title; li.append(link); list.append(li); });
     recovery.append(list);
   }
@@ -73,15 +97,17 @@
     for (const button of buttons) { const active = button.dataset.guideFilter === category; button.classList.toggle('is-active', active); button.setAttribute('aria-pressed', String(active)); if (active && focus) button.focus({ preventScroll: true }); }
     applyFilters();
   }
-  buttons.forEach(button => button.addEventListener('click', () => selectCategory(button.dataset.guideFilter)));
-  [gameFilter, topicFilter].filter(Boolean).forEach(select => select.addEventListener('change', applyFilters));
+  buttons.forEach(button => button.addEventListener('click', () => { selectCategory(button.dataset.guideFilter); writeUrl(true); trackFilter(); }));
+  [gameFilter, topicFilter].filter(Boolean).forEach(select => select.addEventListener('change', () => { applyFilters(); writeUrl(true); trackFilter(); }));
   search.addEventListener('focus', loadBodySearch, { once: true });
-  search.addEventListener('input', () => { applyFilters(); if (search.value.trim()) loadBodySearch(); });
+  search.addEventListener('input', () => { applyFilters(); writeUrl(); if (search.value.trim()) loadBodySearch(); clearTimeout(searchTimer); searchTimer = setTimeout(() => window.PlayPointAnalytics?.track('search', { results_count: cards.filter(card => !card.hidden).length }), 400); });
   function applyHash() {
     const map = { '#intl-hub-account': 'account', '#intl-hub-earn': 'earn', '#intl-hub-levels': 'levels', '#intl-hub-trouble': 'troubleshooting' };
     if (map[location.hash]) selectCategory(map[location.hash]);
   }
-  window.addEventListener('hashchange', applyHash); applyHash(); applyFilters();
+  window.addEventListener('hashchange', applyHash);
+  window.addEventListener('popstate', () => { readUrl(); selectCategory(activeCategory); if (search.value.trim()) loadBodySearch(); });
+  readUrl(); applyHash(); selectCategory(activeCategory);
   let bodySearchPromise;
   function loadBodySearch() {
     if (bodySearchPromise) return bodySearchPromise;

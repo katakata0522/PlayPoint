@@ -13,6 +13,12 @@ const {
 const { INTL_LAYOUT_CSS, renderArticleChrome, renderSidebar } = require('./intl-article-layout.cjs');
 const { getIntlAuthorPageFiles, getIntlAuthorSitemapEntries, writeIntlAuthorPages } = require('./intl-author-pages.cjs');
 const { GENERATED_INTL_PAGE_CONTENT_DATE, getGeneratedIntlPageContentDate } = require('./content-dates.cjs');
+const { ALL_GUIDES } = require('./intl-game-guide-expansion.cjs');
+function getHubModifiedAt(localeKey, articles) {
+  return [ARTICLE_HUB_CONTENT[localeKey].extraModifiedAt, GENERATED_INTL_PAGE_CONTENT_DATE,
+    ...articles.map(article => article.modifiedAt), ...ALL_GUIDES.map(guide => guide.modifiedAt[localeKey])]
+    .filter(Boolean).sort().at(-1);
+}
 
 // 既存の /amount/10000/ URLは維持しつつ、海外3地域では現地通貨の入口として表示する。
 const AMOUNT_ENTRY_OVERRIDES = {
@@ -508,8 +514,7 @@ ${buckets[key].map(([href, title]) => `                <li><a href="${escapeHtml
           </section>`)
     .join('\n');
   const canonical = `https://playpoint-sim.com/${localeKey}/articles/`;
-  const generatedModifiedAt = articles.reduce((latest, article) => latest > article.modifiedAt ? latest : article.modifiedAt, '');
-  const modifiedAt = content.extraModifiedAt > generatedModifiedAt ? content.extraModifiedAt : generatedModifiedAt;
+  const modifiedAt = getHubModifiedAt(localeKey, articles);
   const articleCssVersion = assetVersions.articleSharedCssVersion || assetVersions.cssVersion;
   const schema = {
     '@context': 'https://schema.org',
@@ -618,7 +623,7 @@ function getIntlSitemapEntries() {
     const hubArticles = getPublishedIntlArticles().filter(article => localeKeyForArticle(article) === localeKey);
     entries.push({
       url: `https://playpoint-sim.com/${localeKey}/articles/`,
-      lastmod: hubArticles.reduce((latest, article) => latest > article.modifiedAt ? latest : article.modifiedAt, GENERATED_INTL_PAGE_CONTENT_DATE)
+      lastmod: getHubModifiedAt(localeKey, hubArticles)
     });
   }
   for (const article of getPublishedIntlArticles()) {

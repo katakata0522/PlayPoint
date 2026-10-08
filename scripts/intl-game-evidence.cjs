@@ -61,6 +61,7 @@ const GAME_EVIDENCE = {
     offers: common(offer(text('Monthly / Half Monthly Pyroxene Packs', '월간 / 하프 월간 청휘석 패키지', 'Monthly／Half Monthly青輝石禮包'), text('Check the full and half packs separately. Nexon also lists Lite products and a Battle Pass; their duration and rewards differ from the standard packs.', '일반형과 하프형을 따로 비교하세요. Nexon 안내에는 Lite 상품과 배틀 패스도 있으며 기간과 보상이 일반 상품과 다릅니다.', '一般與半量版本要分開比較。Nexon另有Lite商品與Battle Pass，期間及獎勵不能直接套用一般禮包。'), S.blue))
   },
   pokepoke: {
+    extraSources: [source('https://play.google.com/store/apps/editorial?hl=en_US&id=mc_games_editorialmd_pokemon_trading_card_game_pocket_launch_fcp', 'global', 'google-play-product-introduction')],
     editions: text('https://tcgpocket.pokemon.com/en-us/', 'https://pokemonkorea.co.kr/game_support/pokemon_tcg_pocket_FAQ/view/2434', 'https://www.pokemontcgpocket.com/tc/'),
     offers: common(offer(text('Premium Pass', '프리미엄 패스', '高級通行證'), text('A monthly subscription for additional pack stamina and premium missions. It is tied to the store account used to subscribe; deleting the app does not cancel it.', '추가 팩 스태미나와 프리미엄 미션을 제공하는 월간 구독입니다. 구독한 스토어 계정에 연결되며 앱을 삭제해도 구독은 취소되지 않습니다.', '月費訂閱提供額外開包體力及高級任務。權益連結訂閱時的商店帳號；刪除App不會取消訂閱。'), S.pocket, true))
   },

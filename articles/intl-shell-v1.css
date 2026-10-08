@@ -36,7 +36,7 @@ box-shadow: 0 4px 14px rgba(15, 23, 42, 0.22);
 .intl-global-nav .global-nav-inner { justify-content: flex-start; flex-wrap: wrap; overflow: visible; gap: 0 20px; padding-inline: 16px; }
 .intl-global-nav .nav-item { color: var(--reading-muted, #526176); padding: 10px 4px; min-height: 48px; border: 0; border-bottom: 2px solid transparent; align-items: flex-start; }
 .intl-global-nav .nav-item:hover, .intl-global-nav .nav-item.active { background: transparent; color: var(--reading-link, #0b57d0); border-bottom-color: var(--reading-selected, #0b57d0); }
-.intl-global-nav .nav-sub { color: var(--reading-muted, #526176); opacity: 1; }
+.intl-global-nav .nav-sub { color: #e3f3f4; opacity: 1; }
 .intl-article-breadcrumbs .intl-breadcrumb-current { overflow-wrap: anywhere; }
 .intl-layout-container { gap: 36px; }
 .intl-article-breadcrumbs .intl-breadcrumb-category { color: var(--reading-link, #0f4c5c); font-weight: 700; }

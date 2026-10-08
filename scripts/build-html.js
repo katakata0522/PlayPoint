@@ -150,6 +150,8 @@ console.log(`[build-html] normalized international copy/semantics: ${intlLocaliz
 const { syncReaderImprovements } = require('./article-reader-improvements.cjs');
 console.log('[build-html] synchronized reader answers and sources:', syncReaderImprovements(rootDir));
 syncJapaneseNavigation(rootDir);
+const { syncSiteReaderPolish } = require('./site-reader-polish.cjs');
+console.log('[build-html] synchronized reader purchase flow:', syncSiteReaderPolish(rootDir));
 // This pass produces the real content-hash updates. A second full-tree pass at
 // the end of the build was empirically a no-op, so keep the proven position and
 // avoid rescanning every public HTML file twice.

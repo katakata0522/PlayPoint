@@ -135,7 +135,7 @@ function syncIntlGameEvidence(rootDir) {
       const reference = isReference(locale, id), items = entry.offers[locale];
       const calculator = html.match(/<section class="game-sim-card" id="game-calculator">[\s\S]*?<\/section>/)?.[0];
       if (!calculator) throw new Error(`[intl-game-evidence] missing calculator: ${file}`);
-      const ads = html.match(/<div class="game-ad-container">[\s\S]*?<\/div>/g) || [];
+      const ads = html.match(/<div class="game-ad-container"[^>]*>[\s\S]*?<\/div>/g) || [];
       // メイン欄だけを編集し、サイドバー・広告・共通資産の共有契約を保持する。
       const inside = html.match(/<main class="game-main-content">([\s\S]*?)<\/main>/)?.[1];
       if (!inside) throw new Error(`[intl-game-evidence] missing main: ${file}`);

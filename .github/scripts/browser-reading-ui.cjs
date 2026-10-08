@@ -560,10 +560,21 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await game.selectOption('pokepoke');await topic.selectOption('trial');
       assert.equal(await visibleGuides.count(),1,locale+': game + trial');
       assert.match(await visibleGuides.first().getAttribute('href'),/pokemon-tcg-pocket-premium-pass/);
+      assert.equal(new URL(ip.url()).searchParams.get('game'),'pokepoke');
+      assert.equal(new URL(ip.url()).searchParams.get('topic'),'trial');
+      await ip.reload({waitUntil:'domcontentloaded'});
+      await ip.waitForFunction(()=>document.querySelector('[data-guide-game]').value==='pokepoke');
+      assert.equal(await topic.inputValue(),'trial');
+      assert.equal(await visibleGuides.count(),1,locale+': reload restores filters');
       await game.selectOption('umamusume');
       assert.equal(await visibleGuides.count(),0,locale+': unrelated trial must not match');
       assert.equal(await ip.locator('[data-guide-empty]').isVisible(),true);
-      await ip.locator('.search-recovery button').first().click();
+      await ip.locator('.search-recovery button').filter({hasText: /other guides|다른 가이드|其他指南/}).click();
+      assert.equal(await game.inputValue(),'umamusume');
+      assert.equal(await topic.inputValue(),'all');
+      assert.equal(await visibleGuides.count(),1,locale+': recovery preserves current game');
+      await topic.selectOption('trial');
+      await ip.locator('.search-recovery button').filter({hasText: /Reset search|검색·분류 초기화|清除搜尋與篩選/}).click();
       assert.equal(await game.inputValue(),'all');assert.equal(await topic.inputValue(),'all');
       assert.equal(await visibleGuides.count(),initialCount,locale+': reset restores all guides');
       await game.selectOption('umamusume');
@@ -572,6 +583,11 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await ip.waitForFunction(()=>document.querySelector('[data-guide-grid] .intl-guide-card__excerpt'));
       assert.equal(await visibleGuides.count(),1,locale+': full-text search with game filter');
       assert.match(await visibleGuides.first().getAttribute('href'),/umamusume-umasuku/);
+      assert.equal(new URL(ip.url()).searchParams.get('q'),query);
+      await ip.reload({waitUntil:'domcontentloaded'});
+      await ip.waitForFunction(()=>document.querySelector('[data-guide-grid] .intl-guide-card__excerpt'));
+      assert.equal(await ip.locator('[data-guide-search]').inputValue(),query);
+      assert.equal(await visibleGuides.count(),1,locale+': shared URL restores text and game');
       report.interactions.internationalResources.at(-1).gameDiscovery=true;
     }
     fs.writeFileSync(path.join(artifactDir,'reading-ui-report.json'),JSON.stringify(report,null,2));

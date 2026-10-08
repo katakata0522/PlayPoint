@@ -5,7 +5,7 @@ const path = require('node:path');
 const { resolveGameThumbnail } = require('./game-thumbnail-assets.cjs');
 
 const PUBLISHED_AT = '2026-09-13';
-const MODIFIED_AT = '2026-10-04';
+const MODIFIED_AT = '2026-10-08';
 
 const GAME_GUIDE_ARTICLES = Object.freeze([
   {

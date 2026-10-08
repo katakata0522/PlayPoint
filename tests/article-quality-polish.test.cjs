@@ -47,7 +47,9 @@ test('ゲーム記事は購入説明の後にPlay Pointsの条件を一度示し
       assert.ok(html.indexOf('id="product-detail-1"') < pointsIndex);
       const pointsSection = html.match(/<section class="section" id="play-points">([\s\S]*?)<\/section>/)?.[1] || '';
       assert.match(pointsSection, /Google Play/);
-      assert.ok(pointsSection.includes(`href="/${localeKey}/games/${guide.gameId}/"`));
+      const answerSection = html.match(/<section class="section answer-box" id="purchase-answer">([\s\S]*?)<\/section>/)?.[1] || '';
+      assert.ok(answerSection.includes(`href="/${localeKey}/games/${guide.gameId}/"`), '結論から専用計算機へ進める');
+      assert.ok(html.indexOf('id="purchase-answer"') < html.indexOf('id="product-detail-1"'));
       const decisionSection = html.match(/<section class="section" id="decision-guide">([\s\S]*?)<\/section>/)?.[1] || '';
       const encodedAnswer = guide.content[localeKey].answer.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
       assert.ok(!decisionSection.includes(encodedAnswer), String(localeKey) + '/' + guide.slug + ': decision section repeats the answer');

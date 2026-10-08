@@ -256,6 +256,22 @@ async function main() {
       assert(state.source, `${gamePath} source scope missing`);
       assert(state.slot === '8250492620', `${gamePath} managed ad slot missing`);
       assert(state.adRequests >= 1, `${gamePath} adsbygoogle.push was not observed`);
+      // 配信済みのPC広告が残ったまま幅を変えても、広告を切らず枠内で閲覧できる。
+      await page.setViewportSize({width:1440,height:900});
+      await page.evaluate(() => {
+        const creative = document.createElement('div');
+        creative.style.cssText = 'width:970px;height:100px;background:#eee';
+        creative.textContent = 'Filled advertisement fixture';
+        document.querySelector('.game-ad-container ins.adsbygoogle').append(creative);
+      });
+      await page.setViewportSize({width:390,height:844});
+      const filledLayout = await page.locator('.game-ad-container').evaluate(el => ({
+        overflow:getComputedStyle(el).overflowX, scrollable:el.scrollWidth>el.clientWidth,
+        pageOverflow:document.documentElement.scrollWidth>innerWidth+1,
+        accessible:el.tabIndex===0&&Boolean(el.getAttribute('aria-label'))
+      }));
+      assert.equal(filledLayout.overflow,'auto');
+      assert.ok(filledLayout.scrollable && filledLayout.accessible && !filledLayout.pageOverflow, `${gamePath}: filled ad resize ${JSON.stringify(filledLayout)}`);
       assert(state.consentSource === 'googlefc', `${gamePath} did not use GoogleFC consent source`);
       assertExternalRequests(requests, gamePath);
       assert(errors.length === 0, `${gamePath} browser errors: ${errors.join(' | ')}`);

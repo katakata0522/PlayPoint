@@ -301,6 +301,10 @@
 
         const totalAmountEl = document.getElementById('res-total-amount');
         const earnedPointsEl = document.getElementById('res-earned-points');
+        const basisBadge = document.getElementById('res-calculation-basis');
+        let calculationTimer;
+        let started = false;
+        let lastTracked = '';
         const reachedRankEl = document.getElementById('res-reached-rank');
         const nextRankProgressEl = document.getElementById('res-next-progress');
         const rankProgressBar = document.getElementById('res-rank-bar');
@@ -518,6 +522,7 @@
         }
 
         function update(isUserAction) {
+            if (isUserAction) clearTimeout(calculationTimer);
             const calculation = getCurrentCalculation();
             const res = calculation.result;
             if (!res.valid) return;
@@ -531,6 +536,22 @@
             if (earnedPointsEl) {
                 earnedPointsEl.textContent = `${res.points.toLocaleString()} pt`;
                 if (isUserAction) triggerUpdateAnimation(earnedPointsEl);
+            }
+            if (basisBadge) {
+                basisBadge.textContent = ({ ja: ['支払額からの概算', '税抜対象額で計算'], en: ['Estimate from payment amount', 'Using eligible pre-tax price'], ko: ['결제액 기준 추정', '세전 대상 금액으로 계산'], 'zh-TW': ['付款金額估算', '依不含稅商品價格計算'] }[cfg.lang] || ['Estimated', 'Eligible price'])[res.usesEligibleAmount ? 1 : 0];
+            }
+            if (isUserAction) {
+                const gameId = window.location.pathname.match(/\/games\/([a-z0-9-]+)\//)?.[1];
+                const region = ({ ja: 'JP', en: 'US', ko: 'KR', 'zh-TW': 'TW' })[cfg.lang];
+                if (!started) { started = true; window.PlayPointAnalytics?.track('game_form_started', { game_id: gameId, region }); }
+                clearTimeout(calculationTimer);
+                const key = JSON.stringify([res.amount, res.points, res.usesEligibleAmount]);
+                calculationTimer = setTimeout(() => {
+                    if (key === lastTracked) return;
+                    lastTracked = key;
+                    const units = res.amount / cfg.unitSpend;
+                    window.PlayPointAnalytics?.track('game_calculation_completed', { game_id: gameId, region, amount_bucket: units < 10 ? 'under_10_units' : units < 100 ? '10_to_99_units' : units < 1000 ? '100_to_999_units' : '1000_units_or_more', calculation_basis: res.usesEligibleAmount ? 'eligible_price' : 'payment_estimate' });
+                }, 400);
             }
             if (pointValueYenEl) pointValueYenEl.textContent = cfg.redeemCheckText || '';
 

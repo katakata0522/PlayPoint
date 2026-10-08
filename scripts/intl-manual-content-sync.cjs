@@ -2,7 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { getLocalizedGameGuideLinks } = require('./intl-game-guide-expansion.cjs');
+const { getLocalizedGameGuideLinks, ALL_GUIDES } = require('./intl-game-guide-expansion.cjs');
 
 const HUB_CONTENT = {
   en: {
@@ -66,6 +66,10 @@ function syncIntlManualContent(rootDir) {
     const gameGuideLinks = getLocalizedGameGuideLinks(locale);
     syncArticleHub(rootDir, locale, {
       ...config,
+      modifiedAt: ALL_GUIDES.reduce((latest, guide) => {
+        const date = guide.modifiedAt?.[locale];
+        return date && date > latest ? date : latest;
+      }, config.modifiedAt),
       links: [...gameGuideLinks, ...config.links]
     });
   }

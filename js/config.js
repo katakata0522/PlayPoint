@@ -2,7 +2,7 @@
 
 import { createRegionCalculationConfig } from './region-rules.js';
 
-import './analytics-core.js?v=e63a4a63f7';
+import './analytics-core.js?v=fde7412e57';
 
 // 全画面で同じ許可リスト・同意判定・流入引き継ぎを利用する。
 if (!window.PlayPointAnalytics) {
@@ -76,7 +76,7 @@ export const CONFIGS = {
             closeAria: "閉じる", showHelpAria: "説明を表示", shareResultAria: "計算結果の共有", prevYearAria: "前の年へ", nextYearAria: "次の年へ",
             siteAlias: "通称: Playポイント計算機 / 非公式ツール",
             siteDescription: "Google Play ポイントのランクアップまでに、あといくら必要かを目安計算できます。<br>現在ステータス・目標ステータス・必要ポイントを入力すると、<br>必要な課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を確認できます。",
-            tabMain: "通常計算", tabReverse: "逆算モード", tabDiary: "ウィークリーリワード記録", lastCalculationReuse: "前回の条件を使う",
+            tabMain: "必要額を知る", tabReverse: "金額からポイント", tabDiary: "ウィークリーリワード記録", lastCalculationReuse: "前回の条件を使う",
             firstStepTitle: "まずは3つだけ入力", firstStepCurrent: "現在のステータス", firstStepTarget: "目標ステータス", firstStepNeeded: "目標までの必要ポイント",
             sectionTitleStatus: "ステータス入力", labelCurrentStatus: "現在のステータス",
             labelTargetStatus: "目標ステータス", labelNeededPoints: "目標までの必要ポイント",
@@ -84,7 +84,7 @@ export const CONFIGS = {
             labelBaseRate: "通常獲得率（ステータスから自動入力）", labelMultiplier: "キャンペーン特別獲得率（例：3pt/100円）", labelMultiplierReverse: "キャンペーン特別獲得率（例：3pt/100円）",
             warningRate: "Google Playに表示された特別獲得率と通常獲得率の高い方を試算に使います。ステータスの通常獲得率へ倍率を掛けません。対象・上限・有効化はキャンペーン画面で確認してください。",
             calculateButton: "必要額を計算する", copyButton: "コピーする", tweetButton: "結果をXでシェア",
-            sectionTitleReverse: "逆算モード", labelAmountYen: "課金額（円）",
+            sectionTitleReverse: "金額から獲得ポイントを計算", labelAmountYen: "課金額（円）",
             amountYenPlaceholder: "例：5000", reverseCalculateButton: "ポイントを計算",
             nextTargetNone: "次の目標はありません", statusKeep: "維持", statusUp: "昇格", resultLabelFreeClear: "課金不要", errorInput: "有効な数値を入力し、目標ステータスを選択してください",
             errorNeededPoints: "Google Playに表示される不足ポイントを、0以上の整数で入力してください。すでに達成している場合は0を入力できます。",
@@ -178,7 +178,7 @@ export const CONFIGS = {
             closeAria: "Close", showHelpAria: "Show explanation", shareResultAria: "Share calculation result", prevYearAria: "Previous year", nextYearAria: "Next year",
             siteAlias: "Also known as Play Points Calculator / unofficial tool",
             siteDescription: "Calculate how much you need to spend to reach the next Google Play Points level.<br>Enter your current status, target status, and points needed to estimate spending with promotion special earn rates.",
-            tabMain: "Standard", tabReverse: "Reverse", tabDiary: "Weekly Rewards Diary", lastCalculationReuse: "Use last values",
+            tabMain: "Spending for a goal", tabReverse: "Points from spending", tabDiary: "Weekly Rewards Diary", lastCalculationReuse: "Use last values",
             firstStepTitle: "Enter just 3 items first", firstStepCurrent: "Current status", firstStepTarget: "Target status", firstStepNeeded: "Points needed",
             sectionTitleStatus: "Status Input", labelCurrentStatus: "Current Status",
             labelTargetStatus: "Target Status", labelNeededPoints: "Points to Next Level",
@@ -186,7 +186,7 @@ export const CONFIGS = {
             labelBaseRate: "Base earn rate (auto from level)", labelMultiplier: "Promotion special earn rate (e.g. 3 pt / $1)", labelMultiplierReverse: "Promotion special earn rate (e.g. 3 pt / $1)",
             warningRate: "The calculator compares your base earn rate with the special earn rate shown in Google Play and uses the higher rate. It does not multiply your level rate by the promotion number. Confirm eligibility, caps, and activation in Google Play.",
             calculateButton: "Calculate Amount", copyButton: "Copy", tweetButton: "Share on X",
-            sectionTitleReverse: "Reverse Mode", labelAmountYen: "Amount Spent (USD)",
+            sectionTitleReverse: "Points from spending", labelAmountYen: "Amount Spent (USD)",
             amountYenPlaceholder: "e.g., 50", reverseCalculateButton: "Calculate Points",
             nextTargetNone: "No further levels", statusKeep: "Keep", statusUp: "Level Up", resultLabelFreeClear: "No spending needed", errorInput: "Please enter valid numbers and select a target status.",
             errorNeededPoints: "Please enter a valid number for points to next level.",
@@ -279,7 +279,7 @@ export const CONFIGS = {
             closeAria: "닫기", showHelpAria: "설명 보기", shareResultAria: "계산 결과 공유", prevYearAria: "이전 연도", nextYearAria: "다음 연도",
             siteAlias: "별칭: 구글 플레이 포인트 계산기 / 비공식 도구",
             siteDescription: "먼저 현재 등급, 목표 등급, 목표까지 필요한 포인트를 입력하세요.<br>등급 달성에 필요한 결제 금액과 결제 금액으로 받을 수 있는 포인트를 계산합니다.",
-            tabMain: "일반 계산", tabReverse: "역산 모드", tabDiary: "주간 리워드 일기", lastCalculationReuse: "지난번 조건 사용",
+            tabMain: "필요 금액 계산", tabReverse: "금액으로 포인트", tabDiary: "주간 리워드 일기", lastCalculationReuse: "지난번 조건 사용",
             firstStepTitle: "먼저 3가지만 입력", firstStepCurrent: "현재 등급", firstStepTarget: "목표 등급", firstStepNeeded: "목표까지 필요한 포인트",
             sectionTitleStatus: "등급 입력", labelCurrentStatus: "현재 등급",
             labelTargetStatus: "목표 등급", labelNeededPoints: "목표까지 필요한 포인트",
@@ -287,7 +287,7 @@ export const CONFIGS = {
             labelBaseRate: "기본 적립률(등급에서 자동 입력)", labelMultiplier: "프로모션 특별 적립률(예: 1,000원당 3pt)", labelMultiplierReverse: "프로모션 특별 적립률(예: 1,000원당 3pt)",
             warningRate: "Google Play에 표시된 특별 적립률과 기본 적립률 중 높은 값을 사용합니다. 현재 등급의 기본 적립률에 프로모션 숫자를 곱하지 않습니다. 대상, 상한, 활성화 조건은 Google Play에서 확인하세요.",
             calculateButton: "결제 금액 계산", copyButton: "복사하기", tweetButton: "결과를 X에 공유",
-            sectionTitleReverse: "역산 모드", labelAmountYen: "결제 금액 (₩)",
+            sectionTitleReverse: "금액으로 포인트 계산", labelAmountYen: "결제 금액 (₩)",
             amountYenPlaceholder: "예: 50000", reverseCalculateButton: "포인트 계산",
             nextTargetNone: "다음 목표 등급이 없습니다", statusKeep: "유지", statusUp: "승급", resultLabelFreeClear: "결제 불필요", errorInput: "올바른 숫자를 입력하고 목표 등급을 선택해 주세요",
             errorNeededPoints: "목표까지 필요한 포인트에 올바른 숫자를 입력해 주세요",
@@ -380,7 +380,7 @@ export const CONFIGS = {
             closeAria: "關閉", showHelpAria: "顯示說明", shareResultAria: "分享計算結果", prevYearAria: "上一年", nextYearAria: "下一年",
             siteAlias: "別稱: Google Play 點數計算器 / 非官方工具",
             siteDescription: "請先輸入目前等級、目標等級，以及距離目標還需要的點數。<br>此工具會估算達成等級所需消費金額，以及消費金額可獲得的點數。",
-            tabMain: "一般計算", tabReverse: "逆算模式", tabDiary: "每週獎勵日記", lastCalculationReuse: "使用上次條件",
+            tabMain: "估算所需金額", tabReverse: "依金額反推點數", tabDiary: "每週獎勵日記", lastCalculationReuse: "使用上次條件",
             firstStepTitle: "先輸入3個項目", firstStepCurrent: "目前等級", firstStepTarget: "目標等級", firstStepNeeded: "距離目標還需要的點數",
             sectionTitleStatus: "輸入等級", labelCurrentStatus: "目前等級",
             labelTargetStatus: "目標等級", labelNeededPoints: "距離目標所需點數",
@@ -388,7 +388,7 @@ export const CONFIGS = {
             labelBaseRate: "基本獲點率（依等級自動帶入）", labelMultiplier: "活動特別獲點率（例：每 NT$30 3 點）", labelMultiplierReverse: "活動特別獲點率（例：每 NT$30 3 點）",
             warningRate: "計算器會比較 Google Play 顯示的活動特別獲點率與基本獲點率，採用較高者；不會把目前等級的基本獲點率再乘上活動數字。適用商品、上限與啟用條件請以 Google Play 為準。",
             calculateButton: "計算消費金額", copyButton: "複製", tweetButton: "分享至 X",
-            sectionTitleReverse: "逆算模式", labelAmountYen: "消費金額 (NT$)",
+            sectionTitleReverse: "依金額反推點數", labelAmountYen: "消費金額 (NT$)",
             amountYenPlaceholder: "例如：1500", reverseCalculateButton: "計算點數",
             nextTargetNone: "無下一目標等級", statusKeep: "維持", statusUp: "升級", resultLabelFreeClear: "無需消費", errorInput: "請輸入有效數值並選擇目標等級",
             errorNeededPoints: "請在距離目標所需點數中輸入有效數值",

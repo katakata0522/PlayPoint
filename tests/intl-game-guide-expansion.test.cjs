@@ -56,12 +56,12 @@ test('英語ゲーム特集のmeta descriptionは固定文字数で切らず、�
   for (const guide of ALL_GUIDES) {
     const html = renderGuide('en', guide);
     const description = (html.match(/<meta name="description" content="([^"]*)">/) || [])[1] || '';
-    const expected = String(guide.content.en.market || '').replace(/\\s+/g, ' ').trim()
+    const expected = String(guide.content.en.description || guide.content.en.answer || guide.content.en.market || '').replace(/\\s+/g, ' ').trim()
       .replace(/&/g, '&amp;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
     assert.ok(description.length > 0, guide.slug + ': description is required');
-    assert.equal(description, expected, guide.slug + ': description must preserve the authored market summary without truncation');
+    assert.equal(description, expected, guide.slug + ': description must preserve the authored purchase description without truncation');
     assert.match(description, /[.!?]$/, guide.slug + ': description must end as a complete sentence');
     assert.doesNotMatch(description, /^Region-aware game purchase guide\./, guide.slug + ': generic prefix wastes the snippet');
     descriptions.push(description);
@@ -83,12 +83,12 @@ test('多言語ゲーム特集のmeta descriptionは180文字を超えても固�
       ...base,
       content: {
         ...base.content,
-        [locale]: { ...base.content[locale], market: longMarket }
+        [locale]: { ...base.content[locale], description: longMarket }
       }
     };
     const html = renderGuide(locale, guide);
     const description = (html.match(/<meta name="description" content="([^"]*)">/) || [])[1] || '';
-    const expected = (prefixes[locale] + longMarket)
+    const expected = longMarket
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
@@ -151,7 +151,7 @@ test('全地域のゲーム記事は個別の回答を先に示し、導入を�
     const html = renderGuide(locale, guide);
     const body = html.match(/<article class="content">([\s\S]*?)<\/article>/)[1];
     assert.ok(body.indexOf('id="purchase-answer"') < body.indexOf('class="intl-article-toc"'), guide.slug);
-    assert.equal((body.match(/class="intro"/g) || []).length, 1);
+    assert.equal((body.match(/class="intro"/g) || []).length, 0);
     assert.doesNotMatch(body, /article-common-rule|official-source-note/);
     assert.ok(guide.content[locale].chapters.length > 0);
     assert.ok(guide.content[locale].answer.length > 0);
