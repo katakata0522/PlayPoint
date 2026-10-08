@@ -139,6 +139,7 @@ function playPointCaptureAdChangeMonitor_() {
     { label: '変更後', days: playPointAdChangeDays_('2026-10-10', '2026-10-16') }];
   groups.forEach(function(group) { group.source = playPointAdChangeCohorts_(propertyId, group.days, stableEnd); });
   var ss = resolveAndRememberSpreadsheet_(), history = playPointRevenueReadDailyHistory_(ss);
+  var revenueLatest = playPointRevenueLatestReconciledDate_(history);
   var grid = [ ['広告変更の比較', timestamp],
     ['変更日', '2026-10-09：記事公開・広告除外追加・全画面広告の追加トリガー停止'],
     ['変更前', '2026-09-25～10-08（10/2～8は旧広告実験50%配信を含む）'],
@@ -199,9 +200,11 @@ function playPointCaptureAdChangeMonitor_() {
     cohortSheet.getRange(6, 6, cohortGrid.length - 5, 1).setNumberFormat('0.00%');
     cohortSheet.setFrozenRows(5); cohortSheet.setColumnWidths(1, 7, 150); cohortSheet.autoResizeRows(1, 4);
     var state = Object.keys(sources).some(function(key) { return sources[key].state !== 'OK'; }) ||
+      revenueLatest < stableEnd ||
       groups.some(function(group) { return ['ERROR', 'RESTRICTED'].indexOf(group.source.state) >= 0; }) ? 'PARTIAL' : 'OK';
     playPointP12UpsertHealth_('AD_CHANGE_MONITOR', { lastAttempt: timestamp, lastSuccess: timestamp,
-      dataLatest: end, state: state, consecutiveFailures: 0, error: '', note: '固定期間の前後比較。比較可能日=' + stableEnd });
+      dataLatest: revenueLatest < end ? revenueLatest : end, state: state, consecutiveFailures: 0, error: '',
+      note: '固定期間の前後比較。比較可能日=' + stableEnd + '。収益元の最新=' + revenueLatest });
     return { state: state, stableEnd: stableEnd, sources: Object.keys(sources).map(function(key) { return key + '=' + sources[key].state; }).join(' / ') };
   });
 }
