@@ -74,7 +74,7 @@ test('published Japanese H1 is guarded by the shared heading token', () => {
   const css = fs.readFileSync(path.join(articleDir, 'article-shared.css'), 'utf8');
   assert.match(
     css,
-    /body\[data-article-category\]\s+\.main-content-column\s*>\s*\.hero\s+\.article-title,\s*body\[data-article-category\]\s+\.main-content-column\s*>\s*\.hero\s+h1\s*\{[^}]*color:\s*var\(--cocoon-heading\)/is
+    /body\[data-article-category\]\s+\.main-content-column\s+\.hero\s+\.article-title,\s*body\[data-article-category\]\s+\.main-content-column\s+\.hero\s+h1\s*\{[^}]*color:\s*var\(--cocoon-heading\)/is
   );
 });
 

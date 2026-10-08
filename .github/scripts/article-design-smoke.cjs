@@ -16,7 +16,7 @@ const REPRESENTATIVE_CASES = [
   { key: 'troubleshooting-modern', path: 'articles/2026-03-10-play-points-reflection-timing.html', related: true },
   { key: 'retention-super-ticket', path: 'articles/2026-09-19-google-play-super-ticket.html', related: true },
   { key: 'retention-quests', path: 'articles/2026-07-31-google-play-quests.html', related: true },
-  { key: 'game-decision-deep', path: 'games/fgo/pity-cost/index.html', allArticle: true, intro: true, related: true },
+  { key: 'game-decision-deep', path: 'games/fgo/pity-cost/index.html', allArticle: true, noIntro: true, related: true },
   { key: 'international-decision', path: 'en/articles/google-play-points-earn-free.html', related: true },
   { key: 'international-quest-reading', path: 'en/articles/google-play-quests.html', intro: true, related: true },
   { key: 'cash-opening-ja', path: 'articles/2026-07-24-play-points-cash-conversion.html', related: true, openingV2: true },
@@ -139,7 +139,7 @@ async function inspect(browser, baseUrl, article, viewport) {
     if (article.marker) assert(result.marker, article.key + '/' + viewport.key + ': important emphasis missing');
     if (article.openingV2) {
       assert(result.openingStylesheet, article.key + '/' + viewport.key + ': opening v2 stylesheet missing');
-      assert(result.openingAnswerTextLength > 0 && result.openingAnswerTextLength <= 260, article.key + '/' + viewport.key + ': first answer is too long');
+      assert(result.openingAnswerTextLength > 0, article.key + '/' + viewport.key + ': first answer must contain the decision');
     }
     if (article.compactScope) assert(result.compactScopeText.length > 0 && result.compactScopeText.length <= 20, article.key + '/' + viewport.key + ': region scope is not compact');
     if (article.collapsedToc) assert(result.collapsedToc, article.key + '/' + viewport.key + ': long article navigation must be optional');

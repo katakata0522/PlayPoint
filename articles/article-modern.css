@@ -184,15 +184,15 @@ line-height: 1.7;
 overflow-wrap: anywhere;
 }
 }
-body[data-article-category] .main-content-column > .hero {
+body[data-article-category] .main-content-column .hero {
 background: transparent;
 padding: 0;
 text-align: left;
 border-radius: 0;
 box-shadow: none;
 }
-body[data-article-category] .main-content-column > .hero h1,
-body[data-article-category] .main-content-column > .hero .article-title {
+body[data-article-category] .main-content-column .hero h1,
+body[data-article-category] .main-content-column .hero .article-title {
 max-width: none;
 text-shadow: none;
 }
