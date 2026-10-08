@@ -92,8 +92,8 @@ async function verifyUiContracts(browser, baseUrl, locales, blockExternalRequest
     await rp.locator('#rounding-count').fill('0');
     await rp.locator('#rounding-calculate').click();
     assert.match(await rp.locator('#rounding-result').innerText(), /購入回数/);
-    await rp.locator('[aria-controls="guide-toc"]').click();
-    const toc = await rp.locator('#guide-toc a').evaluateAll(nodes => nodes.map(el => {const target=document.querySelector(el.getAttribute('href'));return {href:el.getAttribute('href'),auxiliary:!!target?.closest('.faq,.contextual-guide-links')};}));
+    await rp.locator('.reader-toc > summary').click();
+    const toc = await rp.locator('.reader-toc a').evaluateAll(nodes => nodes.map(el => {const target=document.querySelector(el.getAttribute('href'));return {href:el.getAttribute('href'),auxiliary:!!target?.closest('.faq,.contextual-guide-links')};}));
     assert.ok(toc.length > 0, '実目次が生成されない');
     assert.ok(toc.every(link => !link.auxiliary), 'FAQ/補助導線が目次へ混入');
     await rp.keyboard.press('Escape');

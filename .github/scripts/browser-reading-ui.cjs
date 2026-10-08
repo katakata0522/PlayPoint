@@ -25,7 +25,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       if (!document.documentElement.classList.contains('guide-navigation-enabled')) return true;
       const menu = document.getElementById('guide-menu');
       const navigation = document.querySelector('.ja-global-nav,.top-bar');
-      const mobile = matchMedia('(max-width:760px)').matches;
+      const mobile = matchMedia(document.documentElement.classList.contains('guide-article-header') ? '(max-width:950px)' : '(max-width:760px)').matches;
       return menu && navigation && menu.contains(navigation) === mobile && (mobile || !menu.open);
     });
   }
@@ -435,10 +435,28 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       assert(await page.locator('#guide-menu').evaluate(el=>el.scrollWidth<=el.clientWidth+1),'Small menu does not overflow');
       await closeMenu(page); await page.setViewportSize({width:390,height:844});
       if (name==='article') {
-        await page.locator('[aria-controls="guide-toc"]').click();
+        assert.equal(await page.locator('.guide-header [aria-controls="guide-toc"]').count(),0,'記事の目次は本文に置く');
+        const searchButton=page.locator('[aria-controls="guide-search"]');
+        const searchRect=await searchButton.boundingBox(), menuRect=await page.locator('[aria-controls="guide-menu"]').boundingBox();
+        assert(searchRect.x<menuRect.x,'記事検索は左、メニューは右');
+        await searchButton.click();
+        await page.waitForFunction(()=>document.activeElement?.id==='guide-search-input');
+        await page.locator('#guide-search-input').fill('原神 空月');
+        await page.locator('#guide-search .guide-search-result').first().waitFor({state:'visible'});
+        assert((await page.locator('#guide-search .guide-search-result').first().textContent()).includes('空月'),'一覧と同じ複合検索で記事を探せる');
+        await page.locator('#guide-search-input').fill('存在しない記事zz987');
+        await page.waitForFunction(()=>document.querySelector('.guide-search-status').textContent.includes('該当する記事がありません'));
+        await page.keyboard.press('Escape');
+        assert(await searchButton.evaluate(el=>el===document.activeElement),'検索を閉じると検索ボタンへ戻る');
+        await page.setViewportSize({width:768,height:844}); await waitNavigationLayout(page);
+        assert(await searchButton.isVisible(),'タブレットでも検索を直接開ける');
+        await openMenu(page);
+        const menuBounds=await page.locator('#guide-menu').boundingBox();
+        assert(Math.abs(menuBounds.x+menuBounds.width-768)<2,'記事メニューは右側から開く');
+        await closeMenu(page); await page.setViewportSize({width:390,height:844}); await waitNavigationLayout(page);
+        await page.locator('.reader-toc > summary').click();
         await page.screenshot({path:path.join(artifactDir,'mobile-article-toc-390.png')});
-        await page.locator('#guide-toc a[href="#article-section-2"]').click();
-        assert.equal(await page.locator('#guide-toc').evaluate(el=>el.open),false);
+        await page.locator('.reader-toc a[href="#article-section-2"]').click();
         await page.waitForFunction(()=>{const y=document.getElementById('article-section-2').getBoundingClientRect().top;return y>=55&&y<200;});
         assert(await page.locator('#article-section-2').evaluate(el=>el===document.activeElement),'TOC puts focus on the chosen heading');
         for(const width of [320,390]) { await page.setViewportSize({width,height:844}); assert(await page.locator('[data-reading-table]').evaluateAll(nodes=>nodes.every(el=>el.scrollWidth<=el.clientWidth+2)),'Two-column table remains readable'); }
