@@ -19,6 +19,17 @@ test('未登録パラメータはAPIを呼ばず待機し、取得0件と区別�
   const empty=c.playPointReaderSource_(()=>{calls++;return {rows:[]};},['customEvent:component'],{'customEvent:component':true});
   assert.equal(empty.state,'OK');assert.equal(empty.rows.length,0);assert.equal(calls,1);
 });
+
+test('既存のゲーム計算機と計算後リンクを同じ集計で取り、人数比を完了率と呼ばない',()=>{
+ const c=runtime();
+ for(const name of ['game_form_started','game_calculation_completed','result_related_article_clicked','result_decision_link_clicked']){
+  assert(c.PLAYPOINT_READER_OUTCOMES.events.includes(name));assert(c.PLAYPOINT_EVENT_DAILY.events.includes(name));
+ }
+ const grid=c.playPointReaderBuildGrid_({start:'2026-09-07',end:'2026-10-06'},[],{
+  EVENTS:{state:'OK',detail:'ok',rows:[{eventName:'game_calculation_completed',eventCount:15,totalUsers:10}]}},'now');
+ assert.equal(grid[9][2],'game_calculation_completed');assert.equal(grid[9][3],15);assert.equal(grid[9][4],10);
+ assert.match(grid[5][1],/疑問解決.*代用しない/);
+});
 test('しきい値で制限された値は完全取得とはしない',()=>{
   const c=runtime(); assert.equal(c.playPointReaderSource_(()=>({rows:[{eventCount:4}],restricted:true}),[],{}).state,'RESTRICTED');
   assert.equal(c.playPointReaderSource_(()=>{throw Error('quota');},[],{}).state,'ERROR');

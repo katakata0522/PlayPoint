@@ -5,7 +5,8 @@ var PLAYPOINT_READER_OUTCOMES = Object.freeze({
   sheet: '🧑読者行動・再訪',
   events: Object.freeze(['page_view', 'article_navigation_click', 'article_to_calculator_clicked',
     'reader_question_clicked', 'search', 'calculator_form_started', 'calculator_funnel_completed',
-    'calculator_validation_error', 'diary_tab_opened', 'diary_entry_saved'])
+    'calculator_validation_error', 'diary_tab_opened', 'diary_entry_saved',
+    'game_form_started', 'game_calculation_completed', 'result_related_article_clicked', 'result_decision_link_clicked'])
 });
 
 function playPointReaderFilter_(name, values) {
@@ -244,7 +245,8 @@ var PLAYPOINT_EVENT_DAILY = Object.freeze({
   historyDays: 35,
   events: Object.freeze(['page_view', 'article_navigation_click', 'article_to_calculator_clicked',
     'calculator_form_started', 'calculator_funnel_completed', 'calculator_validation_error',
-    'reader_question_clicked', 'search'])
+    'reader_question_clicked', 'search', 'game_form_started', 'game_calculation_completed',
+    'result_related_article_clicked', 'result_decision_link_clicked'])
 });
 
 function playPointEventDailyIso_(raw) {

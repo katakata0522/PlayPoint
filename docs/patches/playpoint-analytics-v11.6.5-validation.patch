@@ -1,5 +1,5 @@
 diff --git a/コード.gs b/コード.gs
-index cc24cf3..17a310b 100644
+index cc24cf3..08a8668 100644
 --- a/コード.gs
 +++ b/コード.gs
 @@ -994,32 +994,34 @@ function resolveIncrementalRange_(existingMap) {
@@ -160,7 +160,63 @@ index cc24cf3..17a310b 100644
  /* ========================================================================== */
  /* ページ日次履歴・ページ価値・ランディング分析                               */
  /* ========================================================================== */
-@@ -4462,9 +4485,24 @@ function dimensionValue_(row, index) {
+@@ -3128,38 +3151,52 @@ function createMonthlyArchive_(ss, monthKey) {
+ function createWeeklyDetailArchive_(ss, gaRange, scRange, results) {
+   const archiveRoot = getOrCreateDataChildFolder_('Archives');
+   const weeklyRoot = getOrCreateNestedFolder_(archiveRoot, ['Weekly']);
+   const timestamp = Utilities.formatDate(new Date(), CONFIG.TIME_ZONE, 'yyyy-MM-dd_HHmmss');
+   const folder = getOrCreateNestedFolder_(weeklyRoot, [timestamp]);
++  const sourceSheets = [];
+ 
+   [
+     [CONFIG.SHEETS.PAGES, 'pages.csv'],
+     [CONFIG.SHEETS.COUNTRY, 'country.csv'],
+     [CONFIG.SHEETS.DEVICE, 'device_channel.csv'],
+     [CONFIG.SHEETS.KEYWORDS, 'search_keywords.csv'],
+     [CONFIG.SHEETS.SEARCH_QUERY_PAGE, 'search_query_page.csv'],
+     [CONFIG.SHEETS.ADSENSE_PAGES, 'adsense_pages.csv'],
+     [CONFIG.SHEETS.PAGE_VALUE, 'page_value.csv'],
+-    [CONFIG.SHEETS.LANDING_SOURCE, 'landing_source.csv']
++    [CONFIG.SHEETS.LANDING_SOURCE, 'landing_source.csv'],
++    ['📊ページ価値ファネル', 'p1_page_funnel.csv'],
++    ['🔎検索クロス分析', 'p1_search_cross.csv'],
++    ['🧭URL検査', 'p2_url_inspection.csv'],
++    ['📚記事Portfolio', 'article_portfolio.csv'],
++    ['🧑読者行動・再訪', 'reader_outcomes.csv'],
++    ['📈GA4イベント日次', 'event_daily.csv'],
++    ['⚖広告変更比較', 'ad_change_comparison.csv'],
++    ['↩7日目再訪', 'day7_return.csv'],
++    ['🧪変更効果・利用品質', 'change_quality.csv']
+   ].forEach(function (entry) {
+     const sheet = ss.getSheetByName(entry[0]);
+     if (!sheet || sheet.getLastRow() === 0) return;
++    const values = sheet.getDataRange().getValues();
++    sourceSheets.push({ sheet: entry[0], file: entry[1], rows: values.length,
++      title: (values[0] || []).slice(0, 2), context: (values[1] || []).slice(0, 2) });
+     createOrReplaceTextFile_(
+       folder,
+       entry[1],
+-      rowsToCsv_(sheet.getDataRange().getValues()),
++      rowsToCsv_(values),
+       'text/csv'
+     );
+   });
+ 
+   const metadata = {
+     app: CONFIG.APP_NAME,
+     version: CONFIG.VERSION,
+     exportedAt: currentTimestamp_(),
+     ga4Range: gaRange,
+     searchConsoleRange: scRange,
+     results: results,
+-    note: 'Weekly final-analysis snapshot. See results for per-report success/failure.'
++    sourceSheets: sourceSheets,
++    note: 'Weekly snapshot, including improvement measurements. exportedAt is export time, not collection success. Each CSV retains its own period/state; check sourceSheets and health before comparing.'
+   };
+   createOrReplaceTextFile_(folder, 'manifest.json', JSON.stringify(metadata, null, 2), 'application/json');
+   return 'Archives/Weekly/' + timestamp;
+ }
+@@ -4462,9 +4499,24 @@ function dimensionValue_(row, index) {
  }
  
  function metricNumber_(row, index) {
