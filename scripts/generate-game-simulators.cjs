@@ -1978,6 +1978,9 @@ function generateGamePageHtml(game, localeKey) {
     : '';
 
   const gameTitle = game.names[localeKey] || game.names.ja;
+  const pageTitle = localeKey === 'ja' && game.id === 'wutheringwaves'
+    ? '鳴潮のPlayポイント計算機｜購入額・ランク別の獲得ポイント'
+    : `${gameTitle} - ${loc.siteName}`;
   const gameShort = game.shortNames[localeKey] || game.shortNames.ja;
   const gameDesc = game.descs[localeKey] || game.descs.ja;
   const presentation = localeKey === 'ja' ? getJapaneseCalculator(game) : null;
@@ -2068,7 +2071,7 @@ function generateGamePageHtml(game, localeKey) {
   <meta name="last-modified" content="${GAME_CONTENT_UPDATED_AT}" />
   <meta name="author" content="${loc.authorName}" />
   <link rel="icon" href="${assetsRelative}favicon.svg" type="image/svg+xml" />
-  <title>${gameTitle} - ${loc.siteName}</title>
+  <title>${pageTitle}</title>
   <meta name="description" content="${gameDesc}" />
   <link rel="canonical" href="https://playpoint-sim.com${langPrefix}/games/${game.id}/" />
   <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/${game.id}/" />
@@ -2079,12 +2082,12 @@ function generateGamePageHtml(game, localeKey) {
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="${loc.siteName}" />
-  <meta property="og:title" content="${gameTitle} - ${loc.siteName}" />
+  <meta property="og:title" content="${pageTitle}" />
   <meta property="og:description" content="${gameDesc}" />
   <meta property="og:url" content="https://playpoint-sim.com${langPrefix}/games/${game.id}/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${gameTitle} - ${loc.siteName}" />
+  <meta name="twitter:title" content="${pageTitle}" />
   <meta name="twitter:description" content="${gameDesc}" />
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
 

@@ -43,7 +43,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   {
     id: 'monst-google-play-vs-webshop-2026',
     listDescription: "同じ1万円でアプリ180個、Web190個、月イチ200個。ポイントの利用価値も含めて購入先を選べます。",
-    title: 'モンストの購入経路ガイド｜アプリ180個・Web190個・月イチ200個の違い',
+    title: 'モンストのオーブはどこで買う？アプリ180個・Web190個・月イチ200個を比較',
     category: '使い方',
     gameTitle: 'モンスト',
     listTitle: 'モンスト｜購入経路・オーブ数の基本比較',
@@ -58,13 +58,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'starrail-supply-pass-value-2026',
+    editorialNext: true,
     listDescription: "列車補給標章を毎日受け取れる場合と、すぐ星玉が必要な場合を比較。通常購入との違いを確認できます。",
-    title: 'スタレ「列車補給標章」はどれくらいお得？3000星玉相当とPlay Points',
+    title: 'スタレ「列車補給標章」は買うべき？毎日受取と即時チャージの違い',
     category: '使い方',
     gameTitle: 'スタレ',
     listTitle: 'スタレ｜列車補給標章と通常購入を比較',
     tags: ['スタレ', '崩壊スターレイル', '列車補給標章', '月パス', 'Play Points'],
-    description: '崩壊：スターレイルの列車補給標章を最大3,000星玉相当・受取速度・Google Play Pointsで比較します。',
+    description: '列車補給標章の最大3,000星玉相当を、10日・20日・30日の受取量で比較。欲しいガチャに間に合うか、即時チャージとGoogle Play Pointsをどう比べるかを解説します。',
     file: '../games/starrail/supply-pass-value/index.html',
     related: [
       ["/articles/2025-12-25-subscription.html","定期購入のPlay Points条件を確認する"],
@@ -75,7 +76,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   {
     id: 'zzz-membership-value-2026',
     listDescription: "インターノット会員と通常購入を、受取日数と必要なタイミングで比較。ポイント還元も分けて考えられます。",
-    title: 'ゼンゼロ「インターノット会員」はお得？3000相当とPlay Points',
+    title: 'ゼンゼロ「インターノット会員」はお得？3,000ポリクローム相当の受取条件',
     category: '使い方',
     gameTitle: 'ゼンゼロ',
     listTitle: 'ゼンゼロ｜インターノット会員の価値',
@@ -106,13 +107,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'proseka-google-play-vs-webstore-2026',
+    editorialNext: true,
     listDescription: "カラフルパス3種とミッションパス、公式WebStoreを比較。商品ごとの内容と購入経路の違いを確認できます。",
-    title: 'プロセカはGoogle Playと公式WebStoreどっちがお得？パス・クリスタル・Play Points比較',
+    title: 'プロセカの課金はどこで買う？公式WebStore・カラフルパスの選び方',
     category: '使い方',
     gameTitle: 'プロセカ',
     listTitle: 'プロセカ｜パス・クリスタルの購入先比較',
     tags: ['プロセカ', 'WebStore', 'カラフルパス', 'クリスタル', 'Play Points'],
-    description: 'プロセカ公式WebStoreの現行価格、カラフルパス3種、ミッションパスとGoogle Play Pointsの違いを整理します。',
+    description: 'プロセカ公式WebStoreの価格とカラフルパス3種を比較。毎日分の無償クリスタル、即時購入、有償限定ガチャ、Google Play Pointsの違いから選び方を解説します。',
     file: '../games/proseka/google-play-vs-webstore/index.html',
     related: [
       ["/articles/2026-08-19-web-store-external-billing-points.html","公式WebストアとGoogle Play課金の違いを確認する"],
@@ -123,7 +125,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   {
     id: 'pokepoke-premium-pass-guide-2026',
     listDescription: "プレミアムパスを試す前に、14日無料体験と定期購入の条件を確認。Googleアカウントとの紐付けにも注意できます。",
-    title: 'ポケポケのプレミアムパスはどう課金される？無料体験・Google Play Points確認【2026年】',
+    title: 'ポケポケのプレミアムパスは何が得？14日無料体験と自動更新の注意点',
     category: '使い方',
     gameTitle: 'ポケポケ',
     listTitle: 'ポケポケ｜プレミアムパスと無料体験',
@@ -155,7 +157,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   {
     id: 'arknights-monthly-pass-limited-scout-2026',
     listDescription: "月パスの受取内容と、限定スカウト300回の条件を確認。必要な時期とGoogle Playでの購入額を分けて考えられます。",
-    title: 'アークナイツ月パスと限定300連をどう見る？内容・天井・Play Points【2026年】',
+    title: 'アークナイツの月パスは何が得？内容と限定300連の仕組み',
     category: '使い方',
     gameTitle: 'アークナイツ',
     listTitle: 'アークナイツ｜月パスと限定300連の考え方',
@@ -170,13 +172,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'dokkan-google-play-vs-webstore-2026',
+    editorialNext: true,
     listDescription: "公式Web StoreとGoogle Playは別決済。価格とポイントの対象経路を、購入前に比べられます。",
-    title: 'ドッカンバトルはGoogle PlayとWeb Storeどっちで買う？Play Pointsの違い【2026年】',
+    title: 'ドッカンバトルの龍石はどこで買う？Google PlayとWeb Storeの選び方',
     category: '使い方',
     gameTitle: 'ドッカン',
     listTitle: 'ドッカン｜Google Playと公式ストアを比較',
     tags: ['ドッカンバトル', '龍石', 'Web Store', 'Play Points'],
-    description: 'ドッカンバトル公式Web StoreとGoogle Play購入を別決済として整理。Play Points対象経路、価格変動、購入前の比較ポイントを解説します。',
+    description: 'ドッカンバトルの龍石購入を、同額での個数とPlay Pointsで比較。仮の価格例、Web Store購入後の反映場所・履歴まで説明します。',
     file: '../games/dokkan/google-play-vs-webstore/index.html',
     related: [
       ["/articles/2026-08-19-web-store-external-billing-points.html","公式WebストアとGoogle Play課金の違いを確認する"],
@@ -187,7 +190,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   {
     id: 'hbr-google-play-vs-webshop-2026',
     listDescription: "WEB SHOPの5%OFFと専用ポイントを、Google Playの還元と比較。Webでは加入できない月額パスにも注意できます。",
-    title: 'ヘブバンはGoogle PlayとWEB SHOPどっちがお得？5%OFF・独自ポイント・パスの違い【2026年】',
+    title: 'ヘブバンの課金はWebが得？5%OFFとパス・Play Pointsの違い',
     category: '使い方',
     gameTitle: 'ヘブバン',
     listTitle: 'ヘブバン｜Google PlayとWebショップを比較',
@@ -235,7 +238,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   {
     id: 'prospi-a-google-play-vs-konami-store-2026',
     listDescription: "Google PlayとKONAMI Gamesストアの購入経路を比較。Play Points、パワスピ・ゴールド、dポイントの違いが分かります。",
-    title: 'プロスピAはGoogle PlayとKONAMI Gamesストアどっちがお得？Play Points・パワスピG・dポイント比較【2026年】',
+    title: 'プロスピAの課金はどこがお得？KONAMIストアの還元とGoogle Playを比較',
     category: '使い方',
     gameTitle: 'プロスピA',
     listTitle: 'プロスピA｜Google PlayとKONAMIストアを比較',

@@ -95,7 +95,7 @@ const EDITORIAL_TARGETS = Object.freeze({
   },
   'articles/2026-07-25-play-points-coupon-not-applied.html': {
     manualStructure: true,
-    modifiedDate: '2026-09-12',
+    modifiedDate: '2026-10-08',
     answer: 'クーポンが適用されない場合は、対象アプリ、最低購入額、他の割引との併用、交換したアカウント、国・通貨の順で確認します。',
     known: [
       '保存済みクーポンの対象アプリや条件はGoogle Playの画面で確認できます。',

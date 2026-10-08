@@ -35,7 +35,6 @@ test('選定した日本語記事は本文を邪魔しない文脈型の関連�
     ['articles/2025-12-25-diamond-vip.html', './2026-09-19-google-play-super-ticket.html'],
     ['articles/2025-12-25-playpoints-rank-maintenance.html', './2025-12-25-refund.html'],
     ['articles/2026-07-24-play-points-1-value.html', './2025-12-25-best-use.html'],
-    ['articles/2026-08-16-payment-methods-points.html', './2025-12-25-gift-card.html'],
     ['articles/2026-07-25-play-credit-not-working.html', './2025-12-25-expiration.html'],
     ['articles/2025-12-25-getting-started.html', './2025-12-25-best-use.html'],
     ['articles/2026-08-19-redeemed-item-not-received.html', './2025-12-25-check-balance.html'],
@@ -65,4 +64,12 @@ test('選定した日本語記事は本文を邪魔しない文脈型の関連�
 
     // 実際の祖先要素・幅・フォーカスはui-contract-browserが全対象を確認する。
   }
+  // 長い支払い方法の記事は、直前の説明に結び付いた通常の本文リンクを使う。
+  // 「詳しくはこちら」という名称も、前後に購入経路・付与時点の説明があれば許容する。
+  const payment = fs.readFileSync(path.join(root, 'articles/2026-08-16-payment-methods-points.html'), 'utf8');
+  const body = payment.slice(payment.indexOf('<!-- reading-tools:end -->'), payment.indexOf('data-editorial-next="true"'));
+  assert.match(body, /Google Playを通らない[\s\S]*?href="\/articles\/2026-08-19-web-store-external-billing-points.html">詳しくはこちら/);
+  assert.match(body, /付与タイミング[\s\S]*?href="\/articles\/2025-12-25-gift-card.html">詳しくはこちら/);
+  assert.equal((body.match(/href="\/articles\//g) || []).length, 2);
+  assert.equal(payment.includes('reader-followthrough:start'), false, '個別のおすすめ欄へ同じ導線を重ねない');
 });
