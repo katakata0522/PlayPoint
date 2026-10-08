@@ -137,7 +137,7 @@ function earnRateOptions(locale) {
 
 function adMarkup(locale) {
   const c = COPY[locale];
-  return `<div class="game-ad-slot"><div class="game-ad-label">${c.ad}</div><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455" data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins></div>`;
+  return `<div class="game-ad-container" tabindex="0" role="region" aria-label="${c.ad}"><span class="game-ad-label">${c.ad}</span><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455" data-ad-slot="8250492620" data-full-width-responsive="false"></ins></div>`;
 }
 
 function parentPage(slug, locale) {
@@ -203,7 +203,7 @@ ${locale === 'ja' ? '' : `        <div class="input-field"><label for="sim-pack-
       </div></form>
       <div class="game-result-container"><div class="result-main-grid">
         <div class="result-stat-box"><span class="result-stat-label">${c.total}</span><strong id="res-total-amount" class="result-stat-value">-</strong></div>
-        <div class="result-stat-box"><span class="result-stat-label">${c.points}</span><strong id="res-earned-points" class="result-stat-value highlight">- pt</strong></div>
+        <div class="result-stat-box"><span class="result-stat-label">${c.points}</span><strong id="res-earned-points" class="result-stat-value highlight">- pt</strong><span id="res-calculation-basis" class="game-basis-badge"></span></div>
         <div class="result-stat-box"><span class="result-stat-label">${c.value}</span><strong id="res-point-value-yen" class="result-stat-value">-</strong></div>
         <div class="result-stat-box"><span class="result-stat-label">${c.rank}</span><strong id="res-reached-rank" class="result-stat-value">-</strong></div>
       </div><div class="rank-progress-wrapper"><div class="rank-progress-header"><span id="res-progress-label">${c.progress}</span><span id="res-next-progress">-</span></div><div class="rank-bar-bg"><div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-labelledby="res-progress-label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div></div>
