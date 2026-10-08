@@ -52,6 +52,24 @@ function escapeRegex(text) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+test('日本語の別名配列はサイト・計算機を表し、翻訳生成時に各言語の別名へ置換する', () => {
+  const source = read('index.html');
+  const nodes = html => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+    .map(match => JSON.parse(match[1]))
+    .filter(node => ['WebSite', 'SoftwareApplication'].includes(node['@type']));
+  const japanese = nodes(source);
+  assert.equal(japanese.filter(node => node['@type'] === 'WebSite').length, 1);
+  for (const node of japanese) {
+    assert.ok(node.alternateName.includes('プレイポイント計算機'));
+    assert.equal(node.name, 'Google Play Points 計算機');
+  }
+  for (const [locale, config] of Object.entries(createLocales('2026-10-08'))) {
+    for (const node of nodes(buildLocalizedHtml(source, locale, config, '2026-10-08'))) {
+      assert.equal(node.alternateName, config.alternateName || config.appName);
+    }
+  }
+});
+
 function getUserFacingSurface(html) {
   const withoutNonContent = html
     .replace(/<div\b(?=[^>]*\bclass=["'][^"']*\bregion-switch\b[^"']*["'])[^>]*>[\s\S]*?<\/div>/i, ' ')
