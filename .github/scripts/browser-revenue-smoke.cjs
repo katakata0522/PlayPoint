@@ -270,8 +270,8 @@ async function main() {
         pageOverflow:document.documentElement.scrollWidth>innerWidth+1,
         accessible:el.tabIndex===0&&Boolean(el.getAttribute('aria-label'))
       }));
-      assert.equal(filledLayout.overflow,'auto');
-      assert.ok(filledLayout.scrollable && filledLayout.accessible && !filledLayout.pageOverflow, `${gamePath}: filled ad resize ${JSON.stringify(filledLayout)}`);
+      strictAssert.equal(filledLayout.overflow,'auto');
+      assert(filledLayout.scrollable && filledLayout.accessible && !filledLayout.pageOverflow, `${gamePath}: filled ad resize ${JSON.stringify(filledLayout)}`);
       assert(state.consentSource === 'googlefc', `${gamePath} did not use GoogleFC consent source`);
       assertExternalRequests(requests, gamePath);
       assert(errors.length === 0, `${gamePath} browser errors: ${errors.join(' | ')}`);
