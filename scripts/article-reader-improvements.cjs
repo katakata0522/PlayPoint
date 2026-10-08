@@ -44,6 +44,8 @@ function comparisonTable(game) {
 }
 
 function improveGameGuide(html, article) {
+  // 個別に編集した比較表・出典・導線は、汎用の補足で上書きしない。
+  if (html.includes('data-editorial-flow="2026-10"')) return html;
   html = html.replace(/\s*<p class="reader-source">[\s\S]*?<\/p>/g, '')
     .replace(/<section class="section reader-comparison"[\s\S]*?<\/section>/g, '');
   const sources = [...(html.match(/<section\b[^>]*class="[^"]*source-list[^"]*"[^>]*>[\s\S]*?<\/section>/)?.[0] || '').matchAll(/<a\b[^>]*href="(https:[^"]+)"[^>]*>([\s\S]*?)<\/a>/g)]

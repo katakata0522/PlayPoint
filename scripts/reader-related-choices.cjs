@@ -69,7 +69,7 @@ const escape = value => String(value).replaceAll('&','&amp;').replaceAll('"','&q
 function improveReaderLinks(html, article, byId) {
   const ids = RELATED_CHOICES[article.id];
   const sectionPattern = /<(section|aside)\b[^>]*class="[^"]*(?:related-links-section|contextual-guide-links|article-related-guides)[^"]*"[^>]*>[\s\S]*?<\/\1>/;
-  if (ids) {
+  if (ids && !html.includes('data-editorial-next="true"')) {
     const previous = html.match(sectionPattern)?.[0];
     if (!previous) throw new Error(article.id + ': 関連記事の配置が見つかりません');
     const languageSection = previous.includes('他の言語で読む');

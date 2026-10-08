@@ -202,7 +202,7 @@ function renderFaqSection(pairs) {
 
 function renderRelatedSection(article) {
   const links = Array.isArray(article.related) ? article.related : [];
-  return `\n<section class="section related-links-section"><h2>あわせて読みたい</h2><ul>${links.map(([href, label]) => `<li><a href="${escapeHtml(href)}">${escapeHtml(label)}</a></li>`).join('')}</ul></section>`;
+  return `\n<section class="section related-links-section"${article.editorialNext ? ' data-editorial-next="true"' : ''}><h2>あわせて読みたい</h2><ul>${links.map(([href, label]) => `<li><a href="${escapeHtml(href)}">${escapeHtml(label)}</a></li>`).join('')}</ul></section>`;
 }
 
 function renderAuthor() {

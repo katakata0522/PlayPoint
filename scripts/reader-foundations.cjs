@@ -81,7 +81,10 @@ function syncReaderFoundations(root, { hubOnly = false } = {}) {
       ? [['/articles/2026-09-19-play-points-calendar-schedule-guide.html#reader-calendar-title', '加入中なら、木曜の確認日を残す'], ['/articles/2025-12-25-weekly-reward.html', '金曜のリワードとの違いを読む']]
       : [[href, label]];
     const body = `<nav class="reader-followthrough" aria-label="読んだ後の確認先"><h2>このあと確認すること</h2><ul>${actions.map(([url, name]) => `<li><a href="${escape(url)}">${escape(name)} →</a></li>`).join('')}</ul><p><a href="/blog/">記事トップから別の疑問を探す</a></p></nav>`;
-    html = replaceBlock(html, 'reader-followthrough', body, (source, block) => source.replace(/(<(?:div|section)\b[^>]*class="[^"]*author-profile-box[^\"]*"[^>]*>)/, block + '$1'));
+    // 個別のおすすめ欄がある記事では、同じ記事への追加導線を重ねない。
+    html = html.includes('data-editorial-next="true"')
+      ? html.replace(/<!-- reader-followthrough:start -->[\s\S]*?<!-- reader-followthrough:end -->\s*/g, '')
+      : replaceBlock(html, 'reader-followthrough', body, (source, block) => source.replace(/(<(?:div|section)\b[^>]*class="[^"]*author-profile-box[^\"]*"[^>]*>)/, block + '$1'));
     // 古い相対リンクも、用途が分かる名称に統一する。
     html = html.replace(/(<a\b[^>]*href="(?:\.\.\/blog\/|\/blog\/)"[^>]*>)\s*(?:記事一覧(?:へ)?|攻略記事一覧)\s*(<\/a>)/g, '$1記事トップ$2');
     fs.writeFileSync(file, html);
