@@ -441,6 +441,7 @@
   },
   {
     "id": "hbr-google-play-vs-webshop-2026",
+    "modified": "2026-10-09",
     "listDescription": "WEB SHOPの5%OFFと専用ポイントを、Google Playの還元と比較。Webでは加入できない月額パスにも注意できます。",
     "title": "ヘブバンの課金はWebが得？5%OFFとパス・Play Pointsの違い",
     "category": "使い方",
@@ -470,7 +471,6 @@
       ]
     ],
     "date": "2026-09-13",
-    "modified": "2026-10-08",
     "ogp": "../articles/ogp/hbr-google-play-vs-webshop-2026.png",
     "thumbnail": "../images/game-icons/hbr.webp",
     "thumbnail2x": "../images/game-icons/hbr-2x.webp",
@@ -520,6 +520,7 @@
   },
   {
     "id": "phantomparade-google-play-vs-webshop-2026",
+    "modified": "2026-10-09",
     "listDescription": "公式WEBショップの増量、マイルpt、パス商品を比較。Google Play Pointsと別の特典として判断できます。",
     "title": "ファンパレはGoogle PlayとWEBショップどっちがお得？増量・マイル・Play Points比較【2026年】",
     "category": "使い方",
@@ -549,7 +550,6 @@
       ]
     ],
     "date": "2026-09-13",
-    "modified": "2026-10-08",
     "ogp": "../articles/ogp/phantomparade-google-play-vs-webshop-2026.png",
     "thumbnail": "../images/game-icons/phantomparade.webp",
     "thumbnail2x": "../images/game-icons/phantomparade-2x.webp",
@@ -990,7 +990,7 @@
     "id": "play-points-calendar-schedule-guide-2026",
     "title": "Play Pointsのお得カレンダー｜毎週・毎月の確認日",
     "date": "2026-09-19",
-    "modified": "2026-10-08",
+    "modified": "2026-10-09",
     "category": "キャンペーン",
     "tags": [
       "Play Points",
@@ -1709,7 +1709,7 @@
     "id": "super-weekly-reward",
     "title": "Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・対象ランク",
     "date": "2026-07-31",
-    "modified": "2026-10-05",
+    "modified": "2026-10-09",
     "category": "ランク",
     "tags": [
       "Play Points",
@@ -2144,7 +2144,7 @@
     "description": "Google Play Pointsの通常ウィークリーリワードは日本ではシルバー以上・毎週金曜更新。何が当たるのか、スーパー週次・Play Pass週次との違い、年間記録の実例も整理します。",
     "file": "../articles/2025-12-25-weekly-reward.html",
     "thumbnail": "../articles/thumbnails/weekly-reward-square-v1.webp",
-    "modified": "2026-10-08",
+    "modified": "2026-10-09",
     "listTitle": "ウィークリーリワード｜受取曜日・ランク別特典",
     "listDescription": "日本の通常週次はシルバー以上・金曜更新。賞品と受取方法、スーパー週次・Play Pass週次との違いを確認できます。",
     "browseCategory": "ランク・ステータス",

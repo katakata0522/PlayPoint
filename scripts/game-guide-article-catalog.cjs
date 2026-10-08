@@ -189,6 +189,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'hbr-google-play-vs-webshop-2026',
+    modified: '2026-10-09',
     listDescription: "WEB SHOPの5%OFFと専用ポイントを、Google Playの還元と比較。Webでは加入できない月額パスにも注意できます。",
     title: 'ヘブバンの課金はWebが得？5%OFFとパス・Play Pointsの違い',
     category: '使い方',
@@ -221,6 +222,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'phantomparade-google-play-vs-webshop-2026',
+    modified: '2026-10-09',
     listDescription: "公式WEBショップの増量、マイルpt、パス商品を比較。Google Play Pointsと別の特典として判断できます。",
     title: 'ファンパレはGoogle PlayとWEBショップどっちがお得？増量・マイル・Play Points比較【2026年】',
     category: '使い方',

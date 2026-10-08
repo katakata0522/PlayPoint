@@ -80,7 +80,12 @@ function syncReaderFoundations(root, { hubOnly = false } = {}) {
     const actions = article.id === 'play-pass-worth-it'
       ? [['/articles/2026-09-19-play-points-calendar-schedule-guide.html#reader-calendar-title', '加入中なら、木曜の確認日を残す'], ['/articles/2025-12-25-weekly-reward.html', '金曜のリワードとの違いを読む']]
       : [[href, label]];
-    const body = `<nav class="reader-followthrough" aria-label="読んだ後の確認先"><h2>このあと確認すること</h2><ul>${actions.map(([url, name]) => `<li><a href="${escape(url)}">${escape(name)} →</a></li>`).join('')}</ul><p><a href="/blog/">記事トップから別の疑問を探す</a></p></nav>`;
+    // ゲーム記事の個別計算ボタンと同じ行き先を、末尾で繰り返さない。
+    const primaryAction = html.match(/<section\b[^>]*class="[^"]*game-guide-next-action[^"]*"[^>]*>[\s\S]*?<\/section>/)?.[0] || '';
+    const primaryHrefs = [...primaryAction.matchAll(/href="([^"]+)"/g)].map(match => new URL(match[1], 'https://playpoint-sim.com/' + article.file.replace(/^\.\.\//, '')).pathname);
+    const uniqueActions = actions.filter(([url]) => !primaryHrefs.includes(new URL(url, 'https://playpoint-sim.com/').pathname));
+    const actionList = uniqueActions.length ? `<ul>${uniqueActions.map(([url, name]) => `<li><a href="${escape(url)}">${escape(name)} →</a></li>`).join('')}</ul>` : '';
+    const body = `<nav class="reader-followthrough" aria-label="読んだ後の確認先"><h2>${uniqueActions.length ? 'このあと確認すること' : '別の疑問を調べる'}</h2>${actionList}<p><a href="/blog/">記事トップから別の疑問を探す</a></p></nav>`;
     // 個別のおすすめ欄がある記事では、同じ記事への追加導線を重ねない。
     html = html.includes('data-editorial-next="true"')
       ? html.replace(/<!-- reader-followthrough:start -->[\s\S]*?<!-- reader-followthrough:end -->\s*/g, '')

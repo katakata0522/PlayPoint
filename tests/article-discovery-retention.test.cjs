@@ -174,9 +174,16 @@ test('compact metadata keeps typed source dates and author links without fabrica
   const original='<h1>Title unchanged</h1><p class="hero-meta">公開 <time data-article-date="published" datetime="2025-12-25">2025/12/25</time> ・ 更新 <time data-article-date="modified" datetime="2026-09-08">2026/09/08</time> ・ 公式確認 <time data-article-date="official-verified" datetime="2026-08-01">2026/08/01</time> ・ <a href="/author/katakata.html">著者</a></p>';
   const next=compactReadingMetadata(original,'ja');
   assert.ok(next.includes('<summary>更新 2026-09-08'));
+  assert.ok(!next.match(/<summary>[\s\S]*?公式確認[\s\S]*?<\/summary>/));
   assert.ok(next.includes(original.slice(original.indexOf('<p'))));
   assert.equal((next.match(/data-article-date=/g)||[]).length,3);
   assert.equal(compactReadingMetadata(next,'ja'),next);
+  const {prepareDiscoveryArticle}=require('../scripts/article-discovery-sync.cjs');
+  const entry={locale:'ja',path:'articles/example.html'};
+  const page=prepareDiscoveryArticle('<article><header>'+original+'</header><h2 id="body">本文</h2><p>そのまま残す</p></article>',entry).html;
+  assert.equal((page.match(/class="article-header-meta"/g)||[]).length,1);
+  assert.equal((page.match(/data-reading-tools/g)||[]).length,1);
+  assert.equal(prepareDiscoveryArticle(page,entry).html,page,'再生成しても日付と保存の行を重ねない');
 });
 
 

@@ -13,7 +13,10 @@ test('ランク別週次・Super Ticket・Play Pass週次を現行仕様で区�
   const html = readArticle('2025-12-25-weekly-reward.html');
   assert.match(html, /シルバー.*ウィークリーリワード/);
   assert.match(html, /ゴールド.*スーパーウィークリーリワード/);
-  assert.match(html, /プラチナ・ダイヤモンド.*火曜日.*Super Ticket|火曜日.*Super Ticket/);
+  const ticketRow = html.match(/<tr>\s*<td><a[^>]*>Super Ticket<\/a>[\s\S]*?<\/tr>/)?.[0] || '';
+  assert.match(ticketRow, /プラチナ・ダイヤモンド/);
+  assert.match(ticketRow, /火曜日/);
+  assert.match(ticketRow, /木曜日/);
   assert.match(html, /Play Pass/);
   assert.match(html, /木曜日/);
   assert.match(html, /金曜日/);
