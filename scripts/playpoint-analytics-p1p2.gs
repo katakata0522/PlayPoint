@@ -78,6 +78,16 @@ function capturePlayPointAnalyticsP1P2(e) {
     }
   }
 
+  // GSCの確定日付に依存しない直近日次イベントを、同じ週次トリガーでも更新する。
+  if (typeof capturePlayPointEventDailyReview === 'function') {
+    try {
+      summary.push({ stage: 'EVENT_DAILY', status: 'OK', result: capturePlayPointEventDailyReview() });
+    } catch (eventDailyError) {
+      playPointP12Log_('ERROR', 'EVENT_DAILY', playPointP12ErrorText_(eventDailyError));
+      summary.push({ stage: 'EVENT_DAILY', status: 'ERROR', error: playPointP12ErrorText_(eventDailyError) });
+    }
+  }
+
   summary.push(playPointP12RunStage_('URL_INSPECTION', function() {
     return playPointP12CaptureUrlInspection_(spreadsheet);
   }));
