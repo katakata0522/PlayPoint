@@ -30,7 +30,17 @@ function auditRuntime(fail = false) {
 test('空のAPI応答も取得範囲として記録するがPV=0と断定しない',()=>{const {c,props}=auditRuntime();const r=c.playPointPageHistoryAuditChunk_();assert.equal(r.coveredDays,14);assert.equal(c.coverageRows.length,14);assert.equal(c.coverageRows[0][2],'API_NO_ROWS');assert.equal(JSON.parse(props.get(c.PLAYPOINT_MAINTENANCE.checkpoint)).nextEnd,'2026-09-20');});
 test('書込失敗時は履歴カーソルを進めない',()=>{const {c,props}=auditRuntime(true);assert.throws(()=>c.playPointPageHistoryAuditChunk_(),/write failed/);assert.equal(JSON.parse(props.get(c.PLAYPOINT_MAINTENANCE.checkpoint)).nextEnd,'2026-10-04');assert.equal(props.has('oldComplete'),false);});
 test('365日分を27チャンクで覆い、完了後の重複API取得をしない',()=>{const {c,props,writes}=auditRuntime();let r;for(let i=0;i<27;i++)r=c.playPointPageHistoryAuditChunk_();assert.equal(r.coveredDays,365);assert.equal(r.complete,true);assert.equal(props.get('oldCursor'),'2025-10-04');assert.equal(writes(),27);assert.equal(c.coverageRows.length,365);c.playPointPageHistoryAuditChunk_();assert.equal(writes(),27);});
-test('月別アーカイブを既存の上限で追随し、確定待ちに手を加えない',()=>{let calls=0;const c=runtime({withScriptLock_:fn=>fn(),resolveAndRememberSpreadsheet_:()=>({getSheetByName:()=>({})}),CONFIG:{SHEETS:{LOG:'log'},ARCHIVE_MAX_MONTHS_PER_RUN:2},recordHealthAttempt_:()=>{},recordHealthSuccess_:()=>{},updateHealthSheet_:()=>{},relativeDateString_:()=> '2026-10-04',DATA_STATE:{RECONCILED:'RECONCILED'},maybeArchiveCompletedMonths_:()=>{calls++;return calls===1?['a','b']:['c'];}});assert.equal(c.syncPlayPointPageHistoryArchives().count,3);assert.equal(calls,2);});
+test('月別アーカイブを既存の上限で追随し、正規のログ取得を使う',()=>{
+ let calls=0;const ss={getSheetByName:name=>{assert.equal(typeof name,'string');return {};}},log={};
+ const c=runtime({withScriptLock_:fn=>fn(),resolveAndRememberSpreadsheet_:()=>ss,
+  CONFIG:{SHEETS:{LOGS:'実行ログ'},ARCHIVE_MAX_MONTHS_PER_RUN:2},
+  getOrCreateLogSheet_:book=>{assert.equal(book,ss);return log;},
+  recordHealthAttempt_:()=>{},recordHealthSuccess_:()=>{},updateHealthSheet_:()=>{},relativeDateString_:()=> '2026-10-04',
+  DATA_STATE:{RECONCILED:'RECONCILED'},maybeArchiveCompletedMonths_:(_ss,receivedLog)=>{
+   assert.equal(receivedLog,log);calls++;return calls===1?['a','b']:['c'];
+  }});
+ assert.equal(c.syncPlayPointPageHistoryArchives().count,3);assert.equal(calls,2);
+});
 test('既存週次P1からPortfolioを更新し、失敗も実行エラーとして伝える',()=>{
   const c=runtime();vm.runInContext(fs.readFileSync(path.join(__dirname,'../scripts/playpoint-analytics-p1p2.gs'),'utf8'),c);
   c.playPointP12GetSpreadsheet_=()=>({});c.playPointP12RunStage_=stage=>({stage,status:'OK'});c.playPointP12Log_=()=>{};

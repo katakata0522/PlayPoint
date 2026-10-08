@@ -19,10 +19,51 @@ test('未登録パラメータはAPIを呼ばず待機し、取得0件と区別�
   const empty=c.playPointReaderSource_(()=>{calls++;return {rows:[]};},['customEvent:component'],{'customEvent:component':true});
   assert.equal(empty.state,'OK');assert.equal(empty.rows.length,0);assert.equal(calls,1);
 });
+
+test('既存のゲーム計算機と計算後リンクを同じ集計で取り、人数比を完了率と呼ばない',()=>{
+ const c=runtime();
+ for(const name of ['game_form_started','game_calculation_completed','result_related_article_clicked','result_decision_link_clicked']){
+  assert(c.PLAYPOINT_READER_OUTCOMES.events.includes(name));assert(c.PLAYPOINT_EVENT_DAILY.events.includes(name));
+ }
+ const grid=c.playPointReaderBuildGrid_({start:'2026-09-07',end:'2026-10-06'},[],{
+  EVENTS:{state:'OK',detail:'ok',rows:[{eventName:'game_calculation_completed',eventCount:15,totalUsers:10}]}},'now');
+ assert.equal(grid[9][2],'game_calculation_completed');assert.equal(grid[9][3],15);assert.equal(grid[9][4],10);
+ assert.match(grid[5][1],/疑問解決.*代用しない/);
+});
 test('しきい値で制限された値は完全取得とはしない',()=>{
   const c=runtime(); assert.equal(c.playPointReaderSource_(()=>({rows:[{eventCount:4}],restricted:true}),[],{}).state,'RESTRICTED');
   assert.equal(c.playPointReaderSource_(()=>{throw Error('quota');},[],{}).state,'ERROR');
   assert.equal(c.playPointReaderSource_(()=>({rows:[{eventCount:4}],parameterMissing:true}),[],{}).state,'PARAMETER_PARTIAL');
+});
+
+test('パラメータ取得割合は行数や人数でなく返却イベント回数を分母にする',()=>{
+  const c=runtime({playPointP12Ga4Report_:()=>({}),playPointP12ParseGa4Rows_:()=>[
+    {'customEvent:component':'menu',eventCount:80,totalUsers:10},
+    {'customEvent:component':'(not set)',eventCount:20,totalUsers:15}]});
+  const r=c.playPointReaderSource_(()=>c.playPointReaderReport_('p',{},['customEvent:component'],['eventCount','totalUsers']),[],{});
+  assert.equal(r.state,'PARAMETER_PARTIAL'); assert.equal(r.coverage.available,80);
+  assert.match(r.detail,/80\/100回（80.0%）/); assert.match(r.detail,/人数の割合ではない/);
+});
+
+test('抽出された順序ファネルを全数の完了率として使わない',()=>{
+  const c=runtime({playPointP12GoogleJson_:()=>({funnelTable:{dimensionHeaders:[{name:'funnelStepName'}],
+    metricHeaders:[{name:'activeUsers'}],metadata:{samplingMetadatas:[{samplesReadCount:'10',samplingSpaceSize:'100'}]},rows:[]}}),
+    playPointP12ParseGa4Rows_:()=>[]});
+  assert.equal(c.playPointReaderSource_(()=>c.playPointReaderOrderedFunnel_('p',{}),[],{}).state,'RESTRICTED');
+});
+
+test('記事台帳取得の障害でも読者のGA4計測を止めず、役割ラベルを未取得と示す',()=>{
+  const c=runtime({resolveAndRememberSpreadsheet_:()=>({}),playPointP12BuildGa4Period_:()=>({start:'2026-09-07',end:'2026-10-06'}),
+    playPointP12NowText_:()=> '2026-10-09 09:00:00',playPointP12GetGa4PropertyId_:()=> 'p',
+    playPointP12GoogleJson_:()=>({}),formatDateSafe_:v=>v});
+  c.playPointMaintenanceLoadInventory_=()=>{throw Error('GitHub unavailable');};
+  let calls=0;
+  c.playPointReaderReport_=c.playPointReaderCohorts_=c.playPointReaderOrderedFunnel_=()=>{calls++;return {rows:[]};};
+  c.playPointReaderBuildGrid_=(_period,inventory,sources)=>{
+    assert.equal(inventory.length,0);assert.equal(sources.INVENTORY.state,'ERROR');
+    assert.equal(sources.EVENTS.state,'OK'); assert.equal(sources.FUNNEL.state,'OK');throw Error('metrics reached');
+  };
+  assert.throws(()=>c.playPointCaptureReaderOutcomes_(),/metrics reached/);assert(calls>=4);
 });
 test('公開台帳の言語・役割を結合し、ページ再訪と入口コホートを区別する',()=>{
   const c=runtime();const grid=c.playPointReaderBuildGrid_({start:'2026-09-03',end:'2026-10-02'},

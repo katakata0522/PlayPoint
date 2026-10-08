@@ -133,31 +133,37 @@ function playPointAdChangeCohortGrid_(stableEnd, groups, timestamp) {
 function capturePlayPointAdChangeMonitor(e) {
   if (e && typeof playPointAutomationTriggerAllowed_ === 'function' &&
       !playPointAutomationTriggerAllowed_('capturePlayPointAdChangeMonitor', e)) return { state: 'SKIPPED_STALE_TRIGGER' };
+  var failure = null, result = {};
   try {
-    var result = playPointCaptureAdChangeMonitor_();
-    // 通常同期の内側では呼ばれない更新を既存9時トリガーへ接続。補助障害は収益比較を巻き戻さない。
-    result.maintenance = [];
-    try { result.quality = playPointCaptureChangeQuality_(); }
-    catch (qualityError) {
-      result.quality = { state: 'ERROR', detail: playPointP12ErrorText_(qualityError) };
+    result = playPointCaptureAdChangeMonitor_();
+  } catch (error) {
+    failure = error;
+    // 収益元が欠測でも、独立したGA4の利用品質・読者行動は更新する。
+    try {
+      withScriptLock_(function() { playPointP12HealthError_('AD_CHANGE_MONITOR', playPointP12NowText_(), playPointP12ErrorText_(error)); });
+    } catch (healthError) { console.error(healthError); }
+  }
+  // 通常同期の内側では呼ばれない更新を既存9時トリガーへ接続。補助障害は収益比較を巻き戻さない。
+  result.maintenance = [];
+  try { result.quality = playPointCaptureChangeQuality_(); }
+  catch (qualityError) {
+    result.quality = { state: 'ERROR', detail: playPointP12ErrorText_(qualityError) };
+    try {
       withScriptLock_(function() { playPointP12HealthError_('CHANGE_QUALITY', playPointP12NowText_(), result.quality.detail); });
+    } catch (healthError) { console.error(healthError); }
+  }
+  ['capturePlayPointEventDailyReview', 'capturePlayPointReaderOutcomes'].forEach(function(name) {
+    var fn = name === 'capturePlayPointEventDailyReview' ?
+      typeof capturePlayPointEventDailyReview === 'function' && capturePlayPointEventDailyReview :
+      typeof capturePlayPointReaderOutcomes === 'function' && capturePlayPointReaderOutcomes;
+    if (!fn) return;
+    try { result.maintenance.push({ name: name, state: fn().state }); }
+    catch (error) {
+      result.maintenance.push({ name: name, state: 'ERROR', detail: playPointP12ErrorText_(error) });
     }
-    ['capturePlayPointEventDailyReview', 'capturePlayPointReaderOutcomes'].forEach(function(name) {
-      var fn = name === 'capturePlayPointEventDailyReview' ?
-        typeof capturePlayPointEventDailyReview === 'function' && capturePlayPointEventDailyReview :
-        typeof capturePlayPointReaderOutcomes === 'function' && capturePlayPointReaderOutcomes;
-      if (!fn) return;
-      try { result.maintenance.push({ name: name, state: fn().state }); }
-      catch (error) {
-        result.maintenance.push({ name: name, state: 'ERROR', detail: playPointP12ErrorText_(error) });
-      }
-    });
-    return result;
-  }
-  catch (error) {
-    withScriptLock_(function() { playPointP12HealthError_('AD_CHANGE_MONITOR', playPointP12NowText_(), playPointP12ErrorText_(error)); });
-    throw error;
-  }
+  });
+  if (failure) throw failure;
+  return result;
 }
 
 function playPointCaptureAdChangeMonitor_() {

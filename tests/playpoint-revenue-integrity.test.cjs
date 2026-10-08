@@ -12,6 +12,72 @@ function daily(date,revenue,ga4Pv,adsensePv,engagement=30){
    dataState:'RECONCILED'};
 }
 
+function coreRuntime(extra={}) {
+ const patch=fs.readFileSync(path.join(__dirname,'../docs/patches/playpoint-analytics-v11.6.5-validation.patch'),'utf8');
+ const after=patch.split(/\r?\n/).filter(l=>l.startsWith(' ')||(l.startsWith('+')&&!l.startsWith('+++'))).map(l=>l.slice(1)).join('\n');
+ const names=['fetchGa4Daily_','fetchAdSenseDaily_','assertGa4ReportNotTruncated_','assertAdSenseReportNotTruncated_',
+  'metricNumber_','apiMetricNumber_','validateApiDailyDate_','createWeeklyDetailArchive_'];
+ const c=vm.createContext({CONFIG:{ADSENSE_SITE_DOMAINS:['playpoint-sim.com'],CURRENCY_CODE:'JPY'},
+  AnalyticsData:{newRunReportRequest:()=>({})},resolveAdSenseAccountName_:()=> 'accounts/test',
+  adsenseDateParameters_:()=>({}),normalizeDomain_:v=>v,escapeAdSenseFilterParameter_:v=>v,
+  adSenseCell_:(cells,i)=>cells[i]?.value??'',dimensionValue_:(row,i)=>row.dimensionValues?.[i]?.value??'',
+  normalizeRatio_:v=>Number(v),errorMessage_:e=>e.message,...extra});
+ for(const name of names){
+  const fn=after.match(new RegExp('function '+name+'\\([^]*?\\n\\}'));
+  assert(fn,'公開差分に関数がない: '+name);vm.runInContext(fn[0],c);
+ }
+ return c;
+}
+
+test('元GA4日次も数値欠落・重複・期間外・途中切れ・制限ありを拒否する',()=>{
+ const row={dimensionValues:[{value:'20261008'}],metricValues:['10','5','0'].map(value=>({value}))};
+ let report={rowCount:1,rows:[row]};const c=coreRuntime({runGa4Report_:()=>report});
+ assert.equal(c.fetchGa4Daily_('2026-10-08','2026-10-08')['2026-10-08'].engagementDurationSec,0);
+ for(const value of [undefined,null,'','bad',false]){
+  row.metricValues[0].value=value;assert.throws(()=>c.fetchGa4Daily_('2026-10-08','2026-10-08'),/数値が欠落/);
+ }
+ row.metricValues[0].value='10';report.rows=[row,row];report.rowCount=2;
+ assert.throws(()=>c.fetchGa4Daily_('2026-10-08','2026-10-08'),/重複/);
+ report.rows=[row];report.rowCount=2;assert.throws(()=>c.fetchGa4Daily_('2026-10-08','2026-10-08'),/行しか取得/);
+ report.rowCount=1;assert.throws(()=>c.fetchGa4Daily_('2026-10-07','2026-10-07'),/要求期間外/);
+ for(const metadata of [{subjectToThresholding:true},{dataLossFromOtherRow:true},{samplingMetadatas:[{}]}]){
+  report.metadata=metadata;assert.throws(()=>c.fetchGa4Daily_('2026-10-08','2026-10-08'),/完全な履歴/);
+ }
+ report.metadata={};row.dimensionValues[0].value='20260231';
+ assert.throws(()=>c.fetchGa4Daily_('2026-02-01','2026-03-01'),/日付が不正/);
+});
+
+test('元AdSense日次も実測ゼロと欠落を区別し、列順・通貨・重複・途中切れを検証する',()=>{
+ const metrics=['ESTIMATED_EARNINGS','PAGE_VIEWS','IMPRESSIONS','CLICKS','PAGE_VIEWS_CTR','PAGE_VIEWS_RPM','IMPRESSIONS_CTR','IMPRESSIONS_RPM'];
+ const row={cells:['2026-10-08','0','10','20','0','0','0','0','0'].map(value=>({value}))};
+ const report={headers:['DATE',...metrics].map(name=>({name})),totalMatchedRows:'1',rows:[row]};
+ report.headers[1].currencyCode='JPY';const c=coreRuntime({AdSense:{Accounts:{Reports:{generate:()=>report}}}});
+ assert.equal(c.fetchAdSenseDaily_('2026-10-08','2026-10-08')['2026-10-08'].earnings,0);
+ row.cells[1].value='';assert.throws(()=>c.fetchAdSenseDaily_('2026-10-08','2026-10-08'),/数値が欠落/);
+ row.cells[1].value='0';report.headers[1].currencyCode='USD';
+ assert.throws(()=>c.fetchAdSenseDaily_('2026-10-08','2026-10-08'),/通貨/);report.headers[1].currencyCode='JPY';
+ report.headers[2].name='CLICKS';assert.throws(()=>c.fetchAdSenseDaily_('2026-10-08','2026-10-08'),/列構成/);
+ report.headers[2].name='PAGE_VIEWS';report.totalMatchedRows='2';
+ assert.throws(()=>c.fetchAdSenseDaily_('2026-10-08','2026-10-08'),/行しか取得/);
+ report.rows=[row,row];assert.throws(()=>c.fetchAdSenseDaily_('2026-10-08','2026-10-08'),/重複/);
+ report.rows=[];report.totalMatchedRows='0';assert.equal(Object.keys(c.fetchAdSenseDaily_('2026-10-08','2026-10-08')).length,0);
+});
+
+test('既存週次保存へ改善計測も含め、独立した取得期間と出力一覧を保持する',()=>{
+ const saved=[];const grid=[['読者行動','2026-10-09 09:00'],['対象期間','2026-09-07 ～ 2026-10-06']];
+ const c=coreRuntime({CONFIG:{SHEETS:{},TIME_ZONE:'Asia/Tokyo'},Utilities:{formatDate:()=> '2026-10-09_090000'},
+  getOrCreateDataChildFolder_:()=>({}),getOrCreateNestedFolder_:()=>({}),currentTimestamp_:()=> '2026-10-09 09:00',
+  createOrReplaceTextFile_:(_folder,file,text)=>saved.push({file,text}),rowsToCsv_:v=>JSON.stringify(v)});
+ const names=['📊ページ価値ファネル','🔎検索クロス分析','🧭URL検査','📚記事Portfolio','🧑読者行動・再訪',
+  '📈GA4イベント日次','⚖広告変更比較','↩7日目再訪','🧪変更効果・利用品質'];
+ const ss={getSheetByName:name=>names.includes(name)?{getLastRow:()=>2,getDataRange:()=>({getValues:()=>grid})}:null};
+ assert.equal(c.createWeeklyDetailArchive_(ss,{endDate:'2026-10-08'},{endDate:'2026-10-06'},{}),'Archives/Weekly/2026-10-09_090000');
+ const manifest=JSON.parse(saved.find(x=>x.file==='manifest.json').text);
+ assert.equal(manifest.sourceSheets.length,9);assert(saved.some(x=>x.file==='reader_outcomes.csv'));
+ assert.equal(manifest.sourceSheets[4].context[1],'2026-09-07 ～ 2026-10-06');
+ assert.match(manifest.note,/not collection success/);
+});
+
 test('既存Sheetのdurationシリアル値を秒で解釈し、空欄は未取得扱い',()=>{
  const c=runtime();
  assert(Math.abs(c.playPointRevenueDurationSeconds_(51/86400)-51)<0.00001);

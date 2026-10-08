@@ -971,6 +971,7 @@ function playPointP12FetchOrganicLandings_(propertyId, period) {
     limit: '10000'
   });
 
+  playPointP12AssertDecisionQuality_(payload);
   return playPointP12ParseGa4Rows_(payload, ['page'], ['sessions', 'activeUsers']).map(function(row) {
     row.page = playPointP12NormalizePage_(row.page);
     return row;
@@ -995,6 +996,7 @@ function playPointP12FetchArticleClicks_(propertyId, period) {
     limit: '10000'
   });
 
+  playPointP12AssertDecisionQuality_(payload);
   return playPointP12ParseGa4Rows_(payload, ['page'], ['activeUsers', 'eventCount']).map(function(row) {
     row.page = playPointP12NormalizePage_(row.page);
     return row;
@@ -1021,6 +1023,7 @@ function playPointP12FetchAttributedFunnel_(propertyId, period) {
     limit: '10000'
   });
 
+  playPointP12AssertDecisionQuality_(payload);
   return playPointP12ParseGa4Rows_(
     payload,
     ['page', 'eventName'],
@@ -1034,7 +1037,9 @@ function playPointP12FetchAttributedFunnel_(propertyId, period) {
 }
 
 function playPointP12FetchPageRevenue_(propertyId, period) {
+  var currency = typeof CONFIG !== 'undefined' && CONFIG.CURRENCY_CODE ? CONFIG.CURRENCY_CODE : 'JPY';
   var payload = playPointP12Ga4Report_(propertyId, {
+    currencyCode: currency,
     dateRanges: [{ startDate: period.start, endDate: period.end }],
     dimensions: [{ name: 'pagePath' }],
     metrics: [
@@ -1046,6 +1051,10 @@ function playPointP12FetchPageRevenue_(propertyId, period) {
     limit: '10000'
   });
 
+  playPointP12AssertDecisionQuality_(payload);
+  if (payload.metadata && payload.metadata.currencyCode && payload.metadata.currencyCode !== currency) {
+    throw new Error('GA4ページ収益の通貨が設定と一致しません。');
+  }
   return playPointP12ParseGa4Rows_(
     payload,
     ['page'],
@@ -1078,11 +1087,20 @@ function playPointP12FetchOrganicEngines_(propertyId, period) {
     limit: '100'
   });
 
+  playPointP12AssertDecisionQuality_(payload);
   return playPointP12ParseGa4Rows_(
     payload,
     ['sourceMedium'],
     ['sessions', 'activeUsers', 'engagementRate']
   );
+}
+
+function playPointP12AssertDecisionQuality_(payload) {
+  var metadata = payload.metadata || {};
+  if (metadata.subjectToThresholding || metadata.dataLossFromOtherRow ||
+      (metadata.samplingMetadatas && metadata.samplingMetadatas.length)) {
+    throw new Error('GA4はしきい値・サンプリング・other集約あり。編集判断の全数として使わず、このsourceを保留します。');
+  }
 }
 
 function playPointP12Ga4Report_(propertyId, body) {
