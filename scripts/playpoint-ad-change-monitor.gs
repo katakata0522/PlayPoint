@@ -443,10 +443,15 @@ function playPointCaptureChangeQuality_() {
     sheet.setColumnWidth(1, 155); sheet.setColumnWidths(2, 2, 150); sheet.setColumnWidth(4, 155);
     sheet.setColumnWidths(5, 7, 120); sheet.setColumnWidth(12, 360);
     sheet.getRange(8, 1, Math.max(1, grid.length - 7), 12).setWrap(true);
+    // セクション位置が伸びても以前の構成比書式をイベント回数へ持ち越さない。
+    sheet.getRange(9, 5, grid.length - 8, 7).setNumberFormat('0.00');
+    sheet.getRange(9, 5, grid.length - 8, 2).setNumberFormat('0');
+    sheet.getRange(9, 9, grid.length - 8, 3).setNumberFormat('0');
     sheet.getRange(9, 7, 4, 1).setNumberFormat('0.00%');
     if (compositionRows > 0) {
       sheet.getRange(compositionStart + 1, 6, compositionRows, 1).setNumberFormat('0.00%');
       sheet.getRange(compositionStart + 1, 9, compositionRows, 1).setNumberFormat('0.00%');
+      sheet.getRange(compositionStart + 1, 10, compositionRows, 1).setNumberFormat('0.00');
     }
     [8, 13].forEach(function(row) { sheet.getRange(row, 1, 1, 12).setFontWeight('bold').setBackground('#eeeeee'); });
     sheet.autoResizeRows(1, 13);
