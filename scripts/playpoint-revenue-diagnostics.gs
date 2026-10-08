@@ -15,6 +15,8 @@
 
 var PLAYPOINT_REVENUE_DIAG_CONFIG = Object.freeze({
   sourceSheet: 'AdSense_GA4日次データ',
+  pageHistorySheet: '📚ページ日次履歴',
+  integrityDays: 35,
   outputSheet: '💰収益異常分析',
   healthSheet: '🩺データ鮮度・システム状態',
   healthComponent: '収益異常診断',
@@ -91,8 +93,9 @@ function playPointRevenueCaptureUnlocked_(input) {
     var analysis = playPointRevenueAnalyze_(history, targetDate, PLAYPOINT_REVENUE_DIAG_CONFIG);
     var breakdowns = playPointRevenueFetchBreakdowns_(targetDate, analysis.severity);
     var sourceHealth = playPointRevenueAssessSourceHealth_(spreadsheet, targetDate);
+    var integrity = playPointRevenueInspectIntegrity_(spreadsheet, history, targetDate);
 
-    playPointRevenueWriteSheet_(spreadsheet, analysis, breakdowns, sourceHealth);
+    playPointRevenueWriteSheet_(spreadsheet, analysis, breakdowns, sourceHealth, integrity);
     playPointRevenueHealthSuccess_(spreadsheet, analysis, breakdowns, sourceHealth);
     playPointRevenueLog_(
       spreadsheet,
@@ -113,7 +116,8 @@ function playPointRevenueCaptureUnlocked_(input) {
       cause: analysis.cause,
       analysis: analysis,
       breakdowns: breakdowns,
-      sourceHealth: sourceHealth
+      sourceHealth: sourceHealth,
+      integrity: integrity
     };
   } catch (error) {
     var message = playPointRevenueErrorText_(error);
@@ -184,9 +188,11 @@ function playPointRevenueReadDailyHistory_(spreadsheet) {
     index[name] = found;
   });
 
+  var durationColumn = headers.indexOf('平均エンゲージメント時間／ユーザー');
   return values.slice(1).map(function(row) {
     return {
       date: playPointRevenueIsoDate_(row[index['日付']]),
+      avgEngagementSec: durationColumn < 0 ? null : playPointRevenueDurationSeconds_(row[durationColumn]),
       ga4Pv: playPointRevenueNumber_(row[index['PV数（GA4）']]),
       revenue: playPointRevenueNumber_(row[index['推定収益（円）']]),
       adsensePv: playPointRevenueNumber_(row[index['AdSenseページビュー']]),
@@ -569,7 +575,7 @@ function playPointRevenueAssessSourceHealth_(spreadsheet, targetDate) {
   return result;
 }
 
-function playPointRevenueWriteSheet_(spreadsheet, analysis, breakdowns, sourceHealth) {
+function playPointRevenueWriteSheet_(spreadsheet, analysis, breakdowns, sourceHealth, integrity) {
   var sheet = spreadsheet.getSheetByName(PLAYPOINT_REVENUE_DIAG_CONFIG.outputSheet);
   if (!sheet) sheet = spreadsheet.insertSheet(PLAYPOINT_REVENUE_DIAG_CONFIG.outputSheet);
   sheet.clearContents();
@@ -684,6 +690,8 @@ function playPointRevenueWriteSheet_(spreadsheet, analysis, breakdowns, sourceHe
     }
     startRow += Math.max(5, rows.length + 4);
   });
+
+  if (integrity) playPointRevenueWriteIntegrity_(sheet, integrity, startRow + 1);
 
   sheet.setFrozenRows(6);
   sheet.getRange('A1').setFontWeight('bold').setFontSize(14);
