@@ -67,8 +67,22 @@ test('D7は同じ獲得日集団の人数で加重し、未経過・欠測は0%�
   const total = grid.find(row => row[0] === '変更前合計');
   assert.equal(total[3], 160); assert.equal(total[4], 26); assert.equal(total[5], 26 / 160);
   assert.equal(grid.find(row => row[0] === '変更後合計')[5], '');
-  rows.pop();
+  rows.splice(rows.length - 2, 2);
   assert.equal(c.playPointAdChangeCohortGrid_('2026-10-08', groups, 'now').find(row => row[0] === '変更前合計')[5], '');
+});
+test('完全な実応答が活動0日の行を省略しても、成熟とD0母数がある時だけ0人とする', () => {
+  const c = runtime(), groups = [{ label: '変更前', days: ['2026-09-25'], source: { state: 'OK', rows: [
+    { cohort: 'acquired_20260925', cohortNthDay: '0000', cohortTotalUsers: 91, cohortActiveUsers: 91 },
+    { cohort: 'acquired_20260925', cohortNthDay: '0001', cohortTotalUsers: 91, cohortActiveUsers: 2 }
+  ] } }];
+  let row = c.playPointAdChangeCohortGrid_('2026-10-06', groups, 'now')[5];
+  assert.equal(row[3], 91); assert.equal(row[4], 0); assert.equal(row[5], 0);
+  assert.equal(row[6], 'OK（7日目の活動行なし）');
+  assert.equal(c.playPointAdChangeCohortGrid_('2026-10-01', groups, 'now')[5][5], '');
+  groups[0].source.state = 'RESTRICTED';
+  assert.equal(c.playPointAdChangeCohortGrid_('2026-10-06', groups, 'now')[5][5], '');
+  groups[0].source.state = 'OK'; groups[0].source.rows[0].cohortActiveUsers = 50;
+  assert.equal(c.playPointAdChangeCohortGrid_('2026-10-06', groups, 'now')[5][5], '');
 });
 test('日次トリガーの再実行で重複せず、他のトリガーを変更しない', () => {
   let created = 0;
