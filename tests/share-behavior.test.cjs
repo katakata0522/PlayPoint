@@ -166,3 +166,29 @@ test('reverse share URL hydration validates status, amount and multiplier before
     'reverseCalculate'
   ]);
 });
+
+test('対象額を共有URLへ保存し、復元・省略・不正値の扱いを確認する', () => {
+  const dom = {
+    reverseStatus: createSelect([1, 1.25], 1),
+    amountYen: { value: '1000' }, reverseMultiplier: { value: '1' },
+    reverseEligibleAmount: { value: '909' }
+  };
+  const { SHARE } = loadShare({ dom });
+  assert.equal(new URL(SHARE.buildReverseShareUrl()).searchParams.get('eligible'), '909');
+  dom.reverseEligibleAmount.value = '';
+  assert.equal(new URL(SHARE.buildReverseShareUrl()).searchParams.has('eligible'), false);
+  dom.reverseEligibleAmount.value = '1001';
+  assert.equal(SHARE.buildReverseShareUrl(), '');
+  for (const [param, expected] of [['909', '909'], ['0', '0'], ['1000', '1000'], ['', ''], ['-1', ''], ['1001', ''], ['NaN', '']]) {
+    dom.reverseEligibleAmount.value = '123';
+    const settings = { open: false };
+    dom.reverseEligibleAmount.closest = () => settings;
+    const ctx = loadShare({ search: '?mode=reverse&amount=1000&status=1&multiplier=1&eligible=' + param, dom });
+    ctx.SHARE.applyFromUrl();
+    assert.equal(dom.reverseEligibleAmount.value, expected);
+    assert.equal(settings.open, expected !== '');
+  }
+  dom.reverseEligibleAmount.value = '909';
+  loadShare({ search: '?mode=reverse&amount=1000&status=1&multiplier=1', dom }).SHARE.applyFromUrl();
+  assert.equal(dom.reverseEligibleAmount.value, '', '従来URLは対象額を持ち越さない');
+});

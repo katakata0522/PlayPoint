@@ -2659,6 +2659,14 @@ font-size: 0.8rem;
 }
 }
 .calculator-basis-note { font-size: .85rem; line-height: 1.6; }
+.calculator-basis-settings { margin: 0 0 16px; }
+.calculator-basis-settings > summary,
+.result-basis-details > summary { min-height: 44px; padding: 10px 0; box-sizing: border-box; cursor: pointer; font-size: .9rem; line-height: 1.6; }
+.calculator-basis-settings label { margin-top: 8px; }
+.calculator-basis-settings .calculator-basis-note { margin: 0; }
+.result-basis-label { margin: 8px 0 0; font-size: .9rem; font-weight: 600; }
+.result-basis-details { text-align: left; }
+.result-basis-details > p { margin-top: 0; }
 #main-calculator-inputs > #main-points-basis { order: 2; }
 @media (min-width: 641px) {
 #main-calculator-inputs > #main-points-basis { order: 3; }

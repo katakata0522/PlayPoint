@@ -462,22 +462,28 @@ export const CALC = {
         const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
         const amountYen = this.getValidNumberInput(STATE.dom.amountYen, 0.01);
+        const eligibleInput = STATE.dom.reverseEligibleAmount;
+        const hasEligibleAmount = Boolean(eligibleInput && (String(eligibleInput.value ?? '').trim() || eligibleInput.validity?.badInput));
+        const eligibleAmount = hasEligibleAmount ? this.getValidNumberInput(eligibleInput, 0) : null;
         const rateDetails = this.getRateDetails(STATE.dom.reverseBaseRate, STATE.dom.reverseStatus, STATE.dom.reverseMultiplier);
         const finalRate = rateDetails ? rateDetails.finalRate : null;
         const rateSourceLabel = this.getRateSourceLabel(rateDetails, texts);
 
         if (amountYen === null || finalRate === null) return UI.displayResult(STATE.dom.reverseResult, texts.errorInputReverse, true);
+        if (hasEligibleAmount && (eligibleAmount === null || eligibleAmount > amountYen)) {
+            return UI.displayResult(STATE.dom.reverseResult, texts.errorEligibleAmount, true);
+        }
         if (finalRate <= 0) return UI.displayResult(STATE.dom.reverseResult, texts.errorRateReverse, true);
 
         const spendUnit = config.spendUnit || 100;
         const { earnedPoints, earnedPointsRaw } = CALC_PURE.computeReverseResult({
-            amountYen,
+            amountYen: hasEligibleAmount ? eligibleAmount : amountYen,
             finalRate,
             spendUnit
         });
 
         const resultContent = renderReverseResult({
-            config, earnedPoints, finalRate, rateSourceLabel,
+            config, earnedPoints, finalRate, rateSourceLabel, hasEligibleAmount,
             purchaseCheckContent: this.renderPurchaseCheckLink()
         });
 
@@ -485,6 +491,7 @@ export const CALC = {
         STATE.dom.reverseResult.dataset.earnedPoints = String(earnedPoints);
         STATE.dom.reverseResult.dataset.earnedPointsRaw = earnedPointsRaw.toFixed(2);
         STATE.dom.reverseResult.dataset.amountYen = amountYen;
+        STATE.dom.reverseResult.dataset.eligibleAmount = hasEligibleAmount ? String(eligibleAmount) : '';
         STATE.dom.reverseResult.dataset.shareUrl = SHARE ? SHARE.buildReverseShareUrl() : '';
         ANALYTICS.track('reverse_calculation_completed', {
             calculation_mode: 'spend_to_points',

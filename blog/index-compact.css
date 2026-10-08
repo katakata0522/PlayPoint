@@ -699,3 +699,5 @@ body.blog-index-compact .hero-title { font-size: 1.3rem; }
 .game-search-links p { margin: 0 0 6px; font-size: 13px; }
 .game-search-links ul { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0; padding-left: 18px; }
 .game-search-links a { display: inline-block; padding: 5px 0; overflow-wrap: anywhere; }
+body.blog-index-compact.blog-is-filtered .hub-heading > :not(.hero-title),
+body.blog-index-compact.blog-is-filtered .reader-question-links { display: none; }

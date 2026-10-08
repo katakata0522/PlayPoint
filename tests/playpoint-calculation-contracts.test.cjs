@@ -132,6 +132,57 @@ test('金曜の開始時刻を過ぎたカレンダー登録は翌週を使う',
   );
 });
 
+test('税抜対象額の指定・空欄・0と支払額の保持を各地域で確認する', () => {
+  for (const region of ['JP', 'US', 'KR', 'TW']) {
+    const { PP_STATE, PP_REGION_CONFIGS, reverseCalculate, renderedResults } = loadCalculatorContext();
+    const config = PP_REGION_CONFIGS[region];
+    const rate = config.statusRates[1];
+    PP_STATE.currentRegion = region;
+    Object.assign(PP_STATE.dom, {
+      amountYen: createInput('1000'), reverseEligibleAmount: createInput('909'),
+      reverseBaseRate: createInput(rate), reverseStatus: createInput('1'),
+      reverseMultiplier: createInput('1'), reverseResult: { dataset: {} }
+    });
+    reverseCalculate();
+    assert.strictEqual(renderedResults.at(-1).isError, false);
+    assert.strictEqual(Number(PP_STATE.dom.reverseResult.dataset.earnedPoints), Math.round(909 / config.spendUnit * rate));
+    assert.strictEqual(PP_STATE.dom.reverseResult.dataset.amountYen, 1000);
+    assert.ok(renderedResults.at(-1).content.includes(config.uiText.resultBasisEligible));
+    assert.ok(!renderedResults.at(-1).content.includes(config.uiText.pointsBasisNote), '長い共通説明を繰り返さない');
+    PP_STATE.dom.reverseEligibleAmount.value = '';
+    reverseCalculate();
+    assert.strictEqual(Number(PP_STATE.dom.reverseResult.dataset.earnedPoints), Math.round(1000 / config.spendUnit * rate));
+    assert.ok(renderedResults.at(-1).content.includes(config.uiText.resultBasisEstimate));
+    PP_STATE.dom.reverseEligibleAmount.value = '0';
+    reverseCalculate();
+    assert.strictEqual(PP_STATE.dom.reverseResult.dataset.earnedPoints, '0');
+  }
+});
+
+test('不正な対象額は概算に戻さず入力エラーにする', () => {
+  for (const value of ['-1', '1001', 'invalid', 'Infinity']) {
+    const { PP_STATE, reverseCalculate, renderedResults } = loadCalculatorContext();
+    PP_STATE.currentRegion = 'JP';
+    Object.assign(PP_STATE.dom, {
+      amountYen: createInput('1000'), reverseEligibleAmount: createInput(value),
+      reverseBaseRate: createInput('1'), reverseStatus: createInput('1'),
+      reverseMultiplier: createInput('1'), reverseResult: { dataset: {} }
+    });
+    reverseCalculate();
+    assert.strictEqual(renderedResults.at(-1).isError, true);
+    assert.match(renderedResults.at(-1).content, /0〜支払額/);
+  }
+  const { PP_STATE, reverseCalculate, renderedResults } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'JP';
+  Object.assign(PP_STATE.dom, {
+    amountYen: createInput('1000'), reverseEligibleAmount: { value: '', validity: { badInput: true, valid: false } },
+    reverseBaseRate: createInput('1'), reverseStatus: createInput('1'),
+    reverseMultiplier: createInput('1'), reverseResult: { dataset: {} }
+  });
+  reverseCalculate();
+  assert.strictEqual(renderedResults.at(-1).isError, true);
+});
+
 test('月平均の分母は当月を含む残り月数を使い、12月31日は表示を省く', () => {
   const { getRemainingMonths } = loadCalculatorContext();
 

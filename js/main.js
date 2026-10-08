@@ -249,7 +249,7 @@ export function init() {
         'mainMode', 'reverseMode', 'currentStatus', 'baseRate', 'targetStatus',
         'neededPoints', 'multiplier', 'calculator-last-value', 'calculator-last-value-text', 'calculator-last-value-reuse',
         'calculateButton', 'result', 'result-actions', 'result-details', 'copyButton',
-        'tweetButton', 'amountYen', 'reverseStatus', 'reverseBaseRate',
+        'tweetButton', 'amountYen', 'reverseEligibleAmount', 'reverseStatus', 'reverseBaseRate',
         'reverseMultiplier', 'reverseCalculateButton', 'reverseResult', 'share-twitter-reverse',
         'copyright-year',
         'tab-diary', 'diaryMode', 'prevYearBtn', 'currentYear', 'nextYearBtn',
@@ -302,7 +302,7 @@ export function init() {
 
     // Enterキー押下での計算実行
     bindEnterAction([STATE.dom.neededPoints, STATE.dom.baseRate, STATE.dom.multiplier], () => runTrackedCalculation(CONSTANTS.MODE_MAIN));
-    bindEnterAction([STATE.dom.amountYen, STATE.dom.reverseBaseRate, STATE.dom.reverseMultiplier], () => runTrackedCalculation(CONSTANTS.MODE_REVERSE));
+    bindEnterAction([STATE.dom.amountYen, STATE.dom.reverseEligibleAmount, STATE.dom.reverseBaseRate, STATE.dom.reverseMultiplier], () => runTrackedCalculation(CONSTANTS.MODE_REVERSE));
 
     // タブ切り替え
     document.querySelectorAll(".tab-switch button").forEach(button => {

@@ -10,8 +10,8 @@
     <meta name="description" content="Google Play Points calculator. Estimate spending to reach Silver, Gold, Platinum, or Diamond using your base earn rate and any special earn rate shown in Google Play, plus weekly reward notes.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="author" content="katakata">
-    <meta name="last-modified" content="2026-09-19">
-    <meta property="article:modified_time" content="2026-09-19T00:00:00+09:00">
+    <meta name="last-modified" content="2026-10-08">
+    <meta property="article:modified_time" content="2026-10-08T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/en/">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/">
     <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/">
@@ -41,13 +41,13 @@
     <meta name="twitter:description" content="Estimate Play Points level-up spending and reverse calculations using the higher of your base earn rate or the special earn rate shown in Google Play.">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=be586224d8">
+    <link rel="modulepreload" href="../js/main.js?v=ff7b8d2788">
     <link rel="modulepreload" href="../js/config.js">
     <link rel="modulepreload" href="../js/analytics-core.js?v=fde7412e57">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=274a4487cd">
+    <link rel="stylesheet" href="../style.css?v=ce3c7c73b5">
     <script type="speculationrules">
     {
   "prefetch": [
@@ -113,7 +113,7 @@
         "name": "katakata",
         "url": "https://playpoint-sim.com/author/katakata.html"
       },
-      "dateModified": "2026-09-19",
+      "dateModified": "2026-10-08",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -304,8 +304,13 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
                 <div class="tooltip-box" id="tooltip-amount-yen" hidden></div>
             </label>
-            <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="e.g., 50" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder" aria-describedby="reverse-points-basis">
-            <p class="rounding-assumption-note calculator-basis-note" id="reverse-points-basis" data-lang-key="pointsBasisNote">Amounts use the eligible item price before tax. Entering the checkout total gives an estimate. Check the points shown by Google Play before purchase.</p>
+            <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="e.g., 50" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder">
+            <details id="reverse-basis-settings" class="calculator-basis-settings">
+                <summary data-lang-key="eligibleAmountSummary">Set eligible price before tax (optional)</summary>
+                <label for="reverseEligibleAmount" data-lang-key="eligibleAmountLabel">Eligible price before tax</label>
+                <input type="number" id="reverseEligibleAmount" min="0" step="0.01" inputmode="decimal" aria-describedby="reverse-points-basis">
+                <p id="reverse-points-basis" class="calculator-basis-note" data-lang-key="eligibleAmountHelp">Enter this only if you know the before-tax price. Leave blank to estimate from the amount above.</p>
+            </details>
 
             <label for="reverseStatus" class="label-with-tooltip">
                 <span data-lang-key="labelCurrentStatus">Current status</span>
@@ -449,7 +454,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">Feedback</a>
         </p>
                 <!-- META_LINE_START -->
-        <p class="meta-line">Operator: <a href="/en/author/katakata.html" rel="author">katakata</a> / Content updated: 2026-09-19</p>
+        <p class="meta-line">Operator: <a href="/en/author/katakata.html" rel="author">katakata</a> / Content updated: 2026-10-08</p>
         <!-- META_LINE_END -->
                 <!-- TRADEMARK_DISCLAIMER_START -->
         <p class="site-footer-trademark">Google Play, the Google Play logo, and Android are trademarks of Google LLC. This website is an unofficial community calculator and guide, not affiliated with or endorsed by Google LLC or any game publishers mentioned.</p>
@@ -463,7 +468,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 </main>
 
 <script type="module" src="../js/intl-copy-overrides.js?v=ca73e89485"></script>
-<script type="module" src="../js/main.js?v=be586224d8"></script>
+<script type="module" src="../js/main.js?v=ff7b8d2788"></script>
 <script src="../js/third-party.js?v=91b8bfe5c5" defer></script>
 
 </body>
