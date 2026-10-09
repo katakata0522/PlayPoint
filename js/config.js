@@ -76,7 +76,7 @@ export const CONFIGS = {
             closeAria: "閉じる", showHelpAria: "説明を表示", shareResultAria: "計算結果の共有", prevYearAria: "前の年へ", nextYearAria: "次の年へ",
             siteAlias: "通称: Playポイント計算機 / 非公式ツール",
             siteDescription: "Google Play ポイントのランクアップまでに、あといくら必要かを目安計算できます。<br>現在ステータス・目標ステータス・必要ポイントを入力すると、<br>必要な課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を確認できます。",
-            tabMain: "必要額を知る", tabReverse: "金額からポイント", tabDiary: "ウィークリーリワード記録", lastCalculationReuse: "前回の条件を使う",
+            tabMain: "通常計算", tabReverse: "逆算モード", tabDiary: "ウィークリーリワード記録", lastCalculationReuse: "前回の条件を使う",
             firstStepTitle: "まずは3つだけ入力", firstStepCurrent: "現在のステータス", firstStepTarget: "目標ステータス", firstStepNeeded: "目標までの必要ポイント",
             sectionTitleStatus: "ステータス入力", labelCurrentStatus: "現在のステータス",
             labelTargetStatus: "目標ステータス", labelNeededPoints: "目標までの必要ポイント",
