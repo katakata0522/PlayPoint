@@ -407,8 +407,9 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await page.setViewportSize({width,height:844});
       await page.locator('#calculateButton').waitFor({state:'visible'});
       assert.equal(await page.locator('#guide-menu,.guide-calculator-header').count(),0,'Calculator has no guide menu');
-      assert.equal(await page.locator('#tab-main').innerText(),'必要額を知る');
-      assert.equal(await page.locator('#tab-reverse').innerText(),'金額からポイント');
+      // 2026-10-01 PR #495 で確定した計算モード名。記事改修で意図せず変えない。
+      assert.equal(await page.locator('#tab-main').innerText(),'通常計算');
+      assert.equal(await page.locator('#tab-reverse').innerText(),'逆算モード');
       assert(await page.locator('.top-bar .region-switch').isVisible(),'Region selector remains on the page');
       assert(await page.locator('.top-bar .header-links a[href$="blog/"]').isVisible(),'Article link remains on the page');
     }
