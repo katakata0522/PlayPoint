@@ -1,5 +1,104 @@
 [
   {
+    "id": "google-play-fest-2026-editorial",
+    "title": "Google Playフェス2026は10月13日から！限定交換品・書籍15倍と、今から準備したいこと",
+    "listTitle": "Playフェス2026｜限定交換品・書籍15倍",
+    "description": "10月13〜19日のGoogle Playフェス2026。限定交換品、ギフトカード、書籍15倍、Play Pass先行特典を筆者の実画面をもとに紹介。",
+    "category": "キャンペーン",
+    "browseCategory": "最新情報・イベント",
+    "tags": [
+      "Playフェス2026",
+      "Google Play",
+      "15倍",
+      "ギフトカード",
+      "Play Pass"
+    ],
+    "file": "../articles/2026-10-10-google-play-fest-2026.html",
+    "thumbnail": "../articles/ogp/campaign.png",
+    "ogp": "../articles/ogp/campaign.png",
+    "listDescription": "10/13〜19開催。交換できる限定品、書籍15倍、Play Passの増量と13日以降の確認ポイント。",
+    "date": "2026-10-10",
+    "modified": "2026-10-10",
+    "thumbnailKind": "generic",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-10-10-play-pass-double-points-6x.html",
+        "Play Passの先行特典"
+      ],
+      [
+        "/articles/2026-10-10-super-weekly-reward-results.html",
+        "今週の週次結果"
+      ]
+    ]
+  },
+  {
+    "id": "play-pass-fest-bonus-2026",
+    "title": "Play Pass特典が2倍に！ダイヤモンドで40pt、6倍ブーストも試してみた【2026年10月】",
+    "listTitle": "Play Pass｜40pt実測・2倍と6倍",
+    "description": "Playフェス開催記念のPlay Pass特典2倍・6倍ブーストを筆者が確認。ダイヤモンドで40pt、ランクやアカウントによる違いと加入時の注意点。",
+    "category": "キャンペーン",
+    "browseCategory": "貯める・キャンペーン",
+    "tags": [
+      "Play Pass",
+      "ポイント2倍",
+      "6倍ブースト",
+      "ダイヤモンド",
+      "木曜ボーナス"
+    ],
+    "file": "../articles/2026-10-10-play-pass-double-points-6x.html",
+    "thumbnail": "../articles/thumbnails/play-pass-worth-it-square-v1.webp",
+    "ogp": "../articles/ogp/play-pass-worth-it.png",
+    "listDescription": "ダイヤモンドで40ptを実際に獲得。Play Passの2倍・6倍特典の条件、プラチナとの違いを検証。",
+    "date": "2026-10-10",
+    "modified": "2026-10-10",
+    "thumbnailKind": "generic",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-10-10-google-play-fest-2026.html",
+        "Playフェス2026"
+      ],
+      [
+        "/articles/2026-10-10-super-weekly-reward-results.html",
+        "今週の週次結果"
+      ]
+    ]
+  },
+  {
+    "id": "super-weekly-results-2026-10",
+    "title": "今週のスーパーウィークリー、ダイヤモンドでも3pt。プラチナは45ptでした【2026年10月】",
+    "listTitle": "今週の週次結果｜3pt・14pt・45ptの記録",
+    "description": "ダイヤモンド3pt・14ptとプラチナ45ptの実際の画面から、スーパーウィークリーの結果とSuper Ticketの注意点をまとめた週次レポート。",
+    "category": "ランク",
+    "browseCategory": "最新情報・イベント",
+    "tags": [
+      "スーパーウィークリー",
+      "Play Points",
+      "ダイヤモンド",
+      "プラチナ",
+      "Super Ticket"
+    ],
+    "file": "../articles/2026-10-10-super-weekly-reward-results.html",
+    "thumbnail": "../articles/thumbnails/super-weekly-reward-square-v1.webp",
+    "ogp": "../articles/ogp/2026-07-31-super-weekly-reward.png",
+    "listDescription": "プラチナ45pt、ダイヤモンド3pt・14ptのスクショ記録。上位ランクでも毎回大当たりとは限らない。",
+    "date": "2026-10-10",
+    "modified": "2026-10-10",
+    "thumbnailKind": "generic",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-10-10-google-play-fest-2026.html",
+        "Playフェス2026"
+      ],
+      [
+        "/articles/2026-10-10-play-pass-double-points-6x.html",
+        "Play Passの先行特典"
+      ]
+    ]
+  },
+  {
     "id": "fgo-pity-cost-2026",
     "listDescription": "天井330回までの費用を知りたい方へ。必要な聖晶石、最小購入例、福袋の有償15個とポイント還元を確認できます。",
     "title": "FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】",
