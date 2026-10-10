@@ -1,4 +1,5 @@
 name: Temporary PlayPoint article prepare (PR 567)
+# One-off branch-only generator; removed before merge.
 on:
   pull_request:
     types: [synchronize]
