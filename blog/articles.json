@@ -679,6 +679,147 @@
     "browseCategory": "ゲーム別課金"
   },
   {
+    "id": "diamond-play-pass-break-even-2026",
+    "title": "ダイヤモンド会員はPlay Passに絶対入れ！……と言いたくなる理由。年額5,400円の元は取れる？",
+    "listTitle": "ダイヤモンド×Play Pass｜年間で元が取れる？",
+    "description": "ダイヤモンド会員×Play Passの実際の価値を検証。パズドラ魔法石6個・モンストオーブ8個、FGO50％割引、信長の野望などの有料ゲームと年額費用を比較。",
+    "category": "ランク",
+    "browseCategory": "ランク・ステータス",
+    "tags": [
+      "ダイヤモンド",
+      "Play Pass",
+      "Super Ticket",
+      "木曜ボーナス",
+      "損益分岐点",
+      "パズドラ",
+      "モンスト",
+      "FGO",
+      "有料ゲーム",
+      "信長の野望"
+    ],
+    "date": "2026-10-10",
+    "modified": "2026-10-10",
+    "file": "../articles/2026-10-10-diamond-play-pass-value.html",
+    "thumbnail": "../articles/thumbnails/diamond-play-pass-break-even-2026-square-v1.webp",
+    "ogp": "../articles/ogp/diamond-play-pass-break-even-2026.png",
+    "thumbnailKind": "generic",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-10-10-play-pass-double-points-6x.html",
+        "Play Passの40pt実測と6倍ブースト"
+      ],
+      [
+        "/articles/2026-08-16-play-pass-worth-it.html",
+        "Play Passの基本と加入条件"
+      ],
+      [
+        "/articles/2026-09-19-google-play-super-ticket.html",
+        "Super Ticketの配布・使い方"
+      ]
+    ],
+    "listDescription": "ダイヤモンドならPlay Passは元が取れる？実際の魔法石・オーブ・割引・有料ゲームと年額5,400円を比較。"
+  },
+  {
+    "id": "google-play-fest-2026-editorial",
+    "title": "Google Playフェス2026は10月13日から！限定交換品・書籍15倍と、今から準備したいこと",
+    "listTitle": "Playフェス2026｜限定交換品・書籍15倍",
+    "description": "10月13〜19日のGoogle Playフェス2026。限定交換品、ギフトカード、書籍15倍、Play Pass先行特典を筆者の実画面をもとに紹介。",
+    "category": "キャンペーン",
+    "browseCategory": "最新情報・イベント",
+    "tags": [
+      "Playフェス2026",
+      "Google Play",
+      "15倍",
+      "ギフトカード",
+      "Play Pass"
+    ],
+    "file": "../articles/2026-10-10-google-play-fest-2026.html",
+    "thumbnail": "../articles/thumbnails/google-play-fest-2026-editorial-square-v1.webp",
+    "ogp": "../articles/ogp/google-play-fest-2026-editorial.png",
+    "listDescription": "10/13〜19開催。交換できる限定品、書籍15倍、Play Passの増量と13日以降の確認ポイント。",
+    "date": "2026-10-10",
+    "modified": "2026-10-10",
+    "thumbnailKind": "generic",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-10-10-play-pass-double-points-6x.html",
+        "Play Passの先行特典"
+      ],
+      [
+        "/articles/2026-10-10-super-weekly-reward-results.html",
+        "今週の週次結果"
+      ]
+    ]
+  },
+  {
+    "id": "play-pass-fest-bonus-2026",
+    "title": "Play Pass特典が2倍に！ダイヤモンドで40pt、6倍ブーストも確認【2026年10月】",
+    "listTitle": "Play Pass｜40pt実測・2倍と6倍",
+    "description": "Playフェス開催記念のPlay Pass特典2倍・6倍ブーストを筆者が確認。ダイヤモンドで40pt、ランクやアカウントによる違いと加入時の注意点。",
+    "category": "キャンペーン",
+    "browseCategory": "貯める・キャンペーン",
+    "tags": [
+      "Play Pass",
+      "ポイント2倍",
+      "6倍ブースト",
+      "ダイヤモンド",
+      "木曜ボーナス"
+    ],
+    "file": "../articles/2026-10-10-play-pass-double-points-6x.html",
+    "thumbnail": "../articles/thumbnails/play-pass-fest-bonus-2026-square-v1.webp",
+    "ogp": "../articles/ogp/play-pass-fest-bonus-2026.png",
+    "listDescription": "ダイヤモンドで40ptを実際に獲得。Play Passの2倍・6倍特典の条件、プラチナとの違いを検証。",
+    "date": "2026-10-10",
+    "modified": "2026-10-10",
+    "thumbnailKind": "generic",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-10-10-google-play-fest-2026.html",
+        "Playフェス2026"
+      ],
+      [
+        "/articles/2026-10-10-super-weekly-reward-results.html",
+        "今週の週次結果"
+      ]
+    ]
+  },
+  {
+    "id": "super-weekly-results-2026-10",
+    "title": "今週のスーパーウィークリー、ダイヤモンドでも3pt。プラチナは45ptでした【2026年10月】",
+    "listTitle": "今週の週次結果｜3pt・14pt・45ptの記録",
+    "description": "ダイヤモンド3pt・14ptとプラチナ45ptの実際の画面から、スーパーウィークリーの結果とSuper Ticketの注意点をまとめた週次レポート。",
+    "category": "ランク",
+    "browseCategory": "最新情報・イベント",
+    "tags": [
+      "スーパーウィークリー",
+      "Play Points",
+      "ダイヤモンド",
+      "プラチナ",
+      "Super Ticket"
+    ],
+    "file": "../articles/2026-10-10-super-weekly-reward-results.html",
+    "thumbnail": "../articles/thumbnails/super-weekly-results-2026-10-square-v1.webp",
+    "ogp": "../articles/ogp/super-weekly-results-2026-10.png",
+    "listDescription": "プラチナ45pt、ダイヤモンド3pt・14ptのスクショ記録。上位ランクでも毎回大当たりとは限らない。",
+    "date": "2026-10-10",
+    "modified": "2026-10-10",
+    "thumbnailKind": "generic",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-10-10-google-play-fest-2026.html",
+        "Playフェス2026"
+      ],
+      [
+        "/articles/2026-10-10-play-pass-double-points-6x.html",
+        "Play Passの先行特典"
+      ]
+    ]
+  },
+  {
     "id": "super-weekly-reward-prize-history",
     "title": "スーパーウィークリーリワードで何が当たる？賞品一覧と過去の掲載記録",
     "listTitle": "スーパーウィークリーで何が当たる？賞品一覧と掲載履歴",

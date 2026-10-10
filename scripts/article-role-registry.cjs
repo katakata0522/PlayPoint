@@ -91,7 +91,7 @@ const ROLE_RULES = Object.freeze([
   },
   {
     role: 'retention',
-    test: stem => /(?:super-ticket|super-weekly-reward|weekly-reward|google-play-quests|play-points-day|new-year-campaign|tgs-google-play-vip|calendar-schedule)/.test(stem)
+    test: stem => /(?:super-ticket|super-weekly-reward|weekly-reward|google-play-quests|play-points-day|new-year-campaign|tgs-google-play-vip|calendar-schedule|google-play-fest-2026)/.test(stem)
   },
   {
     role: 'calculator_bridge',
@@ -99,7 +99,7 @@ const ROLE_RULES = Object.freeze([
   },
   {
     role: 'decision_support',
-    test: stem => /(?:best-use|cash-conversion|gift-card|discount|promo-code|discounts-promo-codes|promotion-stacking|multiplier-stacking|payment-methods|balance-combine-payment|external-billing|play-pass-worth-it|youtube-premium|pixel-discount|gold-platinum-worth-it|google-store|earn-play-points-free|points-earn-free|use-coupons|campaign$)/.test(stem)
+    test: stem => /(?:best-use|cash-conversion|gift-card|discount|promo-code|discounts-promo-codes|promotion-stacking|multiplier-stacking|payment-methods|balance-combine-payment|external-billing|play-pass-worth-it|play-pass-double-points|diamond-play-pass-value|youtube-premium|pixel-discount|gold-platinum-worth-it|google-store|earn-play-points-free|points-earn-free|use-coupons|campaign$)/.test(stem)
   },
   {
     role: 'reference',
