@@ -63,7 +63,9 @@ test('サービス表記・ゲームの正式名・略称・ひらがな・全�
     ['にけ 月パス', 'nikke-monthly-card-midasbuy-2026'], ['原神の月パスはいくらですか', 'genshin-welkin-value-2026'],
     ['げんしん 月パス', 'genshin-welkin-value-2026'], ['Honkai Star Rail 月パス', 'starrail-supply-pass-value-2026']];
   for (const [query,id] of cases) assert.equal(hits(query)[0]?.id,id,query);
-  assert.ok(hits('モンスターストライク 課金').every(article => /monst/.test(article.id)));
+  // Play Passの横断比較記事もモンストの課金に言及するが、一般的な課金検索では専用記事を最優先する。
+  assert.match(hits('モンスターストライク 課金')[0]?.id || '', /monst/);
+  assert.ok(hits('モンスターストライク 課金').some(article => article.id === 'diamond-play-pass-break-even-2026'));
   assert.deepEqual(hits('プレイ クレジットが使えない').map(a=>a.id),hits('プレイクレジットが使えない').map(a=>a.id));
   assert.ok(hits('プレイ クレジットが使えない').some(a=>a.id==='play-credit-not-working'));
 });
@@ -72,7 +74,7 @@ test('既知の長い名前の一文字誤入力を拾い、短い語や未知�
   for (const query of ['プレイポインツ', 'プレイポイト', 'プレイポイイント', 'プライポイント', 'プレイポンイト', 'グーグルプレィポイント'])
     assert.equal(hits(query)[0]?.id, 'getting-started', query);
   assert.equal(hits('プレイポインツが消えた')[0]?.id, 'points-disappeared');
-  assert.ok(hits('モンスターストラィク 課金').every(article => /monst/.test(article.id)));
+  assert.match(hits('モンスターストラィク 課金')[0]?.id || '', /monst/);
   assert.ok(hits('モンスターストラィク 課金').length > 0);
   assert.equal(search.matches({ title:'ニケ' }, 'ニキ', 'ja'), false);
   assert.equal(hits('原神 存在しない条件xyz').length, 0);
