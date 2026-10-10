@@ -1,0 +1,47 @@
+name: Temporary editorial prepare PR 568
+on:
+  pull_request:
+    types: [synchronize]
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: ${{ github.event.pull_request.number == 568 && github.event.pull_request.draft && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'fix/editorial-final-review-20261011' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact editorial branch SHA
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: true
+          fetch-depth: 2
+      - name: Set up pinned Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+      - name: Rebuild canonical publication outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$(git log -1 --format=%s)" != "ci: one-time editorial prepare PR568" ]; then
+            echo "Not the one-off synchronization commit; skip."
+            exit 0
+          fi
+          node scripts/prepare-pr.cjs
+          changed="$(git status --porcelain | wc -l)"
+          echo "Generated path count: $changed"
+          git status --short | head -45 || true
+          if [ "$changed" -gt 250 ]; then
+            echo "Unexpected large output change. Stop for inspection." >&2
+            exit 1
+          fi
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No generated changes."
+            exit 0
+          fi
+          git -c user.name='PlayPoint editorial synchronization' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'build: synchronize four revised articles and publication metadata'
+          git push origin HEAD:refs/heads/fix/editorial-final-review-20261011
