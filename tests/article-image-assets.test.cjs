@@ -17,13 +17,13 @@ const {
   syncArticleImageRoles
 } = require('../scripts/article-image-assets.cjs');
 
-test('画像役割台帳は27ゲーム記事・60一般記事・17共有OGP解消対象を持つ', () => {
+test('画像役割台帳は27ゲーム記事・64一般記事・21専用OGP登録対象を持つ', () => {
   assert.equal(Object.keys(GAME_THUMBNAILS).length, 27);
-  assert.equal(GENERIC_ARTICLE_IDS.size, 60);
-  assert.equal(DEDICATED_OGP_IDS.size, 17);
+  assert.equal(GENERIC_ARTICLE_IDS.size, 64);
+  assert.equal(DEDICATED_OGP_IDS.size, 21);
   const manifest = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8'));
   const mappedIds = new Set([...Object.keys(GAME_THUMBNAILS), ...GENERIC_ARTICLE_IDS]);
-  assert.equal(mappedIds.size, 87);
+  assert.equal(mappedIds.size, 91);
   assert.ok([...mappedIds].every(id => manifest.some(article => article.id === id)), '画像役割台帳の全記事が実manifestに存在する');
   assert.ok([...DEDICATED_OGP_IDS].every(id => manifest.some(article => article.id === id)), '専用OGP対象の全記事が実manifestに存在する');
   assert.ok([...Object.values(GAME_THUMBNAILS)].every(value => /^\.\.\/images\/game-icons\/[a-z0-9-]+\.webp$/.test(value)));
