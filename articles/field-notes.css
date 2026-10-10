@@ -7,3 +7,25 @@
 .field-sources-body ul{margin:.5rem 0 1rem;padding-left:1.3rem}
 .field-sources-body li+li{margin-top:.2rem}
 .field-sources-body p{margin:.5rem 0}
+
+/* 本人撮影の実画面は記事の内容を補う。画像一覧をUIの主役にしない。 */
+.field-photo{max-width:560px;width:100%;margin:1.25rem auto 1.65rem}
+.field-photo-link{display:block;border:1px solid #8296a24a;border-radius:12px;overflow:hidden;text-decoration:none}
+.field-photo-link:focus-visible{outline:3px solid #2776ce;outline-offset:3px}
+.field-photo img{display:block;width:100%;height:auto;object-fit:contain;background:#16191d}
+.field-photo figcaption{font-size:.86rem;line-height:1.65;color:var(--text-muted,#68717c);margin-top:.45rem}
+.field-photo-extra{margin:1.1rem 0 1.7rem;border-bottom:1px solid #828c9950;padding-bottom:.7rem}
+.field-photo-extra summary{cursor:pointer;width:fit-content;line-height:1.7;font-weight:600}
+.field-photo-extra .field-photo{max-width:450px}
+.field-photo-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;max-width:840px;margin:1.3rem auto}
+.field-photo-gallery .field-photo{margin:0;min-width:0}
+.field-photo-gallery figcaption{font-size:.8rem}
+.field-photo-tip{font-size:.84rem;opacity:.78;margin-top:-.4rem}
+.field-photo-duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:760px;margin:1.3rem auto}
+.field-photo-duo .field-photo{margin:0;min-width:0}
+@media(max-width:620px){
+ .field-photo-gallery{display:flex;overflow-x:auto;gap:12px;padding:.15rem 0 .75rem;scroll-snap-type:x mandatory}
+ .field-photo-gallery .field-photo{flex:0 0 min(72vw,270px);scroll-snap-align:start}
+ .field-photo-duo{grid-template-columns:1fr}
+ .field-photo-duo .field-photo{max-width:440px;margin:0 auto 1.1rem}
+}
