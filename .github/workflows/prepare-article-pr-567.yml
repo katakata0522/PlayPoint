@@ -1,0 +1,63 @@
+name: Temporary PlayPoint article prepare (PR 567)
+on:
+  pull_request:
+    types: [synchronize]
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    if: ${{ github.event.pull_request.number == 567 && github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'content/play-fest-2026-editorial-20261010' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: true
+          fetch-depth: 2
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+      - name: Synchronize article images and canonical output
+        shell: bash
+        run: |
+          set -euo pipefail
+          subject="$(git log -1 --format=%s)"
+          if [ "$subject" != 'ci: one-time article prepare for PR567' ]; then
+            echo "One-off workflow guard: current head is not the requested staging commit; nothing to do."
+            exit 0
+          fi
+          pairs=(
+            "articles/ogp/ogp-fest-20261010.jpg articles/ogp/google-play-fest-2026-editorial.png"
+            "articles/ogp/ogp-pass-20261010.jpg articles/ogp/play-pass-fest-bonus-2026.png"
+            "articles/ogp/ogp-weekly-20261010.jpg articles/ogp/super-weekly-results-2026-10.png"
+            "articles/ogp/ogp-diamond-20261010.jpg articles/ogp/diamond-play-pass-break-even-2026.png"
+            "articles/thumbnails/thumb-fest-20261010.webp articles/thumbnails/google-play-fest-2026-editorial-square-v1.webp"
+            "articles/thumbnails/thumb-pass-20261010.webp articles/thumbnails/play-pass-fest-bonus-2026-square-v1.webp"
+            "articles/thumbnails/thumb-weekly-20261010.webp articles/thumbnails/super-weekly-results-2026-10-square-v1.webp"
+            "articles/thumbnails/thumb-diamond-20261010.webp articles/thumbnails/diamond-play-pass-break-even-2026-square-v1.webp"
+          )
+          for pair in "${pairs[@]}"; do
+            read -r from to <<< "$pair"
+            test -f "$from" && test ! -e "$to"
+            mv "$from" "$to"
+          done
+          node scripts/prepare-pr.cjs
+          echo "Changed file summary:"
+          git status --short | head -60 || true
+          count="$(git status --porcelain | wc -l)"
+          echo "Changed paths: $count"
+          if [ "$count" -gt 1600 ]; then
+            echo "Too many generated paths; stopping for inspection." >&2
+            exit 1
+          fi
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes after preparation."
+            exit 0
+          fi
+          git -c user.name='PlayPoint build synchronization' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'build: synchronize four editorial articles with PlayPoint output'
+          git push origin HEAD:refs/heads/content/play-fest-2026-editorial-20261010
+          echo "Generated article output synchronized. Remove this temporary workflow before merging."
