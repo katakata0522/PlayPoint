@@ -11,6 +11,13 @@ const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
 const CHROME_PATH = process.env.CHROME_PATH;
 const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
 const REPRESENTATIVE_CASES = [
+  // 2026年10月の実測4記事はPC／390px／320pxを毎回検査する。
+  ...[
+    ['play-fest-2026', 'articles/2026-10-10-google-play-fest-2026.html'],
+    ['play-pass-2x-6x', 'articles/2026-10-10-play-pass-double-points-6x.html'],
+    ['super-weekly-real-results', 'articles/2026-10-10-super-weekly-reward-results.html'],
+    ['diamond-play-pass-value', 'articles/2026-10-10-diamond-play-pass-value.html']
+  ].map(([key, articlePath]) => ({ key, path: articlePath, allArticle: true, related: true })),
   ...['monst-in-app-packs-guide', 'pokemon-sleep-play-points-coupon', 'gakumas-webshop-google-play', 'bluearchive-monthly-packs-guide', 'nikke-monthly-card-midasbuy'].map(slug => ({ key: slug, path: 'articles/' + (slug.startsWith('monst') ? '2026-09-19-' : '2026-09-26-') + slug + '.html', allArticle: true, related: true })),
   { key: 'decision-normalized', path: 'articles/2025-12-25-best-use.html', noIntro: true, summary: true, related: true },
   { key: 'troubleshooting-modern', path: 'articles/2026-03-10-play-points-reflection-timing.html', related: true },
