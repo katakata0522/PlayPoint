@@ -1,5 +1,42 @@
 [
   {
+    "id": "diamond-play-pass-break-even-2026",
+    "title": "ダイヤモンド会員はPlay Passに絶対入れ！……と言いたくなる理由。年額5,400円の元は取れる？",
+    "listTitle": "ダイヤモンド×Play Pass｜年間で元が取れる？",
+    "description": "ダイヤモンドの週次20pt、Play Passの追加Super Ticket、対象ゲームの600円割引とポイントブースト。年額5,400円をどこまで回収できるか実例で検証。",
+    "category": "ランク",
+    "browseCategory": "ランク・ステータス",
+    "tags": [
+      "ダイヤモンド",
+      "Play Pass",
+      "Super Ticket",
+      "木曜ボーナス",
+      "損益分岐点"
+    ],
+    "date": "2026-10-10",
+    "modified": "2026-10-10",
+    "file": "../articles/2026-10-10-diamond-play-pass-value.html",
+    "thumbnail": "../articles/thumbnails/play-pass-worth-it-square-v1.webp",
+    "ogp": "../articles/ogp/play-pass-worth-it.png",
+    "thumbnailKind": "generic",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-10-10-play-pass-double-points-6x.html",
+        "Play Passの40pt実測と6倍ブースト"
+      ],
+      [
+        "/articles/2026-08-16-play-pass-worth-it.html",
+        "Play Passの基本と加入条件"
+      ],
+      [
+        "/articles/2026-09-19-google-play-super-ticket.html",
+        "Super Ticketの配布・使い方"
+      ]
+    ],
+    "listDescription": "ダイヤモンドだから本当に入るべき？週次20pt、追加Ticket、600円割引を年額5,400円と比較。"
+  },
+  {
     "id": "google-play-fest-2026-editorial",
     "title": "Google Playフェス2026は10月13日から！限定交換品・書籍15倍と、今から準備したいこと",
     "listTitle": "Playフェス2026｜限定交換品・書籍15倍",
