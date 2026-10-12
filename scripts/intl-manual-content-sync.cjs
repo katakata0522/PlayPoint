@@ -6,7 +6,7 @@ const { getLocalizedGameGuideLinks, ALL_GUIDES } = require('./intl-game-guide-ex
 
 const HUB_CONTENT = {
   en: {
-    modifiedAt: '2026-09-13',
+    modifiedAt: '2026-10-12',
     description: 'Browse region-checked Google Play Points guides for US levels, eligibility, promotions, account issues and game-specific purchase decisions.',
     links: [
       ['/en/articles/google-play-points-super-weekly-reward.html', 'Super Weekly Prize eligibility, prize stock and Super Tickets'],
@@ -14,7 +14,7 @@ const HUB_CONTENT = {
     ]
   },
   ko: {
-    modifiedAt: '2026-09-13',
+    modifiedAt: '2026-10-12',
     description: '대한민국 공식 조건을 확인한 Google Play Points 등급, 가입, 프로모션, 계정 문제와 게임별 결제 판단 가이드입니다.',
     links: [
       ['/ko/articles/google-play-points-super-weekly-reward.html', '슈퍼 위클리 리워드 대상·재고·슈퍼 티켓'],
@@ -22,7 +22,7 @@ const HUB_CONTENT = {
     ]
   },
   tw: {
-    modifiedAt: '2026-09-13',
+    modifiedAt: '2026-10-12',
     description: '瀏覽依台灣官方條件核對的 Google Play Points 等級、加入、活動、帳號問題與遊戲消費判斷指南。',
     links: [
       ['/tw/articles/google-play-points-super-weekly-reward.html', '超級每週獎勵資格、庫存與超級票券'],

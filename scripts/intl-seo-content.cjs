@@ -1708,6 +1708,58 @@ const MANUAL_MAINTENANCE_PAGES = [
   { file: 'tw/maintenance/diamond/index.html', modifiedAt: '2026-07-25' }
 ];
 
+// 各地域の公式予告に合わせた、料金未掲載の手動キャンペーン記事。
+const MANUAL_FEST_ARTICLES = [
+  {
+    "file": "en/articles/2026-10-12-google-play-fest-2026.html",
+    "lang": "en",
+    "title": "Google Play Fest 2026 in the US: October 13–19, sweepstakes and points boosts",
+    "publishedAt": "2026-10-12",
+    "modifiedAt": "2026-10-12",
+    "manual": true
+  },
+  {
+    "file": "en/articles/2026-10-12-play-pass-double-points-6x.html",
+    "lang": "en",
+    "title": "Play Pass double points and 6x boosts: the US Play Fest 2026 offer",
+    "publishedAt": "2026-10-12",
+    "modifiedAt": "2026-10-12",
+    "manual": true
+  },
+  {
+    "file": "ko/articles/2026-10-12-google-play-fest-2026.html",
+    "lang": "ko",
+    "title": "한국 Play 페스타 2026: 10월 13~19일 포인트 교환과 부스트",
+    "publishedAt": "2026-10-12",
+    "modifiedAt": "2026-10-12",
+    "manual": true
+  },
+  {
+    "file": "ko/articles/2026-10-12-play-pass-double-points-6x.html",
+    "lang": "ko",
+    "title": "Play Pass 포인트 2배·6배 부스트: 한국 Play 페스타 2026 혜택",
+    "publishedAt": "2026-10-12",
+    "modifiedAt": "2026-10-12",
+    "manual": true
+  },
+  {
+    "file": "tw/articles/2026-10-12-google-play-fest-2026.html",
+    "lang": "zh-TW",
+    "title": "台灣 Play 盛典 2026：10 月 13 至 19 日聯賽、任務與點數倍增",
+    "publishedAt": "2026-10-12",
+    "modifiedAt": "2026-10-12",
+    "manual": true
+  },
+  {
+    "file": "tw/articles/2026-10-12-play-pass-double-points-6x.html",
+    "lang": "zh-TW",
+    "title": "Play Pass 雙倍點數與 6 倍優惠：台灣 Play 盛典 2026 使用指南",
+    "publishedAt": "2026-10-12",
+    "modifiedAt": "2026-10-12",
+    "manual": true
+  }
+];
+
 const INTL_ARTICLES = [
   ...[
     ...EN_ARTICLES,
@@ -1721,7 +1773,7 @@ const INTL_ARTICLES = [
     const manualDates = readManualIntlArticleDates(projectRoot, article.file);
     return { ...article, ...configuredDates, ...(manualDates || {}) };
   }),
-  ...MANUAL_COMPARISON_ARTICLES.map((article) => ({
+  ...[...MANUAL_COMPARISON_ARTICLES, ...MANUAL_FEST_ARTICLES].map((article) => ({
     ...article,
     ...(readManualIntlArticleDates(projectRoot, article.file) || {})
   }))
