@@ -1,6 +1,6 @@
 'use strict';
 
-const SIMPLIFIED_CALCULATOR_COPY = Object.freeze({
+export const SIMPLIFIED_CALCULATOR_COPY = Object.freeze({
     JP: {
         neededPointsHint: 'Google Playの「あと○ポイント」を入力。交換用の残高とは別です。達成済みは0を入力できます。',
         baseRateLabel: '通常獲得率（自動入力・編集可）',
@@ -51,10 +51,13 @@ export function updateSimplifiedCalculatorCopy(region) {
             hint.className = 'rounding-assumption-note';
             neededPoints.after(hint);
         }
-        hint.textContent = copy.neededPointsHint;
+        if (hint.textContent !== copy.neededPointsHint) hint.textContent = copy.neededPointsHint;
         const describedBy = new Set((neededPoints.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean));
         describedBy.add(hint.id);
-        neededPoints.setAttribute('aria-describedby', [...describedBy].join(' '));
+        const hintIds = [...describedBy].join(' ');
+        if (neededPoints.getAttribute('aria-describedby') !== hintIds) {
+            neededPoints.setAttribute('aria-describedby', hintIds);
+        }
     }
 
     if (baseRateLabel) baseRateLabel.textContent = copy.baseRateLabel;
