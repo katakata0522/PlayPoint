@@ -1,5 +1,7 @@
 'use strict';
 
+const { SIMPLIFIED_CALCULATOR_COPY } = require('../js/main-calculator-ui.js');
+
 const STATIC_LABELS = Object.freeze({
   baseRate: '100円あたりの獲得率（自動入力・編集可）',
   multiplier: 'キャンペーン特別獲得率（例：3pt/100円）'
@@ -103,6 +105,25 @@ function markStaticLayout(content) {
       ? match
       : `<div id="mainMode"${attributes} data-visible-base-rate-layout="true">`
   );
+}
+
+function ensureStaticNeededPointsHint(content) {
+  const hintId = 'needed-points-hint';
+  const hint = `<p id="${hintId}" class="rounding-assumption-note" data-simplified-calculator-copy="neededPointsHint">${SIMPLIFIED_CALCULATOR_COPY.JP.neededPointsHint}</p>`;
+  const existingHint = /<p\b[^>]*\bid=["']needed-points-hint["'][^>]*>[\s\S]*?<\/p>/i;
+  const hasHint = existingHint.test(content);
+  if (hasHint) content = content.replace(existingHint, () => hint);
+
+  // 初回描画から説明文の高さと読み上げの関連付けを確保する。
+  return content.replace(/<input\b[^>]*\bid=["']neededPoints["'][^>]*>/i, input => {
+    const describedBy = /\baria-describedby=(["'])(.*?)\1/i;
+    const existing = describedBy.exec(input);
+    const ids = new Set((existing?.[2] || '').split(/\s+/).filter(Boolean));
+    ids.add(hintId);
+    const attribute = `aria-describedby="${[...ids].join(' ')}"`;
+    const updated = existing ? input.replace(describedBy, attribute) : input.replace(/\s*\/?>$/, ` ${attribute}>`);
+    return hasHint ? updated : `${updated}\n            ${hint}`;
+  });
 }
 
 function buildAdvancedSettingsToggle() {
@@ -295,6 +316,7 @@ function ensureStaticCalculatorLayout(indexHtml) {
   }
   if (content.includes('</head>') && !content.includes('data-region-selector-style')) content = content.replace('</head>', '<link rel="stylesheet" href="/region-selector.css" data-region-selector-style="true">\n</head>');
   content = decorateStaticLabels(content);
+  content = ensureStaticNeededPointsHint(content);
   content = ensureStaticAdvancedSettings(content);
   content = ensurePrimaryActionSourceOrder(content);
   content = content.replace(/(<div\b[^>]*id="mainMode"[^>]*>\s*<div) class="section"/, '$1 id="main-calculator-inputs" class="section"');

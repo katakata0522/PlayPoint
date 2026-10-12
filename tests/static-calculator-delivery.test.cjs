@@ -39,6 +39,8 @@ const expectedLabels = Object.freeze({
   ]
 });
 const indexPaths = ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html'];
+const { SIMPLIFIED_CALCULATOR_COPY: RUNTIME_COPY } = require('../js/main-calculator-ui.js');
+const regions = ['JP', 'US', 'KR', 'TW', 'HK', 'IN'];
 
 const legacyCalculatorFixture = `
 <head></head>
@@ -83,8 +85,8 @@ test('旧HTMLを初回描画から安定する静的レイアウトへ安全に�
   assert.equal(ensureStaticCalculatorLayout(converted), converted, '静的化処理は冪等である');
 });
 
-test('6地域の公開HTMLはJavaScript実行前から詳細設定の最終DOMを持つ', () => {
-  for (const indexPath of indexPaths) {
+test('6地域の公開HTMLはJavaScript実行前から説明文と詳細設定の最終DOMを持つ', () => {
+  for (const [index, indexPath] of indexPaths.entries()) {
     const html = read(indexPath);
     const mainMode = html.slice(html.indexOf('<div id="mainMode"'), html.indexOf('<div id="reverseMode"'));
     validateStaticLayout(html);
@@ -92,6 +94,10 @@ test('6地域の公開HTMLはJavaScript実行前から詳細設定の最終DOM�
     assert.ok(!mainMode.includes('data-lang-key="sectionTitleRate"'), `${indexPath}: 独立した還元設定が残っている`);
     assert.ok(mainMode.includes('id="calculator-advanced-settings"'), `${indexPath}: 静的な詳細設定ラッパーがない`);
     assert.ok(mainMode.includes('calculator-advanced-settings__toggle'), `${indexPath}: 静的な詳細設定トグルがない`);
+    const hints = [...mainMode.matchAll(/<p\b[^>]*\bid="needed-points-hint"[^>]*>([^<]*)<\/p>/g)];
+    assert.equal(hints.length, 1, `${indexPath}: 必要ポイントの説明文は初期HTMLに1つだけ出力する`);
+    assert.equal(hints[0][1], RUNTIME_COPY[regions[index]].neededPointsHint, `${indexPath}: 初期説明文は地域切替後と一致する`);
+    assert.match(mainMode, /<input\b[^>]*\bid="neededPoints"[^>]*\baria-describedby="[^"]*\bneeded-points-hint\b/);
     const advancedLabels = mainMode.match(/data-simplified-calculator-copy="advancedSettingsLabel"/g) || [];
     assert.equal(advancedLabels.length, 1, `${indexPath}: 詳細設定ラベルは1言語分だけ静的出力する`);
     assert.ok(!mainMode.includes('calculator-advanced-settings__copy--'), `${indexPath}: 他言語の非表示コピーを埋め込まない`);
@@ -135,6 +141,7 @@ test('日本語トップは説明の後にランク導線と記事ハブだけ�
 
 test('多言語生成処理は通常計算専用ラベルを実際のHTMLへ適用する', () => {
   const fixture = `
+    <p data-simplified-calculator-copy="neededPointsHint">old hint</p>
     <span data-simplified-calculator-copy="baseRateLabel">old base</span>
     <span data-simplified-calculator-copy="multiplierLabel">old promo</span>
     <span data-simplified-calculator-copy="advancedSettingsLabel">old advanced</span>`;
@@ -142,6 +149,7 @@ test('多言語生成処理は通常計算専用ラベルを実際のHTMLへ適�
   for (const locale of ['en', 'ko', 'tw']) {
     const copy = SIMPLIFIED_CALCULATOR_COPY[locale];
     const converted = replaceSimplifiedCalculatorCopy(fixture, copy);
+    assert.ok(converted.includes(copy.neededPointsHint), `${locale}: needed points hint`);
     assert.ok(converted.includes(copy.baseRateLabel), `${locale}: base rate copy`);
     assert.ok(converted.includes(copy.multiplierLabel), `${locale}: promotion copy`);
     assert.ok(converted.includes(copy.advancedSettingsLabel), `${locale}: advanced settings copy`);
