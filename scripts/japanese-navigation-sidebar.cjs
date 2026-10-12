@@ -67,6 +67,9 @@ function relatedFor(article, html, catalog) {
 }
 
 function nextFor(role, related, article) {
+  // 期間限定特典から加入の判断へ、損益比較から基本条件へつなぐ。
+  if (article?.path === 'articles/2026-10-10-play-pass-double-points-6x.html') return ['/articles/2026-10-10-diamond-play-pass-value.html', 'Play Passの年額と使う特典を比較する'];
+  if (article?.path === 'articles/2026-10-10-diamond-play-pass-value.html') return ['/articles/2026-08-16-play-pass-worth-it.html', 'Play Passの基本と加入条件を確かめる'];
   if (/pixel-discount/.test(article?.path || '')) return ['/latest/', '最新情報の「その他の特典」を確認する'];
   if (role === 'calculator_bridge') return ['/', 'あなたの必要額を計算する'];
   if (role === 'retention') return ['/latest/', '次回の特典・確認日を調べる'];
