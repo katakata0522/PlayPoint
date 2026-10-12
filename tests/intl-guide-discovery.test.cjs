@@ -133,6 +133,22 @@ test('hub anchors and article active navigation share the taxonomy categories', 
   assert.match(missing, /class="nav-item active" href="\/en\/articles\/#intl-hub-trouble"/);
 });
 
+test('英語版のポイント未表示ガイドは症状別に確認先を分ける', () => {
+  const html = read('en/articles/google-play-points-not-showing.html');
+  const index = JSON.parse(read('en/articles/article-search-index.json'));
+  const record = index.articles.find(article => article.path === '/en/articles/google-play-points-not-showing.html');
+  assert.ok(record, '本文検索インデックスへ収録する');
+  for (const anchor of ['missing-play-points-menu', 'section-1', 'section-3']) {
+    assert.ok(html.includes('href="#' + anchor + '"'), anchor + ' への分岐');
+    assert.match(html, new RegExp('id="' + anchor + '"'), anchor + ' の到達先');
+  }
+  assert.match(html, /Do not buy anything again just to test/, '再購入による確認を勧めない');
+  assert.ok(html.includes('/en/articles/google-play-points-join-eligibility.html'));
+  assert.ok(html.includes('/en/articles/google-play-points-device-change.html'));
+  assert.ok(record.sections.some(section => section.id === 'missing-play-points-menu'),
+    '本文検索にも新しい症状を反映する');
+});
+
 test('ゲーム入口は全ゲームの実記事に対応し、地域固有の購入目的を表示する', () => {
   for (const locale of INTERNATIONAL_LOCALES) {
     const html = read(`${locale}/articles/index.html`);
