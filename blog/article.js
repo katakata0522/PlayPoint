@@ -44,6 +44,9 @@
     // Flags
     let scrollListenerAdded = false;
     let articleAdsenseLoaded = false;
+    let articleAdObserver;
+    let articleAdPrefetchMargin = 0;
+    const scheduledArticleAds = new WeakSet();
 
     // Local fallback utilities (in case BlogUtils is not loaded)
     const fallbackUtils = {
@@ -309,10 +312,58 @@
 
     const MANAGED_ADSENSE_SLOT = '8250492620';
 
-    function initializeManagedArticleAds() {
-        document.querySelectorAll('.article-ad-container ins.adsbygoogle').forEach((ad) => {
+    function isArticleAdNearViewport(ad) {
+        const height = window.innerHeight || document.documentElement.clientHeight;
+        const rect = ad.getBoundingClientRect();
+        // 表示される前に準備する。上へ読み戻す場合も同じ距離を使う。
+        return rect.top <= height + articleAdPrefetchMargin && rect.bottom >= -articleAdPrefetchMargin;
+    }
+
+    function getArticleAdObserver() {
+        if (articleAdObserver !== undefined) return articleAdObserver;
+        articleAdObserver = null;
+        if (typeof window.IntersectionObserver !== 'function') return null;
+        try {
+            articleAdPrefetchMargin = (window.innerHeight || document.documentElement.clientHeight) * 2;
+            articleAdObserver = new IntersectionObserver(entries => {
+                entries.forEach(({ target: ad, isIntersecting }) => {
+                    if (!ad.isConnected || isIntersecting) {
+                        articleAdObserver.unobserve(ad);
+                        scheduledArticleAds.delete(ad);
+                        if (ad.isConnected) scheduleManagedArticleAd(ad);
+                    }
+                });
+            }, { rootMargin: `${articleAdPrefetchMargin}px 0px`, threshold: 0 });
+        } catch (error) {
+            console.warn('広告枠の距離監視を利用できないため、通常の初期化へ戻します。', error);
+        }
+        return articleAdObserver;
+    }
+
+    function scheduleManagedArticleAd(ad) {
+        if (!ad.isConnected || ad.dataset.playpointAdRequested === 'true' || ad.dataset.adsbygoogleStatus || scheduledArticleAds.has(ad)) return;
+        const observer = getArticleAdObserver();
+        let monitorDistance = Boolean(observer);
+        scheduledArticleAds.add(ad);
+        if (observer && !isArticleAdNearViewport(ad)) {
+            try {
+                observer.observe(ad);
+                return;
+            } catch (error) {
+                monitorDistance = false;
+                console.warn('広告枠を監視できないため、通常の初期化へ戻します。', error);
+            }
+        }
+
+        const request = () => {
+            scheduledArticleAds.delete(ad);
+            if (!ad.isConnected || ad.dataset.playpointAdRequested === 'true' || ad.dataset.adsbygoogleStatus) return;
+            // 待機中に同意が取り消され、再許可時には遠くへ移動している場合も再判定する。
+            if (monitorDistance && !isArticleAdNearViewport(ad)) {
+                scheduleManagedArticleAd(ad);
+                return;
+            }
             if (!ad.dataset.adSlot) ad.dataset.adSlot = MANAGED_ADSENSE_SLOT;
-            if (ad.dataset.playpointAdRequested === 'true' || ad.dataset.adsbygoogleStatus) return;
             ad.dataset.playpointAdRequested = 'true';
             try {
                 (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -320,6 +371,17 @@
                 delete ad.dataset.playpointAdRequested;
                 console.error('AdSense slot initialization failed:', error);
             }
+        };
+        // 初回の許可と実際の要求の間に時間が空くため、要求時にも同じ同意境界を通す。
+        const consent = window.PlayPointConsent;
+        if (typeof consent.whenAdsAllowed === 'function') consent.whenAdsAllowed(request);
+        else consent.whenGranted(request);
+    }
+
+    function initializeManagedArticleAds() {
+        document.querySelectorAll('.article-ad-container ins.adsbygoogle').forEach((ad) => {
+            if (!ad.dataset.adSlot) ad.dataset.adSlot = MANAGED_ADSENSE_SLOT;
+            scheduleManagedArticleAd(ad);
         });
     }
 

@@ -150,10 +150,66 @@ async function main() {
           await page.waitForFunction(expected => window.PlayPointConsent?.getAdStatus() === expected, mode);
           assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 許可前の広告要求');
           await page.evaluate(() => window.__testSetConsent('granted'));
+          if (target.startsWith('articles/')) await page.locator(selector).scrollIntoViewIfNeeded();
           await waitForRevenueRuntime(page, selector);
         } finally { await context.close(); }
       }
       console.log('ok - actual ad entry permission boundary: ' + target);
+    }
+
+    // 記事末の広告は画面外で要求せず、近づいた時点で同意を再確認して一度だけ準備する。
+    for (const [target, width] of [
+      ['articles/2026-03-10-play-points-reflection-timing.html', 390],
+      ['articles/2026-03-10-play-points-reflection-timing.html', 1024],
+      ['articles/2025-12-25-best-use.html', 390],
+      ['articles/2026-08-05-play-points-multiplier-stacking.html', 390]
+    ]) {
+      const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
+      try {
+        await configureContext(context, origin);
+        const page = await context.newPage();
+        const selector = '.article-ad-container ins.adsbygoogle';
+        const settleViewport = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+        await page.goto(new URL(target, baseUrl).href, { waitUntil: 'load' });
+        await page.waitForFunction(() => window.PlayPointConsent?.getAdStatus() === 'granted' && [...document.scripts].some(script => script.src.includes('googletagmanager.com/gtag/js')));
+        assert(await page.locator(selector).evaluate(ad => ad.getBoundingClientRect().top > innerHeight * 3), target + ': 初期広告枠が十分に画面外ではない');
+        assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 遠い広告枠を初期化している');
+
+        await page.evaluate(() => window.__testSetConsent('denied'));
+        await page.locator(selector).scrollIntoViewIfNeeded();
+        await settleViewport();
+        assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 待機中の同意取消しを無視した');
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await settleViewport();
+        await page.evaluate(() => window.__testSetConsent('granted'));
+        await settleViewport();
+        assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 再許可時に遠い広告枠を初期化した');
+
+        // まだ画面外にある一画面先で要求されることを確認し、見えてからの後追いを避ける。
+        await page.locator(selector).evaluate(ad => window.scrollTo(0, ad.getBoundingClientRect().top + scrollY - innerHeight * 2));
+        await waitForRevenueRuntime(page, selector);
+        assert(await page.locator(selector).evaluate(ad => ad.getBoundingClientRect().top >= innerHeight), target + ': 表示前の先行準備になっていない');
+        const requestsBefore = await page.evaluate(() => window.adsbygoogle.length);
+        await page.locator(selector).scrollIntoViewIfNeeded();
+        await settleViewport();
+        await page.evaluate(() => { window.__testSetConsent('denied'); window.__testSetConsent('granted'); });
+        await settleViewport();
+        strictAssert.equal(await page.evaluate(() => window.adsbygoogle.length), requestsBefore, target + ': スクロールまたは再許可で二重要求した');
+        console.log(`ok - article ad prepares before view, respects revocation, and requests once: ${target}/${width}`);
+      } finally { await context.close(); }
+    }
+    {
+      const context = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
+      try {
+        await configureContext(context, origin, 'denied');
+        await context.addInitScript(() => { window.IntersectionObserver = undefined; });
+        const page = await context.newPage();
+        await page.goto(new URL('articles/2026-03-10-play-points-reflection-timing.html', baseUrl).href, { waitUntil: 'load' });
+        assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), '旧ブラウザでも同意前の広告を遮断する');
+        await page.evaluate(() => window.__testSetConsent('granted'));
+        await waitForRevenueRuntime(page, '.article-ad-container ins.adsbygoogle');
+        console.log('ok - article ad falls back to consent-gated eager requests without IntersectionObserver');
+      } finally { await context.close(); }
     }
     // main.jsの実DOM登録から送信手前のdataLayerへ接続。外部GAスクリプトはstub済み。
     {
@@ -292,6 +348,7 @@ async function main() {
     const response = await page.goto(articleUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
     assert(response && response.ok(), 'article HTTP failure');
     await page.locator('article').waitFor({ state: 'attached', timeout: 30000 });
+    await page.locator('.article-ad-container ins.adsbygoogle').scrollIntoViewIfNeeded();
     await waitForRevenueRuntime(page, '.article-ad-container ins.adsbygoogle');
 
     const articleState = await page.evaluate(() => ({
