@@ -13,6 +13,8 @@ const INTL_LOCALES = Object.freeze([
 const ARTICLE_JA_ALTERNATES = Object.freeze({
   ...getLocalizedGameGuideJapaneseAlternates(),
   'index.html': '/blog/',
+  '2026-10-12-google-play-fest-2026.html': '/articles/2026-10-10-google-play-fest-2026.html',
+  '2026-10-12-play-pass-double-points-6x.html': '/articles/2026-10-10-play-pass-double-points-6x.html',
   'google-play-games-vs-play-points.html': '/articles/2025-12-25-play-games.html',
   'google-play-points-apps-books-purchases.html': '/articles/2025-12-25-movies-books.html',
   'google-play-points-balance-history-progress.html': '/articles/2025-12-25-check-balance.html',
