@@ -322,6 +322,8 @@
     function getArticleAdObserver() {
         if (articleAdObserver !== undefined) return articleAdObserver;
         articleAdObserver = null;
+        // 収益への影響を比較できるよう、明示した記事だけで先行初期化を試す。
+        if (document.querySelector('meta[name="playpoint:manual-ad-loading"]')?.content !== 'near-viewport') return null;
         if (typeof window.IntersectionObserver !== 'function') return null;
         try {
             articleAdPrefetchMargin = (window.innerHeight || document.documentElement.clientHeight) * 2;

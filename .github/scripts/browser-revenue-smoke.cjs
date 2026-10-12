@@ -150,7 +150,6 @@ async function main() {
           await page.waitForFunction(expected => window.PlayPointConsent?.getAdStatus() === expected, mode);
           assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 許可前の広告要求');
           await page.evaluate(() => window.__testSetConsent('granted'));
-          if (target.startsWith('articles/')) await page.locator(selector).scrollIntoViewIfNeeded();
           await waitForRevenueRuntime(page, selector);
         } finally { await context.close(); }
       }
@@ -160,9 +159,7 @@ async function main() {
     // 記事末の広告は画面外で要求せず、近づいた時点で同意を再確認して一度だけ準備する。
     for (const [target, width] of [
       ['articles/2026-03-10-play-points-reflection-timing.html', 390],
-      ['articles/2026-03-10-play-points-reflection-timing.html', 1024],
-      ['articles/2025-12-25-best-use.html', 390],
-      ['articles/2026-08-05-play-points-multiplier-stacking.html', 390]
+      ['articles/2026-03-10-play-points-reflection-timing.html', 1024]
     ]) {
       const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
       try {
@@ -348,7 +345,6 @@ async function main() {
     const response = await page.goto(articleUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
     assert(response && response.ok(), 'article HTTP failure');
     await page.locator('article').waitFor({ state: 'attached', timeout: 30000 });
-    await page.locator('.article-ad-container ins.adsbygoogle').scrollIntoViewIfNeeded();
     await waitForRevenueRuntime(page, '.article-ad-container ins.adsbygoogle');
 
     const articleState = await page.evaluate(() => ({
