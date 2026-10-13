@@ -78,6 +78,34 @@ jobs:
           set -euo pipefail
           node .github/scripts/preflight.cjs 2>&1 | tee "$RUNNER_TEMP/playpoint-preflight.log"
 
+      # 記事追加時の生成物差分を収集する一時的な検証補助。書込み権限は増やさない。
+      - name: Capture generated outputs for article review
+        id: capture_generated_article_outputs
+        if: ${{ always() && startsWith(github.head_ref, 'article/2026-10-14-three-official-guides') }}
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const cp = require('node:child_process');
+          const path = require('node:path');
+          const { generatedFiles } = require('./scripts/build-targets.cjs');
+          const allowed = new Set(generatedFiles);
+          const status = cp.execFileSync('git', ['status', '--porcelain', '-z', '--untracked-files=all'], { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
+          const paths = [...new Set(status.split('\0').filter(Boolean).map(entry => entry.slice(3)).filter(file => allowed.has(file) && fs.existsSync(file)))];
+          console.log('ARTPUB_TOTAL:' + paths.length);
+          for (const file of paths) {
+            const data = fs.readFileSync(file);
+            if (data.length > 1500000) {
+              console.log('ARTPUB_SKIPPED_LARGE:' + file + ':' + data.length);
+              continue;
+            }
+            const encoded = data.toString('base64');
+            console.log('ARTPUB_BEGIN:' + file + ':' + encoded.length);
+            for (let i = 0; i < encoded.length; i += 2400) console.log('ARTPUB_CHUNK:' + encoded.slice(i, i + 2400));
+            console.log('ARTPUB_END:' + file);
+          }
+          NODE
+
       # 設定を模倣せず、候補の.htaccessを実Apache/TLSで評価する。Node単体検査はWindowsでも維持。
       - name: Verify Apache HTTP cache behavior
         id: verify_apache_http_cache
