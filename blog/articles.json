@@ -1,5 +1,184 @@
 [
   {
+    "id": "2026-10-14-play-points-pc-redeem",
+    "title": "PCでGoogle Play Pointsを使う方法｜ブラウザとPlay Gamesの違い",
+    "date": "2026-10-14",
+    "modified": "2026-10-14",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "listTitle": "Play Points｜パソコンで交換する手順",
+    "listDescription": "スマホなしでもPCで交換可能。ブラウザとPC版Google Play Gamesの表示対象の違いを確認できます。",
+    "tags": [
+      "Play Points",
+      "パソコン",
+      "Google Play Games",
+      "クーポン"
+    ],
+    "description": "パソコンからGoogle Play Pointsを交換する公式手順を解説。play.google.comとPC版Google Play Gamesで表示されるアイテムの違い、クーポンの確認方法も紹介します。",
+    "file": "../articles/2026-10-14-play-points-pc-redeem.html",
+    "thumbnail": "../articles/thumbnails/2026-10-14-play-points-pc-redeem-square.png",
+    "ogp": "../images/article-ogp/2026-10-14-play-points-pc-redeem.png",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2025-12-25-best-use.html",
+        "Play Pointsの交換先を比較する"
+      ],
+      [
+        "/articles/2026-08-16-pc-play-games-points.html",
+        "PC版Play Gamesでポイントを貯める条件"
+      ],
+      [
+        "/articles/2026-07-25-play-points-coupon-not-applied.html",
+        "クーポンが使えない場合"
+      ]
+    ]
+  },
+  {
+    "id": "2026-10-14-play-points-redemption-refunds",
+    "title": "Play Points交換品は返金できる？クーポン使用後の払い戻しとの違い",
+    "date": "2026-10-14",
+    "modified": "2026-10-14",
+    "category": "使い方",
+    "browseCategory": "トラブル・アカウント",
+    "listTitle": "Play Points｜交換品の返金ルール",
+    "listDescription": "直接交換は原則返金不可。ただし交換クーポンを使った購入が返金承認されるとポイントが戻る場合があります。",
+    "tags": [
+      "Play Points",
+      "返金",
+      "クーポン",
+      "Playクレジット"
+    ],
+    "description": "Play Pointsで交換したアイテムやPlayクレジットは返金できる？割引クーポンで購入した商品が返金承認された場合、ポイントが戻る条件をGoogle公式情報で解説します。",
+    "file": "../articles/2026-10-14-play-points-redemption-refunds.html",
+    "thumbnail": "../articles/thumbnails/2026-10-14-play-points-redemption-refunds-square.png",
+    "ogp": "../images/article-ogp/2026-10-14-play-points-redemption-refunds.png",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2025-12-25-refund.html",
+        "購入返金後のポイント残高とランクを見る"
+      ],
+      [
+        "/articles/2026-07-25-play-points-coupon-not-applied.html",
+        "クーポンが適用されない場合"
+      ],
+      [
+        "/articles/2025-12-25-best-use.html",
+        "ポイント交換先を比較する"
+      ]
+    ]
+  },
+  {
+    "id": "2026-10-14-pokemon-sleep-premium-change",
+    "title": "ポケスリのプレミアムパスは途中で期間変更できる？Androidは継続期間に注意",
+    "date": "2026-10-14",
+    "modified": "2026-10-14",
+    "category": "使い方",
+    "browseCategory": "ゲーム別課金",
+    "gameTitle": "ポケスリ",
+    "listTitle": "ポケスリ｜プレミアムパスの期間変更",
+    "listDescription": "プレミアムパスを別期間へ変更するとAndroidでは継続期間がリセット。公式の切替手順と注意点を整理します。",
+    "tags": [
+      "Pokémon Sleep",
+      "ポケスリ",
+      "プレミアムパス",
+      "定期購入",
+      "Android"
+    ],
+    "description": "Pokémon Sleepのプレミアムパスの期間変更について公式サポートで確認。Androidは解約後の再加入が必要で継続期間がリセットされる点と、購入ストア変更時の注意を紹介します。",
+    "file": "../articles/2026-10-14-pokemon-sleep-premium-change.html",
+    "thumbnail": "../articles/thumbnails/2026-10-14-pokemon-sleep-premium-change-square.png",
+    "ogp": "../images/article-ogp/2026-10-14-pokemon-sleep-premium-change.png",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2026-09-26-pokemon-sleep-play-points-coupon.html",
+        "ポケスリのPlay Pointsクーポンを確認"
+      ],
+      [
+        "/articles/2025-12-25-subscription.html",
+        "サブスクでPlay Pointsが貯まる条件"
+      ],
+      [
+        "/games/",
+        "ゲーム別にPlay Pointsを計算する"
+      ]
+    ]
+  },
+  {
+    "id": "2026-10-14-play-credit-subscriptions",
+    "title": "Play Pointsで交換したPlayクレジットはサブスクに使える？初回と更新の違い",
+    "date": "2026-10-14",
+    "modified": "2026-10-14",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "listTitle": "Playクレジット｜サブスクへの使い方",
+    "listDescription": "Google Playクレジットは対象の定期購入に利用可能。初回・更新・残高不足時の違いを公式条件で説明します。",
+    "tags": [
+      "Play Points",
+      "Playクレジット",
+      "定期購入",
+      "支払い方法"
+    ],
+    "description": "Play Pointsから交換したGoogle Playクレジットを定期購入に使える条件をGoogle公式情報で確認。残高不足時の組み合わせ払い、初回と更新・無料試用時の違いを解説します。",
+    "file": "../articles/2026-10-14-play-credit-subscriptions.html",
+    "thumbnail": "../articles/thumbnails/2026-10-14-play-credit-subscriptions-square.png",
+    "ogp": "../images/article-ogp/2026-10-14-play-credit-subscriptions.png",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2026-07-25-play-credit-not-working.html",
+        "Playクレジットを使えないときの確認"
+      ],
+      [
+        "/articles/2025-12-25-subscription.html",
+        "サブスク購入でポイントを貯める条件"
+      ],
+      [
+        "/articles/2025-12-25-best-use.html",
+        "交換先を比較する"
+      ]
+    ]
+  },
+  {
+    "id": "2026-10-14-uma-subscription-comparison",
+    "title": "ウマスクとウマプランはどっち？月額980円・1,980円の特典と選び方",
+    "date": "2026-10-14",
+    "modified": "2026-10-14",
+    "category": "使い方",
+    "browseCategory": "ゲーム別課金",
+    "gameTitle": "ウマ娘",
+    "listTitle": "ウマ娘｜ウマスクとウマプランの違い",
+    "listDescription": "ウマスクはジュエルと育成、ウマプランは継承を支援。公式の特典を比較し、使う機能から月額を選びます。",
+    "tags": [
+      "ウマ娘",
+      "ウマスク",
+      "ウマプラン",
+      "Cygames WebStore",
+      "Play Points"
+    ],
+    "description": "ウマ娘のウマスク月980円とウマプラン月1,980円をCygames公式情報で比較。ジュエル・育成報酬と継承機能の違い、Google PlayとWebStoreの購入条件を整理します。",
+    "file": "../articles/2026-10-14-uma-subscription-comparison.html",
+    "thumbnail": "../articles/thumbnails/2026-10-14-uma-subscription-comparison-square.png",
+    "ogp": "../images/article-ogp/2026-10-14-uma-subscription-comparison.png",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/games/umamusume/umasuku-value/",
+        "ウマスク単体の価値を詳しく見る"
+      ],
+      [
+        "/games/umamusume/",
+        "ウマ娘への課金額を計算する"
+      ],
+      [
+        "/articles/2026-08-19-web-store-external-billing-points.html",
+        "WebStoreとGoogle Playの違い"
+      ]
+    ]
+  },
+  {
     "id": "fgo-pity-cost-2026",
     "listDescription": "天井330回までの費用を知りたい方へ。必要な聖晶石、最小購入例、福袋の有償15個とポイント還元を確認できます。",
     "title": "FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】",
