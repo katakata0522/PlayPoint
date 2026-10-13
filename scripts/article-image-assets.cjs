@@ -6,7 +6,8 @@ const path = require('node:path');
 const SITE_ORIGIN = 'https://playpoint-sim.com';
 const JSON_LD_SCRIPT = /(<script\b[^>]*type=["']application\/ld\+json["'][^>]*>)([\s\S]*?)(<\/script>)/gi;
 const ARTICLE_FILE = /^\.\.\/(?:articles\/[^/]+\.html|games\/[a-z0-9-]+\/[a-z0-9-]+\/index\.html)$/;
-const OGP_PATH = /^\.\.\/articles\/ogp\/[a-z0-9-]+\.png$/i;
+// 従来のJPEG実体OGPと、別ディレクトリで正しくPNG配信する記事画像を分ける。
+const OGP_PATH = /^\.\.\/(?:articles\/ogp|images\/article-ogp)\/[a-z0-9-]+\.png$/i;
 const SAFE_GAME_THUMBNAIL = /^\.\.\/images\/game-icons\/[a-z0-9-]+\.webp$/i;
 const SAFE_GENERIC_THUMBNAIL = /^\.\.\/articles\/thumbnails\/[a-z0-9-]+-square-v1\.webp$/i;
 
@@ -32,7 +33,7 @@ function normalizeManifestPath(value) {
       const url = new URL(raw);
       if (url.origin !== SITE_ORIGIN) return '';
       if (url.pathname === '/ogp.png') return '../ogp.png';
-      if (/^\/articles\/ogp\/[a-z0-9-]+\.png$/i.test(url.pathname)) {
+      if (OGP_PATH.test('..' + url.pathname)) {
         return '..' + url.pathname;
       }
     } catch {
@@ -232,7 +233,7 @@ function syncArticleImageRoles(rootDir, options = {}) {
     article.ogp = roles.ogp;
     let after = before;
     after = setMetaContent(after, 'property', 'og:image', publicOgp);
-    after = setMetaContent(after, 'property', 'og:image:type', 'image/jpeg');
+    after = setMetaContent(after, 'property', 'og:image:type', roles.ogp.startsWith('../images/article-ogp/') ? 'image/png' : 'image/jpeg');
     after = setMetaContent(after, 'name', 'twitter:image', publicOgp);
     after = updateJsonLdArticleImage(after, publicOgp);
     if (after !== before) {
