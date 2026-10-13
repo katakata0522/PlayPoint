@@ -79,7 +79,7 @@ function getIntlGuideCategory(value) {
   const slug = normalizeGuideSlug(value);
   if (CATEGORY_OVERRIDES[slug]) return CATEGORY_OVERRIDES[slug];
 
-  if (/(?:not-showing|not-applied|not-working|locked|missing|cannot|error|problem)/.test(slug)) {
+  if (/(?:not-showing|not-applied|not-working|not-received|locked|missing|cannot|error|problem)/.test(slug)) {
     return 'troubleshooting';
   }
   if (/(?:level|levels|silver|gold|platinum|diamond|weekly-reward|super-weekly|maintenance|rank|status)/.test(slug)) {
