@@ -1687,7 +1687,7 @@ const MANUAL_COMPARISON_ARTICLES = [
     "title": "Play Points app install reward not received? What to check",
     "description": "Installed an app for Play Points but no reward arrived? Check first-install eligibility, two minutes of use within 24 hours, the seven-day wait and personalization.",
     "publishedAt": "2026-10-13",
-    "modifiedAt": "2026-10-13",
+    "modifiedAt": "2026-10-14",
     "manual": true
   },
   {
@@ -1696,7 +1696,7 @@ const MANUAL_COMPARISON_ARTICLES = [
     "title": "Google Play Points locked? Error message and support steps",
     "description": "Google Play Points locked or unavailable? Separate a points restriction from a disabled Google Account, save the error and follow the right support route.",
     "publishedAt": "2026-10-13",
-    "modifiedAt": "2026-10-13",
+    "modifiedAt": "2026-10-14",
     "manual": true
   },
   {
@@ -1704,7 +1704,7 @@ const MANUAL_COMPARISON_ARTICLES = [
     lang: 'zh-TW',
     title: '學園偶像大師日版課金：Google Play、WEB SHOP 與 DMM 怎麼選？',
     publishedAt: '2026-10-13',
-    modifiedAt: '2026-10-13',
+    modifiedAt: '2026-10-14',
     manual: true
   },
   {
