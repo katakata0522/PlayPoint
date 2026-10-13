@@ -13,6 +13,15 @@ function playPointReaderFilter_(name, values) {
   return { filter: { fieldName: name, inListFilter: { values: values, caseSensitive: true } } };
 }
 
+function playPointReaderParameterMissing_(value) {
+  // 検索結果0件は有効値。数値0を欠落と取り違えない。
+  return value === undefined || value === null || String(value).trim() === '' || value === '(not set)';
+}
+
+function playPointReaderMissingParameters_(row, parameters) {
+  return parameters.filter(function(name) { return playPointReaderParameterMissing_(row[name]); });
+}
+
 function playPointReaderReport_(propertyId, period, dimensions, metrics, filter) {
   var body = { dateRanges: [{ startDate: period.start, endDate: period.end }],
     dimensions: dimensions.map(function(name) { return { name: name }; }),
@@ -22,14 +31,20 @@ function playPointReaderReport_(propertyId, period, dimensions, metrics, filter)
   var metadata = report.metadata || {};
   var rows = playPointP12ParseGa4Rows_(report, dimensions, metrics);
   var parameters = dimensions.filter(function(name) { return name.indexOf('customEvent:') === 0; });
-  function missing(row) { return parameters.some(function(name) { return !row[name] || row[name] === '(not set)'; }); }
+  function missing(row) { return playPointReaderMissingParameters_(row, parameters).length > 0; }
   var parameterMissing = rows.some(missing), coverage = null;
   if (parameters.length && metrics.indexOf('eventCount') >= 0) {
     var total = 0, unset = 0;
     rows.forEach(function(row) { total += row.eventCount; if (missing(row)) unset += row.eventCount; });
-    coverage = { total: total, missing: unset, available: total - unset };
+    var byParameter = {};
+    parameters.forEach(function(name) {
+      var count = 0;
+      rows.forEach(function(row) { if (playPointReaderParameterMissing_(row[name])) count += row.eventCount; });
+      byParameter[name] = { total: total, missing: count, available: total - count };
+    });
+    coverage = { total: total, missing: unset, available: total - unset, byParameter: byParameter };
   }
-  return { rows: rows, parameterMissing: parameterMissing, coverage: coverage,
+  return { rows: rows, parameters: parameters, parameterMissing: parameterMissing, coverage: coverage,
     restricted: !!(metadata.subjectToThresholding || metadata.dataLossFromOtherRow ||
       (metadata.samplingMetadatas && metadata.samplingMetadatas.length)) };
 }
@@ -46,9 +61,14 @@ function playPointReaderSource_(fn, required, definitions) {
       detail += '。パラメータ取得 ' + c.available + '/' + c.total + '回' +
         (c.total > 0 ? '（' + (c.available / c.total * 100).toFixed(1) + '%）' : '（母数なし）') +
         ' / 未設定 ' + c.missing + '回。API返却行内のイベント回数。人数の割合ではない';
+      Object.keys(c.byParameter || {}).forEach(function(name) {
+        var parameter = c.byParameter[name];
+        detail += '。' + name.replace('customEvent:', '') + ': 取得 ' + parameter.available +
+          '/' + parameter.total + '回、未設定 ' + parameter.missing + '回';
+      });
     }
     return { state: result.restricted ? 'RESTRICTED' : result.parameterMissing ? 'PARAMETER_PARTIAL' : 'OK',
-      rows: result.rows, detail: detail, coverage: result.coverage || null };
+      rows: result.rows, parameters: result.parameters || [], detail: detail, coverage: result.coverage || null };
   } catch (error) {
     return { state: 'ERROR', rows: [], detail: playPointP12ErrorText_(error) };
   }
@@ -135,12 +155,18 @@ function playPointReaderBuildGrid_(period, inventory, sources, timestamp) {
     source.rows.forEach(function(row) {
       var page = row.pagePath ? playPointP12NormalizePage_(row.pagePath) : '';
       var article = roles[page], locale = article ? article.locale : /^\/(en|ko|tw)(\/|$)/.test(page) ? page.split('/')[1].toUpperCase() : page ? 'JP' : '';
+      var missing = playPointReaderMissingParameters_(row, source.parameters || []);
+      var rowState = source.state === 'PARAMETER_PARTIAL' && source.parameters && source.parameters.length ?
+        (missing.length ? 'PARAMETER_PARTIAL' : 'OK') : source.state;
       var comment = type === 'READING' ? '再訪の閲覧人数。初回記事への帰属ではない' :
-        type === 'SEARCH' ? (String(row['customEvent:results_count']) === '0' ? '検索結果0件' : '検索結果件数: ' + row['customEvent:results_count']) :
+        type === 'ARTICLE_ACTIONS' ? 'ページ別・イベント別の回数と人数。NAVIGATIONと重複するので足さない。クリックは遷移先での閲覧・疑問解決を保証しない' :
+        type === 'SEARCH' ? (playPointReaderParameterMissing_(row['customEvent:results_count']) ? '検索結果件数は未取得（0件ではない）' :
+          String(row['customEvent:results_count']) === '0' ? '検索結果0件' : '検索結果件数: ' + row['customEvent:results_count']) :
         type === 'COHORT' ? (row.cohortTotalUsers > 0 ? '日次アクティブ率: ' + (row.cohortActiveUsers / row.cohortTotalUsers * 100).toFixed(2) + '%' : '母数なし') :
         type === 'FUNNEL' ? '閉じたファネル・成功は開始後24時間以内。同じ計算内容・記事帰属までは保証しない' :
         type === 'ERRORS' ? '入力値は収集せず原因の分類だけを表示' : '';
-      add([type, source.state,
+      if (missing.length) comment += (comment ? '。' : '') + '未設定: ' + missing.map(function(name) { return name.replace('customEvent:', ''); }).join(', ');
+      add([type, rowState,
         row.eventName || row['customEvent:error_type'] || row.funnelStepName || row.cohortNthDay || '',
         row.eventCount !== undefined ? row.eventCount : row.screenPageViews !== undefined ? row.screenPageViews : '',
         row.totalUsers !== undefined ? row.totalUsers : row.activeUsers !== undefined ? row.activeUsers : row.cohortActiveUsers !== undefined ? row.cohortActiveUsers : '',
@@ -160,6 +186,89 @@ function capturePlayPointReaderOutcomes() {
     withScriptLock_(function() { playPointP12HealthError_('READER_OUTCOMES', playPointP12NowText_(), playPointP12ErrorText_(error)); });
     throw error;
   }
+}
+
+function playPointReaderParameterAuditGrid_(period, sources, timestamp) {
+  var grid = [], width = 8;
+  function add(row) {
+    while (row.length < width) row.push('');
+    grid.push(playPointP12LiteralRow_(row));
+  }
+  add(['読者パラメータ診断', timestamp]);
+  add(['対象期間', period.start + ' ～ ' + period.end]);
+  add(['用途', '標準pagePathと各カスタム定義を別々に照合。項目ごとのイベント回数であり、行を横断して足さない']);
+  add(['原因判定', '初取得日は定義の登録日ではない。登録前・旧コード・送信欠落の確定にはGA4設定と送信実測が必要']);
+  add(['プライバシー', '既存イベントのみ再集計。検索語・利用者ID・Cookie・権限・トリガーは追加しない']);
+  add(['種別', '日付', 'ページ', 'パラメータ／イベント', '取得値', 'イベント回数', '状態', '補足']);
+  Object.keys(sources).forEach(function(type) {
+    var source = sources[type], parameter = source.parameters && source.parameters[0];
+    var availableDates = [], missingDates = [];
+    source.rows.forEach(function(row) {
+      var date = playPointEventDailyIso_(row.date);
+      if (date < period.start || date > period.end || !isFinite(row.eventCount) || row.eventCount < 0) {
+        throw new Error('パラメータ診断の結果が期間外・不正値です。');
+      }
+      if (!parameter || row.eventCount <= 0) return;
+      (playPointReaderParameterMissing_(row[parameter]) ? missingDates : availableDates).push(date);
+    });
+    availableDates.sort(); missingDates.sort();
+    var detail = source.detail;
+    if (parameter) detail += '。初取得観測日: ' + (availableDates[0] || '観測なし') +
+      ' / 最終未設定観測日: ' + (missingDates[missingDates.length - 1] || '観測なし');
+    add([type, '', '', parameter || '', '', '', source.state, detail]);
+    source.rows.forEach(function(row) {
+      var missing = parameter && playPointReaderParameterMissing_(row[parameter]);
+      var state = source.state === 'PARAMETER_PARTIAL' ? (missing ? 'PARAMETER_PARTIAL' : 'OK') : source.state;
+      add([type, playPointEventDailyIso_(row.date), playPointP12NormalizePage_(row.pagePath),
+        parameter || row.eventName, parameter ? (missing ? '(not set)' : row[parameter]) : '',
+        row.eventCount, state, missing ? '未取得。0や関心なしへ置換しない' : '既存イベントの観測値']);
+    });
+  });
+  return grid;
+}
+
+function capturePlayPointReaderParameterAudit() {
+  // 原因調査用の手動処理。新しいタイマー・カスタム定義を作らない。
+  var timestamp = playPointP12NowText_(), period = playPointP12BuildGa4Period_();
+  if (!playPointMaintenanceIsoDate_(period.start) || !playPointMaintenanceIsoDate_(period.end) ||
+      Date.parse(period.end) - Date.parse(period.start) !== 29 * 86400000 || period.end >= timestamp.slice(0, 10)) {
+    throw new Error('パラメータ診断の共通期間は実在する過去30日である必要があります。');
+  }
+  var propertyId = playPointP12GetGa4PropertyId_(), definitions = {}, sources = {};
+  var metadata = playPointP12GoogleJson_('https://analyticsdata.googleapis.com/v1beta/properties/' +
+    encodeURIComponent(propertyId) + '/metadata', { method: 'get' });
+  (metadata.dimensions || []).forEach(function(dimension) { definitions[dimension.apiName] = true; });
+  function report(type, dimensions, events) {
+    sources[type] = playPointReaderSource_(function() {
+      return playPointReaderReport_(propertyId, period, dimensions, ['eventCount'], playPointReaderFilter_('eventName', events));
+    }, dimensions.filter(function(name) { return name.indexOf('customEvent:') === 0; }), definitions);
+  }
+  report('PAGE_EVENTS', ['date', 'pagePath', 'eventName'], ['article_navigation_click', 'search']);
+  [ ['NAV_COMPONENT', 'component', 'article_navigation_click'],
+    ['NAV_DESTINATION', 'destination_type', 'article_navigation_click'],
+    ['SEARCH_INTENT', 'intent_id', 'search'], ['SEARCH_RESULTS', 'results_count', 'search'] ].forEach(function(spec) {
+      report(spec[0], ['date', 'pagePath', 'customEvent:' + spec[1]], [spec[2]]);
+    });
+  if (sources.PAGE_EVENTS.state !== 'OK') throw new Error('診断の標準ページ集計を取得できません: ' + sources.PAGE_EVENTS.detail);
+  var grid = playPointReaderParameterAuditGrid_(period, sources, timestamp);
+  return withScriptLock_(function() {
+    var ss = resolveAndRememberSpreadsheet_(), sheet = playPointP12EnsureSheet_(ss, '🔬読者パラメータ診断', 8);
+    var previous = String(sheet.getRange('B2').getValue() || '').match(/^\d{4}-\d{2}-\d{2} ～ (\d{4}-\d{2}-\d{2})$/);
+    if (previous && previous[1] > period.end) throw new Error('より新しいパラメータ診断を旧期間で置換しません。');
+    var oldRows = sheet.getLastRow();
+    playPointP12EnsureRows_(sheet, grid.length);
+    sheet.getRange(1, 1, 5, 8).breakApart().setNumberFormat('@');
+    sheet.getRange(1, 1, grid.length, 8).setValues(grid);
+    if (oldRows > grid.length) sheet.getRange(grid.length + 1, 1, oldRows - grid.length, 8).clearContent();
+    sheet.setFrozenRows(6); sheet.setFrozenColumns(1);
+    sheet.getRange(1, 2, 5, 7).mergeAcross().setWrap(true);
+    sheet.getRange(6, 1, 1, 8).setFontWeight('bold');
+    sheet.setColumnWidths(1, 2, 160); sheet.setColumnWidth(3, 390);
+    sheet.setColumnWidths(4, 2, 200); sheet.setColumnWidth(6, 110);
+    sheet.setColumnWidth(7, 180); sheet.setColumnWidth(8, 480);
+    sheet.getRange(1, 1, grid.length, 8).setWrap(true); sheet.autoResizeRows(1, 6);
+    return { period: period, rows: grid.length, states: Object.keys(sources).map(function(type) { return type + '=' + sources[type].state; }).join(' / ') };
+  });
 }
 
 function playPointCaptureReaderOutcomes_() {
@@ -190,6 +299,9 @@ function playPointCaptureReaderOutcomes_() {
   // 通信中に共通ロックを保持しない。本体の日次・リアルタイム更新を待たせない。
   report('EVENTS', ['eventName'], ['eventCount', 'totalUsers'], playPointReaderFilter_('eventName', PLAYPOINT_READER_OUTCOMES.events));
   report('READING', ['pagePath', 'newVsReturning'], ['screenPageViews', 'activeUsers'], playPointReaderFilter_('eventName', ['page_view']));
+  // 分類パラメータが欠けても、標準pagePathで取得できる記事別成果を独立に保持する。
+  report('ARTICLE_ACTIONS', ['pagePath', 'eventName'], ['eventCount', 'totalUsers'],
+    playPointReaderFilter_('eventName', ['article_navigation_click', 'article_to_calculator_clicked']));
   report('ERRORS', ['customEvent:error_type', 'deviceCategory', 'customEvent:calculation_mode'], ['eventCount', 'totalUsers'], playPointReaderFilter_('eventName', ['calculator_validation_error']));
   report('NAVIGATION', ['pagePath', 'customEvent:component', 'customEvent:destination_type'], ['eventCount', 'totalUsers'], playPointReaderFilter_('eventName', ['article_navigation_click']));
   report('QUESTIONS', ['pagePath', 'customEvent:candidate_id'], ['eventCount', 'totalUsers'], playPointReaderFilter_('eventName', ['reader_question_clicked']));
