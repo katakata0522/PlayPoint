@@ -13,6 +13,7 @@ const {
 const { syncMetadata } = require('../scripts/reader-foundations.cjs');
 const { buildBlogFeeds } = require('../scripts/blog-feeds.cjs');
 const { getBlogSitemapEntries } = require('../scripts/sitemap-sync.cjs');
+const { EDITORIAL_TARGETS, applyEditorialStructure } = require('../scripts/article-editorial-structure.cjs');
 
 const rootDir = path.resolve(__dirname, '..');
 
@@ -182,6 +183,44 @@ test('日本語台帳の実更新日をHTML・構造化データ・フィード�
   const international = fs.readFileSync(path.join(fixtureRoot, 'en/articles/manual.html'), 'utf8');
   assert.match(international, /last-modified" content="2026-08-21"/);
   assert.match(international, /data-article-date="modified" datetime="2026-08-21"/);
+});
+
+test('構成再生成でも後日の実改稿日を台帳・HTML・配信索引に保持する', t => {
+  const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-editorial-dates-'));
+  t.after(() => {
+    assert.equal(path.dirname(fixtureRoot), path.resolve(os.tmpdir()));
+    fs.rmSync(fixtureRoot, { recursive: true, force: true });
+  });
+  const revisedPath = 'articles/2026-03-10-play-points-reflection-timing.html';
+  const manifest = Object.entries(EDITORIAL_TARGETS).map(([file, config]) => ({
+    id: path.basename(file, '.html'), file: `../${file}`, date: '2025-12-25',
+    modified: file === revisedPath ? '2026-10-13' : config.modifiedDate,
+    title: file, description: file
+  }));
+  const registry = {};
+  for (const article of manifest) {
+    const file = article.file.slice(3);
+    fs.mkdirSync(path.dirname(path.join(fixtureRoot, file)), { recursive: true });
+    fs.writeFileSync(path.join(fixtureRoot, file), japaneseFixture());
+    registry[file] = '2026-10-13';
+  }
+  for (const directory of ['blog', 'scripts']) fs.mkdirSync(path.join(fixtureRoot, directory), { recursive: true });
+  fs.writeFileSync(path.join(fixtureRoot, 'blog/articles.json'), JSON.stringify(manifest));
+  fs.writeFileSync(path.join(fixtureRoot, 'scripts/article-official-verification-dates.json'), JSON.stringify(registry));
+  for (let iteration = 0; iteration < 2; iteration += 1) {
+    applyEditorialStructure(fixtureRoot);
+    syncArticleDateContract(fixtureRoot);
+  }
+  const after = JSON.parse(fs.readFileSync(path.join(fixtureRoot, 'blog/articles.json'), 'utf8'));
+  assert.deepEqual(after, manifest);
+  const html = fs.readFileSync(path.join(fixtureRoot, revisedPath), 'utf8');
+  assert.match(html, /last-modified" content="2026-10-13"/);
+  assert.match(html, /"dateModified":"2026-10-13"/);
+  assert.match(html, /data-article-date="modified" datetime="2026-10-13"/);
+  const feedEntry = [...buildBlogFeeds(after).atom.matchAll(/<entry>[\s\S]*?<\/entry>/g)]
+    .find(match => match[0].includes(`/${revisedPath}`))?.[0] || '';
+  assert.match(feedEntry, /<updated>2026-10-13T12:00:00\+09:00<\/updated>/);
+  assert.equal(getBlogSitemapEntries(fixtureRoot).find(entry => entry.url.endsWith(`/${revisedPath}`)).lastmod, '2026-10-13');
 });
 
 test('公開中の全記事が日付SSOTと同期済みである', () => {
