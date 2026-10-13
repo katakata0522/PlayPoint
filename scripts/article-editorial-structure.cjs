@@ -202,6 +202,18 @@ function updateDateMetadata(html, modifiedDate) {
 
 function applyEditorialStructure(rootDir, modifiedDate) {
   let updatedCount = 0;
+  const articlesPath = path.join(rootDir, 'blog', 'articles.json');
+  const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
+  const manifestDates = new Map(articles.map(article => [article.file, article.modified || article.date]));
+  // 過去の構成改稿日は下限とし、その後の実改稿日を台帳から保持する。
+  const targetDates = new Map(Object.entries(EDITORIAL_TARGETS).map(([file, config]) => {
+    const editorialDate = config.modifiedDate || EDITORIAL_MODIFIED_DATE;
+    const manifestDate = manifestDates.get(`../${file}`);
+    const effectiveDate = /^\d{4}-\d{2}-\d{2}$/.test(manifestDate || '') && manifestDate > editorialDate
+      ? manifestDate
+      : editorialDate;
+    return [`../${file}`, effectiveDate];
+  }));
 
   for (const [relativePath, config] of Object.entries(EDITORIAL_TARGETS)) {
     const absolutePath = path.join(rootDir, relativePath);
@@ -209,7 +221,7 @@ function applyEditorialStructure(rootDir, modifiedDate) {
       throw new Error(`編集対象の記事がありません: ${relativePath}`);
     }
 
-    const targetModifiedDate = config.modifiedDate || EDITORIAL_MODIFIED_DATE;
+    const targetModifiedDate = targetDates.get(`../${relativePath}`);
     let html = fs.readFileSync(absolutePath, 'utf8');
 
     if (config.manualStructure) {
@@ -249,12 +261,6 @@ function applyEditorialStructure(rootDir, modifiedDate) {
     updatedCount += 1;
   }
 
-  const articlesPath = path.join(rootDir, 'blog', 'articles.json');
-  const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
-  const targetDates = new Map(Object.entries(EDITORIAL_TARGETS).map(([file, config]) => [
-    `../${file}`,
-    config.modifiedDate || EDITORIAL_MODIFIED_DATE
-  ]));
   for (const article of articles) {
     if (targetDates.has(article.file)) article.modified = targetDates.get(article.file);
   }

@@ -19,7 +19,7 @@ const TOP_PAGE_CONTENT_DATES = Object.freeze({
   ja: '2026-10-08',
   en: '2026-10-08',
   ko: '2026-10-08',
-  tw: '2026-10-08'
+  tw: '2026-10-13'
 });
 
 const rootDir = path.resolve(__dirname, '..');
