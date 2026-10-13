@@ -679,6 +679,27 @@
     "browseCategory": "ゲーム別課金"
   },
   {
+    "id": "play-points-stamp-cards",
+    "title": "Google Play Pointsのスタンプカードとは？購入回数・金額条件の読み方",
+    "category": "キャンペーン",
+    "tags": [
+      "Play Points",
+      "スタンプカード",
+      "購入回数",
+      "キャンペーン"
+    ],
+    "description": "Google Play Pointsのスタンプカードを、1回の最低金額・購入回数・通貨・期限から読む方法を解説。スマートフォンでの確認場所、PCで見つからない理由、追加支出と特典の比較例もまとめます。",
+    "file": "../articles/2026-10-13-play-points-stamp-cards.html",
+    "date": "2026-10-13",
+    "modified": "2026-10-13",
+    "ogp": "../articles/ogp/2026-10-13-play-points-stamp-cards.png",
+    "listed": true,
+    "listDescription": "「500円以上を3回」は合計1,500円とは別。購入回数・スマホでの確認場所・追加支出の比べ方を整理します。",
+    "thumbnail": "../articles/thumbnails/play-points-stamp-cards-square-v1.webp",
+    "thumbnailKind": "generic",
+    "browseCategory": "貯める・キャンペーン"
+  },
+  {
     "id": "diamond-play-pass-break-even-2026",
     "title": "ダイヤモンド会員はPlay Passに絶対入れ！……と言いたくなる理由。年額5,400円の元は取れる？",
     "listTitle": "ダイヤモンド×Play Pass｜年間で元が取れる？",
@@ -698,7 +719,7 @@
       "信長の野望"
     ],
     "date": "2026-10-10",
-    "modified": "2026-10-11",
+    "modified": "2026-10-12",
     "file": "../articles/2026-10-10-diamond-play-pass-value.html",
     "thumbnail": "../articles/thumbnails/diamond-play-pass-break-even-2026-square-v1.webp",
     "ogp": "../articles/ogp/diamond-play-pass-break-even-2026.png",
@@ -739,7 +760,7 @@
     "ogp": "../articles/ogp/google-play-fest-2026-editorial.png",
     "listDescription": "10/13〜19開催。交換できる限定品、書籍15倍、Play Passの増量と13日以降の確認ポイント。",
     "date": "2026-10-10",
-    "modified": "2026-10-11",
+    "modified": "2026-10-12",
     "thumbnailKind": "generic",
     "listed": true,
     "related": [
@@ -772,7 +793,7 @@
     "ogp": "../articles/ogp/play-pass-fest-bonus-2026.png",
     "listDescription": "ダイヤモンドで40ptを実際に獲得。Play Passの2倍・6倍特典の条件、プラチナとの違いを検証。",
     "date": "2026-10-10",
-    "modified": "2026-10-11",
+    "modified": "2026-10-12",
     "thumbnailKind": "generic",
     "listed": true,
     "related": [
@@ -1441,7 +1462,8 @@
     "thumbnail": "../articles/ogp/campaign.png",
     "listed": false,
     "browseCategory": "貯める・キャンペーン",
-    "ogp": "../articles/ogp/2026-08-17-diamond-valley-festival-guide.png"
+    "ogp": "../articles/ogp/2026-08-17-diamond-valley-festival-guide.png",
+    "modified": "2026-08-18"
   },
   {
     "id": "play-pass-worth-it",
@@ -1457,7 +1479,7 @@
     "description": "Google Play Passの定額サービスとPlay Pointsの違いを説明。日本の木曜週次特典・対象条件を確認し、自分の使い方に合うか判断します。加入によるゴールド付与特典の公式対象国に日本は含まれていません。",
     "file": "../articles/2026-08-16-play-pass-worth-it.html",
     "thumbnail": "../articles/thumbnails/play-pass-worth-it-square-v1.webp",
-    "modified": "2026-10-05",
+    "modified": "2026-10-13",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/play-pass-worth-it.png",
     "thumbnailKind": "generic",
@@ -1639,7 +1661,7 @@
     "description": "Playポイントデーは、Google Play公式アカウントが毎月1日0:00〜23:59に案内するポイント増量日です。最大7倍は全員共通ではなく、自分の倍率は「貯める」画面で確認します。",
     "file": "../articles/2026-08-16-play-points-day.html",
     "thumbnail": "../articles/thumbnails/play-points-day-square-v1.webp",
-    "modified": "2026-09-27",
+    "modified": "2026-10-01",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/play-points-day.png",
     "thumbnailKind": "generic",
@@ -1840,7 +1862,7 @@
     "description": "機種変更後も同じGoogleアカウントならPlay Pointsの残高・ランク・履歴は通常引き継がれます。別アカウント、国変更、Play Pass特典の最長15日遅延など、表示されない時の確認順を解説します。",
     "file": "../articles/2026-08-03-play-points-device-change.html",
     "thumbnail": "../articles/thumbnails/device-change-square-v1.webp",
-    "modified": "2026-09-12",
+    "modified": "2026-10-01",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-03-play-points-device-change.png",
     "thumbnailKind": "generic",
@@ -1870,7 +1892,7 @@
     "id": "google-play-quests",
     "title": "Google Playのクエストとは？ポイント報酬の条件・始め方を解説",
     "date": "2026-07-31",
-    "modified": "2026-10-08",
+    "modified": "2026-10-13",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2185,7 +2207,7 @@
     "description": "Google Play Pointsの残高・履歴の見方を整理。Play Points残高、ランク判定用の年間進捗、Google Play残高、交換後のPlayクレジットの違いと、購入・交換・返金でどの数字が変わるかを解説します。",
     "file": "../articles/2025-12-25-check-balance.html",
     "thumbnail": "../articles/thumbnails/check-balance-square-v1.webp",
-    "modified": "2026-10-08",
+    "modified": "2026-10-13",
     "browseCategory": "はじめて・基本",
     "ogp": "../articles/ogp/check-balance.png",
     "thumbnailKind": "generic",
@@ -2245,7 +2267,7 @@
     "description": "Google Play Pointsは家族間でも合算・移動できません。ファミリーライブラリで共有できる範囲、購入アカウント、ギフトカードの注意点を解説します。",
     "file": "../articles/2025-12-25-family-sharing.html",
     "thumbnail": "../articles/thumbnails/family-sharing-square-v1.webp",
-    "modified": "2026-07-24",
+    "modified": "2026-08-17",
     "browseCategory": "はじめて・基本",
     "ogp": "../articles/ogp/family-sharing.png",
     "thumbnailKind": "generic",
@@ -2346,7 +2368,7 @@
     "description": "日本のGoogle Play Pointsダイヤモンド特典を、ダイヤ固有、プラチナとの共通、アカウントや企画で変わる特典に分け、向いている利用者を整理します。",
     "file": "../articles/2025-12-25-diamond-vip.html",
     "thumbnail": "../articles/thumbnails/diamond-vip-square-v1.webp",
-    "modified": "2026-08-05",
+    "modified": "2026-10-01",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/diamond-vip.png",
     "thumbnailKind": "generic",

@@ -1682,6 +1682,14 @@ const INTL_ARTICLE_DATES = {
 
 const MANUAL_COMPARISON_ARTICLES = [
   {
+    file: 'tw/articles/gakuen-idolmaster-japan-google-play-vs-web-shop.html',
+    lang: 'zh-TW',
+    title: '學園偶像大師日版課金：Google Play、WEB SHOP 與 DMM 怎麼選？',
+    publishedAt: '2026-10-13',
+    modifiedAt: '2026-10-13',
+    manual: true
+  },
+  {
     file: 'ko/articles/google-play-points-platinum-diamond-cost.html',
     lang: 'ko',
     title: 'Google Play Points 플래티넘과 다이아몬드 비교 | 필요 포인트·유지 금액',

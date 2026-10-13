@@ -7,6 +7,14 @@ const ARTICLE_DIRS = ['articles', 'en/articles', 'ko/articles', 'tw/articles'];
 const { getJapaneseArticleRepoPaths, isGameGuideArticlePath } = require('./game-guide-article-catalog.cjs');
 
 const RELATED_SECTIONS = {
+  'articles/2026-10-13-play-points-stamp-cards.html': {
+    heading: '条件に合わせて確認したい関連記事',
+    links: [
+      ['./2026-07-31-google-play-quests.html', 'クエストの確認場所と達成条件を見る'],
+      ['./2026-08-05-play-points-multiplier-stacking.html', '回数条件とポイント獲得率を分けて読む'],
+      ['./2026-03-10-play-points-reflection-timing.html', '購入ポイントが付かない時の確認順']
+    ]
+  },
   'articles/2026-10-03-suikoden-star-leap-google-play-vs-store.html': {
     heading: '幻水SPの購入前に確認したい関連記事',
     links: [

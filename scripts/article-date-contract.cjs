@@ -2,7 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { getJapaneseArticleRepoPaths } = require('./game-guide-article-catalog.cjs');
+const { getJapaneseArticleRepoPaths, isSupportedJapaneseArticleManifestFile } = require('./game-guide-article-catalog.cjs');
 
 const ARTICLE_DIRECTORIES = Object.freeze([
   'articles',
@@ -63,6 +63,16 @@ function loadOfficialVerificationRegistry(rootDir) {
   }
 
   return registry;
+}
+
+function loadJapaneseArticleModifiedDates(rootDir) {
+  const manifestPath = path.join(rootDir, 'blog', 'articles.json');
+  if (!fs.existsSync(manifestPath)) return new Map();
+  const articles = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  if (!Array.isArray(articles)) throw new TypeError('記事一覧は配列である必要があります');
+  return new Map(articles
+    .filter(article => isSupportedJapaneseArticleManifestFile(article?.file))
+    .map(article => [article.file.slice(3), normalizeDate(article.modified || article.date, 'manifest.modified', article.file)]));
 }
 
 function hasArticleType(value) {
@@ -288,15 +298,19 @@ function synchronizeVisibleOfficialVerificationNote(html, localeKey, officialVer
   return String(html).replace(patterns[localeKey], replacements[localeKey]);
 }
 
-function synchronizeArticleDateHtml(html, { relativePath, officialVerifiedAt }) {
+function synchronizeArticleDateHtml(html, { relativePath, officialVerifiedAt, contentModifiedAt }) {
   const normalizedPath = normalizeRelativePath(relativePath);
   const localeKey = getLocaleKey(normalizedPath);
   const article = extractArticleStructuredData(html);
   if (!article) throw new Error(`Article構造化データがありません: ${normalizedPath}`);
 
   const publishedAt = normalizeDate(article.datePublished, 'datePublished', normalizedPath);
-  const modifiedAt = extractNamedMetaDate(html, 'last-modified')
-    || normalizeDate(article.dateModified, 'dateModified', normalizedPath);
+  // 日本語記事は一覧・フィード・サイトマップと同じ台帳日付を使う。
+  // 海外の手動記事は既存HTMLの内容更新日を維持する。
+  const modifiedAt = contentModifiedAt
+    ? normalizeDate(contentModifiedAt, 'contentModifiedAt', normalizedPath)
+    : extractNamedMetaDate(html, 'last-modified')
+      || normalizeDate(article.dateModified, 'dateModified', normalizedPath);
   const verifiedAt = normalizeDate(officialVerifiedAt, 'officialVerifiedAt', normalizedPath);
   if (publishedAt > modifiedAt) {
     throw new Error(`datePublished が dateModified より後です: ${normalizedPath} (${publishedAt} > ${modifiedAt})`);
@@ -351,6 +365,7 @@ function assertRegistryCoverage(articleFiles, registry) {
 function syncArticleDateContract(rootDir, { checkOnly = false } = {}) {
   const articleFiles = getArticleFiles(rootDir);
   const registry = loadOfficialVerificationRegistry(rootDir);
+  const japaneseModifiedDates = loadJapaneseArticleModifiedDates(rootDir);
   assertRegistryCoverage(articleFiles, registry);
 
   const summary = {
@@ -364,7 +379,8 @@ function syncArticleDateContract(rootDir, { checkOnly = false } = {}) {
     const original = fs.readFileSync(absolutePath, 'utf8');
     const result = synchronizeArticleDateHtml(original, {
       relativePath,
-      officialVerifiedAt: registry[relativePath]
+      officialVerifiedAt: registry[relativePath],
+      contentModifiedAt: japaneseModifiedDates.get(relativePath)
     });
     if (!result.changed) continue;
 
