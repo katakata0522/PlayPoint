@@ -2,7 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { GAME_EVIDENCE, REVIEWED_AT, locales, isReference } = require('./intl-game-evidence.cjs');
+const { GAME_EVIDENCE, REVIEWED_AT, locales, isReference, getReviewedAt } = require('./intl-game-evidence.cjs');
 const { getRegionRule } = require('../js/region-rules.js');
 const { ALL_GUIDES, hrefFor } = require('./intl-game-guide-expansion.cjs');
 const ORIGIN = 'https://playpoint-sim.com';
@@ -63,6 +63,7 @@ function nameFrom(html, entry, locale) {
   return entry.names?.[locale] || html.match(/<h1\b[^>]*>([^<]+)<\/h1>/)?.[1] || '';
 }
 function description(name, entry, locale, id) {
+  if (entry.descriptions?.[locale]) return entry.descriptions[locale];
   const names = entry.offers[locale].map(item => item.names[locale]).join(locale === 'en' ? ', ' : '・');
   if (isReference(locale, id)) return locale === 'en' ? `${name}: Japanese edition reference and Japan calculator link. Regional products are unconfirmed; no converted yen prices are published.` : locale === 'ko' ? `${name} 일본판 안내와 일본 계산기 링크. 현지 상품은 미확인으로, 일본 가격을 원화로 환산하지 않습니다.` : `${name}日本版參考與日本計算器連結。當地商品未確認，不會把日圓價格換算為新台幣商品表。`;
   return locale === 'en' ? `${name}: ${names ? `compare ${names}, then ` : ''}estimate Google Play Points from your US dollar checkout amount. Official sources and payment-channel differences included.` : locale === 'ko' ? `${name}${names ? ` ${names}` : ''} 구매 전 확인과 한국 원화 Google Play Points 계산. 공식 출처, 결제 경로 차이, 실제 결제액으로 포인트를 확인하세요.` : `${name}${names ? `的${names}` : ''}購買前確認，依台灣新台幣Google Play結帳金額計算積點。附官方來源與付款管道差異。`;
@@ -100,7 +101,7 @@ function updateMetadata(html, name, desc, locale, id, questions) {
   next = next.replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g, (_m, raw) => {
     const object = JSON.parse(raw);
     if (object['@type'] === 'WebApplication') {
-      object.name = title; object.description = desc; object.inLanguage = c.hreflang; object.dateModified = REVIEWED_AT;
+      object.name = title; object.description = desc; object.inLanguage = c.hreflang; object.dateModified = getReviewedAt(locale, id);
       // 0は無料の計算ツールの価格。ゲーム内商品の価格ではない。
       object.offers = { '@type': 'Offer', price: '0', priceCurrency: getRegionRule(c.code).currencyCode };
     }
@@ -141,15 +142,17 @@ function syncIntlGameEvidence(rootDir) {
       if (!inside) throw new Error(`[intl-game-evidence] missing main: ${file}`);
       const header = inside.match(/<header class="game-header">[\s\S]*?<\/header>/)?.[0].replace(/(<h1[^>]*>)[^<]+(<\/h1>)/, (_m, a, b) => a + escape(name) + b).replace(/(<p class="game-meta">)[\s\S]*?(<\/p>)/, (_m, a, b) => a + escape(c.region) + b);
       const focus = entry.focus?.[locale] || items[0]?.details[locale] || c.noOffer;
-      const questions = [[c.faqQ, reference ? c.referenceNote : focus], [c.faqPayQ, c.faqPay]];
+      const questions = [[c.faqQ, reference ? c.referenceNote : focus], [c.faqPayQ, c.faqPay], ...(entry.additionalFaq?.[locale] || [])];
       const edition = { url: entry.editions[locale], kind: 'publisher-site', scope: reference ? 'Japan' : c.code };
-      const sources = [...new Map([edition, ...items.map(item => item.evidence), ...(entry.extraSources || [])].map(s => [s.url, s])).values()];
-      const sourceBlock = `<section class="section game-source-section"><h2>${c.source}</h2><p>${c.boundary}</p><ul>${sources.map(s => `<li>${sourceLink(s, c)}</li>`).join('')}<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3D${c.code}&amp;hl=${c.lang}" target="_blank" rel="noopener noreferrer">Google Play Points — ${c.region}</a></li></ul><p>${c.checked}: <time datetime="${REVIEWED_AT}">${REVIEWED_AT}</time></p></section>`;
+      const sources = [...new Map([edition, ...items.map(item => item.evidence), ...(entry.extraSources || []), ...(entry.regionalSources?.[locale] || [])].map(s => [s.url, s])).values()];
+      const reviewedAt = getReviewedAt(locale, id);
+      const sourceBlock = `<section class="section game-source-section"><h2>${c.source}</h2><p>${c.boundary}</p><ul>${sources.map(s => `<li>${sourceLink(s, c)}</li>`).join('')}<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3D${c.code}&amp;hl=${c.lang}" target="_blank" rel="noopener noreferrer">Google Play Points — ${c.region}</a></li></ul><p>${c.checked}: <time datetime="${reviewedAt}">${reviewedAt}</time></p></section>`;
       const faq = `<section class="section"><h2>FAQ</h2>${questions.map(([q, a]) => `<details><summary>${escape(q)}</summary><p>${escape(a)}</p></details>`).join('')}</section>`;
       const guides = reference ? [] : ALL_GUIDES.filter(guide => guide.gameId === id);
       const reading = guides.length ? `<section class="section game-reading-guides"><h2>${locale === 'en' ? 'Read before buying' : locale === 'ko' ? '구매 전 읽어볼 가이드' : '購買前的指南'}</h2><ul>${guides.map(guide => `<li><a href="${hrefFor(locale, guide.slug)}">${escape(guide.content[locale].title)}</a></li>`).join('')}</ul></section>` : '';
       const note = reference ? `<section class="section game-reference-note"><h2>${c.reference}</h2><p>${c.referenceNote}</p><p><a href="/games/${id}/" hreflang="ja">${c.japan}</a></p></section>` : items.length ? '' : `<section class="section"><h2>${c.bodyTitle}</h2><p>${escape(focus)}</p><p><a href="/games/${id}/" hreflang="ja">${c.japan}</a></p></section>`;
-      const main = `${header}\n<p>${escape(desc)}</p>\n${note}\n${reference ? '' : offersHtml(entry, name, locale)}\n${normalizeCalculator(calculator, c)}\n${ads.join('\n')}\n${reading}\n${faq}\n${sourceBlock}\n<p><a href="/${locale}/games/">${c.more} →</a></p>`;
+      const editorial = (entry.editorial?.[locale] || []).map(section => `<section class="section"><h2>${escape(section.heading)}</h2>${section.paragraphs.map(paragraph => `<p>${escape(paragraph)}</p>`).join('')}</section>`).join('\n');
+      const main = `${header}\n<p>${escape(desc)}</p>\n${note}\n${editorial ? `${editorial}\n` : ''}${reference ? '' : offersHtml(entry, name, locale)}\n${normalizeCalculator(calculator, c)}\n${ads.join('\n')}\n${reading}\n${faq}\n${sourceBlock}\n<p><a href="/${locale}/games/">${c.more} →</a></p>`;
       let next = html.replace(/(<main class="game-main-content">)[\s\S]*?(<\/main>)/, (_m, a, b) => a + main + b);
       next = next.replace(/(<p class="site-tagline">)[\s\S]*?(<\/p>)/, (_m, a, b) => a + c.lead + b);
       next = updateMetadata(next, name, desc, locale, id, questions);

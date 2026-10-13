@@ -28,6 +28,9 @@ test('HK/IN expansion uses region-specific generated output and runtime config',
   assert.match(hk, /href="\.\.\/tw\/games\/" data-lang-key="linkGames">🎮 遊戲計算（台灣規則・非香港）<\/a>/);
   assert.match(hk, /placeholder="例如：350"/);
   assert.match(hk, /香港版/);
+  assert.match(hk, /HK\$14,000/);
+  assert.match(hk, /HK\$44,000/);
+  assert.equal((hk.match(/id="site-description"/g) || []).length, 1, '金額中の$1で説明HTMLを複製しない');
   assert.doesNotMatch(hk, /真的有很多來自台灣的朋友/);
   assert.match(hk, /hreflang="zh-TW" href="https:\/\/playpoint-sim\.com\/tw\/"/);
   assert.match(hk, /hreflang="zh-HK" href="https:\/\/playpoint-sim\.com\/hk\/"/);

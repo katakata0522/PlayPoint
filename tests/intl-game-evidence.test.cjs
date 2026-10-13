@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
-const { GAME_EVIDENCE, REVIEWED_AT, locales, isReference, referenceFiles } = require('../scripts/intl-game-evidence.cjs');
+const { GAME_EVIDENCE, locales, isReference, getReviewedAt, referenceFiles } = require('../scripts/intl-game-evidence.cjs');
 const { COPY } = require('../scripts/intl-game-evidence-sync.cjs');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
@@ -19,7 +19,7 @@ test('all 24 games have regional evidence; overseas calculators never turn an un
     assert.doesNotMatch(html, /id="sim-pack-select"|id="sim-pack-count"|data-amount=|class="pack-table"/, `${file}: unverified fixed-price controls or table`);
     assert.match(html, /id="game-sim-form" data-input-mode="amount"/);
     assert.match(html, /id="sim-custom-amount" value="0"/);
-    assert.match(html, new RegExp(`<time datetime="${REVIEWED_AT}">`));
+    assert.match(html, new RegExp(`<time datetime="${getReviewedAt(locale, id)}">`));
     for (const item of entry.offers[locale]) {
       assert.ok(item.names[locale] && item.details[locale] && item.evidence.url);
       assert.equal(item.evidence.scope === 'global' || item.evidence.scope === COPY[locale].code, true, `${file}: another edition's offer leaked`);
