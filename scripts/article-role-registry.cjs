@@ -83,7 +83,7 @@ function stemOf(relativePath) {
 const ROLE_RULES = Object.freeze([
   {
     role: 'game_decision',
-    test: stem => /(?:pad-puzzle-and-dragons|dokkan-battle|umamusume-half-anniversary|monst-|pokemon-sleep-|gakumas-|gakuen-idolmaster-|bluearchive-|nikke-|suikoden-star-leap-)/.test(stem)
+    test: stem => /(?:pad-puzzle-and-dragons|dokkan-battle|umamusume-half-anniversary|uma-subscription-comparison|monst-|pokemon-sleep-|gakumas-|gakuen-idolmaster-|bluearchive-|nikke-|suikoden-star-leap-)/.test(stem)
   },
   {
     role: 'troubleshooting',
@@ -99,11 +99,11 @@ const ROLE_RULES = Object.freeze([
   },
   {
     role: 'decision_support',
-    test: stem => /(?:best-use|cash-conversion|gift-card|discount|promo-code|discounts-promo-codes|promotion-stacking|multiplier-stacking|payment-methods|balance-combine-payment|external-billing|play-pass-worth-it|play-pass-double-points|diamond-play-pass-value|youtube-premium|pixel-discount|play-fest-deals|gold-platinum-worth-it|google-store|earn-play-points-free|points-earn-free|use-coupons|stamp-card|campaign$)/.test(stem)
+    test: stem => /(?:best-use|cash-conversion|gift-card|discount|promo-code|discounts-promo-codes|promotion-stacking|multiplier-stacking|payment-methods|balance-combine-payment|external-billing|play-pass-worth-it|play-credit-subscriptions|play-pass-double-points|diamond-play-pass-value|youtube-premium|pixel-discount|play-fest-deals|gold-platinum-worth-it|google-store|earn-play-points-free|points-earn-free|use-coupons|stamp-card|campaign$)/.test(stem)
   },
   {
     role: 'reference',
-    test: stem => /(?:getting-started|check-balance|expiration|family-sharing|family-link|multiple-accounts|movies-books|play-games|games-vs-play-points|refund|subscription|subscriptions|device-change|country-change|country-differences|apps-books-purchases|balance-history-progress|join-eligibility|rounding-tax|diamond-vip|premium-support|pc-play-games-points|redeemed-item|install-offer|january-rank-reset|levels(?:-guide)?$)/.test(stem)
+    test: stem => /(?:getting-started|check-balance|expiration|family-sharing|family-link|multiple-accounts|movies-books|play-games|games-vs-play-points|refund|subscription|subscriptions|device-change|country-change|country-differences|apps-books-purchases|balance-history-progress|join-eligibility|rounding-tax|diamond-vip|premium-support|pc-play-games-points|redeemed-item|install-offer|january-rank-reset|play-points-pc-redeem|levels(?:-guide)?$)/.test(stem)
   }
 ]);
 
