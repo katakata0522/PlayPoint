@@ -775,6 +775,37 @@
     ]
   },
   {
+    "id": "play-fest-2026-deals",
+    "title": "Google Playフェス2026がついに開幕！無料特典・最大90%オフ・ギフトカード10%割引まとめ",
+    "listTitle": "Playフェス2026｜無料特典・ギフト10%オフ",
+    "description": "10月13〜19日開催のGoogle Playフェス2026を実際のPlayストア画面から調査。Super Duolingoの1か月無料、マンガ無料レンタル、Uber・サーティワンなど5ブランドのギフトカード10%オフ、最大90%割引を用途・期限別に紹介。",
+    "category": "キャンペーン",
+    "browseCategory": "最新情報・イベント",
+    "tags": [
+      "Google Playフェス2026",
+      "Playフェス",
+      "10%オフ",
+      "無料",
+      "ギフトカード",
+      "マンガ",
+      "アプリ割引"
+    ],
+    "file": "../articles/2026-10-13-play-fest-deals.html",
+    "thumbnail": "../articles/thumbnails/google-play-fest-2026-editorial-square-v1.webp",
+    "ogp": "../articles/ogp/2026-10-13-play-fest-deals.png",
+    "listDescription": "10/13〜19開催。Duolingo1か月無料、対象本の無料レンタル、Uber・サーティワンなどギフトカード10%オフ、アプリ最大90%オフ。",
+    "date": "2026-10-13",
+    "modified": "2026-10-13",
+    "thumbnailKind": "generic",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-10-10-google-play-fest-2026.html",
+        "Playフェスのポイント交換・15倍情報"
+      ]
+    ]
+  },
+  {
     "id": "play-pass-fest-bonus-2026",
     "title": "Play Pass特典が2倍に！ダイヤモンドで40pt、6倍ブーストも確認【2026年10月】",
     "listTitle": "Play Pass｜40pt実測・2倍と6倍",
