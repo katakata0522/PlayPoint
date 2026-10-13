@@ -45,6 +45,64 @@ test('パラメータ取得割合は行数や人数でなく返却イベント�
   assert.match(r.detail,/80\/100回（80.0%）/); assert.match(r.detail,/人数の割合ではない/);
 });
 
+test('各パラメータの欠落を分け、検索結果0件を有効な観測として保持する',()=>{
+  const c=runtime({playPointP12Ga4Report_:()=>({}),playPointP12ParseGa4Rows_:()=>[
+    {'customEvent:intent_id':'other','customEvent:results_count':0,eventCount:4},
+    {'customEvent:intent_id':'(not set)','customEvent:results_count':'2',eventCount:3},
+    {'customEvent:intent_id':'(not set)','customEvent:results_count':'(not set)',eventCount:12}]});
+  const r=c.playPointReaderReport_('p',{},['customEvent:intent_id','customEvent:results_count'],['eventCount']);
+  assert.equal(r.coverage.total,19);assert.equal(r.coverage.available,4);
+  assert.equal(r.coverage.byParameter['customEvent:intent_id'].missing,15);
+  assert.equal(r.coverage.byParameter['customEvent:results_count'].missing,12);
+  assert.equal(r.coverage.byParameter['customEvent:results_count'].available,7);
+  assert.equal(c.playPointReaderParameterMissing_(0),false);
+});
+
+test('分類の取得済み行と記事クリックを部分欠落に巻き込まず、未取得件数を0件と呼ばない',()=>{
+  const c=runtime(), params=['customEvent:intent_id','customEvent:results_count'];
+  const grid=c.playPointReaderBuildGrid_({start:'2026-09-11',end:'2026-10-10'},[],{
+    SEARCH:{state:'PARAMETER_PARTIAL',detail:'partial',parameters:params,rows:[
+      {pagePath:'/blog/',eventCount:1,'customEvent:intent_id':'other','customEvent:results_count':0},
+      {pagePath:'/blog/',eventCount:15,'customEvent:intent_id':'(not set)','customEvent:results_count':'(not set)'},
+      {pagePath:'/en/articles/',eventCount:1,'customEvent:intent_id':'(not set)','customEvent:results_count':'0'}]},
+    ARTICLE_ACTIONS:{state:'OK',detail:'ok',rows:[{pagePath:'/articles/a.html',eventName:'article_navigation_click',eventCount:5,totalUsers:4}]}},'now');
+  assert.equal(grid[9][1],'OK');assert.match(grid[9][11],/検索結果0件/);
+  assert.equal(grid[10][1],'PARAMETER_PARTIAL');assert.match(grid[10][11],/未取得（0件ではない）.*intent_id, results_count/);
+  assert.equal(grid[11][1],'PARAMETER_PARTIAL');assert.match(grid[11][11],/検索結果0件.*未設定: intent_id/);
+  assert.equal(grid[13][1],'OK');assert.equal(grid[13][4],4);assert.match(grid[13][11],/重複.*足さない/);
+});
+
+test('日別の初取得と最終欠落を観測として示し、登録日や利用者人数に置き換えない',()=>{
+  const c=runtime();const params=['customEvent:component'];
+  const source={state:'PARAMETER_PARTIAL',detail:'取得 6/36回',parameters:params,rows:[
+    {date:'20261008',pagePath:'/articles/a.html','customEvent:component':'related',eventCount:6},
+    {date:'20260915',pagePath:'/articles/a.html','customEvent:component':'(not set)',eventCount:30}]};
+  const grid=c.playPointReaderParameterAuditGrid_({start:'2026-09-11',end:'2026-10-10'},{NAV_COMPONENT:source},'now');
+  assert.match(grid[3][1],/初取得日は定義の登録日ではない/);
+  assert.match(grid[6][7],/初取得観測日: 2026-10-08.*最終未設定観測日: 2026-09-15/);
+  assert.equal(grid[7][6],'OK');assert.equal(grid[7][5],6);
+  assert.equal(grid[8][6],'PARAMETER_PARTIAL');assert.equal(grid[8][5],30);
+  assert(grid.every(row=>row.length===8));
+  source.rows[0].date='20261011';
+  assert.throws(()=>c.playPointReaderParameterAuditGrid_({start:'2026-09-11',end:'2026-10-10'},{NAV_COMPONENT:source},'now'),/期間外/);
+});
+
+test('手動診断は一項目の定義欠落でも標準ページと他の既存項目を取得する',()=>{
+  const c=runtime({playPointP12NowText_:()=> '2026-10-13 14:00:00',
+    playPointP12BuildGa4Period_:()=>({start:'2026-09-11',end:'2026-10-10'}),
+    playPointP12GetGa4PropertyId_:()=> 'p',
+    playPointP12GoogleJson_:()=>({dimensions:[{apiName:'customEvent:results_count'}]})});
+  const requested=[];
+  c.playPointReaderReport_=(_p,_period,dims)=>{requested.push(Array.from(dims));return {rows:[],parameters:dims.filter(d=>d.startsWith('customEvent:'))};};
+  c.playPointReaderParameterAuditGrid_=(_period,sources)=>{
+    assert.equal(sources.PAGE_EVENTS.state,'OK');assert.equal(sources.SEARCH_RESULTS.state,'OK');
+    assert.equal(sources.SEARCH_INTENT.state,'WAITING_DEFINITION');assert.equal(sources.NAV_COMPONENT.state,'WAITING_DEFINITION');
+    throw Error('diagnostic reached');
+  };
+  assert.throws(()=>c.capturePlayPointReaderParameterAudit(),/diagnostic reached/);
+  assert.deepEqual(requested,[['date','pagePath','eventName'],['date','pagePath','customEvent:results_count']]);
+});
+
 test('抽出された順序ファネルを全数の完了率として使わない',()=>{
   const c=runtime({playPointP12GoogleJson_:()=>({funnelTable:{dimensionHeaders:[{name:'funnelStepName'}],
     metricHeaders:[{name:'activeUsers'}],metadata:{samplingMetadatas:[{samplesReadCount:'10',samplingSpaceSize:'100'}]},rows:[]}}),
