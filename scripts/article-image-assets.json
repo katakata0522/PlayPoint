@@ -27,7 +27,9 @@
     "monst-web-shop-vs-google-play-2026": "../images/game-icons/monst.webp",
     "pad-puzzle-and-dragons-play-points": "../images/game-icons/pad.webp",
     "dokkan-battle-dragon-ball-play-points": "../images/game-icons/dokkan.webp",
-    "umamusume-half-anniversary-points": "../images/game-icons/umamusume.webp"
+    "umamusume-half-anniversary-points": "../images/game-icons/umamusume.webp",
+    "umasuku-vs-umaplan-2026": "../images/game-icons/umamusume.webp",
+    "pokemon-sleep-premium-plans-2026": "../images/game-icons/pokemon-sleep.webp"
   },
   "genericArticleIds": [
     "play-points-stamp-cards",
@@ -94,7 +96,8 @@
     "google-play-fest-2026-editorial",
     "play-pass-fest-bonus-2026",
     "super-weekly-results-2026-10",
-    "diamond-play-pass-break-even-2026"
+    "diamond-play-pass-break-even-2026",
+    "play-credit-subscription-2026"
   ],
   "dedicatedOgpIds": [
     "fgo-pity-cost-2026",
@@ -117,6 +120,9 @@
     "google-play-fest-2026-editorial",
     "play-pass-fest-bonus-2026",
     "super-weekly-results-2026-10",
-    "diamond-play-pass-break-even-2026"
+    "diamond-play-pass-break-even-2026",
+    "umasuku-vs-umaplan-2026",
+    "play-credit-subscription-2026",
+    "pokemon-sleep-premium-plans-2026"
   ]
 }
