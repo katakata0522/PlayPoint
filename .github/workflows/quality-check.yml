@@ -92,7 +92,7 @@ jobs:
           const allowed = new Set(generatedFiles);
           const index = fs.readFileSync('index.html', 'utf8');
           const sw = fs.readFileSync('sw.js', 'utf8');
-          const modified = index.match(/<meta name="last-modified" content="(\\d{4}-\\d{2}-\\d{2})">/)?.[1];
+          const modified = index.match(/<meta name="last-modified" content="([0-9]{4}-[0-9]{2}-[0-9]{2})">/)?.[1];
           const asset = sw.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/)?.[1];
           if (!modified || !asset) throw new Error('Missing build pins');
           cp.execFileSync(process.execPath, ['scripts/build-html.js'], { env: { ...process.env, PLAYPOINT_MODIFIED_DATE: modified, PLAYPOINT_ASSET_VERSION: asset }, stdio: 'inherit' });
