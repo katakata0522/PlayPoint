@@ -83,7 +83,7 @@ function stemOf(relativePath) {
 const ROLE_RULES = Object.freeze([
   {
     role: 'game_decision',
-    test: stem => /(?:pad-puzzle-and-dragons|dokkan-battle|umamusume-half-anniversary|monst-|pokemon-sleep-|gakumas-|bluearchive-|nikke-|suikoden-star-leap-)/.test(stem)
+    test: stem => /(?:pad-puzzle-and-dragons|dokkan-battle|umamusume-half-anniversary|monst-|pokemon-sleep-|gakumas-|gakuen-idolmaster-|bluearchive-|nikke-|suikoden-star-leap-)/.test(stem)
   },
   {
     role: 'troubleshooting',
@@ -99,7 +99,7 @@ const ROLE_RULES = Object.freeze([
   },
   {
     role: 'decision_support',
-    test: stem => /(?:best-use|cash-conversion|gift-card|discount|promo-code|discounts-promo-codes|promotion-stacking|multiplier-stacking|payment-methods|balance-combine-payment|external-billing|play-pass-worth-it|play-pass-double-points|diamond-play-pass-value|youtube-premium|pixel-discount|gold-platinum-worth-it|google-store|earn-play-points-free|points-earn-free|use-coupons|campaign$)/.test(stem)
+    test: stem => /(?:best-use|cash-conversion|gift-card|discount|promo-code|discounts-promo-codes|promotion-stacking|multiplier-stacking|payment-methods|balance-combine-payment|external-billing|play-pass-worth-it|play-pass-double-points|diamond-play-pass-value|youtube-premium|pixel-discount|gold-platinum-worth-it|google-store|earn-play-points-free|points-earn-free|use-coupons|stamp-card|campaign$)/.test(stem)
   },
   {
     role: 'reference',

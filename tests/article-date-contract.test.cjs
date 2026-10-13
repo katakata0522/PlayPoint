@@ -3,11 +3,16 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
+const fs = require('node:fs');
+const os = require('node:os');
 const {
   getArticleFiles,
   syncArticleDateContract,
   synchronizeArticleDateHtml
 } = require('../scripts/article-date-contract.cjs');
+const { syncMetadata } = require('../scripts/reader-foundations.cjs');
+const { buildBlogFeeds } = require('../scripts/blog-feeds.cjs');
+const { getBlogSitemapEntries } = require('../scripts/sitemap-sync.cjs');
 
 const rootDir = path.resolve(__dirname, '..');
 
@@ -130,6 +135,53 @@ test('記事日付同期は冪等である', () => {
 
   assert.equal(twice.changed, false);
   assert.equal(twice.html, once);
+});
+
+test('日本語台帳の実更新日をHTML・構造化データ・フィード・サイトマップへ揃え、海外の手動更新日は保持する', t => {
+  const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-article-dates-'));
+  t.after(() => {
+    assert.equal(path.dirname(fixtureRoot), path.resolve(os.tmpdir()));
+    fs.rmSync(fixtureRoot, { recursive: true, force: true });
+  });
+  const manifest = [
+    ['best-use', 'best-use.html', '2026-08-04'],
+    ['play-points-calendar-schedule-guide-2026', 'calendar.html', '2026-08-04'],
+    ['play-pass-worth-it', 'pass.html', '2026-10-08']
+  ].map(([id, file, modified]) => ({ id, file: `../articles/${file}`, date: '2025-12-25', modified, title: id, description: id }));
+  const registry = { 'en/articles/manual.html': '2026-08-05' };
+  for (const directory of ['articles', 'blog', 'scripts', 'en/articles']) fs.mkdirSync(path.join(fixtureRoot, directory), { recursive: true });
+  for (const article of manifest) {
+    const file = article.file.slice(3);
+    fs.writeFileSync(path.join(fixtureRoot, file), japaneseFixture());
+    registry[file] = '2026-07-31';
+  }
+  fs.writeFileSync(path.join(fixtureRoot, 'blog/articles.json'), JSON.stringify(manifest));
+  fs.writeFileSync(path.join(fixtureRoot, 'scripts/article-official-verification-dates.json'), JSON.stringify(registry));
+  fs.writeFileSync(path.join(fixtureRoot, 'en/articles/manual.html'), englishFixture());
+
+  // メタ情報同期を繰り返しても、後日のPlay Pass改稿を旧固定日へ戻さない。
+  syncMetadata(fixtureRoot);
+  assert.ok(syncArticleDateContract(fixtureRoot, { checkOnly: true }).changed > 0);
+  syncArticleDateContract(fixtureRoot);
+  syncMetadata(fixtureRoot);
+  assert.equal(syncArticleDateContract(fixtureRoot, { checkOnly: true }).changed, 0);
+  const synchronizedManifest = JSON.parse(fs.readFileSync(path.join(fixtureRoot, 'blog/articles.json'), 'utf8'));
+  const pass = synchronizedManifest.find(article => article.id === 'play-pass-worth-it');
+  assert.equal(pass.modified, '2026-10-08');
+  const passHtml = fs.readFileSync(path.join(fixtureRoot, 'articles/pass.html'), 'utf8');
+  assert.match(passHtml, /last-modified" content="2026-10-08"/);
+  assert.match(passHtml, /"dateModified":"2026-10-08"/);
+  assert.match(passHtml, /article:modified_time[^>]*content="2026-10-08T00:00:00\+09:00"/);
+  assert.match(passHtml, /data-article-date="modified" datetime="2026-10-08"/);
+  assert.match(passHtml, /data-article-date="published" datetime="2025-12-25"/);
+  assert.match(passHtml, /data-article-date="official-verified" datetime="2026-07-31"/);
+  const feeds = buildBlogFeeds(synchronizedManifest);
+  const passEntry = [...feeds.atom.matchAll(/<entry>[\s\S]*?<\/entry>/g)].find(match => match[0].includes('/articles/pass.html'))?.[0] || '';
+  assert.match(passEntry, /<updated>2026-10-08T12:00:00\+09:00<\/updated>/);
+  assert.equal(getBlogSitemapEntries(fixtureRoot).find(entry => entry.url.endsWith('/articles/pass.html')).lastmod, pass.modified);
+  const international = fs.readFileSync(path.join(fixtureRoot, 'en/articles/manual.html'), 'utf8');
+  assert.match(international, /last-modified" content="2026-08-21"/);
+  assert.match(international, /data-article-date="modified" datetime="2026-08-21"/);
 });
 
 test('公開中の全記事が日付SSOTと同期済みである', () => {

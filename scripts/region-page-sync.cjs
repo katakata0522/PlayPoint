@@ -20,13 +20,14 @@ const REGION_PAGES = Object.freeze({
   },
   in: {
     source: 'en',
+    contentDate: '2026-10-13',
     hreflang: 'en-IN',
     currency: 'INR',
     title: 'Google Play Points Calculator for India | INR level-up estimate',
-    description: 'Google Play Points calculator for India. Estimate level-up spending in INR using India-specific levels and the official earn rate per ₹5.',
+    description: 'Calculate Play Points earned from Indian rupee spending and the INR needed to level up. Bronze earns 1 point per ₹5 spent; reward redemption values are separate.',
     mainTitle: 'Google Play Points Calculator — India',
     siteDescription: 'Estimate the spending needed to reach your next Google Play Points level using India-specific levels and earn rates.<br>Enter your current level, target level, and points needed to calculate in INR.',
-    factNote: `<div class="region-fact-note" role="note" aria-label="India Play Points official conditions"><p><strong>India edition:</strong> base earning is calculated per ₹5. Google currently lists Bronze, Silver, Gold, and Platinum for India, with Platinum starting at 4,000 points.</p><p><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DIN&hl=en-IN" target="_blank" rel="noopener noreferrer">Check the official Google Play India level and earn-rate table</a></p></div>`
+    factNote: `<div class="region-fact-note" role="note" aria-label="India Play Points official conditions"><p><strong>India edition:</strong> Bronze earns 1 point per ₹5 of eligible pre-tax spending; ₹5 is the earning unit, not the rupee cash value of a point. Google currently lists Bronze, Silver, Gold, and Platinum for India, with Platinum starting at 4,000 points.</p><p>For example, ₹500 of eligible spending earns about 100 points at Bronze; to value points you already have, compare the reward and required points in your Play Points Use tab. Points cannot be converted to cash.</p><p><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DIN&hl=en-IN" target="_blank" rel="noopener noreferrer">Check the official Google Play India level and earn-rate table</a> · <a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DIN&hl=en" target="_blank" rel="noopener noreferrer">India earning and redemption rules</a></p></div>`
   }
 });
 
@@ -60,13 +61,13 @@ function ensureTopHreflang(html) {
   return next.replace(/\s*(<link rel="alternate" hreflang="x-default")/, `\n${insertion}    $1`);
 }
 
-function replaceContentDate(html) {
+function replaceContentDate(html, contentDate = REGION_CONTENT_DATE) {
   return html
-    .replace(/(<meta name="last-modified" content=")\d{4}-\d{2}-\d{2}(">)/, `$1${REGION_CONTENT_DATE}$2`)
-    .replace(/(<meta property="article:modified_time" content=")\d{4}-\d{2}-\d{2}T[^\"]*(">)/, `$1${REGION_CONTENT_DATE}T00:00:00+09:00$2`)
-    .replace(/("dateModified": ")\d{4}-\d{2}-\d{2}(")/g, `$1${REGION_CONTENT_DATE}$2`)
-    .replace(/((?:Last Updated|Content updated):\s*)\d{4}-\d{2}-\d{2}/g, `$1${REGION_CONTENT_DATE}`)
-    .replace(/((?:最後更新|內容更新)[:：]\s*)\d{4}-\d{2}-\d{2}/g, `$1${REGION_CONTENT_DATE}`);
+    .replace(/(<meta name="last-modified" content=")\d{4}-\d{2}-\d{2}(">)/, `$1${contentDate}$2`)
+    .replace(/(<meta property="article:modified_time" content=")\d{4}-\d{2}-\d{2}T[^\"]*(">)/, `$1${contentDate}T00:00:00+09:00$2`)
+    .replace(/("dateModified": ")\d{4}-\d{2}-\d{2}(")/g, `$1${contentDate}$2`)
+    .replace(/((?:Last Updated|Content updated):\s*)\d{4}-\d{2}-\d{2}/g, `$1${contentDate}`)
+    .replace(/((?:最後更新|內容更新)[:：]\s*)\d{4}-\d{2}-\d{2}/g, `$1${contentDate}`);
 }
 
 // 香港・インドは既存の同言語プロフィールを参照し、遷移先言語を可視化する。
@@ -109,7 +110,7 @@ function buildHongKongPage(source) {
   html = mapOutsideForeignTerminology(html, chunk => chunk
     .replace(/黃金級/g, '金級')
     .replace(/白金級/g, '鉑金級'));
-  html = replaceContentDate(html);
+  html = replaceContentDate(html, config.contentDate);
   return ensureTopHreflang(html);
 }
 
@@ -125,6 +126,7 @@ function buildIndiaPage(source) {
   html = replaceMetaContent(html, 'property="og:image:alt"', 'Google Play Points Calculator India OGP Image');
   html = replaceMetaContent(html, 'name="twitter:title"', config.title);
   html = replaceMetaContent(html, 'name="twitter:description"', config.description);
+  html = html.replace(/("@type": "SoftwareApplication",[\s\S]*?"description": ")[^"]*(")/, `$1${config.description}$2`);
   html = html.replaceAll(`${SITE_ORIGIN}/en/`, `${SITE_ORIGIN}/in/`);
   html = html.replace(/"priceCurrency": "USD"/g, '"priceCurrency": "INR"');
   html = html.replace(/"inLanguage": "en"/g, '"inLanguage": "en-IN"');
@@ -142,7 +144,7 @@ function buildIndiaPage(source) {
   html = html.replace(/Amount spent \(USD\)/g, 'Amount spent (INR)');
   html = html.replace(/Estimate the required spending to reach Platinum or Diamond status\./g, 'Estimate the required spending to reach Platinum status in India.');
   html = html.replace(/such as "just a little more to Platinum," "want to know if I can reach Diamond," or /g, 'such as "just a little more to Platinum" or ');
-  html = replaceContentDate(html);
+  html = replaceContentDate(html, config.contentDate);
   return ensureTopHreflang(html);
 }
 
@@ -183,11 +185,12 @@ function syncRegionSitemap(rootDir) {
   let sitemap = fs.readFileSync(sitemapPath, 'utf8');
   for (const locale of ['hk', 'in']) {
     const url = `${SITE_ORIGIN}/${locale}/`;
+    const contentDate = REGION_PAGES[locale].contentDate || REGION_CONTENT_DATE;
     const existing = new RegExp(`(<url>\\s*<loc>${url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</loc>\\s*<lastmod>)[^<]+(</lastmod>[\\s\\S]*?</url>)`);
     if (existing.test(sitemap)) {
-      sitemap = sitemap.replace(existing, `$1${REGION_CONTENT_DATE}$2`);
+      sitemap = sitemap.replace(existing, `$1${contentDate}$2`);
     } else {
-      sitemap = sitemap.replace('</urlset>', `  <url>\n    <loc>${url}</loc>\n    <lastmod>${REGION_CONTENT_DATE}</lastmod>\n  </url>\n</urlset>`);
+      sitemap = sitemap.replace('</urlset>', `  <url>\n    <loc>${url}</loc>\n    <lastmod>${contentDate}</lastmod>\n  </url>\n</urlset>`);
     }
   }
   return writeFileIfChanged(sitemapPath, sitemap);

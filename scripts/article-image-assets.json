@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-03",
+  "version": "2026-10-13",
   "gameThumbnails": {
     "fgo-pity-cost-2026": "../images/game-icons/fgo.webp",
     "genshin-welkin-value-2026": "../images/game-icons/genshin.webp",
@@ -30,6 +30,7 @@
     "umamusume-half-anniversary-points": "../images/game-icons/umamusume.webp"
   },
   "genericArticleIds": [
+    "play-points-stamp-cards",
     "super-weekly-reward-prize-history",
     "black-diamond-diamond-vip-2026",
     "play-points-calendar-schedule-guide-2026",
