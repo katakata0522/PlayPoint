@@ -10,13 +10,14 @@ const REGION_CONTENT_DATE = '2026-10-08';
 const REGION_PAGES = Object.freeze({
   hk: {
     source: 'tw',
+    contentDate: '2026-10-13',
     hreflang: 'zh-HK',
     currency: 'HKD',
     title: 'Google Play Points 計算器（香港）｜香港等級與消費金額試算',
-    description: '香港 Google Play Points 計算器。依香港官方等級與每 HK$7 的獲點率，估算升級所需消費金額與可獲得點數。',
+    description: '香港 Play Points 升級要花多少？以鉑金級 4,000 分、鑽石級 15,000 分及每 HK$7 的獲點率，估算尚欠積分與港元消費金額。',
     mainTitle: 'Google Play Points 計算器（香港）',
     siteDescription: '依照香港 Google Play Points 的等級與獲點率，估算升級所需消費金額。<br>輸入目前等級、目標等級及尚欠點數，即可用港元計算。',
-    factNote: `<div class="region-fact-note" role="note" aria-label="香港 Play Points 官方條件"><p><strong>香港版：</strong>基本獲點率以每 HK$7 計算。香港目前有銅級、銀級、金級、鉑金級、鑽石級五個等級。</p><p><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DHK&hl=zh-HK" target="_blank" rel="noopener noreferrer">查看 Google Play 香港官方等級與獲點率</a></p></div>`
+    factNote: `<div class="region-fact-note" role="note" aria-label="香港 Play Points 官方條件"><p><strong>香港版：</strong>基本獲點率以每 HK$7 計算。香港目前有銅級、銀級、金級、鉑金級、鑽石級五個等級。鉑金級需要一年度內賺取 4,000 分，鑽石級需要 15,000 分；升級看的是年度積分進度，不是兌換後剩下的積分餘額。</p><p><strong>升級要花多少？</strong>例如剛達到金級、年度進度為 1,000 分，升至鉑金級尚欠 3,000 分。按金級每 HK$7 賺 1.5 分計算，約需 HK$14,000。若剛達到鉑金級、年度進度為 4,000 分，升至鑽石級尚欠 11,000 分，按每 HK$7 賺 1.75 分計算，約需 HK$44,000。</p><p>以上是維持該基本獲點率、不計活動或獎賞的稅前試算；Google 會按每筆購買四捨五入。你的年度進度通常不會剛好停在門檻，將 Play Points 畫面顯示的尚欠分數填入下方，會更貼近自己的情況。</p><p><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DHK&hl=zh-HK" target="_blank" rel="noopener noreferrer">香港官方等級與獲點率</a> · <a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DHK&hl=zh-HK" target="_blank" rel="noopener noreferrer">年度進度、兌換與獲點計算方式</a></p></div>`
   },
   in: {
     source: 'en',
@@ -92,6 +93,7 @@ function buildHongKongPage(source) {
   html = replaceMetaContent(html, 'property="og:image:alt"', 'Google Play Points 計算器（香港） OGP 圖片');
   html = replaceMetaContent(html, 'name="twitter:title"', config.title);
   html = replaceMetaContent(html, 'name="twitter:description"', config.description);
+  html = html.replace(/("@type": "SoftwareApplication",[\s\S]*?"description": ")[^"]*(")/, `$1${config.description}$2`);
   html = html.replaceAll(`${SITE_ORIGIN}/tw/`, `${SITE_ORIGIN}/hk/`);
   html = html.replace(/"priceCurrency": "TWD"/g, '"priceCurrency": "HKD"');
   html = html.replace(/"inLanguage": "zh-TW"/g, '"inLanguage": "zh-HK"');
@@ -101,7 +103,8 @@ function buildHongKongPage(source) {
   html = labelFallbackAuthorLinks(html, 'tw', '（繁體中文）');
   html = html.replace(/(<h1 id="main-title"[^>]*>)[\s\S]*?(<\/h1>)/, `$1${config.mainTitle}$2`);
   html = html.replace(/(<p id="site-description"[^>]*>)[\s\S]*?(<\/p>)/, `$1${config.siteDescription}$2`);
-  html = html.replace(/(<p id="site-description"[^>]*>[\s\S]*?<\/p>)/, `$1\n\n    ${config.factNote}`);
+  // HK$14などの金額を置換文字列の$1として解釈させず、そのまま挿入する。
+  html = html.replace(/(<p id="site-description"[^>]*>[\s\S]*?<\/p>)/, (_match, description) => `${description}\n\n    ${config.factNote}`);
   html = html.replace('每 NT$30 獲得點數（自動帶入，可修改）', '每 HK$7 獲得點數（自動帶入，可修改）');
   html = html.replace('每 NT$30 回饋率（直接輸入）', '每 HK$7 獲得點數（自動帶入，可修改）');
   html = html.replace('placeholder="例如：1500" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"', 'placeholder="例如：350" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"');

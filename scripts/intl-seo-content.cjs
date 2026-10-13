@@ -1682,6 +1682,24 @@ const INTL_ARTICLE_DATES = {
 
 const MANUAL_COMPARISON_ARTICLES = [
   {
+    "file": "en/articles/google-play-points-install-offer-not-received.html",
+    "lang": "en",
+    "title": "Play Points app install reward not received? What to check",
+    "description": "Installed an app for Play Points but no reward arrived? Check first-install eligibility, two minutes of use within 24 hours, the seven-day wait and personalization.",
+    "publishedAt": "2026-10-13",
+    "modifiedAt": "2026-10-13",
+    "manual": true
+  },
+  {
+    "file": "en/articles/google-play-points-account-locked.html",
+    "lang": "en",
+    "title": "Google Play Points locked? Error message and support steps",
+    "description": "Google Play Points locked or unavailable? Separate a points restriction from a disabled Google Account, save the error and follow the right support route.",
+    "publishedAt": "2026-10-13",
+    "modifiedAt": "2026-10-13",
+    "manual": true
+  },
+  {
     file: 'tw/articles/gakuen-idolmaster-japan-google-play-vs-web-shop.html',
     lang: 'zh-TW',
     title: '學園偶像大師日版課金：Google Play、WEB SHOP 與 DMM 怎麼選？',

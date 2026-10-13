@@ -58,6 +58,28 @@ const GAME_EVIDENCE = {
   },
   bluearchive: {
     editions: text('https://bluearchive.nexon.com/', 'https://apps.apple.com/kr/app/%EB%B8%94%EB%A3%A8-%EC%95%84%EC%B9%B4%EC%9D%B4%EB%B8%8C/id1571873795', 'https://apps.apple.com/tw/app/%E8%94%9A%E8%97%8D%E6%AA%94%E6%A1%88/id1571873795'),
+    reviewedAt: { ko: '2026-10-13' },
+    descriptions: { ko: '블루 아카이브 천장·10연차 비용을 검토할 때 확인할 현행 200모집 포인트와 11월 10일 개편 예고를 정리합니다. 한국 Google Play의 실제 원화 결제액으로 Play Points를 계산하세요.' },
+    regionalSources: { ko: [
+      source('https://forum.nexon.com/bluearchive/board_view?allBoard=1&board=1071&thread=2719463', 'KR', 'publisher-help'),
+      source('https://forum.nexon.com/bluearchive/board_view?board=1018&thread=3560305', 'KR', 'publisher-notice')
+    ] },
+    editorial: { ko: [
+      { heading: '천장·10연차 가격을 확인할 때', paragraphs: [
+        '한국 서비스의 모집 기준으로 설명합니다. 현재는 해당 모집에서 포인트 200개를 모아 대상 학생을 선택 영입하는 방식입니다. 손에 있는 청휘석과 모집 티켓을 먼저 확인한 뒤 부족한 재화를 얼마나 살지 정해 보세요.',
+        '“천장 가격”을 원화 한 금액으로 정하기는 어렵습니다. 보유 재화, 사용할 티켓, 보너스 상품과 구매 가능한 횟수가 사람마다 다르기 때문입니다. 아래 계산기에는 청휘석 수나 모집 횟수가 아니라 실제 Google Play 결제 화면의 원화 금액을 넣으면 됩니다. 10연차 비용을 알아볼 때도 먼저 현재 상품의 가격과 필요한 청휘석을 비교해 보세요.',
+        '게임의 모집 포인트와 Google Play Points는 서로 다른 값입니다. 이미 가진 청휘석이나 무료 모집 티켓을 사용하는 것만으로 새로운 Google Play 구매가 생기지는 않습니다.'
+      ] },
+      { heading: '11월 10일 개편은 아직 적용 전입니다', paragraphs: [
+        '2026년 10월 13일 확인한 공식 사전 안내에 따르면 11월 10일 점검 후 모집 스택 방식으로 바뀔 예정입니다. 100스택에서는 ★3 학생이 확정으로 등장하며 픽업 대상일 확률은 50%, 200스택에서는 픽업 대상 학생이 확정입니다. 모집 중 픽업 대상 학생을 얻으면 스택이 초기화됩니다.',
+        '일반 모집 스택과 특별·페스 모집의 특별 스택은 공유되지 않으며, 각각 다음 해당 모집으로 이월될 예정입니다. 모집 마일리지는 별도로, 같은 기간의 모집 사이에서는 공유되지만 다음 기간으로 이월되지 않습니다. 아카이브 포인트 제도는 유지됩니다.',
+        '지금의 200포인트 선택 영입과 개편 이후의 확정 획득 기준을 나눠 보세요. 상세 내용은 추가 공지와 공식 생방송에서 안내될 예정이므로, 구매할 때는 해당 모집에 적용된 조건을 기준으로 판단하면 됩니다.'
+      ] }
+    ] },
+    additionalFaq: { ko: [
+      ['블루아카 천장 가격은 얼마인가요?', '현재의 200모집 포인트는 모집 횟수에 관한 기준이며 고정된 원화 가격이 아닙니다. 보유 청휘석, 모집 티켓과 구매할 상품을 먼저 확인하고 실제 Google Play 결제액으로 포인트를 계산하세요. 2026년 11월 10일 점검 후 모집 스택으로의 개편이 예고되어 있으므로 적용 시점도 확인해야 합니다.'],
+      ['이 계산기로 청휘석이나 10연차 가격도 계산할 수 있나요?', '이 계산기는 한국 Google Play 거래의 원화 결제액으로 적립될 Play Points를 예상합니다. 청휘석 수량이나 모집 횟수를 원화로 바꾸는 기능은 제공하지 않습니다. 구매하려는 상품의 Google Play 가격을 확인해 입력하세요.']
+    ] },
     offers: common(offer(text('Monthly / Half Monthly Pyroxene Packs', '월간 / 하프 월간 청휘석 패키지', 'Monthly／Half Monthly青輝石禮包'), text('Check the full and half packs separately. Nexon also lists Lite products and a Battle Pass; their duration and rewards differ from the standard packs.', '일반형과 하프형을 따로 비교하세요. Nexon 안내에는 Lite 상품과 배틀 패스도 있으며 기간과 보상이 일반 상품과 다릅니다.', '一般與半量版本要分開比較。Nexon另有Lite商品與Battle Pass，期間及獎勵不能直接套用一般禮包。'), S.blue))
   },
   pokepoke: {
@@ -161,5 +183,6 @@ const GAME_EVIDENCE = {
 
 // 価格未確認は0円の商品ではなく、価格データが存在しない状態とする。
 function isReference(locale, id) { return GAME_EVIDENCE[id]?.referenceLocales?.includes(locale) || false; }
+function getReviewedAt(locale, id) { return GAME_EVIDENCE[id]?.reviewedAt?.[locale] || REVIEWED_AT; }
 function referenceFiles() { return Object.keys(GAME_EVIDENCE).flatMap(id => locales.filter(locale => isReference(locale, id)).map(locale => `${locale}/games/${id}/index.html`)); }
-module.exports = { REVIEWED_AT, GAME_EVIDENCE, S, locales, isReference, referenceFiles };
+module.exports = { REVIEWED_AT, GAME_EVIDENCE, S, locales, isReference, getReviewedAt, referenceFiles };
