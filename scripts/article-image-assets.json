@@ -27,9 +27,12 @@
     "monst-web-shop-vs-google-play-2026": "../images/game-icons/monst.webp",
     "pad-puzzle-and-dragons-play-points": "../images/game-icons/pad.webp",
     "dokkan-battle-dragon-ball-play-points": "../images/game-icons/dokkan.webp",
-    "umamusume-half-anniversary-points": "../images/game-icons/umamusume.webp"
+    "umamusume-half-anniversary-points": "../images/game-icons/umamusume.webp",
+    "umasuku-umaplan-2026": "../images/game-icons/umamusume.webp",
+    "pokemon-sleep-premium-plan-2026": "../images/game-icons/pokemon-sleep.webp"
   },
   "genericArticleIds": [
+    "play-credit-subscription-2026",
     "play-points-stamp-cards",
     "super-weekly-reward-prize-history",
     "black-diamond-diamond-vip-2026",
@@ -97,6 +100,9 @@
     "diamond-play-pass-break-even-2026"
   ],
   "dedicatedOgpIds": [
+    "pokemon-sleep-premium-plan-2026",
+    "play-credit-subscription-2026",
+    "umasuku-umaplan-2026",
     "fgo-pity-cost-2026",
     "genshin-welkin-value-2026",
     "monst-google-play-vs-webshop-2026",

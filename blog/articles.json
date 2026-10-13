@@ -1,5 +1,99 @@
 [
   {
+    "id": "pokemon-sleep-premium-plan-2026",
+    "title": "ポケモンスリープのプレミアムパスは1か月と6か月どっち？毎日の特典と継続の注意点【2026年】",
+    "date": "2026-10-14",
+    "modified": "2026-10-14",
+    "category": "使い方",
+    "browseCategory": "ゲーム別課金",
+    "description": "ポケモンスリープのプレミアムパス1か月と6か月を比較。毎日の100スリープポイントや継続特典、Androidの切替注意点とiOS参考価格を整理。Android現行価格は未確認。",
+    "listDescription": "ポケモンスリープのプレミアムパス1か月と6か月を比較。毎日の100スリープポイントや継続特典、Androidの切替注意点とiOS参考価格を整理。Android現行価格は未確認。",
+    "listTitle": "ポケモンスリープのプレミアムパスは1か月と6か月どっち？毎日の特典と継続の注意点【2026年】",
+    "tags": [
+      "ポケモンスリープ",
+      "Google Play",
+      "Play Points"
+    ],
+    "file": "../articles/2026-10-14-pokemon-sleep-premium-plans.html",
+    "thumbnail": "../images/game-icons/pokemon-sleep.webp",
+    "thumbnailKind": "app-icon",
+    "ogp": "../articles/ogp/pokemon-sleep-premium-plan-2026.png",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-09-26-pokemon-sleep-play-points-coupon.html",
+        "ポケモンスリープでPlay Pointsクーポンを使う方法"
+      ],
+      [
+        "/articles/2025-12-25-subscription.html",
+        "Play Points対象の定期購入について"
+      ]
+    ],
+    "gameTitle": "ポケモンスリープ"
+  },
+  {
+    "id": "play-credit-subscription-2026",
+    "title": "Play Pointsで交換したGoogle Playクレジットはサブスクに使える？初回と更新時の違い【2026年】",
+    "date": "2026-10-14",
+    "modified": "2026-10-14",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "description": "Google Play Pointsで交換したPlayクレジットはサブスクに使える？初回加入・更新・残高とカードの併用条件、無料体験時の注意点を公式情報で解説。",
+    "listDescription": "Google Play Pointsで交換したPlayクレジットはサブスクに使える？初回加入・更新・残高とカードの併用条件、無料体験時の注意点を公式情報で解説。",
+    "listTitle": "Play Pointsで交換したGoogle Playクレジットはサブスクに使える？初回と更新時の違い【2026年】",
+    "tags": [
+      "Google Play",
+      "Play Points"
+    ],
+    "file": "../articles/2026-10-14-play-credit-subscriptions.html",
+    "thumbnail": "../articles/thumbnails/play-credit-subscription-2026-square-v1.webp",
+    "thumbnailKind": "generic",
+    "ogp": "../articles/ogp/play-credit-subscription-2026.png",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-07-25-play-credit-not-working.html",
+        "交換したクレジットを使えない時の確認順"
+      ],
+      [
+        "/articles/2025-12-25-subscription.html",
+        "サブスク購入でPlay Pointsを貯める条件"
+      ]
+    ]
+  },
+  {
+    "id": "umasuku-umaplan-2026",
+    "title": "ウマスクとウマプランはどっちがお得？月980円と1,980円、特典を比べて選ぶ【2026年】",
+    "date": "2026-10-14",
+    "modified": "2026-10-14",
+    "category": "使い方",
+    "browseCategory": "ゲーム別課金",
+    "description": "ウマ娘のウマスク（月980円）とウマプラン（月1,980円）を公式情報で比較。ジュエル、継承特典、月額・長期プラン、Play Pointsの違いから選びます。",
+    "listDescription": "ウマ娘のウマスク（月980円）とウマプラン（月1,980円）を公式情報で比較。ジュエル、継承特典、月額・長期プラン、Play Pointsの違いから選びます。",
+    "listTitle": "ウマスクとウマプランはどっちがお得？月980円と1,980円、特典を比べて選ぶ【2026年】",
+    "tags": [
+      "ウマ娘",
+      "Google Play",
+      "Play Points"
+    ],
+    "file": "../articles/2026-10-14-umasuku-umaplan-compare.html",
+    "thumbnail": "../images/game-icons/umamusume.webp",
+    "thumbnailKind": "app-icon",
+    "ogp": "../articles/ogp/umasuku-umaplan-2026.png",
+    "listed": true,
+    "related": [
+      [
+        "/games/umamusume/umasuku-value/",
+        "ウマスク単独の受取条件を詳しく見る"
+      ],
+      [
+        "/articles/2025-12-25-subscription.html",
+        "サブスクのPlay Points対象条件を確認する"
+      ]
+    ],
+    "gameTitle": "ウマ娘"
+  },
+  {
     "id": "fgo-pity-cost-2026",
     "listDescription": "天井330回までの費用を知りたい方へ。必要な聖晶石、最小購入例、福袋の有償15個とポイント還元を確認できます。",
     "title": "FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】",
