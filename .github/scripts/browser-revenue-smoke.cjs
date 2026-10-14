@@ -255,7 +255,7 @@ async function main() {
         await page.evaluate(()=>window.__testSetConsent('granted'));
       }
       await waitForRevenueRuntime(page,'.article-ad ins.adsbygoogle');
-      assert.equal(await page.locator('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]').getAttribute('data-overlays'),'collapsed-bottom','記事一覧のアンカー広告は下側・展開なし');
+      assert(await page.locator('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]').getAttribute('data-overlays') === 'collapsed-bottom','記事一覧のアンカー広告は下側・展開なし');
       const before=await page.evaluate(()=>{window.__auditAdNode=document.querySelector('.article-ad');return window.adsbygoogle.length;});
       for(const order of ['newest','oldest','updated']) await page.locator('#sort-toggle').selectOption(order);
       assert(await page.evaluate(()=>window.__auditAdNode===document.querySelector('.article-ad')&&window.__auditAdNode.isConnected),'Ad node is preserved across rendering');

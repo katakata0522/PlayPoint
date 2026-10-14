@@ -583,7 +583,7 @@ async function verifyBlogPage(browser, baseUrl) {
     const topic = 'ランク・ステータス';
     await categorySelect.selectOption(topic);
     await page.waitForFunction(expected => new URL(location.href).searchParams.get('topic') === expected, topic);
-    assert.equal(await categorySelect.inputValue(), topic, '選択中のカテゴリーを表示する');
+    assert(await categorySelect.inputValue() === topic, '選択中のカテゴリーを表示する');
     assert(await page.locator('#game-title-filter').isHidden(), 'ゲーム以外のカテゴリーではゲーム欄を表示しない');
 
     // スマホはメニューから、PCは常時表示ナビから同じ行き先へ移動できる。
