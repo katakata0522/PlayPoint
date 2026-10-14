@@ -49,7 +49,7 @@ const targets = [
   { url: 'https://playpoint-sim.com/tw/campaign/3x/', contains: '3 倍活動' },
   { url: 'https://playpoint-sim.com/tw/campaign/wait/', contains: '活動值得等嗎' },
   { url: 'https://playpoint-sim.com/tw/amount/10000/', contains: 'NT$1,500' },
-  { url: 'https://playpoint-sim.com/tw/articles/google-play-points-levels.html', contains: 'Google Play Points 等級說明' },
+  { url: 'https://playpoint-sim.com/tw/articles/google-play-points-levels.html', contains: '台灣 Google Play Points 等級表｜門檻、積點率與每週獎勵' },
   { url: 'https://playpoint-sim.com/blog/', contains: 'Google Play Points' },
   { url: 'https://playpoint-sim.com/feed.xml', contains: '<rss version="2.0"', contentType: 'application/rss+xml', cacheControlIncludes: 'max-age=1800' },
   { url: 'https://playpoint-sim.com/atom.xml', contains: '<feed xmlns="http://www.w3.org/2005/Atom">', contentType: 'application/atom+xml', cacheControlIncludes: 'max-age=1800' },
