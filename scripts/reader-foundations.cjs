@@ -95,9 +95,10 @@ function syncReaderFoundations(root, { hubOnly = false } = {}) {
   }
   const hub = path.join(root, 'blog/index.html'); let html = fs.readFileSync(hub, 'utf8');
   html = html.replace(/(<h1 class="hero-title">)[\s\S]*?(<\/h1>)/, '$1' + HUB_TITLE + '$2');
-  html = html.replace(/(<script\b[^>]*type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/g, (_all, start, json, end) => {
+  html = html.replace(/([\t ]*<script\b[^>]*type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/g, (_all, start, json, end) => {
     const data = JSON.parse(json);
-    if (data['@type'] === 'BreadcrumbList') data.itemListElement = [{ '@type': 'ListItem', position: 1, name: '記事トップ', item: 'https://playpoint-sim.com/blog/' }];
+    // 一覧の入口にはパンくずを表示しない。1項目だけの無効なBreadcrumbListを残さない。
+    if (data['@type'] === 'BreadcrumbList') return '';
     if (data['@type'] === 'Blog') { data.name = HUB_TITLE; data.description = HUB_DESCRIPTION; }
     return start + JSON.stringify(data) + end;
   });

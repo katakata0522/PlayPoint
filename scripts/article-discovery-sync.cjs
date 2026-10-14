@@ -190,11 +190,10 @@ function buildDiscoveryAssets(root) {
   };
 }
 
-function applyDiscoveryAssets(html, assets) {
-  // 海外版は通常の下部アンカーだけに揃える。既存の明示設定は優先する。
+function applyDiscoveryAssets(html, assets, { article = false } = {}) {
+  // 本文を覆う大型アンカーを避ける。新しい記事にも適用し、既存の明示設定は優先する。
   // 広告ローダーの共有契約を使い、第三者の広告DOMをCSSで隠さない。
-  if (/<html\b[^>]*\blang="(?:en|ko|zh-TW)"/i.test(html)
-    && /intl-layout-container/.test(html)
+  if ((article || (/<html\b[^>]*\blang="(?:en|ko|zh-TW)"/i.test(html) && /intl-layout-container/.test(html)))
     && !/<meta\b[^>]*\bname="playpoint:anchor-ads"/i.test(html)) {
     html = html.replace(/<\/head>/i, '<meta name="playpoint:anchor-ads" content="collapsed-bottom">\n</head>');
   }
@@ -224,7 +223,7 @@ function syncArticleDiscovery(root) {
     const file = path.join(root, entry.path);
     const before = fs.readFileSync(file, 'utf8');
     const prepared = prepareDiscoveryArticle(before, entry);
-    const html = applyDiscoveryAssets(prepared.html, assets.article);
+    const html = applyDiscoveryAssets(prepared.html, assets.article, { article: true });
     // 本文とアセットを別々に読み書きせず、記事単位で最終結果だけ保存する。
     if (html !== before) fs.writeFileSync(file, html);
     indexes[entry.locale].push(prepared.record);
