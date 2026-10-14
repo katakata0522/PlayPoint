@@ -30,7 +30,6 @@ html[lang] body .guide-dialog .guide-menu-body .site-header-links { display:flex
 html body #guide-toc { inset:auto 0 0; width:100%; height:auto; max-height:80dvh; border-radius:16px 16px 0 0; padding-bottom:env(safe-area-inset-bottom); }
 .guide-toc-links { padding:4px 20px 24px; }
 .guide-toc-links a { display:block; color:var(--reading-text, #203d43); padding:14px 0; border-bottom:1px solid var(--reading-border, #d7e3df); text-decoration:none; line-height:1.65; overflow-wrap:anywhere; }
-/* 記事だけ検索を左、メニューを右に置く。一覧・目的別ガイドの配置は維持する。 */
 html.guide-navigation-enabled.guide-article-header body #guide-menu { inset:0 0 0 auto; box-shadow:-8px 0 40px #102d4330; }
 html body #guide-search { inset:60px auto auto 50%; transform:translateX(-50%); width:min(600px,calc(100% - 24px)); height:auto; max-height:calc(100dvh - 84px); border-radius:10px; }
 .guide-search-body { padding:16px; }

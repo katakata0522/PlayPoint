@@ -160,8 +160,8 @@ const DISTINCT_MAPPING = {
     image: '2026-07-25-play-points-coupon-not-applied.png',
     template: 'coupon-not-applied',
     category: 'トラブル解決',
-    subtitle: '対象金額・有効期限・課金画面の確認チェック',
-    points: ['最低購入金額条件', 'サブスク対象外', '手動適用トグル確認'],
+    subtitle: '保存場所・対象アカウント・購入金額を確認',
+    points: ['保存済み特典の確認', '対象アカウントのエラー', '割引なしの購入判断'],
     accentColor: '#f97316'
   },
 
@@ -438,7 +438,13 @@ function cleanTitle(raw) {
 }
 
 async function run() {
-  console.log('Starting full 64-article OGP generation and HTML meta tag synchronization...');
+  const selectedFiles = new Set(process.argv.filter(arg => arg.startsWith('--file=')).map(arg => arg.slice('--file='.length)));
+  const articleFiles = fs.readdirSync(articlesDir).filter(f => f.endsWith('.html')).sort();
+  for (const file of selectedFiles) {
+    if (!articleFiles.includes(file)) throw new Error('記事が見つかりません: ' + file);
+  }
+  const files = articleFiles.filter(file => !selectedFiles.size || selectedFiles.has(file));
+  console.log(`記事専用OGP生成・メタ情報同期: ${files.length}件`);
 
   // 1. Cache existing image buffers in memory before generating
   const originalImageBuffers = new Map();
@@ -450,8 +456,6 @@ async function run() {
 
   const browser = await chromium.launch({ channel: 'msedge', headless: true });
   const page = await browser.newPage({ viewport: { width: 1200, height: 630 } });
-
-  const files = fs.readdirSync(articlesDir).filter(f => f.endsWith('.html')).sort();
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -604,7 +608,7 @@ async function run() {
   }
 
   await browser.close();
-  console.log('\nAll 64 articles successfully updated with dedicated 1200x630 OGP images and unified meta tags!');
+  console.log(`記事専用OGP更新完了: ${files.length}件`);
 }
 
 run().catch(err => {

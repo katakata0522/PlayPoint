@@ -25,7 +25,7 @@
   "articles/2026-07-24-play-points-500-1000-value.html": "2026-07-30",
   "articles/2026-07-24-play-points-cash-conversion.html": "2026-08-04",
   "articles/2026-07-25-play-credit-not-working.html": "2026-07-30",
-  "articles/2026-07-25-play-points-coupon-not-applied.html": "2026-10-08",
+  "articles/2026-07-25-play-points-coupon-not-applied.html": "2026-10-14",
   "articles/2026-07-31-google-play-quests.html": "2026-10-13",
   "articles/2026-07-31-super-weekly-reward.html": "2026-10-02",
   "articles/2026-08-03-play-points-device-change.html": "2026-08-03",
@@ -122,7 +122,7 @@
   "en/articles/google-play-points-super-weekly-reward.html": "2026-10-02",
   "en/articles/google-play-points-use-coupons.html": "2026-10-13",
   "en/articles/google-play-points-weekly-reward.html": "2026-08-05",
-  "en/articles/google-play-quests.html": "2026-09-03",
+  "en/articles/google-play-quests.html": "2026-10-14",
   "en/articles/heaven-burns-red-google-play-vs-web-shop.html": "2026-10-07",
   "en/articles/honkai-impact-3rd-google-play-vs-top-up-center.html": "2026-10-07",
   "en/articles/honkai-star-rail-express-supply-pass.html": "2026-10-07",
@@ -269,5 +269,7 @@
   "tw/articles/google-play-points-basics.html": "2026-10-14",
   "tw/articles/google-play-credit-subscriptions.html": "2026-10-14",
   "tw/articles/google-play-points-stamp-cards.html": "2026-10-14",
-  "tw/articles/pokemon-sleep-premium-pass-plans.html": "2026-10-14"
+  "tw/articles/pokemon-sleep-premium-pass-plans.html": "2026-10-14",
+  "ko/articles/google-play-credit-uses.html": "2026-10-14",
+  "tw/articles/google-play-credit-uses.html": "2026-10-14"
 }

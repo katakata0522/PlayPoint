@@ -422,7 +422,6 @@ background: #f8fafc;
 border-radius: 8px;
 border: 1px dashed #cbd5e1;
 padding: 12px;
-/* 幅変更後の既配信広告も、切り取らず枠内で全体を閲覧できる。 */
 overflow-x: auto;
 }
 .game-ad-container > ins.adsbygoogle { display:block; width:100%; height:100px; }
@@ -457,15 +456,14 @@ color: #334155;
 white-space: nowrap;
 }
 .game-product-detail {
-    display: block;
-    min-width: 14rem;
-    max-width: 28rem;
-    margin-top: 0.4rem;
-    font-size: 0.85rem;
-    line-height: 1.6;
-    white-space: normal;
+display: block;
+min-width: 14rem;
+max-width: 28rem;
+margin-top: 0.4rem;
+font-size: 0.85rem;
+line-height: 1.6;
+white-space: normal;
 }
-
 .pack-table tbody tr:hover {
 background: #f8fafc;
 }
@@ -724,8 +722,6 @@ scroll-behavior: auto !important;
 }
 .site-footer .site-footer-trademark { color: inherit; }
 .input-field[hidden] { display: none; }
-
-/* 金額入力だけの計算機は、最初に入力する欄を広く見せる。 */
 .game-sim-lead { margin: 0 0 20px; color: #475569; line-height: 1.8; }
 #game-sim-form[data-input-mode="amount"] .input-field:has(#sim-custom-amount) {
 grid-column: 1 / -1;

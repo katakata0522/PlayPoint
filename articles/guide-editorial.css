@@ -177,12 +177,10 @@ html[lang] body.blog-index-compact .guide-hub-layout .hub-result-toolbar label {
 html[lang] body main.main-content-column > article.content { padding:0; margin:0; max-width:none; border:0; border-radius:0; box-shadow:none; background:transparent; }
 .skip-link { position:fixed; top:12px; left:16px; z-index:10000; padding:12px 16px; background:var(--reading-surface,#fff); color:var(--reading-link,#176773); border:2px solid currentColor; transform:translateY(-200%); }
 .skip-link:focus { transform:none; }
-/* 回答の装飾を一つにまとめ、言語別の囲みでも見出しを簡潔にする。 */
 html[lang] body :is(.main-content-column,.main-card) .content :is(.answer-box,.editorial-answer) { padding:16px 18px !important; margin:14px 0 24px !important; }
 html[lang] body :is(.main-content-column,.main-card) .content :is(.answer-box,.editorial-answer) > h2 { background:none !important; border:0 !important; border-radius:0 !important; padding:0 !important; margin:0 0 8px !important; box-shadow:none !important; font-size:18px !important; line-height:1.5 !important; }
 html[lang] body :is(.main-content-column,.main-card) .content :is(.answer-box,.editorial-answer)::before { display:none !important; }
 .reader-source { font-size:13px; line-height:1.6; color:var(--reading-muted); margin-top:10px; }
-/* 日付と保存を一段にまとめ、記事本文へ入るまでの重複を減らす。 */
 html[lang="ja"] body .main-content-column .article-header-meta { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:start; gap:4px 12px; margin:8px 0 12px; }
 html[lang="ja"] body .article-header-meta .reading-metadata { min-width:0; margin:0; }
 html[lang="ja"] body .article-header-meta .reading-metadata summary { min-height:44px; box-sizing:border-box; padding:11px 0; font-size:13px; line-height:22px; cursor:pointer; }

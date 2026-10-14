@@ -99,7 +99,7 @@ const ROLE_RULES = Object.freeze([
   },
   {
     role: 'decision_support',
-    test: stem => /(?:best-use|cash-conversion|gift-card|discount|promo-code|discounts-promo-codes|promotion-stacking|multiplier-stacking|payment-methods|balance-combine-payment|external-billing|play-pass-worth-it|play-pass-double-points|diamond-play-pass-value|youtube-premium|pixel-discount|play-fest-deals|gold-platinum-worth-it|google-store|earn-play-points-free|points-earn-free|use-coupons|stamp-card|campaign$)/.test(stem)
+    test: stem => /(?:best-use|cash-conversion|gift-card|discount|promo-code|discounts-promo-codes|promotion-stacking|multiplier-stacking|payment-methods|balance-combine-payment|external-billing|play-pass-worth-it|play-pass-double-points|diamond-play-pass-value|youtube-premium|pixel-discount|play-fest-deals|gold-platinum-worth-it|google-store|earn-play-points-free|points-earn-free|use-coupons|google-play-credit-uses$|stamp-card|campaign$)/.test(stem)
   },
   {
     role: 'reference',

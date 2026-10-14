@@ -269,12 +269,12 @@ const VISUAL_CARDS = {
         <div style="font-size: 17px; font-weight: 800; color: #ffffff;">例: 500円クーポンは500円以上の商品</div>
       </div>
       <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 10px 16px;">
-        <div style="font-size: 13px; color: #cbd5e1; font-weight: 700;">対象外アイテム</div>
-        <div style="font-size: 17px; font-weight: 800; color: #ffffff;">定期購入（サブスク）には使えない</div>
+        <div style="font-size: 13px; color: #cbd5e1; font-weight: 700;">アカウント対象外</div>
+        <div style="font-size: 17px; font-weight: 800; color: #ffffff;">特典を受け取ったアカウントを確認</div>
       </div>
       <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 10px 16px;">
-        <div style="font-size: 13px; color: #cbd5e1; font-weight: 700;">手動選択が必要</div>
-        <div style="font-size: 17px; font-weight: 800; color: #ffffff;">支払い画面でタップして適用する</div>
+        <div style="font-size: 13px; color: #cbd5e1; font-weight: 700;">割引なしで続ける場合</div>
+        <div style="font-size: 17px; font-weight: 800; color: #ffffff;">最終金額を見て購入を判断</div>
       </div>
     </div>
   `,
