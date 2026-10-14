@@ -12,7 +12,14 @@ const REGION = { en: 'UNITED STATES · ENGLISH', ko: '대한민국 · 한국어'
 
 async function run() {
   // 新規記事の追加時は既存の確認済み画像を上書きしない。
-  const targets = articleImages(root).filter(article => !process.argv.includes('--only-missing') || !fs.existsSync(path.join(root, article.image)));
+  // 改稿時は --file=相対パス を指定し、見出しを変えた記事だけ再生成できる。
+  const selectedFiles = new Set(process.argv.filter(arg => arg.startsWith('--file=')).map(arg => arg.slice('--file='.length)));
+  const articles = articleImages(root);
+  for (const file of selectedFiles) {
+    if (!articles.some(article => article.file === file)) throw Error('海外記事が見つかりません: ' + file);
+  }
+  const targets = articles.filter(article => (!selectedFiles.size || selectedFiles.has(article.file))
+    && (!process.argv.includes('--only-missing') || !fs.existsSync(path.join(root, article.image))));
   const browser = await chromium.launch(process.env.PLAYPOINT_CHROME_PATH ? { executablePath: process.env.PLAYPOINT_CHROME_PATH, headless: true } : { channel: 'msedge', headless: true });
   try {
     const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });

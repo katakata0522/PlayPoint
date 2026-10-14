@@ -12,7 +12,7 @@ const TOPICS = [
         ['Join first, then earn', 'Open your profile in the Play Store and select Play Points. Eligible purchases made after joining can earn points; earlier purchases do not. Use the Google account that will make the purchase.'],
         ['A small US example', 'At the US Bronze base rate, $10 of eligible pre-tax spending earns about 10 points. An offer may change the final earn rate. Look at the offer before a purchase you already plan to make, rather than buying something just to fill a points target.'],
         ['Choose a reward you will actually use', 'The Use tab can show app-specific coupons, in-game items or Google Play credit. A coupon for a game you play may be more useful than an unfamiliar item. Compare the points required with the purchase you have in mind.'],
-        ['Points are not the same as Play credit', 'Play Points are the rewards you collect. Google Play credit is a payment balance you can obtain through an eligible exchange. Collecting points alone does not automatically reduce a bill. Make the exchange first, then check the available payment option.'],
+        ['Points are not the same as Play credit', 'Play Points are the rewards you collect. Google Play credit is a payment balance you can obtain through an eligible exchange. Collecting points alone does not automatically reduce a bill. If you choose Play credit, redeem it first, then check that balance at checkout.'],
         ['Your balance and level progress do different jobs', 'The balance is what you can spend on rewards. Annual level progress determines your level; redeeming points does not subtract those earned points from annual progress. The linked US levels guide has the local thresholds, and the calculator lets you compare the amount still needed.'],
         ['Next time you open Google Play', 'Check the account, your level, and the Earn and Use tabs. With those three things clear, the program is easier to enjoy alongside purchases you wanted to make anyway.']
       ],
@@ -26,7 +26,7 @@ const TOPICS = [
         ['가입을 먼저 마치세요', 'Play 스토어의 프로필에서 Play Points를 선택합니다. 가입 전에 결제한 상품에는 포인트가 소급 적립되지 않습니다. 실제 결제할 Google 계정으로 가입하는 것이 첫 단계입니다.'],
         ['한국 브론즈의 간단한 예시', '한국 브론즈 기본 적립률은 1,000원당 1포인트입니다. 대상 결제 금액 10,000원이면 기본적으로 약 10포인트를 예상할 수 있습니다. 캠페인이 있다면 표시된 최종 특별 적립률로 비교하세요. 포인트 때문에 구매를 늘리기보다 예정된 구매에 혜택을 더하는 편이 좋습니다.'],
         ['쓸 곳을 정하고 교환하기', '사용 탭에서 앱별 쿠폰, 게임 아이템, Google Play 크레딧 등 본인에게 제공되는 교환 항목을 확인합니다. 자주 하는 게임의 쿠폰이라면 낯선 상품보다 활용하기 쉬울 수 있습니다. 필요한 포인트와 구매할 상품을 함께 비교하세요.'],
-        ['포인트와 Play 잔액은 다릅니다', 'Play Points는 혜택으로 교환하는 포인트이고 Google Play 크레딧은 지원되는 결제에 쓰는 잔액입니다. 포인트를 얻었다고 다음 결제 금액이 자동으로 줄지는 않습니다. 먼저 교환한 뒤 결제 수단에 잔액이 표시되는지 확인합니다.'],
+        ['포인트와 Play 잔액은 다릅니다', 'Play Points는 혜택으로 교환하는 포인트이고 Google Play 크레딧은 지원되는 결제에 쓰는 잔액입니다. 포인트를 얻었다고 다음 결제 금액이 자동으로 줄지는 않습니다. Play 크레딧으로 쓰려면 먼저 교환한 뒤 결제 수단에 해당 잔액이 표시되는지 확인합니다.'],
         ['잔액과 연간 등급 진행도 구분하기', '교환에 쓰는 포인트 잔액과 등급을 결정하는 연간 진행도는 별개입니다. 포인트를 사용해도 그만큼 연간 적립 실적이 줄지는 않습니다. 자세한 한국 등급 기준은 등급 가이드에서, 남은 금액은 계산기에서 확인할 수 있습니다.'],
         ['다음 구매 전에 볼 세 가지', '선택한 계정, 현재 등급, 적립·사용 탭을 살펴보세요. 이 세 가지를 알면 원래 즐기던 게임과 구매 안에서 포인트 혜택을 찾기 쉬워집니다.']
       ],
@@ -38,11 +38,11 @@ const TOPICS = [
       intro: '本來就想買的遊戲商品，如果還能多拿一份回饋，會更有樂趣。Google Play Points 讓你透過符合資格的消費累積點數，再選擇優惠券或遊戲道具。先分清加入、兌換和等級，就容易上手。',
       sections: [
         ['先加入，再累積', '在 Play 商店開啟個人資料，選擇 Play Points。加入前的消費不會追溯積點，因此請先用實際購買的 Google 帳號加入。'],
-        ['台灣銅級的小例子', '台灣銅級基本積點率為每 NT$30 1 點。符合資格的 NT$300 未稅商品金額，基本約為 10 點。活動可能改變最終獲點率，購買前先看活動畫面，比單純為了點數增加消費更實用。'],
+        ['台灣銅級的小例子', '台灣銅級基本積點率為每 NT$30 1 點。以 NT$300 的符合資格未稅消費為例，銅級基本可得約 10 點。活動可能改變最終獲點率，購買前先看活動畫面，比單純為了點數增加消費更實用。'],
         ['挑選自己真的會用的回饋', '在「使用」分頁比較帳號提供的 App 優惠券、遊戲道具或 Google Play 抵用金。常玩的遊戲優惠券可能比陌生道具更合適，先看需要多少點，再想下一次要買什麼。'],
-        ['點數與 Play 餘額是兩件事', 'Play Points 是用來兌換回饋的點數；Google Play 抵用金則是可用於支援交易的餘額。拿到點數不代表下一筆帳單自動降價，要先兌換，再確認結帳時的付款選項。'],
+        ['點數與 Play 餘額是兩件事', 'Play Points 是用來兌換回饋的點數；Google Play 抵用金則是可用於支援交易的餘額。拿到點數不代表下一筆帳單自動折抵。若選擇抵用金，先完成兌換，再確認結帳時能否使用該餘額。'],
         ['點數餘額與年度進度各有用途', '餘額決定還能兌換多少回饋，年度進度決定會員等級。使用點數不會扣除已累積的年度等級進度。台灣等級門檻可到等級指南查看，距離下一級還差多少金額則可用計算機試算。'],
-        ['下次購買前看三個地方', '確認目前帳號、會員等級，以及「獲取」和「使用」分頁。掌握這些資訊，就能在原本喜歡的遊戲與消費裡找到合適的回饋。']
+        ['下次購買前看三個地方', '確認目前帳號、會員等級，以及「賺取」和「使用」分頁。掌握這些資訊，就能在原本喜歡的遊戲與消費裡找到合適的回饋。']
       ],
       faq: [['這裡直接套用日本積點率嗎？', '不是。金額例子使用台灣帳號的基本積點率，請以自己 Google Play 帳號的地區與獲點率為準。'], ['兌換點數會扣除年度進度嗎？', '不會。可使用的點數餘額與年度等級進度是不同數字。']]
     }
@@ -63,7 +63,7 @@ const TOPICS = [
       faq: [['Is Play credit the same as an app-specific coupon?', 'No. A coupon has its own eligible app and purchase conditions. This guide concerns Google Play balance.'], ['Does uninstalling the app stop renewal?', 'No. Manage or cancel the subscription in the store that bills it.']]
     },
     ko: {
-      title: 'Google Play 크레딧으로 구독 결제하기: 첫 결제와 갱신 때 볼 것',
+      title: 'Google Play 크레딧으로 구독 결제하기: 첫 결제부터 갱신까지',
       description: 'Play Points로 교환한 크레딧을 구독에 쓰려면 결제 스토어, 계정, 통화와 갱신 결제 수단을 확인해야 합니다. 잔액 부족 예시로 비교해 보세요.',
       intro: '모아 둔 Play Points를 크레딧으로 바꾸면 구독 비용에 보탤 수 있습니다. 중요한 것은 잔액이 있다는 사실뿐 아니라, 이 구독의 첫 결제와 다음 갱신에 그 잔액을 사용할 수 있는지입니다.',
       sections: [
@@ -105,7 +105,7 @@ const TOPICS = [
       faq: [['Does a stamp card mean a higher earn rate?', 'Not by itself. Purchase-count rewards and earn-rate boosts are different conditions.'], ['Can I complete the card from a PC?', 'Check it on a supported phone. Google says quests and stamp cards are unavailable on Play Games on PC and the Play website.']]
     },
     ko: {
-      title: 'Google Play Points 스탬프 카드: 구매 횟수와 금액을 따로 보세요',
+      title: 'Google Play Points 스탬프 카드: 구매 횟수와 보상 조건 읽는 법',
       description: 'Play Points 스탬프 카드의 대상 구매 횟수, 건별 최소 금액, 통화와 시작 조건을 확인하는 방법. 포인트 부스트·퀘스트와의 차이를 설명합니다.',
       intro: '“한 번만 더 구매하면 완료”라는 문구는 눈길을 끕니다. Play Points 스탬프 카드는 정해진 횟수의 대상 구매로 리워드를 받는 캠페인입니다. 원래 예정된 구매로 채울 수 있다면 반가운 추가 혜택이 됩니다.',
       sections: [
@@ -124,7 +124,7 @@ const TOPICS = [
       sections: [
         ['集點卡看的是購買條件', '集點卡看合格購買次數，加倍活動看獲點率，任務則看指定行動。先讀每筆最低金額和需要幾次購買，不要把次數直接當成點數倍率。'],
         ['總額相同，也可能算不一樣', '假設某張卡要求三次每筆至少 NT$150 的購買。一次 NT$450 只有一筆；三筆合格的 NT$150 購買可能同時滿足金額與次數；五筆 NT$90 則沒有達到每筆門檻。這是假設例子，不是目前正在發送的優惠。'],
-        ['到手機找卡片', '在 Play 商店個人資料中選擇 Play Points，再查看「獲取」。Google Play Games 電腦版與 Play 網站不支援任務及集點卡。活動會因帳號與條件而異，看不到卡片不代表每個人都收到同一張。'],
+        ['到手機找卡片', '在 Play 商店個人資料中選擇 Play Points，再查看「賺取」。Google Play Games 電腦版與 Play 網站不支援任務及集點卡。活動會因帳號與條件而異，看不到卡片不代表每個人都收到同一張。'],
         ['付款前讀完幾個條件', '查看適用 App 或商品、幣別、啟用步驟、購買期間和領獎期限。購買幣別必須與活動一致；折扣後的金額是否符合門檻，要以卡片條款判斷。'],
         ['先算增加的支出', '如果為了完成而多買不需要的商品，先列出額外支出。原本就要買的商品已符合條件時，才能在不新增購物清單的情況下享受回饋。']
       ],
@@ -151,9 +151,9 @@ const TOPICS = [
     ko: {
       title: '포켓몬 슬립 프리미엄 패스: 1개월과 6개월, 매일 받는 혜택으로 비교',
       description: 'Pokémon Sleep 프리미엄 패스의 일일 슬립 포인트와 1개월·6개월 가격 비교 방법, 플랜 변경 시 연속 구독 기간을 확인하세요.',
-      intro: '아침마다 새로운 포켓몬의 수면 타입을 보는 일이 익숙해졌다면 프리미엄 패스도 궁금해집니다. 한 달 동안 써 볼지, 여섯 달 이어 갈지 선택하기 전에 매일 실제로 누릴 혜택부터 살펴보세요.',
+      intro: '아침마다 포켓몬의 새로운 잠자는 모습을 찾는 일이 익숙해졌다면 프리미엄 패스도 궁금해집니다. 한 달 동안 써 볼지, 여섯 달 이어 갈지 선택하기 전에 매일 실제로 누릴 혜택부터 살펴보세요.',
       sections: [
-        ['매일 받는 보너스가 쌓입니다', '프리미엄 패스가 활성화된 동안 수면을 기록한 날에는 하루 한 번 보너스 슬립 포인트 100포인트를 받을 수 있습니다. 대상 기록을 30일 이어 가면 보너스만 3,000포인트입니다. 프리미엄 교환소와 업그레이드된 일일 비스킷도 일상의 재미를 더합니다.'],
+        ['매일 받는 보너스가 쌓입니다', '프리미엄 패스가 활성화된 동안 수면을 기록한 날에는 하루 한 번 보너스 슬립 포인트 100포인트를 받을 수 있습니다. 대상 기록을 30일 이어 가면 보너스만 3,000포인트입니다. 프리미엄 교환소와 매일 받는 보너스 사블레+도 아침 리서치의 즐거움을 더합니다.'],
         ['한국 구매 화면의 가격으로 비교', '앱에 표시된 1개월 가격을 6배 한 금액과 6개월 가격을 비교하고, 6개월 가격을 6으로 나눠 월 환산 금액을 구합니다. 같은 국가·플랫폼·세금 기준으로 비교하세요. 일본 엔화 가격을 한국 판매 가격처럼 사용하지 않습니다.'],
         ['본인의 기록 습관에 기간 맞추기', '수면 기록 습관을 아직 시험하는 중이면 짧은 플랜이 판단하기 쉽습니다. 앞으로 여섯 달 혜택을 사용할 예정이면 총 절약액과 중간에 사용을 멈출 가능성을 함께 비교하세요.'],
         ['변경 전에 연속 구독 기간 확인', '포켓몬의 결제 FAQ는 Android 플랜 변경 시 해지, 만료와 재구매가 필요할 수 있으며 연속 구독 기간이 초기화된다고 안내합니다. 구매 스토어를 바꿀 때도 초기화됩니다. 월 환산 금액만 보고 바꾸기 전에 절차를 확인하세요.'],
@@ -181,9 +181,9 @@ const TOPICS = [
 
 const REGION = { en: { country: 'US', hl: 'en' }, ko: { country: 'KR', hl: 'ko' }, tw: { country: 'TW', hl: 'zh-Hant' } };
 const SOURCE_COPY = {
-  en: { title: 'Official sources checked on October 14, 2026', body: 'Sources: Google Play earning and balance rules, promotion guidance, and Pokémon’s billing FAQ where applicable. Local prices and account-only offers must be checked in your purchase screen.', link: 'Read the official guidance', program: 'Google Play Points official help' },
-  ko: { title: '공식 자료 확인: 2026년 10월 14일', body: 'Google Play 적립·잔액·프로모션 안내와 해당하는 경우 포켓몬 결제 FAQ를 확인했습니다. 현지 가격과 계정별 오퍼는 실제 구매 화면에서 확인합니다.', link: '공식 안내 읽기', program: 'Google Play Points 공식 도움말' },
-  tw: { title: '官方資料確認：2026年10月14日', body: '依 Google Play 積點、餘額與活動說明，相關題材並參考寶可夢付款 FAQ。當地價格與帳號限定優惠，請以實際購買畫面為準。', link: '閱讀官方說明', program: 'Google Play Points 官方說明' }
+  en: { title: 'Official sources checked on October 14, 2026', body: 'The official sources below explain the rules used in this guide. Check your purchase screen for current prices and the offers available to your account.', link: 'Read the official guidance', program: 'Google Play Points official help' },
+  ko: { title: '공식 자료 확인: 2026년 10월 14일', body: '아래 공식 자료에서 이 가이드에 사용한 규칙을 볼 수 있습니다. 현재 가격과 내 계정에 제공되는 혜택은 실제 구매 화면에서 확인하세요.', link: '공식 안내 읽기', program: 'Google Play Points 공식 도움말' },
+  tw: { title: '官方資料確認：2026年10月14日', body: '下方官方資料說明本文使用的規則；目前價格與自己帳號能用的優惠，請查看實際購買畫面。', link: '閱讀官方說明', program: 'Google Play Points 官方說明' }
 };
 const EXTRA_SOURCES = {
   'google-play-points-basics': [['9080348', 'levels']],
@@ -213,7 +213,7 @@ function buildLocalizedTopicArticles(locales, labels) {
       officialSourceLink: copy.link, officialProgramLink: copy.program,
       officialSourceLinks: (EXTRA_SOURCES[topic.slug] || []).map(([id, label]) => ({
         href: id === 'pokemon-benefits'
-          ? 'https://app-psl.pokemon-support.com/hc/en-us/articles/20336388720153-After-I-cancel-my-Premium-Pass-can-I-still-use-the-perks-and-items-I-have-received'
+          ? (locale === 'ko' ? 'https://pokemonkorea.co.kr/game_support/pokemonsleep_FAQ/view/1635' : 'https://app-psl.pokemon-support.com/hc/en-us/articles/20336388720153-After-I-cancel-my-Premium-Pass-can-I-still-use-the-perks-and-items-I-have-received')
           : id.startsWith('android-developer/')
             ? `https://support.google.com/googleplay/android-developer/answer/${id.split('/')[1]}?hl=${region.hl}`
             : `https://support.google.com/googleplay/answer/${id}?co=GENIE.CountryCode%3D${region.country}&hl=${region.hl}`,

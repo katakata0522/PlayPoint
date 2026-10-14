@@ -38,12 +38,15 @@ function escapeRegExp(value) {
 function syncArticleHub(rootDir, locale, config) {
   const file = path.join(rootDir, locale, 'articles', 'index.html');
   let html = fs.readFileSync(file, 'utf8');
+  // 生成された一覧が持つ実際の更新日を、手動リンク台帳の古い日付で戻さない。
+  const modifiedAt = [config.modifiedAt, html.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})">/)?.[1]]
+    .filter(Boolean).sort().at(-1);
 
   html = html.replace(/<meta name="description" content="[^"]+">/, `<meta name="description" content="${config.description}">`);
-  html = html.replace(/<meta name="last-modified" content="\d{4}-\d{2}-\d{2}">/, `<meta name="last-modified" content="${config.modifiedAt}">`);
+  html = html.replace(/<meta name="last-modified" content="\d{4}-\d{2}-\d{2}">/, `<meta name="last-modified" content="${modifiedAt}">`);
   html = html.replace(/<meta property="og:description" content="[^"]+">/, `<meta property="og:description" content="${config.description}">`);
   html = html.replace(/("description":\s*)"[^"]+"/, `$1${JSON.stringify(config.description)}`);
-  html = html.replace(/(<p class="hero-meta">[^<]*?)\d{4}-\d{2}-\d{2}(<\/p>)/, `$1${config.modifiedAt}$2`);
+  html = html.replace(/(<p class="hero-meta">[^<]*?)\d{4}-\d{2}-\d{2}(<\/p>)/, `$1${modifiedAt}$2`);
 
   for (const [href] of config.links) {
     const duplicate = new RegExp(`\\s*<li><a href="${escapeRegExp(href)}">[\\s\\S]*?<\\/a><\\/li>`, 'g');

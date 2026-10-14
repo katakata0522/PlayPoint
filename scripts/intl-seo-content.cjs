@@ -716,7 +716,7 @@ const EN_ARTICLES = [
     faq: [
       ['Can points be transferred from another account?', 'No. Play Points are account-based.'],
       ['Does a missing bonus mean the normal points are wrong?', 'Not necessarily. Bonus timing and regular points can be handled differently.'],
-      ['Should I buy again to test it?', 'No. Do not create another purchase just to test point reflection. Confirm the existing purchase and campaign conditions first.']
+      ['Should I buy again to test it?', 'No. Do not make another purchase just to see whether points appear. Check the existing order and offer conditions first.']
     ]
   },
   {
@@ -810,9 +810,9 @@ const ADDITIONAL_EN_ARTICLES = [
   },
   {
     file: 'en/articles/google-play-points-promotion-not-applied.html',
-    title: 'Google Play Points promotion not applied',
+    title: 'Google Play Points promotion not applied? Check the offer and your purchase',
     description: 'A step-by-step checklist for Google Play Points bonuses that did not apply, including activation, dates, app eligibility, caps, and normal point comparison.',
-    h1: 'Google Play Points promotion not applied',
+    h1: 'Google Play Points promotion not applied? Check the offer and your purchase',
     badge: 'Promotion check',
     lead: 'When a Play Points promotion does not appear, the problem is often the bonus condition rather than the whole purchase. Check activation, timing, eligibility, and caps before assuming the account is broken.',
     intro: 'A 2x or 3x campaign looks simple in a banner, but the real rule can include small conditions that matter at checkout. This guide is written for the moment after purchase, when the normal balance or bonus result does not match your expectation. The goal is to separate a missing promotion from a missing purchase, so your next step is based on evidence instead of refreshes and guesswork.',
@@ -928,9 +928,9 @@ const KO_ARTICLES = [
       ['/ko/articles/google-play-points-levels.html', 'Play Points 등급 구조 이해'],
       ['/author/katakata.html', '운영 및 검증 방침']
     ],
-    title: 'Google Play Points가 표시되지 않을 때 확인할 것',
+    title: 'Google Play Points가 안 보일 때: 계정부터 적립 내역까지 확인',
     description: 'Google Play Points가 보이지 않을 때 계정, 결제 내역, 대상 결제, 캠페인, 환불, 국가별 조건을 순서대로 확인하는 한국어 체크리스트입니다.',
-    h1: 'Google Play Points가 표시되지 않을 때 확인할 것',
+    h1: 'Google Play Points가 안 보일 때: 계정부터 적립 내역까지 확인',
     badge: '문제 확인',
     lead: '포인트가 보이지 않을 때는 잔액만 보지 말고 계정, 구매 내역, 대상 조건, 캠페인, 국가별 차이를 차례대로 확인하는 편이 안전합니다.',
     intro: 'Play Points가 안 보이면 바로 오류처럼 느껴지지만, 실제로는 작은 조건 하나가 어긋난 경우가 많습니다. 다른 Google 계정으로 결제했거나, 구매가 아직 완료되지 않았거나, 캠페인 보너스만 늦게 반영되는 식입니다. 이 글은 같은 화면을 계속 새로고침하기보다 무엇을 먼저 확인해야 하는지 정리한 한국어 가이드입니다.',
@@ -1031,16 +1031,16 @@ const KO_ARTICLES = [
       ['/ko/articles/google-play-points-gift-cards.html', '기프트카드와 포인트 조건'],
       ['/author/katakata.html', '운영 및 검증 방침']
     ],
-    title: 'Google Play Points 캠페인 미적용 확인',
-    description: 'Google Play Points 2배, 3배 캠페인 보너스가 적용되지 않았다고 느낄 때 확인할 활성화, 기간, 대상 앱, 상한, 반영 시점 체크리스트입니다.',
-    h1: 'Google Play Points 캠페인 미적용 확인',
+    title: 'Google Play Points 보너스가 안 들어올 때: 적용 조건과 확인 순서',
+    description: 'Google Play Points 보너스가 예상보다 적거나 안 들어왔나요? 일반 적립과 보너스를 나누어 활성화·기간·대상 앱·상한·반영 시점을 확인하세요.',
+    h1: 'Google Play Points 보너스가 안 들어올 때: 적용 조건과 확인 순서',
     badge: '캠페인 확인',
     lead: '캠페인 보너스가 보이지 않을 때는 전체 포인트 누락인지, 일반 포인트와 보너스가 분리되어 있는지부터 확인해야 합니다.',
-    intro: 'Google Play Points 캠페인은 “2배”, “3배”처럼 단순하게 보이지만 실제 조건은 더 세부적일 수 있습니다. 활성화가 필요했는지, 기간 안에 결제했는지, 대상 앱인지, 보너스 상한이 있는지에 따라 결과가 달라집니다. 이 글은 캠페인이 적용되지 않았다고 느낄 때 확인할 순서를 정리합니다.',
+    intro: '추가 포인트가 예상보다 적거나 아직 들어오지 않았다면 일반 적립과 보너스를 먼저 나누어 보세요. 기본 포인트가 있는지 확인한 뒤, 활성화 여부·구매 기간·대상 앱·보너스 상한을 주문 내역과 비교하면 원인을 좁히기 쉽습니다.',
     sections: [
-      ['일반 포인트와 보너스를 분리하기', ['먼저 기본 적립 포인트가 들어왔는지 확인하세요. 기본 포인트는 있는데 보너스만 없다면, 구매 추적 실패보다 캠페인 조건 문제일 가능성이 큽니다.', '계산기에서는 같은 금액을 현재 등급의 일반 적립률과 Google Play에 표시된 최종 특별 적립률로 나누어 비교하세요. 두 결과의 차이가 바로 확인해야 할 보너스 영역입니다.']],
+      ['일반 포인트와 보너스를 분리하기', ['먼저 기본 적립 포인트가 들어왔는지 확인하세요. 기본 포인트는 있는데 보너스만 없다면, 구매 추적 실패보다 캠페인 조건 문제일 가능성이 큽니다.', '계산기에서는 같은 금액을 현재 등급의 일반 적립률과 Google Play에 표시된 최종 특별 적립률로 나누어 비교하세요. 두 결과의 차이를 실제 적립 내역과 비교하면 어떤 보너스가 부족한지 설명하기 쉽습니다.']],
       ['캠페인 활성화 여부 확인하기', ['일부 캠페인은 보기만 해도 적용되는 것이 아니라, 참여 버튼을 누르거나 특정 화면에서 조건을 확인해야 할 수 있습니다. 캠페인 상세 화면에서 활성화 상태를 확인하세요.', '활성화 전에 결제한 구매가 나중에 자동으로 캠페인 대상이 된다고 기대하면 안 됩니다. 결제 시간과 캠페인 시작 시간을 나누어 보세요.']],
-      ['기간, 앱, 상품 조건 확인하기', ['캠페인은 전체 Google Play 결제에 적용되는 것처럼 보여도 특정 앱, 게임, 상품, 결제 방식에 제한될 수 있습니다. 구독 갱신이나 프로모션 잔액 사용이 대상에서 빠질 수도 있습니다.', '영수증의 구매 시각, 상품명, 앱 이름을 캠페인 조건과 비교하세요. 조건을 하나씩 지우면 문의할 때도 설명이 쉬워집니다.']],
+      ['기간, 앱, 상품 조건 확인하기', ['캠페인은 전체 Google Play 결제에 적용되는 것처럼 보여도 특정 앱, 게임, 상품, 결제 방식에 제한될 수 있습니다. 구독 갱신이나 프로모션 잔액 사용이 대상에서 빠질 수도 있습니다.', '영수증의 구매 시각, 상품명, 앱 이름을 캠페인 조건과 비교하세요. 조건별로 충족 여부를 확인하면 문의할 때도 설명이 쉬워집니다.']],
       ['보너스 상한과 반영 시점 보기', ['캠페인에는 최대 보너스 포인트나 계정별 제한이 있을 수 있습니다. 기대한 포인트보다 적게 보인다면 상한에 걸렸는지 확인하세요.', '또한 일반 포인트와 보너스가 같은 시점에 보이지 않을 수 있습니다. 구매 직후 잔액만 보고 결론을 내리지 말고 활동 내역을 함께 확인하세요.']],
       ['문의 전에 계산 결과를 정리하기', ['일반 적립률 예상치, 최종 특별 적립률 예상치, 실제 표시 포인트를 간단히 적어두면 원인을 좁히기 쉽습니다. 단, 주문번호와 결제 정보는 공개하지 마세요.', '모든 조건을 확인했는데도 보너스가 보이지 않는다면 공식 지원에 문의하세요. 계산기는 계정을 확인하거나 포인트를 반영시키는 도구가 아니라, 설명을 정리하기 위한 보조 도구입니다.']]
     ],
@@ -1116,7 +1116,7 @@ const KO_ARTICLES = [
     intro: '정기 결제는 한 번의 구매와 달리 자동 갱신, 체험 전환, 첫 가입 보너스, 국가 변경이 겹칠 수 있습니다. 따라서 “구독이면 모두 몇 배”라고 계산하기보다 결제 계정, Google Play 주문 기록, 프로모션 조건을 나누어 보는 것이 안전합니다.',
     sections: [
       ['결론: 대상 정기 결제는 일반 적립 대상이 될 수 있습니다', ['Google 공식 도움말은 앱을 통해 이루어진 정기 결제가 일반 등급 적립률로 포인트를 받을 수 있다고 안내합니다. 단, 결제가 Google Play에서 처리되었는지와 해당 국가·계정에서 적립 대상인지가 먼저입니다.', '앱 회사 웹사이트나 다른 결제 서비스에서 가입한 구독은 Google Play 주문과 다를 수 있습니다. 이메일 영수증과 Play 구매 내역에서 실제 결제 경로를 확인하세요.']],
-      ['첫 정기 결제 보너스는 반복 적립이 아닙니다', ['첫 정기 결제에 추가 포인트가 표시되는 프로모션은 일반적으로 최초 한 번만 적용되는 조건을 가질 수 있습니다. 매월 같은 보너스가 반복된다고 가정하면 예상치가 크게 부풀어집니다.', '기본 적립과 첫 가입 보너스를 두 줄로 분리하세요. 계산기에서는 먼저 현재 등급의 일반 적립률을 보고, 공식 화면에 최종 특별 적립률이 명확히 표시된 경우에만 그 값을 비교하세요.']],
+      ['첫 구독 보너스와 매월 적립을 나누어 보기', ['첫 정기 결제에 추가 포인트가 표시되는 프로모션은 일반적으로 최초 한 번만 적용되는 조건을 가질 수 있습니다. 매월 같은 보너스가 반복된다고 가정하면 예상치가 크게 부풀어집니다.', '기본 적립과 첫 가입 보너스를 두 줄로 분리하세요. 계산기에서는 먼저 현재 등급의 일반 적립률을 보고, 공식 화면에 최종 특별 적립률이 명확히 표시된 경우에만 그 값을 비교하세요.']],
       ['체험 종료와 자동 갱신 시점을 확인하세요', ['무료 체험 시작일과 실제 유료 결제일은 다를 수 있습니다. 포인트를 확인할 때는 체험을 시작한 날보다 Google Play 주문이 실제로 완료된 날을 기준으로 보는 편이 정확합니다.', '갱신이 보류, 실패, 취소 또는 환불된 경우 포인트 결과도 달라질 수 있습니다. 잔액만 보지 말고 Play Points 활동과 주문 상태를 함께 확인하세요.']],
       ['계정과 국가를 바꾸면 구독 흐름이 복잡해집니다', ['포인트는 결제한 계정 기준으로 확인해야 합니다. 여러 Google 계정을 쓰는 기기라면 구독 관리 화면, 영수증 계정, Play Points 화면의 계정이 같은지 먼저 맞추세요.', 'Play 국가를 변경해도 기존 구독은 이전 결제 프로필에서 계속될 수 있습니다. 새 국가에서 다시 가입하기 전에 기존 구독과 다음 결제일을 확인해 중복 결제를 피하세요.']],
       ['월 지출 계획은 포인트보다 먼저 정하세요', ['정기 결제는 자동으로 반복되기 때문에 등급 달성을 위해 새 구독을 추가하면 작은 금액이 계속 쌓일 수 있습니다. 원래 사용할 서비스인지, 해지 예정일을 기억할 수 있는지, 연간 비용이 감당 가능한지부터 확인하세요.', 'Play Points는 부가 혜택입니다. 포인트 가치가 사용하지 않는 구독료를 상쇄한다고 가정하지 말고, 이미 필요한 구독의 결제 시점과 조건을 정리하는 데 계산기를 사용하세요.']]
@@ -1150,9 +1150,9 @@ const TW_ARTICLES = [
       ['/tw/articles/google-play-points-levels.html', 'Play Points 等級說明'],
       ['/author/katakata.html', '營運與驗證方針']
     ],
-    title: 'Google Play Points 沒有顯示時要確認什麼',
+    title: 'Google Play Points 沒有顯示：帳號、訂單與活動加碼怎麼查',
     description: '當 Google Play Points 沒有顯示時，依序確認帳號、購買紀錄、適用資格、活動條件、退款與地區差異的繁體中文指南。',
-    h1: 'Google Play Points 沒有顯示時要確認什麼',
+    h1: 'Google Play Points 沒有顯示：帳號、訂單與活動加碼怎麼查',
     badge: '問題確認',
     lead: '如果 Play Points 沒有顯示，不要只看最後餘額。先依序確認帳號、購買紀錄、適用資格、活動條件與地區差異。',
     intro: '點數沒有出現時，很容易直覺認為系統壞了。但實際上常見原因是帳號不同、付款尚未完成、購買不符合資格，或只有活動加碼尚未反映。這篇指南的目的不是催你再買一次，而是幫你把檢查順序整理清楚，避免一直刷新同一個畫面卻忽略真正原因。',
@@ -1161,7 +1161,7 @@ const TW_ARTICLES = [
       ['2. 查看購買是否符合點數資格', ['不是每一種付款流程都會照直覺累積點數。試用期、訂閱轉換、促銷餘額、禮物卡付款、退款或部分取消，都需要分開確認。', '先看訂單狀態是否完成。如果購買本身不符合資格，計算機估算再漂亮，也不會讓實際點數出現。']],
       ['3. 把一般點數和活動加碼分開看', ['2 倍或 3 倍活動可能有限定 App、付款方式、期間、啟用步驟或加碼上限。一般點數有出現但加碼沒有出現時，問題可能是活動條件，而不是整筆購買沒有被追蹤。', '可以先用目前等級的一般獲點率估算，再用 Google Play 對符合資格購買顯示的最終活動特別獲點率比較。兩個結果之間的差距，能幫你更清楚說明少的是哪一部分。']],
       ['4. 地區與帳號規則要以官方畫面為準', ['繁體中文使用者可能會看到日本、韓國或英文頁面的資訊。這些內容可以參考檢查方法，但最終條件仍要以自己帳號所在的 Google Play App 顯示為準。', '付款地區、Google Play 國家設定、活動提供地區不同，都可能讓同樣的購買看起來有不同結果。不要只靠其他地區的截圖做決定。']],
-      ['5. 詢問支援前先整理短資料', ['如果帳號、訂單、活動條件都確認過，仍然沒有看到預期點數，再整理購買日期、商品名稱、活動名稱、預期點數與實際顯示結果。', '訂單編號和付款資訊不要放在公開貼文中。把資訊保留給官方支援，並用簡短清楚的方式說明你已經確認過哪些項目。']]
+      ['5. 聯絡客服前，整理需要的資料', ['如果帳號、訂單、活動條件都確認過，仍然沒有看到預期點數，再整理購買日期、商品名稱、活動名稱、預期點數與實際顯示結果。', '訂單編號和付款資訊不要放在公開貼文中。把資訊保留給官方支援，並用簡短清楚的方式說明你已經確認過哪些項目。']]
     ],
     faq: [
       ['點數可以轉到另一個帳號嗎？', '不要這樣假設。Play Points 通常依帳號管理，應先確認購買帳號是否正確。'],
@@ -1258,21 +1258,21 @@ const TW_ARTICLES = [
       ['/tw/articles/google-play-points-gift-cards.html', '禮物卡與點數條件'],
       ['/author/katakata.html', '營運與驗證方針']
     ],
-    title: 'Google Play Points 活動未套用確認',
-    description: '當 Google Play Points 2 倍或 3 倍活動加碼沒有套用時，確認啟用、期間、適用 App、上限與反映時間的繁體中文清單。',
-    h1: 'Google Play Points 活動未套用確認',
+    title: 'Google Play Points 活動加碼沒入帳？先查啟用、期限與上限',
+    description: 'Google Play Points 活動加碼比預期少，或還沒入帳？分開核對一般點數、啟用狀態、適用 App、期限與加碼上限，找出需要追查的部分。',
+    h1: 'Google Play Points 活動加碼沒入帳？先查啟用、期限與上限',
     badge: '活動確認',
     lead: '活動加碼沒有出現時，先分清楚是整筆點數沒有顯示，還是一般點數和加碼點數的條件不同。',
-    intro: 'Google Play Points 活動常以 2 倍、3 倍呈現，但實際上可能有啟用、日期、指定 App、付款方式、加碼上限等條件。當你覺得活動沒有套用時，最重要的是不要立刻再次購買，而是把一般點數、活動加碼和官方條件拆開確認。',
+    intro: '活動加碼比預期少，或購買後還沒看到點數？先分清一般點數與活動加碼，再核對啟用狀態、日期、適用 App、付款方式與上限。把這幾項和原訂單對照，比再次購買測試更能找到原因。',
     sections: [
-      ['先看一般點數是否已出現', ['如果一般點數有出現，但活動加碼沒有出現，問題可能不是整筆購買失敗，而是活動條件或反映時間不同。', '用計算機先依目前等級的一般獲點率估算，再依 Google Play 顯示的最終活動特別獲點率估算。兩者差額就是你要追蹤的活動加碼部分。']],
+      ['先看一般點數是否已出現', ['如果一般點數有出現，但活動加碼沒有出現，問題可能不是整筆購買失敗，而是活動條件或入帳時間不同。', '用計算機先依目前等級的一般獲點率估算，再依 Google Play 顯示的最終活動特別獲點率估算。兩者差額就是你要追蹤的活動加碼部分。']],
       ['確認活動是否需要啟用', ['有些活動需要先點擊參加或在指定頁面啟用，並不是看到活動頁就一定自動套用。請回到 Google Play App 內確認活動狀態。', '如果購買發生在啟用之前，後續通常不能直接假設會補套用。購買時間和活動開始時間要分開看。']],
       ['檢查期間、App 與付款條件', ['活動可能只適用特定 App、遊戲、商品、期間或付款方式。訂閱續約、試用轉付費、促銷餘額或禮物卡餘額，也可能需要特別確認。', '把收據上的購買日期、商品名稱和活動條件對照，可以更快排除不適用的原因。']],
-      ['注意加碼上限與反映時間', ['活動可能有帳號上限或最高加碼點數。如果實際點數比預期少，請確認是否已達上限。', '另外，一般點數與活動加碼可能不是同時出現在畫面上。只看購買後的瞬間餘額，容易太早下結論。']],
+      ['注意加碼上限與入帳時間', ['活動可能有帳號上限或最高加碼點數。如果實際點數比預期少，請確認是否已達上限。', '另外，一般點數與活動加碼可能不是同時出現在畫面上。只看購買後的瞬間餘額，容易太早下結論。']],
       ['詢問支援前整理計算與證據', ['如果條件都符合，仍看不到加碼，請整理購買日期、活動名稱、一般獲點率估算、最終活動特別獲點率估算與實際顯示點數。', '訂單編號與付款資訊不要公開。計算機不能替帳號補點數，但能讓你把問題說得更清楚。']]
     ],
     faq: [
-      ['為什麼 2 倍活動不是剛好兩倍？', '可能受到適用金額、加碼上限、活動條件或反映時間影響。'],
+      ['為什麼 2 倍活動不是剛好兩倍？', '可能受到適用金額、加碼上限、活動條件或入帳時間影響。'],
       ['沒有先啟用活動就購買，還會套用嗎？', '活動規則不同，不能保證。請以 Google Play App 內的條件為準。'],
       ['活動沒套用應該立刻退款嗎？', '不要只因短時間沒有看到加碼就立刻判斷。先確認條件與活動紀錄，退款也可能影響點數。']
     ]
@@ -1343,7 +1343,7 @@ const TW_ARTICLES = [
     intro: '訂閱會遇到自動續訂、試用轉付費、首次加入加碼與國家/地區變更，因此不能只用「訂閱都是幾倍」來估算。請分開檢查付款帳號、Google Play 訂單與活動條件。',
     sections: [
       ['結論：符合資格的訂閱可按一般回饋率累積', ['Google 官方說明提到，透過 App 進行的訂閱可依一般等級回饋率取得點數。前提是付款由 Google Play 處理，而且該地區與帳號符合累積資格。', '如果是在服務商網站或其他付款平台訂閱，可能不會成為 Google Play 訂單。請比對電子收據與 Play 購買紀錄。']],
-      ['首次訂閱加碼不是每月重複加碼', ['畫面若顯示首次訂閱額外點數，通常可能有僅限首次一次的條件。把這項加碼套用到每個月，會讓預估結果明顯偏高。', '請把一般回饋與首次加碼分成兩列。計算時先看目前等級的一般獲點率，只有官方畫面明確顯示最終活動特別獲點率時才加入比較。']],
+      ['首次加碼與每月積點要分開算', ['畫面若顯示首次訂閱額外點數，可能僅限首次訂閱。把這項加碼套用到每個月，會讓預估結果明顯偏高。', '請把一般回饋與首次加碼分成兩列。計算時先看目前等級的一般獲點率，只有官方畫面明確顯示最終活動特別獲點率時才加入比較。']],
       ['確認試用結束與實際扣款時間', ['免費試用開始日不一定是點數產生的日期。檢查時應以 Google Play 訂單實際完成的付費日期為準。', '續訂若處於保留、付款失敗、取消或退款狀態，點數也可能受到影響。不要只看總餘額，請一起查看 Play Points 活動與訂單狀態。']],
       ['帳號與國家/地區變更會讓流程更複雜', ['點數要在實際付款的 Google 帳號查看。使用多個帳號時，請確認訂閱管理、收據與 Play Points 畫面都是同一個帳號。', '變更 Play 國家/地區後，舊訂閱可能繼續使用原付款資料。重新加入前，先查看舊訂閱與下次扣款日，避免重複付款。']],
       ['先決定月支出，再考慮點數', ['訂閱會自動重複扣款。為了升級而新增用不到的服務，可能讓小額支出長期累積，遠高於獲得的點數價值。', 'Play Points 應是附加回饋。計算器適合整理原本就需要的訂閱，不適合用來合理化不會使用的月費。']]
@@ -1656,27 +1656,27 @@ POINT_VALUE_100_ARTICLES.forEach((article) => {
 
 const INTL_ARTICLE_DATES = {
   'en/articles/google-play-points-reflection-timing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
-  'en/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-08-21' },
-  'en/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
-  'en/articles/google-play-points-platinum-diamond-cost.html': { publishedAt: '2026-07-07', modifiedAt: '2026-08-21' },
+  'en/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-10-14' },
+  'en/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-10-14' },
+  'en/articles/google-play-points-platinum-diamond-cost.html': { publishedAt: '2026-07-07', modifiedAt: '2026-10-14' },
   'en/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'en/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-07', modifiedAt: '2026-08-21' },
-  'en/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
-  'en/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
-  'ko/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-08-21' },
+  'en/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-07', modifiedAt: '2026-10-14' },
+  'en/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-07', modifiedAt: '2026-10-14' },
+  'ko/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-10-14' },
   'ko/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'ko/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' },
-  'ko/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-08-21' },
-  'tw/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-08-21' },
-  'tw/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'ko/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-10-14' },
+  'tw/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-10-14' },
+  'tw/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-10-14' },
   'tw/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-25' },
-  'tw/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-08-21' },
-  'ko/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-24', modifiedAt: '2026-08-21' },
-  'ko/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-24', modifiedAt: '2026-08-21' },
+  'tw/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-10-14' },
+  'ko/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-24', modifiedAt: '2026-10-14' },
+  'ko/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-24', modifiedAt: '2026-10-14' },
   'tw/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-24', modifiedAt: '2026-08-21' },
-  'tw/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-24', modifiedAt: '2026-08-21' },
+  'tw/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-24', modifiedAt: '2026-10-14' },
   'en/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
-  'ko/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-08-21' },
+  'ko/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-10-14' },
   'tw/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' }
 };
 
@@ -1739,7 +1739,7 @@ const MANUAL_FEST_ARTICLES = [
   {
     "file": "en/articles/2026-10-12-google-play-fest-2026.html",
     "lang": "en",
-    "title": "Google Play Fest 2026 in the US: October 13–19, sweepstakes and points boosts",
+    "title": "Google Play Fest 2026 is live! US rewards, boosts and key dates",
     "publishedAt": "2026-10-12",
     "modifiedAt": "2026-10-12",
     "manual": true
@@ -1755,7 +1755,7 @@ const MANUAL_FEST_ARTICLES = [
   {
     "file": "ko/articles/2026-10-12-google-play-fest-2026.html",
     "lang": "ko",
-    "title": "한국 Play 페스타 2026: 10월 13~19일 포인트 교환과 부스트",
+    "title": "한국 Play 페스타 2026 시작! 교환 상품과 해피 아워 한눈에",
     "publishedAt": "2026-10-12",
     "modifiedAt": "2026-10-12",
     "manual": true
@@ -1771,7 +1771,7 @@ const MANUAL_FEST_ARTICLES = [
   {
     "file": "tw/articles/2026-10-12-google-play-fest-2026.html",
     "lang": "zh-TW",
-    "title": "台灣 Play 盛典 2026：10 月 13 至 19 日聯賽、任務與點數倍增",
+    "title": "台灣 Play 盛典 2026 開跑！聯賽、任務與每日點數優惠",
     "publishedAt": "2026-10-12",
     "modifiedAt": "2026-10-12",
     "manual": true

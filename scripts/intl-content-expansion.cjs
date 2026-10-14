@@ -29,6 +29,7 @@ const TOPICS = [
   },
   {
     slug: "google-play-points-rounding-tax.html",
+    lastmodByLocale: {"ko": "2026-10-14"},
     labels: {
       en: "How Play Points handle tax, rounding and split purchases",
       ko: "Play Points 세금·반올림·분할 결제 계산",
@@ -37,11 +38,7 @@ const TOPICS = [
   },
   {
     slug: "google-play-points-balance-history-progress.html",
-    lastmodByLocale: {
-      en: "2026-09-12",
-      ko: "2026-10-05",
-      tw: "2026-09-12"
-    },
+    lastmodByLocale: {"en": "2026-10-14", "ko": "2026-10-14", "tw": "2026-10-14"},
     labels: {
       en: "Where to check Play Points balance, history and level progress",
       ko: "Google Play Points 잔액·내역·등급 진행도 확인 방법",
@@ -50,6 +47,7 @@ const TOPICS = [
   },
   {
     slug: "google-play-points-apps-books-purchases.html",
+    lastmodByLocale: {"en": "2026-10-14", "ko": "2026-10-14", "tw": "2026-10-14"},
     labels: {
       en: "Do paid apps, games and books earn Play Points?",
       ko: "유료 앱·게임·도서 구매의 Play Points 적립 조건",
@@ -66,6 +64,7 @@ const TOPICS = [
   },
   {
     slug: "google-play-points-earn-free.html",
+    lastmodByLocale: {"tw": "2026-10-14"},
     labels: {
       en: "Legitimate ways to earn Play Points without extra spending",
       ko: "추가 결제 없이 Play Points를 모으는 공식 방법",
@@ -74,6 +73,7 @@ const TOPICS = [
   },
   {
     slug: "google-play-points-500-1000-cost.html",
+    lastmodByLocale: {"ko": "2026-10-14"},
     labels: {
       en: "How much spending for 500 or 1,000 Play Points?",
       ko: "Play Points 500·1,000포인트 필요 금액",
@@ -82,6 +82,7 @@ const TOPICS = [
   },
   {
     slug: "google-play-points-discounts-promo-codes.html",
+    lastmodByLocale: {"en": "2026-10-14", "ko": "2026-10-14", "tw": "2026-10-14"},
     labels: {
       en: "Do discounts and promo codes still earn Play Points?",
       ko: "할인·프로모션 코드 사용 시 Play Points 적립 기준",
