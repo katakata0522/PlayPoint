@@ -41,7 +41,7 @@ const targets = [
   { url: 'https://playpoint-sim.com/ko/campaign/3x/', contains: '3배 캠페인' },
   { url: 'https://playpoint-sim.com/ko/campaign/wait/', contains: '캠페인을 기다려야 할까요' },
   { url: 'https://playpoint-sim.com/ko/amount/10000/', contains: '50,000원' },
-  { url: 'https://playpoint-sim.com/ko/articles/google-play-points-not-showing.html', contains: 'Play Points가 표시되지 않을 때' },
+  { url: 'https://playpoint-sim.com/ko/articles/google-play-points-not-showing.html', contains: 'Google Play Points가 안 보일 때: 계정부터 적립 내역까지 확인' },
   { url: 'https://playpoint-sim.com/tw/status/diamond/', contains: '鑽石' },
   { url: 'https://playpoint-sim.com/tw/status/platinum/', contains: '白金' },
   { url: 'https://playpoint-sim.com/tw/status/gold/', contains: '金級' },
