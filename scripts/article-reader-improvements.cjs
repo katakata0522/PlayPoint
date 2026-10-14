@@ -106,7 +106,7 @@ function syncReaderImprovements(root) {
     if (after !== before) { fs.writeFileSync(file, after); changed++; }
   }
   for (const [name, transform] of [['2026-08-16-points-disappeared.html', improveDiagnostic], ['2025-12-25-getting-started.html', improveBeginner]]) {
-    const file = path.join(root, 'articles', name), before = fs.readFileSync(file, 'utf8'), after = updateDate(transform(before), name === '2026-08-16-points-disappeared.html' ? '2026-10-08' : modified);
+    const file = path.join(root, 'articles', name), before = fs.readFileSync(file, 'utf8'), after = updateDate(transform(before), name === '2026-08-16-points-disappeared.html' ? '2026-10-14' : modified);
     if (after !== before) { fs.writeFileSync(file, after); changed++; }
   }
   const calendarFile = path.join(root, 'articles/2026-09-19-play-points-calendar-schedule-guide.html');
@@ -136,7 +136,7 @@ function syncReaderImprovements(root) {
     const after = improveReaderLinks(before, article, byId);
     if (after !== before) { fs.writeFileSync(articleFile, after); changed++; }
   }
-  for (const article of manifest) if (article.source === 'game-guide' || ['getting-started', 'points-disappeared'].includes(article.id)) article.modified = article.source === 'game-guide' ? GAME_GUIDE_ARTICLES.find(guide => guide.id === article.id).modified : article.id === 'points-disappeared' ? '2026-10-08' : modified;
+  for (const article of manifest) if (article.source === 'game-guide' || ['getting-started', 'points-disappeared'].includes(article.id)) article.modified = article.source === 'game-guide' ? GAME_GUIDE_ARTICLES.find(guide => guide.id === article.id).modified : article.id === 'points-disappeared' ? '2026-10-14' : modified;
   const calendarEntry = manifest.find(article => article.id === 'play-points-calendar-schedule-guide-2026');
   if (calendarEntry) calendarEntry.modified = calendarModified;
   fs.writeFileSync(file, JSON.stringify(manifest, null, 2) + '\n');

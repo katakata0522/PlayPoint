@@ -49,7 +49,7 @@ function syncMetadata(root) {
   calendar.listTitle = calendar.title;
   calendar.description = '火曜のSuper Ticket、木曜のPlay Pass特典、金曜の週次リワード、月初の増量案内を確認する日の目安です。対象条件と開催が未確定のイベントを分け、必要な確認日だけカレンダーに保存できます。';
   const pass = registry.find(article => article.id === 'play-pass-worth-it');
-  pass.description = 'Google Play Passの定額サービスとPlay Pointsの違いを説明。日本の木曜週次特典・対象条件を確認し、自分の使い方に合うか判断します。加入によるゴールド付与特典の公式対象国に日本は含まれていません。';
+  pass.description = 'Google Play Passの定額ゲームと、木曜更新のPlay Pointsボーナス・ブースターを解説。Super Ticket、家族メンバー、新端末での表示条件も確認できます。';
   const jsonFile = path.join(root, 'blog/articles.json');
   const output = JSON.stringify(registry, null, 2) + '\n';
   if (fs.readFileSync(jsonFile, 'utf8') !== output) fs.writeFileSync(jsonFile, output);

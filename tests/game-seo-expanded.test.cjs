@@ -81,7 +81,7 @@ test('ゼンゼロ深掘りはSSOTの会員総量を即時チャージと混同�
   assert.ok(html.includes(SOURCES.zzzMembershipReference));
   assert.ok(html.includes('最大' + formatNumber(membership.maxPolychromeEquivalent) + 'ポリクローム相当'));
   assert.ok(html.includes(String(membership.days) + '日'));
-  assert.match(html, /即時に.*受け取る商品ではない/);
+  assert.match(html, /3,000個相当が購入直後にそろうわけではありません/);
   assert.match(html, /固定の円額/);
 });
 

@@ -12,11 +12,11 @@ test('high-impression JP articles expose the observed search intent without keyw
   const superWeekly = read('articles/2026-07-31-super-weekly-reward.html');
   assert.match(
     superWeekly,
-    /<title>Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・対象ランク<\/title>/
+    /<title>スーパーウィークリーリワードで何が当たる？Google Play Pointsの賞品と対象ランク<\/title>/
   );
   assert.match(
     superWeekly,
-    /<h1[^>]*>Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・対象ランク<\/h1>/
+    /<h1[^>]*>スーパーウィークリーリワードで何が当たる？Google Play Pointsの賞品と対象ランク<\/h1>/
   );
   assert.match(superWeekly, /スーパーウィークリーリワードとは？何が当たるの？/);
 
@@ -132,7 +132,7 @@ test('exchange comparison and cash-out pages state their different jobs with rec
 
 test('central article surfaces stay in sync with updated JP titles', () => {
   const expected = [
-    'Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・対象ランク',
+    'スーパーウィークリーリワードで何が当たる？Google Play Pointsの賞品と対象ランク',
     'Google PlayのSuper Ticket（スーパーチケット）とは？配布日・保存期限・使い方',
     'Google Playのクエストとは？ポイント報酬の条件・始め方を解説',
     'Google Play Pointsが反映されない・遅い時は？いつ付くかと確認する順番'

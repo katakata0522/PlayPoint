@@ -4,6 +4,7 @@ const { DESCRIPTIONS, getJapaneseCalculator, renderSpecialOffers } = require('./
 const fs = require('node:fs');
 const path = require('node:path');
 const { VERIFIED_AT, SOURCES, GAME_SEO_WAVE5 } = require('./game-seo-wave5-data.cjs');
+const { articleForPath } = require('./game-guide-article-catalog.cjs');
 
 const LOCALES = Object.freeze(['ja', 'en', 'ko', 'tw']);
 const GAME_ORDER = Object.freeze(['prospi-a', 'pokemon-go', 'efootball']);
@@ -90,6 +91,8 @@ function writeIfChanged(rootDir, relativePath, content) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   const normalized = content.replace(/\r\n/g, '\n');
   const previous = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : null;
+  // 個別に編集した登録記事の本文は、汎用生成で旧版へ戻さない。
+  if (articleForPath(relativePath) && previous?.includes('data-editorial-flow="2026-10"')) return false;
   if (previous === normalized) return false;
   fs.writeFileSync(filePath, normalized, 'utf8');
   return true;

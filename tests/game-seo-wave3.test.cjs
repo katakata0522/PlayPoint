@@ -88,7 +88,7 @@ test('Arknights preserves SSOT-verified mechanics but removes unverified price a
   assert.ok(guide.includes('有償純正源石' + monthly.paidOriginitePrimeImmediate + '個'));
   assert.ok(guide.includes('合成玉' + monthly.orundumPerDay + '個'));
   assert.ok(guide.includes(String(limited.extraLimitedOperatorAtPulls) + '回スカウト'));
-  assert.match(guide, /固定現金額/);
+  assert.match(guide, /固定額とは別の話/);
 });
 
 test('Dokkan separates official Web Store from Google Play and drops changing fixed pack prices', () => {
