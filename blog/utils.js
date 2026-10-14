@@ -8,8 +8,23 @@
     const GAME_TITLE_FILTERS = Object.freeze(['FGO', '原神', 'モンスト', 'スタレ', 'ゼンゼロ', 'ウマ娘', 'プロセカ', 'ポケポケ', 'パズドラ', 'アークナイツ', 'ドッカン', 'ヘブバン', '崩壊3rd', 'ファンパレ', 'プロスピA', 'Pokémon GO', 'eFootball', 'ポケスリ', '学マス', 'ブルアカ', 'NIKKE']);
 
     function gameTitleFilters(articles) {
-        return [...new Set([...GAME_TITLE_FILTERS, ...(articles || []).map(a => a.gameTitle).filter(Boolean)])];
+        const names = [...GAME_TITLE_FILTERS, ...(articles || []).map(a => a.gameTitle).filter(Boolean)];
+        const seen = new Set();
+        return names.map(name => canonicalGameTitle(name) === canonicalGameTitle('ポケスリ') ? 'ポケモンスリープ' : name)
+            .filter(name => { const key = canonicalGameTitle(name); if (seen.has(key)) return false; seen.add(key); return true; });
     }
+
+    // 検索と同じ同義語辞書で略称・正式名・旧URLを対応付ける。
+    function canonicalGameTitle(value) {
+        const search = root.PlayPointSearch || (typeof require === 'function' ? require('../js/article-search.js') : null);
+        return search ? search.canonical(value, 'ja') : String(value || '').normalize('NFKC').toLowerCase();
+    }
+
+    function resolveGameTitle(value, articles) {
+        return gameTitleFilters(articles).find(name => canonicalGameTitle(name) === canonicalGameTitle(value)) || '';
+    }
+
+    function gameTitleLabel(value) { return value === 'ポケモンスリープ' ? 'ポケモンスリープ（ポケスリ）' : value; }
 
     function relatedGameCalculators(calculators, query, gameTitle) {
         const search = root.PlayPointSearch || (typeof require === 'function' ? require('../js/article-search.js') : null);
@@ -65,11 +80,10 @@
     function articleMatchesGameTitle(article, gameTitle) {
         if (!gameTitle) return true;
         const source = article && typeof article === 'object' ? article : {};
-        if (source.gameTitle === gameTitle) return true;
         const title = typeof source.title === 'string' ? source.title : '';
         const tags = Array.isArray(source.tags) ? source.tags : [];
-        if (title.includes(gameTitle)) return true;
-        return tags.some(tag => typeof tag === 'string' && tag.includes(gameTitle));
+        const query = canonicalGameTitle(gameTitle);
+        return [source.gameTitle, title, ...tags].some(value => typeof value === 'string' && canonicalGameTitle(value).includes(query));
     }
 
     /**
@@ -308,7 +322,7 @@
         clampPageJump: clampPageJump,
         filterListedArticles: filterListedArticles,
         GAME_TITLE_FILTERS: GAME_TITLE_FILTERS,
-        validArticleDate, sortListedArticles, gameTitleFilters, relatedGameCalculators, normalizeArticle, articleCardMarkup, articleCardIdentity, articleThumbnailDimensions
+        validArticleDate, sortListedArticles, gameTitleFilters, resolveGameTitle, gameTitleLabel, relatedGameCalculators, normalizeArticle, articleCardMarkup, articleCardIdentity, articleThumbnailDimensions
     };
 
     const api = Object.assign({}, BlogUtils, {
@@ -318,7 +332,7 @@
         clampPageJump: clampPageJump,
         filterListedArticles: filterListedArticles,
         GAME_TITLE_FILTERS: GAME_TITLE_FILTERS,
-        validArticleDate, sortListedArticles, gameTitleFilters, relatedGameCalculators, normalizeArticle, articleCardMarkup, articleCardIdentity, articleThumbnailDimensions
+        validArticleDate, sortListedArticles, gameTitleFilters, resolveGameTitle, gameTitleLabel, relatedGameCalculators, normalizeArticle, articleCardMarkup, articleCardIdentity, articleThumbnailDimensions
     });
 
     if (typeof module === 'object' && module.exports) {

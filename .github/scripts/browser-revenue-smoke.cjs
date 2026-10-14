@@ -247,8 +247,6 @@ async function main() {
       await page.goto(new URL('blog/',baseUrl).href,{waitUntil:'domcontentloaded',timeout:45000});
       await page.locator('.article-card').first().waitFor({state:'visible'});
       await page.waitForFunction(expected=>window.PlayPointConsent?.getAdStatus()===expected,mode);
-      const filterPanel = page.locator('#article-filter-panel');
-      if (!(await filterPanel.evaluate(element => element.open))) await filterPanel.locator('summary').click();
       await page.locator('#sort-toggle').waitFor({state:'visible',timeout:10000});
       await page.locator('#sort-toggle').selectOption('oldest');
       if(mode!=='granted') {
@@ -257,6 +255,7 @@ async function main() {
         await page.evaluate(()=>window.__testSetConsent('granted'));
       }
       await waitForRevenueRuntime(page,'.article-ad ins.adsbygoogle');
+      assert(await page.locator('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]').getAttribute('data-overlays') === 'collapsed-bottom','記事一覧のアンカー広告は下側・展開なし');
       const before=await page.evaluate(()=>{window.__auditAdNode=document.querySelector('.article-ad');return window.adsbygoogle.length;});
       for(const order of ['newest','oldest','updated']) await page.locator('#sort-toggle').selectOption(order);
       assert(await page.evaluate(()=>window.__auditAdNode===document.querySelector('.article-ad')&&window.__auditAdNode.isConnected),'Ad node is preserved across rendering');

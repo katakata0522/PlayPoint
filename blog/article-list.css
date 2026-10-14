@@ -226,3 +226,29 @@ html[lang="ja"] body.blog-index-compact .hub-search-controls > .search-container
 html[lang="ja"] body.blog-index-compact #article-result-status.visually-hidden { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); clip-path:inset(50%); white-space:nowrap; }
 @media(min-width:1000px) { html[lang="ja"] body.blog-index-compact #article-filter-panel { display:none; } }
 @media(max-width:760px) { html[lang="ja"] body.blog-index-compact .hub-access-row { gap:0 14px; } }
+
+/* 検索とカテゴリーを主役にし、ゲーム選択は必要になったときだけ表示する。 */
+html[lang="ja"] body.blog-index-compact .reader-entry-questions { display:flex; flex-wrap:wrap; gap:4px 16px; margin:0 0 8px; }
+html[lang="ja"] body.blog-index-compact .reader-entry-questions a { display:inline-flex; align-items:center; min-height:44px; padding:0; border:0; border-radius:0; background:none; text-decoration:underline; text-underline-offset:3px; }
+html[lang="ja"] body.blog-index-compact .reader-entry-questions strong { font-size:14px; font-weight:600; }
+html[lang="ja"] body.blog-index-compact .browse-filter-container { min-width:0; }
+html[lang="ja"] body.blog-index-compact .browse-filter-label { display:block; margin:0 0 4px; font-size:13px; }
+html[lang="ja"] body.blog-index-compact #browse-category-filter { width:100%; max-width:100%; min-width:0; min-height:44px; padding:8px 10px; border:1px solid var(--reading-border); border-radius:6px; background:var(--reading-surface); color:var(--reading-text); font-family:inherit; font-size:14px; line-height:1.5; }
+html[lang="ja"] body.blog-index-compact .blog-discovery > .game-filter-container { margin:8px 0; grid-template-columns:52px minmax(0,1fr); max-width:100%; }
+html[lang="ja"] body.blog-index-compact .game-filter-container[hidden] { display:none; }
+html[lang="ja"] body.blog-index-compact [data-hub-menu-tools] { margin:24px 0; }
+html[lang="ja"] body.blog-index-compact .guide-menu-body [data-hub-menu-tools] { margin:0; }
+html[lang="ja"] body.blog-index-compact .guide-menu-body .hub-access-row { display:block; }
+html[lang="ja"] body.blog-index-compact .guide-menu-body .reader-question-links { display:grid; gap:0; margin:8px 0; }
+html[lang="ja"] body.blog-index-compact .guide-menu-body .reading-resume { margin:8px 0; padding:12px; }
+html[lang="ja"] body.blog-index-compact .guide-menu-body #reading-library > summary { min-height:44px; font-size:15px; }
+@media(min-width:761px) {
+  html[lang="ja"] body.blog-index-compact.hub-menu-ready .guide-nav-button[aria-controls="guide-menu"] { display:flex; order:2; align-items:center; gap:6px; width:auto; min-height:44px; margin:0 0 0 16px; padding:8px 12px; border:1px solid var(--reading-border); border-radius:6px; background:var(--reading-surface); color:var(--reading-text); font:inherit; cursor:pointer; }
+}
+@media(max-width:480px) {
+  html[lang="ja"] body.blog-index-compact .browse-filter-container { display:grid; grid-template-columns:76px minmax(0,1fr); align-items:center; gap:8px; }
+  html[lang="ja"] body.blog-index-compact .browse-filter-label { margin:0; }
+  html[lang="ja"] body.blog-index-compact .reader-entry-questions { gap:0 12px; }
+  html[lang="ja"] body.blog-index-compact .reader-entry-questions a { min-height:36px; }
+  html[lang="ja"] body.blog-index-compact .reader-entry-questions strong { font-size:13px; }
+}

@@ -101,7 +101,7 @@ function syncReaderFoundations(root, { hubOnly = false } = {}) {
     if (data['@type'] === 'Blog') { data.name = HUB_TITLE; data.description = HUB_DESCRIPTION; }
     return start + JSON.stringify(data) + end;
   });
-  const entry = `<p class="reader-hub-intro">Play Pointsの仕組み、ランクの特典、ポイントの使い道を知りたいことから探せます。</p><nav class="reader-entry-questions" aria-label="まず知っておきたいこと">${QUESTIONS.map(([question, reason, href]) => `<a href="${href}"><strong>${question}</strong><span>${reason}</span></a>`).join('')}</nav><section class="reading-resume" data-reading-resume aria-label="前回読んだ記事" hidden></section>`;
+  const entry = `<p class="reader-hub-intro">Play Pointsの仕組み、ランクの特典、ポイントの使い道を知りたいことから探せます。</p><nav class="reader-entry-questions" aria-label="まず知っておきたいこと">${QUESTIONS.map(([question, , href]) => `<a href="${href}"><strong>${question}</strong></a>`).join('')}</nav>`;
   html = replaceBlock(html, 'reader-hub-entry', entry, (source, block) => source.replace(/(<h1 class="hero-title">[\s\S]*?<\/h1>)/, '$1' + block));
   fs.writeFileSync(hub, html);
   for (const relative of ['latest/index.html', 'author/katakata.html']) {
