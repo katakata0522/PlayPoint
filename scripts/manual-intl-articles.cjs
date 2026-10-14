@@ -92,13 +92,13 @@ function readManualIntlArticleDates(rootDir, relativePath) {
   const html = fs.readFileSync(absolutePath, 'utf8');
   const publishedAt = extractUniqueDate(
     html,
-    /"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})"/g,
+    /"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2}))?"/g,
     'datePublished',
     relativePath
   );
   const modifiedAt = extractUniqueDate(
     html,
-    /"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})"/g,
+    /"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2}))?"/g,
     'dateModified',
     relativePath
   );

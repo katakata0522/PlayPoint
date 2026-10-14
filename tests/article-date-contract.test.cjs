@@ -7,6 +7,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const {
   getArticleFiles,
+  extractArticleStructuredData,
   syncArticleDateContract,
   synchronizeArticleDateHtml
 } = require('../scripts/article-date-contract.cjs');
@@ -85,7 +86,10 @@ test('更新日と公式情報確認日を別の意味として表示する', ()
   assert.match(result.html, /<meta name="last-modified" content="2026-08-04">/);
   assert.match(result.html, /<meta name="playpoint:official-verified" content="2026-07-31">/);
   assert.match(result.html, /article:modified_time[^>]*content="2026-08-04T00:00:00\+09:00"/);
-  assert.match(result.html, /"dateModified":"2026-08-04"/);
+  assert.match(result.html, /"dateModified":"2026-08-04T00:00:00\+09:00"/);
+  assert.match(result.html, /"datePublished":"2025-12-25T00:00:00\+09:00"/);
+  assert.equal(result.publishedAt, '2025-12-25');
+  assert.equal(result.modifiedAt, '2026-08-04');
   assert.match(result.html, /最終公式確認日：2026年7月31日/);
 });
 
@@ -122,6 +126,32 @@ test('日付正規化で地域注記を消さず、明示された公式確認�
   assert.match(result.html, /US official conditions/);
   assert.match(result.html, /Official info checked <time[^>]*datetime="2026-08-05"/);
   assert.match(result.html, /Official sources checked: August 5, 2026/);
+});
+
+test('タイムゾーン付きの既知の日時は日付が一致する場合に保持する', () => {
+  const fixture = japaneseFixture()
+    .replace(/2025-12-25T00:00:00\+09:00/g, '2025-12-25T13:45:00+09:00')
+    .replace('"datePublished":"2025-12-25"', '"datePublished":"2025-12-25T13:45:00+09:00"');
+  const result = synchronizeArticleDateHtml(fixture, {
+    relativePath: 'articles/example.html',
+    officialVerifiedAt: '2026-07-31'
+  });
+  assert.match(result.html, /"datePublished":"2025-12-25T13:45:00\+09:00"/);
+  assert.match(result.html, /article:published_time[^>]*content="2025-12-25T13:45:00\+09:00"/);
+  assert.equal(result.publishedAt, '2025-12-25');
+});
+
+test('日付だけまたはタイムゾーンのない日時は日単位の日本時間として直列化する', () => {
+  const fixture = japaneseFixture()
+    .replace('"datePublished":"2025-12-25"', '"datePublished":"2025-12-25T13:45:00"')
+    .replace('article:published_time" content="2025-12-25T00:00:00+09:00"', 'article:published_time" content="2025-12-25"');
+  const result = synchronizeArticleDateHtml(fixture, {
+    relativePath: 'articles/example.html',
+    officialVerifiedAt: '2026-07-31'
+  });
+  assert.match(result.html, /"datePublished":"2025-12-25T00:00:00\+09:00"/);
+  assert.match(result.html, /article:published_time[^>]*content="2025-12-25T00:00:00\+09:00"/);
+  assert.match(result.html, /data-article-date="official-verified" datetime="2026-07-31"/);
 });
 
 test('記事日付同期は冪等である', () => {
@@ -171,7 +201,7 @@ test('日本語台帳の実更新日をHTML・構造化データ・フィード�
   assert.equal(pass.modified, '2026-10-08');
   const passHtml = fs.readFileSync(path.join(fixtureRoot, 'articles/pass.html'), 'utf8');
   assert.match(passHtml, /last-modified" content="2026-10-08"/);
-  assert.match(passHtml, /"dateModified":"2026-10-08"/);
+  assert.match(passHtml, /"dateModified":"2026-10-08T00:00:00\+09:00"/);
   assert.match(passHtml, /article:modified_time[^>]*content="2026-10-08T00:00:00\+09:00"/);
   assert.match(passHtml, /data-article-date="modified" datetime="2026-10-08"/);
   assert.match(passHtml, /data-article-date="published" datetime="2025-12-25"/);
@@ -215,7 +245,7 @@ test('構成再生成でも後日の実改稿日を台帳・HTML・配信索引�
   assert.deepEqual(after, manifest);
   const html = fs.readFileSync(path.join(fixtureRoot, revisedPath), 'utf8');
   assert.match(html, /last-modified" content="2026-10-13"/);
-  assert.match(html, /"dateModified":"2026-10-13"/);
+  assert.match(html, /"dateModified":"2026-10-13T00:00:00\+09:00"/);
   assert.match(html, /data-article-date="modified" datetime="2026-10-13"/);
   const feedEntry = [...buildBlogFeeds(after).atom.matchAll(/<entry>[\s\S]*?<\/entry>/g)]
     .find(match => match[0].includes(`/${revisedPath}`))?.[0] || '';
@@ -229,4 +259,11 @@ test('公開中の全記事が日付SSOTと同期済みである', () => {
   assert.ok(expectedFiles.length > 0, 'article inventory must not be empty');
   assert.equal(summary.checked, expectedFiles.length, 'date contract must audit the complete article inventory');
   assert.equal(summary.changed, 0, `日付同期が必要な記事: ${summary.changedFiles.join(', ')}`);
+  for (const file of expectedFiles) {
+    const article = extractArticleStructuredData(fs.readFileSync(path.join(rootDir, file), 'utf8'));
+    for (const field of ['datePublished', 'dateModified']) {
+      assert.match(article[field], /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/, `${file}: ${field} must include a timezone`);
+      assert.ok(Number.isFinite(Date.parse(article[field])), `${file}: ${field} must be a valid datetime`);
+    }
+  }
 });
