@@ -249,6 +249,14 @@ function extractNamedMetaDate(html, name) {
   return value ? normalizeDate(value, name) : '';
 }
 
+function formatArticleDateTime(date, currentValue = '') {
+  const value = String(currentValue);
+  const zonedDateTime = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
+  if (value.slice(0, 10) === date && zonedDateTime.test(value) && Number.isFinite(Date.parse(value))) return value;
+  // 台帳は日単位。既存のOG日時と同じ日本時間の日境界で直列化し、実測の公開時刻とは扱わない。
+  return `${date}T00:00:00+09:00`;
+}
+
 function synchronizeArticleStructuredDataDates(html, publishedAt, modifiedAt) {
   return String(html).replace(JSON_LD_FULL_SCRIPT_PATTERN, (full, openTag, body, closeTag) => {
     let parsed;
@@ -260,8 +268,8 @@ function synchronizeArticleStructuredDataDates(html, publishedAt, modifiedAt) {
     if (collectArticleNodes(parsed, []).length === 0) return full;
 
     const synchronized = body
-      .replace(/("datePublished"\s*:\s*")[^"]*(")/g, `$1${publishedAt}$2`)
-      .replace(/("dateModified"\s*:\s*")[^"]*(")/g, `$1${modifiedAt}$2`);
+      .replace(/("datePublished"\s*:\s*")([^"]*)(")/g, (_, before, value, after) => `${before}${formatArticleDateTime(publishedAt, value)}${after}`)
+      .replace(/("dateModified"\s*:\s*")([^"]*)(")/g, (_, before, value, after) => `${before}${formatArticleDateTime(modifiedAt, value)}${after}`);
     return `${openTag}${synchronized}${closeTag}`;
   });
 }
@@ -272,8 +280,7 @@ function synchronizeOptionalArticlePropertyMeta(html, propertyName, date) {
   if (!match) return String(html);
 
   const currentContent = match[0].match(/\bcontent\s*=\s*(["'])(.*?)\1/i)?.[2] || '';
-  const suffix = /^\d{4}-\d{2}-\d{2}/.test(currentContent) ? currentContent.slice(10) : '';
-  return String(html).replace(pattern, updateTagContentAttribute(match[0], `${date}${suffix}`));
+  return String(html).replace(pattern, updateTagContentAttribute(match[0], formatArticleDateTime(date, currentContent)));
 }
 
 function formatJapaneseLongDate(date) {
