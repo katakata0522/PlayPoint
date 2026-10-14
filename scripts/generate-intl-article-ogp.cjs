@@ -27,7 +27,8 @@ async function run() {
       const html = fs.readFileSync(path.join(root, article.file), 'utf8');
       const title = cardTitle(html);
       if (!title) throw Error('記事タイトルがありません: ' + article.file);
-      const guide = ALL_GUIDES.find(item => item.slug === article.slug);
+      const guide = ALL_GUIDES.find(item => item.slug === article.slug)
+        || (article.slug === 'bluearchive-recruitment-stack-update-2026' ? { gameId: 'bluearchive' } : null);
       const icon = guide && path.join(root, 'images/game-icons', guide.gameId + '-2x.webp');
       const visual = icon && fs.existsSync(icon) ? `<img src="data:image/webp;base64,${fs.readFileSync(icon).toString('base64')}" alt="">` : '<div class="points-mark" aria-hidden="true">P<span>POINTS</span></div>';
       const category = guide ? ({ en: 'GAME PURCHASE GUIDE', ko: '게임 결제 가이드', tw: '遊戲消費指南' }[article.locale]) : getCategoryLabels(article.locale)[getIntlGuideCategory('/' + article.file)];

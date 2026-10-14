@@ -1682,6 +1682,33 @@ const INTL_ARTICLE_DATES = {
 
 const MANUAL_COMPARISON_ARTICLES = [
   {
+    "file": "en/articles/google-play-pass-guide.html",
+    "lang": "en",
+    "title": "Google Play Pass explained: games, weekly perks and cancellation",
+    "description": "What does Google Play Pass include in the US? Compare catalog games, weekly offers and Play Points perks, then check trial charges and what happens when you cancel.",
+    "publishedAt": "2026-10-15",
+    "modifiedAt": "2026-10-15",
+    "manual": true
+  },
+  {
+    "file": "ko/articles/bluearchive-recruitment-stack-update-2026.html",
+    "lang": "ko",
+    "title": "블루아카이브 천장이 바뀐다! 11월 10일 모집 스택과 이월 안내",
+    "description": "한국 블루아카이브의 2026년 11월 10일 모집 개편 예고. 100·200스택, 픽업 획득 시 초기화, 일반·특별 스택 이월과 모집 마일리지의 차이를 확인하세요.",
+    "publishedAt": "2026-10-15",
+    "modifiedAt": "2026-10-15",
+    "manual": true
+  },
+  {
+    "file": "tw/articles/google-play-points-reward-codes.html",
+    "lang": "zh-TW",
+    "title": "Google Play Points 序號在哪裡？獎勵代碼的查找與使用方法",
+    "description": "找不到 Google Play Points 序號？分清合作夥伴獎勵代碼、內購優惠券與抵用金，找到保存位置、兌換平台和無法使用時的支援管道。",
+    "publishedAt": "2026-10-15",
+    "modifiedAt": "2026-10-15",
+    "manual": true
+  },
+  {
     "file": "ko/articles/google-play-credit-uses.html",
     "lang": "ko",
     "title": "Google Play 크레딧 사용법: 게임·도서·구독에 쓰는 방법",

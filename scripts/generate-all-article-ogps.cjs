@@ -204,6 +204,14 @@ const DISTINCT_MAPPING = {
 
 // The 6 base articles that keep their image filenames
 const BASE_CONFIGS = {
+  '2026-10-15-google-play-purchase-history-budget.html': {
+    image: '2026-10-15-google-play-purchase-history-budget.png',
+    template: 'spending-history',
+    category: '課金額と購入履歴',
+    subtitle: '今月の支出・購入先ごとの整理・予算通知',
+    points: ['今月の金額を見る', '注文を購入先で分ける', '予算は通知機能'],
+    accentColor: '#5ee0c4'
+  },
   '2025-12-25-campaign.html': {
     image: 'campaign.png',
     template: 'campaign-base',

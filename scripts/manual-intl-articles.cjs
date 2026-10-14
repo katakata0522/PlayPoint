@@ -4,6 +4,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const MANUAL_INTL_ARTICLE_FILES = Object.freeze([
+  'en/articles/google-play-pass-guide.html',
+  'ko/articles/bluearchive-recruitment-stack-update-2026.html',
+  'tw/articles/google-play-points-reward-codes.html',
   'ko/articles/google-play-credit-uses.html',
   'tw/articles/google-play-credit-uses.html',
   'en/articles/google-play-points-install-offer-not-received.html',

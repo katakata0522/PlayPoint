@@ -2378,7 +2378,7 @@
     "description": "Google Play Pointsの残高・履歴の見方を整理。Play Points残高、ランク判定用の年間進捗、Google Play残高、交換後のPlayクレジットの違いと、購入・交換・返金でどの数字が変わるかを解説します。",
     "file": "../articles/2025-12-25-check-balance.html",
     "thumbnail": "../articles/thumbnails/check-balance-square-v1.webp",
-    "modified": "2026-10-14",
+    "modified": "2026-10-15",
     "browseCategory": "はじめて・基本",
     "ogp": "../articles/ogp/check-balance.png",
     "thumbnailKind": "generic",
@@ -2624,5 +2624,41 @@
     "ogp": "../articles/ogp/playpoints-rank-maintenance.png",
     "thumbnailKind": "generic",
     "listDescription": "到達したランクは翌年末まで維持。再判定の時期と、今年貯める必要があるステータス判定ポイントが分かります。"
+  },
+  {
+    "id": "google-play-purchase-history-budget",
+    "title": "ゲームに今月いくら使った？Google Playの購入履歴と予算通知",
+    "category": "使い方",
+    "tags": [
+      "Google Play",
+      "購入履歴",
+      "課金額",
+      "ゼンゼロ",
+      "予算"
+    ],
+    "description": "ゲームの課金額をGoogle Playの購入履歴で確認する方法。今月の支出、ゲーム別の集計、公式Webストアとの違い、購入を止めない予算通知を整理します。",
+    "listDescription": "今月の課金額と個別の注文を確認。Google Play以外の購入も分けて整理し、予算通知を設定できます。",
+    "file": "../articles/2026-10-15-google-play-purchase-history-budget.html",
+    "date": "2026-10-15",
+    "modified": "2026-10-15",
+    "ogp": "../articles/ogp/2026-10-15-google-play-purchase-history-budget.png",
+    "related": [
+      [
+        "/articles/2025-12-25-check-balance.html",
+        "Play Pointsの残高・履歴との違い"
+      ],
+      [
+        "/articles/2026-08-19-web-store-external-billing-points.html",
+        "公式WebストアとGoogle Playの課金経路"
+      ],
+      [
+        "/articles/2025-12-25-subscription.html",
+        "継続する定期購入とポイントの条件"
+      ]
+    ],
+    "listed": true,
+    "browseCategory": "はじめて・基本",
+    "thumbnail": "../articles/thumbnails/google-play-purchase-history-budget-square-v1.webp",
+    "thumbnailKind": "generic"
   }
 ]

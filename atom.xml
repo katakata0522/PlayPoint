@@ -5,11 +5,25 @@
   <link href="https://playpoint-sim.com/blog/" rel="alternate" type="text/html" />
   <link href="https://playpoint-sim.com/atom.xml" rel="self" type="application/atom+xml" />
   <id>https://playpoint-sim.com/blog/</id>
-  <updated>2026-10-14T12:00:00+09:00</updated>
+  <updated>2026-10-15T12:00:00+09:00</updated>
   <author>
     <name>かたかた</name>
     <uri>https://playpoint-sim.com/author/katakata.html</uri>
   </author>
+  <entry>
+    <title>Google Play Pointsの残高・履歴の見方｜ランク判定ポイントとの違い</title>
+    <link href="https://playpoint-sim.com/articles/2025-12-25-check-balance.html" rel="alternate" type="text/html" />
+    <id>https://playpoint-sim.com/articles/2025-12-25-check-balance.html</id>
+    <updated>2026-10-15T12:00:00+09:00</updated>
+    <summary>Google Play Pointsの残高・履歴の見方を整理。Play Points残高、ランク判定用の年間進捗、Google Play残高、交換後のPlayクレジットの違いと、購入・交換・返金でどの数字が変わるかを解説します。</summary>
+  </entry>
+  <entry>
+    <title>ゲームに今月いくら使った？Google Playの購入履歴と予算通知</title>
+    <link href="https://playpoint-sim.com/articles/2026-10-15-google-play-purchase-history-budget.html" rel="alternate" type="text/html" />
+    <id>https://playpoint-sim.com/articles/2026-10-15-google-play-purchase-history-budget.html</id>
+    <updated>2026-10-15T12:00:00+09:00</updated>
+    <summary>ゲームの課金額をGoogle Playの購入履歴で確認する方法。今月の支出、ゲーム別の集計、公式Webストアとの違い、購入を止めない予算通知を整理します。</summary>
+  </entry>
   <entry>
     <title>FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】</title>
     <link href="https://playpoint-sim.com/games/fgo/pity-cost/index.html" rel="alternate" type="text/html" />
@@ -506,13 +520,6 @@
     <id>https://playpoint-sim.com/articles/2025-12-25-promo-code.html</id>
     <updated>2026-10-14T12:00:00+09:00</updated>
     <summary>プロモコードや割引利用時のPlay Pointsは特典条件で異なります。決済前の支払い額、併用条件、購入後のポイント履歴を確認する手順を解説します。</summary>
-  </entry>
-  <entry>
-    <title>Google Play Pointsの残高・履歴の見方｜ランク判定ポイントとの違い</title>
-    <link href="https://playpoint-sim.com/articles/2025-12-25-check-balance.html" rel="alternate" type="text/html" />
-    <id>https://playpoint-sim.com/articles/2025-12-25-check-balance.html</id>
-    <updated>2026-10-14T12:00:00+09:00</updated>
-    <summary>Google Play Pointsの残高・履歴の見方を整理。Play Points残高、ランク判定用の年間進捗、Google Play残高、交換後のPlayクレジットの違いと、購入・交換・返金でどの数字が変わるかを解説します。</summary>
   </entry>
   <entry>
     <title>Google Play Pointsは家族と共有できる？ファミリー利用の注意点</title>
