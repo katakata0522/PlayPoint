@@ -525,7 +525,7 @@ async function verifyBlogPage(browser, baseUrl) {
       cards: document.querySelectorAll('.article-card').length,
       resultStatus: document.querySelector('#article-result-status')?.textContent || '',
       pagination: document.querySelector('.pagination-status')?.textContent || '',
-      activeTopic: document.querySelector('#category-filter button.active')?.dataset.topic ?? null,
+      activeTopic: document.querySelector('#browse-category-filter')?.value ?? null,
       navigationLinks: document.querySelectorAll('.ja-global-nav .nav-item').length,
       thumbnailImages: document.querySelectorAll('.article-card .card-thumb img').length,
       appIconThumbnails: document.querySelectorAll('.article-card .card-thumb--app-icon img').length,
@@ -574,22 +574,17 @@ async function verifyBlogPage(browser, baseUrl) {
       return !url.searchParams.has('q') && !url.searchParams.has('category') && !url.searchParams.has('topic') && !url.searchParams.has('page');
     });
     const resetState = await page.evaluate(() => ({
-      activeTopic: document.querySelector('#category-filter button.active')?.dataset.topic ?? null,
+      activeTopic: document.querySelector('#browse-category-filter')?.value ?? null,
       query: document.querySelector('#search-input')?.value || ''
     }));
     assert(resetState.activeTopic === '' && resetState.query === '', 'Blog reset state is inconsistent');
 
-    const filterPanel = page.locator('#article-filter-panel');
-    if (!(await filterPanel.evaluate(element => element.open))) {
-      await filterPanel.locator('summary').click();
-    }
-    const topicButton = page.locator('#category-filter button[data-topic]:not([data-topic=""])').first();
-    await topicButton.waitFor({ state: 'visible', timeout: 10_000 });
-    const topic = await topicButton.getAttribute('data-topic');
-    await topicButton.click();
+    const categorySelect = page.locator('#browse-category-filter');
+    const topic = 'ランク・ステータス';
+    await categorySelect.selectOption(topic);
     await page.waitForFunction(expected => new URL(location.href).searchParams.get('topic') === expected, topic);
-    assert(await topicButton.evaluate(element => element.classList.contains('active')), 'Blog topic active state did not update');
-    assert(await filterPanel.evaluate(element => element.open), 'Blog optional filters should stay open while a topic filter is active');
+    assert.equal(await categorySelect.inputValue(), topic, '選択中のカテゴリーを表示する');
+    assert(await page.locator('#game-title-filter').isHidden(), 'ゲーム以外のカテゴリーではゲーム欄を表示しない');
 
     // スマホはメニューから、PCは常時表示ナビから同じ行き先へ移動できる。
     if (await page.locator('[aria-controls="guide-menu"]:visible').count()) await page.locator('[aria-controls="guide-menu"]').click();

@@ -35,7 +35,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
   }
   async function closeMenu(page) { if (await page.locator('#guide-menu[open]').count()) await page.keyboard.press('Escape'); }
   async function chooseTheme(page) {
-    await openMenu(page);
+    if (await page.locator('#guide-menu #theme-toggle').count()) await openMenu(page);
     const settings=page.locator('.guide-menu-group').filter({has:page.locator('#theme-toggle')});
     if (await settings.count() && !(await settings.evaluate(el=>el.open))) await settings.locator('summary').click();
     await page.locator('#theme-toggle').click(); await closeMenu(page);
@@ -44,14 +44,12 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.locator('.article-card').first().waitFor({state:'visible',timeout:30000});
     // 初期カードは台帳より先に読める。操作・カテゴリの検証は取得完了を待つ。
     await page.waitForFunction(() =>
-      document.querySelector('#category-filter button.active')
+      document.querySelector('#browse-category-filter option[value="ゲーム別課金"]')
       && document.querySelector('#article-grid')?.getAttribute('aria-busy') !== 'true'
       && document.querySelector('#search-input')?.disabled === false,
       null, {timeout:30000});
   }
   async function openOptionalFilters(page) {
-    const panel = page.locator('#article-filter-panel');
-    if (!(await panel.evaluate(el => el.open))) await panel.locator('summary').click();
     await page.locator('#sort-toggle').waitFor({state:'visible',timeout:10000});
   }
   async function palette(page, selectors) {
@@ -143,16 +141,14 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     });
     // 新着記事の追加順に依存せず、画像を持つ公開ゲーム記事を検証する。
     await goto(page,'blog/'); await cards(page);
-    const filterPanel = page.locator('#article-filter-panel');
-    assert.equal(await filterPanel.evaluate(el=>el.open),false,'Optional filters stay collapsed on the default list');
+    assert(await page.locator('#game-title-filter').isHidden(), '通常はゲーム選択を表示しない');
     const order = await page.evaluate(()=>({
       search:document.querySelector('#search-input')?.getBoundingClientRect().top,
-      game:document.querySelector('#game-title-filter')?.getBoundingClientRect().top,
-      filters:document.querySelector('#article-filter-panel')?.getBoundingClientRect().top,
+      category:document.querySelector('#browse-category-filter')?.getBoundingClientRect().top,
       list:document.querySelector('.article-list-heading')?.getBoundingClientRect().top
     }));
-    assert(order.search <= order.game && order.game < order.filters && order.filters < order.list,'Discovery order: '+JSON.stringify(order));
-    await filterPanel.locator('summary').click();
+    assert(order.search <= order.category && order.category < order.list,'Discovery order: '+JSON.stringify(order));
+    await page.locator('#browse-category-filter').selectOption('ゲーム別課金');
     const gameFilter = page.locator('#game-title-filter');
     await gameFilter.waitFor({ state: 'visible', timeout: 10000 });
     await gameFilter.locator('option[value="FGO"]').waitFor({ state: 'attached', timeout: 10000 });
@@ -187,7 +183,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await page.setViewportSize({width,height:844});
       const state=await page.evaluate(()=>({
         overflow:document.documentElement.scrollWidth>innerWidth,
-        discoveryFit:[...document.querySelectorAll('#search-input,#game-title-filter,#sort-toggle')].every(el=>{const r=el.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.height>=40;}),
+        discoveryFit:[...document.querySelectorAll('#search-input,#browse-category-filter,#sort-toggle')].every(el=>{const r=el.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth&&r.height>=40;}),
         controls:[...document.querySelectorAll('.guide-nav-button')].filter(el=>el.getClientRects().length).every(el=>{const r=el.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;}),
         firstArticleY:document.querySelector('.article-card').getBoundingClientRect().top+scrollY,
         menuRight:(()=>{
@@ -214,6 +210,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       }
       assert(state.discoveryFit,`Discovery controls must fit and remain tappable at ${width}`);
       if(width<=760) {
+        assert(state.firstArticleY<650, `スマホの初期画面に記事が入る: ${width}: ${state.firstArticleY}`);
         const entries = await page.locator('.reader-entry-questions a').evaluateAll(links=>links.map(link=>{const r=link.getBoundingClientRect();return {top:r.top,bottom:r.bottom,width:r.width};}));
         assert(entries.length===3&&entries.every(entry=>entry.top>=0&&entry.bottom<=844&&entry.width>=44),`記事トップの疑問を最初の画面で選べる: ${width}`);
         assert(state.menuRight===true,`Mobile menu button must sit to the right of the centered brand at ${width}`);
@@ -264,18 +261,22 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.locator('#sort-toggle').selectOption('newest');
     await page.locator('#search-input').fill('ニケ 月パス');
     await page.waitForFunction(()=>document.querySelector('#sort-toggle')?.value==='relevance');
-    assert.equal(await page.locator('#article-filter-panel').evaluate(el=>el.open),false,'Search leaves the collapsed category panel closed');
+    assert(await page.locator('#game-title-filter').isHidden(), 'キーワード検索だけならゲーム選択は隠れたまま');
     assert.equal(await page.locator('.reader-entry-questions').isVisible(),false,'検索中は入門案内を畳む');
     assert.equal(await page.locator('.reader-question-links').isVisible(),false,'検索結果前のおすすめを畳む');
     await page.reload({waitUntil:'domcontentloaded'}); await cards(page);
     assert.equal(await page.locator('.reader-entry-questions').isVisible(),false,'再読込でも絞り込み表示を復元');
     await page.locator('.filter-reset-inline').click();
     assert(await page.locator('.reader-entry-questions').isVisible(),'解除すると入門案内を戻す');
-    assert(await page.locator('#reading-library summary').isVisible(),'解除すると保存記事への入口を戻す');
+    assert(await page.locator('#reading-library summary').isHidden(),'保存記事は検索結果の前に出さない');
+    await openMenu(page);
+    assert(await page.locator('#reading-library summary').isVisible(),'メニューから保存記事へ進める');
+    await closeMenu(page);
     await page.locator('#search-input').fill('ニケ 月パス');
     await page.waitForFunction(()=>document.querySelector('#sort-toggle')?.value==='relevance');
     await page.setViewportSize({width:1264,height:552}); await waitNavigationLayout(page);
-    await page.locator('#game-title-filter').selectOption({label:'NIKKE'});
+    await goto(page,'blog/?q=' + encodeURIComponent('ニケ 月パス') + '&game=NIKKE'); await cards(page);
+    assert.equal(await page.locator('#game-title-filter').inputValue(),'NIKKE','旧ゲームURLを復元する');
     const facet=page.locator('.guide-hub-sidebar .sidebar-browse-category[data-topic="ゲーム別課金"]');
     await facet.click();
     assert.equal(new URL(page.url()).searchParams.get('game'),'NIKKE');
@@ -290,7 +291,9 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     const firstTitle=await page.locator('.article-card h3').first().boundingBox();
     assert(firstTitle.y+firstTitle.height<=552,'記事一覧へ進むと短いPC画面でも最初の見出しを読める');
     await page.setViewportSize({width:390,height:844}); await waitNavigationLayout(page);
-    assert(await page.locator('#reading-library summary').isVisible(),'Saved articles are directly reachable on mobile');
+    await openMenu(page);
+    assert(await page.locator('#reading-library summary').isVisible(),'スマホもメニューから保存記事へ進める');
+    await closeMenu(page);
     report.interactions.readerFlow={history:true,relevance:true,conditions:true,skip:true,mobileLibrary:true};
     // 入力途中の履歴ではなく、検索前と確定した検索結果を往復できる。
     await goto(page,'blog/'); await cards(page);
@@ -303,7 +306,9 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.goForward();
     await page.waitForFunction(()=>document.querySelector('#search-input').value==='ポイント 有効期限');
     await page.locator('.filter-reset-inline').click();
-    assert(await page.locator('.reader-question-links').isVisible(),'解除するとおすすめ記事への入口を戻す');
+    assert(await page.locator('.reader-question-links').isHidden(),'おすすめリンクは上部へ戻さない');
+    await openMenu(page);
+    assert(await page.locator('.reader-question-links').isVisible(),'メニュー内でおすすめリンクを使える');
     await page.getByRole('link',{name:'次の増量はいつ？',exact:true}).click();
     await page.evaluate(()=>document.fonts.ready);
     await page.waitForFunction(()=>{const r=document.querySelector('#next-campaign-title')?.getBoundingClientRect();return r && r.top>=document.querySelector('.guide-header').getBoundingClientRect().bottom && r.top<innerHeight/2;});

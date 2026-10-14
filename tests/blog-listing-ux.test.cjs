@@ -67,6 +67,21 @@ test('reader-facing browse taxonomy filters the full public corpus without break
   assert.ok(legacyTrouble.every(article => article.category === 'トラブル'));
 });
 
+test('ゲームの正式名・略称・旧URLから同じ公開記事を探せる', () => {
+  const registry = JSON.parse(read('blog/articles.json')).filter(article => article.listed !== false);
+  const aliases = ['ポケスリ', 'ポケモンスリープ', 'Pokémon Sleep', 'Pokemon Sleep'];
+  const expected = blogUtils.filterListedArticles(registry, { gameTitle: aliases[0] }).map(article => article.id).sort();
+  assert.ok(expected.length >= 2);
+  for (const alias of aliases) {
+    assert.deepEqual(blogUtils.filterListedArticles(registry, { gameTitle: alias }).map(article => article.id).sort(), expected);
+    assert.equal(blogUtils.resolveGameTitle(alias, registry), 'ポケモンスリープ');
+    assert.deepEqual(blogUtils.filterListedArticles(registry, { search: alias }).map(article => article.id).sort(), expected);
+  }
+  assert.equal(blogUtils.gameTitleFilters(registry).filter(name => aliases.includes(name)).length, 1);
+  assert.equal(blogUtils.gameTitleLabel('ポケモンスリープ'), 'ポケモンスリープ（ポケスリ）');
+  assert.equal(blogUtils.articleMatchesGameTitle({ title:'ポケモンGOでポイントを使う' }, 'ポケスリ'), false);
+});
+
 test('page-number jump clamps full-width digits into the published page range', () => {
   assert.equal(clampPageJump('３', 10), 3);
   assert.equal(clampPageJump('0', 10), 1);

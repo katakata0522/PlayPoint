@@ -8,6 +8,7 @@ const { classifyArticleRole } = require('./article-role-registry.cjs');
 const { normalizeSharedArticleCopy } = require('./article-static-usability.cjs');
 const { extractRelatedTargets } = require('./article-role-next-action-audit.cjs');
 const { selectRelatedArticles } = require('./intl-related-guides.cjs');
+const BlogUtils = require('../blog/utils.js');
 const { getJapanesePopularGuides, POPULAR_GUIDES_SNAPSHOT, POPULAR_GUIDES_WINDOW } = require('./japanese-popular-guides.cjs');
 
 const BROWSE_CATEGORIES = Object.freeze([
@@ -157,8 +158,8 @@ function navigationAssets(html) {
 }
 
 function renderGamesWidget(catalog) {
-  const games = [...new Set(catalog.map(item => item.gameTitle).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ja'));
-  return `<section class="sidebar-widget sidebar-widget--games"><h2 class="sidebar-widget-title">ゲーム別に探す</h2><div class="sidebar-widget-body"><ul class="sidebar-game-list">${games.map(name => `<li><a href="/blog/?game=${encodeURIComponent(name)}">${escapeHtml(name)}</a></li>`).join('')}</ul><a href="/games/">ゲーム別の計算機を見る</a></div></section>`;
+  const games = BlogUtils.gameTitleFilters(catalog).filter(name => catalog.some(item => item.gameTitle && BlogUtils.articleMatchesGameTitle({ gameTitle: item.gameTitle }, name))).sort((a, b) => a.localeCompare(b, 'ja'));
+  return `<section class="sidebar-widget sidebar-widget--games"><h2 class="sidebar-widget-title">ゲーム別に探す</h2><div class="sidebar-widget-body"><ul class="sidebar-game-list">${games.map(name => `<li><a href="/blog/?game=${encodeURIComponent(name)}">${escapeHtml(BlogUtils.gameTitleLabel(name))}</a></li>`).join('')}</ul><a href="/games/">ゲーム別の計算機を見る</a></div></section>`;
 }
 
 function renderNavigation(current) {

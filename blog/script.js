@@ -268,6 +268,7 @@
         grid: document.getElementById('article-grid'),
         pagination: document.getElementById('pagination'),
         categoryFilter: document.getElementById('category-filter'),
+        browseCategoryFilter: document.getElementById('browse-category-filter'),
         searchInput: document.getElementById('search-input'),
         gameTitleFilter: document.getElementById('game-title-filter'),
         sortToggle: document.getElementById('sort-toggle'),
@@ -302,8 +303,36 @@
 
     // Helper functions moved to utils.js
 
+    // 再訪用の操作は一つのメニューへ移し、保存状態と既存リンクを保つ。
+    function setupHubMenu() {
+        const tools = document.querySelector('[data-hub-menu-tools]');
+        const menu = document.getElementById('guide-menu');
+        const body = menu?.querySelector('.guide-menu-body');
+        const trigger = document.querySelector('[aria-controls="guide-menu"]');
+        if (!tools || !body || !trigger) return;
+        body.prepend(tools);
+        document.body.classList.add('hub-menu-ready');
+        function openLibrary() {
+            if (!menu.open) trigger.click();
+            const panel = document.getElementById('reading-library');
+            if (panel) { panel.open = true; panel.scrollIntoView({ block: 'nearest' }); }
+        }
+        function fromHash() { if (location.hash === '#reading-library') openLibrary(); }
+        document.addEventListener('click', event => {
+            const link = event.target.closest('a[href]');
+            if (!link) return;
+            const url = new URL(link.href, location.href);
+            if (url.origin === location.origin && url.pathname === location.pathname && url.hash === '#reading-library') {
+                event.preventDefault(); openLibrary();
+            }
+        });
+        window.addEventListener('hashchange', fromHash);
+        fromHash();
+    }
+
     // Initialize
     async function init() {
+        setupHubMenu();
         // Dynamic Footer Year
         if (window.BlogUtils) BlogUtils.updateFooterYear();
 
@@ -339,7 +368,7 @@
         });
 
         dom.grid?.setAttribute('aria-busy', 'true');
-        [dom.searchInput, dom.sortToggle, dom.gameTitleFilter].forEach(control => { if (control) control.disabled = true; });
+        [dom.searchInput, dom.sortToggle, dom.gameTitleFilter, dom.browseCategoryFilter].forEach(control => { if (control) control.disabled = true; });
         await loadArticles();
     }
 
@@ -507,7 +536,7 @@
                 currentCategory = state.category;
                 currentBrowseCategory = state.topic;
                 currentSearch = state.search;
-                currentGameTitle = state.game;
+                currentGameTitle = BlogUtils.resolveGameTitle(state.game, allArticles);
                 currentPage = state.page;
                 sortIsExplicit = Boolean(state.sort);
                 sortMode = state.sort || (currentSearch ? 'relevance' : Storage.getSortOrder() || 'newest');
@@ -526,7 +555,7 @@
                 focusResults();
             });
 
-            [dom.searchInput, dom.sortToggle, dom.gameTitleFilter].forEach(control => { if (control) control.disabled = false; });
+            [dom.searchInput, dom.sortToggle, dom.gameTitleFilter, dom.browseCategoryFilter].forEach(control => { if (control) control.disabled = false; });
             dom.grid?.setAttribute('aria-busy', 'false');
             render();
             if (currentSearch) { await loadBodySearch(); render(); }
@@ -616,13 +645,11 @@
             if (existing.has(name)) return;
             const option = document.createElement('option');
             option.value = name;
-            option.textContent = name;
+            option.textContent = BlogUtils.gameTitleLabel(name);
             select.appendChild(option);
         });
 
-        if (currentGameTitle && !gameNames.includes(currentGameTitle)) {
-            currentGameTitle = '';
-        }
+        currentGameTitle = BlogUtils.resolveGameTitle(currentGameTitle, allArticles);
         select.value = currentGameTitle;
 
         if (select.dataset.bound === 'true') return;
@@ -647,6 +674,9 @@
     }
 
     function syncFilterPanelState() {
+        const gameContainer = dom.gameTitleFilter?.closest('.game-filter-container');
+        if (gameContainer) gameContainer.hidden = !(currentBrowseCategory === 'ゲーム別課金' || currentGameTitle);
+        if (dom.browseCategoryFilter) dom.browseCategoryFilter.value = currentBrowseCategory || (currentGameTitle ? 'ゲーム別課金' : '');
         if (!dom.filterPanel) return;
         const hasOptionalFilter = Boolean(
             currentGameTitle ||
@@ -661,7 +691,7 @@
 
 
     function setupCategories(articles) {
-        if (!dom.categoryFilter) return;
+        if (!dom.categoryFilter && !dom.browseCategoryFilter) return;
 
         const topicCounts = Object.fromEntries(BROWSE_CATEGORIES.map(topic => [topic, 0]));
         articles.forEach(article => {
@@ -670,6 +700,21 @@
             }
         });
 
+        if (dom.browseCategoryFilter) {
+            const select = dom.browseCategoryFilter;
+            select.replaceChildren();
+            const ordered = ['', ...BROWSE_CATEGORIES.filter(topic => topic !== 'ゲーム別課金'), 'ゲーム別課金'];
+            ordered.forEach(topic => {
+                const option = document.createElement('option'); option.value = topic;
+                option.textContent = topic === 'ゲーム別課金' ? 'ゲーム別に探す' : topic || 'すべての記事';
+                select.append(option);
+            });
+            if (!select.dataset.bound) {
+                select.dataset.bound = 'true';
+                select.addEventListener('change', () => setBrowseCategory(select.value));
+            }
+        }
+        if (!dom.categoryFilter) return;
         dom.categoryFilter.innerHTML = '';
         const topics = ['', ...BROWSE_CATEGORIES.filter(topic => topicCounts[topic] > 0)];
         topics.forEach(topic => {
@@ -686,6 +731,7 @@
     }
 
     function syncCategoryActiveState() {
+        syncFilterPanelState();
         if (dom.categoryFilter) {
             dom.categoryFilter.querySelectorAll('button').forEach(btn => {
                 const active = btn.dataset.topic === currentBrowseCategory
@@ -712,6 +758,10 @@
     function setBrowseCategory(topic) {
         currentBrowseCategory = topic;
         currentCategory = 'all';
+        if (topic !== 'ゲーム別課金') {
+            currentGameTitle = '';
+            if (dom.gameTitleFilter) dom.gameTitleFilter.value = '';
+        }
         currentPage = 1;
 
         updateURLState('push');
@@ -985,11 +1035,17 @@
     }
 
     function syncBrowseFacets() {
-        const candidates = BlogUtils.filterListedArticles(allArticles, { search: currentSearch, gameTitle: currentGameTitle });
+        // カテゴリーを変えるとゲーム指定を解除するため、移動先の件数も検索条件だけで示す。
+        const candidates = BlogUtils.filterListedArticles(allArticles, { search: currentSearch });
         const counts = Object.fromEntries(BROWSE_CATEGORIES.map(topic => [topic, candidates.filter(a => a.browseCategory === topic).length]));
         dom.categoryFilter?.querySelectorAll('button').forEach(button => {
             const topic = button.dataset.topic;
             button.textContent = topic ? `${topic} (${counts[topic] || 0})` : `すべて (${candidates.length})`;
+        });
+        dom.browseCategoryFilter?.querySelectorAll('option').forEach(option => {
+            const topic = option.value;
+            const label = topic === 'ゲーム別課金' ? 'ゲーム別に探す' : topic || 'すべての記事';
+            option.textContent = `${label} (${topic ? counts[topic] || 0 : candidates.length})`;
         });
         document.querySelectorAll('.sidebar-browse-category').forEach(link => {
             const topic = link.dataset.topic || new URL(link.href, location.href).searchParams.get('topic');
