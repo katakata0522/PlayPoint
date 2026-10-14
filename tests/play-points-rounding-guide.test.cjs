@@ -68,8 +68,8 @@ test('記事冒頭は通常獲得率と交換価値を分けて即答する', ()
   const html = fs.readFileSync(articlePath, 'utf8');
   assert.match(html, /結論：通常のブロンズは対象価格100円で1ポイント/);
   assert.match(html, /税金を除いた対象アイテム価格100円あたり1ポイント/);
-  assert.match(html, /1ポイントを貯めるために必要な金額/);
-  assert.match(html, /1ポイントを使うときの価値は交換先によって変わり、常に1円分とは限りません/);
+  assert.match(html, /1ポイントを貯めるための購入額/);
+  assert.match(html, /使うときの円換算は別で、交換先によって変わります/);
 });
 
 test("記事固有の導線だけを1つずつ表示し、自動導線の重複を防ぐ", () => {

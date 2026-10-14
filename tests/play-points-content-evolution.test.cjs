@@ -31,7 +31,7 @@ test('スーパーウィークリー記事は一般条件と個別条件を分�
   assert.ok(html.includes('賞品数には限り'));
   assert.ok(html.includes('id="known-unknown"'));
   assert.ok(html.includes('現在の賞品、残りの賞品数、追加条件'));
-  assert.ok(html.includes('このサイトから個別アカウントの資格や在庫は確認できません'));
+  assert.ok(html.includes('自分の特典画面で今週の内容を探してみましょう'));
   assert.ok(html.includes('play.google.com/store/apps/editorial'));
   assert.ok(html.includes('./2025-12-25-weekly-reward.html'));
 

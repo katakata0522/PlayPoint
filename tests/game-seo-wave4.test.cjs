@@ -80,7 +80,8 @@ test('Honkai Impact 3rd removes cash pity guesses and reflects Charge Center SSO
 
   const guide = read('games/honkai3rd/google-play-vs-charge-center/index.html');
   const charge = GAME_SEO_WAVE4.honkai3rd.chargeCenter;
-  assert.match(guide, /月パス以外の水晶2倍チャージボーナス/);
+  assert.match(guide, /月パスを除く商品の水晶2倍チャージボーナス/);
+  assert.match(guide, /ボーナスの利用状況はゲーム内と公式チャージセンターで共通/);
   assert.ok(guide.includes(String(charge.monthlyPassCanExtendWhenRemainingDaysBelow) + '日未満'));
   assert.equal(charge.historical2026CouponCampaign.currentStandingDiscount, false);
   assert.match(guide, /恒常割引ではありません/);

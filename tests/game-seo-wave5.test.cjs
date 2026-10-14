@@ -147,7 +147,7 @@ test('eFootball guide explicitly separates Google Play Points from KONAMI eFootb
   assert.match(html, /eFootball™ポイント/);
   assert.match(html, /完全に別のポイント/);
   assert.ok(html.includes(String(points.expiryMonthsAfterClaim) + 'か月後'));
-  assert.match(html, /eFootball™コイン、GP、eFootball™ポイント/);
+  assert.match(html, /eFootballコイン、GP、eFootballポイントは、それぞれ用途の違う/);
   assert.match(html, /<h2\b[^>]*>/);
 });
 

@@ -194,3 +194,24 @@ test('文字抽出は空白付きscript/style終了タグを除去して前後�
   }
   assert.equal(stripHtml('<b>比較</b><em>判断</em>'), '比較 判断');
 });
+
+test('個別改稿した登録記事は汎用生成で上書きせず、通常の生成ページは更新する', () => {
+  const os = require('node:os');
+  const { writeIfChanged } = require('../scripts/game-seo-common.cjs');
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-edited-guide-'));
+  try {
+    const articlePath = repoPath(GAME_GUIDE_ARTICLES[0]);
+    const target = path.join(temporary, articlePath);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    const edited = '<article data-editorial-flow="2026-10"><p>読者のために個別改稿した本文</p></article>';
+    fs.writeFileSync(target, edited);
+    assert.equal(writeIfChanged(temporary, articlePath, '<p>汎用テンプレート</p>'), false);
+    assert.equal(fs.readFileSync(target, 'utf8'), edited);
+    const calculatorPath = 'games/fgo/index.html';
+    fs.writeFileSync(path.join(temporary, calculatorPath), '<p>旧計算機</p>');
+    assert.equal(writeIfChanged(temporary, calculatorPath, '<p>新計算機</p>'), true);
+    assert.equal(fs.readFileSync(path.join(temporary, calculatorPath), 'utf8'), '<p>新計算機</p>');
+  } finally {
+    fs.rmSync(temporary, { recursive: true, force: true });
+  }
+});

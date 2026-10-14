@@ -13,6 +13,8 @@ function writeIfChanged(rootDir, relativePath, content) {
   const filePath = path.join(rootDir, relativePath);
   const normalized = content.replace(/\r\n/g, '\n');
   const previous = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : null;
+  // 本文を個別編集した登録記事はHTMLを正本とする。headと台帳は後段で同期する。
+  if (articleForPath(relativePath) && previous?.includes('data-editorial-flow="2026-10"')) return false;
   if (previous === normalized) return false;
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, normalized, 'utf8');
