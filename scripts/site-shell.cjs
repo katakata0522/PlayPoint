@@ -86,7 +86,13 @@ const JAPANESE_FIXED_HEADER_PROFILE = Object.freeze({
 });
 
 const FIXED_PAGE_HEADER_PROFILES = Object.freeze({
-  'about-playpoints.html': JAPANESE_FIXED_HEADER_PROFILE,
+  'about-playpoints.html': Object.freeze({
+    ...JAPANESE_FIXED_HEADER_PROFILE,
+    navLinks: Object.freeze(JAPANESE_FIXED_REGION_LINKS.map(link => Object.freeze({
+      ...link,
+      href: link.href === './' ? '/about-playpoints.html' : `${link.href}articles/google-play-points-basics.html`
+    })))
+  }),
   'attention.html': Object.freeze({
     topBarStyle: 'margin-bottom:20px;',
     headerLinksStyle: 'width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:10px;',

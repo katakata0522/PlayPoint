@@ -8,6 +8,21 @@ const index = require('../blog/article-search-index.json').articles;
 const articles = manifest.map(article => ({ ...article, sections: index.find(entry => entry.path === new URL(article.file, 'https://playpoint-sim.com/blog/').pathname)?.sections || [] }));
 function hits(query) { return articles.filter(article => search.matches(article, query, 'ja')).sort((a,b) => search.score(b, query, 'ja') - search.score(a, query, 'ja')); }
 
+test('海外でもPokemon Sleepと現地名から同じパス記事を探せる', () => {
+  for (const [locale, queries] of [
+    ['en', ['Pokémon Sleep', 'Pokemon Sleep']],
+    ['ko', ['포켓몬 슬립', 'Pokémon Sleep', 'Pokemon Sleep']],
+    ['tw', ['Pokémon Sleep', 'Pokemon Sleep', '寶可夢睡眠']]
+  ]) {
+    const localized = require(`../${locale}/articles/article-search-index.json`).articles;
+    const expected = localized.filter(article => search.matches(article, queries[0], locale)).map(article => article.path).sort();
+    assert.ok(expected.some(value => value.endsWith('/pokemon-sleep-premium-pass-plans.html')), locale);
+    for (const query of queries) {
+      assert.deepEqual(localized.filter(article => search.matches(article, query, locale)).map(article => article.path).sort(), expected, locale + ': ' + query);
+    }
+  }
+});
+
 test('読者の目的を表す自然文を回答に結び、数字の桁を取り違えない', () => {
   for (const [query, id] of [
     ['毎週何がもらえる', 'weekly-reward'], ['課金しないで貯めたい', 'earn-play-points-free'],

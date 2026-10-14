@@ -11,10 +11,12 @@ const escape = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '
 const REGION = { en: 'UNITED STATES · ENGLISH', ko: '대한민국 · 한국어', tw: '台灣 · 繁體中文' };
 
 async function run() {
+  // 新規記事の追加時は既存の確認済み画像を上書きしない。
+  const targets = articleImages(root).filter(article => !process.argv.includes('--only-missing') || !fs.existsSync(path.join(root, article.image)));
   const browser = await chromium.launch(process.env.PLAYPOINT_CHROME_PATH ? { executablePath: process.env.PLAYPOINT_CHROME_PATH, headless: true } : { channel: 'msedge', headless: true });
   try {
     const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
-    for (const article of articleImages(root)) {
+    for (const article of targets) {
       const html = fs.readFileSync(path.join(root, article.file), 'utf8');
       const title = cardTitle(html);
       if (!title) throw Error('記事タイトルがありません: ' + article.file);
@@ -35,7 +37,7 @@ async function run() {
       if (!fits) throw Error('共有画像のタイトルが収まりません: ' + article.file);
       await page.screenshot({ path: path.join(root, article.image), type: 'jpeg', quality: 90 });
     }
-    console.log('海外記事専用OGP生成:', articleImages(root).length);
+    console.log('海外記事専用OGP生成:', targets.length);
   } finally { await browser.close(); }
 }
 if (require.main === module) run().catch(error => { console.error(error); process.exitCode = 1; });

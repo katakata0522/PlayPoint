@@ -1787,6 +1787,7 @@ const MANUAL_FEST_ARTICLES = [
 ];
 
 const INTL_ARTICLES = [
+  ...require('./intl-topic-expansion-content.cjs').buildLocalizedTopicArticles(LOCALES, ARTICLE_LABELS),
   ...[
     ...EN_ARTICLES,
     ...ADDITIONAL_EN_ARTICLES,

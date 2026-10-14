@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
-const { ARTICLE_JA_ALTERNATES, INTL_LOCALES, SITE_ORIGIN, intlUrl } = require('../scripts/intl-article-hreflang-sync.cjs');
+const { ARTICLE_JA_ALTERNATES, ARTICLE_JA_PARTIAL_ALTERNATES, INTL_LOCALES, SITE_ORIGIN, intlUrl } = require('../scripts/intl-article-hreflang-sync.cjs');
 const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
 const terminologyContract = require('../scripts/tw-terminology-contract.cjs');
 
@@ -133,9 +133,25 @@ test('international expansion sitemap adds ja only for verified equivalents', ()
     const block = xml.slice(start, blockEnd);
     assert.ok(block.includes('hreflang="ja" href="https://playpoint-sim.com' + jaPath + '"'));
   }
-  const slug = 'google-play-points-500-1000-cost.html';
+  const slug = 'google-play-points-rounding-tax.html';
   const start = xml.indexOf('<loc>https://playpoint-sim.com/en/articles/' + slug + '</loc>');
   assert.ok(start >= 0);
   const block = xml.slice(start, xml.indexOf('</url>', start));
   assert.ok(!block.includes('hreflang="ja"'));
+});
+
+test('partial translations link only the languages that have real counterparts', () => {
+  for (const [slug, config] of Object.entries(ARTICLE_JA_PARTIAL_ALTERNATES)) {
+    const jaHtml = fs.readFileSync(sitePathToFile(config.jaPath), 'utf8');
+    for (const [locale, lang] of INTL_LOCALES) {
+      const tag = 'hreflang="' + lang + '" href="' + intlUrl(locale, slug) + '"';
+      if (!config.locales.includes(locale)) {
+        assert.ok(!jaHtml.includes(tag), 'must not advertise an untranslated article: ' + locale + '/' + slug);
+        continue;
+      }
+      const intlHtml = fs.readFileSync(path.join(root, locale, 'articles', slug), 'utf8');
+      assert.ok(jaHtml.includes(tag), slug + ': Japanese return link');
+      assert.ok(intlHtml.includes('hreflang="ja" href="' + SITE_ORIGIN + config.jaPath + '"'), slug + ': international return link');
+    }
+  }
 });
