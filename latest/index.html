@@ -39,8 +39,8 @@
     "author":{"@type":"Person","name":"かたかた","url":"https://playpoint-sim.com/author/katakata.html"}
   }
   </script>
-  <link rel="stylesheet" href="./hub.css?v=d037c5f6a1">
-  <script defer src="./hub.js?v=bc11c8d04b"></script>
+  <link rel="stylesheet" href="./hub.css?v=4329a57e13">
+  <script defer src="./hub.js?v=c2e9245663"></script>
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
 <link rel="stylesheet" href="/articles/japanese-shell.css?v=d181c50417">
@@ -51,34 +51,32 @@
 <link rel="stylesheet" href="/articles/guide-editorial.css?v=d5aeedb04a">
 <!-- guide-navigation-assets:end -->
 </head>
-<body>
+<body class="latest-hub">
 <!-- guide-header:start --><header class="site-header guide-header"><div class="site-header-inner"><a href="/blog/" class="site-logo"><span class="guide-brand-full"><span class="guide-wordmark">PlayPoint<span class="guide-brand-points" aria-hidden="true"><i></i><i></i><i></i></span></span><span class="guide-brand-caption">Google Play Points 完全攻略ガイド</span></span><span class="guide-brand-short">PlayPoint<span>記事ガイド</span></span></a><div class="site-header-links"><a href="/author/katakata.html">運営者・検証方針</a><button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="テーマ切替">☀️</button></div></div></header>
 <nav class="global-nav ja-global-nav" aria-label="目的から探す"><div class="global-nav-inner"><a class="nav-item" href="/blog/"><span>記事トップ</span></a><a class="nav-item" href="/latest/" aria-current="page"><span>開催中の特典</span></a><a class="nav-item" href="/guides/ranks/"><span>ランク・維持条件</span></a><a class="nav-item" href="/blog/?topic=%E8%B2%AF%E3%82%81%E3%82%8B%E3%83%BB%E3%82%AD%E3%83%A3%E3%83%B3%E3%83%9A%E3%83%BC%E3%83%B3"><span>貯める・キャンペーン</span></a><a class="nav-item" href="/guides/using-points/"><span>使い道を選ぶ</span></a><a class="nav-item" href="/guides/troubleshooting/"><span>困ったときの確認</span></a><a class="nav-item" href="/"><span>必要額を計算する</span></a></div></nav><!-- guide-header:end --><div class="guide-hub-layout guide-latest-layout"><main class="calculator-wrapper lp-wrapper latest-visual">
 
 
   <section class="lp-hero">
-    <h1><span class="benefit-product">Google Play Points</span>今の特典・変更点をチェック</h1>
-    <p class="lp-lead">今の特典と、公式に確認できる変更点をまとめました。条件の再確認も日付付きで残しているので、以前の記事から今の案内へたどれます。</p>
+    <h1><span class="benefit-product">Google Play Points</span>今の特典・キャンペーン</h1>
+    <p class="lp-lead">対象と期限を見て、自分に合う特典を探せます。</p>
     <div class="lp-trust-line">
       <span>最終更新: <time datetime="2026-10-15">2026-10-15</time></span>
 
     </div>
   </section>
 
-<p class="benefit-footnote history-shortcuts"><a href="#benefit-board-title">今の特典</a><a href="#change-records">変更点・確認記録</a><a href="../articles/2026-10-03-super-weekly-reward-prize-history.html">スーパーウィークリーの賞品履歴</a></p>
+
   <section class="benefit-board" aria-labelledby="benefit-board-title">
     <h2 id="benefit-board-title">特典・キャンペーン一覧</h2>
-    <p class="benefit-intro">端末・グッズの割引は「その他の特典」へ。</p>
-    <p class="benefit-intro"><a href="../articles/2026-10-10-google-play-fest-2026.html">Google Playフェス2026</a>の開催期間は10月13〜19日です。交換品や書籍15倍などの案内は、開催前に筆者が撮影した画面と、開催中の日本向け公式情報を分けてまとめています。</p>
-    <div class="benefit-tabs" role="tablist" aria-label="特典を探す" hidden>
-      <button type="button" role="tab" id="benefit-tab-active" aria-controls="benefit-panel" aria-selected="true" data-filter="active">開催中</button>
-      <button type="button" role="tab" id="benefit-tab-soon" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="soon">まもなく終了</button>
-      <button type="button" role="tab" id="benefit-tab-upcoming" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="upcoming">開始予定</button>
-      <button type="button" role="tab" id="benefit-tab-other" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="other">その他の特典</button>
+    <div class="benefit-tabs" role="tablist" aria-label="特典の種類" hidden>
+      <button type="button" role="tab" id="benefit-tab-active" aria-controls="benefit-panel" aria-selected="true" data-filter="active">すべて</button>
+      <button type="button" role="tab" id="benefit-tab-points" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="points">ポイント</button>
+      <button type="button" role="tab" id="benefit-tab-gift" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="gift">コード還元</button>
+      <button type="button" role="tab" id="benefit-tab-other" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="other">製品割引</button>
     </div>
-    <p class="benefit-filter-note" data-filter-note hidden></p>
-    <details class="benefit-audience" hidden><summary>ランク・Play Passで絞る</summary>
+    <details class="benefit-audience" hidden><summary>対象・時期で絞り込む<span data-audience-summary></span></summary>
       <div class="benefit-audience-controls">
+        <label for="benefit-period">時期<select id="benefit-period"><option value="active">今チェックできる特典</option><option value="soon">まもなく終了（7日以内）</option><option value="upcoming">開始予定</option></select></label>
         <label for="benefit-rank">今のランク<select id="benefit-rank"><option value="">すべて・わからない</option><option value="bronze">ブロンズ</option><option value="silver">シルバー</option><option value="gold">ゴールド</option><option value="platinum">プラチナ</option><option value="diamond">ダイヤモンド</option></select></label>
         <label for="benefit-pass">Play Passの利用<select id="benefit-pass"><option value="">指定しない</option><option value="yes">利用中・ファミリー対象</option><option value="no">利用していない</option></select></label>
         <button type="button" data-clear-audience>条件を解除</button>
@@ -87,7 +85,18 @@
     <div id="benefit-panel">
       <p class="benefit-count" role="status" aria-live="polite" aria-atomic="true" hidden></p>
       <div class="benefit-grid">
-      <article class="benefit-card benefit-theme-play" data-benefit-id="lawson-gift-code-2026-autumn" data-category="other" data-kind="dated" data-start="2026-09-29T00:00:00+09:00" data-end="2026-10-20T00:00:00+09:00">
+      <article class="benefit-card benefit-theme-play benefit-featured" data-benefit-id="play-fest-2026" data-category="points" data-kind="dated" data-start="2026-10-13T00:00:00+09:00" data-end="2026-10-20T00:00:00+09:00">
+        <div class="benefit-card-body"><div class="benefit-labels"><span class="benefit-status" data-benefit-status>期間限定</span><span class="benefit-tag">Playフェス</span></div>
+        <h3>Google Playフェス2026</h3>
+        <p class="benefit-reward">限定交換品と書籍15倍に注目！</p>
+        <dl><div><dt>対象</dt><dd>日本向けPlayストアで各特典が表示される方</dd></div><div><dt>期間</dt><dd>10月13〜19日（書籍15倍の予告は16〜18日）</dd></div></dl>
+        <p class="benefit-key-condition">必要ポイント・在庫・適用条件は特典ごとに異なります。書籍15倍は開催前の筆者の画面で確認した案内です。</p>
+        <a class="benefit-action" href="../articles/2026-10-10-google-play-fest-2026.html">交換品とポイント特典を見る <span aria-hidden="true">→</span></a>
+        <details class="benefit-details"><summary>確認方法・条件・出典</summary>
+<p ><a href="../articles/2026-10-10-google-play-fest-2026.html">Google Playフェス2026</a>の開催期間は10月13〜19日です。交換品や書籍15倍などの案内は、開催前に筆者が撮影した画面と、開催中の日本向け公式情報を分けてまとめています。</p>
+        <p class="benefit-source"><a href="https://play.google.com/store/apps/editorial?hl=ja&amp;gl=JP&amp;id=mc_games_cmp_play_days_2026_fcp" target="_blank" rel="noopener noreferrer">Google Play：日本向け公式案内</a> · 確認日: <time datetime="2026-10-14">2026-10-14</time></p></details></div>
+      </article>
+      <article class="benefit-card benefit-theme-play" data-benefit-id="lawson-gift-code-2026-autumn" data-category="gift" data-kind="dated" data-start="2026-09-29T00:00:00+09:00" data-end="2026-10-20T00:00:00+09:00">
         <div class="benefit-card-body"><div class="benefit-labels"><span class="benefit-status" data-benefit-status>期間限定</span><span class="benefit-tag">ギフトコード還元</span></div>
         <h3><span aria-hidden="true">🏪</span> ローソンのGoogle Play購入特典</h3>
         <p class="benefit-reward">最大10％分のギフトコード・1人5,000円分まで</p>
@@ -180,38 +189,40 @@
       <div class="benefit-empty" hidden><p data-empty-message></p><a href="#next-campaign-title">次回のポイント増量について確認する</a></div>
     </div>
     <details class="benefit-ended" hidden><summary>終了した企画（全件）</summary><div class="benefit-grid" data-ended-list></div></details>
+    <p class="benefit-filter-note" data-filter-note hidden></p>
     <p class="benefit-footnote">日時は日本時間です。掲載時点の情報をもとに、対象・在庫・受取条件はリンク先やご自身のPlayストアで確認してください。</p>
     <noscript><p class="benefit-footnote">すべての掲載情報を表示しています。開始日・終了日を確認してご利用ください。</p></noscript>
   </section>
-  <section class="section personal-offer-check" aria-labelledby="personal-offer-check">
-    <h2 id="personal-offer-check">自分の増量・クエストを確認する</h2>
+  <nav class="latest-jump-links" aria-label="特典の確認に役立つ情報"><a href="#personal-offer-check">自分の増量・クエスト</a><a href="#current-notes">制度・条件の確認メモ</a><a href="#change-records">変更点・確認記録</a><a href="../articles/2026-10-03-super-weekly-reward-prize-history.html">スーパーウィークリーの賞品履歴</a></nav>
+  <details class="benefit-reference personal-offer-check">
+    <summary><h2 id="personal-offer-check">自分の増量・クエストを確認する</h2></summary>
     <ol><li>利用するGoogleアカウントでPlayストアを開き、プロフィールから「Play Points」へ進みます。</li><li>増量は「貯める」で、対象商品・獲得率・期限・開始操作が必要かを確認します。</li><li>クエストは表示されたカードを開き、各ステップと完了期限を確認します。「ゲーム」「アプリ」などに表示される場合もあります。</li></ol>
     <p>表示内容はアカウントごとに異なります。購入する場合は、元から予定している商品が条件に合うかを先に確認してください。</p>
     <p><a href="../articles/2026-07-31-google-play-quests.html#quest-route-title">クエストの購入条件・進め方を見る</a> ／ <a href="../articles/2026-09-19-play-points-promotion-not-showing.html">表示されないときの確認順</a></p>
     <p class="benefit-source">公式の確認先：<a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja">ポイント増量</a> ／ <a href="https://support.google.com/googleplay/answer/11534416?hl=ja">Google Playのクエスト</a></p>
-  </section>
+  </details>
   <section class="section latest-status-panel lp-hero-panel" aria-labelledby="current-notes-title" id="current-notes">
-<h2 id="current-notes-title">10月3日の追加確認：今の条件をひと目で</h2>
-<p class="benefit-footnote">これまでの記事を残し、現在の公式案内を日付付きで追記しました。制度がこの日に変わったという意味ではありません。個別の対象・期限・在庫は、ご自身の画面で確認してください。</p>
-<div class="latest-status-grid"><article class="benefit-card" data-source-scope="public"><span class="latest-status-label benefit-status">Play Pass｜PCとモバイルを区別</span><h3>PC版ではPlay Passのポイントボーナス・ブースターを利用できません</h3><p>PCでの対象ゲーム利用と、モバイルの木曜ポイント特典を分けて確認できます。</p><p><a href="../articles/2026-08-16-play-pass-worth-it.html#current-info-20261003">記事の現在の確認メモを読む</a> · <a href="https://support.google.com/googleplay/answer/17266661?hl=ja">公式の条件を確認</a></p><p class="meta-line benefit-source">追記の確認日: <time datetime="2026-10-03">2026-10-03</time> / 再確認: <time datetime="2026-10-15">2026-10-15</time> / 次回確認目安: 2026-10-22頃</p></article>
-<article class="benefit-card" data-source-scope="public"><span class="latest-status-label benefit-status">Super Ticket｜日本向け公式情報</span><h3>火曜・木曜の対象と2つの期限</h3><p>未保存は48時間後に削除。保存後は利用可能になってから8週間後の最初の木曜が期限です。</p><p><a href="../articles/2026-09-19-google-play-super-ticket.html#current-info-20261003">記事の現在の確認メモを読む</a> · <a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&amp;hl=ja">公式の条件を確認</a></p><p class="meta-line benefit-source">追記の確認日: <time datetime="2026-10-03">2026-10-03</time> / 再確認: <time datetime="2026-10-15">2026-10-15</time> / 次回確認目安: 2026-10-22頃</p></article>
-<article class="benefit-card" data-source-scope="public"><span class="latest-status-label benefit-status">ポイント期限｜画面で確認</span><h3>「使う」の上部で自分の有効期限を見る</h3><p>残高・有効期限は「使う」、獲得・使用は「ポイント履歴」。ランク進捗や交換後の期限とは分けて確認します。</p><p><a href="../articles/2025-12-25-expiration.html#current-info-20261003">記事の現在の確認メモを読む</a> · <a href="https://support.google.com/googleplay/answer/15776969?hl=ja">公式の条件を確認</a></p><p class="meta-line benefit-source">追記の確認日: <time datetime="2026-10-03">2026-10-03</time> / 再確認: <time datetime="2026-10-15">2026-10-15</time> / 次回確認目安: 2026-10-22頃</p></article>
-<article class="benefit-card" data-source-scope="public"><span class="latest-status-label benefit-status">ランク｜日本向け公式情報</span><h3>必要ポイントと、自分のステータスを確認</h3><p>日本の到達基準と翌年末までの維持ルールを再確認。現在のランクは「ステータスの特典」で確認できます。</p><p><a href="../articles/2026-08-05-play-points-levels-guide.html#current-info-20261003">記事の現在の確認メモを読む</a> · <a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&amp;hl=ja">公式の条件を確認</a></p><p class="meta-line benefit-source">追記の確認日: <time datetime="2026-10-03">2026-10-03</time> / 再確認: <time datetime="2026-10-15">2026-10-15</time> / 次回確認目安: 2026-10-22頃</p></article>
-<article class="benefit-card" data-source-scope="public"><span class="latest-status-label benefit-status">TGSオンライン｜期間と対象を区別</span><h3>公開規約では10月16日9:59まで</h3><p>第1〜3弾とシークレット企画の条件を確認しました。先着枠の残数は未確認です。</p><p><a href="../articles/2026-08-17-tgs-google-play-vip.html#current-info-20261003">記事の現在の確認メモを読む</a> · <a href="https://playpoints.withgoogle.com/tgs/2026/terms-privacy/">公式の条件を確認</a></p><p class="meta-line benefit-source">追記の確認日: <time datetime="2026-10-03">2026-10-03</time> / 再確認: <time datetime="2026-10-15">2026-10-15</time> / 次回確認目安: 2026-10-16頃</p></article>
-<article class="benefit-card" data-source-scope="public"><span class="latest-status-label benefit-status">SteelSeries｜日本向け公式規約</span><h3>前回確認の期限は2027年3月31日23:45</h3><p>前回確認では、プラチナ以上の対象者向けで、1回の注文は対象製品2点まで・他の割引と併用不可でした。10月15日は参照先で規約本文を確認できていないため、現在の期限・対象商品はご自身の特典画面で確かめてください。</p><p><a href="https://steelseries.com/ja-jp/campaigns/google-play-prize-picker-terms-and-conditions">公式の条件を確認</a></p><p class="meta-line benefit-source">追記の確認日: <time datetime="2026-10-03">2026-10-03</time> / 次回確認目安: 2026-10-15頃（再確認待ち）</p></article></div>
+<h2 id="current-notes-title">制度・条件の確認メモ</h2>
+<p class="benefit-footnote">気になる項目を開くと、確認した条件と出典を読めます。確認日は制度の変更日とは限りません。</p>
+<div class="latest-status-grid"><details class="latest-note" data-source-scope="public"><summary><span class="latest-status-label benefit-status">Play Pass｜PCとモバイルを区別</span><h3 class="latest-note-title">PC版ではPlay Passのポイントボーナス・ブースターを利用できません</h3></summary><div class="latest-note-body"><p>PCでの対象ゲーム利用と、モバイルの木曜ポイント特典を分けて確認できます。</p><p><a href="../articles/2026-08-16-play-pass-worth-it.html#current-info-20261003">記事の現在の確認メモを読む</a> · <a href="https://support.google.com/googleplay/answer/17266661?hl=ja">公式の条件を確認</a></p><p class="meta-line benefit-source">追記の確認日: <time datetime="2026-10-03">2026-10-03</time> / 再確認: <time datetime="2026-10-15">2026-10-15</time> / 次回確認目安: 2026-10-22頃</p></div></details>
+<details class="latest-note" data-source-scope="public"><summary><span class="latest-status-label benefit-status">Super Ticket｜日本向け公式情報</span><h3 class="latest-note-title">火曜・木曜の対象と2つの期限</h3></summary><div class="latest-note-body"><p>未保存は48時間後に削除。保存後は利用可能になってから8週間後の最初の木曜が期限です。</p><p><a href="../articles/2026-09-19-google-play-super-ticket.html#current-info-20261003">記事の現在の確認メモを読む</a> · <a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&amp;hl=ja">公式の条件を確認</a></p><p class="meta-line benefit-source">追記の確認日: <time datetime="2026-10-03">2026-10-03</time> / 再確認: <time datetime="2026-10-15">2026-10-15</time> / 次回確認目安: 2026-10-22頃</p></div></details>
+<details class="latest-note" data-source-scope="public"><summary><span class="latest-status-label benefit-status">ポイント期限｜画面で確認</span><h3 class="latest-note-title">「使う」の上部で自分の有効期限を見る</h3></summary><div class="latest-note-body"><p>残高・有効期限は「使う」、獲得・使用は「ポイント履歴」。ランク進捗や交換後の期限とは分けて確認します。</p><p><a href="../articles/2025-12-25-expiration.html#current-info-20261003">記事の現在の確認メモを読む</a> · <a href="https://support.google.com/googleplay/answer/15776969?hl=ja">公式の条件を確認</a></p><p class="meta-line benefit-source">追記の確認日: <time datetime="2026-10-03">2026-10-03</time> / 再確認: <time datetime="2026-10-15">2026-10-15</time> / 次回確認目安: 2026-10-22頃</p></div></details>
+<details class="latest-note" data-source-scope="public"><summary><span class="latest-status-label benefit-status">ランク｜日本向け公式情報</span><h3 class="latest-note-title">必要ポイントと、自分のステータスを確認</h3></summary><div class="latest-note-body"><p>日本の到達基準と翌年末までの維持ルールを再確認。現在のランクは「ステータスの特典」で確認できます。</p><p><a href="../articles/2026-08-05-play-points-levels-guide.html#current-info-20261003">記事の現在の確認メモを読む</a> · <a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&amp;hl=ja">公式の条件を確認</a></p><p class="meta-line benefit-source">追記の確認日: <time datetime="2026-10-03">2026-10-03</time> / 再確認: <time datetime="2026-10-15">2026-10-15</time> / 次回確認目安: 2026-10-22頃</p></div></details>
+<details class="latest-note" data-source-scope="public"><summary><span class="latest-status-label benefit-status">TGSオンライン｜期間と対象を区別</span><h3 class="latest-note-title">公開規約では10月16日9:59まで</h3></summary><div class="latest-note-body"><p>第1〜3弾とシークレット企画の条件を確認しました。先着枠の残数は未確認です。</p><p><a href="../articles/2026-08-17-tgs-google-play-vip.html#current-info-20261003">記事の現在の確認メモを読む</a> · <a href="https://playpoints.withgoogle.com/tgs/2026/terms-privacy/">公式の条件を確認</a></p><p class="meta-line benefit-source">追記の確認日: <time datetime="2026-10-03">2026-10-03</time> / 再確認: <time datetime="2026-10-15">2026-10-15</time> / 次回確認目安: 2026-10-16頃</p></div></details>
+<details class="latest-note" data-source-scope="public"><summary><span class="latest-status-label benefit-status">SteelSeries｜日本向け公式規約</span><h3 class="latest-note-title">前回確認の期限は2027年3月31日23:45</h3></summary><div class="latest-note-body"><p>前回確認では、プラチナ以上の対象者向けで、1回の注文は対象製品2点まで・他の割引と併用不可でした。10月15日は参照先で規約本文を確認できていないため、現在の期限・対象商品はご自身の特典画面で確かめてください。</p><p><a href="https://steelseries.com/ja-jp/campaigns/google-play-prize-picker-terms-and-conditions">公式の条件を確認</a></p><p class="meta-line benefit-source">追記の確認日: <time datetime="2026-10-03">2026-10-03</time> / 次回確認目安: 2026-10-15頃（再確認待ち）</p></div></details></div>
 </section>
-<section class="section latest-status-panel history-records" aria-labelledby="change-records-title" id="change-records"><h2 id="change-records-title">Play Points、今はどうなった？変更点と確認記録</h2><p>「前に読んだ説明と違うかも」と思ったら、ここから確かめてください。公式が発表した変更と、当サイトが今の条件を再確認した記録を分けています。記事の更新日だけを見て、制度がその日に変わったと考える必要はありません。</p><ol class="history-timeline"><li><p class="change-record-date"><time datetime="2026-10-15">2026年10月15日</time>｜開催案内・制度説明の再確認</p><h3>Playフェスは開催中。今の案内へ更新しました</h3><p>日本向けの公式案内に合わせ、Playフェスの「開催予定」を開催期間中の案内に更新しました。ランク・週次特典・クエスト・ポイント確認の公式説明も再確認しています。割引製品の個別条件や在庫は、特典画面で確かめてください。</p><a href="../articles/2026-10-10-google-play-fest-2026.html">Playフェスの交換品・特典を見る</a></li><li><span class="latest-status-label benefit-status">公式情報の確認</span><h3>2026年10月8日｜ローソンの秋企画と日本のランク特典</h3><p>ローソンの最大10％分ギフトコード企画を掲載しました。購入・応募・特典取得の期限を分け、Play Points還元との違いを明記しています。日本のGoogle公式特典表も再確認し、基本説明にゴールド以上のスーパーウィークリーとプラチナ以上のSuper Ticketを反映しました。</p><p><a href="../articles/2026-06-20-discount-gift-cards.html#lawson-2026-autumn">ローソンの条件を見る</a> · <a href="../about-playpoints.html">日本のランク特典を見る</a></p></li><li><span class="latest-status-label benefit-status">掲載内容の確認</span><h3>2026年10月3日｜スーパーウィークリーの賞品をランク別に記録</h3><p>公式ページのゴールド・プラチナ・ダイヤモンドの賞品を、過去例と分けて保存しました。今の残数と参加可否は、ご自身の特典画面で確認します。</p><p><strong>関係する人：</strong>今の賞品や過去の掲載を見返したい方。</p><a href="../articles/2026-10-03-super-weekly-reward-prize-history.html">賞品一覧と掲載記録を見る →</a></li><li><span class="latest-status-label benefit-status">条件の再確認</span><h3>2026年10月3日｜残高・クーポンの確認先を整理</h3><p>Play Points残高と年間進捗、交換したクーポンの保存先を公式案内に沿って追記しました。制度の変更を確認した記録ではありません。</p><p><strong>関係する人：</strong>計算に使う数字や、交換後の保存場所で迷っている方。</p><p><a href="../articles/2025-12-25-check-balance.html#current-info-20261003">残高・年間進捗の追記</a> ／ <a href="../articles/2026-07-25-play-points-coupon-not-applied.html#current-info-20261003">クーポンの確認場所</a></p></li><li><span class="latest-status-label benefit-status">公式リリースノート</span><h3>2026年5月11日付｜週次特典などの通知・メール設定</h3><p>Google Playストア v51.4のリリースノートでは、スマートフォンでスーパーウィークリーリワードなどを通知やメールから受け取る設定が案内されました。</p><p><strong>関係する人：</strong>特典の確認を忘れがちな方。ご自身のPlayストアで、利用できる通知設定と特典カードを確認してください。日本の全アカウントへの提供日や、設定画面の位置まではこの資料で確定できません。</p><p>公式記載日：2026年5月11日 ／ 掲載確認日：2026年10月3日</p><a href="https://support.google.com/product-documentation/answer/14343500?hl=ja" target="_blank" rel="noopener noreferrer">Google公式リリースノートを見る</a></li></ol><details class="benefit-reference"><summary>この記録の日付と残し方</summary><p>「公式記載日」は出典に明記された日、「掲載確認日」は当サイトが読んだ日です。実際の変更日が不明なものに推測で日付を付けません。以前の記事と確認メモは残し、新しい記録から詳しい説明へ案内します。</p><p>計算機やサイトの機能変更は<a href="../changelog.html">PlayPointの更新履歴</a>で確認できます。</p></details></section>
-  <section class="section benefit-next-campaign">
-    <div class="lp-hero-panel" aria-labelledby="next-campaign-title">
-      <h2 id="next-campaign-title">2026年の次回ポイント増量キャンペーン予定</h2>
+<details class="benefit-reference history-records" aria-labelledby="change-records-title" id="change-records"><summary><h2 id="change-records-title">Play Pointsの変更点・確認記録</h2></summary><p>「前に読んだ説明と違うかも」と思ったら、ここから確かめてください。公式が発表した変更と、当サイトが今の条件を再確認した記録を分けています。記事の更新日だけを見て、制度がその日に変わったと考える必要はありません。</p><ol class="history-timeline"><li><p class="change-record-date"><time datetime="2026-10-15">2026年10月15日</time>｜開催案内・制度説明の再確認</p><h3>Playフェスは開催中。今の案内へ更新しました</h3><p>日本向けの公式案内に合わせ、Playフェスの「開催予定」を開催期間中の案内に更新しました。ランク・週次特典・クエスト・ポイント確認の公式説明も再確認しています。割引製品の個別条件や在庫は、特典画面で確かめてください。</p><a href="../articles/2026-10-10-google-play-fest-2026.html">Playフェスの交換品・特典を見る</a></li><li><span class="latest-status-label benefit-status">公式情報の確認</span><h3>2026年10月8日｜ローソンの秋企画と日本のランク特典</h3><p>ローソンの最大10％分ギフトコード企画を掲載しました。購入・応募・特典取得の期限を分け、Play Points還元との違いを明記しています。日本のGoogle公式特典表も再確認し、基本説明にゴールド以上のスーパーウィークリーとプラチナ以上のSuper Ticketを反映しました。</p><p><a href="../articles/2026-06-20-discount-gift-cards.html#lawson-2026-autumn">ローソンの条件を見る</a> · <a href="../about-playpoints.html">日本のランク特典を見る</a></p></li><li><span class="latest-status-label benefit-status">掲載内容の確認</span><h3>2026年10月3日｜スーパーウィークリーの賞品をランク別に記録</h3><p>公式ページのゴールド・プラチナ・ダイヤモンドの賞品を、過去例と分けて保存しました。今の残数と参加可否は、ご自身の特典画面で確認します。</p><p><strong>関係する人：</strong>今の賞品や過去の掲載を見返したい方。</p><a href="../articles/2026-10-03-super-weekly-reward-prize-history.html">賞品一覧と掲載記録を見る →</a></li><li><span class="latest-status-label benefit-status">条件の再確認</span><h3>2026年10月3日｜残高・クーポンの確認先を整理</h3><p>Play Points残高と年間進捗、交換したクーポンの保存先を公式案内に沿って追記しました。制度の変更を確認した記録ではありません。</p><p><strong>関係する人：</strong>計算に使う数字や、交換後の保存場所で迷っている方。</p><p><a href="../articles/2025-12-25-check-balance.html#current-info-20261003">残高・年間進捗の追記</a> ／ <a href="../articles/2026-07-25-play-points-coupon-not-applied.html#current-info-20261003">クーポンの確認場所</a></p></li><li><span class="latest-status-label benefit-status">公式リリースノート</span><h3>2026年5月11日付｜週次特典などの通知・メール設定</h3><p>Google Playストア v51.4のリリースノートでは、スマートフォンでスーパーウィークリーリワードなどを通知やメールから受け取る設定が案内されました。</p><p><strong>関係する人：</strong>特典の確認を忘れがちな方。ご自身のPlayストアで、利用できる通知設定と特典カードを確認してください。日本の全アカウントへの提供日や、設定画面の位置まではこの資料で確定できません。</p><p>公式記載日：2026年5月11日 ／ 掲載確認日：2026年10月3日</p><a href="https://support.google.com/product-documentation/answer/14343500?hl=ja" target="_blank" rel="noopener noreferrer">Google公式リリースノートを見る</a></li></ol><details class="benefit-reference"><summary>この記録の日付と残し方</summary><p>「公式記載日」は出典に明記された日、「掲載確認日」は当サイトが読んだ日です。実際の変更日が不明なものに推測で日付を付けません。以前の記事と確認メモは残し、新しい記録から詳しい説明へ案内します。</p><p>計算機やサイトの機能変更は<a href="../changelog.html">PlayPointの更新履歴</a>で確認できます。</p></details></details>
+  <details class="benefit-reference benefit-next-campaign">
+    <summary><h2 id="next-campaign-title">2026年の次回ポイント増量キャンペーン予定</h2></summary>
+    <div class="latest-reference-body">
       <p>ここでいう「ポイント増量」は、いわゆる「ポイントアップ」と呼ばれる、通常より獲得率が高くなるキャンペーンです。</p>
       <p><strong>毎月1日の「Playポイントデー」と、個別に届く増量オファーを分けて確認しましょう。</strong>月初の案内は<a href="../articles/2026-08-16-play-points-day.html">Playポイントデーの確認手順</a>にまとめています。次の回の対象・獲得率・時間は、ご自身のPlayストア表示で確認してください。</p>
       <p>Google公式ではポイント獲得率が上がるプロモーション自体は案内されていますが、対象・獲得率・有効期限は異なり、一部は利用者ごとに表示されます。1回の購入に複数のプロモーションを組み合わせることはできず、利用できる中で最も高い獲得率が適用されます。購入前にGoogle Playの「Play Points」→「貯める」で、自分のアカウントに現在表示されている条件を確認してください。</p>
       <p>「SNSでは出ているのに自分の『貯める』にはない」場合は、<a href="../articles/2026-09-19-play-points-promotion-not-showing.html"><strong>増量キャンペーンが表示されない時の確認順</strong></a>へ。対象者限定、カスタマイズ、Play Pass、PC限定などを分けて確認できます。</p>
-      <p class="lp-note">「開始予定」タブには、開始日時を確認できた個別の企画を載せます。月初の定例案内だけを根拠に、全員に同じオファーが出るとは扱いません。</p>
+      <p class="lp-note">絞り込みの「開始予定」には、開始日時を確認できた個別の企画を載せます。月初の定例案内だけを根拠に、全員に同じオファーが出るとは扱いません。</p>
     </div>
 
-  </section>
+  </details>
   <details class="benefit-reference"><summary>いつもの特典・確認方法を詳しく見る</summary>
   <section class="section" aria-labelledby="scope-title">
 <p><span>公式情報の確認: <time data-latest-verified datetime="2026-10-15">2026-10-15</time></span></p>

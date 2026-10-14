@@ -156,6 +156,35 @@ async function main() {
       console.log('ok - actual ad entry permission boundary: ' + target);
     }
 
+    // 最新情報ページでも、配信済み広告と自動配置広告が狭い画面で本文を押し広げない。
+    {
+      const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: 'block' });
+      try {
+        await configureContext(context, origin);
+        const page = await context.newPage();
+        await page.goto(new URL('latest/', baseUrl).href, { waitUntil: 'load' });
+        await waitForRevenueRuntime(page, '.lp-ad-container ins.adsbygoogle');
+        await page.evaluate(() => {
+          const creative = document.createElement('div'); creative.style.cssText = 'width:815px;height:90px';
+          document.querySelector('.lp-ad-container ins.adsbygoogle').append(creative);
+          const autoAd = document.createElement('div'); autoAd.className = 'google-auto-placed ap_container';
+          autoAd.append(creative.cloneNode(true)); document.querySelector('.benefit-board').after(autoAd);
+        });
+        for (const width of [360, 390, 1280]) {
+          await page.setViewportSize({ width, height: 844 });
+          const layout = await page.evaluate(() => ({
+            pageOverflow: document.documentElement.scrollWidth > innerWidth + 1,
+            ads: [...document.querySelectorAll('.lp-ad-container,.google-auto-placed')].map(ad => {
+              ad.scrollLeft = ad.scrollWidth;
+              return { width: ad.clientWidth, scrollWidth: ad.scrollWidth, reachable: ad.scrollWidth <= ad.clientWidth || ad.scrollLeft > 0 };
+            })
+          }));
+          assert(!layout.pageOverflow && layout.ads.every(ad => ad.reachable), `latest/${width}: 広告を枠内で閲覧できない ${JSON.stringify(layout)}`);
+        }
+        console.log('ok - latest filled ads stay within page after viewport resize');
+      } finally { await context.close(); }
+    }
+
     // 記事末の広告は画面外で要求せず、近づいた時点で同意を再確認して一度だけ準備する。
     for (const [target, width] of [
       ['articles/2026-03-10-play-points-reflection-timing.html', 390],
