@@ -113,8 +113,11 @@ test('article hreflang links are reciprocal and use the Taiwan locale code', () 
     for (const { attrs } of alternates) {
       assert.notEqual(attrs.hreflang, 'zh-Hant', file + ': use zh-TW');
       const url = new URL(attrs.href); assert.equal(url.origin, 'https://playpoint-sim.com', file + ': alternate origin');
-      const targetFile = sitePathToFile(url.pathname); assert.ok(articleSet.has(targetFile), file + ': alternate registered article');
+      const targetFile = sitePathToFile(url.pathname);
+      const registeredOverview = targetFile === 'about-playpoints.html';
+      assert.ok(articleSet.has(targetFile) || registeredOverview, file + ': alternate registered article or program overview');
       const target = read(targetFile);
+      assert.ok(openingTags(target).some(node => node.tag === 'link' && node.attrs.rel === 'canonical' && node.attrs.href === url.href), file + ': alternate self canonical');
       if (attrs.hreflang === 'x-default') continue;
       assert.equal(openingTags(target).find(node => node.tag === 'html')?.attrs.lang, attrs.hreflang, file + ': alternate language');
       assert.ok(links(target).some(node => node.attrs.hreflang === lang && node.attrs.href === own), file + ': reciprocal alternate');

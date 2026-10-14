@@ -103,7 +103,7 @@ const ROLE_RULES = Object.freeze([
   },
   {
     role: 'reference',
-    test: stem => /(?:getting-started|check-balance|expiration|family-sharing|family-link|multiple-accounts|movies-books|play-games|games-vs-play-points|refund|subscription|subscriptions|device-change|country-change|country-differences|apps-books-purchases|balance-history-progress|join-eligibility|rounding-tax|diamond-vip|premium-support|pc-play-games-points|redeemed-item|install-offer|january-rank-reset|levels(?:-guide)?$)/.test(stem)
+    test: stem => /(?:google-play-points-basics|getting-started|check-balance|expiration|family-sharing|family-link|multiple-accounts|movies-books|play-games|games-vs-play-points|refund|subscription|subscriptions|device-change|country-change|country-differences|apps-books-purchases|balance-history-progress|join-eligibility|rounding-tax|diamond-vip|premium-support|pc-play-games-points|redeemed-item|install-offer|january-rank-reset|levels(?:-guide)?$)/.test(stem)
   }
 ]);
 
