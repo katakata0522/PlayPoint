@@ -50,7 +50,7 @@ const GAME_EVIDENCE = {
   },
   zzz: {
     editions: text('https://zenless.hoyoverse.com/en-us/', 'https://zenless.hoyoverse.com/ko-kr/', 'https://zenless.hoyoverse.com/zh-tw/'),
-    offers: common(offer(text('Inter-Knot Membership', '인터넷 회원', '繩網會員'), text('Includes 300 Monochromes at purchase and 90 Polychromes per daily login during a 30-day membership. Separate the immediate reward from the daily rewards.', '구매 시 흑백 필름 300개와 30일간 매일 로그인 보상 폴리크롬 90개를 받습니다. 즉시 받는 보상과 일일 보상을 나눠 생각하세요.', '購買時獲得300菲林底片，30天會員期間每天登入領取90菲林。立即獲得的部分與每日獎勵要分開考慮。'), S.interknot))
+    offers: common(offer(text('Inter-Knot Membership', '로프넷 회원', '繩網會員'), text('Includes 300 Monochromes at purchase and 90 Polychromes per daily login during a 30-day membership. Separate the immediate reward from the daily rewards.', '구매 시 모노크롬 300개와 30일간 매일 로그인 보상 폴리크롬 90개를 받습니다. 즉시 받는 보상과 일일 보상을 나눠 생각하세요.', '購買時獲得300菲林底片，30天會員期間每天登入領取90菲林。立即獲得的部分與每日獎勵要分開考慮。'), S.interknot))
   },
   wutheringwaves: {
     editions: text('https://wutheringwaves.kurogames.com/en/', 'https://wutheringwaves.kurogames.com/kr/', 'https://wutheringwaves.kurogames.com/zh-tw/'),
@@ -90,7 +90,7 @@ const GAME_EVIDENCE = {
   umamusume: {
     editions: text('https://cygames.com/en/games/umamusume_en/', 'https://umamusume.kakaogames.com/mejiro/index.html', 'https://apps.apple.com/tw/app/%E8%B3%BD%E9%A6%AC%E5%A8%98pretty-derby/id1575861620'),
     offers: {
-      en: [offer(text('Daily Carat Pack'), text('The English publisher listing names this Daily Carat Pack. Japanese Umasuku and Umaplan are separate services; their prices and benefits are not copied to this edition.'), S.umaUS)],
+      en: [offer(text('Daily Carat Pack'), text('Daily Carat Pack is the product to look for in the English version. Its rewards and price belong to that version; Japanese Umasuku and Umaplan have separate benefits.'), S.umaUS)],
       ko: [offer(text(null, '먼슬리 우마'), text(null, '구매·갱신 시 유료 쥬얼 500개, 매일 무료 쥬얼 50개와 데일리 레이스 티켓 추가 보충 등을 제공합니다. 못 받은 일일 무료 쥬얼은 다음 로그인에 모아서 지급됩니다.'), S.umaKR, true)],
       tw: [offer(text(null, null, '每日寶石包'), text(null, null, '繁體中文版的發行商商品列表列有每日寶石包。不要直接套用日本版ウマスク與ウマプラン的特典或日圓價格。'), S.umaTW)]
     }
@@ -125,7 +125,7 @@ const GAME_EVIDENCE = {
   },
   arknights: {
     editions: text('https://www.arknights.global/', 'https://www.arknights.kr/', 'https://apps.apple.com/tw/app/%E6%98%8E%E6%97%A5%E6%96%B9%E8%88%9F/id1490985322?platform=ipad'),
-    offers: { en: [offer(text('Monthly Card'), text('The publisher identifies a Monthly Card in its pack notice. Compare its daily rewards with the Originite Prime you need immediately; enter the Android checkout price below.'), source('https://www.arknights.global/news/337', 'US', 'publisher-notice'))], ko: [], tw: [offer(text(null, null, '月卡'), text(null, null, '台灣發行商的商品列表列有月卡。先比較每天領取的獎勵與立即需要的源石，再用Android結帳金額計算。'), source('https://apps.apple.com/tw/app/%E6%98%8E%E6%97%A5%E6%96%B9%E8%88%9F/id1490985322?platform=ipad', 'TW', 'publisher-ios-listing'))] }
+    offers: { en: [offer(text('Monthly Card'), text('A Monthly Card spreads rewards across your daily play. Compare what you can collect before your next banner with an immediate Originite Prime pack, using the price shown at Android checkout.'), source('https://www.arknights.global/news/337', 'US', 'publisher-notice'))], ko: [], tw: [offer(text(null, null, '月卡'), text(null, null, '月卡的每日獎勵適合慢慢存資源。先看目標尋訪前能領到多少，再用 Android 結帳金額與立即取得源石的方案比較。'), source('https://apps.apple.com/tw/app/%E6%98%8E%E6%97%A5%E6%96%B9%E8%88%9F/id1490985322?platform=ipad', 'TW', 'publisher-ios-listing'))] }
   },
   pad: {
     editions: text('https://www.puzzleanddragons.us/', 'https://pad.neocyon.com/', 'https://pad.gungho.jp/hktw/pad/'),
@@ -166,7 +166,7 @@ const GAME_EVIDENCE = {
   shadowversewb: {
     editions: text('https://shadowverse-wb.com/en/', 'https://shadowverse-wb.com/ko/', 'https://shadowverse-wb.com/cht/'),
     names: text('Shadowverse: Worlds Beyond', '섀도우버스: 월즈 비욘드', '闇影詩章：凌越世界'),
-    offers: common(offer(text('Premium Battle Pass', '프리미엄 배틀 패스', '高級對戰通行證'), text('Season 16 runs from the September 29 maintenance until card set #10. The pass uses in-game Crystals; spending Crystals you already own is not a new Google Play purchase.', '시즌 16은 9월 29일 점검 후부터 10탄 카드팩 출시까지입니다. 패스는 게임 내 크리스탈로 구매하며 이미 가진 크리스탈 사용은 새로운 Google Play 결제가 아닙니다.', 'Season 16自9月29日維護後至第10彈卡包登場為止。通行證以遊戲內水晶購買，花掉原有水晶不是一筆新的Google Play付款。'), S.sv))
+    offers: common(offer(text('Premium Battle Pass', '프리미엄 배틀 패스', '高級對戰通行證'), text('Season 16 runs from the September 29 maintenance until card set #10. The pass uses in-game Crystals; spending Crystals you already own is not a new Google Play purchase.', '시즌 16은 9월 29일 점검 후부터 10탄 카드팩 출시까지입니다. 패스는 게임 내 크리스탈로 구매하며 이미 가진 크리스탈 사용은 새로운 Google Play 결제가 아닙니다.', 'Season 16自9月29日維護後至第10彈卡包登場為止。通行證以遊戲內水晶購買，花掉原有水晶不是一筆新的Google Play 付款。'), S.sv))
   },
   'prospi-a': {
     editions: text('https://www.konami.com/games/prospi_a/', 'https://www.konami.com/games/prospi_a/', 'https://www.konami.com/games/prospi_a/'), referenceLocales: locales, offers: empty()

@@ -75,7 +75,7 @@ const CASH_CONVERSION_H1_PATTERNS = Object.freeze({
 
 const TW_CONTEXTUAL_H1_PATTERNS = Object.freeze({
   couponNotApplied: /<h1\b[^>]*>\s*Google Play Points 折價券沒有自動套用時\s*<\/h1>/i,
-  platinumDiamond: /<h1\b[^>]*>\s*台灣 Play Points：白金 4,000 點，鑽石 15,000 點起\s*<\/h1>/i
+  platinumDiamond: /<h1\b[^>]*>\s*(?:台灣 Play Points：白金 4,000 點，鑽石 15,000 點起|台灣 Google Play Points 白金與鑽石：升級金額、積點率和福利比較)\s*<\/h1>/i
 });
 
 const CONTEXTUAL_PROMPT_PATHS = Object.freeze({
