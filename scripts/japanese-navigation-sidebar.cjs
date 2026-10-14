@@ -235,15 +235,26 @@ function transformArticle(html, article, catalog) {
   const label = (article.listTitle || article.title).split('｜').join('：');
   const breadcrumb = `<div class="breadcrumbs-wrapper"><nav aria-label="パンくずリスト">${trail.map(item => `<a href="${item.href}">${escapeHtml(item.name)}</a> <span aria-hidden="true">&gt;</span> `).join('')}<span aria-current="page">この記事</span></nav></div>`;
   after = after.replace(/<div class="breadcrumbs-wrapper">[\s\S]*?<\/div>/, breadcrumb);
+  const canonicalHref = article.href.replace(/\/index\.html$/, '/');
+  const breadcrumbItems = [...trail, { name: label, href: canonicalHref }]
+    .map((item, i) => ({ '@type': 'ListItem', position: i + 1, name: item.name, item: 'https://playpoint-sim.com' + item.href }));
+  let hasBreadcrumbSchema = false;
   after = after.replace(/(<script\b[^>]*type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/g, (whole, start, json, end) => {
     const data = JSON.parse(json);
     const update = node => {
       if (!node || typeof node !== 'object') return;
-      if (node['@type'] === 'BreadcrumbList') node.itemListElement = [...trail, { name: label, href: article.href }].map((item, i) => ({ '@type': 'ListItem', position: i + 1, name: item.name, item: 'https://playpoint-sim.com' + item.href }));
+      if ([].concat(node['@type'] || []).includes('BreadcrumbList')) {
+        node.itemListElement = breadcrumbItems;
+        hasBreadcrumbSchema = true;
+      }
       if (Array.isArray(node)) node.forEach(update); else Object.values(node).forEach(update);
     };
-    update(data); return start + JSON.stringify(data) + end;
+    update(data); return start + JSON.stringify(data).replaceAll('<', '\\u003c') + end;
   });
+  if (!hasBreadcrumbSchema) {
+    const schema = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: breadcrumbItems };
+    after = after.replace('</head>', '<script type="application/ld+json">' + JSON.stringify(schema).replaceAll('<', '\\u003c') + '</script>\n</head>');
+  }
   after = after.replace(/<header\b[^>]*class="[^"]*\bsite-header\b[^"]*"[^>]*>[\s\S]*?<\/header>/, renderHeader());
   if (SIDEBAR.test(after)) after = after.replace(SIDEBAR, sidebar);
   else {

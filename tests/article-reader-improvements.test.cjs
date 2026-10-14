@@ -59,8 +59,16 @@ test('記事パンくずは表示用7分類と構造化データを一致させ�
     assert.ok(breadcrumb.includes('?topic=' + encodeURIComponent(article.browseCategory)), article.id);
     const data = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map(match => JSON.parse(match[1]));
     const crumbs = data.flatMap(node => node['@graph'] || [node]).find(node => node['@type'] === 'BreadcrumbList');
-    if (crumbs) assert.equal(crumbs.itemListElement[1].name, article.browseCategory, article.id);
+    assert.ok(crumbs, article.id + ': パンくずを検索にも伝える');
+    assert.equal(crumbs.itemListElement.length, 3, article.id);
+    assert.equal(crumbs.itemListElement[1].name, article.browseCategory, article.id);
+    assert.deepEqual(crumbs.itemListElement.map(item => item.position), [1, 2, 3], article.id);
+    assert.equal(crumbs.itemListElement[0].item, 'https://playpoint-sim.com/blog/', article.id);
+    assert.equal(crumbs.itemListElement[2].item, new URL(article.file.replace(/index\.html$/, ''), 'https://playpoint-sim.com/blog/').href, article.id);
+    assert.match(html, /name="playpoint:anchor-ads" content="collapsed-bottom"/, article.id + ': 通常アンカーを下部に表示');
   }
+  const hubSchemas = [...read('blog/index.html').matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map(match => JSON.parse(match[1]));
+  assert.equal(hubSchemas.some(node => node['@type'] === 'BreadcrumbList'), false, '入口には表示のないパンくずを作らない');
 });
 
 test('ゲーム記事は先に回答を読み、全端末で本文目次と主張近くの一次情報を使える', () => {
