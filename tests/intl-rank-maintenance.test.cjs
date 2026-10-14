@@ -4,6 +4,7 @@ const assert = require('node:assert');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { extractArticleStructuredData } = require('../scripts/article-date-contract.cjs');
 
 const root = path.resolve(__dirname, '..');
 const pages = [
@@ -93,7 +94,7 @@ test('日本語の既存記事と記事データは同じ更新日を持つ', ()
 
   assert.ok(article);
   assert.strictEqual(article.modified, date);
-  assert.ok(html.includes(`"dateModified": "${date}"`) || html.includes(`"dateModified":"${date}"`));
+  assert.strictEqual(extractArticleStructuredData(html)?.dateModified?.slice(0, 10), date);
 });
 
 test('専用サイトマップは4言語URLと完全なhreflangを持ちrobots.txtから発見できる', () => {
