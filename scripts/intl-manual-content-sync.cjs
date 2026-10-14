@@ -10,7 +10,7 @@ const HUB_CONTENT = {
     description: 'Browse region-checked Google Play Points guides for US levels, eligibility, promotions, account issues and game-specific purchase decisions.',
     links: [
       ['/en/articles/google-play-points-super-weekly-reward.html', 'Super Weekly Prize eligibility, prize stock and Super Tickets'],
-      ['/en/articles/google-play-quests.html', 'Google Play quests not appearing or completing']
+      ['/en/articles/google-play-quests.html', 'Google Play quest not working? Check progress and purchase rules']
     ]
   },
   ko: {

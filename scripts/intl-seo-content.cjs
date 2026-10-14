@@ -1682,6 +1682,24 @@ const INTL_ARTICLE_DATES = {
 
 const MANUAL_COMPARISON_ARTICLES = [
   {
+    "file": "ko/articles/google-play-credit-uses.html",
+    "lang": "ko",
+    "title": "Google Play 크레딧 사용법: 게임·도서·구독에 쓰는 방법",
+    "description": "한국 Google Play 크레딧으로 살 수 있는 게임·전자책·영화·구독을 확인하고, 잔액 선택과 YouTube 결제 조건, Google Pay·하드웨어의 사용 제한을 알아보세요.",
+    "publishedAt": "2026-10-14",
+    "modifiedAt": "2026-10-14",
+    "manual": true
+  },
+  {
+    "file": "tw/articles/google-play-credit-uses.html",
+    "lang": "zh-TW",
+    "title": "Google Play 抵用金怎麼用？遊戲、電子書與訂閱的付款指南",
+    "description": "台灣 Google Play 抵用金可以買什麼？從遊戲、電子書、電影到支援的訂閱，查看餘額付款步驟、YouTube 請款條件與不能使用的地方。",
+    "publishedAt": "2026-10-14",
+    "modifiedAt": "2026-10-14",
+    "manual": true
+  },
+  {
     "file": "en/articles/google-play-points-install-offer-not-received.html",
     "lang": "en",
     "title": "Play Points app install reward not received? What to check",

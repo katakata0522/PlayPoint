@@ -2077,7 +2077,7 @@
   },
   {
     "id": "play-points-coupon-not-applied",
-    "title": "Google Play Pointsクーポンが使えない？保存場所・条件・確認手順",
+    "title": "Google Play Pointsクーポンが使えない？「特典を適用できません」の対処",
     "date": "2026-07-25",
     "modified": "2026-10-14",
     "category": "トラブル",
@@ -2085,15 +2085,16 @@
       "Play Points",
       "クーポン",
       "自動適用",
-      "対処法"
+      "対処法",
+      "特典を適用できません"
     ],
-    "description": "Google Play Pointsクーポンが見つからない・適用されないときに、ゲーム割引クーポン、パートナークーポン、Playクレジットの保存場所・期限・確認手順を整理します。",
+    "description": "Google Play Pointsクーポンが使えない・「特典を適用できません」と表示される時の確認順。対象アカウント、保存場所、金額・対象アプリ・期限を分けて確認します。",
     "file": "../articles/2026-07-25-play-points-coupon-not-applied.html",
     "thumbnail": "../articles/thumbnails/play-points-coupon-not-applied-square-v1.webp",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-07-25-play-points-coupon-not-applied.png",
     "thumbnailKind": "generic",
-    "listDescription": "クーポンが見つからない・使えない時に、種類、保存場所、期限を確認。Playクレジットとの取り違えも切り分けられます。"
+    "listDescription": "「特典を適用できません」のアカウント確認と、クーポンの保存場所・金額条件を分けて対処。"
   },
   {
     "id": "play-credit-not-working",
