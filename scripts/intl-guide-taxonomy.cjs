@@ -55,6 +55,10 @@ const START_HERE_SLUGS = Object.freeze({
 });
 
 const CATEGORY_OVERRIDES = Object.freeze({
+  'google-play-points-basics': 'account',
+  'google-play-credit-subscriptions': 'earn',
+  'google-play-points-stamp-cards': 'earn',
+  'pokemon-sleep-premium-pass-plans': 'earn',
   'google-play-balance-combine-payment': 'earn',
   'google-play-games-vs-play-points': 'account',
   'google-play-points-use-coupons': 'earn',

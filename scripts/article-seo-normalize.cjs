@@ -311,12 +311,39 @@ function hasLargeImagePreview(html) {
   return /(?:^|,)\s*max-image-preview\s*:\s*large\s*(?:,|$)/i.test(content);
 }
 
+function synchronizeArticleHeadline(html) {
+  if (!/<html\b[^>]*lang=["'](?:en|ko|zh-TW)["']/i.test(html)) return String(html);
+  const heading = String(html).match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1];
+  if (!heading) return String(html);
+  const headline = decodeHtmlEntities(heading.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+  return String(html).replace(JSON_LD_SCRIPT_PATTERN, (full, attributes, body) => {
+    let data;
+    try { data = JSON.parse(body); } catch { return full; }
+    let changed = false;
+    const visit = value => {
+      if (!value || typeof value !== 'object') return;
+      if (['Article', 'BlogPosting', 'NewsArticle'].some(type => hasType(value, type)) && value.headline !== headline) {
+        value.headline = headline;
+        changed = true;
+      }
+      Object.values(value).forEach(visit);
+    };
+    visit(data);
+    if (!changed) return full;
+    const indent = body.includes('\n') ? 2 : undefined;
+    const leading = body.match(/^\s*/)[0], trailing = body.match(/\s*$/)[0];
+    const serialized = JSON.stringify(data, null, indent).replace(/</g, '\\u003c');
+    return `<script${attributes}>${leading}${serialized}${trailing}</script>`;
+  });
+}
+
 function normalizeArticleHtml(html) {
   const faqResult = synchronizeFaqStructuredData(html);
   const robotsResult = ensureLargeImagePreview(faqResult.html);
+  const headlineHtml = synchronizeArticleHeadline(robotsResult.html);
   return {
-    html: robotsResult.html,
-    changed: faqResult.changed || robotsResult.changed,
+    html: headlineHtml,
+    changed: faqResult.changed || robotsResult.changed || headlineHtml !== robotsResult.html,
     removedFaqPageCount: faqResult.removedFaqPageCount,
     synchronizedFaqPageCount: faqResult.synchronizedFaqPageCount,
     addedLargeImagePreview: robotsResult.changed

@@ -155,6 +155,9 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
 
   // 著者紹介は既存の同言語版へ。日本語版の相対パスを引き継がない。
   output = output.replaceAll('href="../author/katakata.html"', `href="/${langDir}/author/katakata.html"`);
+  if (['en', 'ko', 'tw'].includes(langDir)) {
+    output = output.replaceAll('href="../about-playpoints.html"', `href="/${langDir}/articles/google-play-points-basics.html"`);
+  }
 
   // 6. JSON-LD の置換
   // SoftwareApplication

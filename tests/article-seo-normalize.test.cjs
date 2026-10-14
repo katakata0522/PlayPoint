@@ -35,6 +35,22 @@ function faqJson(question, answer) {
   });
 }
 
+test('海外Articleのheadlineは表示見出しへ同期し、本文と他の構造化データを保持する', () => {
+  const schema = JSON.stringify({ '@context': 'https://schema.org', '@graph': [
+    { '@type': 'Article', headline: 'Earlier title', datePublished: '2026-10-01' },
+    { '@type': 'WebPage', name: 'Search title', headline: 'Different metadata' }
+  ] });
+  const body = '<body><h1>Play Points &amp; rewards</h1><p>Keep this reader copy.</p></body>';
+  const before = `<html lang="en"><head><meta name="robots" content="index, follow, max-image-preview:large"><script type="application/ld+json">${schema}</script></head>${body}</html>`;
+  const result = normalizeArticleHtml(before);
+  const nodes = JSON.parse(result.html.match(/<script[^>]*>([\s\S]*?)<\/script>/)[1])['@graph'];
+  assert.equal(nodes[0].headline, 'Play Points & rewards');
+  assert.equal(nodes[0].datePublished, '2026-10-01');
+  assert.equal(nodes[1].headline, 'Different metadata');
+  assert.ok(result.html.includes(body));
+  assert.equal(normalizeArticleHtml(result.html).changed, false);
+});
+
 function htmlTemplate({ body = '', robots = 'index, follow', jsonLd = '' } = {}) {
   return `<!doctype html><html><head><meta name="robots" content="${robots}">${jsonLd}</head><body>${body}</body></html>`;
 }

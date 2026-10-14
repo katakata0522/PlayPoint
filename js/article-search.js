@@ -8,6 +8,10 @@
     tw: [['playpoints', 'googleplaypoints', 'google playpoints', 'googleplay points', 'google play points', 'play points', 'play 點數', 'play點數', 'google play 點數', 'google play點數', 'googleplay點數'], ['到期', '有效期限', '過期', '失效'], ['未入帳', '沒有入帳', '沒收到', '未收到'], ['每週', '每周', '週獎勵']]
   };
   function normalize(value) { return String(value || '').normalize('NFKC').toLowerCase().replace(/\s+/g, ' ').trim(); }
+  // 海外版でもアクセントの有無や現地のゲーム名から同じ記事へ辿れる。
+  groups.en.push(['Pokémon Sleep', 'Pokemon Sleep']);
+  groups.ko.push(['포켓몬 슬립', 'Pokémon Sleep', 'Pokemon Sleep']);
+  groups.tw.push(['Pokémon Sleep', 'Pokemon Sleep', '寶可夢睡眠']);
   // ひらがな入力でも商品名を探せる。表示用の文字列は変換しない。
   function fold(value, locale) {
     const text = normalize(value);
