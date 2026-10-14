@@ -99,11 +99,11 @@ const ROLE_RULES = Object.freeze([
   },
   {
     role: 'decision_support',
-    test: stem => /(?:best-use|cash-conversion|gift-card|discount|promo-code|discounts-promo-codes|promotion-stacking|multiplier-stacking|payment-methods|balance-combine-payment|external-billing|play-pass-worth-it|play-pass-double-points|diamond-play-pass-value|youtube-premium|pixel-discount|play-fest-deals|gold-platinum-worth-it|google-store|earn-play-points-free|points-earn-free|use-coupons|google-play-credit-uses$|stamp-card|campaign$)/.test(stem)
+    test: stem => /(?:best-use|cash-conversion|gift-card|discount|promo-code|discounts-promo-codes|promotion-stacking|multiplier-stacking|payment-methods|balance-combine-payment|external-billing|play-pass-worth-it|play-pass-double-points|diamond-play-pass-value|youtube-premium|pixel-discount|play-fest-deals|gold-platinum-worth-it|google-store|earn-play-points-free|points-earn-free|use-coupons|google-play-credit-uses$|google-play-pass-guide$|stamp-card|campaign$)/.test(stem)
   },
   {
     role: 'reference',
-    test: stem => /(?:google-play-points-basics|getting-started|check-balance|expiration|family-sharing|family-link|multiple-accounts|movies-books|play-games|games-vs-play-points|refund|subscription|subscriptions|device-change|country-change|country-differences|apps-books-purchases|balance-history-progress|join-eligibility|rounding-tax|diamond-vip|premium-support|pc-play-games-points|redeemed-item|install-offer|january-rank-reset|levels(?:-guide)?$)/.test(stem)
+    test: stem => /(?:google-play-points-basics|getting-started|check-balance|expiration|family-sharing|family-link|multiple-accounts|movies-books|play-games|games-vs-play-points|refund|subscription|subscriptions|device-change|country-change|country-differences|apps-books-purchases|balance-history-progress|purchase-history-budget|reward-codes|join-eligibility|rounding-tax|diamond-vip|premium-support|pc-play-games-points|redeemed-item|install-offer|january-rank-reset|levels(?:-guide)?$)/.test(stem)
   }
 ]);
 

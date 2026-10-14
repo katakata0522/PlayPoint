@@ -2,6 +2,13 @@
 
 // Visual cards for the 28 custom OGP designs
 const VISUAL_CARDS = {
+  'spending-history': `
+    <div style="width:100%;padding:24px;border:2px solid #5ee0c4;border-radius:18px;background:#153632;color:#fff;text-align:left;">
+      <div style="font-size:24px;font-weight:800;margin-bottom:20px;">購入先から確認</div>
+      <div style="font-size:19px;line-height:1.8;border-top:1px solid #47776e;padding-top:14px;">Google Play<br><strong>今月の支出・注文</strong></div>
+      <div style="font-size:19px;line-height:1.8;border-top:1px solid #47776e;margin-top:14px;padding-top:14px;">公式Webストア<br><strong>購入先の履歴</strong></div>
+    </div>
+  `,
   'diamond-valley': `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; width: 100%;">
       <div style="position: relative; width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;">
