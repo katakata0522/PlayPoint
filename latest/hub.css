@@ -141,7 +141,7 @@ body.latest-hub .latest-jump-links a { display:flex; align-items:center; min-hei
 html[data-reading-theme] body.latest-hub .personal-offer-check { padding:0 16px; }
 body.latest-hub .benefit-reference { padding:0 16px; border-radius:8px; }
 body.latest-hub .benefit-reference > summary { padding:16px 0; line-height:1.6; }
-body.latest-hub .benefit-reference > summary h2 { display:inline; font-size:17px; line-height:1.6; margin:0; padding:0; border:0; }
+body.latest-hub .benefit-reference > summary h2 { display:inline; font-size:17px; line-height:1.6; margin:0; padding:0; border:0; color:var(--reading-text); }
 body.latest-hub .benefit-reference[open] > summary { border-bottom:1px solid var(--reading-border); margin-bottom:16px; }
 body.latest-hub :is(.benefit-reference,.latest-note)[open] { padding-bottom:16px; }
 html[lang] body.latest-hub .guide-latest-layout #current-notes { padding:0; margin:28px 0; border:0; border-radius:0; background:none; box-shadow:none; }
