@@ -142,6 +142,26 @@ test('海外記事の長い表の前で、本文と到達先を残したまま�
   assert.equal(compactIntlToc(nested), wrapped, '既に生成した二重の開閉も一段に戻す');
 });
 
+test('海外の主題バッジは題名と同じ意味だけを省き、固有の条件を残す', () => {
+  const { polishPage } = require('../scripts/site-reader-polish.cjs');
+  const page = (title, badge) => `<div class="hero"><span class="hero-badge">${badge}</span><h1>${title}</h1></div><p>Account conditions and article body.</p>`;
+  for (const [title,badge] of [
+    ['Google Play quest not working?', 'Google Play quests'],
+    ['구글 플레이 퀘스트란? 안 뜸 원인', 'Google Play 퀘스트'],
+    ['Google Play Fest 2026 is live! US rewards', 'Play Fest 2026 · US'],
+    ['台灣 Play 盛典 2026 開跑！', 'Play 盛典 2026 · 台灣']
+  ]) {
+    const result = polishPage(page(title,badge), 'en/articles/example.html');
+    assert.doesNotMatch(result, /hero-badge/);
+    assert.ok(result.includes(`<h1>${title}</h1>`));
+    assert.ok(result.includes('Account conditions and article body.'));
+    assert.equal(polishPage(result, 'en/articles/example.html'), result);
+  }
+  for (const badge of ['Weekly prizes · installs · quests · Play Pass', 'Play Fest 2026 · Ends October 19', 'Game purchase guide · Japan edition']) {
+    assert.ok(polishPage(page('Google Play quests and Play Fest 2026',badge), 'en/articles/example.html').includes(badge));
+  }
+});
+
 test('手書きの日本語目次はリンクと見出しIDを残して一つの開閉にまとめる', () => {
   const { polishPage } = require('../scripts/site-reader-polish.cjs');
   const source = '<nav class="article-toc" aria-label="この記事の目次"><h2 id="toc">この記事の目次</h2><ol><li><a href="#orders">購入履歴</a></li></ol></nav><h2 id="orders">購入履歴</h2><p>本文と条件</p>';

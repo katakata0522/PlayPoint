@@ -26,8 +26,12 @@ function polishPage(html, file) {
     '<details class="inpage-toc reader-toc"><summary class="inpage-toc-title"$2>$3</summary><nav class="article-toc"$1>$4</nav></details>');
   if (locale !== 'ja' && /\/articles\/[^/]+\.html$/.test(file)) {
     // 題名に含まれる主題の繰り返しだけを省く。固有の開催時期などは残す。
-    const title = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, '').toLowerCase();
-    html = html.replace(/<span class="hero-badge">([^<]+)<\/span>/g, (tag, label) => title?.includes(label.toLowerCase()) ? '' : tag);
+    const normalize = value => value.replace(/<[^>]*>/g, '').toLowerCase()
+      .replace(/google\s*play|구글\s*플레이/g, 'googleplay').replace(/\bquests\b/g, 'quest')
+      .replace(/[\s\p{P}\p{S}]/gu, '');
+    const title = normalize(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] || '');
+    html = html.replace(/<span class="hero-badge">([^<]+)<\/span>/g, (tag, label) =>
+      label.split(/\s*·\s*/).every(part => normalize(part) && title.includes(normalize(part))) ? '' : tag);
   }
   if (locale !== 'ja' && /\/articles\/[^/]+\.html$/.test(file)) html = compactIntlToc(addPracticalToc(html, file, locale));
   const article = html.match(/<article\b[^>]*class="[^"]*\bcontent\b[^"]*"[^>]*>/i);

@@ -116,7 +116,10 @@ html[lang] body .intl-article-site-header .guide-brand-short { display: block; }
 /* 海外記事の入口は、地域・メニュー・本文を優先する。 */
 .intl-mobile-menu { display:none; }
 @media (max-width:760px) {
-html[lang] body .intl-article-site-header { padding:0 12px; }
+html[lang] body .site-header.intl-article-site-header { position:sticky; top:0; z-index:100; padding:0 12px; background:var(--reading-surface,#fff); }
+html[lang] body .intl-layout-container :is(h1,h2,h3,section,details)[id],html[lang] body #main-content { scroll-margin-top:80px; }
+/* 本文に署名がある記事では、下へ回り込む同じ著者カードを重ねない。 */
+.intl-layout-container:has(main .author-box) .sidebar-widget--author { display:none; }
 html[lang] body .intl-article-site-header .site-header-inner { min-height:60px; flex-direction:row; flex-wrap:nowrap; gap:8px; }
 html[lang] body .intl-article-site-header .site-header-tools { width:auto; flex-wrap:nowrap; gap:6px; }
 html[lang] body .intl-article-site-header .site-about-link { display:none; }
@@ -133,6 +136,7 @@ html[lang] body .intl-mobile-menu > summary { display:flex; align-items:center; 
 .intl-mobile-menu > summary::-webkit-details-marker { display:none; }
 html[lang] body .intl-mobile-menu[open] > summary { background:var(--reading-soft); }
 html[lang] body .intl-mobile-menu nav { position:absolute; right:0; top:calc(100% + 8px); z-index:100; width:min(280px,calc(100vw - 24px)); padding:8px; border:1px solid var(--reading-border); border-radius:10px; background:var(--reading-surface); box-shadow:0 8px 24px #0002; }
+html[lang] body .intl-mobile-menu nav,html[lang] body .intl-article-site-header .site-region-menu { max-height:calc(100dvh - 84px); overflow-y:auto; }
 html[lang] body .intl-mobile-menu nav a { display:flex; align-items:center; min-height:44px; padding:8px 12px; color:var(--reading-link); font-size:15px; }
 html[lang] body .intl-global-nav { display:none; }
 html[lang] body .intl-article-breadcrumbs { width:calc(100% - 24px); margin:10px auto; }

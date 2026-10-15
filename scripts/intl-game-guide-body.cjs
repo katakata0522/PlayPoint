@@ -30,7 +30,7 @@ ${chapters}
 <section class="section" id="play-points"><h2>${escape(c.points)}</h2><p>${escape(c.rule)}</p></section>
 <section class="section"><h2>${escape(locale.faq)}</h2><h3>${escape(content.faqQ)}</h3><p>${escape(content.faqA)}</p></section>
 <details class="article-source-details"><summary>${escape(c.sources)}</summary><ul>${[...sources].map(([url, title]) => `<li>${sourceAnchor(url, title)}</li>`).join('')}</ul><p>${escape(c.scope)}</p><p>${escape(locale.verified)}: ${escape(guide.verifiedAt)}</p></details>
-<section class="section related-links-section"><h2>${escape(locale.related)}</h2><ul><li><a href="/${localeKey}/articles/">${escape(locale.back)}</a></li><li><a href="/${localeKey}/articles/google-play-points-promotion-stacking.html">Google Play Points</a></li><li><a href="${parent}">${escape(c.calculate)}</a></li></ul></section>`;
+<section class="section related-links-section"><h2>${escape(locale.related)}</h2><ul><li><a href="/${localeKey}/articles/google-play-points-promotion-stacking.html">${escape({en:'Play Points boosts: which rate applies?',ko:'Play Points 배율 중복 적용 규칙',tw:'Play Points 加倍活動的疊加規則'}[localeKey])}</a></li><li><a href="${parent}">${escape(c.calculate)}</a></li></ul></section>`;
 }
 
 module.exports = { renderGuideBody };
