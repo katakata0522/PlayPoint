@@ -293,13 +293,13 @@ async function inspectIntlReading(browser, baseUrl) {
       if (item.width <= 760) {
         const menu = page.locator('.intl-mobile-menu');
         await menu.locator(':scope > summary').click();
-        assert.equal(await menu.locator('nav a:visible').count(), 7, item.locale + ': mobile menu links must be visible');
+        assert(await menu.locator('nav a:visible').count() === 7, item.locale + ': mobile menu links must be visible');
         const menuBounds = await menu.locator('nav').boundingBox();
         assert(menuBounds && menuBounds.x >= 0 && menuBounds.x + menuBounds.width <= item.width, item.locale + ': mobile menu must fit the screen');
         await menu.locator(':scope > summary').click();
         const regions = page.locator('.site-region-switcher');
         await regions.locator(':scope > summary').click();
-        assert.equal(await regions.locator('.site-region-menu a:visible').count(), 5, item.locale + ': region destinations must be visible');
+        assert(await regions.locator('.site-region-menu a:visible').count() === 5, item.locale + ': region destinations must be visible');
         const regionBounds = await regions.locator('.site-region-menu').boundingBox();
         assert(regionBounds && regionBounds.x >= 0 && regionBounds.x + regionBounds.width <= item.width, item.locale + ': region menu must fit the screen');
         await regions.locator(':scope > summary').click();
