@@ -134,6 +134,7 @@ const TOPICS = [
   {
     slug: 'pokemon-sleep-premium-pass-plans', jaAlternate: '/articles/2026-10-14-pokemon-sleep-premium-pass-plans.html', category: 'earn',
     sourceHref: 'https://support.pokemon.com/hc/en-us/articles/17264929442324-Pok%C3%A9mon-Sleep-Billing-and-Premium-Pass-FAQ',
+    sourceHrefByLocale: { tw: 'https://app-psl.pokemon-support.com/hc/zh-tw/articles/20406040940185' },
     en: {
       title: 'Pokémon Sleep Premium Pass: one month or six months? Compare the daily benefits',
       description: 'Compare Pokémon Sleep Premium Pass monthly and six-month plans, daily sleep points, local prices and subscription-streak rules. Sleep points and Play Points are separate.',
@@ -163,11 +164,11 @@ const TOPICS = [
       faq: [['매일 받는 보너스가 Google Play Points에 적립되나요?', '아니요. 포켓몬 슬립 게임 안의 슬립 포인트입니다.'], ['일본 가격을 한국 플랜 비교에 그대로 쓰나요?', '아니요. 본인의 국가와 구매 플랫폼에 현재 표시된 가격을 사용합니다.']]
     },
     tw: {
-      title: 'Pokémon Sleep 高級通行證：1個月或6個月？從每日福利來選',
-      description: '比較 Pokémon Sleep 高級通行證的每日睡眠點數、1個月與6個月方案，以及台灣價格和變更訂閱時的連續訂閱期間。',
-      intro: '每天早上查看新的寶可夢睡姿，已經成為習慣的話，高級通行證會很吸引人。先試一個月，或決定用六個月？在比較價格之前，先看看自己每天會享受哪些福利。',
+      title: 'Pokémon Sleep 進階票證：1個月或6個月？從每日福利來選',
+      description: '比較 Pokémon Sleep 進階票證的每日睡眠點數、1個月與6個月方案，以及台灣價格和變更訂閱時的連續訂閱期間。',
+      intro: '每天早上查看新的寶可夢睡姿，已經成為習慣的話，進階票證會很吸引人。先試一個月，或決定用六個月？在比較價格之前，先看看自己每天會享受哪些福利。',
       sections: [
-        ['每日獎勵會慢慢累積', '通行證有效期間，在記錄睡眠的日子每天可領一次額外 100 睡眠點數。符合條件地記錄 30 天，額外點數就有 3,000 點。高級兌換區與升級的每日沙布蕾，也讓日常記錄多一份樂趣。'],
+        ['每日獎勵會慢慢累積', '進階票證有效期間，在記錄睡眠的日子每天可領一次額外 100 睡眠點數。符合條件地記錄 30 天，額外點數就有 3,000 點。進階兌換處與每天的獎勵沙布蕾+，也讓日常記錄多一份樂趣。'],
         ['用台灣購買畫面上的價格計算', '比較 App 顯示的單月價格 × 6 與六個月方案價格，再把六個月價格 ÷ 6，算出每月平均費用。使用相同地區、平台和稅金基準，日本日圓售價不是台灣的報價。'],
         ['讓期間配合你的習慣', '還在嘗試建立睡眠記錄習慣時，短期方案比較容易評估；已打算使用六個月，就把總節省金額和可能提前停止使用的情況一起考慮。'],
         ['變更前先看連續訂閱期間', '寶可夢的付款 FAQ 說明，Android 變更方案可能需要取消、等到到期後再購買，並會重設連續訂閱期間。更換購買商店也會重設。別只看平均月費較低，就忽略這個差別。'],
@@ -194,7 +195,7 @@ const EXTRA_SOURCES = {
 const SOURCE_LABELS = {
   en: { levels: 'US levels and benefits', renewal: 'Subscription renewal and payment methods', payments: 'US accepted payment methods', devices: 'Devices supported for quests and stamp cards', cards: 'Google’s stamp-card promotion overview', benefits: 'Pokémon Sleep Premium Pass benefits' },
   ko: { levels: '한국 등급과 혜택', renewal: '구독 갱신과 결제 수단', payments: '한국 지원 결제 수단', devices: '퀘스트·스탬프 카드 지원 기기', cards: 'Google 스탬프 카드 프로모션 안내', benefits: 'Pokémon Sleep 프리미엄 패스 혜택' },
-  tw: { levels: '台灣等級與福利', renewal: '訂閱續訂與付款方式', payments: '台灣支援的付款方式', devices: '任務與集點卡支援的裝置', cards: 'Google 集點卡活動說明', benefits: 'Pokémon Sleep 高級通行證福利' }
+  tw: { levels: '台灣等級與福利', renewal: '訂閱續訂與付款方式', payments: '台灣支援的付款方式', devices: '任務與集點卡支援的裝置', cards: 'Google 集點卡活動說明', benefits: 'Pokémon Sleep 進階票證福利' }
 };
 
 function buildLocalizedTopicArticles(locales, labels) {
@@ -209,11 +210,11 @@ function buildLocalizedTopicArticles(locales, labels) {
       publishedAt: '2026-10-14', modifiedAt: '2026-10-14', jaAlternate: topic.jaAlternate,
       labels: labels[locale], siteName: locales[locale].siteName, ctaHref: `/${locale}/`,
       officialSourceTitle: copy.title, officialSourceBody: copy.body,
-      officialSourceHref: topic.sourceHref || `https://support.google.com/googleplay/answer/${topic.source}?co=GENIE.CountryCode%3D${region.country}&hl=${region.hl}`,
+      officialSourceHref: topic.sourceHrefByLocale?.[locale] || topic.sourceHref || `https://support.google.com/googleplay/answer/${topic.source}?co=GENIE.CountryCode%3D${region.country}&hl=${region.hl}`,
       officialSourceLink: copy.link, officialProgramLink: copy.program,
       officialSourceLinks: (EXTRA_SOURCES[topic.slug] || []).map(([id, label]) => ({
         href: id === 'pokemon-benefits'
-          ? (locale === 'ko' ? 'https://pokemonkorea.co.kr/game_support/pokemonsleep_FAQ/view/1635' : 'https://app-psl.pokemon-support.com/hc/en-us/articles/20336388720153-After-I-cancel-my-Premium-Pass-can-I-still-use-the-perks-and-items-I-have-received')
+          ? ({ ko: 'https://pokemonkorea.co.kr/game_support/pokemonsleep_FAQ/view/1635', tw: 'https://app-psl.pokemon-support.com/hc/zh-tw/articles/20336388720153', en: 'https://app-psl.pokemon-support.com/hc/en-us/articles/20336388720153-After-I-cancel-my-Premium-Pass-can-I-still-use-the-perks-and-items-I-have-received' }[locale])
           : id.startsWith('android-developer/')
             ? `https://support.google.com/googleplay/android-developer/answer/${id.split('/')[1]}?hl=${region.hl}`
             : `https://support.google.com/googleplay/answer/${id}?co=GENIE.CountryCode%3D${region.country}&hl=${region.hl}`,

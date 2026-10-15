@@ -26,6 +26,7 @@ function renderGuideBody(localeKey, guide, locale) {
   sources.set(content.edition, c.edition);
   for (const offer of content.offers) sources.set(offer.evidence.url, offer.names[localeKey] + ' — ' + offer.evidence.scope);
   for (const source of GAME_EVIDENCE[guide.gameId].extraSources || []) sources.set(source.url, c.detail);
+  for (const source of GAME_EVIDENCE[guide.gameId].regionalSources?.[localeKey] || []) sources.set(source.url, c.detail);
   // 主役が現地商品へ変わった記事では、無関係な日本・台湾の商品説明を再掲しない。
   if (!['umamusume', 'phantomparade'].includes(guide.gameId) && !(guide.gameId === 'hbr' && localeKey !== 'tw')) sources.set(guide.source[1], guide.source[0]);
   sources.set(locale.googleUrl, locale.earningRuleLink);

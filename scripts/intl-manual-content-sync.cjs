@@ -17,7 +17,7 @@ const HUB_CONTENT = {
     modifiedAt: '2026-10-12',
     description: '대한민국 공식 조건을 확인한 Google Play Points 등급, 가입, 프로모션, 계정 문제와 게임별 결제 판단 가이드입니다.',
     links: [
-      ['/ko/articles/google-play-points-super-weekly-reward.html', '슈퍼 위클리 리워드 대상·재고·슈퍼 티켓'],
+      ['/ko/articles/google-play-points-super-weekly-reward.html', 'Super Weekly Prize 대상·재고·슈퍼 티켓'],
       ['/ko/articles/google-play-quests.html', 'Google Play 퀘스트가 표시되지 않거나 완료되지 않을 때']
     ]
   },

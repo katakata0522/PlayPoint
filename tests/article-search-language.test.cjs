@@ -49,6 +49,22 @@ test('海外でもPokemon Sleepと現地名から同じパス記事を探せる'
   }
 });
 
+test('台湾の公式商品名から該当記事へ進み、別ゲームのパスを同一視しない', () => {
+  const localized = require('../tw/articles/article-search-index.json').articles;
+  for (const [query, slug, other] of [
+    ['特級護照', 'pokemon-tcg-pocket-premium-pass', 'pokemon-sleep-premium-pass-plans'],
+    ['進階票證', 'pokemon-sleep-premium-pass-plans', 'pokemon-tcg-pocket-premium-pass'],
+    ['進階兌換處', 'pokemon-sleep-premium-pass-plans', 'pokemon-tcg-pocket-premium-pass'],
+    ['開包力', 'pokemon-tcg-pocket-premium-pass', 'pokemon-sleep-premium-pass-plans']
+  ]) {
+    const matched = localized.filter(article => search.matches(article, query, 'tw'))
+      .sort((a, b) => search.score(b, query, 'tw') - search.score(a, query, 'tw'));
+    assert.equal(matched[0]?.path, `/tw/articles/${slug}.html`, query);
+    assert.equal(matched.some(article => article.path === `/tw/articles/${other}.html`), false, query);
+    assert.equal(localized.some(article => search.matches(article, query + ' 未掲載xyz9988', 'tw')), false);
+  }
+});
+
 test('読者の目的を表す自然文を回答に結び、数字の桁を取り違えない', () => {
   for (const [query, id] of [
     ['毎週何がもらえる', 'weekly-reward'], ['課金しないで貯めたい', 'earn-play-points-free'],

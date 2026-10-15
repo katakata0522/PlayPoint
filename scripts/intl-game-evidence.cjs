@@ -54,7 +54,11 @@ const GAME_EVIDENCE = {
   },
   wutheringwaves: {
     editions: text('https://wutheringwaves.kurogames.com/en/', 'https://wutheringwaves.kurogames.com/kr/', 'https://wutheringwaves.kurogames.com/zh-tw/'),
-    offers: common(offer(text('Lunite Subscription', '월정액 (Lunite Subscription)', '月相觀測卡'), text('The publisher lists 300 Lunites at purchase and 90 Astrites on daily login for 30 days. A console listing confirms the contents, not the Google Play price.', '공식 상품은 구매 시 월상 300개와 30일간 매일 로그인 시 별의 소리 90개를 안내합니다. 콘솔 상품 설명은 내용의 출처이며 Google Play 가격이 아닙니다.', '官方商品說明為購買時300月相、30天每天登入90星聲。主機商品頁用來核對內容，Google Play售價另看結帳畫面。'), S.lunite))
+    regionalSources: {
+      ko: [source('https://store.playstation.com/ko-kr/product/EB1238-PPSA24686_00-0039297268247085/', 'KR', 'publisher-store-content')],
+      tw: [source('https://store.playstation.com/zh-hant-tw/product/EB1238-PPSA24686_00-0039297268247085/', 'TW', 'publisher-store-content')]
+    },
+    offers: common(offer(text('Lunite Subscription', '달빛 관측 카드', '月相觀測卡'), text('The publisher lists 300 Lunites at purchase and 90 Astrites on daily login for 30 days. A console listing confirms the contents, not the Google Play price.', '공식 상품은 구매 시 달빛 300개와 30일간 매일 로그인 시 별의 소리 90개를 안내합니다. 콘솔 상품 설명은 내용의 출처이며 Google Play 가격이 아닙니다.', '官方商品說明為購買時300月相、30天每天登入90星聲。主機商品頁用來核對內容，Google Play售價另看結帳畫面。'), S.lunite))
   },
   bluearchive: {
     editions: text('https://bluearchive.nexon.com/', 'https://apps.apple.com/kr/app/%EB%B8%94%EB%A3%A8-%EC%95%84%EC%B9%B4%EC%9D%B4%EB%B8%8C/id1571873795', 'https://apps.apple.com/tw/app/%E8%94%9A%E8%97%8D%E6%AA%94%E6%A1%88/id1571873795'),
@@ -63,7 +67,7 @@ const GAME_EVIDENCE = {
     regionalSources: { ko: [
       source('https://forum.nexon.com/bluearchive/board_view?allBoard=1&board=1071&thread=2719463', 'KR', 'publisher-help'),
       source('https://forum.nexon.com/bluearchive/board_view?board=1018&thread=3560305', 'KR', 'publisher-notice')
-    ] },
+    ], tw: [source('https://forum.nexon.com/bluearchiveTW/board_view?board=3355&thread=3309516', 'TW', 'publisher-notice')] },
     editorial: { ko: [
       { heading: '천장·10연차 가격을 확인할 때', paragraphs: [
         '한국 서비스의 모집 기준으로 설명합니다. 현재는 해당 모집에서 포인트 200개를 모아 대상 학생을 선택 영입하는 방식입니다. 손에 있는 청휘석과 모집 티켓을 먼저 확인한 뒤 부족한 재화를 얼마나 살지 정해 보세요.',
@@ -80,12 +84,16 @@ const GAME_EVIDENCE = {
       ['블루아카 천장 가격은 얼마인가요?', '현재의 200모집 포인트는 모집 횟수에 관한 기준이며 고정된 원화 가격이 아닙니다. 보유 청휘석, 모집 티켓과 구매할 상품을 먼저 확인하고 실제 Google Play 결제액으로 포인트를 계산하세요. 2026년 11월 10일 점검 후 모집 스택으로의 개편이 예고되어 있으므로 적용 시점도 확인해야 합니다.'],
       ['이 계산기로 청휘석이나 10연차 가격도 계산할 수 있나요?', '이 계산기는 한국 Google Play 거래의 원화 결제액으로 적립될 Play Points를 예상합니다. 청휘석 수량이나 모집 횟수를 원화로 바꾸는 기능은 제공하지 않습니다. 구매하려는 상품의 Google Play 가격을 확인해 입력하세요.']
     ] },
-    offers: common(offer(text('Monthly / Half Monthly Pyroxene Packs', '월간 / 하프 월간 청휘석 패키지', 'Monthly／Half Monthly青輝石禮包'), text('Check the full and half packs separately. Nexon also lists Lite products and a Battle Pass; their duration and rewards differ from the standard packs.', '일반형과 하프형을 따로 비교하세요. Nexon 안내에는 Lite 상품과 배틀 패스도 있으며 기간과 보상이 일반 상품과 다릅니다.', '一般與半量版本要分開比較。Nexon另有Lite商品與Battle Pass，期間及獎勵不能直接套用一般禮包。'), S.blue))
+    offers: common(offer(text('Monthly / Half Monthly Pyroxene Packs', '월간 / 하프 월간 청휘석 패키지', '每月青輝石組合包／半月青輝石組合包'), text('Check the full and half packs separately. Nexon also lists Lite products and a Battle Pass; their duration and rewards differ from the standard packs.', '일반형과 하프형을 따로 비교하세요. Nexon 안내에는 Lite 상품과 배틀 패스도 있으며 기간과 보상이 일반 상품과 다릅니다.', '每月與半月版本要分開比較。Nexon另有Lite商品與戰鬥通行證，期間及獎勵不能直接套用一般組合包。'), S.blue))
   },
   pokepoke: {
     extraSources: [source('https://play.google.com/store/apps/editorial?hl=en_US&id=mc_games_editorialmd_pokemon_trading_card_game_pocket_launch_fcp', 'global', 'google-play-product-introduction')],
     editions: text('https://tcgpocket.pokemon.com/en-us/', 'https://pokemonkorea.co.kr/game_support/pokemon_tcg_pocket_FAQ/view/2434', 'https://www.pokemontcgpocket.com/tc/'),
-    offers: common(offer(text('Premium Pass', '프리미엄 패스', '高級通行證'), text('A monthly subscription for additional pack stamina and premium missions. It is tied to the store account used to subscribe; deleting the app does not cancel it.', '추가 팩 스태미나와 프리미엄 미션을 제공하는 월간 구독입니다. 구독한 스토어 계정에 연결되며 앱을 삭제해도 구독은 취소되지 않습니다.', '月費訂閱提供額外開包體力及高級任務。權益連結訂閱時的商店帳號；刪除App不會取消訂閱。'), S.pocket, true))
+    regionalSources: {
+      ko: [source('https://pokemonkorea.co.kr/game_support/pokemon_tcg_pocket_FAQ/view/2434', 'KR')],
+      tw: [source('https://app-ptcgp.pokemon-support.com/hc/zh-tw/articles/39082740268569', 'TW'), source('https://app-ptcgp.pokemon-support.com/hc/zh-tw/articles/39085452917785', 'TW'), source('https://www.pokemontcgpocket.com/tc/howtoplay/card/', 'TW', 'publisher-site')]
+    },
+    offers: common(offer(text('Premium Pass', '프리미엄 패스', '特級護照'), text('A monthly subscription for additional pack stamina and premium missions. It is tied to the store account used to subscribe; deleting the app does not cancel it.', '추가 팩 파워와 프리미엄 미션을 제공하는 월간 구독입니다. 구독한 스토어 계정에 연결되며 앱을 삭제해도 구독은 취소되지 않습니다.', '月費訂閱提供額外開包力及特級任務。權益連結訂閱時的商店帳號；刪除App不會取消訂閱。'), S.pocket, true))
   },
   umamusume: {
     editions: text('https://cygames.com/en/games/umamusume_en/', 'https://umamusume.kakaogames.com/mejiro/index.html', 'https://apps.apple.com/tw/app/%E8%B3%BD%E9%A6%AC%E5%A8%98pretty-derby/id1575861620'),
@@ -133,7 +141,11 @@ const GAME_EVIDENCE = {
   },
   mementomori: {
     editions: text('https://mememori-game.com/en/', 'https://mememori-game.com/kr/', 'https://mememori-game.com/tw/'),
-    offers: common(offer(text('Monthly Boost', 'Monthly Boost (월간 혜택)', 'Monthly Boost（30天特典）'), text('Lasts 30 days including purchase day. Includes immediate and daily rewards; the previous day’s unclaimed rewards are sent to Presents.', '구매일을 포함해 30일간 적용됩니다. 즉시·일일 보상이 있으며 전날 받지 않은 보상은 선물함으로 지급됩니다.', '包含購買日在內有效30天，有立即與每日獎勵。前一天未領取的獎勵會寄到禮物箱。'), S.boost))
+    regionalSources: {
+      ko: [source('https://mementomori.zendesk.com/hc/ko/articles/44102448913049', 'KR')],
+      tw: [source('https://mementomori.zendesk.com/hc/zh-tw/articles/44102448913049', 'TW')]
+    },
+    offers: common(offer(text('Monthly Boost', '월간 부스트', '每月強化組合包'), text('Lasts 30 days including purchase day. Includes immediate and daily rewards; the previous day’s unclaimed rewards are sent to Presents.', '구매일을 포함해 30일간 적용됩니다. 즉시·일일 보상이 있으며 전날 받지 않은 보상은 선물함으로 지급됩니다.', '包含購買日在內有效30天，有立即與每日獎勵。前一天未領取的獎勵會寄到禮物箱。'), S.boost))
   },
   proseka: {
     editions: text('https://www.colorfulstage.com/', 'https://www.kr-pjsekai.com/', 'https://www.tw-pjsekai.com/'),
@@ -166,18 +178,30 @@ const GAME_EVIDENCE = {
   shadowversewb: {
     editions: text('https://shadowverse-wb.com/en/', 'https://shadowverse-wb.com/ko/', 'https://shadowverse-wb.com/cht/'),
     names: text('Shadowverse: Worlds Beyond', '섀도우버스: 월즈 비욘드', '闇影詩章：凌越世界'),
-    offers: common(offer(text('Premium Battle Pass', '프리미엄 배틀 패스', '高級對戰通行證'), text('Season 16 runs from the September 29 maintenance until card set #10. The pass uses in-game Crystals; spending Crystals you already own is not a new Google Play purchase.', '시즌 16은 9월 29일 점검 후부터 10탄 카드팩 출시까지입니다. 패스는 게임 내 크리스탈로 구매하며 이미 가진 크리스탈 사용은 새로운 Google Play 결제가 아닙니다.', 'Season 16自9月29日維護後至第10彈卡包登場為止。通行證以遊戲內水晶購買，花掉原有水晶不是一筆新的Google Play 付款。'), S.sv))
+    regionalSources: {
+      ko: [source('https://shadowverse-wb.com/ko/news/detail/?id=01M2EZ5KS4F3A6C0TD5M57VV8F', 'KR', 'publisher-notice')],
+      tw: [source('https://shadowverse-wb.com/cht/news/detail/?id=01M1AVCXPWBBD14K80ME5RPVQF', 'TW', 'publisher-notice')]
+    },
+    offers: common(offer(text('Premium Pass', '프리미엄 패스', '高級通行證'), text('Season 16 runs from the September 29 maintenance until card set #10. The pass uses in-game Crystals; spending Crystals you already own is not a new Google Play purchase.', '시즌 16은 9월 29일 점검 후부터 10탄 카드팩 출시까지입니다. 패스는 게임 내 크리스탈로 구매하며 이미 가진 크리스탈 사용은 새로운 Google Play 결제가 아닙니다.', 'Season 16自9月29日維護後至第10彈卡包登場為止。通行證以遊戲內水晶購買，花掉原有水晶不是一筆新的Google Play 付款。'), S.sv))
   },
   'prospi-a': {
     editions: text('https://www.konami.com/games/prospi_a/', 'https://www.konami.com/games/prospi_a/', 'https://www.konami.com/games/prospi_a/'), referenceLocales: locales, offers: empty()
   },
   'pokemon-go': {
     editions: text('https://pokemongo.com/', 'https://pokemongo.com/?hl=ko', 'https://pokemongo.com/?hl=zh_Hant'),
-    offers: common(offer(text('GO Pass Deluxe — October 2026', 'GO패스 디럭스 — 2026년 10월', 'GO Pass Deluxe — 2026年10月'), text('October’s paid upgrade is available October 6–November 3, local time. Deluxe and Deluxe + 10 Ranks differ; collect unlocked rewards before November 5. It is not a renewing monthly subscription.', '10월 유료 업그레이드 기간은 현지 시간 10월 6일~11월 3일입니다. 디럭스와 디럭스 + 10랭크는 다른 상품이며 보상은 11월 5일까지 수령해야 합니다. 자동 갱신 월정액이 아닙니다.', '10月付費升級於當地時間10月6日至11月3日提供。Deluxe與Deluxe + 10 Ranks不同，已解鎖獎勵須於11月5日前領取，不是自動續訂月費。'), S.go))
+    regionalSources: {
+      ko: [source('https://pokemongo.com/news/go-pass-october-2026?hl=ko', 'KR', 'publisher-notice')],
+      tw: [source('https://pokemongo.com/news/go-pass-october-2026?hl=zh_Hant', 'TW', 'publisher-notice')]
+    },
+    offers: common(offer(text('GO Pass Deluxe — October 2026', 'GO패스 디럭스 — 2026년 10월', 'GO Pass豪華版：2026年10月'), text('October’s paid upgrade is available October 6–November 3, local time. Deluxe and Deluxe + 10 Ranks differ; collect unlocked rewards before November 5. It is not a renewing monthly subscription.', '10월 유료 업그레이드 기간은 현지 시간 10월 6일~11월 3일입니다. 디럭스와 디럭스 + 10랭크는 다른 상품이며 보상은 11월 5일까지 수령해야 합니다. 자동 갱신 월정액이 아닙니다.', '10月付費升級於當地時間10月6日至11月3日提供。GO Pass豪華版與GO Pass豪華版＋10級不同，已解鎖獎勵須於11月5日前領取，不是自動續訂月費。'), S.go))
   },
   efootball: {
     editions: text('https://www.konami.com/efootball/en-us/', 'https://www.konami.com/efootball/ko/', 'https://www.konami.com/efootball/zh-tw/'), offers: empty(),
-    focus: text('The old Match Pass was replaced by Campaign Hub. Check current packs in the app; eFootball Points are separate from Google Play Points.', '기존 매치 패스는 캠페인 허브로 변경됐습니다. 앱의 현재 상품을 확인하세요. eFootball 포인트는 Google Play Points와 다른 제도입니다.', '舊Match Pass已改為Campaign Hub。請看App內目前的商品；eFootball點數與Google Play Points不同。'), extraSources: [S.efootball]
+    focus: text('The old Match Pass was replaced by Campaign Hub. Check current packs in the app; eFootball Points are separate from Google Play Points.', '기존 매치 패스는 캠페인 허브로 변경됐습니다. 앱의 현재 상품을 확인하세요. eFootball 포인트는 Google Play Points와 다른 제도입니다.', '舊比賽通行證已改為活動中心。請看App內目前的商品；eFootball™點數與Google Play Points不同。'), extraSources: [S.efootball],
+    regionalSources: {
+      ko: [source('https://www.konami.com/wepes/efootball_point/ko/', 'KR', 'publisher-site')],
+      tw: [source('https://www.konami.com/efootball/zh-tw/page/v5/versioninfo_v5-00', 'TW', 'publisher-notice'), source('https://www.konami.com/wepes/efootball_point/zh-tw/', 'TW', 'publisher-site'), source('https://www.konami.com/efootball/zh-tw/page/overview', 'TW', 'publisher-site')]
+    }
   }
 };
 
