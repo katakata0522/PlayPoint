@@ -71,6 +71,10 @@ test('絞り込みと確認日のダウンロードは同意を守り、固定�
       assert.deepEqual(eventCalls(context, 'reader_calendar_download')[0], { results_count: 2 });
       analytics.track('benefit_filter_changed', { rank_filter: 'private@example.com', pass_filter: 'invalid', benefit_tab: 'invalid' });
       assert.deepEqual(eventCalls(context, 'benefit_filter_changed')[1], {});
+      for (const tab of ['all', 'upcoming', 'ended']) {
+        analytics.track('benefit_filter_changed', { benefit_tab:tab, results_count:0 });
+        assert.deepEqual(eventCalls(context, 'benefit_filter_changed').at(-1), { benefit_tab:tab, results_count:0 });
+      }
     }
   }
 });

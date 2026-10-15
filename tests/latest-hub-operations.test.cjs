@@ -255,22 +255,20 @@ test('製品割引も期間を独立して判定し、終了後は終了扱い�
   assert.equal(classifyBenefit(offer, Date.parse(offer.end)), 'ended');
 });
 
-test('期限不明の個別報告・週次特典をまもなく終了や開始予定にしない', () => {
-  assert.equal(classifyBenefit({ category: 'other', kind: 'report' }), 'active');
+test('期限不明の配布報告と、継続中の週次・個別特典を区別する', () => {
+  assert.equal(classifyBenefit({ category: 'other', kind: 'report' }), 'unknown');
   assert.equal(classifyBenefit({ category: 'points', kind: 'weekly' }), 'active');
+  assert.equal(classifyBenefit({ category: 'points', kind: 'account' }), 'active');
   assert.equal(classifyBenefit({ category: 'points', end: 'invalid-date' }), 'unknown');
 });
 
-test('特典の種類と時期を組み合わせ、コード還元や製品割引もすべての一覧に含める', () => {
-  const gift = { category: 'gift' }, product = { category: 'other' };
-  assert.equal(matchesFilter(gift, 'soon'), true);
-  assert.equal(matchesFilter(gift, 'soon', 'gift', 'soon'), true);
-  assert.equal(matchesFilter(gift, 'soon', 'points'), false);
-  assert.equal(matchesFilter(product, 'upcoming', 'other'), false);
-  assert.equal(matchesFilter(product, 'upcoming', 'other', 'upcoming'), true);
-  assert.equal(matchesFilter(product, 'active'), true);
-  assert.equal(matchesFilter(product, 'ended', 'other'), false);
-  assert.equal(matchesFilter(product, 'unknown', 'other', 'soon'), false);
+test('時期別の4タブは終了間近を開催中に含め、日時不明と終了を混同しない', () => {
+  for (const state of ['active', 'soon', 'upcoming', 'ended', 'unknown']) {
+    assert.equal(matchesFilter(state, 'all'), true, state);
+    assert.equal(matchesFilter(state, 'active'), ['active', 'soon'].includes(state), state);
+    assert.equal(matchesFilter(state, 'upcoming'), state === 'upcoming', state);
+    assert.equal(matchesFilter(state, 'ended'), state === 'ended', state);
+  }
 });
 
 test('同じ状態の定期確認はDOMを書き換えず、開始・終了時刻では表示を更新する', () => {
@@ -287,29 +285,36 @@ test('同じ状態の定期確認はDOMを書き換えず、開始・終了時�
     }
     return value;
   }
-  const tabs = ['active', 'points', 'gift', 'other'].map(filter => { const tab = node(); tab.dataset.filter = filter; return tab; });
-  const grid = node(), endedList = node(), ended = node(), count = node(), badge = node(), message = node(), empty = node();
+  const tabs = ['all', 'active', 'upcoming', 'ended'].map(filter => { const tab = node(); tab.dataset.filter = filter; return tab; });
+  const grid = node(), count = node(), badge = node(), message = node(), empty = node();
   empty.querySelector = () => message;
   const card = node(); card.dataset = { category: 'points', kind: 'dated', start: '2026-09-02T00:00:00Z', end: '2026-09-15T00:00:00Z' };
   card.querySelector = () => badge; card.parentElement = grid;
-  const period = node(); period.value = 'active';
-  const nodes = { '#benefit-panel .benefit-grid': grid, '#benefit-panel': node(), '.benefit-ended': ended, '#benefit-period': period,
-    '[data-ended-list]': endedList, '.benefit-count': count, '.benefit-empty': empty, '[data-filter-note]': node(), '[role="tablist"]': node() };
+  grid.children = [card];
+  const nodes = { '#benefit-panel .benefit-grid': grid, '#benefit-panel': node(),
+    '.benefit-count': count, '.benefit-empty': empty, '[data-filter-note]': node(), '[role="tablist"]': node() };
   const board = { querySelector: key => nodes[key], querySelectorAll: key => key === '[role="tab"]' ? tabs : [card] };
-  vm.runInNewContext(fs.readFileSync(path.join(root, 'latest/hub.js'), 'utf8'), {
-    Date: { now: () => now, parse: Date.parse }, window: { location: { search: '?filter=upcoming' }, setInterval(callback) { timer = callback; } },
+  const boot = search => vm.runInNewContext(fs.readFileSync(path.join(root, 'latest/hub.js'), 'utf8'), {
+    Date: { now: () => now, parse: Date.parse }, window: { location: { search }, setInterval(callback) { timer = callback; } },
     document: { hidden: false, querySelector: () => board, addEventListener() {} }
   });
-  assert.equal(tabs[0].attributes['aria-selected'], 'true', '以前の開始予定リンクでも一覧を開く');
-  assert.equal(period.value, 'upcoming', '以前の開始予定リンクから時期の絞り込みを引き継ぐ');
+  boot('?filter=upcoming');
+  assert.equal(tabs[2].attributes['aria-selected'], 'true', '以前の開始予定リンクで開始予定のタブを開く');
   assert.equal(card.hidden, false, '直接リンクの初回描画で開始前の企画を表示する');
-  tabs[1].handlers.click(); assert.equal(card.hidden, false); assert.equal(count.textContent, '1件の情報');
+  assert.equal(badge.textContent, '開始予定');
   writes = 0; timer(); timer(); assert.equal(writes, 0, '変化のない確認で読み上げ領域を更新しない');
   now = Date.parse(card.dataset.start); timer(); assert.equal(card.hidden, true);
-  period.value = 'active'; tabs[0].handlers.click(); assert.equal(card.hidden, false); assert.equal(badge.textContent, '開催中');
+  tabs[1].handlers.click(); assert.equal(card.hidden, false); assert.equal(badge.textContent, '開催中');
   now = Date.parse('2026-09-10T00:00:00Z'); timer(); assert.equal(badge.textContent, 'まもなく終了');
   assert.equal(card.hidden, false, '終了間近も開催中に含む');
   tabs[0].handlers.keydown({ key: 'Home', preventDefault() {} }); assert.equal(focused, tabs[0]);
-  now = Date.parse(card.dataset.end); timer(); assert.equal(card.parentElement, endedList);
-  assert.equal(ended.hidden, false); assert.equal(count.textContent, '0件の情報'); assert.equal(badge.textContent, '終了');
+  tabs[1].handlers.click();
+  now = Date.parse(card.dataset.end); timer(); assert.equal(card.hidden, true);
+  assert.equal(count.textContent, '0件の情報'); assert.equal(badge.textContent, '終了');
+  tabs[3].handlers.click(); assert.equal(card.hidden, false); assert.equal(count.textContent, '1件の情報');
+  tabs[0].handlers.click(); assert.equal(card.hidden, false, 'すべてには終了済みも残す');
+  for (const [legacy, expected] of [['points',0], ['gift',0], ['other',0], ['soon',1], ['ended',3]]) {
+    boot('?filter=' + legacy);
+    assert.equal(tabs[expected].attributes['aria-selected'], 'true', legacy + ' のリンクを引き継ぐ');
+  }
 });

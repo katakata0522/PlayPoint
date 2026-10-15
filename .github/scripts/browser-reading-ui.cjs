@@ -330,7 +330,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       for (const item of await palette(page,['.benefit-audience-controls label'])) assert(item.ratio>=4.5,`Benefit label ${theme}: ${item.ratio}`);
       // 別のタブへマウス・フォーカスを移しても、選択中と同じ塗りつぶしにしない。
       const selectedTab = page.getByRole('tab', { name:'すべて', exact:true });
-      const otherTab = page.getByRole('tab', { name:'製品割引', exact:true });
+      const otherTab = page.getByRole('tab', { name:'終了', exact:true });
       await selectedTab.click();
       await otherTab.hover();
       await page.keyboard.press('Tab');
@@ -338,7 +338,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       for (const item of await palette(page,['.benefit-tabs [role="tab"]'])) assert(item.ratio>=4.5,`Benefit tab hover/focus ${theme}: ${JSON.stringify(item)}`);
       const tabState = await page.evaluate(() => {
         const selected = document.querySelector('.benefit-tabs [aria-selected="true"]');
-        const other = document.querySelector('#benefit-tab-other');
+        const other = document.querySelector('#benefit-tab-ended');
         return {
           count:document.querySelectorAll('.benefit-tabs [aria-selected="true"]').length,
           selectedBg:getComputedStyle(selected).backgroundColor,

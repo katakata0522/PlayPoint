@@ -858,8 +858,8 @@
           recovery.append(list);
           const latestLink = document.createElement('a');
           const benefitQuery = /steel\s*series|スチール\s*シリーズ|pixel|ピクセル/i.test(currentSearch.normalize('NFKC'));
-          latestLink.href = benefitQuery ? '/latest/?filter=other' : '/latest/';
-          latestLink.textContent = benefitQuery ? 'Pixel・SteelSeriesなど「その他の特典」を見る' : '記事になっていないキャンペーンは最新情報で確認する';
+          latestLink.href = '/latest/';
+          latestLink.textContent = benefitQuery ? 'Pixel・SteelSeriesなどの特典を確認する' : '記事になっていないキャンペーンは最新情報で確認する';
           const latestChoice = document.createElement('p'); latestChoice.append(latestLink); recovery.append(latestChoice);
           dom.grid.append(recovery);
           renderGameCalculatorLinks();
