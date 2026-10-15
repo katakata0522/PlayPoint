@@ -106,6 +106,7 @@ html[data-reading-theme] .history-records { background:var(--reading-surface); c
 html[lang="ja"][data-reading-theme] body .guide-latest-layout .history-records :is(h2,h3) { color:var(--reading-text); }
 
 /* 一覧を先に、詳しい条件・記録は必要なときに開いて読む。 */
+body.latest-hub { transition:none; }
 html[lang] body.latest-hub .guide-latest-layout .lp-hero { margin:0 0 16px; }
 html[lang] body.latest-hub .lp-hero h1 { font-size:clamp(23px,3vw,30px); line-height:1.4; }
 body.latest-hub .benefit-product { font-size:13px; margin-bottom:3px; }
