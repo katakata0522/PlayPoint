@@ -23,6 +23,8 @@ function renderRegionFlow(template, locale) {
   const { description, unit, amount } = regionFlowExample(locale);
   return template.replace(/<title id="title">[^<]*<\/title>/, `<title id="title">${{en:'Calculation example',ko:'계산 예시',tw:'計算範例',hk:'計算例子',in:'Calculation example'}[locale]}</title>`)
     .replace(/<desc id="desc">[^<]*<\/desc>/, `<desc id="desc">${description}</desc>`)
+    // 図をスマホ幅へ縮小しても文字のコントラストを保つ。枠・矢印の4色は維持する。
+    .replace(/(<text\b[^>]*\bfill=")(#4285F4|#EA4335|#34A853)(")/g, (_tag, before, color, after) => before + ({'#4285F4':'#185abc','#EA4335':'#b3261e','#34A853':'#137333'})[color] + after)
     .replace('/ ¥100', '/ ' + unit)
     .replace('font-size="47" font-weight="800">¥86,400', `font-size="${amount.length > 8 ? 40 : 47}" font-weight="800">${amount}`);
 }

@@ -39,14 +39,14 @@
 
   <g font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" text-anchor="middle">
     <g font-size="29" font-weight="800">
-      <text x="177" y="126" fill="#4285F4">01</text>
-      <text x="480" y="126" fill="#EA4335">02</text>
-      <text x="783" y="126" fill="#34A853">03</text>
+      <text x="177" y="126" fill="#185abc">01</text>
+      <text x="480" y="126" fill="#b3261e">02</text>
+      <text x="783" y="126" fill="#137333">03</text>
     </g>
 
     <text x="177" y="211" fill="#202124" font-size="52" font-weight="800">1,728 pt</text>
 
-    <text x="480" y="194" fill="#EA4335" font-size="49" font-weight="800">2.0 pt</text>
+    <text x="480" y="194" fill="#b3261e" font-size="49" font-weight="800">2.0 pt</text>
     <text x="480" y="236" fill="#5F6368" font-size="30" font-weight="750">/ NT$30</text>
 
     <text x="783" y="211" fill="#202124" font-size="40" font-weight="800">NT$25,920</text>
