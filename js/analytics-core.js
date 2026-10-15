@@ -434,11 +434,14 @@
         if (hasClass('site-logo')) return { component: 'site_identity', link_position: 1 };
         if (hasClass('nav-item') && (closest('.intl-global-nav') || closest('.ja-global-nav'))) return { component: 'global_nav', link_position: getSelectorPosition(link, '.intl-global-nav .nav-item, .ja-global-nav .nav-item') };
         if (closest('.intl-article-breadcrumbs')) return { component: 'breadcrumb', link_position: getSelectorPosition(link, '.intl-article-breadcrumbs a') };
+        if (closest('.breadcrumbs-wrapper')) return { component: 'breadcrumb', link_position: getSelectorPosition(link, '.breadcrumbs-wrapper a') };
         if (closest('.site-region-menu')) return { component: 'region_switch', link_position: getSelectorPosition(link, '.site-region-menu a') };
         if (hasClass('sidebar-next-link')) return { component: 'next_step', link_position: 1 };
         if (hasClass('sidebar-popular-link')) return { component: 'popular', link_position: getPopularPosition(link) };
         if (hasClass('sidebar-related-link')) return { component: 'related', link_position: getSelectorPosition(link, '.sidebar-related-link') };
+        if (closest('article .related-links-section')) return { component: 'related', link_position: getSelectorPosition(link, 'article .related-links-section a') };
         if (hasClass('sidebar-browse-link')) return { component: 'browse', link_position: getSelectorPosition(link, '.sidebar-browse-link') };
+        if (hasClass('sidebar-browse-category')) return { component: 'browse', link_position: getSelectorPosition(link, '.sidebar-browse-category') };
         if (hasClass('site-about-link') || closest('.sidebar-author-links, .author-box-links')) {
             const hostname = String(url.hostname || '').toLowerCase();
             const isKatakataLab = hostname === 'katakatalab.com' || hostname.endsWith('.katakatalab.com');
@@ -460,7 +463,7 @@
         if (component === 'author') return 'operator_profile';
         if (url.pathname === window.location.pathname && url.hash) return 'section';
         if (/\/(?:(?:en|ko|tw)\/)?articles\/[^/]+\.html$/.test(url.pathname)) return 'article';
-        if (/\/(?:(?:en|ko|tw)\/articles|blog)\/$/.test(url.pathname)) return url.hash || url.searchParams.has('category') ? 'category' : 'guide_hub';
+        if (/\/(?:(?:en|ko|tw)\/articles|blog)\/$/.test(url.pathname)) return url.hash || ['category', 'topic', 'game', 'q'].some(key => url.searchParams.has(key)) ? 'category' : 'guide_hub';
         return 'internal';
     }
 
