@@ -116,3 +116,17 @@ test('韓国・台湾の週次特典は銀級と上位等級の現行プログ�
   assert.match(ticket, /48시간/);
   assert.match(ticket, /8주/);
 });
+
+test('有効期限の記事は年間の等級進捗を毎週特典の画面へ案内しない', () => {
+  for (const [locale, rowName, destination] of [
+    ['en', 'Level progress', 'Play Points → More → Level benefits'],
+    ['ko', '등급 진행도', 'Play Points → 더보기 → 등급별 혜택'],
+    ['tw', '等級進度', 'Play Points → 更多 → 等級福利']
+  ]) {
+    const html = read(`${locale}/articles/google-play-points-expiration.html`);
+    const row = [...html.matchAll(/<tr\b[^>]*>[\s\S]*?<\/tr>/g)]
+      .map(match => match[0]).find(value => value.includes(`>${rowName}</td>`));
+    assert.ok(row, `${locale}: annual progress comparison row`);
+    assert.ok(row.includes(destination), `${locale}: level information must use level benefits, not weekly perks`);
+  }
+});
