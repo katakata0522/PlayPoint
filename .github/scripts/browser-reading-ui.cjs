@@ -625,6 +625,8 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       const visibleGuides=ip.locator('[data-guide-grid] [data-guide-card]:visible');
       const initialCount=await visibleGuides.count();
       const game=ip.locator('[data-guide-game]'),topic=ip.locator('[data-guide-topic]');
+      await ip.locator('[data-guide-more] > summary').click();
+      assert.equal(await game.isVisible(),true,locale+': additional filters open on request');
       await game.focus();await ip.keyboard.press('Home');await ip.keyboard.press('ArrowDown');
       await ip.waitForFunction(()=>document.querySelector('[data-guide-game]').value==='games');
       assert.equal(await visibleGuides.count(),17,locale+': keyboard game filter');
