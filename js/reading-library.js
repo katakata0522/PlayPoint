@@ -145,6 +145,18 @@
   root.PlayPointReading = api;
   function init() {
     const document = root.document, pathname = normalizeArticlePath(root.location.pathname) || root.location.pathname;
+    // 同じページの分類や履歴へ進んだときも、移動先をメニューで覆わない。
+    document.querySelectorAll('.intl-mobile-menu').forEach(menu => menu.addEventListener('click', event => {
+      const link = event.target.closest('a[href]');
+      if (!link || event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      const destination = new URL(link.href, root.location.href);
+      if (destination.origin !== root.location.origin || destination.pathname !== root.location.pathname) return;
+      menu.open = false;
+      // 閉じたメニューの中へフォーカスを残さない。
+      const target = destination.hash && document.getElementById(destination.hash.slice(1));
+      if (target) { target.tabIndex = -1; target.focus({ preventScroll: true }); }
+      else menu.querySelector('summary')?.focus({ preventScroll: true });
+    }));
     const locale = pathname.match(/^\/(en|ko|tw)\//)?.[1] || 'ja', copy = COPY[locale];
     const hub = locale === 'ja' ? '/blog/' : `/${locale}/articles/`;
     const isHub = pathname === hub || pathname === hub + 'index.html';

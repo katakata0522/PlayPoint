@@ -48,6 +48,8 @@
   function updateResult(count) {
     const loading = Boolean(search.value.trim()) && bodySearchStatus === 'loading';
     result.setAttribute('aria-busy', String(loading));
+    // 全件数は分類欄にあるため、絞り込み前だけ重複表示を省く。
+    result.classList.toggle('is-default', !search.value.trim() && activeCategory === 'all' && (!gameFilter || gameFilter.value === 'all') && (!topicFilter || topicFilter.value === 'all'));
     const template = count === 1 && grid.dataset.resultTemplateSingle || grid.dataset.resultTemplate || '{count}';
     result.textContent = loading ? loadingCopy : template.replace('{count}', String(count));
     empty.hidden = loading || count !== 0; recovery.hidden = loading || count !== 0;

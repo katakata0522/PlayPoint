@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const http = require('node:http');
 const path = require('node:path');
 const { chromium } = require('playwright-core');
+const { measureTextContrast } = require('./accessibility-browser.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
 const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
@@ -296,6 +297,18 @@ async function verifyLocale(browser, baseUrl, locale) {
       }
       await page.waitForFunction(() => getComputedStyle(document.querySelector('.region-switch')).display === 'grid', null, { timeout: 10_000 });
       const layout = await inspectLayout(page);
+      if (width === 320) {
+        const advanced = page.locator('.calculator-advanced-settings__toggle');
+        await advanced.click();
+        assert(await advanced.getAttribute('aria-expanded') === 'true', locale.key + ': 任意設定を開ける');
+        for (const state of ['hover', 'focus']) {
+          if (state === 'hover') await advanced.hover();
+          else { await page.mouse.move(0, 0); await advanced.focus(); }
+          const colors = await page.evaluate(measureTextContrast, '.calculator-advanced-settings__toggle');
+          assert(colors.length > 0 && colors.every(color => color.unknown.length === 0 && color.ratio >= 4.5), locale.key + ': 任意設定の' + state + '文字が読める ' + JSON.stringify(colors));
+        }
+        await advanced.click();
+      }
       assert(layout, `${locale.key} ${width}px: region selector was not fully initialized`);
 
       const overflowDetails = layout.overflowers

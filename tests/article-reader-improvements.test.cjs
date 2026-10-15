@@ -141,3 +141,14 @@ test('海外記事の長い表の前で、本文と到達先を残したまま�
   const nested = wrapped.replace('<nav', '<details').replace('</nav>', '</details>').replace('<h2 id="toc">Contents</h2>', '<summary><h2 id="toc">Contents</h2></summary>');
   assert.equal(compactIntlToc(nested), wrapped, '既に生成した二重の開閉も一段に戻す');
 });
+
+test('手書きの日本語目次はリンクと見出しIDを残して一つの開閉にまとめる', () => {
+  const { polishPage } = require('../scripts/site-reader-polish.cjs');
+  const source = '<nav class="article-toc" aria-label="この記事の目次"><h2 id="toc">この記事の目次</h2><ol><li><a href="#orders">購入履歴</a></li></ol></nav><h2 id="orders">購入履歴</h2><p>本文と条件</p>';
+  const output = polishPage(source, 'articles/purchase-history.html');
+  assert.match(output, /<summary class="inpage-toc-title" id="toc">この記事の目次<\/summary>/);
+  assert.match(output, /href="#orders"/);
+  assert.match(output, /<h2 id="orders">購入履歴<\/h2><p>本文と条件<\/p>/);
+  assert.equal((output.match(/class="inpage-toc reader-toc"/g) || []).length, 1);
+  assert.equal(polishPage(output, 'articles/purchase-history.html'), output);
+});

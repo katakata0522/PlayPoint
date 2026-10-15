@@ -288,6 +288,7 @@ async function inspectIntlReading(browser, baseUrl) {
         const menu = page.locator('.intl-mobile-menu');
         await menu.locator(':scope > summary').click();
         await menu.locator('[data-reading-library-menu]').click();
+        assert(!await menu.evaluate(el => el.open), item.locale + ': 履歴へ移動した後はメニューを閉じる');
       } else await page.locator('.reading-tools a').click();
       const library = page.locator('#reading-library');
       await library.waitFor({ state: 'visible' });
@@ -308,7 +309,11 @@ async function inspectIntlReading(browser, baseUrl) {
         assert(await menu.locator('nav a:visible').count() === 8, item.locale + ': mobile menu links must be visible');
         const menuBounds = await menu.locator('nav').boundingBox();
         assert(menuBounds && menuBounds.x >= 0 && menuBounds.x + menuBounds.width <= item.width, item.locale + ': mobile menu must fit the screen');
-        await menu.locator(':scope > summary').click();
+        await menu.locator('a[href="/' + item.locale + '/articles/#intl-hub-earn"]').click();
+        await page.waitForFunction(() => document.querySelector('[data-guide-category]').value === 'earn');
+        assert(!await menu.evaluate(el => el.open), item.locale + ': 分類へ移動した後はメニューを閉じる');
+        assert(await page.locator('[data-guide-grid] [data-guide-card]:visible').evaluateAll(cards => cards.length > 0 && cards.every(card => card.dataset.category === 'earn')), item.locale + ': メニューから選んだ分類を表示する');
+        await page.locator('[data-guide-category]').selectOption('all');
         const regions = page.locator('.site-region-switcher');
         await regions.locator(':scope > summary').click();
         assert(await regions.locator('.site-region-menu a:visible').count() === 5, item.locale + ': region destinations must be visible');

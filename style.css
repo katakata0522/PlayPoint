@@ -2657,6 +2657,8 @@ overflow-wrap: anywhere;
 padding: 6px;
 font-size: 0.8rem;
 }
+html:is(:lang(ko),:lang(zh-TW)) .top-bar > .region-switch + .header-links { grid-template-columns:minmax(0,1.5fr) auto auto; gap:4px !important; }
+html:is(:lang(ko),:lang(zh-TW)) .top-bar > .region-switch + .header-links a:not(.alert-link) { padding-inline:3px; word-break:keep-all; overflow-wrap:normal; white-space:nowrap; }
 }
 .calculator-basis-note { font-size: .85rem; line-height: 1.6; }
 .calculator-basis-settings { margin: 0 0 16px; }

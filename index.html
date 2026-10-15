@@ -47,7 +47,7 @@
     <link rel="modulepreload" href="js/ui.js">
     <link rel="modulepreload" href="js/share.js">
     <link rel="modulepreload" href="js/calculator.js">
-    <link rel="stylesheet" href="style.css?v=cf9672d999">
+    <link rel="stylesheet" href="style.css?v=1f22901514">
     <script type="speculationrules">
     {
   "prefetch": [
@@ -186,7 +186,7 @@
 #main-calculator-inputs>#calculator-advanced-settings{order:2}
 .calculator-advanced-settings{display:block;margin-top:.85em}
 .calculator-advanced-settings__toggle{display:flex;align-items:center;justify-content:space-between;gap:.75em;width:100%;min-height:46px;margin:0;padding:.65em .8em;box-sizing:border-box;border:1px solid rgba(11,87,208,.22);border-radius:8px;background:rgba(11,87,208,.055);color:var(--text-color,#1f2937);box-shadow:none;font:inherit;font-weight:700;text-align:left;cursor:pointer}
-.calculator-advanced-settings__toggle:hover{background:rgba(11,87,208,.1);box-shadow:none;transform:none}
+.calculator-advanced-settings__toggle:hover:not(:disabled){background:rgba(11,87,208,.1);color:var(--text-color,#1f2937);box-shadow:none;transform:none}
 .calculator-advanced-settings__toggle:focus-visible{outline:3px solid var(--input-focus-border-color,#005fcc);outline-offset:2px}
 .calculator-advanced-settings__chevron{flex:0 0 auto;font-size:.9em;transition:transform .18s ease}
 .calculator-advanced-settings.is-open .calculator-advanced-settings__chevron,html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings__chevron{transform:rotate(180deg)}

@@ -181,8 +181,8 @@ test('多言語トップの実行時記事リンクは各言語の記事一覧�
   const configs = loadConfigs();
   const expected = {
     US: { text: '📝 Articles', href: 'articles/' },
-    KR: { text: '📝 가이드 목록', href: 'articles/' },
-    TW: { text: '📝 指南列表', href: 'articles/' }
+    KR: { text: '가이드 목록', href: 'articles/' },
+    TW: { text: '指南列表', href: 'articles/' }
   };
   for (const [region, link] of Object.entries(expected)) {
     assert.deepEqual(configs[region].uiText.linkArticles, link, region);

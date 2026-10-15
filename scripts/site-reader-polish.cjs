@@ -21,6 +21,13 @@ function contentEnd(html, index) {
 function polishPage(html, file) {
   const locale = file.startsWith('en/') ? 'en' : file.startsWith('ko/') ? 'ko' : file.startsWith('tw/') ? 'tw' : 'ja';
   const copy = COPY[locale];
+  if (locale === 'ja') html = html.replace(/<nav class="article-toc"([^>]*)><h2([^>]*)>([\s\S]*?)<\/h2>([\s\S]*?)<\/nav>/g,
+    '<details class="inpage-toc reader-toc"><summary class="inpage-toc-title"$2>$3</summary><nav class="article-toc"$1>$4</nav></details>');
+  if (locale !== 'ja' && /\/articles\/[^/]+\.html$/.test(file)) {
+    // 題名に含まれる主題の繰り返しだけを省く。固有の開催時期などは残す。
+    const title = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, '').toLowerCase();
+    html = html.replace(/<span class="hero-badge">([^<]+)<\/span>/g, (tag, label) => title?.includes(label.toLowerCase()) ? '' : tag);
+  }
   if (locale !== 'ja' && /\/articles\/[^/]+\.html$/.test(file)) html = compactIntlToc(html);
   const article = html.match(/<article\b[^>]*class="[^"]*\bcontent\b[^"]*"[^>]*>/i);
   if (article && !/<main\b|\brole="main"/i.test(html)) {
@@ -54,12 +61,12 @@ function polishPage(html, file) {
           const reference = href.startsWith('/games/');
           if (reference) return before + description + after;
           brief = {
-            en: reference ? 'Japanese products and prices for reference.' : names ? `Compare ${names}, then calculate points from your Android purchase amount.` : 'Calculate points from your Android purchase amount.',
-            ko: reference ? '일본판 상품·가격을 참고하는 페이지입니다.' : names ? `${names} 비교 후 Android 구매 금액으로 포인트를 계산합니다.` : 'Android 구매 금액으로 포인트를 계산합니다.',
-            tw: reference ? '日本版商品與價格的參考頁面。' : names ? `比較${names}，再依Android購買金額計算點數。` : '依Android購買金額計算點數。'
+            en: names ? `Compare ${names}` : '',
+            ko: names ? `${names} 비교` : '',
+            tw: names ? `比較${names}` : ''
           }[locale].replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
         }
-        return before + brief + after;
+        return brief ? before + brief + after : '';
       });
     });
     tools = true;

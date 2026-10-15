@@ -771,6 +771,8 @@ body .site-header .site-logo-text { font-size:17px; }
 body .site-header .site-tagline { display:none; }
 body .global-nav .global-nav-inner { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0; overflow:visible; }
 body .global-nav .nav-item { min-width:0; min-height:44px; padding:8px 4px; white-space:normal; font-size:12px; text-align:center; }
+html:is(:lang(ko),:lang(zh-TW)) body .global-nav .nav-item { padding-inline:1px; word-break:keep-all; overflow-wrap:normal; }
+html:lang(zh-TW) body .global-nav .global-nav-inner { grid-template-columns:1fr 1.3fr 1fr 1fr; }
 body .breadcrumbs-wrapper { margin-block:10px; }
 .game-main-content { padding:16px 12px; }
 .games-grid { gap:10px; }

@@ -56,7 +56,7 @@ html[lang] body.blog-index-compact .hero-title { font-size:clamp(25px,2.7vw,34px
 html[lang] body.blog-index-compact .guide-intro { margin:12px 0 0; font-size:14px; line-height:1.8; color:var(--reading-muted); }
 html[lang] body.blog-index-compact .blog-discovery { padding-bottom:0; }
 html[lang] body.blog-index-compact .search-sort-row { margin-bottom:10px; }
-html[lang] body.blog-index-compact .guide-search-label { display:block; margin:0 0 8px; font-size:13px; font-weight:700; color:var(--reading-text); }
+html[lang] body.blog-index-compact :is(.guide-search-label,.sort-container > label) { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 html[lang] body.blog-index-compact #search-input { min-height:52px; padding:12px 16px; font-size:16px; border-radius:6px; border-color:var(--reading-muted); background:var(--reading-surface); }
 html[lang] body.blog-index-compact #search-input::placeholder { color:var(--reading-muted); opacity:1; }
 html[lang] body.blog-index-compact .game-filter-container { margin:0 0 10px; grid-template-columns:max-content minmax(0,320px); }
