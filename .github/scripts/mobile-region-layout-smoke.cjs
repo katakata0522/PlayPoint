@@ -298,6 +298,10 @@ async function verifyLocale(browser, baseUrl, locale) {
       await page.waitForFunction(() => getComputedStyle(document.querySelector('.region-switch')).display === 'grid', null, { timeout: 10_000 });
       const layout = await inspectLayout(page);
       if (width === 320) {
+        if (locale.key !== 'JP') {
+          const linkHeights = await page.locator('.top-bar .header-links a').evaluateAll(nodes => nodes.map(node => node.getBoundingClientRect().height));
+          assert(linkHeights.length === 3 && linkHeights.every(height => height >= 43 && height <= 48), locale.key + ': 地域条件を残して各リンクを読みやすい一段に収める ' + linkHeights.join(','));
+        }
         const advanced = page.locator('.calculator-advanced-settings__toggle');
         await advanced.click();
         assert(await advanced.getAttribute('aria-expanded') === 'true', locale.key + ': 任意設定を開ける');

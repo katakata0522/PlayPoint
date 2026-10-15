@@ -230,8 +230,6 @@ function renderNextWidget(localeKey, role, variant, newline, relativePath = '') 
     '  <section class="sidebar-widget sidebar-widget--next' + roleClass + '">',
     '    <h2 class="sidebar-widget-title">' + escapeHtml(config.kicker) + '</h2>',
     '    <div class="sidebar-widget-body">',
-    '      <p class="sidebar-next-title">' + escapeHtml(config.title) + '</p>',
-    '      <p class="sidebar-next-copy">' + escapeHtml(config.body) + '</p>',
     '      <a class="sidebar-next-link" href="' + escapeHtml(target) + '">' + escapeHtml(game ? game.name + ' · ' + config.cta : config.cta) + '</a>',
     '    </div>',
     '  </section>'
@@ -336,14 +334,14 @@ function renderBrowseWidget(localeKey, section, catalog = [], newline = '\n', ro
 function renderSidebar(localeKey, relativePath, section, role, relatedArticles, variant, catalog = [], rootDir = path.resolve(__dirname, '..'), newline = '\n') {
   const copy = COPY[localeKey];
   const widgets = [];
-  const next = renderNextWidget(localeKey, role, variant, newline, relativePath);
-  if (next) widgets.push(next);
-  widgets.push(renderSearchWidget(localeKey, newline));
-  widgets.push(renderBrowseWidget(localeKey, section, catalog, newline, rootDir));
   if (variant === 'article') {
     const related = renderRelatedWidget(localeKey, relatedArticles, newline);
     if (related) widgets.push(related);
   }
+  const next = renderNextWidget(localeKey, role, variant, newline, relativePath);
+  if (next) widgets.push(next);
+  widgets.push(renderSearchWidget(localeKey, newline));
+  widgets.push(renderBrowseWidget(localeKey, section, catalog, newline, rootDir));
   widgets.push(renderPopularWidget(localeKey, '/' + String(relativePath).replace(/^\//, ''), catalog, rootDir, newline));
   if (variant !== 'policy') widgets.push(renderAuthorWidget(localeKey, newline));
   return ['<aside class="sidebar-column intl-article-sidebar" aria-label="' + escapeHtml(copy.sidebar) + '" data-article-role="' + (role || 'reference') + '" data-article-category="' + section + '">', ...widgets, '</aside>'].join(newline);
@@ -351,6 +349,7 @@ function renderSidebar(localeKey, relativePath, section, role, relatedArticles, 
 
 function ensureStylesheet(html, newline) {
   let next = html;
+  if (!next.includes('/js/guide-navigation.js')) next = next.replace(/<\/head>/i, '<script src="/js/guide-navigation.js" defer></script>' + newline + '</head>');
   if (!next.includes(SHELL_STYLESHEET)) {
     const intlCss = /<link\b[^>]*href=["'][^"']*\/articles\/intl-article\.css(?:\?[^"']*)?["'][^>]*>/i;
     if (intlCss.test(next)) next = next.replace(intlCss, match => match + newline + '<link rel="stylesheet" href="' + SHELL_STYLESHEET + '">');

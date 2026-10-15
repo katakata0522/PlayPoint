@@ -83,7 +83,11 @@ function normalizeCalculator(calc, c) {
   for (const id of ['sim-pack-select', 'sim-pack-count']) result = result.replace(new RegExp(`<div class="input-field">\\s*<label for="${id}">[\\s\\S]*?<\\/div>`), '');
   result = result.replace(/<form id="game-sim-form"[^>]*>/, '<form id="game-sim-form" data-input-mode="amount">');
   result = result.replace(/(<input[^>]*\bid="sim-custom-amount"[^>]*\bvalue=")[^"]*(")/, (_m, a, b) => a + '0' + b);
-  result = result.replace(/(<h2 class="game-sim-title">[\s\S]*?<\/h2>)/, (_m, h) => `${h}<p class="game-sim-lead">${escape(c.input)}</p>`);
+  // ゲーム名はH1で示しているため、入力欄の前で繰り返さない。
+  result = result.replace(/<h2 class="game-sim-title">[\s\S]*?<\/h2>/, '');
+  result = result.replace('class="game-sim-card"', 'class="game-sim-card game-sim-card--inline"');
+  result = result.replace(/<p class="game-eligibility-note">[\s\S]*?<\/p>/g, '')
+    .replace(/(<details class="game-rate-settings"><summary>[\s\S]*?<\/summary>)/, `$1<p class="game-eligibility-note">${escape(c.input)}</p>`);
   return result.replace(/^[\t ]+$/gm, '');
 }
 function hreflangs(html, id) {
@@ -134,7 +138,7 @@ function syncIntlGameEvidence(rootDir) {
       const name = nameFrom(html, entry, locale), desc = description(name, entry, locale, id);
       summaries[locale][id] = { name, desc };
       const reference = isReference(locale, id), items = entry.offers[locale];
-      const calculator = html.match(/<section class="game-sim-card" id="game-calculator">[\s\S]*?<\/section>/)?.[0];
+      const calculator = html.match(/<section class="game-sim-card(?: game-sim-card--inline)?" id="game-calculator">[\s\S]*?<\/section>/)?.[0];
       if (!calculator) throw new Error(`[intl-game-evidence] missing calculator: ${file}`);
       const ads = html.match(/<div class="game-ad-container"[^>]*>[\s\S]*?<\/div>/g) || [];
       // メイン欄だけを編集し、サイドバー・広告・共通資産の共有契約を保持する。
@@ -152,7 +156,9 @@ function syncIntlGameEvidence(rootDir) {
       const reading = guides.length ? `<section class="section game-reading-guides"><h2>${locale === 'en' ? 'Read before buying' : locale === 'ko' ? '구매 전 읽어볼 가이드' : '購買前的指南'}</h2><ul>${guides.map(guide => `<li><a href="${hrefFor(locale, guide.slug)}">${escape(guide.content[locale].title)}</a></li>`).join('')}</ul></section>` : '';
       const note = reference ? `<section class="section game-reference-note"><h2>${c.reference}</h2><p>${c.referenceNote}</p><p><a href="/games/${id}/" hreflang="ja">${c.japan}</a></p></section>` : items.length ? '' : `<section class="section"><h2>${c.bodyTitle}</h2><p>${escape(focus)}</p><p><a href="/games/${id}/" hreflang="ja">${c.japan}</a></p></section>`;
       const editorial = (entry.editorial?.[locale] || []).map(section => `<section class="section"><h2>${escape(section.heading)}</h2>${section.paragraphs.map(paragraph => `<p>${escape(paragraph)}</p>`).join('')}</section>`).join('\n');
-      const main = `${header}\n<p>${escape(desc)}</p>\n${note}\n${editorial ? `${editorial}\n` : ''}${reference ? '' : offersHtml(entry, name, locale)}\n${normalizeCalculator(calculator, c)}\n${ads.join('\n')}\n${reading}\n${faq}\n${sourceBlock}\n<p><a href="/${locale}/games/">${c.more} →</a></p>`;
+      const productNames = items.map(item => item.names[locale]).join(' / ');
+      const lead = reference || entry.descriptions?.[locale] ? desc : productNames ? ({en:`Compare ${productNames} and calculate Google Play Points.`,ko:`${productNames} 비교와 Google Play Points 계산.`,tw:`比較${productNames}，計算Google Play Points。`})[locale] : '';
+      const main = `${header}\n${lead ? `<p>${escape(lead)}</p>` : ''}\n${note}\n${editorial ? `${editorial}\n` : ''}${reference ? '' : offersHtml(entry, name, locale)}\n${normalizeCalculator(calculator, c)}\n${ads.join('\n')}\n${reading}\n${faq}\n${sourceBlock}\n<p><a href="/${locale}/games/">${c.more} →</a></p>`;
       let next = html.replace(/(<main class="game-main-content">)[\s\S]*?(<\/main>)/, (_m, a, b) => a + main + b);
       next = next.replace(/(<p class="site-tagline">)[\s\S]*?(<\/p>)/, (_m, a, b) => a + c.lead + b);
       next = updateMetadata(next, name, desc, locale, id, questions);

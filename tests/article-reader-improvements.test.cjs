@@ -152,3 +152,21 @@ test('手書きの日本語目次はリンクと見出しIDを残して一つの
   assert.equal((output.match(/class="inpage-toc reader-toc"/g) || []).length, 1);
   assert.equal(polishPage(output, 'articles/purchase-history.html'), output);
 });
+
+test('長い海外実用記事は本文を変えず見出しへ移動でき、短いニュースへ目次を増やさない', () => {
+  const { addPracticalToc } = require('../scripts/site-reader-polish.cjs');
+  const source = '<article class="content"><p>Short answer &amp; condition.</p><section class="answer-box">' + Array.from({length:6}, (_,i) => `<h2 id="section-${i}">Topic ${i}</h2><p>Body ${i}</p>`).join('') + '</section></article>';
+  const result = addPracticalToc(source, 'en/articles/google-play-points-earn-free.html', 'en');
+  assert.equal(result.replace(/<details[\s\S]*?<\/details>\n/, ''), source);
+  assert.ok(result.indexOf('<details') < result.indexOf('<section class="answer-box">'));
+  for (let i=0;i<6;i++) assert.ok(result.includes(`href="#section-${i}"`));
+  assert.equal(addPracticalToc(result, 'en/articles/google-play-points-earn-free.html', 'en'), result);
+  assert.equal(addPracticalToc(source, 'en/articles/2026-10-12-google-play-fest-2026.html', 'en'), source);
+  for (const locale of ['en','ko','tw']) {
+    const html = read(`${locale}/articles/google-play-points-earn-free.html`);
+    assert.equal((html.match(/class="intl-article-toc reader-toc"/g) || []).length, 1);
+    const links = [...html.matchAll(/<a href="#(article-section-\d+)"/g)];
+    assert.ok(links.length >= 5);
+    for (const [,id] of links) assert.ok(html.includes(`id="${id}"`));
+  }
+});

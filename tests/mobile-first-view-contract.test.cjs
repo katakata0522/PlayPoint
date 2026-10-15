@@ -309,8 +309,24 @@ test('公開トップのタブ名は実行時の地域設定と一致し、前�
 
 
 test("計算フローはGoogleコア4色を段階と接続へ使う", () => {
-  const svg=read('images/calculation-flow.svg');
+  const svg=read('images/calculation-flow-compact.svg');
   for(const hex of ['#4285F4','#EA4335','#FBBC04','#34A853'])assert.ok(svg.toLowerCase().includes(hex.toLowerCase()),hex);
+});
+
+test('海外の計算例は地域ルールと実際の計算関数から通貨・対象額を生成する', () => {
+  const { renderRegionFlow, REGIONS } = require('../scripts/region-calculation-flow.cjs');
+  const { getRegionRule } = require('../js/region-rules.js');
+  const { CALC_PURE } = require('../js/calculator-core.js');
+  for (const [locale, [region, symbol]] of Object.entries(REGIONS)) {
+    const svg = read(`images/calculation-flow-${locale}.svg`);
+    const unit = getRegionRule(region).spendUnit;
+    const expected = CALC_PURE.computeMainResult({ neededPoints:1728, finalRate:2, spendUnit:unit }).totalAmountNeeded;
+    assert.equal(svg, renderRegionFlow(read('images/calculation-flow-compact.svg'), locale));
+    assert.ok(svg.includes(`/ ${symbol}${unit.toLocaleString('en-US')}`));
+    assert.ok(svg.includes(`${symbol}${expected.toLocaleString('en-US')}`));
+    assert.doesNotMatch(svg, /¥|× 2/);
+    assert.ok(read(`${locale}/index.html`).includes(`images/calculation-flow-${locale}.svg`));
+  }
 });
 
 test('トップ下部は機能説明とおすすめ利用場面を分け、目的別の4記事・FAQを残す', () => {

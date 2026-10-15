@@ -98,6 +98,11 @@ test('international hubs render their curated starts plus searchable category ca
   for (const locale of INTERNATIONAL_LOCALES) {
     const html = read(`${locale}/articles/index.html`);
     const content = getArticleContent(html);
+    const grid = content.split('data-guide-grid')[1];
+    const hrefs = [...grid.matchAll(/href="([^"]+)" data-guide-card/g)].map(m => m[1]);
+    const dates = hrefs.map(href => read(href.slice(1).replace(/\/$/, '/index.html')).match(/"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})/)?.[1] || '');
+    assert.deepEqual(dates, [...dates].sort().reverse(), `${locale}: 公開日の新しい記事を先に並べる`);
+    assert.ok(hrefs.indexOf(`/${locale}/articles/2026-10-12-google-play-fest-2026.html`) < 10, `${locale}: 最近のイベントへすぐ到達できる`);
 
     assert.match(html, /\/articles\/intl-hub\.css\?v=[a-z0-9_-]+/i);
     assert.match(html, /\/js\/intl-guide-hub\.js\?v=[a-z0-9_-]+/i);

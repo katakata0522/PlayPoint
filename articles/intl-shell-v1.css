@@ -109,7 +109,11 @@ html[lang] body .intl-article-site-header .guide-brand-short { display: block; }
 }
 @media (max-width: 340px) {
 .site-header-tools { grid-template-columns: 1fr; }
-}/* 海外記事の入口は、地域・メニュー・本文を優先する。 */
+}
+.intl-article-site-header .intl-search-trigger { display:inline-flex; align-items:center; justify-content:center; flex:0 0 44px; width:44px; min-width:44px; height:44px; padding:0; margin:0; border:0; background:transparent; color:var(--reading-text); cursor:pointer; }
+.intl-article-site-header .intl-search-trigger:focus-visible { outline:3px solid var(--reading-link); outline-offset:2px; }
+.intl-article-site-header .guide-brand-short { white-space:nowrap; }
+/* 海外記事の入口は、地域・メニュー・本文を優先する。 */
 .intl-mobile-menu { display:none; }
 @media (max-width:760px) {
 html[lang] body .intl-article-site-header { padding:0 12px; }

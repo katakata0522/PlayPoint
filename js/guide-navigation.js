@@ -31,15 +31,17 @@
 (function () {
   'use strict';
   const doc = document;
-  if (doc.documentElement.lang !== 'ja' || typeof window.HTMLDialogElement?.prototype.showModal !== 'function') return;
+  const locale = ({ja:'ja',en:'en',ko:'ko','zh-TW':'tw'})[doc.documentElement.lang];
+  if (!locale || typeof window.HTMLDialogElement?.prototype.showModal !== 'function') return;
+  const intl = locale !== 'ja';
   // headで同期実行し、最初の描画からスマホ用の配置を確保する。
-  doc.documentElement.classList.add('guide-navigation-enabled');
+  if (!intl) doc.documentElement.classList.add('guide-navigation-enabled');
   function init() {
     const header = doc.querySelector('.guide-header');
     if (!header) return;
     const article = doc.querySelector('article.content, article.main-content-column');
     const compactArticle = Boolean(article);
-    if (compactArticle) doc.documentElement.classList.add('guide-article-header');
+    if (compactArticle && !intl) doc.documentElement.classList.add('guide-article-header');
     const el = (tag, className, text) => {
       const node = doc.createElement(tag); if (className) node.className = className; if (text) node.textContent = text; return node;
     };
@@ -51,12 +53,16 @@
     const button = (text, id) => {
       const node = el('button', 'guide-nav-button', text); node.type = 'button'; node.setAttribute('aria-controls', id); node.setAttribute('aria-expanded', 'false'); node.setAttribute('aria-haspopup', 'dialog'); return node;
     };
-    const menuButton = button('メニュー', 'guide-menu'); menuButton.prepend(el('span', 'guide-menu-icon')); menuButton.firstChild.setAttribute('aria-hidden', 'true');
-    if (compactArticle) inner.append(menuButton); else inner.prepend(menuButton);
+    const menuButton = button('メニュー', 'guide-menu');
+    if (!intl) {
+      menuButton.prepend(el('span', 'guide-menu-icon')); menuButton.firstChild.setAttribute('aria-hidden', 'true');
+      if (compactArticle) inner.append(menuButton); else inner.prepend(menuButton);
+    }
     const makeDialog = (id, title, trigger) => {
       const dialog = el('dialog', 'guide-dialog'); dialog.id = id; dialog.setAttribute('aria-labelledby', id + '-title');
-      const top = el('div', 'guide-dialog-header'), heading = el('h2', '', title), close = el('button', 'guide-close', '閉じる ×');
-      heading.id = id + '-title'; close.type = 'button'; close.autofocus = true; close.setAttribute('aria-label', title + 'を閉じる'); top.append(heading, close); dialog.append(top); doc.body.append(dialog);
+      const closeText = {ja:'閉じる',en:'Close',ko:'닫기',tw:'關閉'}[locale];
+      const top = el('div', 'guide-dialog-header'), heading = el('h2', '', title), close = el('button', 'guide-close', closeText + ' ×');
+      heading.id = id + '-title'; close.type = 'button'; close.autofocus = true; close.setAttribute('aria-label', intl ? closeText : title + 'を閉じる'); top.append(heading, close); dialog.append(top); doc.body.append(dialog);
       const finish = () => { trigger.setAttribute('aria-expanded', String(dialog.open)); if (!doc.querySelector('.guide-dialog[open]')) doc.documentElement.classList.remove('guide-dialog-open'); };
       const open = () => { if (dialog.open) return; dialog.showModal(); dialog.scrollTop = 0; trigger.setAttribute('aria-expanded', 'true'); doc.documentElement.classList.add('guide-dialog-open'); };
       trigger.addEventListener('click', open); close.addEventListener('click', () => dialog.close()); dialog.addEventListener('close', finish);
@@ -64,6 +70,22 @@
       dialog.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); dialog.close(); } });
       return { dialog, open };
     };
+    if (intl) {
+      if (!/^\/(?:en|ko|tw)\/articles\/[^/]+\.html$/.test(location.pathname)) return;
+      const search = articleSearch(inner.querySelector('.site-header-tools'), button, makeDialog, null, el, locale);
+      const trigger = header.querySelector('[aria-controls="guide-search"]'); trigger.classList.add('intl-search-trigger');
+      // 検索の追加で見出しを折り返さないよう、表示設定は既存メニュー内へ移す。
+      const theme = header.querySelector('#theme-toggle'), nav = header.querySelector('.intl-mobile-menu nav');
+      if (theme && nav) {
+        const marker = doc.createComment('表示設定を戻す位置'); theme.before(marker);
+        const media = matchMedia('(max-width:760px)');
+        const layout = () => { if (media.matches) nav.append(theme); else marker.after(theme); };
+        layout(); media.addEventListener('change', layout);
+      }
+      trigger.addEventListener('click', () => { for (const panel of header.querySelectorAll('details[open]')) panel.open = false; });
+      window.addEventListener('pagehide', () => search.dialog.close());
+      return;
+    }
     const menu = makeDialog('guide-menu', 'メニュー', menuButton), menuBody = el('div', 'guide-menu-body ja-article-sidebar'); menu.dialog.append(menuBody);
     const sidebar = doc.querySelector('aside.ja-article-sidebar');
     const moves = [];
@@ -137,43 +159,52 @@
     window.addEventListener('pagehide', () => { menu.dialog.close(); search?.dialog.close(); });
   }
   // 検索を開いたときだけ、一覧と同じ検索エンジン・本文索引を読み込む。
-  function articleSearch(inner, button, makeDialog, menu, el) {
-    const trigger = button('', 'guide-search'); trigger.setAttribute('aria-label', '記事を検索');
+  function articleSearch(inner, button, makeDialog, menu, el, locale = 'ja') {
+    const searchModule = doc.querySelector('script[src*="/js/guide-navigation.js"]')?.dataset.searchModule || '/js/article-search.js';
+    const copy = {
+      ja: ['記事を検索','キーワード','原神、支払い方法、ポイントなど','検索','もう一度読み込む','記事一覧で探す →','ゲーム名や気になる言葉で探せます。','記事を読み込んでいます…','検索を読み込めませんでした。再読み込みするか、記事一覧から探せます。','該当する記事がありません。別の言葉でも試してみてください。'],
+      en: ['Search guides','Keyword','Game, payment method, points…','Search','Try again','Browse all guides →','Search by game or topic.','Loading guides…','Search is unavailable. Try again or browse all guides.','No matching guides. Try another keyword.'],
+      ko: ['가이드 검색','키워드','게임, 결제 수단, 포인트…','검색','다시 시도','전체 가이드 보기 →','게임 이름이나 주제로 검색하세요.','가이드를 불러오는 중…','검색을 불러오지 못했습니다. 다시 시도하거나 전체 가이드를 확인하세요.','일치하는 가이드가 없습니다. 다른 키워드로 검색해 보세요.'],
+      tw: ['搜尋指南','關鍵字','遊戲、付款方式、點數…','搜尋','重試','瀏覽所有指南 →','依遊戲名稱或主題搜尋。','正在載入指南…','無法載入搜尋，請重試或瀏覽所有指南。','找不到符合的指南，請試試其他關鍵字。']
+    }[locale];
+    const hub = locale === 'ja' ? '/blog/' : `/${locale}/articles/`;
+    const trigger = button('', 'guide-search'); trigger.setAttribute('aria-label', copy[0]);
     trigger.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>';
     inner.prepend(trigger);
-    const search = makeDialog('guide-search', '記事を検索', trigger);
-    search.dialog.querySelector('.guide-close').setAttribute('aria-label', '検索を閉じる');
+    const search = makeDialog('guide-search', copy[0], trigger);
+    if (locale === 'ja') search.dialog.querySelector('.guide-close').setAttribute('aria-label', '検索を閉じる');
     const body = el('div', 'guide-search-body');
-    body.innerHTML = '<form action="/blog/" method="get" role="search"><label for="guide-search-input">キーワード</label><div class="guide-search-line"><input id="guide-search-input" type="search" name="q" placeholder="原神、支払い方法、ポイントなど" autocomplete="off"><button type="submit">検索</button></div></form><p class="guide-search-status" role="status" aria-live="polite"></p><div class="guide-search-results"></div><button type="button" class="guide-search-retry" hidden>もう一度読み込む</button><a class="guide-search-all" href="/blog/">記事一覧で探す →</a>';
+    body.innerHTML = `<form action="${hub}" method="get" role="search"><label for="guide-search-input">${copy[1]}</label><div class="guide-search-line"><input id="guide-search-input" type="search" name="q" placeholder="${copy[2]}" autocomplete="off"><button type="submit">${copy[3]}</button></div></form><p class="guide-search-status" role="status" aria-live="polite"></p><div class="guide-search-results"></div><button type="button" class="guide-search-retry" hidden>${copy[4]}</button><a class="guide-search-all" href="${hub}">${copy[5]}</a>`;
     search.dialog.append(body);
     const input = body.querySelector('input'), status = body.querySelector('[role="status"]'), results = body.querySelector('.guide-search-results'), retry = body.querySelector('.guide-search-retry'), all = body.querySelector('.guide-search-all');
     let articles, pending;
     function render() {
       const query = input.value.trim(); results.replaceChildren();
-      all.href = '/blog/' + (query ? '?q=' + encodeURIComponent(query) : '');
+      all.href = hub + (query ? '?q=' + encodeURIComponent(query) : '');
       if (!articles) return;
-      if (!query) { status.textContent = 'ゲーム名や気になる言葉で探せます。'; return; }
+      if (!query) { status.textContent = copy[6]; return; }
       const engine = window.PlayPointSearch;
-      const matches = articles.filter(a => engine.matches(a, query, 'ja')).sort((a,b) => engine.score(b, query, 'ja') - engine.score(a, query, 'ja'));
-      status.textContent = matches.length ? matches.length + '件の記事が見つかりました' + (matches.length > 20 ? '（上位20件を表示）' : '') : '該当する記事がありません。別の言葉でも試してみてください。';
+      const matches = articles.filter(a => engine.matches(a, query, locale)).sort((a,b) => engine.score(b, query, locale) - engine.score(a, query, locale));
+      const count = matches.length, limit = count > 20;
+      status.textContent = count ? ({ja:`${count}件の記事が見つかりました${limit ? '（上位20件を表示）' : ''}`,en:`${count} guides found${limit ? ' (top 20 shown)' : ''}`,ko:`가이드 ${count}개${limit ? ' (상위 20개 표시)' : ''}`,tw:`找到 ${count} 篇指南${limit ? '（顯示前20篇）' : ''}`})[locale] : copy[9];
       for (const article of matches.slice(0,20)) {
         const link = el('a', 'guide-search-result'); link.href = article.path.replace(/index\.html$/, '');
-        link.append(el('strong', '', article.title), el('span', '', engine.excerpt(article, query, 'ja').text)); results.append(link);
+        link.append(el('strong', '', article.title), el('span', '', engine.excerpt(article, query, locale).text)); results.append(link);
       }
     }
     function load() {
       if (articles || pending) return;
-      retry.hidden = true; status.textContent = '記事を読み込んでいます…';
+      retry.hidden = true; status.textContent = copy[7];
       pending = Promise.all([
-        window.PlayPointSearch ? Promise.resolve() : import('/js/article-search.js'),
-        fetch('/blog/article-search-index.json').then(response => { if (!response.ok) throw Error('Unavailable'); return response.json(); })
+        window.PlayPointSearch ? Promise.resolve() : import(searchModule),
+        fetch(hub + 'article-search-index.json').then(response => { if (!response.ok) throw Error('Unavailable'); return response.json(); })
       ]).then(([,index]) => {
         if (!Array.isArray(index.articles) || !window.PlayPointSearch) throw Error('Invalid search index');
-        articles = index.articles.filter(a => /^\/(?:articles\/[^/]+\.html|games\/[a-z0-9-]+\/[a-z0-9-]+\/(?:index\.html)?)$/.test(a.path));
+        articles = index.articles.filter(a => locale === 'ja' ? /^\/(?:articles\/[^/]+\.html|games\/[a-z0-9-]+\/[a-z0-9-]+\/(?:index\.html)?)$/.test(a.path) : a.path.startsWith(hub) && a.path.endsWith('.html'));
         render();
-      }).catch(() => { status.textContent = '検索を読み込めませんでした。再読み込みするか、記事一覧から探せます。'; retry.hidden = false; }).finally(() => { pending = null; });
+      }).catch(() => { status.textContent = copy[8]; retry.hidden = false; }).finally(() => { pending = null; });
     }
-    trigger.addEventListener('click', () => { if (menu.dialog.open) menu.dialog.close(); input.focus(); render(); load(); });
+    trigger.addEventListener('click', () => { if (menu?.dialog.open) menu.dialog.close(); input.focus(); render(); load(); });
     input.addEventListener('input', render);
     body.querySelector('form').addEventListener('submit', event => { event.preventDefault(); render(); load(); });
     retry.addEventListener('click', load);
