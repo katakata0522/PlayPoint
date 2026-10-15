@@ -5,6 +5,8 @@ const path = require('node:path');
 const { classifyArticleRole } = require('./article-role-registry.cjs');
 const { createRevision } = require('./article-asset-versioning.cjs');
 const { COPY: readingCopy } = require('../js/reading-library.js');
+const { metadata: gameMetadata } = require('./intl-game-article-discovery.cjs');
+const { applyEditorialCues } = require('./intl-editorial-cues.cjs');
 function text(html) {
   return String(html).replace(/<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi, ' ').replace(/<style\b[^>]*>[\s\S]*?<\/style[^>]*>/gi, ' ')
     .replace(/<[^>]*>/g, ' ').replace(/&(?:amp|quot|apos|lt|gt|nbsp);|&#(?:x[\da-f]+|\d+);/gi, entity => {
@@ -173,9 +175,10 @@ function prepareDiscoveryArticle(html, entry) {
   html = html.replace(/\s*<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '');
   }
   html = readingMount(compactReadingMetadata(html, entry.locale), entry.locale, false);
+  html = applyEditorialCues(html, entry.path);
   const record = { path: '/' + entry.path, title: text(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || entry.title || ''),
       description: entry.description || text(html.match(/<meta name="description" content="([^"]*)"/)?.[1] || ''),
-      category: entry.category || '', tags: entry.tags || [], role, sections: extractSections(html) };
+      category: entry.category || '', tags: [...new Set([...(entry.tags || []), ...[gameMetadata('/' + entry.path)?.name].filter(Boolean)])], role, sections: extractSections(html) };
   return { html, record };
 }
 

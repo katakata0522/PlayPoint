@@ -5,6 +5,7 @@ const http = require('node:http');
 const path = require('node:path');
 const { chromium } = require('playwright-core');
 const { INTERNATIONAL_LOCALES } = require('../../scripts/locale-ids.cjs');
+const { measureTextContrast } = require('./accessibility-browser.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
 const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
@@ -281,6 +282,10 @@ async function inspectIntlReading(browser, baseUrl) {
       await dialog.locator('.guide-search-result').first().waitFor({state:'visible'});
       const targets = await dialog.locator('.guide-search-result').evaluateAll(nodes => nodes.map(node => node.getAttribute('href')));
       assert(targets.length && targets.every(href => href.startsWith('/' + item.locale + '/articles/')), item.locale + ': 検索結果は現在の地域の記事へ進む');
+      const nativeQuery = {en:'Puzzle and Dragons',ko:'퍼즐앤드래곤',tw:'龍族拼圖'}[item.locale];
+      const nativeTarget = '/' + item.locale + '/articles/puzzle-and-dragons-pass.html';
+      await articleSearch.fill(nativeQuery);
+      assert(await dialog.locator('.guide-search-result').first().getAttribute('href') === nativeTarget, item.locale + ': 現地名・正式名で記事内検索から対象へ進む');
       const broadQuery = {en:'points',ko:'포인트',tw:'點數'}[item.locale];
       await articleSearch.fill(broadQuery);
       assert(await dialog.locator('.guide-search-result').count() === 20, item.locale + ': 多数の検索結果は20件のプレビューを表示する');
@@ -382,6 +387,9 @@ async function inspectIntlReading(browser, baseUrl) {
       await game.selectOption('all');
       assert(await more.locator(':scope > summary').innerText() === defaultFilters, item.locale + ': 選択解除で通常の見出しへ戻る');
       await more.locator(':scope > summary').click();
+      await search.fill(nativeQuery);
+      await page.waitForFunction(target => document.querySelector('[data-guide-grid] [data-guide-card]:not([hidden])')?.getAttribute('href') === target, nativeTarget);
+      assert(await page.locator('[data-guide-grid] [data-guide-card]:visible').count() === 1, item.locale + ': 一覧も同じ現地名で同じ記事を表示する');
       await search.fill(item.query);
       await page.waitForFunction(() => document.querySelector('[data-guide-start]')?.hidden && document.querySelectorAll('[data-guide-grid] [data-guide-card]:not([hidden])').length > 0);
       await page.waitForFunction(() => document.querySelector('[data-guide-result]')?.getAttribute('aria-busy') === 'false');
@@ -424,6 +432,38 @@ async function inspectIntlReading(browser, baseUrl) {
   }
 }
 
+async function inspectMarkerThemes(browser, baseUrl) {
+  const context=await browser.newContext({viewport:{width:320,height:800},reducedMotion:'reduce'});
+  const origin=new URL(baseUrl).origin;
+  await context.route('**/*',route=>new URL(route.request().url()).origin===origin?route.continue():route.fulfill({status:204,body:''}));
+  const page=await context.newPage();
+  try {
+    for(const file of ['articles/2026-08-05-play-points-multiplier-stacking.html',...['en','ko','tw'].map(l=>l+'/articles/google-play-points-100-value.html')]) {
+      await page.goto(new URL('/'+file,baseUrl).href,{waitUntil:'load'});
+      for(const theme of ['light','dark']) {
+        if(await page.evaluate(()=>document.documentElement.dataset.readingTheme)!==theme){
+          const toggle=page.locator('#theme-toggle');
+          if(!await toggle.isVisible()) {
+            if(file.startsWith('articles/')) {
+              await page.locator('[aria-controls="guide-menu"]').click();
+              const settings=page.locator('#guide-menu details').filter({has:toggle});
+              if(!await settings.evaluate(el=>el.open)) await settings.locator(':scope > summary').click();
+            }
+            else await page.locator('.intl-mobile-menu > summary').click();
+          }
+          await toggle.click();
+          if(file.startsWith('articles/')) {if(await page.locator('#guide-menu').evaluate(el=>el.open)) await page.locator('#guide-menu .guide-close').click();}
+          else {const menu=page.locator('.intl-mobile-menu');if(await menu.evaluate(el=>el.open)) await menu.locator(':scope > summary').click();}
+        }
+        const values=await page.evaluate(measureTextContrast,'.content .marker-yellow');
+        assert(values.length>0,file+': 既存の重要箇所マーカーが表示される');
+        assert(values.every(v=>!v.unknown.length&&v.ratio>=4.5),file+'/'+theme+': マーカーと文字のコントラストが不足 '+JSON.stringify(values));
+      }
+    }
+    console.log('[article-design-smoke] editorial markers: JA/EN/KO/TW, 320px light/dark contrast: OK');
+  } finally {await context.close();}
+}
+
 async function main() {
   assert(CHROME_PATH, 'CHROME_PATH is required');
   const local = REQUESTED_BASE_URL ? null : await startLocalServer();
@@ -433,6 +473,7 @@ async function main() {
     for (const article of CASES) for (const viewport of VIEWPORTS) await inspect(browser, baseUrl, article, viewport);
     await inspectGameReading(browser, baseUrl);
     await inspectIntlReading(browser, baseUrl);
+    await inspectMarkerThemes(browser, baseUrl);
   } finally {
     await browser.close();
     if (local) await local.close();

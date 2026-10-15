@@ -437,17 +437,17 @@ transform: translateY(-1px);
 box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
 }
 .marker-yellow {
-background: linear-gradient(transparent 60%, #fef08a 60%);
+background: linear-gradient(transparent 60%, var(--reading-marker-yellow, #fef08a) 60%);
 font-weight: 700;
 padding: 0 2px;
 }
 .marker-blue {
-background: linear-gradient(transparent 60%, #bae6fd 60%);
+background: linear-gradient(transparent 60%, var(--reading-marker-blue, #bae6fd) 60%);
 font-weight: 700;
 padding: 0 2px;
 }
 .marker-red {
-background: linear-gradient(transparent 60%, #fecdd3 60%);
+background: linear-gradient(transparent 60%, var(--reading-marker-red, #fecdd3) 60%);
 font-weight: 700;
 padding: 0 2px;
 }
@@ -1439,17 +1439,17 @@ box-decoration-break: clone;
 padding: 0 0.08em;
 }
 body .content .marker-yellow {
-background-image: linear-gradient(transparent 58%, #fde68a 58%);
+background-image: linear-gradient(transparent 64%, var(--reading-marker-yellow, #fde68a) 64%);
 -webkit-box-decoration-break: clone;
 box-decoration-break: clone;
 }
 body .content .marker-blue {
-background-image: linear-gradient(transparent 58%, #bae6fd 58%);
+background-image: linear-gradient(transparent 64%, var(--reading-marker-blue, #bae6fd) 64%);
 -webkit-box-decoration-break: clone;
 box-decoration-break: clone;
 }
 body .content .marker-red {
-background-image: linear-gradient(transparent 58%, #fecdd3 58%);
+background-image: linear-gradient(transparent 64%, var(--reading-marker-red, #fecdd3) 64%);
 -webkit-box-decoration-break: clone;
 box-decoration-break: clone;
 }

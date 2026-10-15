@@ -9,7 +9,7 @@ const LABELS = {
 const NAMES = {
   en: ['Fate/Grand Order', 'Genshin Impact', 'Monster Strike', 'Honkai: Star Rail', 'Zenless Zone Zero', 'Umamusume', 'COLORFUL STAGE!', 'Pokémon TCG Pocket', 'Puzzle & Dragons', 'Arknights', 'Dokkan Battle', 'Heaven Burns Red', 'Honkai Impact 3rd', 'Phantom Parade', 'Prospi A', 'Pokémon GO', 'eFootball'],
   ko: ['페이트/그랜드 오더', '원신', '몬스터 스트라이크', '붕괴: 스타레일', '젠레스 존 제로', '우마무스메', '프로젝트 세카이', '포켓몬 카드 게임 Pocket', '퍼즐앤드래곤', '명일방주', '드래곤볼 Z 폭렬격전', '헤븐 번즈 레드', '붕괴3rd', '주술회전 팬텀 퍼레이드', '프로스피A', 'Pokémon GO', 'eFootball'],
-  tw: ['Fate/Grand Order', '原神', '怪物彈珠', '崩壞：星穹鐵道', '絕區零', '賽馬娘', '世界計畫', 'Pokémon TCG Pocket', 'Puzzle & Dragons', '明日方舟', '七龍珠Z 爆裂激戰', '緋染天空', '崩壞3rd', '咒術迴戰 幻影夜行', 'Prospi A', 'Pokémon GO', 'eFootball']
+  tw: ['Fate/Grand Order', '原神', '怪物彈珠', '崩壞：星穹鐵道', '絕區零', '賽馬娘', '世界計畫', 'Pokémon TCG Pocket', '龍族拼圖', '明日方舟', '七龍珠Z 爆裂激戰', '緋染天空', '崩壞3rd', '咒術迴戰 幻影夜行', 'Prospi A', 'Pokémon GO', 'eFootball']
 };
 // ゲーム名はカタログ順ではなくIDと結び付け、順序変更時に別ゲームへずれない。
 const IDS = ['fgo', 'genshin', 'monst', 'starrail', 'zzz', 'umamusume', 'proseka', 'pokepoke', 'pad', 'arknights', 'dokkan', 'hbr', 'honkai3rd', 'phantomparade', 'prospi-a', 'pokemon-go', 'efootball'];
