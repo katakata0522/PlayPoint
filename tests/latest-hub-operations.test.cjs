@@ -290,7 +290,8 @@ test('同じ状態の定期確認はDOMを書き換えず、開始・終了時�
   empty.querySelector = () => message;
   const card = node(); card.dataset = { category: 'points', kind: 'dated', start: '2026-09-02T00:00:00Z', end: '2026-09-15T00:00:00Z' };
   card.querySelector = () => badge; card.parentElement = grid;
-  grid.children = [card];
+  // 後から追加された広告などを、タブ操作のたびに末尾へ押し出さない。
+  grid.children = [node(), card];
   const nodes = { '#benefit-panel .benefit-grid': grid, '#benefit-panel': node(),
     '.benefit-count': count, '.benefit-empty': empty, '[data-filter-note]': node(), '[role="tablist"]': node() };
   const board = { querySelector: key => nodes[key], querySelectorAll: key => key === '[role="tab"]' ? tabs : [card] };

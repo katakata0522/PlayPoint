@@ -79,7 +79,8 @@
     cards.map((card, index) => ({ card, index })).sort((a, b) => order[states[a.index]] - order[states[b.index]]).forEach(({ card, index }, position) => {
       const state = states[index];
       const badge = card.querySelector('[data-benefit-status]');
-      if (grid.children[position] !== card) grid.insertBefore(card, grid.children[position] || null);
+      const positionedCard = [...grid.children].filter(child => cards.includes(child))[position];
+      if (positionedCard !== card) grid.insertBefore(card, positionedCard || null);
       const shown = matchesFilter(state, filter) && matchesAudience(card.dataset, rank, pass);
       card.hidden = !shown;
       if (shown) visible++;
