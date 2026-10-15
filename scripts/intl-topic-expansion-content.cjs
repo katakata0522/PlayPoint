@@ -118,17 +118,17 @@ const TOPICS = [
       faq: [['스탬프 카드가 곧 포인트 부스트인가요?', '아니요. 구매 횟수에 대한 리워드와 적립률을 높이는 부스트는 조건이 다릅니다.'], ['PC에서 카드에 참여할 수 있나요?', '지원되는 스마트폰에서 확인하세요. Google은 PC용 Play Games와 웹사이트에서 퀘스트·스탬프 카드를 제공하지 않는다고 안내합니다.']]
     },
     tw: {
-      title: 'Google Play Points 集點卡：購買次數與每筆金額要一起看',
-      description: '看懂 Play Points 集點卡的購買次數、每筆最低金額、幣別、啟用與領獎期限，分清加倍活動和任務的差別。',
-      intro: '看到「再買一次就完成」，很容易想把卡片填滿。Google Play Points 集點卡依指定次數的合格購買提供回饋；如果原本的購買計畫就能完成，會是一份很實用的額外獎勵。',
+      title: 'Google Play Points 集章卡：購買次數與每筆金額要一起看',
+      description: '看懂 Play Points 集章卡的購買次數、每筆最低金額、幣別、啟用與領獎期限，分清加倍活動和任務的差別。',
+      intro: '看到「再買一次就完成」，很容易想把卡片填滿。這類集點卡依指定次數的合格購買提供回饋；如果原本的購買計畫就能完成，會是一份很實用的額外獎勵。',
       sections: [
-        ['集點卡看的是購買條件', '集點卡看合格購買次數，加倍活動看獲點率，任務則看指定行動。先讀每筆最低金額和需要幾次購買，不要把次數直接當成點數倍率。'],
+        ['集章卡看的是購買條件', '集章卡看合格購買次數，加倍活動看獲點率，任務則看指定行動。先讀每筆最低金額和需要幾次購買，不要把次數直接當成點數倍率。'],
         ['總額相同，也可能算不一樣', '假設某張卡要求三次每筆至少 NT$150 的購買。一次 NT$450 只有一筆；三筆合格的 NT$150 購買可能同時滿足金額與次數；五筆 NT$90 則沒有達到每筆門檻。這是假設例子，不是目前正在發送的優惠。'],
-        ['到手機找卡片', '在 Play 商店個人資料中選擇 Play Points，再查看「賺取」。Google Play Games 電腦版與 Play 網站不支援任務及集點卡。活動會因帳號與條件而異，看不到卡片不代表每個人都收到同一張。'],
+        ['到手機找卡片', '在 Play 商店個人資料中選擇 Play Points，再查看「賺取」。Google Play Games 電腦版與 Play 網站不支援任務及集章卡。活動會因帳號與條件而異，看不到卡片不代表每個人都收到同一張。'],
         ['付款前讀完幾個條件', '查看適用 App 或商品、幣別、啟用步驟、購買期間和領獎期限。購買幣別必須與活動一致；折扣後的金額是否符合門檻，要以卡片條款判斷。'],
         ['先算增加的支出', '如果為了完成而多買不需要的商品，先列出額外支出。原本就要買的商品已符合條件時，才能在不新增購物清單的情況下享受回饋。']
       ],
-      faq: [['集點卡一定會提高積點倍率嗎？', '不一定。購買次數獎勵與提高獲點率是不同的條件。'], ['可以用電腦完成卡片嗎？', '請在支援的手機查看。Google 說明電腦版 Play Games 與 Play 網站不支援任務和集點卡。']]
+      faq: [['集章卡一定會提高積點倍率嗎？', '不一定。購買次數獎勵與提高獲點率是不同的條件。'], ['可以用電腦完成卡片嗎？', '請在支援的手機查看。Google 說明電腦版 Play Games 與 Play 網站不支援任務和集章卡。']]
     }
   },
   {
@@ -195,7 +195,7 @@ const EXTRA_SOURCES = {
 const SOURCE_LABELS = {
   en: { levels: 'US levels and benefits', renewal: 'Subscription renewal and payment methods', payments: 'US accepted payment methods', devices: 'Devices supported for quests and stamp cards', cards: 'Google’s stamp-card promotion overview', benefits: 'Pokémon Sleep Premium Pass benefits' },
   ko: { levels: '한국 등급과 혜택', renewal: '구독 갱신과 결제 수단', payments: '한국 지원 결제 수단', devices: '퀘스트·스탬프 카드 지원 기기', cards: 'Google 스탬프 카드 프로모션 안내', benefits: 'Pokémon Sleep 프리미엄 패스 혜택' },
-  tw: { levels: '台灣等級與福利', renewal: '訂閱續訂與付款方式', payments: '台灣支援的付款方式', devices: '任務與集點卡支援的裝置', cards: 'Google 集點卡活動說明', benefits: 'Pokémon Sleep 進階票證福利' }
+  tw: { levels: '台灣等級與福利', renewal: '訂閱續訂與付款方式', payments: '台灣支援的付款方式', devices: '任務與集章卡支援的裝置', cards: 'Google 集章卡活動說明', benefits: 'Pokémon Sleep 進階票證福利' }
 };
 
 function buildLocalizedTopicArticles(locales, labels) {
@@ -203,7 +203,7 @@ function buildLocalizedTopicArticles(locales, labels) {
     const region = REGION[locale], copy = SOURCE_COPY[locale], content = topic[locale];
     const links = topic.slug === 'pokemon-sleep-premium-pass-plans'
       ? [['google-play-points-subscriptions', { en: 'Do subscriptions earn Play Points?', ko: '구독 결제의 Play Points 적립 조건', tw: '訂閱的 Play Points 積點條件' }[locale]], ['google-play-credit-subscriptions', { en: 'Pay subscriptions with Play credit', ko: 'Play 크레딧으로 구독 결제', tw: '抵用金支付訂閱' }[locale]]]
-      : [['google-play-points-levels', { en: 'Local levels and earning rates', ko: '한국 등급과 적립률', tw: '台灣等級與積點率' }[locale]], ['google-play-points-play-credit-not-working', { en: 'Play credit troubleshooting', ko: 'Play 크레딧 문제 해결', tw: 'Play 抵用金問題排解' }[locale]], ['google-play-points-stamp-cards', { en: 'Read a stamp card', ko: '스탬프 카드 읽기', tw: '看懂集點卡' }[locale]]];
+      : [['google-play-points-levels', { en: 'Local levels and earning rates', ko: '한국 등급과 적립률', tw: '台灣等級與積點率' }[locale]], ['google-play-points-play-credit-not-working', { en: 'Play credit troubleshooting', ko: 'Play 크레딧 문제 해결', tw: 'Play 抵用金問題排解' }[locale]], ['google-play-points-stamp-cards', { en: 'Read a stamp card', ko: '스탬프 카드 읽기', tw: '看懂集章卡' }[locale]]];
     return {
       ...content, file: `${locale}/articles/${topic.slug}.html`, lang: locale === 'tw' ? 'zh-TW' : locale,
       h1: content.title, lead: content.intro, badge: { en: 'Practical guide', ko: '실용 가이드', tw: '實用指南' }[locale],
