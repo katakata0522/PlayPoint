@@ -64,7 +64,7 @@ test('記事変換はI/Oなしで本文・既存アンカー・入力レコー�
   assert.equal(first.record.sections.some(s => /Navigation only|Open this week/.test(s.text)), false);
   assert.deepEqual(prepareDiscoveryArticle(articleHtml, entry), first);
   assert.deepEqual(prepareDiscoveryArticle(first.html, entry).record, first.record);
-  assert.match(first.html, /Language: English · US reference/, '通常の海外記事は詳細な地域注意を維持する');
+  assert.match(first.html, /US reference\. Offers depend on your Google Play country and account\./, '通常の海外記事は国・アカウントによる条件を維持する');
   const compactScope = prepareDiscoveryArticle(articleHtml, Object.freeze({ path: 'en/articles/google-play-points-cash-conversion.html', locale: 'en' }));
   assert.match(compactScope.html, /article-region-scope" aria-label="United States reference[^"]*">United States<\/p>/, '冒頭を整理した現金化記事は地域表示を短くする');
   assert.deepEqual(prepareDiscoveryArticle(compactScope.html, Object.freeze({ path: 'en/articles/google-play-points-cash-conversion.html', locale: 'en' })), compactScope, '注釈付きの短い地域表示も再生成で重複しない');
