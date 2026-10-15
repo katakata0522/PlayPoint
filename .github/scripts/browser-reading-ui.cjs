@@ -328,6 +328,29 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     for (const theme of ['light','dark']) {
       if (await page.evaluate(()=>document.documentElement.dataset.readingTheme)!==theme) await chooseTheme(page);
       for (const item of await palette(page,['.benefit-audience-controls label'])) assert(item.ratio>=4.5,`Benefit label ${theme}: ${item.ratio}`);
+      // 別のタブへマウス・フォーカスを移しても、選択中と同じ塗りつぶしにしない。
+      const selectedTab = page.getByRole('tab', { name:'すべて', exact:true });
+      const otherTab = page.getByRole('tab', { name:'製品割引', exact:true });
+      await selectedTab.click();
+      await otherTab.hover();
+      await page.keyboard.press('Tab');
+      await otherTab.focus();
+      for (const item of await palette(page,['.benefit-tabs [role="tab"]'])) assert(item.ratio>=4.5,`Benefit tab hover/focus ${theme}: ${JSON.stringify(item)}`);
+      const tabState = await page.evaluate(() => {
+        const selected = document.querySelector('.benefit-tabs [aria-selected="true"]');
+        const other = document.querySelector('#benefit-tab-other');
+        return {
+          count:document.querySelectorAll('.benefit-tabs [aria-selected="true"]').length,
+          selectedBg:getComputedStyle(selected).backgroundColor,
+          otherBg:getComputedStyle(other).backgroundColor,
+          focus:other.matches(':focus-visible'),
+          outline:getComputedStyle(other).outlineStyle,
+          outlineWidth:parseFloat(getComputedStyle(other).outlineWidth)
+        };
+      });
+      assert.equal(tabState.count,1,'選択中のタブは1つ');
+      assert.notEqual(tabState.selectedBg,tabState.otherBg,`${theme}: hoverで二重選択に見える`);
+      assert(tabState.focus && tabState.outline!=='none' && tabState.outlineWidth>=3,`${theme}: キーボードフォーカスを枠で示す`);
     }
     await page.locator('#benefit-rank').selectOption('bronze');
     await page.locator('#benefit-pass').selectOption('no');

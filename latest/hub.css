@@ -113,7 +113,10 @@ body.latest-hub .benefit-product { font-size:13px; margin-bottom:3px; }
 body.latest-hub .lp-hero .lp-lead { margin:8px 0 6px; font-size:14px; line-height:1.7; }
 body.latest-hub .lp-trust-line span { font-size:12px; }
 html[lang] body.latest-hub .guide-latest-layout .benefit-tabs { grid-template-columns:repeat(4,minmax(0,1fr)); margin:0; }
-html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button { font-size:14px; min-height:44px; white-space:nowrap; }
+/* 共通ボタンのhover色を引き継がず、塗りつぶしは選択中だけに使う。 */
+html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button { font-size:14px; min-height:44px; white-space:nowrap; background:transparent; color:var(--reading-text); transition:none; }
+html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button[aria-selected="false"]:is(:hover,:active) { background:var(--reading-surface); color:var(--reading-text); border-color:var(--reading-link); }
+html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button[aria-selected="true"] { background:var(--reading-selected); color:var(--reading-on-selected); border-color:var(--reading-selected); }
 body.latest-hub .benefit-audience { border:0; border-bottom:1px solid var(--reading-border); border-radius:0; padding:0; margin:4px 0 0; background:none; }
 body.latest-hub .benefit-audience > summary { font-size:13px; font-weight:600; padding:12px 0; }
 body.latest-hub [data-audience-summary]:not(:empty) { margin-left:8px; padding:2px 6px; color:var(--reading-link); background:var(--reading-soft); border-radius:4px; font-size:12px; }
