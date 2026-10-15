@@ -684,7 +684,7 @@
         badge.className = 'reading-time-badge';
         badge.textContent = labels[loc] || labels.ja;
 
-        const targetMeta = document.querySelector('.article-verification-meta, .article-header-meta, .hero-meta, .article-meta, .post-meta');
+        const targetMeta = document.querySelector('.intl-layout-container .reading-metadata .hero-meta, .intl-layout-container .reading-metadata .article-meta') || document.querySelector('.article-verification-meta, .article-header-meta, .hero-meta, .article-meta, .post-meta');
         if (targetMeta) {
             targetMeta.appendChild(badge);
         } else {

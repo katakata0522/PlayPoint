@@ -76,11 +76,17 @@ function readingMount(html, locale, isHub) {
   if (isHub) return html.replace(/[ \t]*(<div\b[^>]*(?:data-intl-guide-controls|id="article-grid")[^>]*>)/i, (_, tag) => block + tag);
   if (locale !== 'ja') {
     const hero = html.match(/(<div\b[^>]*class="[^"]*\bhero\b[^"]*"[^>]*>[\s\S]*?)(<\/div>\s*<article\b)/i);
-    if (hero) return html.replace(hero[0], hero[1].trimEnd() + block + hero[2]);
+    if (hero) {
+      const metadata = /<details class="reading-metadata">[\s\S]*?<\/details>/;
+      const opening = metadata.test(hero[1])
+        ? hero[1].replace(metadata, details => '<div class="article-header-meta">' + details + block + '</div>')
+        : hero[1].trimEnd() + block;
+      return html.replace(hero[0], opening + hero[2]);
+    }
   }
   const header = [...html.matchAll(/<header\b[^>]*>[\s\S]*?<\/header>/gi)].find(match => /<h1\b/i.test(match[0]));
   if (header) {
-    if (locale === 'ja' && header[0].includes('<details class="reading-metadata">')) {
+    if (header[0].includes('<details class="reading-metadata">')) {
       return html.replace(header[0], tag => tag.replace(/<details class="reading-metadata">[\s\S]*?<\/details>/,
         metadata => '<div class="article-header-meta">' + metadata + block + '</div>'));
     }

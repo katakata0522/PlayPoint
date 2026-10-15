@@ -79,6 +79,10 @@ color: var(--reading-text, #233044);
 font-size: 13px;
 font-weight: 800;
 }
+/* 検索名は読み上げに残し、画面では入力例をそのまま使う。 */
+.intl-guide-controls > label[for="intl-guide-search"], .intl-guide-result.is-default {
+position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap;
+}
 .intl-guide-controls input[type="search"] {
 width: 100%;
 min-height: 44px;

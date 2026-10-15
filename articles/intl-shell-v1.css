@@ -166,3 +166,16 @@ body .intl-layout-container .intl-article-toc > summary > h2 { display:inline !i
   .intl-layout-container .reading-tools [data-reading-library-link] { display:none; }
 }
 body .intl-layout-container details.intl-article-toc { padding:0 !important; border:0 !important; background:transparent !important; }
+/* 日付と保存は一列にまとめ、日付の詳細は既存の開閉で確認する。 */
+html[lang] body .intl-layout-container .article-header-meta { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 12px; align-items:start; margin:4px 0 10px; }
+html[lang] body .intl-layout-container .article-header-meta .reading-metadata { min-width:0; margin:0 !important; }
+html[lang] body .intl-layout-container .article-header-meta .reading-metadata > summary { box-sizing:border-box; min-height:44px; padding:11px 0; line-height:22px; font-size:12px; }
+html[lang] body .intl-layout-container .article-header-meta .reading-metadata > summary > span { display:none; }
+html[lang] body .intl-layout-container .article-header-meta .reading-tools { margin:0 !important; max-width:112px; justify-content:flex-end; }
+html[lang] body .intl-layout-container .article-header-meta .reading-tools button { min-height:44px; }
+html[lang] body .intl-layout-container .article-header-meta .reading-tools > [data-reading-library-link] { display:none; }
+@media(max-width:760px) {
+html[lang] body .intl-layout-container .main-card.intl-article-hub { padding:8px 0; border:0; background:transparent; box-shadow:none; }
+html[lang] body .intl-layout-container .hero h1 { text-wrap:balance; }
+html:lang(zh-TW) body .intl-layout-container .hero h1 { word-break:normal; overflow-wrap:normal; }
+}
