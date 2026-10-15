@@ -159,7 +159,7 @@ function createLocales() {
         <h2>What You Can Do with Google Play Points Calculator</h2>
         <p class="home-description-lead">Use this page to check <strong>the spending needed to level up</strong>, <strong>the Play Points you can earn from a spending amount</strong>, and <strong>estimates using a special earn rate shown in Google Play</strong>.</p>
         <figure class="calculation-flow-figure">
-            <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="Three-step flow from points needed through the selected reward condition to estimated spending">
+            <img src="../images/calculation-flow-en.svg" width="960" height="360" loading="lazy" decoding="async" alt="Three-step flow from points needed through the selected reward condition to estimated spending">
             <figcaption>Points gap → reward condition → estimated spending. The 1,728-point figure is an input example.</figcaption>
         </figure>
     </section>
@@ -322,7 +322,7 @@ function createLocales() {
         <h2>구글 플레이 포인트 계산기로 할 수 있는 것</h2>
         <p class="home-description-lead">이 페이지에서 <strong>등급 업까지 필요한 결제 금액</strong>, <strong>결제 금액으로 획득 가능한 포인트</strong>, <strong>Google Play에 표시된 특별 적립률을 사용한 예상치</strong>를 바로 확인할 수 있습니다.</p>
         <figure class="calculation-flow-figure">
-            <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="필요 포인트와 적립 조건에서 예상 결제 금액까지 이어지는 3단계 계산 흐름">
+            <img src="../images/calculation-flow-ko.svg" width="960" height="360" loading="lazy" decoding="async" alt="필요 포인트와 적립 조건에서 예상 결제 금액까지 이어지는 3단계 계산 흐름">
             <figcaption>필요 포인트 → 적립 조건 → 예상 결제 금액. 그림의 1,728pt는 입력 예시입니다.</figcaption>
         </figure>
     </section>
@@ -485,7 +485,7 @@ function createLocales() {
         <h2>Google Play 點數計算器可以做什麼？</h2>
         <p class="home-description-lead">此頁面可直接確認 <strong>升級所需的消費金額</strong>、<strong>消費金額可獲得的點數</strong>，以及 <strong>套用 Google Play 顯示的活動特別獲點率後的預估結果</strong>。</p>
         <figure class="calculation-flow-figure">
-            <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="從所需點數與回饋條件到預估消費金額的三步驟計算流程">
+            <img src="../images/calculation-flow-tw.svg" width="960" height="360" loading="lazy" decoding="async" alt="從所需點數與回饋條件到預估消費金額的三步驟計算流程">
             <figcaption>所需點數 → 獲點條件 → 預估消費金額。圖中的 1,728pt 是輸入範例。</figcaption>
         </figure>
     </section>

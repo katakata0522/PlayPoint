@@ -309,7 +309,7 @@ test('公開トップのタブ名は実行時の地域設定と一致し、前�
 
 
 test("計算フローはGoogleコア4色を段階と接続へ使う", () => {
-  const svg=read('images/calculation-flow.svg');
+  const svg=read('images/calculation-flow-compact.svg');
   for(const hex of ['#4285F4','#EA4335','#FBBC04','#34A853'])assert.ok(svg.toLowerCase().includes(hex.toLowerCase()),hex);
 });
 
