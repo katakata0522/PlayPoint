@@ -154,6 +154,7 @@ html[lang][data-reading-theme] body .intl-layout-container .reading-tools > [rol
 html[lang] body .intl-article-site-header .site-header-tools { position:relative; }
 html[lang] body .intl-article-site-header :is(.intl-mobile-menu,.site-region-switcher) { position:static; }
 html[lang] body .intl-article-site-header .site-header-tools .intl-mobile-menu nav a { display:flex; }
+html[lang] body .intl-article-site-header .site-header-tools .site-region-menu a { display:flex; }
 }
 @media(max-width:760px) {
 html[lang][data-reading-theme] body .intl-layout-container .content > section.section.answer-box { padding:14px 10px !important; }

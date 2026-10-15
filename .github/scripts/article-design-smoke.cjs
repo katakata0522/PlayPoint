@@ -297,6 +297,12 @@ async function inspectIntlReading(browser, baseUrl) {
         const menuBounds = await menu.locator('nav').boundingBox();
         assert(menuBounds && menuBounds.x >= 0 && menuBounds.x + menuBounds.width <= item.width, item.locale + ': mobile menu must fit the screen');
         await menu.locator(':scope > summary').click();
+        const regions = page.locator('.site-region-switcher');
+        await regions.locator(':scope > summary').click();
+        assert.equal(await regions.locator('.site-region-menu a:visible').count(), 5, item.locale + ': region destinations must be visible');
+        const regionBounds = await regions.locator('.site-region-menu').boundingBox();
+        assert(regionBounds && regionBounds.x >= 0 && regionBounds.x + regionBounds.width <= item.width, item.locale + ': region menu must fit the screen');
+        await regions.locator(':scope > summary').click();
       }
       const bounds = await search.boundingBox();
       assert(bounds && bounds.y + bounds.height < 900, item.locale + ': guide search must be reachable in the first viewport');
