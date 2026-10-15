@@ -205,12 +205,33 @@
     const mainAnswer = generalMissing && /reflection-timing\.html$/.test(article.path || article.file || '');
     return (isIntentOwner(article, query, locale) ? 100 : 0) + (mainAnswer ? 30 : 0) + terms.reduce((sum, token) => sum + (contains(title, token) ? 10 : 0) + (contains(headings, token) ? 2 : 0), 0);
   }
+  // 検索対象の全文は保ち、表示する抜粋だけを文末・単語の区切りで短くする。
+  function shortExcerpt(value, locale, start = 0, matchEnd = 0) {
+    const text = String(value || '').replace(/\s+/g, ' ').trim();
+    const limit = locale === 'en' ? 160 : locale === 'ko' ? 100 : 80;
+    if (start && /[\uDC00-\uDFFF]/.test(text[start])) start--;
+    if (start && (locale === 'en' || locale === 'ko' || /[a-z0-9]/i.test(text[start - 1]) && /[a-z0-9]/i.test(text[start]))) {
+      const boundary = text.lastIndexOf(' ', start);
+      if (boundary >= start - 24) start = boundary + 1;
+    }
+    let clip = Array.from(text.slice(start)).slice(0, limit).join('');
+    if (start + clip.length < text.length) {
+      const endings = [...clip.matchAll(/[。！？!?]|\.(?=\s|$)/g)];
+      const end = endings.at(-1)?.index;
+      if (end >= Math.max(clip.length / 3, matchEnd - start - 1)) clip = clip.slice(0, end + 1);
+      else if ((locale === 'en' || locale === 'ko' || /[a-z0-9]$/i.test(clip) && /[a-z0-9]/i.test(text[start + clip.length])) && text[start + clip.length] !== ' ') {
+        const boundary = clip.lastIndexOf(' ');
+        if (boundary >= Math.max(clip.length / 2, matchEnd - start)) clip = clip.slice(0, boundary);
+      }
+    }
+    return (start ? '…' : '') + clip.trim() + (start + clip.length < text.length ? '…' : '');
+  }
   function excerpt(article, query, locale = 'ja') {
-    if (!normalize(query)) return { text: article.description || '', id: '', heading: '' };
+    if (!normalize(query)) return { text: shortExcerpt(article.description, locale), id: '', heading: '' };
     const terms = tokens(query, locale);
     const title = canonical(article.title, locale);
     if (terms.every(term => title.includes(term)) && article.description) {
-      return { text: article.description, id: '', heading: '' };
+      return { text: shortExcerpt(article.description, locale), id: '', heading: '' };
     }
     let best = null, bestScore = 0;
     for (const section of sections(article)) {
@@ -218,12 +239,16 @@
       const count = terms.filter(t => text.includes(t)).length;
       if (count > bestScore) { best = section; bestScore = count; }
     }
-    if (!best) return { text: article.description || '', id: '', heading: '' };
-    const text = String(best.text || best.heading);
-    const normalizedText = normalize(text);
-    const literal = normalize(query).split(' ').filter(Boolean).map(t => normalizedText.indexOf(t)).filter(i => i >= 0);
-    const start = Math.max(0, (literal.length ? Math.min(...literal) : 0) - 40);
-    return { text: (start ? '…' : '') + text.slice(start, start + 180) + (text.length > start + 180 ? '…' : ''), id: best.id || '', heading: best.heading || '' };
+    if (!best) return { text: shortExcerpt(article.description, locale), id: '', heading: '' };
+    if (!terms.every(term => contains(canonical(best.text, locale), term)) && article.description && terms.every(term => contains(canonical(article.description, locale), term))) {
+      return { text: shortExcerpt(article.description, locale), id: best.id || '', heading: best.heading || '' };
+    }
+    const text = String(best.text || best.heading).replace(/\s+/g, ' ').trim();
+    const phrase = String(query).toLowerCase().replace(/\s+/g, ' ').trim();
+    const literal = [phrase, ...phrase.split(' ')].map(term => ({ index: text.toLowerCase().indexOf(term), length: term.length })).filter(hit => hit.index >= 0);
+    const hit = literal[0];
+    const start = Math.max(0, (hit?.index || 0) - 30);
+    return { text: shortExcerpt(text, locale, start, hit ? hit.index + hit.length : 0), id: best.id || '', heading: best.heading || '' };
   }
   function suggest(articles, query, locale = 'ja') {
     const terms = tokens(query, locale).filter(term => locale !== 'ja' || term !== 'zzalias0zz');

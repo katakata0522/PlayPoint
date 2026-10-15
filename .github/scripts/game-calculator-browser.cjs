@@ -62,6 +62,10 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
             assert.equal(await purchaseDetails.getAttribute('open'), null, '計算機への入口では商品説明を閉じておく');
             await purchaseDetails.locator(':scope > summary').click();
             assert.equal(await offers.isVisible(), true, '商品比較は必要なときに開ける');
+            const summaryBox = await purchaseDetails.locator(':scope > summary').boundingBox();
+            const productBox = await offers.locator('.game-offer-card h2').first().boundingBox();
+            const productDistance = /^\/games\//.test(target.pathname) ? 240 : 140;
+            assert.ok(summaryBox && productBox && productBox.y - (summaryBox.y + summaryBox.height) < productDistance, '重複見出しで商品名を押し下げず、日本語の商品固有の導入は保持する');
           }
           assert.ok(await page.evaluate(() => Boolean(document.querySelector('.game-offers').compareDocumentPosition(document.querySelector('#game-calculator')) & Node.DOCUMENT_POSITION_FOLLOWING)), '商品紹介は計算より前');
           const more = offers.locator('summary');

@@ -61,17 +61,18 @@ function getJapaneseCalculator(game) {
   return { packs, presets, budgets, mode: packs.length ? 'products' : 'amount', initialAmount: presets[0]?.amount || 0, offers: getSpecialOffers(game.id, packs) };
 }
 
-function renderSpecialOffers(offers, gameShort) {
+function renderSpecialOffers(offers, gameShort, { labelledBySummary = false } = {}) {
   const escapeReadingText = value => String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
   const offerCard = offer => {
     const text = escapeReadingText;
     const amount = offer.price == null ? '購入画面の金額で計算' : `${offer.kind.startsWith('月額') ? '月額 ' : ''}${offer.price.toLocaleString('ja-JP')}円`;
     const action = offer.productId ? `data-offer-product="${text(offer.productId)}"` : 'data-offer-input="amount"';
     const subscription = offer.kind.includes('自動更新') ? ' data-offer-subscription="true"' : '';
-    return `<article class="game-offer-card"><span class="game-offer-kind">${text(offer.kind)}</span><h3>${text(offer.name)}</h3><p>${text(offer.detail)}</p><div class="game-offer-bottom"><strong>${amount}</strong><a class="game-offer-action" href="#game-calculator" ${action}${subscription} aria-label="${text(offer.name)}の購入額で計算">${offer.productId ? 'この料金で計算' : '購入額を入力して計算'}<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="${text(offer.source.url)}" target="_blank" rel="noopener noreferrer">${text(offer.source.label)}</a></div></article>`;
+    const heading = labelledBySummary ? 'h2' : 'h3';
+    return `<article class="game-offer-card"><span class="game-offer-kind">${text(offer.kind)}</span><${heading}>${text(offer.name)}</${heading}><p>${text(offer.detail)}</p><div class="game-offer-bottom"><strong>${amount}</strong><a class="game-offer-action" href="#game-calculator" ${action}${subscription} aria-label="${text(offer.name)}の購入額で計算">${offer.productId ? 'この料金で計算' : '購入額を入力して計算'}<span aria-hidden="true"> →</span></a><a class="game-offer-source" href="${text(offer.source.url)}" target="_blank" rel="noopener noreferrer">${text(offer.source.label)}</a></div></article>`;
   };
   return offers ? `<section class="game-offers" aria-labelledby="game-offers-title">
-            <div class="game-offers-heading"><div><span class="game-offers-eyebrow">課金する前に、こちらもチェック</span><h2 id="game-offers-title">${escapeReadingText(gameShort)}のパス・特別商品</h2></div><a href="#game-calculator" class="game-offers-skip">計算へ進む ↓</a></div>
+${labelledBySummary ? '' : `            <div class="game-offers-heading"><div><span class="game-offers-eyebrow">課金する前に、こちらもチェック</span><h2 id="game-offers-title">${escapeReadingText(gameShort)}のパス・特別商品</h2></div><a href="#game-calculator" class="game-offers-skip">計算へ進む ↓</a></div>`}
             <p class="game-offers-lead">${escapeReadingText(offers.lead)}</p>
             <div class="game-offers-grid">${offers.items.slice(0, 2).map(offerCard).join('')}</div>
 ${offers.items.length > 2 ? `            <details class="game-offers-more"><summary>ほかの特別商品も見る（${offers.items.length - 2}件）</summary><div class="game-offers-grid">${offers.items.slice(2).map(offerCard).join('')}</div></details>` : ''}
