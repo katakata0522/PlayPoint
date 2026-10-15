@@ -23,7 +23,7 @@ const INTL_POPULAR_GUIDES = Object.freeze({
   ko: Object.freeze([
     Object.freeze(['/ko/articles/google-play-points-cash-conversion.html', 'Play Points 현금화 가능 여부']),
     Object.freeze(['/ko/articles/google-play-points-expiration.html', 'Play Points 유효기간']),
-    Object.freeze(['/ko/articles/google-play-points-super-weekly-reward.html', 'Super Weekly Reward']),
+    Object.freeze(['/ko/articles/google-play-points-super-weekly-reward.html', 'Super Weekly Prize']),
     Object.freeze(['/ko/articles/google-play-points-levels.html', '한국 Play Points 등급']),
     Object.freeze(['/ko/articles/google-play-points-use-coupons.html', '포인트·쿠폰 사용법'])
   ]),
@@ -32,7 +32,7 @@ const INTL_POPULAR_GUIDES = Object.freeze({
     Object.freeze(['/tw/articles/google-play-points-platinum-diamond-cost.html', '白金／鑽石需要多少消費']),
     Object.freeze(['/tw/articles/google-play-points-levels.html', '台灣 Play Points 等級']),
     Object.freeze(['/tw/articles/google-play-points-weekly-reward.html', '每週回饋']),
-    Object.freeze(['/tw/articles/google-play-quests.html', 'Google Play Quests'])
+    Object.freeze(['/tw/articles/google-play-quests.html', 'Google Play 任務'])
   ])
 });
 

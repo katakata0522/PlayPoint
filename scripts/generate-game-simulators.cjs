@@ -244,7 +244,7 @@ const LOCALES = {
     portalBadge: '🎮 모바일 게임 특화',
     portalH1: '모바일 게임 구매 금액으로 Google Play Points 계산',
     portalMeta: '원신, 붕괴: 스타레일, 젠레스 존 제로, 블루 아카이브, 포켓몬 카드 게임 Pocket, 니케, 명조 등 인기 게임의 패키지 과금 시 적립되는 Play Points를 계산하세요.',
-    portalLead: 'Google Play 스토어에서 서비스 중인 주요 모바일 게임의 인앱 결제 패키지(창세의 결정, 오래된 꿈, 모노크롬, 청휘석, 포켓골드, 월상, 유료 쥬얼, 용석, 순수한 원석 등) 가격에 대응! 천장 가챠 결제 시 적립 포인트 및 등급 달성을 즉시 시뮬레이션할 수 있습니다.',
+    portalLead: 'Google Play 스토어에서 서비스 중인 주요 모바일 게임의 인앱 결제 패키지(창세의 결정, 오래된 꿈, 모노크롬, 청휘석, 포켓골드, 달빛, 유료 쥬얼, 용석, 순수한 원석 등) 가격에 대응! 천장 가챠 결제 시 적립 포인트 및 등급 달성을 즉시 시뮬레이션할 수 있습니다.',
     openCalc: '계산기 열기 ➔',
     presetHeading: '▼ 목표 프리셋:',
     approxText: '약 ',
@@ -737,7 +737,7 @@ const GAMES_DATA = [
   {
     id: 'pokepoke',
     icon: '🎴',
-    names: { ja: 'Pokémon TCG Pocket (ポケポケ)', en: 'Pokémon TCG Pocket', ko: '포켓몬 카드 게임 Pocket', tw: '寶可夢 TCG Pocket' },
+    names: { ja: 'Pokémon TCG Pocket (ポケポケ)', en: 'Pokémon TCG Pocket', ko: '포켓몬 카드 게임 Pocket', tw: 'Pokémon TCG Pocket' },
     shortNames: { ja: 'ポケポケ', en: 'PTCGP', ko: '포케포케', tw: '寶可夢卡牌' },
     descs: {
       ja: DESCRIPTIONS['pokepoke'],
@@ -799,7 +799,7 @@ const GAMES_DATA = [
         { q: '포켓몬 카드 게임 Pocket 결제 시 포인트가 적립되나요?', a: '네, 구글 플레이 스토어 결제 시 정상 적립됩니다.' }
       ],
       tw: [
-        { q: '寶可夢 TCG Pocket 課金能累積點數嗎？', a: '可以，透過 Google Play 商店購買均能累積點數。' }
+        { q: 'Pokémon TCG Pocket 課金能累積點數嗎？', a: '可以，透過 Google Play 商店購買均能累積點數。' }
       ]
     }
   },
@@ -1224,7 +1224,7 @@ const GAMES_DATA = [
     descs: {
       ja: DESCRIPTIONS['wutheringwaves'],
       en: 'Calculate Play Points earned on Lunite, Lunite Subscription, Pioneer Podcast, 160-pull hard pity, and S6 Resonance Chain in Wuthering Waves!',
-      ko: '월상 패키지, 월상 관측 카드, 선구 라디오, 160연차 확천, 공명 체인 6단계(풀돌/S6) 과금 시 적립되는 Play Points를 계산하세요!',
+      ko: '달빛 패키지, 달빛 관측 카드, 선구 라디오, 160연차 확천, 공명 체인 6단계(풀돌/S6) 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '計算鳴潮月相、月相觀測卡、先驅電台、160抽大保底、共鳴鏈6(滿鏈/S6)課金可獲得的 Play Points！'
     },
     packs: {
@@ -1240,15 +1240,15 @@ const GAMES_DATA = [
         { name: '6480+1600 Lunite ($99.99)', price: 99.99 }
       ],
       ko: [
-        { name: '월상 관측 카드 (₩5,900)', price: 5900 },
+        { name: '달빛 관측 카드 (₩5,900)', price: 5900 },
         { name: '선구 라디오 유니버스 (₩12,000)', price: 12000 },
         { name: '선구 라디오 엑스트라 (₩25,000)', price: 25000 },
-        { name: '월상 60개 (₩1,200)', price: 1200 },
-        { name: '월상 300+30개 (₩5,900)', price: 5900 },
-        { name: '월상 980+110개 (₩19,000)', price: 19000 },
-        { name: '월상 1980+260개 (₩37,000)', price: 37000 },
-        { name: '월상 3280+600개 (₩65,000)', price: 65000 },
-        { name: '월상 6480+1600개 (₩119,000)', price: 119000 }
+        { name: '달빛 60개 (₩1,200)', price: 1200 },
+        { name: '달빛 300+30개 (₩5,900)', price: 5900 },
+        { name: '달빛 980+110개 (₩19,000)', price: 19000 },
+        { name: '달빛 1980+260개 (₩37,000)', price: 37000 },
+        { name: '달빛 3280+600개 (₩65,000)', price: 65000 },
+        { name: '달빛 6480+1600개 (₩119,000)', price: 119000 }
       ],
       tw: [
         { name: '月相觀測卡 (NT$170)', price: 170 },
@@ -1270,7 +1270,7 @@ const GAMES_DATA = [
         { label: '160-pull Hard Pity ($400.00)', amount: 400.0, mult: 1 }
       ],
       ko: [
-        { label: '월상 관측 카드 (₩5,900)', amount: 5900, mult: 1 },
+        { label: '달빛 관측 카드 (₩5,900)', amount: 5900, mult: 1 },
         { label: '10연차 (약 ₩30,000)', amount: 30000, mult: 1 },
         { label: '80연차 반천장 (약 ₩240,000)', amount: 240000, mult: 1 },
         { label: '160연차 확천 (약 ₩480,000)', amount: 480000, mult: 1 }
@@ -1569,8 +1569,8 @@ const GAMES_DATA = [
         { label: '풀돌 기준 (약 ₩2,400,000)', amount: 2400000, mult: 1 }
       ],
       tw: [
-        { label: '輕量通行證 (NT$170)', amount: 170, mult: 1 },
-        { label: '高級通行證 (NT$790)', amount: 790, mult: 1 },
+        { label: '輕型月費方案 (NT$170)', amount: 170, mult: 1 },
+        { label: '尊爵月費方案 (NT$790)', amount: 790, mult: 1 },
         { label: '10連抽 (約 NT$800)', amount: 800, mult: 1 },
         { label: '200抽保底 (約 NT$16,000)', amount: 16000, mult: 1 },
         { label: '滿突預估 (約 NT$64,000)', amount: 64000, mult: 1 }
