@@ -253,6 +253,7 @@ async function inspectGameReading(browser, baseUrl) {
 async function inspectIntlReading(browser, baseUrl) {
   const cases = [
     { locale: 'en', width: 1280, query: 'quests' },
+    { locale: 'en', width: 320, query: 'quests' },
     { locale: 'ko', width: 390, query: '퀘스트' },
     { locale: 'tw', width: 320, query: '任務' }
   ];
@@ -263,9 +264,28 @@ async function inspectIntlReading(browser, baseUrl) {
       ? route.continue() : route.fulfill({ status: 204, body: '' }));
     const page = await context.newPage();
     const errors = [];
+    const searchRequests = [];
     page.on('pageerror', error => errors.push(error.message));
+    page.on('request', request => { if (/article-search(?:-index)?\.(?:js|json)/.test(request.url())) searchRequests.push(request.url()); });
     try {
       await page.goto(new URL('/' + item.locale + '/articles/google-play-quests.html', baseUrl).href, { waitUntil: 'load' });
+      assert(searchRequests.length === 0, item.locale + ': 記事の初期表示では検索索引を取得しない');
+      const searchTrigger = page.locator('[aria-controls="guide-search"]');
+      const header = await page.locator('.site-header-inner').evaluate(el => ({width:el.clientWidth, scroll:el.scrollWidth, height:el.getBoundingClientRect().height}));
+      assert(header.scroll <= header.width + 1 && header.height <= 76, item.locale + ': 検索追加後もヘッダーを一段に収める');
+      await searchTrigger.click();
+      const dialog = page.locator('#guide-search');
+      const articleSearch = dialog.locator('input');
+      await articleSearch.fill(item.query);
+      await dialog.locator('.guide-search-result').first().waitFor({state:'visible'});
+      const targets = await dialog.locator('.guide-search-result').evaluateAll(nodes => nodes.map(node => node.getAttribute('href')));
+      assert(targets.length && targets.every(href => href.startsWith('/' + item.locale + '/articles/')), item.locale + ': 検索結果は現在の地域の記事へ進む');
+      await articleSearch.fill('zzzznomatch999999');
+      assert(await dialog.locator('.guide-search-result').count() === 0, item.locale + ': 一致しない語句の古い結果を消す');
+      assert((await dialog.locator('.guide-search-status').innerText()).trim(), item.locale + ': ゼロ件の案内を残す');
+      await articleSearch.press('Escape');
+      assert(!await dialog.evaluate(el => el.open), item.locale + ': Escapeで検索を閉じる');
+      assert(await searchTrigger.evaluate(el => document.activeElement === el), item.locale + ': 検索ボタンへフォーカスを戻す');
       const save = page.locator('.reading-tools button');
       await save.waitFor({ state: 'visible' });
       assert(await page.locator('.hero').evaluate(el => {

@@ -131,9 +131,9 @@ const CALCULATOR_HEADER_PROFILES = Object.freeze({
     { href: 'blog/', label: '📝 記事トップ', langKey: 'linkArticles' },
   ]),
   'en/index.html': calculatorHeaderProfile('US', 'Play country or region', [
-    { href: './articles/google-play-points-country-differences.html', label: '⚠️ Country notes', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
-    { href: './games/', label: '🎮 Game Calculators', langKey: 'linkGames' },
-    { href: './articles/', label: '📝 Articles', langKey: 'linkArticles' },
+    { href: './articles/google-play-points-country-differences.html', label: 'Country rules', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: './games/', label: 'Game calculators', langKey: 'linkGames' },
+    { href: './articles/', label: 'Articles', langKey: 'linkArticles' },
   ]),
   'ko/index.html': calculatorHeaderProfile('KR', 'Play 국가 또는 지역', [
     { href: './articles/google-play-points-country-differences.html', label: '⚠️ 국가별 안내', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
@@ -147,13 +147,13 @@ const CALCULATOR_HEADER_PROFILES = Object.freeze({
   ]),
   'hk/index.html': calculatorHeaderProfile(null, 'Play 國家或地區', [
     { href: '../attention.html', label: '⚠️ 地區注意事項', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
-    { href: '../tw/games/', label: '🎮 遊戲計算（台灣規則・非香港）', langKey: 'linkGames' },
-    { href: '../tw/articles/', label: '📝 指南', langKey: 'linkArticles' },
+    { href: '../tw/games/', label: '遊戲計算（台灣規則・非香港）', langKey: 'linkGames' },
+    { href: '../tw/articles/', label: '指南', langKey: 'linkArticles' },
   ]),
   'in/index.html': calculatorHeaderProfile(null, 'Play country or region', [
-    { href: '../attention.html', label: '⚠️ Country notes', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
-    { href: '../en/games/', label: '🎮 Game calculators (U.S. rules, not India)', langKey: 'linkGames' },
-    { href: '../en/articles/', label: '📝 Articles', langKey: 'linkArticles' },
+    { href: '../attention.html', label: 'Country rules', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: '../en/games/', label: 'Game calculators (U.S. rules, not India)', langKey: 'linkGames' },
+    { href: '../en/articles/', label: 'Articles', langKey: 'linkArticles' },
   ])
 });
 

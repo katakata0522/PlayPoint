@@ -180,7 +180,7 @@ test('海外向け案内は英語を全世界共通レートとして案内し�
 test('多言語トップの実行時記事リンクは各言語の記事一覧を指す', () => {
   const configs = loadConfigs();
   const expected = {
-    US: { text: '📝 Articles', href: 'articles/' },
+    US: { text: 'Articles', href: 'articles/' },
     KR: { text: '가이드 목록', href: 'articles/' },
     TW: { text: '指南列表', href: 'articles/' }
   };

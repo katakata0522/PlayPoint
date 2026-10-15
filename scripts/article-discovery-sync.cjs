@@ -192,11 +192,13 @@ function buildDiscoveryAssets(root) {
   // 検索は一覧、表の拡張は本文だけ。保存とテーマは両方で使う。
   return {
     article: block(['js/reading-library.js', 'js/reading-experience.js']),
-    hub: block(['js/article-search.js', 'js/reading-library.js'])
+    hub: block(['js/article-search.js', 'js/reading-library.js']),
+    searchModule: '/js/article-search.js?v=' + version('js/article-search.js')
   };
 }
 
-function applyDiscoveryAssets(html, assets, { article = false } = {}) {
+function applyDiscoveryAssets(html, assets, { article = false, searchModule = '' } = {}) {
+  if (article && searchModule) html = html.replace(/<script\b[^>]*\bsrc="[^"]*\/js\/guide-navigation\.js(?:\?[^"]*)?"[^>]*>/g, tag => tag.replace(/\sdata-search-module="[^"]*"/g, '').replace(/>$/, ` data-search-module="${searchModule}">`));
   // 本文を覆う大型アンカーを避ける。新しい記事にも適用し、既存の明示設定は優先する。
   // 広告ローダーの共有契約を使い、第三者の広告DOMをCSSで隠さない。
   if ((article || (/<html\b[^>]*\blang="(?:en|ko|zh-TW)"/i.test(html) && /intl-layout-container/.test(html)))
@@ -229,7 +231,7 @@ function syncArticleDiscovery(root) {
     const file = path.join(root, entry.path);
     const before = fs.readFileSync(file, 'utf8');
     const prepared = prepareDiscoveryArticle(before, entry);
-    const html = applyDiscoveryAssets(prepared.html, assets.article, { article: true });
+    const html = applyDiscoveryAssets(prepared.html, assets.article, { article: true, searchModule:assets.searchModule });
     // 本文とアセットを別々に読み書きせず、記事単位で最終結果だけ保存する。
     if (html !== before) fs.writeFileSync(file, html);
     indexes[entry.locale].push(prepared.record);

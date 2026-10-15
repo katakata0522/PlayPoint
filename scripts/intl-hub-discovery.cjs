@@ -135,7 +135,7 @@ function renderHubBody(localeKey, links) {
       <label class="intl-category-label" for="intl-guide-category">${escapeHtml(copy.browse)}</label>
       <select id="intl-guide-category" data-guide-category><option value="all">${escapeHtml(copy.all)} (${links.length})</option>${CATEGORY_KEYS.map(key => `<option value="${key}">${escapeHtml(labels[key])} (${counts[key]})</option>`).join('')}</select>
       <div class="intl-guide-shortcuts">
-      <details class="intl-guide-more" data-guide-more><summary>${({en:'Game or purchase',ko:'게임·구매 유형',tw:'遊戲・購買類型'})[localeKey]}</summary>
+      <details class="intl-guide-more" data-guide-more><summary>${({en:'Game & purchase type',ko:'게임·구매 유형',tw:'遊戲・購買類型'})[localeKey]}</summary>
       <div class="intl-game-discovery" id="intl-hub-games"><div><label for="intl-guide-game">${escapeHtml(gameCopy.game)}</label><select id="intl-guide-game" data-guide-game><option value="all">${escapeHtml(gameCopy.all)}</option><option value="games">${escapeHtml(gameCopy.games)}</option>${games.map(game => `<option value="${game.id}">${escapeHtml(game.name)}</option>`).join('')}</select></div><div><label for="intl-guide-topic">${escapeHtml(gameCopy.topic)}</label><select id="intl-guide-topic" data-guide-topic><option value="all">${escapeHtml(gameCopy.any)}</option>${['pass', 'trial', 'shop', 'rewards', 'version'].map(tag => `<option value="${tag}">${escapeHtml(gameCopy[tag])}</option>`).join('')}</select></div></div>
       </details>
       <details class="intl-hub-start" data-guide-start><summary id="intl-hub-start">${escapeHtml(copy.start)}</summary><section aria-labelledby="intl-hub-start">
@@ -169,6 +169,12 @@ function synchronizeHubFile(rootDir, localeKey) {
   const links = extractHubLinks(match[1]);
   if (links.length < 10) throw new Error(`international hub link catalog unexpectedly small: ${localeKey} (${links.length})`);
 
+  // 更新日ではなく記事自身の公開日で並べる。日付のない案内ページには日付を作らない。
+  const dates = new Map(links.map(link => {
+    const source = fs.readFileSync(path.join(rootDir, link.href.replace(/^\//, '').replace(/\/$/, '/index.html')), 'utf8');
+    return [link.href, source.match(/"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})/)?.[1] || ''];
+  }));
+  links.sort((a, b) => dates.get(b.href).localeCompare(dates.get(a.href)));
   const body = renderHubBody(localeKey, links);
   html = html.replace(match[0], `<article class="content">\n      ${body}\n    </article>`);
 

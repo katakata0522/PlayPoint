@@ -114,7 +114,7 @@ test('calculator Header synchronization repairs drift and becomes idempotent', (
     const englishPath = path.join(tempRoot, 'en', 'index.html');
     fs.writeFileSync(
       englishPath,
-      fs.readFileSync(englishPath, 'utf8').replace('>📝 Articles</a>', '>📝 Articles drift</a>'),
+      fs.readFileSync(englishPath, 'utf8').replace('>Articles</a>', '>Articles drift</a>'),
       'utf8'
     );
 

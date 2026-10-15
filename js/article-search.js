@@ -10,6 +10,7 @@
   function normalize(value) { return String(value || '').normalize('NFKC').toLowerCase().replace(/\s+/g, ' ').trim(); }
   // 海外版でもアクセントの有無や現地のゲーム名から同じ記事へ辿れる。
   groups.en.push(['Pokémon Sleep', 'Pokemon Sleep']);
+  groups.en.push(['quest', 'quests']);
   groups.ko.push(['포켓몬 슬립', 'Pokémon Sleep', 'Pokemon Sleep']);
   groups.tw.push(['Pokémon Sleep', 'Pokemon Sleep', '寶可夢睡眠']);
   // ひらがな入力でも商品名を探せる。表示用の文字列は変換しない。
@@ -67,7 +68,7 @@
     aliases.flatMap((group, index) => group.map(word => [fold(word, locale), 'zzalias' + index + 'zz'])).sort((a, b) => b[0].length - a[0].length)
   ]));
   const dictionaries = Object.fromEntries(Object.entries(replacementsByLocale).map(([locale, words]) => [locale, {
-    words, map: new Map(words), pattern: new RegExp(words.map(([word]) => escapePattern(word)).join('|'), 'g')
+    words, map: new Map(words), pattern: new RegExp(words.map(([word]) => locale === 'en' && /^quests?$/.test(word) ? '\\b' + escapePattern(word) + '\\b' : escapePattern(word)).join('|'), 'g')
   }]));
   // 記事の回答範囲が質問と一致する場合だけ優先する。辞書の並び番号に依存しない。
   const purposeOwners = new Map([

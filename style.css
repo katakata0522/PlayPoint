@@ -2659,6 +2659,11 @@ font-size: 0.8rem;
 }
 html:is(:lang(ko),:lang(zh-TW)) .top-bar > .region-switch + .header-links { grid-template-columns:minmax(0,1.5fr) auto auto; gap:4px !important; }
 html:is(:lang(ko),:lang(zh-TW)) .top-bar > .region-switch + .header-links a:not(.alert-link) { padding-inline:3px; word-break:keep-all; overflow-wrap:normal; white-space:nowrap; }
+html:lang(en) .top-bar > .region-switch + .header-links { grid-template-columns:auto minmax(0,1fr) auto; gap:4px !important; }
+html:lang(en) .top-bar > .region-switch + .header-links a { padding-inline:3px; overflow-wrap:normal; word-break:normal; }
+html:lang(en-IN) .top-bar > .region-switch + .header-links,
+html:lang(zh-HK) .top-bar > .region-switch + .header-links { grid-template-columns:repeat(2,minmax(0,1fr)); }
+html:is(:lang(en-IN),:lang(zh-HK)) .top-bar > .region-switch + .header-links a[data-lang-key="linkGames"] { grid-column:1 / -1; grid-row:2; white-space:normal; }
 }
 .calculator-basis-note { font-size: .85rem; line-height: 1.6; }
 .calculator-basis-settings { margin: 0 0 16px; }

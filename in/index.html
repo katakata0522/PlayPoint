@@ -47,7 +47,7 @@
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=1f22901514">
+    <link rel="stylesheet" href="../style.css?v=191d7d0950">
     <script type="speculationrules">
     {
   "prefetch": [
@@ -217,9 +217,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <button data-region="TW">TW</button>
         </div>
         <div class="header-links">
-            <a href="../attention.html" class="alert-link" data-country-notes-link data-lang-key="linkAttention">⚠️ Country notes</a>
-            <a href="../en/games/" data-lang-key="linkGames">🎮 Game calculators (U.S. rules, not India)</a>
-            <a href="../en/articles/" data-lang-key="linkArticles">📝 Articles</a>
+            <a href="../attention.html" class="alert-link" data-country-notes-link data-lang-key="linkAttention">Country rules</a>
+            <a href="../en/games/" data-lang-key="linkGames">Game calculators (U.S. rules, not India)</a>
+            <a href="../en/articles/" data-lang-key="linkArticles">Articles</a>
         </div>
     </div>
 
@@ -235,23 +235,23 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" aria-hidden="false" data-visible-base-rate-layout="true">
         <div id="main-calculator-inputs" class="section">
-            <h2 data-lang-key="sectionTitleStatus">Status input</h2>
+            <h2 data-lang-key="sectionTitleStatus">Your level goal</h2>
             <label for="currentStatus" class="label-with-tooltip">
-                <span data-lang-key="labelCurrentStatus">Current status</span>
+                <span data-lang-key="labelCurrentStatus">Current level</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
                 <div class="tooltip-box" id="tooltip-current-status" hidden></div>
             </label>
             <select id="currentStatus"></select>
 
             <label for="targetStatus" class="label-with-tooltip">
-                <span data-lang-key="labelTargetStatus">Target status</span>
+                <span data-lang-key="labelTargetStatus">Target level</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status" hidden></div>
             </label>
             <select id="targetStatus"></select>
 
             <label for="neededPoints" class="label-with-tooltip">
-                <span data-lang-key="labelNeededPoints">Points needed</span>
+                <span data-lang-key="labelNeededPoints">Points to next level</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points" hidden></div>
             </label>
@@ -314,7 +314,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             </details>
 
             <label for="reverseStatus" class="label-with-tooltip">
-                <span data-lang-key="labelCurrentStatus">Current status</span>
+                <span data-lang-key="labelCurrentStatus">Current level</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-status" hidden></div>
             </label>
@@ -412,7 +412,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         <h2>What You Can Do with Google Play Points Calculator</h2>
         <p class="home-description-lead">Use this page to check <strong>the spending needed to level up</strong>, <strong>the Play Points you can earn from a spending amount</strong>, and <strong>estimates using a special earn rate shown in Google Play</strong>.</p>
         <figure class="calculation-flow-figure">
-            <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="Three-step flow from points needed through the selected reward condition to estimated spending">
+            <img src="../images/calculation-flow-in.svg" width="960" height="360" loading="lazy" decoding="async" alt="Example: 1,728 points at 2 points per ₹5 requires ₹4,320.">
             <figcaption>Points gap → reward condition → estimated spending. The 1,728-point figure is an input example.</figcaption>
         </figure>
     </section>

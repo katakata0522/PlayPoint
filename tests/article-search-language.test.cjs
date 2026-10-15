@@ -8,6 +8,14 @@ const index = require('../blog/article-search-index.json').articles;
 const articles = manifest.map(article => ({ ...article, sections: index.find(entry => entry.path === new URL(article.file, 'https://playpoint-sim.com/blog/').pathname)?.sections || [] }));
 function hits(query) { return articles.filter(article => search.matches(article, query, 'ja')).sort((a,b) => search.score(b, query, 'ja') - search.score(a, query, 'ja')); }
 
+test('英語のquestとquestsは同じ記事へ進み、requestsには誤一致しない', () => {
+  const localized = require('../en/articles/article-search-index.json').articles;
+  const ranked = query => localized.filter(a => search.matches(a, query, 'en')).sort((a,b) => search.score(b, query, 'en') - search.score(a, query, 'en')).map(a => a.path);
+  assert.deepEqual(ranked('quests'), ranked('quest'));
+  assert.equal(ranked('quests')[0], '/en/articles/google-play-quests.html');
+  assert.equal(search.matches({title:'Payment requests'}, 'quests', 'en'), false);
+});
+
 test('海外でもPokemon Sleepと現地名から同じパス記事を探せる', () => {
   for (const [locale, queries] of [
     ['en', ['Pokémon Sleep', 'Pokemon Sleep']],

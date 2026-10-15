@@ -159,7 +159,7 @@ const LOCALES = {
       { val: '5', label: 'Special rate: 5 pt / $1' },
       { val: '7', label: 'Special rate: 7 pt / $1' }
     ],
-    statusLabel: 'Current Status Level:',
+    statusLabel: 'Current level:',
     statusOptions: [
       { val: '1.0', label: 'Bronze ($1 = 1pt)' },
       { val: '1.1', label: 'Silver ($1 = 1.1pt)' },

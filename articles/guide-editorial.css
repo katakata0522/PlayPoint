@@ -196,6 +196,6 @@ html[lang="ja"] body .main-content-column .hero:has(.article-header-meta) { marg
 html[lang="ja"] body .main-content-column .hero:has(.article-header-meta) h1 { margin-top:0; }
 .source-list-toggle { margin:24px 0; border-top:1px solid var(--reading-border); padding-top:12px; }
 .source-list-toggle > summary { cursor:pointer; color:var(--reading-link); font-weight:600; }
-.intl-article-sidebar .sidebar-widget--next { order:-1; }
+.intl-article-sidebar .sidebar-widget--next { order:0; }
 @media(max-width:760px) { .intl-article-sidebar details.sidebar-discovery > summary { padding:14px; font-weight:700; cursor:pointer; } .intl-article-sidebar details.sidebar-discovery { border:1px solid var(--reading-border); border-radius:8px; margin:12px 0; } }
 @media(max-width:760px) { .reader-entry-questions { grid-template-columns:1fr; gap:6px; } .reader-entry-questions a { padding:8px 12px; gap:2px; } .reader-hub-intro { font-size:14px; margin:6px 0 12px; } }

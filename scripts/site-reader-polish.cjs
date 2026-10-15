@@ -2,6 +2,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { GAME_EVIDENCE } = require('./intl-game-evidence.cjs');
+const { regionFlowExample, syncRegionFlows } = require('./region-calculation-flow.cjs');
 const COPY = {
   ja: { search: 'ゲーム名で探す', placeholder: '例：ポケポケ、原神、FGO', result: '件のゲーム', clear: '検索をクリア', edition: '日本版の参考ページ', sources: '出典と確認情報', browse: '記事を探す・人気記事', rank: '0ptからの参考ランクを見る' },
   en: { search: 'Find your game', placeholder: 'e.g. Pocket, Genshin, FGO', result: 'games shown', clear: 'Clear search', edition: 'Japan-edition reference', sources: 'Sources and verification', browse: 'Browse and popular guides', rank: 'View level progress from zero points' },
@@ -28,7 +29,7 @@ function polishPage(html, file) {
     const title = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]*>/g, '').toLowerCase();
     html = html.replace(/<span class="hero-badge">([^<]+)<\/span>/g, (tag, label) => title?.includes(label.toLowerCase()) ? '' : tag);
   }
-  if (locale !== 'ja' && /\/articles\/[^/]+\.html$/.test(file)) html = compactIntlToc(html);
+  if (locale !== 'ja' && /\/articles\/[^/]+\.html$/.test(file)) html = compactIntlToc(addPracticalToc(html, file, locale));
   const article = html.match(/<article\b[^>]*class="[^"]*\bcontent\b[^"]*"[^>]*>/i);
   if (article && !/<main\b|\brole="main"/i.test(html)) {
     const end = contentEnd(html, article.index);
@@ -75,6 +76,10 @@ function polishPage(html, file) {
   if (html.includes('res-earned-points')) tools = true;
   if (tools && !html.includes('data-site-reader-tools')) html = html.replace('</body>', '<script src="/js/site-reader-tools.js" defer data-site-reader-tools></script>\n</body>');
   if (/^(?:en\/|ko\/|tw\/|hk\/|in\/)?index\.html$/.test(file)) {
+    const region = file.split('/')[0];
+    if (region !== 'index.html') html = html.replace(/<img\b[^>]*src="[^"<>]*images\/calculation-flow(?:-[a-z]+)?\.svg"[^>]*>/, image => image
+      .replace(/images\/calculation-flow(?:-[a-z]+)?\.svg/, `images/calculation-flow-${region}.svg`)
+      .replace(/alt="[^"]*"/, `alt="${regionFlowExample(region).description}"`));
     if (!html.includes('calculator-brand')) html = html.replace(/(<h1 id="main-title")/, '<span class="calculator-brand">PlayPoint</span>\n$1');
     // Google公式が案内する通常アンカーの下部限定設定を、操作のある主計算機へ適用する。
     if (!html.includes('name="playpoint:anchor-ads"')) html = html.replace('</head>', '<meta name="playpoint:anchor-ads" content="collapsed-bottom">\n</head>');
@@ -82,12 +87,39 @@ function polishPage(html, file) {
   return html.replace(/^[\t ]+(?=\r?$)/gm, '');
 }
 function syncSiteReaderPolish(root) {
+  syncRegionFlows(root);
   const files = ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html'];
   const walk = dir => { if (!fs.existsSync(dir)) return; for (const entry of fs.readdirSync(dir, { withFileTypes: true })) { const file = path.join(dir, entry.name); if (entry.isDirectory()) walk(file); else if (entry.name.endsWith('.html')) files.push(path.relative(root, file).replaceAll('\\', '/')); } };
   for (const dir of ['articles', 'games', 'en/articles', 'ko/articles', 'tw/articles', 'en/games', 'ko/games', 'tw/games']) walk(path.join(root, dir));
   let changed = 0;
   for (const file of files) { const absolute = path.join(root, file), before = fs.readFileSync(absolute, 'utf8'), after = polishPage(before, file); if (before !== after) { fs.writeFileSync(absolute, after); changed++; } }
   return { checked: files.length, changed };
+}
+// 長い実用記事だけに補う。短い開催ニュースの導入は押し下げない。
+const PRACTICAL_TOC_SLUGS = new Set([
+  'google-play-points-earn-free', 'google-play-points-install-offer-not-received',
+  '2026-06-20-discount-gift-cards', 'google-play-points-balance-history-progress',
+  'google-play-points-500-1000-cost', 'google-play-points-discounts-promo-codes',
+  'google-play-balance-combine-payment', 'google-play-games-vs-play-points',
+  'google-play-points-apps-books-purchases', 'google-play-points-device-change'
+]);
+function addPracticalToc(html, file, locale) {
+  if (!PRACTICAL_TOC_SLUGS.has(path.basename(file, '.html'))) return html;
+  html = html.replace(/<details class="intl-article-toc reader-toc">[\s\S]*?<\/details>\n?/, '');
+  if (/\b(?:reader-toc|intl-article-toc)\b/.test(html)) return html;
+  const match = html.match(/<article\b[^>]*class="[^"]*\bcontent\b[^"]*"[^>]*>/);
+  if (!match) return html;
+  const end = contentEnd(html, match.index), body = html.slice(match.index, end);
+  const headings = [...body.matchAll(/<h2\b[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)]
+    .filter(h => !/^(?:related|author|reading|article-next|intl-hub)/.test(h[1]));
+  if (headings.length < 5) return html;
+  const label = {en:'On this page',ko:'이 글의 목차',tw:'本頁目錄'}[locale];
+  const toc = `<details class="intl-article-toc reader-toc"><summary>${label}</summary><nav aria-label="${label}"><ol>${headings.map(h => `<li><a href="#${h[1]}">${h[2].replace(/<[^>]+>/g, '')}</a></li>`).join('')}</ol></nav></details>`;
+  const headingStart = body.indexOf(headings[0][0]), prefix = body.slice(0, headingStart);
+  const section = prefix.lastIndexOf('<section');
+  const first = section > prefix.lastIndexOf('</section>') ? section : headingStart;
+  // 最初の本文見出しの直前に置き、冒頭の短い回答を先に読めるようにする。
+  return html.slice(0, match.index + first) + toc + '\n' + html.slice(match.index + first);
 }
 function compactIntlToc(html) {
   // 既に折りたたまれた目次には、開閉をもう一段重ねない。
@@ -110,4 +142,4 @@ function compactIntlToc(html) {
   }
   return html.replace(toc[0], compact);
 }
-module.exports = { COPY, compactIntlToc, polishPage, syncSiteReaderPolish };
+module.exports = { COPY, addPracticalToc, compactIntlToc, polishPage, syncSiteReaderPolish };
