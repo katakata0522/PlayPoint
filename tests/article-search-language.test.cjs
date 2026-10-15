@@ -63,6 +63,11 @@ test('台湾の公式商品名から該当記事へ進み、別ゲームのパ�
     assert.equal(matched.some(article => article.path === `/tw/articles/${other}.html`), false, query);
     assert.equal(localized.some(article => search.matches(article, query + ' 未掲載xyz9988', 'tw')), false);
   }
+  for (const query of ['超級票券', 'Super Ticket']) {
+    const matched = localized.filter(article => search.matches(article, query, 'tw'))
+      .sort((a, b) => search.score(b, query, 'tw') - search.score(a, query, 'tw'));
+    assert.equal(matched[0]?.path, '/tw/articles/google-play-points-super-weekly-reward.html', query);
+  }
 });
 
 test('読者の目的を表す自然文を回答に結び、数字の桁を取り違えない', () => {
