@@ -83,6 +83,12 @@ function syncSiteReaderPolish(root) {
   return { checked: files.length, changed };
 }
 function compactIntlToc(html) {
+  // 既に折りたたまれた目次には、開閉をもう一段重ねない。
+  const wrapped = /(<details\b[^>]*class="[^"]*\breader-toc--intl\b[^"]*"[^>]*>\s*<summary\b[^>]*>[\s\S]*?<\/summary>\s*)<(nav|details)\b([^>]*class="[^"]*\bintl-article-toc\b[^"]*"[^>]*>)([\s\S]*?)<\/\2>(\s*<\/details>)/;
+  if (wrapped.test(html)) return html.replace(wrapped, (whole, outer, tag, attributes, body, end) => {
+    if (tag === 'nav') return whole;
+    return outer + '<nav' + attributes + body.replace(/<summary>(<h2\b[^>]*>[\s\S]*?<\/h2>)<\/summary>/, '$1') + '</nav>' + end;
+  });
   const toc = html.match(/<nav\b[^>]*class="[^"]*\bintl-article-toc\b[^"]*"[^>]*>[\s\S]*?<\/nav>/);
   if (!toc) return html;
   const compact = toc[0].replace(/^<nav/, '<details').replace(/<\/nav>$/, '</details>')

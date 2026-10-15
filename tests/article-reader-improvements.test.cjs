@@ -136,4 +136,8 @@ test('海外記事の長い表の前で、本文と到達先を残したまま�
   assert.match(output, /href="#answer"/);
   for (const value of ['導入を残す', 'id="answer"', '<td>条件1</td><td>100pt</td>']) assert.ok(output.includes(value));
   assert.equal(compactIntlToc(output), output);
+  const wrapped = '<details class="reader-toc reader-toc--intl"><summary>On this page</summary>' + source.match(/<nav[\s\S]*?<\/nav>/)[0] + '</details>';
+  assert.equal(compactIntlToc(wrapped), wrapped, '既存の折りたたみをもう一段増やさない');
+  const nested = wrapped.replace('<nav', '<details').replace('</nav>', '</details>').replace('<h2 id="toc">Contents</h2>', '<summary><h2 id="toc">Contents</h2></summary>');
+  assert.equal(compactIntlToc(nested), wrapped, '既に生成した二重の開閉も一段に戻す');
 });

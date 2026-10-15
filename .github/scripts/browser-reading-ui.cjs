@@ -156,7 +156,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.waitForFunction(() => new URL(location.href).searchParams.get('game') === 'FGO');
     await cards(page);
     assert.equal(await gameFilter.inputValue(), 'FGO', 'Game selection matches the URL');
-    assert.equal(await page.locator('.reader-entry-questions').isVisible(), false, 'ゲーム絞り込み中は入門案内を畳む');
+    assert.equal(await page.locator('.reader-hub-entry').isVisible(), false, 'ゲーム絞り込み中は入門案内を畳む');
     assert.equal(await page.locator('.hub-access-row').isVisible(), false, 'ゲーム絞り込み中は上部の再訪案内を畳む');
     const stableArticle = await page.locator('.article-card').first().elementHandle();
     releaseCalculators();
@@ -211,8 +211,8 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       assert(state.discoveryFit,`Discovery controls must fit and remain tappable at ${width}`);
       if(width<=760) {
         assert(state.firstArticleY<650, `スマホの初期画面に記事が入る: ${width}: ${state.firstArticleY}`);
-        const entries = await page.locator('.reader-entry-questions a').evaluateAll(links=>links.map(link=>{const r=link.getBoundingClientRect();return {top:r.top,bottom:r.bottom,width:r.width};}));
-        assert(entries.length===3&&entries.every(entry=>entry.top>=0&&entry.bottom<=844&&entry.width>=44),`記事トップの疑問を最初の画面で選べる: ${width}`);
+        const entry = await page.locator('.reader-hub-entry > summary').boundingBox();
+        assert(entry&&entry.y>=0&&entry.y+entry.height<=844&&entry.x>=0&&entry.x+entry.width<=width&&entry.height>=44,`記事トップの入門入口を最初の画面で開ける: ${width}`);
         assert(state.menuRight===true,`Mobile menu button must sit to the right of the centered brand at ${width}`);
       } else {
         assert(await page.locator('.reader-entry-questions a').count()===3,'PCでも疑問から読む入口を使える');
@@ -262,12 +262,17 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.locator('#search-input').fill('ニケ 月パス');
     await page.waitForFunction(()=>document.querySelector('#sort-toggle')?.value==='relevance');
     assert(await page.locator('#game-title-filter').isHidden(), 'キーワード検索だけならゲーム選択は隠れたまま');
-    assert.equal(await page.locator('.reader-entry-questions').isVisible(),false,'検索中は入門案内を畳む');
+    assert.equal(await page.locator('.reader-hub-entry').isVisible(),false,'検索中は入門案内を畳む');
     assert.equal(await page.locator('.reader-question-links').isVisible(),false,'検索結果前のおすすめを畳む');
     await page.reload({waitUntil:'domcontentloaded'}); await cards(page);
-    assert.equal(await page.locator('.reader-entry-questions').isVisible(),false,'再読込でも絞り込み表示を復元');
+    assert.equal(await page.locator('.reader-hub-entry').isVisible(),false,'再読込でも絞り込み表示を復元');
     await page.locator('.filter-reset-inline').click();
-    assert(await page.locator('.reader-entry-questions').isVisible(),'解除すると入門案内を戻す');
+    const readerEntry = page.locator('.reader-hub-entry');
+    assert(await readerEntry.locator('summary').isVisible(),'解除すると入門案内の入口を戻す');
+    assert.equal(await readerEntry.getAttribute('open'),null,'入門案内は必要なときに開く');
+    await readerEntry.locator('summary').click();
+    assert(await page.locator('.reader-entry-questions').isVisible(),'開くと入門記事へのリンクを使える');
+    await readerEntry.locator('summary').click();
     assert(await page.locator('#reading-library summary').isHidden(),'保存記事は検索結果の前に出さない');
     await openMenu(page);
     assert(await page.locator('#reading-library summary').isVisible(),'メニューから保存記事へ進める');
@@ -371,6 +376,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     assert.equal(await downloaded.failure(),null);
     report.interactions.followthrough={searchHistory:true,campaignArrival:true,guideThemes:true,guideAnchors:true,benefitFilter:true,calendarDownload:true};
     await goto(page,'blog/'); await cards(page);
+    await page.locator('.reader-hub-entry > summary').click();
     await page.locator('.reader-entry-questions a').first().click();
     await page.locator('#play-pass-basics').waitFor({state:'visible'});
     assert.equal(new URL(page.url()).hash,'#play-pass-basics');
