@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('node:path');
+const { metadata: gameMetadata } = require('./intl-game-article-discovery.cjs');
 
 const GENERIC_TOKENS = new Set([
   'google', 'play', 'points', 'point', 'guide', 'guides', 'explained', 'how', 'to', 'the', 'a', 'an', 'and', 'or', 'vs'
@@ -44,6 +45,20 @@ function scoreRelatedArticle(currentPath, candidate) {
   const currentSlug = slugFromPath(currentPath);
   const candidateSlug = slugFromPath(candidate.path || candidate.href || '');
   if (!candidateSlug || currentSlug === candidateSlug) return Number.NEGATIVE_INFINITY;
+  const game = gameMetadata('/' + String(currentPath).replace(/^\//, ''));
+  if (game) {
+    // 同名のPassでも別サービス。ゲーム購入の次は、その購入に関わる条件へ案内する。
+    if (/play-pass/.test(candidateSlug)) return Number.NEGATIVE_INFINITY;
+    const adjacent = game.id === 'efootball'
+      ? ['google-play-games-vs-play-points', 'google-play-points-use-coupons', 'google-play-points-basics']
+      : game.tags.includes('pass')
+        ? ['google-play-points-subscriptions', 'google-play-points-promotion-stacking', 'google-play-points-rounding-tax']
+        : game.tags.includes('shop')
+          ? ['google-play-points-promotion-stacking', 'google-play-points-discounts-promo-codes', 'google-play-points-refund']
+          : ['google-play-points-apps-books-purchases', 'google-play-points-promotion-stacking', 'google-play-points-rounding-tax'];
+    const position = adjacent.indexOf(candidateSlug);
+    if (position !== -1) return 160 - position * 10;
+  }
 
   const sharedTokens = intersectionSize(meaningfulTokens(currentSlug), meaningfulTokens(candidateSlug));
   const sharedTopics = intersectionSize(topicTags(currentSlug), topicTags(candidateSlug));

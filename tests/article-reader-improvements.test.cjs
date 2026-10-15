@@ -162,6 +162,26 @@ test('海外の主題バッジは題名と同じ意味だけを省き、固有�
   }
 });
 
+test('海外本文の句だけを強調・リンクし、文字・段落・地域条件と既存リンクを保つ', () => {
+  const {applyEditorialCues,CUES}=require('../scripts/intl-editorial-cues.cjs');
+  const strip=s=>s.replace(/<[^>]*>/g,'');
+  const source='<article class="content"><header><p>item price</p></header><p>Points use item price, not taxes, then the nearest whole point.</p><p><a href="/existing/">item price</a> stays here.</p><aside><p>item price</p></aside></article>';
+  const output=applyEditorialCues(source,'en/articles/google-play-points-rounding-tax.html');
+  assert.equal(strip(output),strip(source));
+  assert.equal((output.match(/data-editorial-cue/g)||[]).length,1);
+  assert.equal((output.match(/data-editorial-link/g)||[]).length,1);
+  assert.ok(output.includes('<header><p>item price</p></header>'));
+  assert.ok(output.includes('<a href="/existing/">item price</a>'));
+  assert.ok(output.includes('<aside><p>item price</p></aside>'));
+  assert.equal(applyEditorialCues(output,'en/articles/google-play-points-rounding-tax.html'),output);
+  assert.equal(applyEditorialCues(source,'articles/example.html'),source);
+  for(const [slug,locales] of Object.entries(CUES)) for(const [locale,cue]of Object.entries(locales)) if(cue.link){
+    const html=read(`${locale}/articles/${slug}.html`);
+    assert.equal((html.match(/data-editorial-link/g)||[]).length,1,locale+'/'+slug);
+    assert.ok(fs.existsSync(path.join(root,locale,'articles',cue.link[1]+'.html')));
+  }
+});
+
 test('手書きの日本語目次はリンクと見出しIDを残して一つの開閉にまとめる', () => {
   const { polishPage } = require('../scripts/site-reader-polish.cjs');
   const source = '<nav class="article-toc" aria-label="この記事の目次"><h2 id="toc">この記事の目次</h2><ol><li><a href="#orders">購入履歴</a></li></ol></nav><h2 id="orders">購入履歴</h2><p>本文と条件</p>';

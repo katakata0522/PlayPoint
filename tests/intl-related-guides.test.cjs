@@ -70,3 +70,15 @@ test('high-signal published guides point to genuinely adjacent topics', () => {
   const coupon = sidebarRelatedHrefs(fs.readFileSync(path.join(enDir, 'google-play-points-coupon-not-applied.html'), 'utf8'));
   assert.ok(coupon.some(href => /promotion-not-applied|discounts-promo-codes/.test(href)), 'coupon troubleshooting should surface a promotion or promo-code guide');
 });
+
+test('ゲームのPassから別サービスのPlay Passへ語の一致だけで案内しない', () => {
+  for (const locale of locales) {
+    const html=fs.readFileSync(path.join(root,locale,'articles/puzzle-and-dragons-pass.html'),'utf8');
+    const hrefs=sidebarRelatedHrefs(html);
+    assert.ok(!hrefs.some(h=>/play-pass/.test(h)));
+    assert.ok(hrefs.some(h=>/promotion-stacking/.test(h)));
+    assert.ok(hrefs.some(h=>/rounding-tax/.test(h)));
+  }
+  const html=fs.readFileSync(path.join(root,'en/articles/efootball-google-play-points-vs-efootball-points.html'),'utf8');
+  assert.ok(sidebarRelatedHrefs(html).some(h=>/google-play-games-vs-play-points/.test(h)));
+});

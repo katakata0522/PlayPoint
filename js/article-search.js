@@ -13,6 +13,13 @@
   groups.en.push(['quest', 'quests']);
   groups.ko.push(['포켓몬 슬립', 'Pokémon Sleep', 'Pokemon Sleep']);
   groups.tw.push(['Pokémon Sleep', 'Pokemon Sleep', '寶可夢睡眠']);
+  groups.en.push(['Puzzle & Dragons', 'Puzzle and Dragons', 'P&D']);
+  groups.ko.push(['FGO', 'Fate/Grand Order', '페이트/그랜드 오더', '페이트 그랜드 오더', '페그오']);
+  groups.ko.push(['퍼즐앤드래곤', '퍼즐 앤 드래곤', '퍼드패스', '퍼드', 'Puzzle & Dragons', 'Puzzle and Dragons']);
+  groups.ko.push(['Pokémon GO', 'Pokemon GO', '포켓몬고', '포켓몬 GO']);
+  groups.ko.push(['Super Weekly Prize', 'Super Weekly', '슈퍼 위클리', '슈퍼위클리']);
+  groups.tw.push(['Puzzle & Dragons', 'Puzzle and Dragons', '龍族拼圖', 'P&D']);
+  groups.tw.push(['Pokémon GO', 'Pokemon GO', '寶可夢GO', '寶可夢 GO']);
   // ひらがな入力でも商品名を探せる。表示用の文字列は変換しない。
   function fold(value, locale) {
     const text = normalize(value);

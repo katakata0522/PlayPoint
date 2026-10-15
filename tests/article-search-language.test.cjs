@@ -16,6 +16,24 @@ test('英語のquestとquestsは同じ記事へ進み、requestsには誤一致�
   assert.equal(search.matches({title:'Payment requests'}, 'quests', 'en'), false);
 });
 
+test('現地名・正式名・略称から海外の同じゲーム記事へ進み、追加条件は捨てない', () => {
+  for (const [locale,queries,slug] of [
+    ['en',['Puzzle & Dragons','Puzzle and Dragons','P&D'],'puzzle-and-dragons-pass'],
+    ['ko',['페이트/그랜드 오더','페그오','FGO'],'fgo-guaranteed-summon-play-points'],
+    ['ko',['퍼즐앤드래곤','퍼드패스'],'puzzle-and-dragons-pass'],
+    ['ko',['포켓몬고','Pokemon GO'],'pokemon-go-google-play-vs-web-store'],
+    ['tw',['龍族拼圖','Puzzle & Dragons'],'puzzle-and-dragons-pass'],
+    ['tw',['寶可夢GO','Pokemon GO'],'pokemon-go-google-play-vs-web-store']
+  ]) {
+    const localized = require(`../${locale}/articles/article-search-index.json`).articles;
+    for (const query of queries) {
+      const matches = localized.filter(a=>search.matches(a,query,locale)).sort((a,b)=>search.score(b,query,locale)-search.score(a,query,locale));
+      assert.equal(matches[0]?.path,`/${locale}/articles/${slug}.html`,query);
+      assert.equal(localized.filter(a=>search.matches(a,query+' zzzzunknown9988',locale)).length,0,query+'のAND条件');
+    }
+  }
+});
+
 test('海外でもPokemon Sleepと現地名から同じパス記事を探せる', () => {
   for (const [locale, queries] of [
     ['en', ['Pokémon Sleep', 'Pokemon Sleep']],

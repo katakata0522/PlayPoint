@@ -10,6 +10,14 @@ const COPY = {
 
 function renderGuideBody(localeKey, guide, locale) {
   const content = guide.content[localeKey], c = COPY[localeKey];
+  // 正式名と現地名を冒頭の自然な文に含め、表示名と検索名を結び付ける。
+  let answer = content.answer;
+  if (guide.gameId === 'fgo' && localeKey === 'ko') answer = answer.replace('목표 소환', '페이트/그랜드 오더(FGO)의 목표 소환');
+  if (guide.gameId === 'pad') answer = answer.replace(...({
+    en: ['Consider P&D Pass', 'Consider Puzzle & Dragons’ P&D Pass'],
+    ko: ['전용 던전', '퍼즐앤드래곤의 전용 던전'],
+    tw: ['會固定打通行證專用關卡', '若會固定打《龍族拼圖》通行證專用關卡']
+  })[localeKey]);
   const parent = `/${localeKey}/games/${guide.gameId}/`;
   const sourceAnchor = (url, title) => `<a href="${escape(url)}" target="_blank" rel="noopener noreferrer">${escape(title)}</a>`;
   const offerMarkup = content.offers.map(offer => `<h3>${escape(offer.names[localeKey])}</h3><p>${escape(offer.details[localeKey])}</p>`).join('\n');
@@ -22,7 +30,7 @@ function renderGuideBody(localeKey, guide, locale) {
   if (!['umamusume', 'phantomparade'].includes(guide.gameId) && !(guide.gameId === 'hbr' && localeKey !== 'tw')) sources.set(guide.source[1], guide.source[0]);
   sources.set(locale.googleUrl, locale.earningRuleLink);
   sources.set(locale.levelsUrl, locale.levelsRuleLink);
-  return `<section class="section answer-box" id="purchase-answer"><h2>${escape(c.answer)}</h2><p>${escape(content.answer)}</p><p><a class="cta-btn" href="${parent}">${escape(c.calculate)}</a></p></section>
+  return `<section class="section answer-box" id="purchase-answer"><h2>${escape(c.answer)}</h2><p>${escape(answer)}</p><p><a class="cta-btn" href="${parent}">${escape(c.calculate)}</a></p></section>
 <nav class="intl-article-toc" aria-label="${escape(locale.toc)}"><h2>${escape(locale.toc)}</h2><ol>${content.offers.length ? `<li><a href="#official-source-scope">${escape(c.product)}</a></li>` : ''}${content.chapters.map((item, i) => `<li><a href="#product-detail-${i + 1}">${escape(item.title)}</a></li>`).join('')}<li><a href="#decision-guide">${escape(c.compare)}</a></li><li><a href="#play-points">${escape(c.points)}</a></li></ol></nav>
 ${content.offers.length ? `<section class="section" id="official-source-scope"><h2>${escape(c.product)}</h2>${offerMarkup}</section>` : ''}
 ${chapters}
