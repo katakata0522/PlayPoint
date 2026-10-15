@@ -120,6 +120,13 @@ async function inspect(browser, baseUrl, article, viewport) {
         openingAnswerTextLength: answer?.textContent?.replace(/\\s+/g, ' ').trim().length || 0,
         compactScopeText: document.querySelector('.article-region-scope')?.textContent?.trim() || '',
         collapsedToc: Boolean(content?.querySelector(':scope > details.reader-toc--intl > nav.intl-article-toc')),
+        tocToggle: (() => {
+          const summary = content?.querySelector('details.intl-article-toc > summary');
+          if (!summary) return null;
+          const toggle = summary.getBoundingClientRect();
+          const title = summary.querySelector('h2').getBoundingClientRect();
+          return { height: toggle.height, titleOffset: title.top - toggle.top };
+        })(),
         horizontalOverflow: document.documentElement.scrollWidth - window.innerWidth
       };
     }, article.answerSelector);
@@ -150,6 +157,7 @@ async function inspect(browser, baseUrl, article, viewport) {
     }
     if (article.compactScope) assert(result.compactScopeText.length > 0 && result.compactScopeText.length <= 20, article.key + '/' + viewport.key + ': region scope is not compact');
     if (article.collapsedToc) assert(result.collapsedToc, article.key + '/' + viewport.key + ': long article navigation must be optional');
+    if (result.tocToggle) assert(result.tocToggle.height >= 44 && result.tocToggle.height <= 56 && result.tocToggle.titleOffset <= 16, article.key + '/' + viewport.key + ': TOC marker and title must share a compact, tappable row');
     if (article.related) {
       assert(result.related, article.key + '/' + viewport.key + ': related navigation missing');
     }
