@@ -600,8 +600,13 @@ async function verifyBlogPage(browser, baseUrl) {
     const firstBenefit = await page.locator('#benefit-panel [data-benefit-id]:not([hidden])').first().boundingBox();
     assert(firstBenefit && firstBenefit.y < 500, '最新情報の特典がスマホ初期画面に現れない');
     const allBenefits = await page.locator('#benefit-panel [data-benefit-id]:not([hidden])').count();
-    await page.getByRole('tab', { name: '製品割引', exact: true }).click();
-    assert(await page.locator('#benefit-panel [data-benefit-id]:not([hidden])').evaluateAll(cards => cards.every(card => card.dataset.category === 'other')), '製品割引に別種類の特典が混ざる');
+    await page.getByRole('tab', { name: '開催中', exact: true }).click();
+    assert(await page.locator('#benefit-panel [data-benefit-id]:not([hidden])').count() > 0, '開催中の特典を表示する');
+    assert(await page.locator('[data-benefit-id="pixel"]').isHidden(), '期限不明の配布報告を開催中と断定しない');
+    await page.getByRole('tab', { name: '開始予定', exact: true }).click();
+    const upcomingBenefits = await page.locator('#benefit-panel [data-benefit-id]:not([hidden])').count();
+    if (!upcomingBenefits) assert(await page.locator('.benefit-empty').isVisible(), '開始予定がないときは空状態を案内する');
+    await page.getByRole('tab', { name: '開催中', exact: true }).click();
     await page.locator('.benefit-audience > summary').click();
     await page.locator('#benefit-rank').selectOption('bronze');
     assert(await page.locator('#benefit-panel [data-benefit-id]:not([hidden])').evaluateAll(cards => cards.every(card => !card.dataset.minRank)), 'ブロンズで上位ランク専用の特典が残る');
@@ -610,7 +615,35 @@ async function verifyBlogPage(browser, baseUrl) {
     assert(await page.locator('#benefit-panel [data-benefit-id]:not([hidden])').count() === allBenefits, '条件解除で一覧へ戻れない');
     await page.locator('.benefit-audience > summary').click();
     await page.getByRole('tab', { name: 'すべて', exact: true }).press('End');
-    assert(await page.getByRole('tab', { name: '製品割引', exact: true }).getAttribute('aria-selected') === 'true', 'キーボードで末尾のタブへ移れない');
+    assert(await page.getByRole('tab', { name: '終了', exact: true }).getAttribute('aria-selected') === 'true', 'キーボードで末尾のタブへ移れない');
+    // 開始前・終了後の配信データを模し、同じカードの表示先と詳細導線を確認する。
+    const originalPeriod = await page.locator('[data-benefit-id="play-fest-2026"]').evaluate(card => {
+      const original = { start:card.dataset.start, end:card.dataset.end };
+      card.dataset.start = new Date(Date.now() + 86400000).toISOString();
+      card.dataset.end = new Date(Date.now() + 172800000).toISOString();
+      return original;
+    });
+    await page.getByRole('tab', { name: '開始予定', exact: true }).click();
+    assert(await page.locator('[data-benefit-id="play-fest-2026"] .benefit-action').isVisible(), '開始予定の詳細へ進める');
+    await page.locator('[data-benefit-id="play-fest-2026"]').evaluate(card => {
+      card.dataset.start = new Date(Date.now() - 172800000).toISOString();
+      card.dataset.end = new Date(Date.now() - 86400000).toISOString();
+    });
+    await page.getByRole('tab', { name: '開催中', exact: true }).click();
+    assert(await page.locator('[data-benefit-id="play-fest-2026"]').isHidden(), '終了したフェスを開催中へ残さない');
+    await page.getByRole('tab', { name: '終了', exact: true }).click();
+    assert(await page.locator('[data-benefit-id="play-fest-2026"] .benefit-action').isVisible(), '終了した企画の詳細へ進める');
+    await page.getByRole('tab', { name: 'すべて', exact: true }).click();
+    assert(await page.locator('#benefit-panel [data-benefit-id]:not([hidden])').count() === allBenefits, 'すべてに終了した企画も含める');
+    assert(await page.locator('#benefit-panel [data-benefit-id]:not([hidden])').evaluateAll(cards => {
+      let ended = false;
+      return cards.every(card => {
+        if (card.dataset.end && Date.parse(card.dataset.end) <= Date.now()) { ended = true; return true; }
+        return !ended;
+      });
+    }), 'すべてでは終了済みを最後に置く');
+    await page.locator('[data-benefit-id="play-fest-2026"]').evaluate((card, original) => Object.assign(card.dataset,original), originalPeriod);
+    await page.getByRole('tab', { name: '開催中', exact: true }).click();
     await page.locator('.latest-jump-links a[href="#personal-offer-check"]').click();
     await page.waitForFunction(() => document.querySelector('.personal-offer-check').open);
     assert(await page.locator('.personal-offer-check').getAttribute('open') !== null, '手順へのアンカーで折りたたみが開かない');

@@ -47,7 +47,7 @@
         benefit_filter_changed: Object.freeze({
             rank_filter: new Set(['all', 'bronze', 'silver', 'gold', 'platinum', 'diamond']),
             pass_filter: new Set(['all', 'yes', 'no']),
-            benefit_tab: new Set(['active', 'soon', 'upcoming', 'other'])
+            benefit_tab: new Set(['all', 'active', 'soon', 'upcoming', 'ended', 'other'])
         }),
         article_navigation_click: Object.freeze({
             component: new Set(['site_identity', 'global_nav', 'breadcrumb', 'region_switch', 'next_step', 'popular', 'related', 'author', 'katakatalab', 'browse', 'citation', 'diary', 'contextual_action']),

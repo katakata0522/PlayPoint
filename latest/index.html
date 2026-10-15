@@ -40,7 +40,7 @@
   }
   </script>
   <link rel="stylesheet" href="./hub.css?v=25c1190649">
-  <script defer src="./hub.js?v=c2e9245663"></script>
+  <script defer src="./hub.js?v=734a6fa39e"></script>
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
 <link rel="stylesheet" href="/articles/japanese-shell.css?v=d181c50417">
@@ -67,15 +67,14 @@
 
   <section class="benefit-board" aria-labelledby="benefit-board-title">
     <h2 id="benefit-board-title">特典・キャンペーン一覧</h2>
-    <div class="benefit-tabs" role="tablist" aria-label="特典の種類" hidden>
-      <button type="button" role="tab" id="benefit-tab-active" aria-controls="benefit-panel" aria-selected="true" data-filter="active">すべて</button>
-      <button type="button" role="tab" id="benefit-tab-points" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="points">ポイント</button>
-      <button type="button" role="tab" id="benefit-tab-gift" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="gift">コード還元</button>
-      <button type="button" role="tab" id="benefit-tab-other" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="other">製品割引</button>
+    <div class="benefit-tabs" role="tablist" aria-label="特典の開催時期" hidden>
+      <button type="button" role="tab" id="benefit-tab-all" aria-controls="benefit-panel" aria-selected="true" data-filter="all">すべて</button>
+      <button type="button" role="tab" id="benefit-tab-active" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="active">開催中</button>
+      <button type="button" role="tab" id="benefit-tab-upcoming" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="upcoming">開始予定</button>
+      <button type="button" role="tab" id="benefit-tab-ended" aria-controls="benefit-panel" aria-selected="false" tabindex="-1" data-filter="ended">終了</button>
     </div>
-    <details class="benefit-audience" hidden><summary>対象・時期で絞り込む<span data-audience-summary></span></summary>
+    <details class="benefit-audience" hidden><summary>対象条件で絞り込む<span data-audience-summary></span></summary>
       <div class="benefit-audience-controls">
-        <label for="benefit-period">時期<select id="benefit-period"><option value="active">今チェックできる特典</option><option value="soon">まもなく終了（7日以内）</option><option value="upcoming">開始予定</option></select></label>
         <label for="benefit-rank">今のランク<select id="benefit-rank"><option value="">すべて・わからない</option><option value="bronze">ブロンズ</option><option value="silver">シルバー</option><option value="gold">ゴールド</option><option value="platinum">プラチナ</option><option value="diamond">ダイヤモンド</option></select></label>
         <label for="benefit-pass">Play Passの利用<select id="benefit-pass"><option value="">指定しない</option><option value="yes">利用中・ファミリー対象</option><option value="no">利用していない</option></select></label>
         <button type="button" data-clear-audience>条件を解除</button>
@@ -187,7 +186,6 @@
       </div>
       <div class="benefit-empty" hidden><p data-empty-message></p><a href="#next-campaign-title">次回のポイント増量について確認する</a></div>
     </div>
-    <details class="benefit-ended" hidden><summary>終了した企画（全件）</summary><div class="benefit-grid" data-ended-list></div></details>
     <p class="benefit-filter-note" data-filter-note hidden></p>
     <p class="benefit-footnote">日時は日本時間です。掲載時点の情報をもとに、対象・在庫・受取条件はリンク先やご自身のPlayストアで確認してください。</p>
     <noscript><p class="benefit-footnote">すべての掲載情報を表示しています。開始日・終了日を確認してご利用ください。</p></noscript>
@@ -466,9 +464,9 @@
         <p class="site-footer-trademark">Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは個人によって運営される非公式のファンサイト・計算ツールであり、Google LLC および掲載されている各ゲームの配信元・開発会社とは一切関係ありません。</p>
         <p class="copyright">© 2026 PlayPoint Simulation Tool All Rights Reserved.</p>
     </footer>
-<script src="/js/analytics-core.js?v=fde7412e57"></script>
+<script src="/js/analytics-core.js?v=2a21f6d951"></script>
 <script src="/js/intent-tracking.js?v=cdaccb870f"></script>
-<script src="/js/third-party.js?v=91b8bfe5c5"></script>
-<script src="../blog/components.js?v=40b5a80daa"></script>
+<script src="/js/third-party.js?v=34ee3a19ae"></script>
+<script src="../blog/components.js?v=5a19fbfc06"></script>
 </body>
 </html>
