@@ -196,10 +196,4 @@ html[lang="ja"] body .main-content-column .hero:has(.article-header-meta) h1 { m
 .source-list-toggle > summary { cursor:pointer; color:var(--reading-link); font-weight:600; }
 .intl-article-sidebar .sidebar-widget--next { order:-1; }
 @media(max-width:760px) { .intl-article-sidebar details.sidebar-discovery > summary { padding:14px; font-weight:700; cursor:pointer; } .intl-article-sidebar details.sidebar-discovery { border:1px solid var(--reading-border); border-radius:8px; margin:12px 0; } }
-@media(max-width:760px) { .reader-entry-questions { grid-template-columns:1fr; gap:6px; } .reader-entry-questions a { padding:8px 12px; gap:2px; } .reader-hub-intro { font-size:14px; margin:6px 0 12px; } }/* 狭い一覧でも画像よりタイトルの読み幅を優先する。 */
-@media(max-width:360px) {
-html[lang] body.blog-index-compact .article-card.article-card--visual { grid-template-columns:64px minmax(0,1fr); gap:8px; }
-html[lang] body.blog-index-compact .article-card .card-thumb { min-height:96px; }
-html[lang] body.blog-index-compact .article-card .card-thumb--app-icon img { padding:6px; }
-html[lang] body.blog-index-compact .article-card .card-content { padding:10px 8px; }
-}
+@media(max-width:760px) { .reader-entry-questions { grid-template-columns:1fr; gap:6px; } .reader-entry-questions a { padding:8px 12px; gap:2px; } .reader-hub-intro { font-size:14px; margin:6px 0 12px; } }
