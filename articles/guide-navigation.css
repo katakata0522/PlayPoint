@@ -44,6 +44,8 @@ html body #guide-search { inset:60px auto auto 50%; transform:translateX(-50%); 
 .guide-search-result span { display:block; color:var(--reading-muted,#526c71); font-size:13px; line-height:1.7; margin-top:4px; }
 .guide-search-result:hover strong { text-decoration:underline; }
 .guide-search-all { display:inline-block; padding:12px 0; color:var(--reading-link,#176773); font-size:14px; }
+.guide-search-body--intl .guide-search-status { margin-bottom:0; }
+.guide-search-body--intl .guide-search-all { display:flex; align-items:center; min-height:44px; padding:4px 0; box-sizing:border-box; }
 @media(max-width:950px) {
 .guide-article-header .guide-menu-icon { width:16px; height:12px; border:0; background:repeating-linear-gradient(to bottom,currentColor 0 2px,transparent 2px 5px); }
 html.guide-navigation-enabled.guide-article-header body .guide-header { position:sticky; top:0; z-index:100; padding:0 12px; width:100%; box-sizing:border-box; background:var(--reading-surface,#fff); border-bottom:1px solid var(--reading-border,#d7e3df); }

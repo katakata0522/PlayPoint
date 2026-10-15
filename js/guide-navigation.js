@@ -177,10 +177,15 @@
     body.innerHTML = `<form action="${hub}" method="get" role="search"><label for="guide-search-input">${copy[1]}</label><div class="guide-search-line"><input id="guide-search-input" type="search" name="q" placeholder="${copy[2]}" autocomplete="off"><button type="submit">${copy[3]}</button></div></form><p class="guide-search-status" role="status" aria-live="polite"></p><div class="guide-search-results"></div><button type="button" class="guide-search-retry" hidden>${copy[4]}</button><a class="guide-search-all" href="${hub}">${copy[5]}</a>`;
     search.dialog.append(body);
     const input = body.querySelector('input'), status = body.querySelector('[role="status"]'), results = body.querySelector('.guide-search-results'), retry = body.querySelector('.guide-search-retry'), all = body.querySelector('.guide-search-all');
+    if (locale !== 'ja') {
+      body.classList.add('guide-search-body--intl');
+      status.after(all);
+    }
     let articles, pending;
     function render() {
       const query = input.value.trim(); results.replaceChildren();
       all.href = hub + (query ? '?q=' + encodeURIComponent(query) : '');
+      if (locale !== 'ja') all.textContent = query ? ({en:'See all results →',ko:'전체 검색 결과 보기 →',tw:'查看所有搜尋結果 →'})[locale] : copy[5];
       if (!articles) return;
       if (!query) { status.textContent = copy[6]; return; }
       const engine = window.PlayPointSearch;

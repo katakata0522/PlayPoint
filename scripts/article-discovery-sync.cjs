@@ -38,13 +38,13 @@ function extractSections(html) {
   return sections;
 }
 const scopeCopy = {
-  en: 'Language: English · US reference. Offers depend on your Google Play country and account.',
-  ko: '표시 언어: 한국어 · 대한민국 기준. 혜택은 Google Play 국가와 계정에 따라 달라집니다.',
-  tw: '顯示語言：繁體中文 · 台灣條件。優惠依 Google Play 國家／地區與帳號而定。'
+  en: 'US reference. Offers depend on your Google Play country and account.',
+  ko: '대한민국 기준. 혜택은 Google Play 국가와 계정에 따라 달라집니다.',
+  tw: '台灣條件。優惠依 Google Play 國家／地區與帳號而定。'
 };
 // 表示言語と商品の販売地域が異なる記事は、地域条件を明示したまま同期する。
 const articleScopeCopy = {
-  'tw/articles/gakuen-idolmaster-japan-google-play-vs-web-shop.html': '顯示語言：繁體中文 · 日本版商品／日圓（JPY）。Play Points 條件依實際 Google Play 國家／地區與帳號而定。'
+  'tw/articles/gakuen-idolmaster-japan-google-play-vs-web-shop.html': '日本版商品／日圓（JPY）。Play Points 條件依實際 Google Play 國家／地區與帳號而定。'
 };
 const compactScopeCopy = {
   en: ['United States', 'United States reference. Offers depend on your Google Play country and account.'],

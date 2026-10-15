@@ -10,6 +10,8 @@
   const topicFilter = document.querySelector('[data-guide-topic]');
   const categoryFilter = document.querySelector('[data-guide-category]');
   const moreFilters = document.querySelector('[data-guide-more]');
+  const filterSummary = moreFilters?.querySelector('summary');
+  const defaultFilterLabel = filterSummary?.textContent;
   if (!grid || !search || !buttons.length || !result || !empty) return;
   const locale = location.pathname.split('/')[1];
   const copy = {
@@ -74,6 +76,10 @@
     // 検索・分類の選択中は一致する結果を検索欄の直後に見せる。
     if (start) start.hidden = Boolean(query) || activeCategory !== 'all' || Boolean(gameFilter && gameFilter.value !== 'all') || Boolean(topicFilter && topicFilter.value !== 'all');
     if (moreFilters && (gameFilter?.value !== 'all' || topicFilter?.value !== 'all')) moreFilters.open = true;
+    // 閉じても選択中の条件が分かるよう、既存の見出しに表示する。
+    if (filterSummary) filterSummary.textContent = [gameFilter, topicFilter]
+      .filter(select => select && select.value !== 'all')
+      .map(select => select.selectedOptions[0].textContent).join(' · ') || defaultFilterLabel;
     const byPath = new Map(articles.map(article => [article.path, article]));
     const ordered = cards.map(card => {
       const sourceArticle = byPath.get(new URL(card.href).pathname);

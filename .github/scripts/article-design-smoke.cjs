@@ -281,12 +281,35 @@ async function inspectIntlReading(browser, baseUrl) {
       await dialog.locator('.guide-search-result').first().waitFor({state:'visible'});
       const targets = await dialog.locator('.guide-search-result').evaluateAll(nodes => nodes.map(node => node.getAttribute('href')));
       assert(targets.length && targets.every(href => href.startsWith('/' + item.locale + '/articles/')), item.locale + ': 検索結果は現在の地域の記事へ進む');
+      const broadQuery = {en:'points',ko:'포인트',tw:'點數'}[item.locale];
+      await articleSearch.fill(broadQuery);
+      assert(await dialog.locator('.guide-search-result').count() === 20, item.locale + ': 多数の検索結果は20件のプレビューを表示する');
+      const allResults = dialog.locator('.guide-search-all');
+      assert(await allResults.getAttribute('href') === '/' + item.locale + '/articles/?q=' + encodeURIComponent(broadQuery), item.locale + ': 全件リンクに検索語を引き継ぐ');
+      const allBounds = await allResults.boundingBox();
+      const firstResultBounds = await dialog.locator('.guide-search-result').first().boundingBox();
+      assert(allBounds && firstResultBounds && allBounds.y + allBounds.height <= firstResultBounds.y + 1 && allBounds.y + allBounds.height < 900, item.locale + ': 全件リンクをプレビューの上で操作できる');
       await articleSearch.fill('zzzznomatch999999');
       assert(await dialog.locator('.guide-search-result').count() === 0, item.locale + ': 一致しない語句の古い結果を消す');
       assert((await dialog.locator('.guide-search-status').innerText()).trim(), item.locale + ': ゼロ件の案内を残す');
       await articleSearch.press('Escape');
       assert(!await dialog.evaluate(el => el.open), item.locale + ': Escapeで検索を閉じる');
       assert(await searchTrigger.evaluate(el => document.activeElement === el), item.locale + ': 検索ボタンへフォーカスを戻す');
+      if (item.width <= 760) {
+        const headingLink = page.locator('.intl-article-toc a[href^="#"]').last();
+        const toc = page.locator('details.intl-article-toc, details.reader-toc--intl').first();
+        await toc.locator(':scope > summary').click();
+        const targetId = (await headingLink.getAttribute('href')).slice(1);
+        await headingLink.click();
+        await page.waitForFunction(id => {
+          const header = document.querySelector('.intl-article-site-header').getBoundingClientRect();
+          const target = document.getElementById(id).getBoundingClientRect();
+          return scrollY > 100 && header.top >= -1 && header.bottom <= 80 && target.top >= header.bottom;
+        }, targetId);
+        assert(await page.locator('.author-box:visible').count() === 1 && await page.locator('.sidebar-widget--author:visible').count() === 0, item.locale + ': スマホの著者表示は本文の署名一度だけ');
+        await searchTrigger.click();
+        await articleSearch.press('Escape');
+      }
       const save = page.locator('.reading-tools button');
       await save.waitFor({ state: 'visible' });
       assert(await page.locator('.hero').evaluate(el => {
@@ -346,6 +369,19 @@ async function inspectIntlReading(browser, baseUrl) {
       assert(bounds && bounds.y + bounds.height < 900, item.locale + ': guide search must be reachable in the first viewport');
       const start = page.locator('[data-guide-start]');
       assert(await start.isVisible(), item.locale + ': curated entrances missing before search');
+      const more = page.locator('[data-guide-more]');
+      const defaultFilters = await more.locator(':scope > summary').innerText();
+      await more.locator(':scope > summary').click();
+      const game = page.locator('[data-guide-game]');
+      await game.selectOption('genshin');
+      const selectedGame = await game.locator('option:checked').innerText();
+      await more.locator(':scope > summary').click();
+      assert(await more.locator(':scope > summary').innerText() === selectedGame, item.locale + ': 閉じたフィルターでも選んだゲームが分かる');
+      await page.reload({waitUntil:'load'});
+      assert(await game.inputValue() === 'genshin' && await more.locator(':scope > summary').innerText() === selectedGame, item.locale + ': URLから選択表示を復元する');
+      await game.selectOption('all');
+      assert(await more.locator(':scope > summary').innerText() === defaultFilters, item.locale + ': 選択解除で通常の見出しへ戻る');
+      await more.locator(':scope > summary').click();
       await search.fill(item.query);
       await page.waitForFunction(() => document.querySelector('[data-guide-start]')?.hidden && document.querySelectorAll('[data-guide-grid] [data-guide-card]:not([hidden])').length > 0);
       await page.waitForFunction(() => document.querySelector('[data-guide-result]')?.getAttribute('aria-busy') === 'false');
