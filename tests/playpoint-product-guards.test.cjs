@@ -101,6 +101,15 @@ test('CIデプロイはコミット済み成果物だけを公開する', () => 
 
 // P08: syntax-verifier-executionで実CLIに運用JSの構文エラーと必須ファイル欠損を与える。
 
+test('日本語トップの3タブはユーザー指定の操作名を維持する', () => {
+  const html = read('index.html');
+  for (const [id, label] of [['tab-main', '通常計算'], ['tab-reverse', '逆算モード'], ['tab-diary', 'ウィークリーリワード記録']]) {
+    const button = html.match(new RegExp('<button\\b[^>]*id="' + id + '"[^>]*>([\\s\\S]*?)<\\/button>'));
+    assert.ok(button, id);
+    assert.equal(elementText(button[1]).trim(), label, id);
+  }
+});
+
 test('多言語トップはJS実行前の主要文言も翻訳済みにする', () => {
   for (const [file, expected] of [['en/index.html', 'Google Play Points Calculator'], ['ko/index.html', 'Google Play Points 계산기'], ['tw/index.html', 'Google Play Points 計算器']]) {
     const html = read(file), tags = openingTags(html);

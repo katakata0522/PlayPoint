@@ -174,6 +174,7 @@
       buttonStatus = element('span'); buttonStatus.setAttribute('role', 'status');
       button.addEventListener('click', () => attempt(() => { store.toggle(current); updateButton(); buttonStatus.textContent = copy[button.getAttribute('aria-pressed') === 'true' ? 11 : 12]; if (localLibrary) render(); }));
       const link = element('a', copy[2]); link.href = (localLibrary ? '' : hub) + '#reading-library';
+      link.dataset.readingLibraryLink = '';
       tools.replaceChildren(button, link, buttonStatus);
       if (!tools.isConnected) {
         const intlHero = locale !== 'ja' && h1.closest('.hero');

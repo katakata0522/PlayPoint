@@ -321,6 +321,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             </label>
             <select id="reverseStatus"></select>
 
+            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">포인트 계산</button>
+            <details id="reverse-rate-settings" class="calculator-basis-settings">
+                <summary><span data-simplified-calculator-copy="advancedSettingsLabel">적립률·프로모션 조정 (선택)</span></summary>
             <label for="reverseBaseRate" class="label-with-tooltip">
                 <span data-lang-key="labelBaseRate">1,000원당 적립률(직접 입력)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
@@ -336,9 +339,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
             <div class="warning" data-lang-key="warningRate">Google Play에 표시된 특별 적립률과 기본 적립률 중 높은 값을 사용합니다. 현재 등급의 기본 적립률에 프로모션 숫자를 곱하지 않습니다. 대상, 상한, 활성화 조건은 Google Play에서 확인하세요.</div>
+            </details>
         </div>
          <div class="section">
-            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">포인트 계산</button>
             <div class="result" id="reverseResult" aria-live="polite"></div>
             <button id="share-twitter-reverse" class="hidden" hidden>
                 <span data-lang-key="tweetButton">결과를 X에 공유</span>

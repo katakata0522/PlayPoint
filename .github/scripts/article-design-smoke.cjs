@@ -276,7 +276,11 @@ async function inspectIntlReading(browser, baseUrl) {
       if (headingFrame.inAnswer) assert(headingFrame.border === 0 && headingFrame.padding === 0 && headingFrame.radius === 0, item.locale + ': answer heading must not add a second frame');
       await save.click();
       assert(await save.getAttribute('aria-pressed') === 'true', item.locale + ': saving failed');
-      await page.locator('.reading-tools a').click();
+      if (item.width <= 760) {
+        const menu = page.locator('.intl-mobile-menu');
+        await menu.locator(':scope > summary').click();
+        await menu.locator('[data-reading-library-menu]').click();
+      } else await page.locator('.reading-tools a').click();
       const library = page.locator('#reading-library');
       await library.waitFor({ state: 'visible' });
       assert(await library.evaluate(el => {
@@ -293,7 +297,7 @@ async function inspectIntlReading(browser, baseUrl) {
       if (item.width <= 760) {
         const menu = page.locator('.intl-mobile-menu');
         await menu.locator(':scope > summary').click();
-        assert(await menu.locator('nav a:visible').count() === 7, item.locale + ': mobile menu links must be visible');
+        assert(await menu.locator('nav a:visible').count() === 8, item.locale + ': mobile menu links must be visible');
         const menuBounds = await menu.locator('nav').boundingBox();
         assert(menuBounds && menuBounds.x >= 0 && menuBounds.x + menuBounds.width <= item.width, item.locale + ': mobile menu must fit the screen');
         await menu.locator(':scope > summary').click();
@@ -310,6 +314,12 @@ async function inspectIntlReading(browser, baseUrl) {
       assert(await start.isVisible(), item.locale + ': curated entrances missing before search');
       await search.fill(item.query);
       await page.waitForFunction(() => document.querySelector('[data-guide-start]')?.hidden && document.querySelectorAll('[data-guide-grid] [data-guide-card]:not([hidden])').length > 0);
+      await page.waitForFunction(() => document.querySelector('[data-guide-result]')?.getAttribute('aria-busy') === 'false');
+      const polluted = await page.locator('[data-guide-grid] [data-guide-card]:visible').evaluateAll(cards => cards.some(card => {
+        const excerpt = card.querySelector('.intl-guide-card__excerpt')?.textContent.trim() || '';
+        return excerpt && excerpt.endsWith(card.dataset.search.trim());
+      }));
+      assert(!polluted, item.locale + ': search-only aliases leaked into the visible excerpt');
       await search.fill('zzzznomatch999999');
       await page.locator('[data-guide-empty]').waitFor({ state: 'visible' });
       assert(await page.locator('.search-recovery button').count() >= 1, item.locale + ': empty search has no recovery');

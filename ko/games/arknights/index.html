@@ -33,7 +33,7 @@
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
   <link rel="stylesheet" href="../../../articles/article-shared.css?v=686f14082a" />
-  <link rel="stylesheet" href="../../../games/games.css?v=f6becd6849" />
+  <link rel="stylesheet" href="../../../games/games.css?v=57eff59ca1" />
 
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"명일방주 — Google Play Points (대한민국 · KRW)","url":"https://playpoint-sim.com/ko/games/arknights/","applicationCategory":"UtilityApplication","operatingSystem":"All","inLanguage":"ko-KR","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"author":{"@type":"Person","name":"카타카타","url":"https://playpoint-sim.com/ko/author/katakata.html"},"description":"명일방주 구매 전 확인과 한국 원화 Google Play Points 계산. 공식 출처, 결제 경로 차이, 실제 결제액으로 포인트를 확인하세요.","dateModified":"2026-10-07"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://playpoint-sim.com/ko/"},{"@type":"ListItem","position":2,"name":"게임별 포인트 계산기 목록","item":"https://playpoint-sim.com/ko/games/"},{"@type":"ListItem","position":3,"name":"명일방주","item":"https://playpoint-sim.com/ko/games/arknights/"}]}</script>
@@ -104,19 +104,22 @@
                       </div>
 
                       <div class="input-field">
-                          <label for="sim-multiplier">프로모션 특별 적립률:</label>
-                          <select id="sim-multiplier">
-                              <option value="1">기본 기준: 1,000원당 1pt</option><option value="2">특별 적립률: 1,000원당 2pt</option><option value="3">특별 적립률: 1,000원당 3pt</option><option value="4">특별 적립률: 1,000원당 4pt</option><option value="5">특별 적립률: 1,000원당 5pt</option><option value="7">특별 적립률: 1,000원당 7pt</option>
-                          </select>
-                      </div>
-
-                      <div class="input-field">
                           <label for="sim-status">현재 회원 등급:</label>
                           <select id="sim-status">
                               <option value="1.0">브론즈 (1,000원=1pt)</option><option value="1.1">실버 (1,000원=1.1pt)</option><option value="1.3">골드 (1,000원=1.3pt)</option><option value="1.6">플래티넘 (1,000원=1.6pt)</option><option value="2.0">다이아몬드 (1,000원=2pt)</option>
                           </select>
                       </div>
                   </div>
+                  <details class="game-rate-settings"><summary>적립률·대상 금액 조정 (선택)</summary>
+                    <div class="input-grid">
+                      <div class="input-field">
+                          <label for="sim-multiplier">프로모션 특별 적립률:</label>
+                          <select id="sim-multiplier">
+                              <option value="1">기본 기준: 1,000원당 1pt</option><option value="2">특별 적립률: 1,000원당 2pt</option><option value="3">특별 적립률: 1,000원당 3pt</option><option value="4">특별 적립률: 1,000원당 4pt</option><option value="5">특별 적립률: 1,000원당 5pt</option><option value="7">특별 적립률: 1,000원당 7pt</option>
+                          </select>
+                      </div>
+                    </div>
+                  </details>
               </form>
 
               <!-- 計算結果表示エリア -->
@@ -231,7 +234,7 @@
 
   <script src="../../../js/analytics-core.js?v=2a21f6d951"></script>
   <script src="../../../js/third-party.js?v=34ee3a19ae"></script>
-  <script src="../../../games/game-sim.js?v=5343b1c9e0"></script>
+  <script src="../../../games/game-sim.js?v=a64aa562cb"></script>
 <script src="/js/site-reader-tools.js?v=04636b5ced" defer data-site-reader-tools></script>
 </body>
 </html>

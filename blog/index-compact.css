@@ -701,3 +701,4 @@ body.blog-index-compact .hero-title { font-size: 1.3rem; }
 .game-search-links a { display: inline-block; padding: 5px 0; overflow-wrap: anywhere; }
 body.blog-index-compact.blog-is-filtered .hub-heading > :not(.hero-title),
 body.blog-index-compact.blog-is-filtered .reader-question-links { display: none; }
+body.blog-index-compact.blog-is-filtered .reader-hub-entry { display:none; }

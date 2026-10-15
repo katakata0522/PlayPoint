@@ -791,3 +791,10 @@ body .site-header .site-logo { justify-content:flex-start; }
 .game-header .game-badge { display:none; }
 .game-header .game-title { font-size:22px; line-height:1.45; margin-top:0; }
 }
+.game-rate-settings { margin:8px 0 12px; border-block:1px solid var(--game-border, #cbd5e1); }
+.game-rate-settings > summary { min-height:44px; padding:9px 0; color:var(--game-primary, #176773); cursor:pointer; font-weight:650; }
+.game-rate-settings .input-grid { padding-top:12px; }
+@media(max-width:760px) {
+  .game-sim-card #game-sim-form[data-input-mode="amount"] .input-field:has(#sim-custom-amount) { padding:0; border:0; background:transparent; }
+  .game-sim-card .game-sim-lead { margin-bottom:12px; font-size:14px; line-height:1.65; }
+}

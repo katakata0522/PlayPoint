@@ -21,6 +21,7 @@ function contentEnd(html, index) {
 function polishPage(html, file) {
   const locale = file.startsWith('en/') ? 'en' : file.startsWith('ko/') ? 'ko' : file.startsWith('tw/') ? 'tw' : 'ja';
   const copy = COPY[locale];
+  if (locale !== 'ja' && /\/articles\/[^/]+\.html$/.test(file)) html = compactIntlToc(html);
   const article = html.match(/<article\b[^>]*class="[^"]*\bcontent\b[^"]*"[^>]*>/i);
   if (article && !/<main\b|\brole="main"/i.test(html)) {
     const end = contentEnd(html, article.index);
@@ -42,14 +43,16 @@ function polishPage(html, file) {
       html = html.replace(/(<div class="games-grid">)/, `<div class="game-search" data-game-directory-search><label for="game-search">${copy.search}</label><input id="game-search" type="search" placeholder="${copy.placeholder}" autocomplete="off"><p class="game-search-count" aria-live="polite"></p><button type="button" data-game-search-clear hidden>${copy.clear}</button></div>$1`);
     }
     if (locale !== 'ja') html = html.replace(/(<a class="game-portal-card" href="\/games\/[^"#?]+\/">)(?!<span class="game-edition-badge")/g, '$1<span class="game-edition-badge">' + copy.edition + '</span>');
-    html = html.replace(/<a class="game-portal-card" href="([^"]+)">[\s\S]*?<\/a>/g, (card, href) => {
+    html = html.replace(/<a class="game-portal-card" href="([^"]+)"[^>]*>[\s\S]*?<\/a>/g, (card, href) => {
       const id = href.split('/').filter(Boolean).at(-1);
+      if (locale !== 'ja' && href.startsWith('/games/')) card = card.replace(/(<div class="game-card-action">)[\s\S]*?(<\/div>)/, '$1' + ({en:'Japan calculator ➔',ko:'일본판 계산기 ➔',tw:'日版計算器 ➔'})[locale] + '$2');
       return card.replace(/(<p class="game-card-desc">)([\s\S]*?)(<\/p>)/, (_match, before, description, after) => {
         let brief = description;
         if (locale === 'ja') brief = description.split('。')[0] + '。';
         else {
           const names = (GAME_EVIDENCE[id]?.offers?.[locale] || []).map(offer => offer.names[locale]).filter(Boolean).join(' / ');
           const reference = href.startsWith('/games/');
+          if (reference) return before + description + after;
           brief = {
             en: reference ? 'Japanese products and prices for reference.' : names ? `Compare ${names}, then calculate points from your Android purchase amount.` : 'Calculate points from your Android purchase amount.',
             ko: reference ? '일본판 상품·가격을 참고하는 페이지입니다.' : names ? `${names} 비교 후 Android 구매 금액으로 포인트를 계산합니다.` : 'Android 구매 금액으로 포인트를 계산합니다.',
@@ -79,4 +82,19 @@ function syncSiteReaderPolish(root) {
   for (const file of files) { const absolute = path.join(root, file), before = fs.readFileSync(absolute, 'utf8'), after = polishPage(before, file); if (before !== after) { fs.writeFileSync(absolute, after); changed++; } }
   return { checked: files.length, changed };
 }
-module.exports = { COPY, polishPage, syncSiteReaderPolish };
+function compactIntlToc(html) {
+  const toc = html.match(/<nav\b[^>]*class="[^"]*\bintl-article-toc\b[^"]*"[^>]*>[\s\S]*?<\/nav>/);
+  if (!toc) return html;
+  const compact = toc[0].replace(/^<nav/, '<details').replace(/<\/nav>$/, '</details>')
+    .replace(/(<h2\b[^>]*>[\s\S]*?<\/h2>)/, '<summary>$1</summary>');
+  const before = html.slice(0, toc.index);
+  // 長い早見表を通らずに、既存の目次から必要な項目へ進める。
+  const answer = before.match(/<(?:section|div)\b[^>]*class="[^"]*\banswer-box\b[^"]*"[^>]*>/);
+  if (answer && /<table\b/.test(before.slice(answer.index))) {
+    const intro = before.match(/<(?:div|p)\b[^>]*class="[^"]*\bintro\b[^"]*"[^>]*>/);
+    const anchor = intro ? intro.index : answer.index;
+    return html.slice(0, anchor) + '\n' + compact + html.slice(anchor, toc.index) + html.slice(toc.index + toc[0].length);
+  }
+  return html.replace(toc[0], compact);
+}
+module.exports = { COPY, compactIntlToc, polishPage, syncSiteReaderPolish };

@@ -321,6 +321,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             </label>
             <select id="reverseStatus"></select>
 
+            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">計算點數</button>
+            <details id="reverse-rate-settings" class="calculator-basis-settings">
+                <summary><span data-simplified-calculator-copy="advancedSettingsLabel">調整獲點率與活動（選填）</span></summary>
             <label for="reverseBaseRate" class="label-with-tooltip">
                 <span data-lang-key="labelBaseRate">每 HK$7 獲得點數（自動帶入，可修改）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
@@ -336,9 +339,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
             <div class="warning" data-lang-key="warningRate">計算器會比較 Google Play 顯示的活動特別獲點率與基本獲點率，採用較高者；不會把目前等級的基本獲點率再乘上活動數字。適用商品、上限與啟用條件請以 Google Play 為準。</div>
+            </details>
         </div>
          <div class="section">
-            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">計算點數</button>
             <div class="result" id="reverseResult" aria-live="polite"></div>
             <button id="share-twitter-reverse" class="hidden" hidden>
                 <span data-lang-key="tweetButton">分享至 X</span>

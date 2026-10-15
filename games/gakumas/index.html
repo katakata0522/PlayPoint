@@ -30,7 +30,7 @@
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
   <link rel="stylesheet" href="../../articles/article-shared.css?v=686f14082a" />
-  <link rel="stylesheet" href="../../games/games.css?v=f6becd6849" />
+  <link rel="stylesheet" href="../../games/games.css?v=57eff59ca1" />
 
   <script type="application/ld+json">
   {
@@ -170,19 +170,22 @@
                       </div>
 
                       <div class="input-field">
-                          <label for="sim-multiplier">キャンペーン特別獲得率：</label>
-                          <select id="sim-multiplier">
-                              <option value="1">通常 / 100円あたり1pt</option><option value="2">特別獲得率：100円あたり2pt</option><option value="3">特別獲得率：100円あたり3pt</option><option value="4">特別獲得率：100円あたり4pt</option><option value="5">特別獲得率：100円あたり5pt</option><option value="7">特別獲得率：100円あたり7pt</option>
-                          </select>
-                      </div>
-
-                      <div class="input-field">
                           <label for="sim-status">現在の会員ランク：</label>
                           <select id="sim-status">
                               <option value="1.0">ブロンズ（100円=1pt）</option><option value="1.25">シルバー（100円=1.25pt）</option><option value="1.5">ゴールド（100円=1.5pt）</option><option value="1.75">プラチナ（100円=1.75pt）</option><option value="2.0">ダイヤモンド（100円=2.0pt）</option>
                           </select>
                       </div>
                   </div>
+                  <details class="game-rate-settings"><summary>獲得率・対象額を調整（任意）</summary>
+                    <div class="input-grid">
+                      <div class="input-field">
+                          <label for="sim-multiplier">キャンペーン特別獲得率：</label>
+                          <select id="sim-multiplier">
+                              <option value="1">通常 / 100円あたり1pt</option><option value="2">特別獲得率：100円あたり2pt</option><option value="3">特別獲得率：100円あたり3pt</option><option value="4">特別獲得率：100円あたり4pt</option><option value="5">特別獲得率：100円あたり5pt</option><option value="7">特別獲得率：100円あたり7pt</option>
+                          </select>
+                      </div>
+                    </div>
+                  </details>
               </form>
 
               <!-- 計算結果表示エリア -->
@@ -518,7 +521,7 @@
 
   <script src="../../js/analytics-core.js?v=2a21f6d951"></script>
   <script src="../../js/third-party.js?v=34ee3a19ae"></script>
-  <script src="../../games/game-sim.js?v=5343b1c9e0"></script>
+  <script src="../../games/game-sim.js?v=a64aa562cb"></script>
 <script src="/js/site-reader-tools.js?v=04636b5ced" defer data-site-reader-tools></script>
 </body>
 </html>

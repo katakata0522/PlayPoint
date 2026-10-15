@@ -88,10 +88,14 @@
     });
     note.textContent = descriptions[filter];
     count.textContent = visible + '件の情報';
+    note.hidden = visible === 0;
     empty.hidden = visible !== 0;
     const unfilteredCount = cards.filter((card, index) => matchesFilter(states[index], filter)).length;
     empty.querySelector('[data-empty-message]').textContent = unfilteredCount && (rank || pass)
       ? 'このランク・加入状況に合う掲載情報はありません。「条件を解除」で、このタブの全件を確認できます。' : emptyMessages[filter];
+    const emptyLink = empty.querySelector('a');
+    emptyLink.href = filter === 'upcoming' || filter === 'ended' ? '?filter=active' : '#next-campaign-title';
+    emptyLink.textContent = filter === 'upcoming' || filter === 'ended' ? '開催中の特典を見る' : '次回のポイント増量について確認する';
     if (audienceSummary) audienceSummary.textContent = rank || pass ? '絞り込み中' : '';
     panel.setAttribute('aria-labelledby', 'benefit-tab-' + filter);
   }
@@ -120,7 +124,6 @@
   if (audience) audience.hidden = false;
   render(selected);
   board.querySelector('[role="tablist"]').hidden = false;
-  note.hidden = false;
   count.hidden = false;
   // 開いたままのタブでも期限を過ぎた企画を開催中に残さない。
   window.setInterval(() => { if (!document.hidden) render(selected); }, 60000);

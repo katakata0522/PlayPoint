@@ -242,7 +242,7 @@ const LOCALES = {
     verifiedDate: 'Play Points 적립률 확인: 2026년 8월 (게임 가격/천장은 참고값)',
     badgeText: '인기 게임별 포인트 시뮬레이터',
     portalBadge: '🎮 모바일 게임 특화',
-    portalH1: '인기 모바일 게임 Google Play Points 과금·천장 계산기',
+    portalH1: '모바일 게임 구매 금액으로 Google Play Points 계산',
     portalMeta: '원신, 붕괴: 스타레일, 젠레스 존 제로, 블루 아카이브, 포켓몬 카드 게임 Pocket, 니케, 명조 등 인기 게임의 패키지 과금 시 적립되는 Play Points를 계산하세요.',
     portalLead: 'Google Play 스토어에서 서비스 중인 주요 모바일 게임의 인앱 결제 패키지(창세의 결정, 오래된 꿈, 모노크롬, 청휘석, 포켓골드, 월상, 유료 쥬얼, 용석, 순수한 원석 등) 가격에 대응! 천장 가챠 결제 시 적립 포인트 및 등급 달성을 즉시 시뮬레이션할 수 있습니다.',
     openCalc: '계산기 열기 ➔',
@@ -344,7 +344,7 @@ const LOCALES = {
     verifiedDate: 'Play Points 獲點率確認：2026年8月（遊戲價格／保底為參考值）',
     badgeText: '熱門手遊點數試算工具',
     portalBadge: '🎮 手遊課金專區',
-    portalH1: '熱門手遊 Google Play Points 課金與保底點數計算器',
+    portalH1: '手遊課金 Google Play Points 計算器',
     portalMeta: '針對原神、崩壞：星穹鐵道、絕區零、蔚藍檔案、寶可夢卡牌、妮姬、鳴潮等熱門遊戲，快速計算課金禮包與保底可獲得的 Play Points。',
     portalLead: '支援 Google Play 商店熱門手機遊戲（創世結晶、古老夢華、菲林底片、青輝石、寶可金塊、月相、付費珠寶、龍石、至純源石等）價格匯率！一鍵計算大保底能拿多少點數回饋、距離白金與鑽石等級還差多少。',
     openCalc: '開啟計算器 ➔',
@@ -2183,19 +2183,22 @@ ${amountOnly ? '' : `                      <div class="input-field">
                       </div>
 
                       <div class="input-field">
-                          <label for="sim-multiplier">${loc.multiplierLabel}</label>
-                          <select id="sim-multiplier">
-                              ${loc.multiplierOptions.map(m => `<option value="${m.val}">${m.label}</option>`).join('')}
-                          </select>
-                      </div>
-
-                      <div class="input-field">
                           <label for="sim-status">${loc.statusLabel}</label>
                           <select id="sim-status">
                               ${loc.statusOptions.map(s => `<option value="${s.val}">${s.label}</option>`).join('')}
                           </select>
                       </div>
                   </div>
+                  <details class="game-rate-settings"><summary>${({ja:'獲得率・対象額を調整（任意）',en:'Adjust rate & eligible amount (optional)',ko:'적립률·대상 금액 조정 (선택)',tw:'調整獲點率與適用金額（選填）'})[localeKey]}</summary>
+                    <div class="input-grid">
+                      <div class="input-field">
+                          <label for="sim-multiplier">${loc.multiplierLabel}</label>
+                          <select id="sim-multiplier">
+                              ${loc.multiplierOptions.map(m => `<option value="${m.val}">${m.label}</option>`).join('')}
+                          </select>
+                      </div>
+                    </div>
+                  </details>
               </form>
 
               <!-- 計算結果表示エリア -->

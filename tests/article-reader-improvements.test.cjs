@@ -127,3 +127,13 @@ test('目的別案内は空の絞り込みページではなく、状況・読�
   assert.match(hub, /<title>Google Play Points 記事ガイド \| PlayPoint<\/title>/);
   assert.match(hub, /images\/guides\/article-guide.jpg/);
 });
+test('海外記事の長い表の前で、本文と到達先を残したまま目次を開ける', () => {
+  const { compactIntlToc } = require('../scripts/site-reader-polish.cjs');
+  const source = '<article class="content"><p>導入を残す</p><section class="section answer-box"><h2 id="answer">回答</h2><table><tr><td>条件1</td><td>100pt</td></tr></table></section><nav class="intl-article-toc" aria-label="Contents"><h2 id="toc">Contents</h2><ol><li><a href="#answer">回答へ</a></li></ol></nav></article>';
+  const output = compactIntlToc(source);
+  assert.ok(output.indexOf('<details') < output.indexOf('<table'));
+  assert.match(output, /<summary><h2 id="toc">Contents<\/h2><\/summary>/);
+  assert.match(output, /href="#answer"/);
+  for (const value of ['導入を残す', 'id="answer"', '<td>条件1</td><td>100pt</td>']) assert.ok(output.includes(value));
+  assert.equal(compactIntlToc(output), output);
+});

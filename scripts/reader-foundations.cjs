@@ -80,13 +80,13 @@ function syncReaderFoundations(root, { hubOnly = false } = {}) {
       ? [['/articles/2026-09-19-play-points-calendar-schedule-guide.html#reader-calendar-title', '加入中なら、木曜の確認日を残す'], ['/articles/2025-12-25-weekly-reward.html', '金曜のリワードとの違いを読む']]
       : [[href, label]];
     // ゲーム記事の個別計算ボタンと同じ行き先を、末尾で繰り返さない。
-    const primaryAction = html.match(/<section\b[^>]*class="[^"]*game-guide-next-action[^"]*"[^>]*>[\s\S]*?<\/section>/)?.[0] || '';
+    const primaryAction = [...html.matchAll(/<(section|aside)\b[^>]*class="[^"]*\b(?:game-guide-next-action|related-links-section|article-related-guides|contextual-guide-links)\b[^"]*"[^>]*>[\s\S]*?<\/\1>/g)].map(match => match[0]).join('\n');
     const primaryHrefs = [...primaryAction.matchAll(/href="([^"]+)"/g)].map(match => new URL(match[1], 'https://playpoint-sim.com/' + article.file.replace(/^\.\.\//, '')).pathname);
     const uniqueActions = actions.filter(([url]) => !primaryHrefs.includes(new URL(url, 'https://playpoint-sim.com/').pathname));
     const actionList = uniqueActions.length ? `<ul>${uniqueActions.map(([url, name]) => `<li><a href="${escape(url)}">${escape(name)} →</a></li>`).join('')}</ul>` : '';
     const body = `<nav class="reader-followthrough" aria-label="読んだ後の確認先"><h2>${uniqueActions.length ? 'このあと確認すること' : '別の疑問を調べる'}</h2>${actionList}<p><a href="/blog/">記事トップから別の疑問を探す</a></p></nav>`;
     // 個別のおすすめ欄がある記事では、同じ記事への追加導線を重ねない。
-    html = html.includes('data-editorial-next="true"')
+    html = html.includes('data-editorial-next="true"') || (!uniqueActions.length && primaryHrefs.length)
       ? html.replace(/<!-- reader-followthrough:start -->[\s\S]*?<!-- reader-followthrough:end -->\s*/g, '')
       : replaceBlock(html, 'reader-followthrough', body, (source, block) => source.replace(/(<(?:div|section)\b[^>]*class="[^"]*author-profile-box[^\"]*"[^>]*>)/, block + '$1'));
     // 古い相対リンクも、用途が分かる名称に統一する。
@@ -102,8 +102,13 @@ function syncReaderFoundations(root, { hubOnly = false } = {}) {
     if (data['@type'] === 'Blog') { data.name = HUB_TITLE; data.description = HUB_DESCRIPTION; }
     return start + JSON.stringify(data) + end;
   });
-  const entry = `<p class="reader-hub-intro">Play Pointsの仕組み、ランクの特典、ポイントの使い道を知りたいことから探せます。</p><nav class="reader-entry-questions" aria-label="まず知っておきたいこと">${QUESTIONS.map(([question, , href]) => `<a href="${href}"><strong>${question}</strong></a>`).join('')}</nav>`;
-  html = replaceBlock(html, 'reader-hub-entry', entry, (source, block) => source.replace(/(<h1 class="hero-title">[\s\S]*?<\/h1>)/, '$1' + block));
+  const entry = `<details class="reader-hub-entry"><summary>初めての方</summary><p class="reader-hub-intro">Play Pointsの仕組み、ランクの特典、ポイントの使い道を知りたいことから探せます。</p><nav class="reader-entry-questions" aria-label="まず知っておきたいこと">${QUESTIONS.map(([question, , href]) => `<a href="${href}"><strong>${question}</strong></a>`).join('')}</nav></details>`;
+  html = html.replace(/<!-- reader-hub-entry:start -->[\s\S]*?<!-- reader-hub-entry:end -->/g, '');
+  const discovery = html.indexOf('id="blog-discovery-title"');
+  const discoveryEnd = html.indexOf('</section>', discovery);
+  if (discovery < 0 || discoveryEnd < 0) throw Error('記事検索の入口がありません');
+  const entryBlock = '<!-- reader-hub-entry:start -->' + entry + '<!-- reader-hub-entry:end -->';
+  html = html.slice(0, discoveryEnd + 10) + '\n' + entryBlock + html.slice(discoveryEnd + 10);
   fs.writeFileSync(hub, html);
   for (const relative of ['latest/index.html', 'author/katakata.html']) {
     const file = path.join(root, relative); let body = fs.readFileSync(file, 'utf8');

@@ -441,7 +441,6 @@ ${jsonLd(faqSchema)}
     <footer class="article-footer">
         <p><a href="/${localeKey}/articles/">${escapeHtml(labels.backToGuides)}</a> | <a href="${escapeHtml(ctaHref.replace(/\?.*$/, ''))}">${escapeHtml(labels.calculatorTop)}</a></p>
         <p class="site-footer-trademark">${escapeHtml(LOCALES[localeKey].trademarkNotice)}</p>
-        <p class="small article-note-spacing">${escapeHtml(labels.footerNote)}</p>
     </footer>
 </main>
 <script src="/js/intent-tracking.js?v=${assetVersions.intentTrackingVersion}"></script>
