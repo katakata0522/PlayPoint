@@ -26,6 +26,13 @@ test('all 24 games have regional evidence; overseas calculators never turn an un
       assert.ok(html.indexOf('class="game-offers"') < html.indexOf('id="game-calculator"'), `${file}: offer before calculation`);
       assert.ok(html.includes(item.evidence.url.replace(/&/g, '&amp;')));
       assert.equal(new URL(item.evidence.url).protocol, 'https:');
+      assert.ok(decode(html).includes(`<h2>${item.names[locale]}</h2><p>${item.details[locale]}</p>`), `${file}: 商品名と条件の全文を保持`);
+    }
+    if (entry.offers[locale].length) {
+      const panel = html.match(/<details class="game-purchase-details">([\s\S]*?)<\/details>/)[1];
+      assert.ok(panel.startsWith(`<summary id="game-offers-title">${COPY[locale].offers}</summary>`));
+      assert.doesNotMatch(panel, /game-offers-heading|game-offers-lead|game-offers-skip/, `${file}: 開閉後は商品へ直接進む`);
+      assert.ok(!panel.includes(COPY[locale].type), `${file}: 一般的な商品案内バッジを繰り返さない`);
     }
     const app = schemas(html).find(s => s['@type'] === 'WebApplication');
     assert.equal(app.inLanguage, COPY[locale].hreflang);

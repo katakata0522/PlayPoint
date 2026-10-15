@@ -8,6 +8,49 @@ const index = require('../blog/article-search-index.json').articles;
 const articles = manifest.map(article => ({ ...article, sections: index.find(entry => entry.path === new URL(article.file, 'https://playpoint-sim.com/blog/').pathname)?.sections || [] }));
 function hits(query) { return articles.filter(article => search.matches(article, query, 'ja')).sort((a,b) => search.score(b, query, 'ja') - search.score(a, query, 'ja')); }
 
+test('4言語の抜粋は表示だけを短くし、全文一致・順位・本文への到達先を保つ', () => {
+  for (const [locale, limit, sentence] of [
+    ['ja', 80, '特典の条件と受け取り方法を確認できます。'],
+    ['en', 160, 'Compare the available rewards and check the eligibility rules. '],
+    ['ko', 100, '보상을 비교하고 계정별 이용 조건을 확인하세요. '],
+    ['tw', 80, '比較獎勵內容，並確認帳號與領取期限。']
+  ]) {
+    const article = { title: 'Rewards', description: sentence.repeat(12), sections: [{id:'conditions', heading:'Details', text:sentence.repeat(12) + ' uniquecondition'}] };
+    const before = JSON.stringify(article), rank = search.score(article, 'uniquecondition', locale);
+    for (const query of ['', 'Rewards', 'unknown', 'uniquecondition']) {
+      const snippet = search.excerpt(article, query, locale);
+      assert.ok(Array.from(snippet.text).length <= limit + 2, `${locale}: ${query}`);
+      assert.ok(snippet.text.endsWith('…') || snippet.text.endsWith('uniquecondition'));
+      if (query === 'uniquecondition') {
+        assert.equal(snippet.id, 'conditions');
+        assert.equal(snippet.heading, 'Details');
+        assert.ok(snippet.text.includes('uniquecondition'));
+      }
+    }
+    assert.equal(search.matches(article, 'uniquecondition', locale), true);
+    assert.equal(search.score(article, 'uniquecondition', locale), rank);
+    assert.equal(JSON.stringify(article), before, '本文・索引を短縮しない');
+  }
+});
+
+test('抜粋は英単語・韓国語の語節・絵文字を壊さず、短い説明はそのまま表示する', () => {
+  for (const locale of ['en', 'ko']) {
+    const words = locale === 'en' ? 'eligible purchases subscription conditions ' : '구매 조건과 구독 갱신 혜택을 확인하세요 ';
+    const snippet = search.excerpt({description:words.repeat(12)}, '', locale).text;
+    assert.ok(words.split(' ').includes(snippet.replace(/…$/, '').split(' ').at(-1)));
+  }
+  assert.equal(search.excerpt({description:'短い説明です。'}, '', 'ja').text, '短い説明です。');
+  assert.equal(search.excerpt({}, '', 'tw').text, '');
+  const emoji = search.excerpt({description:'🎁'.repeat(100)}, '', 'tw').text;
+  assert.equal(emoji, '🎁'.repeat(80) + '…');
+  const article = {sections:[{id:'tickets', heading:'Rewards', text:'Super Weekly Prize ' + '條件。'.repeat(20) + 'Super Ticket 的領取條件。' + '後續說明。'.repeat(20)}]};
+  assert.ok(search.excerpt(article, 'Super Ticket', 'tw').text.includes('Super Ticket'), '複合キーワードは語句全体の近くを抜粋し、手前の文末で切らない');
+  article.description = 'Super Ticket 的領取期限與重抽條件。';
+  article.sections[0].text = '台灣等級官方說明已列出現行規則。'.repeat(20);
+  article.sections[0].heading = 'Super Ticket';
+  assert.deepEqual(search.excerpt(article, 'Super Ticket', 'tw'), {text:article.description,id:'tickets',heading:'Super Ticket'}, '本文の見出しだけに一致するときは内容を伝える説明文を使い、到達先を残す');
+});
+
 test('英語のquestとquestsは同じ記事へ進み、requestsには誤一致しない', () => {
   const localized = require('../en/articles/article-search-index.json').articles;
   const ranked = query => localized.filter(a => search.matches(a, query, 'en')).sort((a,b) => search.score(b, query, 'en') - search.score(a, query, 'en')).map(a => a.path);

@@ -280,6 +280,8 @@ async function inspectIntlReading(browser, baseUrl) {
       const articleSearch = dialog.locator('input');
       await articleSearch.fill(item.query);
       await dialog.locator('.guide-search-result').first().waitFor({state:'visible'});
+      const excerpts = await dialog.locator('.guide-search-result > span').allTextContents();
+      assert(excerpts.length && excerpts.every(text => Array.from(text).length <= ({en:162,ko:102,tw:82})[item.locale]), item.locale + ': スマホの抜粋を短く比較できる');
       const targets = await dialog.locator('.guide-search-result').evaluateAll(nodes => nodes.map(node => node.getAttribute('href')));
       assert(targets.length && targets.every(href => href.startsWith('/' + item.locale + '/articles/')), item.locale + ': 検索結果は現在の地域の記事へ進む');
       const nativeQuery = {en:'Puzzle and Dragons',ko:'퍼즐앤드래곤',tw:'龍族拼圖'}[item.locale];

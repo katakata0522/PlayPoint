@@ -1984,7 +1984,7 @@ function generateGamePageHtml(game, localeKey) {
   const gameShort = game.shortNames[localeKey] || game.shortNames.ja;
   const gameDesc = game.descs[localeKey] || game.descs.ja;
   const presentation = localeKey === 'ja' ? getJapaneseCalculator(game) : null;
-  const offersHtml = renderSpecialOffers(presentation?.offers, gameShort);
+  const offersHtml = renderSpecialOffers(presentation?.offers, gameShort, { labelledBySummary: true });
   const gamePacks = presentation ? presentation.packs : (game.packs[localeKey] || game.packs.ja);
   const gamePresets = presentation ? presentation.presets : (game.presets[localeKey] || game.presets.ja);
   const amountOnly = presentation?.mode === 'amount';
@@ -2155,7 +2155,7 @@ function generateGamePageHtml(game, localeKey) {
           <p>${gameDesc}</p>
 
           <!-- シミュレーター操作パネル -->
-${offersHtml ? `          <details class="game-purchase-details"><summary>${({ja:'パス・特別商品を比べる',en:'Compare passes and special purchases',ko:'패스·특별 상품 비교',tw:'比較通行證與特別商品'})[localeKey]}</summary>${offersHtml}</details>\n` : ''}          <section class="game-sim-card" id="game-calculator">
+${offersHtml ? `          <details class="game-purchase-details"><summary id="game-offers-title">${({ja:'パス・特別商品を比べる',en:'Compare passes and special purchases',ko:'패스·특별 상품 비교',tw:'比較通行證與特別商品'})[localeKey]}</summary>${offersHtml}</details>\n` : ''}          <section class="game-sim-card" id="game-calculator">
               <h2 class="game-sim-title">🧮 ${gameShort}</h2>
 
 ${gamePresets.length ? `              <p class="preset-heading">${localeKey === 'ja' ? '金額をすぐ入力：' : loc.presetHeading}</p>
