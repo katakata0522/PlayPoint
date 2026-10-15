@@ -22,6 +22,8 @@
   let articles = cards.map(card => ({ path: new URL(card.href).pathname, title: card.querySelector('.intl-guide-card__title')?.textContent || '', description: '', sections: [] }));
   let activeCategory = 'all';
   let searchTimer;
+  let bodySearchStatus = 'idle';
+  const loadingCopy = { en: 'Searching article text…', ko: '본문 검색 중…', tw: '正在搜尋內文…' }[locale];
   const categories = new Set(buttons.map(button => button.dataset.guideFilter));
   function readUrl() {
     const params = new URLSearchParams(location.search);
@@ -44,8 +46,11 @@
   }
   const recovery = document.createElement('div'); recovery.className = 'search-recovery'; recovery.hidden = true; empty.after(recovery);
   function updateResult(count) {
-    result.textContent = (grid.dataset.resultTemplate || '{count}').replace('{count}', String(count));
-    empty.hidden = count !== 0; recovery.hidden = count !== 0;
+    const loading = Boolean(search.value.trim()) && bodySearchStatus === 'loading';
+    result.setAttribute('aria-busy', String(loading));
+    const template = count === 1 && grid.dataset.resultTemplateSingle || grid.dataset.resultTemplate || '{count}';
+    result.textContent = loading ? loadingCopy : template.replace('{count}', String(count));
+    empty.hidden = loading || count !== 0; recovery.hidden = loading || count !== 0;
   }
   function addButton(label, action) { const button = document.createElement('button'); button.type = 'button'; button.textContent = label; button.addEventListener('click', action); recovery.append(button); }
   function recover() {
@@ -70,24 +75,28 @@
     const byPath = new Map(articles.map(article => [article.path, article]));
     const ordered = cards.map(card => {
       const sourceArticle = byPath.get(new URL(card.href).pathname);
-      const article = { ...sourceArticle, description: (sourceArticle?.description || '') + ' ' + card.dataset.search };
-      return { card, article, score: query && engine ? engine.score(article, query, locale) : 0 };
+      // 検索用の別名や分類語を、読者に見せる抜粋へ混ぜない。
+      const article = sourceArticle || { path: new URL(card.href).pathname, title: card.querySelector('.intl-guide-card__title')?.textContent || '', description: '', sections: [] };
+      const searchable = { ...article, description: (article.description || '') + ' ' + card.dataset.search };
+      return { card, article, searchable, score: query && engine ? engine.score(searchable, query, locale) : 0 };
     });
     if (query && engine) ordered.sort((a, b) => b.score - a.score);
-    for (const { card, article } of ordered) {
+    for (const { card, article, searchable } of ordered) {
       const categoryMatches = activeCategory === 'all' || card.dataset.category === activeCategory;
       const game = card.querySelector('[data-game]');
       const gameMatches = !gameFilter || gameFilter.value === 'all' || (gameFilter.value === 'games' ? Boolean(game) : game?.dataset.game === gameFilter.value);
       const topicMatches = !topicFilter || topicFilter.value === 'all' || (game?.dataset.topics || '').split(' ').includes(topicFilter.value);
-      const queryMatches = !query || (engine ? engine.matches(article, query, locale) : card.dataset.search.toLowerCase().includes(query.toLowerCase()));
+      const queryMatches = !query || (engine ? engine.matches(searchable, query, locale) : card.dataset.search.toLowerCase().includes(query.toLowerCase()));
       card.hidden = !(categoryMatches && queryMatches && gameMatches && topicMatches);
       card.setAttribute('href', originalHrefs.get(card)); card.querySelector('.intl-guide-card__excerpt')?.remove();
       if (!card.hidden) {
         visible++;
         if (query && engine) {
           const snippet = engine.excerpt(article, query, locale);
-          const paragraph = document.createElement('span'); paragraph.className = 'intl-guide-card__excerpt';
-          paragraph.textContent = (snippet.heading ? snippet.heading + ' — ' : '') + snippet.text; card.append(paragraph);
+          if (snippet.text && snippet.text.trim() !== article.title.trim()) {
+            const paragraph = document.createElement('span'); paragraph.className = 'intl-guide-card__excerpt';
+            paragraph.textContent = (snippet.heading ? snippet.heading + ' — ' : '') + snippet.text; card.append(paragraph);
+          }
           if (snippet.id) card.href = article.path + '#' + encodeURIComponent(snippet.id);
         }
       }
@@ -116,10 +125,12 @@
   let bodySearchPromise;
   function loadBodySearch() {
     if (bodySearchPromise) return bodySearchPromise;
+    bodySearchStatus = 'loading';
+    updateResult(cards.filter(card => !card.hidden).length);
     bodySearchPromise = fetch('article-search-index.json').then(response => { if (!response.ok) throw Error('Unavailable'); return response.json(); }).then(index => {
     const byPath = new Map(index.articles.map(article => [article.path, article]));
-    articles = articles.map(article => byPath.get(article.path) || article); applyFilters();
-  }).catch(() => { const notice = document.createElement('p'); notice.setAttribute('role', 'status'); notice.textContent = copy[4]; search.after(notice); });
+    articles = articles.map(article => byPath.get(article.path) || article); bodySearchStatus = 'ready'; applyFilters();
+  }).catch(() => { bodySearchStatus = 'failed'; applyFilters(); const notice = document.createElement('p'); notice.setAttribute('role', 'status'); notice.textContent = copy[4]; search.after(notice); });
     return bodySearchPromise;
   }
   if (search.value.trim()) loadBodySearch();

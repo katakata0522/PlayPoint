@@ -314,6 +314,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             </label>
             <select id="reverseStatus"></select>
 
+            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">ポイントを計算</button>
+            <details id="reverse-rate-settings" class="calculator-basis-settings">
+                <summary><span data-simplified-calculator-copy="advancedSettingsLabel">獲得率・キャンペーンを調整（任意）</span></summary>
             <label for="reverseBaseRate" class="label-with-tooltip">
                 <span data-lang-key="labelBaseRate">通常獲得率（ステータスから自動入力）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
@@ -331,9 +334,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <div class="warning" data-lang-key="warningRate">
                 Google Playに表示された特別獲得率と通常獲得率の高い方を試算に使います。ステータスの通常獲得率へ倍率を掛けません。対象・上限・有効化はキャンペーン画面で確認してください。
             </div>
+            </details>
         </div>
          <div class="section">
-            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">ポイントを計算</button>
             <div class="result" id="reverseResult" aria-live="polite"></div>
             <button id="share-twitter-reverse" class="hidden" hidden>
                 <span data-lang-key="tweetButton">結果をXでシェア</span>

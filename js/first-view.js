@@ -39,6 +39,11 @@ function syncSettingsState(container, body, toggle, mediaQuery) {
 }
 
 export function enhanceCalculatorAdvancedSettings() {
+    const reverseSettings = document.getElementById('reverse-rate-settings');
+    const params = new URLSearchParams(window.location.search);
+    if (reverseSettings && params.get('mode') === 'reverse' && (params.has('baseRate') || params.has('multiplier'))) {
+        reverseSettings.open = true;
+    }
     const container = document.getElementById(SETTINGS_ID);
     const body = document.getElementById(SETTINGS_BODY_ID);
     const toggle = container?.querySelector('.calculator-advanced-settings__toggle');

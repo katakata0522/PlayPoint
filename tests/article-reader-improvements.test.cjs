@@ -127,3 +127,17 @@ test('目的別案内は空の絞り込みページではなく、状況・読�
   assert.match(hub, /<title>Google Play Points 記事ガイド \| PlayPoint<\/title>/);
   assert.match(hub, /images\/guides\/article-guide.jpg/);
 });
+test('海外記事の長い表の前で、本文と到達先を残したまま目次を開ける', () => {
+  const { compactIntlToc } = require('../scripts/site-reader-polish.cjs');
+  const source = '<article class="content"><p>導入を残す</p><section class="section answer-box"><h2 id="answer">回答</h2><table><tr><td>条件1</td><td>100pt</td></tr></table></section><nav class="intl-article-toc" aria-label="Contents"><h2 id="toc">Contents</h2><ol><li><a href="#answer">回答へ</a></li></ol></nav></article>';
+  const output = compactIntlToc(source);
+  assert.ok(output.indexOf('<details') < output.indexOf('<table'));
+  assert.match(output, /<summary><h2 id="toc">Contents<\/h2><\/summary>/);
+  assert.match(output, /href="#answer"/);
+  for (const value of ['導入を残す', 'id="answer"', '<td>条件1</td><td>100pt</td>']) assert.ok(output.includes(value));
+  assert.equal(compactIntlToc(output), output);
+  const wrapped = '<details class="reader-toc reader-toc--intl"><summary>On this page</summary>' + source.match(/<nav[\s\S]*?<\/nav>/)[0] + '</details>';
+  assert.equal(compactIntlToc(wrapped), wrapped, '既存の折りたたみをもう一段増やさない');
+  const nested = wrapped.replace('<nav', '<details').replace('</nav>', '</details>').replace('<h2 id="toc">Contents</h2>', '<summary><h2 id="toc">Contents</h2></summary>');
+  assert.equal(compactIntlToc(nested), wrapped, '既に生成した二重の開閉も一段に戻す');
+});

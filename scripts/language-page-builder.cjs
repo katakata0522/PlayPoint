@@ -62,7 +62,7 @@ function replaceSimplifiedCalculatorCopy(html, copy) {
       (_match, openTag, closeTag) => `${openTag}${copy.multiplierLabel}${closeTag}`
     )
     .replace(
-      /(<span\b[^>]*\bdata-simplified-calculator-copy="advancedSettingsLabel"[^>]*>)[\s\S]*?(<\/span>)/i,
+      /(<span\b[^>]*\bdata-simplified-calculator-copy="advancedSettingsLabel"[^>]*>)[\s\S]*?(<\/span>)/gi,
       (_match, openTag, closeTag) => `${openTag}${copy.advancedSettingsLabel}${closeTag}`
     );
 }

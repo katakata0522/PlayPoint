@@ -181,6 +181,7 @@ function renderChrome(localeKey, title, section, variant, newline) {
     ...renderRegionSwitcher(localeKey, copy),
     '      <details class="intl-mobile-menu"><summary>' + ({ en: 'Menu', ko: '메뉴', tw: '選單' })[localeKey] + '</summary><nav aria-label="' + escapeHtml(copy.primary) + '">',
     ...SECTION_ORDER.map(key => '        <a href="' + navLinks[key][0] + '">' + escapeHtml(navLinks[key][1]) + '</a>'),
+    '        <a href="' + guidesHref + '#reading-library" data-reading-library-menu>' + ({ en: 'Saved articles & reading history', ko: '저장한 글·최근 읽은 글', tw: '已儲存文章與閱讀紀錄' })[localeKey] + '</a>',
     '        <a href="' + policyHref + '">' + escapeHtml(copy.about) + '</a>',
     '      </nav></details>',
     '      <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="' + escapeHtml(copy.themeLabel) + '">☀️</button>',

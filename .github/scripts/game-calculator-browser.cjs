@@ -15,6 +15,11 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
   await blockExternalRequests(context, new URL(baseUrl).origin);
   const page = await context.newPage();
   const report = { checkedAt: new Date().toISOString(), scenario: 'external-ad-and-analytics-requests-blocked', widths: WIDTHS, pages: [], passed: false };
+  async function readyCalculator() {
+    await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+    const settings = page.locator('.game-rate-settings');
+    if (await settings.count() && !await settings.evaluate(el => el.open)) await settings.locator(':scope > summary').click();
+  }
   try {
     for (const target of pages) {
       const row = { path: target.pathname, widths: [], passed: false };
@@ -24,7 +29,7 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
         const response = await page.goto(new URL(target.pathname, baseUrl).href, { waitUntil: 'load', timeout: 30000 });
         assert.ok(response?.ok(), `HTTP ${response?.status()}`);
         const isCalculator = await page.locator('#game-sim-form').count() > 0;
-        if (isCalculator) await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+        if (isCalculator) await readyCalculator();
         await page.evaluate(() => document.fonts.ready);
         if (isCalculator) {
           await page.locator('#sim-status').selectOption({ index: 0 });
@@ -117,7 +122,7 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
           const packUrl = await page.evaluate(() => window.__copiedGameUrl);
           assert.ok(packUrl.includes('pack=') && packUrl.includes('count=2'));
           await page.goto(packUrl, { waitUntil: 'load' });
-          await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+          await readyCalculator();
           assert.equal(await page.locator('#sim-pack-count').inputValue(), '2');
           assert.equal(await page.locator('.game-result-container').isVisible(), true);
           row.packCountAndShareRestoration = true;
@@ -131,7 +136,7 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
         // 共通エンジンの境界を4言語の実フォーム・共有URLでも検証する。
         if (target.pathname === '/games/monst/') {
           await page.goto(new URL(target.pathname, baseUrl).href, { waitUntil: 'load' });
-          await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+          await readyCalculator();
           assert.equal(await page.locator('#sim-pack-select').inputValue(), 'custom', '初期の予算例から商品を推測しない');
           const selectedProduct = () => page.locator('#sim-pack-select').evaluate(el => el.options[el.selectedIndex].dataset.productId);
           const copyUrl = async () => {
@@ -147,7 +152,7 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
             const url = await copyUrl();
             assert.equal(new URL(url).searchParams.get('product'), id);
             await page.goto(url, { waitUntil: 'load' });
-            await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+            await readyCalculator();
             assert.equal(await selectedProduct(), id, '同額でも共有前と同じ商品へ戻る');
             assert.equal(await page.locator('#sim-pack-count').inputValue(), '2');
             assert.equal(await page.locator('.game-result-container').isVisible(), true);
@@ -155,19 +160,19 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
           await page.locator('.preset-btn[data-amount="480"]').click();
           const budgetUrl = await copyUrl();
           await page.goto(budgetUrl, { waitUntil: 'load' });
-          await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+          await readyCalculator();
           assert.equal(await page.locator('#sim-pack-select').inputValue(), 'custom');
           assert.equal(await page.locator('#sim-custom-amount').inputValue(), '480');
           assert.equal(await page.locator('.preset-btn[aria-pressed="true"]').count(), 0, '共有条件に初期の予算ボタンの選択表示を残さない');
           for (const query of ['pack=480&count=2', 'amount=960&pack=480&count=2']) {
             await page.goto(new URL(`${target.pathname}?${query}`, baseUrl).href, { waitUntil: 'load' });
-            await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+            await readyCalculator();
             assert.equal(await page.locator('#sim-pack-select').inputValue(), 'custom');
             assert.equal(await page.locator('#sim-custom-amount').inputValue(), '960');
             assert.equal(await page.locator('.game-result-container').isVisible(), true);
           }
           await page.goto(new URL(`${target.pathname}?amount=480&pack=480&product=missing`, baseUrl).href, { waitUntil: 'load' });
-          await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+          await readyCalculator();
           assert.equal(await page.locator('.game-result-container').isVisible(), false);
           await page.locator('#sim-pack-select').selectOption({ label: 'モンパス (月額480円)' });
           assert.equal(await page.locator('.game-result-container').isVisible(), true);
@@ -202,20 +207,20 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
           const copied = await page.evaluate(() => window.__copiedGameUrl);
           assert.ok(copied.includes('eligible=900') && copied.includes('amount=1000'));
           await page.goto(copied, { waitUntil: 'load' });
-          await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+          await readyCalculator();
           assert.equal(await page.locator('#sim-eligible-amount').inputValue(), '900');
           assert.equal(await page.locator('.game-result-container').isVisible(), true);
           await page.goto(new URL(target.pathname + '?amount=1e308', baseUrl).href, { waitUntil: 'load' });
-          await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+          await readyCalculator();
           assert.equal(await page.locator('#sim-custom-amount').getAttribute('aria-invalid'), 'true');
           await page.locator('#sim-custom-amount').fill('1000');
           assert.equal(await page.locator('.game-result-container').isVisible(), true);
           await page.goto(new URL(target.pathname + '?amount=1000&eligible=&count=invalid', baseUrl).href, { waitUntil: 'load' });
-          await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+          await readyCalculator();
           assert.equal(await page.locator('.game-result-container').isVisible(), true, '任意対象額の空欄と自由金額モードの未使用回数は計算を妨げない');
           if (target.pathname === '/games/nikke/') {
             await page.goto(new URL(target.pathname + '?amount=1000&pack=invalid', baseUrl).href, { waitUntil: 'load' });
-            await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+            await readyCalculator();
             assert.equal(await page.locator('.game-result-container').isVisible(), false, '使えない商品指定を含む共有URLは計算しない');
             assert.equal(await page.locator('#sim-custom-amount').getAttribute('aria-invalid'), 'true');
             await page.locator('#sim-custom-amount').fill('1200');
@@ -250,7 +255,7 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
           assert.ok(new URL(copied).searchParams.get('amount') === String(amount));
           assert.equal(new URL(copied).searchParams.has('pack'), false);
           await page.goto(copied, { waitUntil: 'load' });
-          await page.locator('#sim-eligible-amount').waitFor({ state: 'attached' });
+          await readyCalculator();
           assert.equal(await page.locator('#sim-custom-amount').inputValue(), String(amount));
         }
         row.passed = true;

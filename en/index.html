@@ -320,6 +320,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             </label>
             <select id="reverseStatus"></select>
 
+            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">Calculate points</button>
+            <details id="reverse-rate-settings" class="calculator-basis-settings">
+                <summary><span data-simplified-calculator-copy="advancedSettingsLabel">Adjust earn rates & promotion (optional)</span></summary>
             <label for="reverseBaseRate" class="label-with-tooltip">
                 <span data-lang-key="labelBaseRate">Earn rate per $1 (direct entry)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
@@ -335,9 +338,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
             <div class="warning" data-lang-key="warningRate">The calculator compares your base earn rate with the special earn rate shown in Google Play and uses the higher rate. It does not multiply your level rate by the promotion number. Confirm eligibility, caps, and activation in Google Play.</div>
+            </details>
         </div>
          <div class="section">
-            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">Calculate points</button>
             <div class="result" id="reverseResult" aria-live="polite"></div>
             <button id="share-twitter-reverse" class="hidden" hidden>
                 <span data-lang-key="tweetButton">Share on X</span>

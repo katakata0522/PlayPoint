@@ -159,6 +159,8 @@ html[lang] body.blog-index-compact .hub-result-toolbar { padding:4px 0; }
 html[lang] body.blog-index-compact .guide-hub-layout .hub-result-toolbar .sort-container { display:flex; align-items:center; gap:6px; }
 html[lang] body.blog-index-compact .guide-hub-layout .hub-result-toolbar label { margin:0; }
 }
+.reader-hub-entry { margin:4px 0 12px; border-block:1px solid var(--reading-border); }
+.reader-hub-entry > summary { min-height:44px; display:list-item; padding:10px 0; cursor:pointer; color:var(--reading-link); font-weight:650; }
 .reader-hub-intro { color:var(--reading-muted); line-height:1.7; margin:8px 0 16px; }
 .reader-entry-questions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:0 0 16px; }
 .reader-entry-questions a { display:flex; flex-direction:column; gap:5px; padding:12px; border:1px solid var(--reading-border); border-radius:8px; background:var(--reading-surface); color:var(--reading-link); text-decoration:none; min-width:0; }

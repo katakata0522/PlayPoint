@@ -283,7 +283,9 @@
         input.placeholder = cfg.eligiblePlaceholder;
         input.setAttribute('aria-describedby', 'game-calculation-basis');
         field.append(label, input);
-        anchor.insertAdjacentElement('afterend', field);
+        const advanced = document.querySelector('.game-rate-settings .input-grid');
+        if (advanced) advanced.prepend(field);
+        else anchor.insertAdjacentElement('afterend', field);
         return input;
     }
 
@@ -404,6 +406,8 @@
         // 共有URLも手入力と同じ検証へ通す。parseFloatによる部分読み・切捨てはしない。
         try {
             const params = new URLSearchParams(window.location.search);
+            const advanced = form.querySelector('.game-rate-settings');
+            if (advanced && (params.has('eligible') || params.has('mult') && Number(params.get('mult')) !== 1)) advanced.open = true;
             hasUrlAmount = params.has('amount') || params.has('pack') || params.has('product');
             const readParam = (param, key, max) => {
                 if (!params.has(param) || !fields[key]) return;
@@ -769,7 +773,9 @@
         form.addEventListener('submit', event => {
             event.preventDefault();
             update(true);
-            form.querySelector('[aria-invalid="true"]')?.focus();
+            const invalid = form.querySelector('[aria-invalid="true"]');
+            for (let details = invalid?.closest('details'); details; details = details.parentElement?.closest('details')) details.open = true;
+            invalid?.focus();
         });
         update(false);
     }

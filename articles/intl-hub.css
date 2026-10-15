@@ -59,6 +59,12 @@ font-weight: 650;
 line-height: 1.55;
 text-wrap: pretty;
 }
+.intl-guide-card .intl-guide-card__excerpt {
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 3;
+overflow: hidden;
+}
 .intl-guide-controls {
 display: grid;
 gap: 10px;
@@ -170,3 +176,8 @@ html[lang] body .intl-article-hub .hero-meta { margin:4px 0; }
 }
 html[lang] body .intl-article-hub .hero-badge { display:none; }
 .intl-hub-browser > .intl-hub-section-heading { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+.intl-guide-shortcuts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 12px; }
+.intl-guide-shortcuts > details { min-width:0; margin:0; border:0; }
+.intl-guide-shortcuts > details > summary { font-size:12.5px; line-height:1.5; padding:10px 0; }
+.intl-guide-shortcuts > details[open] { grid-column:1 / -1; }
+.intl-guide-shortcuts:has([data-guide-start][hidden]) { grid-template-columns:1fr; }
