@@ -51,11 +51,11 @@ const CASH_CONVERSION_PROMPT_COPY = Object.freeze({
 
 const TW_CONTEXTUAL_PROMPT_COPY = Object.freeze({
   couponNotApplied: Object.freeze({
-    aria: '問題排解後反推原定消費可獲得的點數',
+    aria: '問題排解後估算原定消費可獲得的點數',
     label: '問題排解完成後的下一步',
     heading: '原本預計消費，可以累積多少點？',
-    body: '先完成折價券條件檢查；如果仍要進行原本的購買，再用實際預計消費金額與 Google Play 顯示的最終獲點率反推可獲得點數。',
-    cta: '用預計消費金額反推點數',
+    body: '先完成折價券條件檢查；如果仍要進行原本的購買，再用實際預計消費金額與 Google Play 顯示的最終積點率估算可獲得點數。',
+    cta: '用預計消費金額計算點數',
     href: '/tw/?mode=reverse'
   }),
   platinumDiamond: Object.freeze({

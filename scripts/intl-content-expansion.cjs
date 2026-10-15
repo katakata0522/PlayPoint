@@ -38,7 +38,7 @@ const TOPICS = [
   },
   {
     slug: "google-play-points-balance-history-progress.html",
-    lastmodByLocale: {"en": "2026-10-14", "ko": "2026-10-14", "tw": "2026-10-14"},
+    lastmodByLocale: {"en": "2026-10-16", "ko": "2026-10-14", "tw": "2026-10-16"},
     labels: {
       en: "Where to check Play Points balance, history and level progress",
       ko: "Google Play Points 잔액·내역·등급 진행도 확인 방법",
@@ -64,7 +64,7 @@ const TOPICS = [
   },
   {
     slug: "google-play-points-earn-free.html",
-    lastmodByLocale: {"tw": "2026-10-14"},
+    lastmodByLocale: {"ko": "2026-10-16", "tw": "2026-10-16"},
     labels: {
       en: "Legitimate ways to earn Play Points without extra spending",
       ko: "추가 결제 없이 Play Points를 모으는 공식 방법",
@@ -92,6 +92,7 @@ const TOPICS = [
   {
     slug: "google-play-points-levels.html",
     publishedAt: '2026-08-05',
+    lastmodByLocale: {"en": "2026-10-14", "ko": "2026-10-16", "tw": "2026-10-16"},
     labels: {
       en: "Google Play Points levels by region",
       ko: "한국 Google Play Points 등급표",
@@ -119,6 +120,7 @@ const TOPICS = [
   {
     slug: "google-play-points-fastest-silver.html",
     publishedAt: '2026-08-05',
+    lastmodByLocale: {"tw": "2026-10-16"},
     labels: {
       en: "Reach Silver efficiently in the US",
       ko: "한국 실버 효율적으로 달성",
