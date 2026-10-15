@@ -66,7 +66,8 @@ test('台湾の公式商品名から該当記事へ進み、別ゲームのパ�
   for (const [query, slug] of [
     ['超級票券', 'google-play-points-super-weekly-reward'],
     ['Super Ticket', 'google-play-points-super-weekly-reward'],
-    ['集章卡', 'google-play-points-stamp-cards']
+    ['集章卡', 'google-play-points-stamp-cards'],
+    ['集點卡', 'google-play-points-stamp-cards']
   ]) {
     const matched = localized.filter(article => search.matches(article, query, 'tw'))
       .sort((a, b) => search.score(b, query, 'tw') - search.score(a, query, 'tw'));
