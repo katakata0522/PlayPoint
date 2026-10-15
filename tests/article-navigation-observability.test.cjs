@@ -191,3 +191,64 @@ test('diary entry is separate from calculator attribution', () => {
  listeners.get('click')[0]({target:popularLink});
  assert.equal(eventCalls(context,'article_navigation_click').at(-1).destination_type,'diary');
 });
+
+
+test('日本語記事のパンくずはbreadcrumbとして区別する', () => {
+  const { context, listeners } = createRuntime(true);
+  const link = {
+    href: 'https://playpoint-sim.com/blog/?topic=account',
+    classList: createClassList([]),
+    closest(selector) {
+      if (selector === 'a[href]' || selector === '.breadcrumbs-wrapper') return this;
+      return null;
+    }
+  };
+  listeners.get('click')[0]({ target: link });
+  const events = eventCalls(context, 'article_navigation_click');
+  assert.equal(events.length, 1);
+  assert.equal(events[0].locale, 'ja');
+  assert.equal(events[0].component, 'breadcrumb');
+  assert.equal(events[0].destination_type, 'category');
+  assert.equal(events[0].target_path, '/blog/');
+});
+
+test('本文末の関連記事はrelatedとして計測し通常の本文リンクは自動加算しない', () => {
+  const { context, listeners } = createRuntime(true);
+  const link = {
+    href: 'https://playpoint-sim.com/articles/2025-12-25-expiration.html',
+    classList: createClassList([]),
+    closest(selector) {
+      if (selector === 'a[href]' || selector === 'article .related-links-section') return this;
+      return null;
+    }
+  };
+  listeners.get('click')[0]({ target: link });
+  assert.deepEqual(JSON.parse(JSON.stringify(eventCalls(context, 'article_navigation_click'))).map(e => ({
+    component: e.component, destination_type: e.destination_type, target_path: e.target_path
+  })), [{
+    component: 'related', destination_type: 'article', target_path: '/articles/2025-12-25-expiration.html'
+  }]);
+  const unclassified = {
+    href: link.href, classList: createClassList([]),
+    closest(selector) { return selector === 'a[href]' ? this : null; }
+  };
+  listeners.get('click')[0]({ target: unclassified });
+  assert.equal(eventCalls(context, 'article_navigation_click').length, 1);
+});
+
+test('サイドバーのカテゴリ絞り込みはbrowseと分類し検索語を送らない', () => {
+  const { context, listeners } = createRuntime(true);
+  const link = {
+    href: 'https://playpoint-sim.com/blog/?topic=%E4%BA%A4%E6%8F%9B&game=FGO&q=sample',
+    classList: createClassList(['sidebar-browse-category']),
+    closest(selector) { return selector === 'a[href]' ? this : null; }
+  };
+  listeners.get('click')[0]({ target: link });
+  const sent = eventCalls(context, 'article_navigation_click').at(-1);
+  assert.equal(sent.component, 'browse');
+  assert.equal(sent.destination_type, 'category');
+  assert.equal(sent.target_path, '/blog/');
+  assert.equal(JSON.stringify(sent).includes('sample'), false);
+  assert.equal(JSON.stringify(sent).includes('FGO'), false);
+  assert.equal(sent.locale, 'ja');
+});
