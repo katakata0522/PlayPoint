@@ -811,7 +811,7 @@ const ADDITIONAL_EN_ARTICLES = [
   {
     file: 'en/articles/google-play-points-promotion-not-applied.html',
     title: 'Google Play Points promotion not applied? Check the offer and your purchase',
-    description: 'A step-by-step checklist for Google Play Points bonuses that did not apply, including activation, dates, app eligibility, caps, and normal point comparison.',
+    description: 'A step-by-step checklist for Google Play Points bonuses that did not apply, including activation, dates, app eligibility, caps, and comparison with base-rate points.',
     h1: 'Google Play Points promotion not applied? Check the offer and your purchase',
     badge: 'Promotion check',
     lead: 'When a Play Points promotion does not appear, the problem is often the bonus condition rather than the whole purchase. Check activation, timing, eligibility, and caps before assuming the account is broken.',
@@ -821,7 +821,7 @@ const ADDITIONAL_EN_ARTICLES = [
       ['Check dates, time zones, and purchase completion', ['Campaign windows can depend on local dates, store time zones, or the moment a transaction completes. A pending payment near the beginning or end of a campaign can be harder to judge from memory.', 'Use the purchase receipt time and campaign details together. If the order was later cancelled, refunded, or adjusted, the bonus may also change or disappear.']],
       ['Review app, item, and payment eligibility', ['A campaign may apply only to selected apps, games, subscriptions, in-app items, or payment methods. It may also exclude trials, promotional credit, refunded purchases, or some gift-card flows.', 'Do not rely only on the banner headline. The smaller conditions are often where the answer is. If normal points appear but bonus points do not, eligibility is one of the strongest places to check.']],
       ['Look for caps and partial bonuses', ['Some campaigns have maximum bonus points or only apply to part of the purchase. That can make the result look incomplete even when the promotion worked correctly.', 'Compare the expected normal points first, then estimate the bonus separately. A partial result is easier to understand when you know whether the base earning matched.']],
-      ['Use the calculator to make the support story cleaner', ['Run the same amount at your current tier’s normal earn rate, then run it with the final special earn rate shown for the eligible purchase in Google Play. The gap gives you a simple way to explain what you expected and which part seems missing.', 'The calculator does not prove official eligibility, but it helps you avoid vague messages. A clear support note should include purchase date, account, campaign name, expected bonus, and what actually appeared.']]
+      ['Compare your estimate before contacting support', ['Run the same amount at your current tier’s normal earn rate, then run it with the final special earn rate shown for the eligible purchase in Google Play. The gap gives you a simple way to explain what you expected and which part seems missing.', 'The calculator does not prove official eligibility, but it helps you avoid vague messages. A clear support note should include purchase date, account, campaign name, expected bonus, and what actually appeared.']]
     ],
     faq: [
       ['Does a campaign banner mean every purchase qualifies?', 'No. Check the offer details for eligible apps, payment methods, dates, and caps.'],
@@ -1872,7 +1872,7 @@ const ARTICLE_HUB_CONTENT = {
       ['/en/articles/google-play-points-join-eligibility.html', 'Eligibility and missing Join button'],
       ['/en/articles/google-play-points-coupon-not-applied.html', 'Coupon not applied'],
       ['/en/articles/google-play-points-play-credit-not-working.html', 'Play credit cannot be exchanged or used'],
-      ['/en/articles/google-play-points-level-maintenance-reset.html', 'Level maintenance and yearly reset'],
+      ['/en/articles/google-play-points-level-maintenance-reset.html', 'Keeping your level and the yearly reset'],
       ['/en/status/silver/', 'US Silver: estimate the remaining cost'],
       ['/en/status/gold/', 'US Gold: estimate the remaining cost'],
       ['/en/amount/10000/', 'Points for $50 of eligible US spending'],

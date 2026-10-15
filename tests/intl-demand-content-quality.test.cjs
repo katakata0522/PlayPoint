@@ -91,3 +91,28 @@ for (const contract of demandContracts) {
     answerWithoutGenericCalculator(html, contract.marker, contract.file);
   });
 }
+
+test('韓国・台湾の週次特典は銀級と上位等級の現行プログラムを区別する', () => {
+  for (const [locale, silver, superPrize, country] of [
+    ['ko', '실버', 'Super Weekly Prize', 'KR'],
+    ['tw', '銀級', '超級每週獎勵', 'TW']
+  ]) {
+    for (const slug of ['levels', 'weekly-reward']) {
+      const file = `${locale}/articles/google-play-points-${slug}.html`;
+      const html = read(file);
+      const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || '';
+      assert.ok(main.includes(silver), file);
+      assert.ok(main.includes(superPrize), `${file}: upper-level weekly program`);
+      assert.ok(main.includes(`CountryCode%3D${country}`), `${file}: local official source`);
+      assert.doesNotMatch(main, /실버 최대 50|골드 최대 100|플래티넘 최대 500|다이아몬드 최대 1,000/,
+        `${file}: outdated caps must not be attributed to the current official table`);
+      assert.doesNotMatch(main, /像韓國表格那樣|韓國等級表那種/, `${file}: obsolete cross-country maximum comparison`);
+    }
+  }
+  const ticket = read('ko/articles/google-play-points-super-weekly-reward.html');
+  assert.match(ticket, /포인트 내역/);
+  assert.match(ticket, /혜택 받기/);
+  assert.match(ticket, /기존 보상이 사라지고/);
+  assert.match(ticket, /48시간/);
+  assert.match(ticket, /8주/);
+});

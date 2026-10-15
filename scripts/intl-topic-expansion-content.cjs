@@ -77,13 +77,14 @@ const TOPICS = [
     },
     tw: {
       title: 'Google Play 抵用金支付訂閱：首次付款與續訂要分開看',
+      modifiedAt: '2026-10-16',
       description: '用 Play Points 兌換的 Google Play 抵用金支付訂閱前，確認付款平台、帳號、幣別、餘額與續訂付款方式。',
       intro: '把累積的 Play Points 換成抵用金，可以替訂閱費用出一份力。關鍵不只是帳號有餘額，還要確認這筆訂閱首次付款和下一次續訂是否能用同一份餘額。',
       sections: [
         ['先找出實際請款的平台', '台灣 Google Play 餘額可用於支援的訂閱；網站或 Apple 請款是不同的購買管道。先確認這筆訂閱是否出現在同一 Google 帳號的 Play 商店訂閱清單。'],
         ['首次付款時選擇抵用金', '如果帳號提供抵用金兌換項目，先完成兌換，再看訂閱結帳畫面的付款方式。餘額所屬帳號與購買帳號、餘額幣別與交易幣別必須相符。'],
         ['下一次續訂也要準備好', '自動續訂通常會再次使用選定的付款方式。到訂閱設定查看下一次日期、付款方式與可用餘額。備用付款方式和拆分付款是否支援，要依訂閱方案與實際畫面判斷。'],
-        ['有餘額，也可能還差一筆', '假設帳單為 NT$180，可用餘額為 NT$120，差額就是 NT$60。看看結帳畫面是否提供其他方式支付差額，以及最後的付款分配。這是示範，不是某個方案的售價，也不代表每次續訂都能自動合併付款。'],
+        ['有餘額，也可能不夠付款', '假設帳單為 NT$180，可用餘額為 NT$120，差額就是 NT$60。看看結帳畫面是否提供其他方式支付差額，以及最後的付款分配。這是示範，不是某個方案的售價，也不代表每次續訂都能自動合併付款。'],
         ['抵用金沒有出現時', '依序比對帳號、Play 地區、幣別、餘額期限和請款平台。先找到差異，再決定是否兌換更多點數；相關問題排解指南可以幫你縮小範圍。']
       ],
       faq: [['抵用金和 App 專用優惠券一樣嗎？', '不一樣。優惠券另有適用 App 和購買條件，本文說明的是 Google Play 餘額。'], ['移除 App 就會停止續訂嗎？', '不會。要到實際請款的商店管理或取消訂閱。']]
@@ -207,7 +208,7 @@ function buildLocalizedTopicArticles(locales, labels) {
     return {
       ...content, file: `${locale}/articles/${topic.slug}.html`, lang: locale === 'tw' ? 'zh-TW' : locale,
       h1: content.title, lead: content.intro, badge: { en: 'Practical guide', ko: '실용 가이드', tw: '實用指南' }[locale],
-      publishedAt: '2026-10-14', modifiedAt: '2026-10-14', jaAlternate: topic.jaAlternate,
+      publishedAt: '2026-10-14', modifiedAt: content.modifiedAt || '2026-10-14', jaAlternate: topic.jaAlternate,
       labels: labels[locale], siteName: locales[locale].siteName, ctaHref: `/${locale}/`,
       officialSourceTitle: copy.title, officialSourceBody: copy.body,
       officialSourceHref: topic.sourceHrefByLocale?.[locale] || topic.sourceHref || `https://support.google.com/googleplay/answer/${topic.source}?co=GENIE.CountryCode%3D${region.country}&hl=${region.hl}`,
