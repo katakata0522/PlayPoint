@@ -103,12 +103,12 @@ function syncReaderFoundations(root, { hubOnly = false } = {}) {
     return start + JSON.stringify(data) + end;
   });
   const entry = `<details class="reader-hub-entry"><summary>初めての方</summary><p class="reader-hub-intro">Play Pointsの仕組み、ランクの特典、ポイントの使い道を知りたいことから探せます。</p><nav class="reader-entry-questions" aria-label="まず知っておきたいこと">${QUESTIONS.map(([question, , href]) => `<a href="${href}"><strong>${question}</strong></a>`).join('')}</nav></details>`;
-  html = html.replace(/<!-- reader-hub-entry:start -->[\s\S]*?<!-- reader-hub-entry:end -->/g, '');
+  html = html.replace(/\s*<!-- reader-hub-entry:start -->[\s\S]*?<!-- reader-hub-entry:end -->\s*/g, '\n');
   const discovery = html.indexOf('id="blog-discovery-title"');
   const discoveryEnd = html.indexOf('</section>', discovery);
   if (discovery < 0 || discoveryEnd < 0) throw Error('記事検索の入口がありません');
   const entryBlock = '<!-- reader-hub-entry:start -->' + entry + '<!-- reader-hub-entry:end -->';
-  html = html.slice(0, discoveryEnd + 10) + '\n' + entryBlock + html.slice(discoveryEnd + 10);
+  html = html.slice(0, discoveryEnd + 10) + '\n' + entryBlock + html.slice(discoveryEnd + 10).replace(/^\s*/, '\n');
   fs.writeFileSync(hub, html);
   for (const relative of ['latest/index.html', 'author/katakata.html']) {
     const file = path.join(root, relative); let body = fs.readFileSync(file, 'utf8');
