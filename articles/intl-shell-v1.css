@@ -160,8 +160,8 @@ html[lang] body .intl-article-site-header .site-header-tools .site-region-menu a
 html[lang][data-reading-theme] body .intl-layout-container .content > section.section.answer-box { padding:14px 10px !important; }
 }
 /* 目次は既存の見出し・リンクを保ち、必要なときだけ開く。 */
-.intl-article-toc > summary { min-height:44px; padding:8px 0; cursor:pointer; color:var(--reading-link); }
-body .intl-layout-container .intl-article-toc > summary > h2 { display:inline; margin:0 !important; font-size:1rem !important; }
+.intl-article-toc > summary { box-sizing:border-box; min-height:44px; padding:10px 0; line-height:24px; cursor:pointer; color:var(--reading-link); }
+body .intl-layout-container .intl-article-toc > summary > h2 { display:inline !important; margin:0 !important; padding:0 !important; border:0 !important; background:none !important; box-shadow:none !important; font-size:1rem !important; }
 @media(max-width:760px) {
   .intl-layout-container .reading-tools [data-reading-library-link] { display:none; }
 }
