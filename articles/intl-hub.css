@@ -150,4 +150,23 @@ padding: 13px 14px;
 .intl-guide-controls {
 padding: 0;
 }
+}/* 検索を先に見せ、追加の探し方は必要なときに開く。 */
+.intl-guide-controls select { width:100%; min-width:0; min-height:44px; padding:9px 12px; border:1px solid var(--reading-border); border-radius:8px; background:var(--reading-surface); color:var(--reading-text); font:inherit; }
+.intl-guide-controls:has([data-guide-category]) .intl-guide-filters { display:none; }
+.intl-guide-more > summary,.intl-hub-start > summary { min-height:44px; padding:10px 0; cursor:pointer; color:var(--reading-link); font-weight:650; }
+.intl-hub-start { margin:4px 0 12px; border-block:1px solid var(--reading-border); }
+.intl-hub-start > section { padding:8px 0 16px; }
+.intl-hub-start .intl-hub-section-heading h2 { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+.intl-hub-browser { margin-top:14px; }
+.intl-guide-filter:hover:not(.is-active) { background:var(--reading-soft); color:var(--reading-text); }
+html[lang] body .intl-article-hub .intl-hub-intro { margin-bottom:14px; }
+@media(max-width:760px) {
+html[lang] body .intl-article-hub .hero { margin-bottom:10px; }
+html[lang] body .intl-article-hub .hero h1 { font-size:24px; margin:4px 0 8px; }
+html[lang] body .intl-article-hub .hero-meta { margin:4px 0; }
+.intl-category-label { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+.intl-game-discovery { margin:4px 0 10px; padding:10px; }
+.intl-guide-card { border-radius:8px; }
 }
+html[lang] body .intl-article-hub .hero-badge { display:none; }
+.intl-hub-browser > .intl-hub-section-heading { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }

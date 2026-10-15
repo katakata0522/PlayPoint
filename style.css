@@ -2679,4 +2679,50 @@ outline-offset: 3px;
 html { scroll-padding-bottom:140px; }
 body { padding-bottom:110px; }
 .calculator-wrapper .tab-switch { scroll-margin-top:16px; }
-.calculator-wrapper :is(input,button,.result-box) { scroll-margin-bottom:150px; }
+.calculator-wrapper :is(input,button,.result-box) { scroll-margin-bottom:150px; }/* モードの選択、hover、フォーカスを別の状態として示す。 */
+.tab-switch button[aria-selected="true"] { background:#17694f; color:#fff; box-shadow:inset 0 -3px 0 #cce9bd; }
+.tab-switch button[aria-selected="false"]:hover:not(:disabled) { background:#e2ede8; color:#183e36; transform:none; box-shadow:none; }
+.tab-switch button:focus-visible { outline:3px solid #145f83; outline-offset:3px; }
+@media(max-width:760px) {
+.calculator-wrapper > .site-description { font-size:14px; line-height:1.65; margin:8px 0 14px; }
+.calculator-wrapper .tab-switch { margin:12px 0; gap:6px; }
+.calculator-wrapper .tab-switch button { min-height:44px; padding:9px 7px; font-size:13px; }
+.calculator-wrapper #main-calculator-inputs { margin-top:10px; padding:14px 12px; }
+.calculator-wrapper #main-calculator-inputs > h2 { margin-top:0; margin-bottom:12px; font-size:19px; }
+.calculator-wrapper:not(.lp-wrapper) .top-bar { margin-bottom:12px; }
+}
+/* 単純な比較は、スマホでは見出しと値を1項目ずつ読む。 */
+@media(max-width:600px) {
+html body table.reading-responsive-table { display:block; width:100%; min-width:0; table-layout:auto; }
+html body table.reading-responsive-table thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+html body table.reading-responsive-table tbody { display:block; }
+html body table.reading-responsive-table tr { display:block; padding:10px 0; border-bottom:1px solid var(--reading-border,#cbd5e1); }
+html body table.reading-responsive-table :is(td,tbody th) { display:block; width:auto; min-width:0; padding:7px 10px; border:0; white-space:normal; overflow-wrap:anywhere; word-break:normal; text-align:left; }
+html body table.reading-responsive-table :is(td,tbody th)::before { content:attr(data-column-label); display:block; margin-bottom:3px; font-size:.8em; font-weight:750; color:var(--reading-muted,#526176); }
+html body :is(.table-wrap,.table-card,.table-wrapper,.lp-table-wrap):has(>table.reading-responsive-table) { overflow:visible; }
+html body .reading-table-hint:has(+ :is(.table-wrap,.table-card,.table-wrapper) >table.reading-responsive-table) { display:none; }
+}
+/* 操作への入口と条件を近づけ、一般説明は下へ残す。 */
+.lp-wrapper .lp-hero-panel { padding:16px; }
+.lp-wrapper .lp-action-row { margin:0 0 14px; }
+.lp-wrapper .lp-trust-line { gap:6px 12px; font-size:12px; }
+.lp-wrapper .lp-trust-line span { background:transparent; border:0; padding:0; }
+@media(max-width:760px) {
+.lp-wrapper .lp-hero { padding:14px 0; }
+.lp-wrapper .lp-hero h1 { font-size:26px; line-height:1.5; }
+.lp-wrapper .lp-lead { font-size:15px; line-height:1.7; }
+.lp-wrapper .lp-jp-summary { grid-template-columns:1fr; gap:0; }
+.lp-wrapper .lp-jp-summary > div { padding:8px 0; border:0; border-radius:0; background:transparent; }
+.lp-wrapper .lp-summary-value { font-size:14px; }
+}
+/* 目的別ページの計算ボタンを、見出しのすぐ後に置く。 */
+body:has(>main.lp-wrapper) { background:#f4f7f6; }
+.lp-wrapper { background:#fff; border-color:#d7e3df; }
+.lp-wrapper .lp-hero { background:none; border:0; box-shadow:none; }
+.lp-wrapper .lp-eyebrow { background:none; border:0; padding:0; color:#176773; }
+.lp-wrapper .lp-hero > .lp-action-row { margin:12px 0 18px; }
+.lp-wrapper .top-bar { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.lp-wrapper .top-bar a { min-width:0; min-height:44px; display:flex; align-items:center; justify-content:center; border:1px solid #d7e3df; border-radius:8px; background:#edf5f2; color:#176773; }
+.lp-wrapper .lp-primary-link { background:#176773; border-color:#176773; color:#fff; box-shadow:none; }
+.lp-wrapper .lp-primary-link:hover { background:#12525c; }
+.lp-wrapper .lp-secondary-link { color:#176773; border-color:#d7e3df; box-shadow:none; }

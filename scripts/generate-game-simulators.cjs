@@ -1994,7 +1994,7 @@ function generateGamePageHtml(game, localeKey) {
   const packOptions = gamePacks.map(p => `<option value="${p.price}"${p.id ? ` data-product-id="${p.id}"` : ''}>${p.name}</option>`).join('\n                  ');
   const presetButtons = gamePresets.map((p, idx) => `<button type="button" class="preset-btn ${idx === 0 ? 'active' : ''}" data-amount="${p.amount}"${p.kind === 'budget' ? ' data-input-kind="budget"' : ` data-mult="${p.mult}"`} aria-pressed="${idx === 0 ? 'true' : 'false'}">${p.label}</button>`).join('\n              ');
   const faqHtml = gameFaq.map(f => `<h3>${f.q}</h3>\n<p>${f.a}</p>`).join('\n');
-  
+
   const packTableRows = gamePacks.map(p => {
     const normalPts = Math.round(p.price / loc.unitSpend);
     const cpPts = Math.round((p.price / loc.unitSpend) * 5);
@@ -2155,7 +2155,7 @@ function generateGamePageHtml(game, localeKey) {
           <p>${gameDesc}</p>
 
           <!-- シミュレーター操作パネル -->
-${offersHtml ? `          ${offersHtml}\n` : ''}          <section class="game-sim-card" id="game-calculator">
+${offersHtml ? `          <details class="game-purchase-details"><summary>${({ja:'パス・特別商品を比べる',en:'Compare passes and special purchases',ko:'패스·특별 상품 비교',tw:'比較通行證與特別商品'})[localeKey]}</summary>${offersHtml}</details>\n` : ''}          <section class="game-sim-card" id="game-calculator">
               <h2 class="game-sim-title">🧮 ${gameShort}</h2>
 
 ${gamePresets.length ? `              <p class="preset-heading">${localeKey === 'ja' ? '金額をすぐ入力：' : loc.presetHeading}</p>

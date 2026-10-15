@@ -1,11 +1,11 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20261014_1404-03d32aed';;
+const CACHE_NAME = 'playpoint-calc-v20261015_1424-29efd130';;
 // 初回は計算機の必須シェルだけを先読みし、記事・日記などは実利用時にキャッシュする。
 const ASSETS = [
   './',
-  './style.css?v=ce3c7c73b5',
+  './style.css?v=cf9672d999',
   './region-selector.css',
   './favicon.svg',
   './manifest.json',

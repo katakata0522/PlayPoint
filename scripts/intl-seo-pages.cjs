@@ -229,6 +229,10 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = ge
     <section class="lp-hero">
         <p class="lp-eyebrow">${escapeHtml(content.eyebrow)}</p>
         <h1>${escapeHtml(content.h1)}</h1>
+        <div class="lp-action-row">
+            <a class="lp-primary-link" href="${calcHref}">${escapeHtml(content.cta)}</a>
+            <a class="lp-secondary-link" href="${content.secondaryHref}">${escapeHtml(content.secondary)}</a>
+        </div>
         <p class="lp-lead">${escapeHtml(content.lead)}</p>
         <div class="lp-trust-line">
             <span>${escapeHtml(locale.lastUpdatedLabel)}: ${contentModifiedAt}</span>
@@ -239,10 +243,6 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = ge
             <p class="lp-note">${escapeHtml(locale.disclaimer)}</p>
             <div class="lp-jp-summary" aria-label="Page summary">
                 ${content.summary.map(item => `<div><span class="lp-summary-value">${escapeHtml(item)}</span></div>`).join('\n                ')}
-            </div>
-            <div class="lp-action-row">
-                <a class="lp-primary-link" href="${calcHref}">${escapeHtml(content.cta)}</a>
-                <a class="lp-secondary-link" href="${content.secondaryHref}">${escapeHtml(content.secondary)}</a>
             </div>
         </div>
     </section>
@@ -257,6 +257,7 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = ge
     <section class="section">
         <h2>${escapeHtml(locale.relatedTitle)}</h2>
         <ul class="lp-related-list">
+${localeKey === 'en' && page.slug === 'status/diamond' ? '            <li><a href="/articles/2025-12-25-diamond-worth-it.html">Read Diamond value notes (Japan, Japanese)</a></li>' : ''}
             ${related.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join('\n            ')}
         </ul>
     </section>

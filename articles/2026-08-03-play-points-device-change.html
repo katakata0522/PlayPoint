@@ -100,7 +100,7 @@
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -152,14 +152,14 @@
 <h2 id="article-section-2">症状から確認先を選ぶ</h2>
 <p>「何も表示されない」のか、「一部だけ見つからない」のかで確認先が変わります。最初に近い症状を選ぶと、不要な手順を飛ばせます。</p>
 <div class="table-card" tabindex="0" role="region" aria-label="症状から確認先を選ぶ: 比較表（左右矢印キーでスクロール）">
-<table>
+<table class="reading-responsive-table" role="table">
 <caption>機種変更後に見つからないもの別の確認先</caption>
-<thead><tr><th>見つからないもの</th><th>最初に確認すること</th><th>読む場所</th></tr></thead>
+<thead><tr role="row"><th role="columnheader">見つからないもの</th><th role="columnheader">最初に確認すること</th><th role="columnheader">読む場所</th></tr></thead>
 <tbody>
-<tr><td>Play Pointsのメニュー自体</td><td>参加済みアカウント、Google Playの国、対応端末</td><td><a href="#new-device">新端末での確認順</a></td></tr>
-<tr><td>残高・ランク・履歴が以前と違う</td><td>旧端末と同じGoogleアカウントか</td><td><a href="#account-country">別アカウント・国変更</a></td></tr>
-<tr><td>Play Passの週次特典だけ</td><td>新端末へアカウントを追加してからの日数</td><td><a href="#play-pass">最長15日の注意</a></td></tr>
-<tr><td>購入で得るはずのポイントだけ</td><td>注文状態、購入アカウント、ポイント履歴</td><td><a href="./2026-03-10-play-points-reflection-timing.html">反映が遅い時の記事</a></td></tr>
+<tr role="row"><td role="cell" data-column-label="見つからないもの">Play Pointsのメニュー自体</td><td role="cell" data-column-label="最初に確認すること">参加済みアカウント、Google Playの国、対応端末</td><td role="cell" data-column-label="読む場所"><a href="#new-device">新端末での確認順</a></td></tr>
+<tr role="row"><td role="cell" data-column-label="見つからないもの">残高・ランク・履歴が以前と違う</td><td role="cell" data-column-label="最初に確認すること">旧端末と同じGoogleアカウントか</td><td role="cell" data-column-label="読む場所"><a href="#account-country">別アカウント・国変更</a></td></tr>
+<tr role="row"><td role="cell" data-column-label="見つからないもの">Play Passの週次特典だけ</td><td role="cell" data-column-label="最初に確認すること">新端末へアカウントを追加してからの日数</td><td role="cell" data-column-label="読む場所"><a href="#play-pass">最長15日の注意</a></td></tr>
+<tr role="row"><td role="cell" data-column-label="見つからないもの">購入で得るはずのポイントだけ</td><td role="cell" data-column-label="最初に確認すること">注文状態、購入アカウント、ポイント履歴</td><td role="cell" data-column-label="読む場所"><a href="./2026-03-10-play-points-reflection-timing.html">反映が遅い時の記事</a></td></tr>
 </tbody>
 </table>
 </div>
@@ -218,14 +218,14 @@
 <section class="section" id="account-country">
 <h2 id="article-section-9">別アカウント・国変更は、機種変更とは別の問題</h2>
 <div class="table-card" tabindex="0" role="region" aria-label="別アカウント・国変更は、機種変更とは別の問題: 比較表（左右矢印キーでスクロール）">
-<table>
+<table class="reading-responsive-table" role="table">
 <caption>端末変更・アカウント変更・国変更の違い</caption>
-<thead><tr><th>状況</th><th>扱い</th><th>確認先</th></tr></thead>
+<thead><tr role="row"><th role="columnheader">状況</th><th role="columnheader">扱い</th><th role="columnheader">確認先</th></tr></thead>
 <tbody>
-<tr><td>同じGoogleアカウントで新端末を使う</td><td>通常は残高・ランク・履歴を確認可能</td><td>Play Points画面</td></tr>
-<tr><td>別のGoogleアカウントを選んでいる</td><td>元のアカウントのポイントは表示されない</td><td>プロフィール画像から切り替え</td></tr>
-<tr><td>別アカウントへポイントを移したい</td><td>移行・合算不可</td><td>元のアカウントで利用</td></tr>
-<tr><td>Google Playの請求先国を変更した</td><td>旧国のポイントは失われ、ステータスも引き継がれない</td><td>Playの国とプロフィール</td></tr>
+<tr role="row"><td role="cell" data-column-label="状況">同じGoogleアカウントで新端末を使う</td><td role="cell" data-column-label="扱い">通常は残高・ランク・履歴を確認可能</td><td role="cell" data-column-label="確認先">Play Points画面</td></tr>
+<tr role="row"><td role="cell" data-column-label="状況">別のGoogleアカウントを選んでいる</td><td role="cell" data-column-label="扱い">元のアカウントのポイントは表示されない</td><td role="cell" data-column-label="確認先">プロフィール画像から切り替え</td></tr>
+<tr role="row"><td role="cell" data-column-label="状況">別アカウントへポイントを移したい</td><td role="cell" data-column-label="扱い">移行・合算不可</td><td role="cell" data-column-label="確認先">元のアカウントで利用</td></tr>
+<tr role="row"><td role="cell" data-column-label="状況">Google Playの請求先国を変更した</td><td role="cell" data-column-label="扱い">旧国のポイントは失われ、ステータスも引き継がれない</td><td role="cell" data-column-label="確認先">Playの国とプロフィール</td></tr>
 </tbody>
 </table>
 </div>

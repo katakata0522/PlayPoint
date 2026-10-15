@@ -18,7 +18,7 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
   <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=2f0b4eec92">
 <meta property="og:type" content="article">
     <meta property="og:site_name" content="Google Play Points 계산기">
     <meta property="og:title" content="한국에서 Google Play Points 가입이 안 될 때｜가입 버튼·계정·결제 프로필 확인">
@@ -142,7 +142,7 @@
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -156,7 +156,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/ko/author/katakata.html">Katakata 소개</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play 국가: 대한민국"><span aria-hidden="true">🌐</span><span>대한민국</span></summary>
+      <summary data-region-code="KR" aria-label="Play 국가: 대한민국"><span aria-hidden="true">🌐</span><span>대한민국</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play 국가</p>
         <a href="/">일본</a>
@@ -167,6 +167,15 @@
         <a href="/in/">인도</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>메뉴</summary><nav aria-label="주요 탐색">
+        <a href="/ko/">계산기</a>
+        <a href="/ko/articles/">가이드</a>
+        <a href="/ko/articles/#intl-hub-trouble">문제 해결</a>
+        <a href="/ko/articles/#intl-hub-earn">적립·사용</a>
+        <a href="/ko/articles/#intl-hub-levels">등급·리워드</a>
+        <a href="/ko/articles/#intl-hub-account">계정·기본</a>
+        <a href="/ko/author/katakata.html">Katakata 소개</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="테마 전환">☀️</button>
     </div>
   </div>
@@ -222,13 +231,13 @@
         <nav class="intl-article-toc" aria-label="목차"><h2 id="article-section-3">목차</h2><ol><li><a href="#section-1">증상별로 먼저 볼 곳</a></li><li><a href="#section-2">공식 가입 조건 확인</a></li><li><a href="#section-3">Play 국가를 최근 변경했다면</a></li><li><a href="#section-4">Google 지원에 문의할 시점</a></li></ol></nav>
         <section class="section">
           <h2 id="section-1">지금 보이는 증상부터 고르세요</h2>
-          <div class="table-wrap" tabindex="0" role="region" aria-label="지금 보이는 증상부터 고르세요: 비교표 (왼쪽 및 오른쪽 화살표 키로 스크롤)"><table>
-            <thead><tr><th>현재 증상</th><th>먼저 확인</th><th>다음 행동</th></tr></thead>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="지금 보이는 증상부터 고르세요: 비교표 (왼쪽 및 오른쪽 화살표 키로 스크롤)"><table class="reading-responsive-table" role="table">
+            <thead><tr role="row"><th role="columnheader">현재 증상</th><th role="columnheader">먼저 확인</th><th role="columnheader">다음 행동</th></tr></thead>
             <tbody>
-              <tr><td>Play Points 또는 가입 메뉴 자체가 없음</td><td>Play 국가, 관리 계정, 연령</td><td>실제 결제할 Google 계정의 Play 국가부터 확인합니다.</td></tr>
-              <tr><td>Play Points는 보이지만 가입이 완료되지 않음</td><td>결제수단, 청구지 주소</td><td>활성 결제 프로필이 한국 조건과 맞는지 봅니다.</td></tr>
-              <tr><td>최근 Play 국가를 변경함</td><td>국가 변경 반영 상태</td><td>최대 48시간의 반영 가능성을 고려해 기다린 뒤 다시 확인합니다.</td></tr>
-              <tr><td>이미 가입했고 구매 포인트만 안 보임</td><td>구매·반영 문제</td><td><a href="/ko/articles/google-play-points-not-showing.html">포인트 미반영 문제 해결</a>로 이동합니다.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="현재 증상">Play Points 또는 가입 메뉴 자체가 없음</td><td role="cell" data-column-label="먼저 확인">Play 국가, 관리 계정, 연령</td><td role="cell" data-column-label="다음 행동">실제 결제할 Google 계정의 Play 국가부터 확인합니다.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="현재 증상">Play Points는 보이지만 가입이 완료되지 않음</td><td role="cell" data-column-label="먼저 확인">결제수단, 청구지 주소</td><td role="cell" data-column-label="다음 행동">활성 결제 프로필이 한국 조건과 맞는지 봅니다.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="현재 증상">최근 Play 국가를 변경함</td><td role="cell" data-column-label="먼저 확인">국가 변경 반영 상태</td><td role="cell" data-column-label="다음 행동">최대 48시간의 반영 가능성을 고려해 기다린 뒤 다시 확인합니다.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="현재 증상">이미 가입했고 구매 포인트만 안 보임</td><td role="cell" data-column-label="먼저 확인">구매·반영 문제</td><td role="cell" data-column-label="다음 행동"><a href="/ko/articles/google-play-points-not-showing.html">포인트 미반영 문제 해결</a>로 이동합니다.</td></tr>
             </tbody>
           </table></div>
         </section>

@@ -18,7 +18,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
   <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=2f0b4eec92">
 <meta property="og:type" content="article">
   <meta property="og:site_name" content="Google Play Points Calculator">
   <meta property="og:title" content="Best Ways to Use Google Play Points: Coupons, Credit & Rewards">
@@ -87,7 +87,7 @@
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -101,7 +101,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/en/author/katakata.html">About Katakata</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play country: United States"><span aria-hidden="true">🌐</span><span>United States</span></summary>
+      <summary data-region-code="US" aria-label="Play country: United States"><span aria-hidden="true">🌐</span><span>United States</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play country</p>
         <a href="/">Japan</a>
@@ -112,6 +112,15 @@
         <a href="/in/">India</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>Menu</summary><nav aria-label="Primary navigation">
+        <a href="/en/">Calculator</a>
+        <a href="/en/articles/">Guides</a>
+        <a href="/en/articles/#intl-hub-trouble">Troubleshooting</a>
+        <a href="/en/articles/#intl-hub-earn">Earn &amp; spend</a>
+        <a href="/en/articles/#intl-hub-levels">Levels &amp; rewards</a>
+        <a href="/en/articles/#intl-hub-account">Account &amp; basics</a>
+        <a href="/en/author/katakata.html">About Katakata</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="Switch theme">☀️</button>
     </div>
   </div>
@@ -193,13 +202,13 @@
 
     <section class="section" id="coupon-credit">
       <h2 id="article-section-5">Coupon vs Google Play credit: which is better?</h2>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Coupon vs Google Play credit: which is better?: Comparison table (scroll with the left and right arrow keys)"><table>
-        <thead><tr><th>Question</th><th>Coupon</th><th>Play credit</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Coupon vs Google Play credit: which is better?: Comparison table (scroll with the left and right arrow keys)"><table class="reading-responsive-table" role="table">
+        <thead><tr role="row"><th role="columnheader">Question</th><th role="columnheader">Coupon</th><th role="columnheader">Play credit</th></tr></thead>
         <tbody>
-          <tr><td>Where can it be used?</td><td>Only the named eligible app/game purchase and conditions</td><td>Eligible Google Play purchases supported by Play balance</td></tr>
-          <tr><td>Minimum purchase?</td><td>Often part of the coupon conditions</td><td>Depends on the purchase and balance rules, not an app-specific coupon minimum</td></tr>
-          <tr><td>Expiry after points exchange?</td><td>One year</td><td>One year</td></tr>
-          <tr><td>Best fit</td><td>A near-term purchase you already planned</td><td>You want to keep the eventual purchase more flexible</td></tr>
+          <tr role="row"><td role="cell" data-column-label="Question">Where can it be used?</td><td role="cell" data-column-label="Coupon">Only the named eligible app/game purchase and conditions</td><td role="cell" data-column-label="Play credit">Eligible Google Play purchases supported by Play balance</td></tr>
+          <tr role="row"><td role="cell" data-column-label="Question">Minimum purchase?</td><td role="cell" data-column-label="Coupon">Often part of the coupon conditions</td><td role="cell" data-column-label="Play credit">Depends on the purchase and balance rules, not an app-specific coupon minimum</td></tr>
+          <tr role="row"><td role="cell" data-column-label="Question">Expiry after points exchange?</td><td role="cell" data-column-label="Coupon">One year</td><td role="cell" data-column-label="Play credit">One year</td></tr>
+          <tr role="row"><td role="cell" data-column-label="Question">Best fit</td><td role="cell" data-column-label="Coupon">A near-term purchase you already planned</td><td role="cell" data-column-label="Play credit">You want to keep the eventual purchase more flexible</td></tr>
         </tbody>
       </table></div>
       <p>A coupon is not automatically better because its headline discount is larger. When the purchase qualifies, a redeemed coupon can apply automatically at checkout; still confirm the applied discount before paying. If meeting the minimum purchase makes you spend money you would not otherwise spend, subtract that extra spending from the practical benefit. <span class="article-source-inline">(<a href="https://support.google.com/googleplay/answer/15776916?hl=en">Google’s official guidance</a>)</span></p>
@@ -215,13 +224,13 @@
 
     <section class="section" id="where-rewards-go">
       <h2 id="article-section-7">Where each reward goes after you redeem points</h2>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Where each reward goes after you redeem points: Comparison table (scroll with the left and right arrow keys)"><table>
-        <thead><tr><th>Reward</th><th>Where to look</th><th>If it seems missing</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Where each reward goes after you redeem points: Comparison table (scroll with the left and right arrow keys)"><table class="reading-responsive-table" role="table">
+        <thead><tr role="row"><th role="columnheader">Reward</th><th role="columnheader">Where to look</th><th role="columnheader">If it seems missing</th></tr></thead>
         <tbody>
-          <tr><td>Coupon</td><td>Play Points → More → Points history; also Notifications &amp; offers → Saved offers</td><td>Check the same Google account and the coupon conditions</td></tr>
-          <tr><td>Play credit</td><td>Your Google Play balance / payment methods</td><td>Check the account, country/currency and expiry</td></tr>
-          <tr><td>In-app item</td><td>Inside the relevant app or game</td><td>Reopen the app and confirm the linked account</td></tr>
-          <tr><td>Partner voucher</td><td>Play Points → Perks</td><td>Check the voucher's displayed deadline and terms</td></tr>
+          <tr role="row"><td role="cell" data-column-label="Reward">Coupon</td><td role="cell" data-column-label="Where to look">Play Points → More → Points history; also Notifications &amp; offers → Saved offers</td><td role="cell" data-column-label="If it seems missing">Check the same Google account and the coupon conditions</td></tr>
+          <tr role="row"><td role="cell" data-column-label="Reward">Play credit</td><td role="cell" data-column-label="Where to look">Your Google Play balance / payment methods</td><td role="cell" data-column-label="If it seems missing">Check the account, country/currency and expiry</td></tr>
+          <tr role="row"><td role="cell" data-column-label="Reward">In-app item</td><td role="cell" data-column-label="Where to look">Inside the relevant app or game</td><td role="cell" data-column-label="If it seems missing">Reopen the app and confirm the linked account</td></tr>
+          <tr role="row"><td role="cell" data-column-label="Reward">Partner voucher</td><td role="cell" data-column-label="Where to look">Play Points → Perks</td><td role="cell" data-column-label="If it seems missing">Check the voucher's displayed deadline and terms</td></tr>
         </tbody>
       </table></div>
       <p>If a coupon or Play credit exists but will not apply at checkout, use the dedicated troubleshooting guides instead of redeeming the same reward again.</p>

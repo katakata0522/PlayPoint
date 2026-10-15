@@ -16,7 +16,7 @@
                         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
   <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=2f0b4eec92">
 <meta property="og:type" content="article">
     <meta property="og:site_name" content="Google Play Points 計算器">
     <meta property="og:title" content="Google Play 抵用金怎麼用？遊戲、電子書與訂閱的付款指南">
@@ -66,7 +66,7 @@
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -80,7 +80,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/tw/author/katakata.html">關於 Katakata</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
+      <summary data-region-code="TW" aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play 國家／地區</p>
         <a href="/">日本</a>
@@ -91,6 +91,15 @@
         <a href="/in/">印度</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>選單</summary><nav aria-label="主要導覽">
+        <a href="/tw/">計算機</a>
+        <a href="/tw/articles/">指南</a>
+        <a href="/tw/articles/#intl-hub-trouble">問題排解</a>
+        <a href="/tw/articles/#intl-hub-earn">積點與使用</a>
+        <a href="/tw/articles/#intl-hub-levels">等級與回饋</a>
+        <a href="/tw/articles/#intl-hub-account">帳號與基本</a>
+        <a href="/tw/author/katakata.html">關於 Katakata</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="切換主題">☀️</button>
     </div>
   </div>
@@ -130,11 +139,11 @@
 
     <article class="content">
 <div class="intro"><p>用 Play Points 換了抵用金，卻還沒想到要買什麼？除了遊戲內的商品，想讀的電子書或付費 App 也能列入清單。先選自己需要的內容，再看結帳畫面能不能使用 Google Play 餘額，比為了用完點數而多買一筆更容易做決定。</p></div>
-<section class="section answer-box" aria-labelledby="uses"><h2 id="uses">台灣 Google Play 抵用金可以買什麼</h2><p><strong>抵用金兌換後會成為付款用的 Google Play 餘額。</strong>台灣支援的用途包括 App、遊戲、圖書、電影與部分訂閱。下面先從想買的內容找使用方式；個別商品是否販售、是否提供餘額付款，要看該筆交易的結帳畫面。</p><div class="table-wrap" tabindex="0" role="region" aria-label="台灣 Google Play 抵用金用途"><table><caption>依購買目的選擇使用方式</caption><thead><tr><th scope="col">想買的內容</th><th scope="col">可以找什麼</th><th scope="col">結帳前看哪裡</th></tr></thead><tbody>
-<tr><th scope="row">App、遊戲</th><td>付費 App、遊戲與支援的 App 內商品</td><td>Google Play 付款畫面的餘額選項</td></tr>
-<tr><th scope="row">電子書</th><td>Google Play 圖書中可購買的書籍</td><td>新台幣價格與購買帳號</td></tr>
-<tr><th scope="row">電影</th><td>支援購買或租借的影片</td><td>該部影片的販售狀態與付款方式</td></tr>
-<tr><th scope="row">訂閱</th><td>接受餘額付款的訂閱項目</td><td>首次付款與續訂的設定</td></tr>
+<section class="section answer-box" aria-labelledby="uses"><h2 id="uses">台灣 Google Play 抵用金可以買什麼</h2><p><strong>抵用金兌換後會成為付款用的 Google Play 餘額。</strong>台灣支援的用途包括 App、遊戲、圖書、電影與部分訂閱。下面先從想買的內容找使用方式；個別商品是否販售、是否提供餘額付款，要看該筆交易的結帳畫面。</p><div class="table-wrap" tabindex="0" role="region" aria-label="台灣 Google Play 抵用金用途"><table class="reading-responsive-table" role="table"><caption>依購買目的選擇使用方式</caption><thead><tr role="row"><th scope="col" role="columnheader">想買的內容</th><th scope="col" role="columnheader">可以找什麼</th><th scope="col" role="columnheader">結帳前看哪裡</th></tr></thead><tbody>
+<tr role="row"><th scope="row" role="rowheader" data-column-label="想買的內容">App、遊戲</th><td role="cell" data-column-label="可以找什麼">付費 App、遊戲與支援的 App 內商品</td><td role="cell" data-column-label="結帳前看哪裡">Google Play 付款畫面的餘額選項</td></tr>
+<tr role="row"><th scope="row" role="rowheader" data-column-label="想買的內容">電子書</th><td role="cell" data-column-label="可以找什麼">Google Play 圖書中可購買的書籍</td><td role="cell" data-column-label="結帳前看哪裡">新台幣價格與購買帳號</td></tr>
+<tr role="row"><th scope="row" role="rowheader" data-column-label="想買的內容">電影</th><td role="cell" data-column-label="可以找什麼">支援購買或租借的影片</td><td role="cell" data-column-label="結帳前看哪裡">該部影片的販售狀態與付款方式</td></tr>
+<tr role="row"><th scope="row" role="rowheader" data-column-label="想買的內容">訂閱</th><td role="cell" data-column-label="可以找什麼">接受餘額付款的訂閱項目</td><td role="cell" data-column-label="結帳前看哪裡">首次付款與續訂的設定</td></tr>
 </tbody></table></div><p class="reader-source">依據：<a href="https://support.google.com/googleplay/answer/6080850?hl=zh-Hant">Google 官方餘額用途的台灣項目</a>。</p></section>
 <nav class="intl-article-toc" aria-label="目錄"><h2 id="article-section-1">目錄</h2><ol><li><a href="#choose">遊戲以外，電子書也是選項</a></li><li><a href="#youtube">YouTube 與訂閱怎麼看</a></li><li><a href="#checkout">在結帳畫面選擇 Play 餘額</a></li><li><a href="#limits">不能使用的地方與期限</a></li></ol></nav>
 <section class="section"><h2 id="choose">遊戲以外，電子書也是選項</h2><p>最近沒有想買的遊戲道具，可以先看看自己的閱讀清單。買一本原本就想讀的電子書，或補上常用 App 的付費功能，也是在運用抵用金。選擇時從需要的內容出發，不必為了清空餘額多買不會使用的東西。</p><p>遊戲中的購買按鈕若帶你前往官方 Web 商店或其他付款服務，就要另外看付款方式。<strong>從 App 開始購買，不等於最後由 Google Play 請款。</strong>能否使用 Play 餘額，要看實際的結帳畫面。</p><p>如果還沒兌換，想先比較特定遊戲的優待券與抵用金，可以看<a href="/tw/articles/google-play-points-use-coupons.html">Play Points 的兌換方式與交換選擇</a>。優待券是指定商品的折扣，抵用金則是支援交易的付款餘額。</p></section>

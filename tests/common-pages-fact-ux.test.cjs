@@ -29,13 +29,15 @@ test('地域別の公式レート・年間しきい値・通貨単位を固定�
   }
 });
 
-test('あとがきページは感謝→開発秘話→アップデートの順で、重複Q&Aと不要な上部ナビを持たない', () => {
+test('更新情報へ先に到達でき、本人の感謝と開発秘話も残る', () => {
   const html = read('info.html');
   assert.match(html, /<h1>あとがき・アップデート情報<\/h1>/);
   const thanks = html.indexOf('id="thanks-section"');
   const about = html.indexOf('id="about-section"');
   const update = html.indexOf('id="update-section"');
-  assert.ok(thanks >= 0 && thanks < about && about < update);
+  assert.ok(update >= 0 && update < thanks && thanks < about);
+  assert.match(html, /href="#thanks-section">あとがきを読む/);
+  assert.match(html, /href="\/blog\/">記事を探す/);
   assert.match(html, /<h2>あとがき・開発秘話<\/h2>/);
   assert.doesNotMatch(html, /id="qa-section"/);
   assert.doesNotMatch(html, /"@type": "FAQPage"/);

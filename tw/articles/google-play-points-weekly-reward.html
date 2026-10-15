@@ -18,7 +18,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
   <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=2f0b4eec92">
 <meta property="og:type" content="article">
   <meta property="og:site_name" content="Google Play Points 計算器">
   <meta property="og:title" content="Google Play Points 每週獎勵不見？台灣星期五重設與 Play Pass 星期四">
@@ -87,7 +87,7 @@
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -101,7 +101,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/tw/author/katakata.html">關於 Katakata</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
+      <summary data-region-code="TW" aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play 國家／地區</p>
         <a href="/">日本</a>
@@ -112,6 +112,15 @@
         <a href="/in/">印度</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>選單</summary><nav aria-label="主要導覽">
+        <a href="/tw/">計算機</a>
+        <a href="/tw/articles/">指南</a>
+        <a href="/tw/articles/#intl-hub-trouble">問題排解</a>
+        <a href="/tw/articles/#intl-hub-earn">積點與使用</a>
+        <a href="/tw/articles/#intl-hub-levels">等級與回饋</a>
+        <a href="/tw/articles/#intl-hub-account">帳號與基本</a>
+        <a href="/tw/author/katakata.html">關於 Katakata</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="切換主題">☀️</button>
     </div>
   </div>
@@ -149,14 +158,14 @@
     <section class="section answer-box" aria-labelledby="quick-check">
       <h2 id="quick-check">每週獎勵不見時，先看你是哪一種情況</h2>
       <div class="intro"><strong>先分清你要領的是一般每週獎勵、Play Pass 星期四福利，還是超級每週獎勵。</strong>台灣一般每週獎勵目前從銀級開始，依 Play 國家/地區在星期五重設；Play Pass 的每週 Play Points 福利則是符合資格者在星期四更新的另一套福利。</div>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="每週獎勵不見時，先看你是哪一種情況: 比較表（使用左右方向鍵捲動）"><table>
-        <thead><tr><th>目前狀況</th><th>先檢查</th><th>下一步</th></tr></thead>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="每週獎勵不見時，先看你是哪一種情況: 比較表（使用左右方向鍵捲動）"><table class="reading-responsive-table" role="table">
+        <thead><tr role="row"><th role="columnheader">目前狀況</th><th role="columnheader">先檢查</th><th role="columnheader">下一步</th></tr></thead>
         <tbody>
-          <tr><td>完全看不到一般每週獎勵</td><td>是否銀級以上、目前 Play 國家/地區</td><td>銀級以上仍未顯示，再確認星期五重設與帳號</td></tr>
-          <tr><td>本週曾經開過或領過，現在卡片不見</td><td>Play Points 點數記錄</td><td>先確認是否已經領取，不要重複找另一張卡片</td></tr>
-          <tr><td>星期四看到福利，星期五又有另一個</td><td>是否為 Play Pass 訂閱者或家庭成員</td><td>兩者分開判斷；星期四 Play Pass、星期五一般 Play Points</td></tr>
-          <tr><td>換新手機後 Play Pass 週次福利不見</td><td>是否剛把 Play Pass 帳號加入新裝置</td><td>Google 說明可能因政策與合規檢查最長需要約 15 天才顯示</td></tr>
-          <tr><td>別人的帳號有「超級每週」，自己的沒有</td><td>自己福利頁籤是否真的出現該卡片</td><td>不要把其他帳號截圖當成所有台灣帳號的固定規則</td></tr>
+          <tr role="row"><td role="cell" data-column-label="目前狀況">完全看不到一般每週獎勵</td><td role="cell" data-column-label="先檢查">是否銀級以上、目前 Play 國家/地區</td><td role="cell" data-column-label="下一步">銀級以上仍未顯示，再確認星期五重設與帳號</td></tr>
+          <tr role="row"><td role="cell" data-column-label="目前狀況">本週曾經開過或領過，現在卡片不見</td><td role="cell" data-column-label="先檢查">Play Points 點數記錄</td><td role="cell" data-column-label="下一步">先確認是否已經領取，不要重複找另一張卡片</td></tr>
+          <tr role="row"><td role="cell" data-column-label="目前狀況">星期四看到福利，星期五又有另一個</td><td role="cell" data-column-label="先檢查">是否為 Play Pass 訂閱者或家庭成員</td><td role="cell" data-column-label="下一步">兩者分開判斷；星期四 Play Pass、星期五一般 Play Points</td></tr>
+          <tr role="row"><td role="cell" data-column-label="目前狀況">換新手機後 Play Pass 週次福利不見</td><td role="cell" data-column-label="先檢查">是否剛把 Play Pass 帳號加入新裝置</td><td role="cell" data-column-label="下一步">Google 說明可能因政策與合規檢查最長需要約 15 天才顯示</td></tr>
+          <tr role="row"><td role="cell" data-column-label="目前狀況">別人的帳號有「超級每週」，自己的沒有</td><td role="cell" data-column-label="先檢查">自己福利頁籤是否真的出現該卡片</td><td role="cell" data-column-label="下一步">不要把其他帳號截圖當成所有台灣帳號的固定規則</td></tr>
         </tbody>
       </table></div>
     </section>
@@ -166,7 +175,7 @@
     <section class="section" id="normal">
       <h2 id="article-section-3">一般每週獎勵：銀級以上、週五（星期五）重設</h2>
       <p>Google 台灣等級表目前從<strong>銀級</strong>開始列出每週獎勵；銅級沒有一般每週獎勵。Google 的 Play Points 說明也指出，一般每週獎勵會依使用者的 <strong>Play 國家/地區在星期五重設</strong>。 <span class="article-source-inline">(<a href="https://support.google.com/googleplay/answer/9077192?hl=zh-Hant&amp;co=GENIE.CountryCode%3DTW">Google 官方說明</a>)</span></p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="一般每週獎勵：銀級以上、週五（星期五）重設: 比較表（使用左右方向鍵捲動）"><table><thead><tr><th>等級</th><th>台灣一般每週獎勵</th></tr></thead><tbody><tr><td>銅級 0–249</td><td>官方等級表未列一般每週獎勵</td></tr><tr><td>銀級 250–999</td><td>銀級每週獎勵</td></tr><tr><td>黃金級 1,000–3,999</td><td>黃金級每週獎勵</td></tr><tr><td>白金級 4,000–14,999</td><td>白金級每週獎勵</td></tr><tr><td>鑽石級 15,000+</td><td>鑽石級每週獎勵</td></tr></tbody></table></div>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="一般每週獎勵：銀級以上、週五（星期五）重設: 比較表（使用左右方向鍵捲動）"><table class="reading-responsive-table" role="table"><thead><tr role="row"><th role="columnheader">等級</th><th role="columnheader">台灣一般每週獎勵</th></tr></thead><tbody><tr role="row"><td role="cell" data-column-label="等級">銅級 0–249</td><td role="cell" data-column-label="台灣一般每週獎勵">官方等級表未列一般每週獎勵</td></tr><tr role="row"><td role="cell" data-column-label="等級">銀級 250–999</td><td role="cell" data-column-label="台灣一般每週獎勵">銀級每週獎勵</td></tr><tr role="row"><td role="cell" data-column-label="等級">黃金級 1,000–3,999</td><td role="cell" data-column-label="台灣一般每週獎勵">黃金級每週獎勵</td></tr><tr role="row"><td role="cell" data-column-label="等級">白金級 4,000–14,999</td><td role="cell" data-column-label="台灣一般每週獎勵">白金級每週獎勵</td></tr><tr role="row"><td role="cell" data-column-label="等級">鑽石級 15,000+</td><td role="cell" data-column-label="台灣一般每週獎勵">鑽石級每週獎勵</td></tr></tbody></table></div>
       <p>台灣官方等級表沒有列出韓國等級表那種固定的「最高幾點」數字，因此不要把其他地區的最高點數直接套到台灣。</p>
     </section>
 

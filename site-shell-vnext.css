@@ -505,4 +505,9 @@ transition-duration: 0.01ms !important;
 animation-duration: 0.01ms !important;
 animation-iteration-count: 1 !important;
 }
-}
+}/* 補助ページからも、目的のページへすぐ戻れるようにする。 */
+.fixed-page-quicklinks { display:flex; flex-wrap:wrap; gap:8px 12px; margin:14px 0 22px; }
+.fixed-page-quicklinks a { display:inline-flex; align-items:center; min-height:44px; padding:8px 12px; border:1px solid var(--pp-shell-border,#d7e3df); border-radius:8px; color:var(--pp-shell-link,#176773); background:var(--pp-shell-surface,#fff); font-size:14px; line-height:1.5; text-decoration:none; }
+.fixed-page-quicklinks a:hover { background:var(--pp-shell-surface-soft,#edf5f2); }
+.info-page h1 { font-size:clamp(24px,5vw,32px); line-height:1.5; }
+@media(max-width:760px) { .info-page .calculator-wrapper { padding:18px 14px; } .info-page #update-section { margin-top:12px; } }

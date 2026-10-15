@@ -37,6 +37,7 @@ function polishPage(html, file) {
     tools = true;
   }
   if (/^(?:en\/|ko\/|tw\/)?games\/index\.html$/.test(file)) {
+    if (!html.includes('class="game-directory-notes"')) html = html.replace(/(<p class="game-portal-lead">[\s\S]*?<\/p>)/, '<details class="game-directory-notes"><summary>' + ({ja:'この計算機について',en:'About these calculators',ko:'계산기 이용 안내',tw:'關於這些計算器'})[locale] + '</summary>$1</details>');
     if (!html.includes('data-game-directory-search')) {
       html = html.replace(/(<div class="games-grid">)/, `<div class="game-search" data-game-directory-search><label for="game-search">${copy.search}</label><input id="game-search" type="search" placeholder="${copy.placeholder}" autocomplete="off"><p class="game-search-count" aria-live="polite"></p><button type="button" data-game-search-clear hidden>${copy.clear}</button></div>$1`);
     }
@@ -60,7 +61,7 @@ function polishPage(html, file) {
     });
     tools = true;
   }
-  if (/^(?:en\/|ko\/|tw\/)?games\//.test(file)) html = html.replace(/(<span class="site-logo-text">)(?!PlayPoint)/, '$1PlayPoint · ');
+  if (/^(?:en\/|ko\/|tw\/)?games\//.test(file)) html = html.replace(/<span class="site-logo-text">[\s\S]*?<\/span>/, '<span class="site-logo-text">PlayPoint</span>');
   if (html.includes('res-earned-points')) tools = true;
   if (tools && !html.includes('data-site-reader-tools')) html = html.replace('</body>', '<script src="/js/site-reader-tools.js" defer data-site-reader-tools></script>\n</body>');
   if (/^(?:en\/|ko\/|tw\/|hk\/|in\/)?index\.html$/.test(file)) {

@@ -75,7 +75,7 @@ function offersHtml(entry, name, locale) {
   const c = COPY[locale], items = entry.offers[locale];
   if (!items.length) return '';
   const cards = items.map(item => `<article class="game-offer-card"><span class="game-offer-kind">${escape(item.subscription ? c.subscription : c.type)}</span><h3>${escape(item.names[locale])}</h3><p>${escape(item.details[locale])}</p><div class="game-offer-bottom"><strong>${escape(c.price)}</strong><a class="game-offer-action" href="#game-calculator" data-offer-input="amount"${item.subscription ? ' data-offer-subscription="true"' : ''}>${escape(c.action)} →</a><p class="game-offer-source">${sourceLink(item.evidence, c)}</p></div></article>`).join('\n');
-  return `<section class="game-offers" aria-labelledby="game-offers-title"><div class="game-offers-heading"><div><span class="game-offers-eyebrow">${c.heading}</span><h2 id="game-offers-title">${escape(name)}: ${c.offers}</h2></div><a class="game-offers-skip" href="#game-calculator">${c.skip}</a></div><p class="game-offers-lead">${c.lead}</p><div class="game-offers-grid">${cards}</div></section>`;
+  return `<details class="game-purchase-details"><summary>${c.offers}</summary><section class="game-offers" aria-labelledby="game-offers-title"><div class="game-offers-heading"><div><span class="game-offers-eyebrow">${c.heading}</span><h2 id="game-offers-title">${escape(name)}: ${c.offers}</h2></div><a class="game-offers-skip" href="#game-calculator">${c.skip}</a></div><p class="game-offers-lead">${c.lead}</p><div class="game-offers-grid">${cards}</div></section></details>`;
 }
 function normalizeCalculator(calc, c) {
   let result = calc.replace(/<p class="preset-heading">[\s\S]*?<\/div>/, '');

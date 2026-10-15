@@ -18,7 +18,7 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
   <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=2f0b4eec92">
 <meta property="og:type" content="article">
     <meta property="og:site_name" content="Google Play Points Calculator">
     <meta property="og:title" content="Can't join Google Play Points in the US? Eligibility checks">
@@ -142,7 +142,7 @@
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -156,7 +156,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/en/author/katakata.html">About Katakata</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play country: United States"><span aria-hidden="true">🌐</span><span>United States</span></summary>
+      <summary data-region-code="US" aria-label="Play country: United States"><span aria-hidden="true">🌐</span><span>United States</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play country</p>
         <a href="/">Japan</a>
@@ -167,6 +167,15 @@
         <a href="/in/">India</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>Menu</summary><nav aria-label="Primary navigation">
+        <a href="/en/">Calculator</a>
+        <a href="/en/articles/">Guides</a>
+        <a href="/en/articles/#intl-hub-trouble">Troubleshooting</a>
+        <a href="/en/articles/#intl-hub-earn">Earn &amp; spend</a>
+        <a href="/en/articles/#intl-hub-levels">Levels &amp; rewards</a>
+        <a href="/en/articles/#intl-hub-account">Account &amp; basics</a>
+        <a href="/en/author/katakata.html">About Katakata</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="Switch theme">☀️</button>
     </div>
   </div>
@@ -223,26 +232,26 @@
         <section class="section">
           <h2 id="section-1">Check the signup requirements first</h2>
           <p>Google's public signup guidance combines country, device, account management, age, payment method and billing information. Passing only one of those checks is not enough.</p>
-          <div class="table-wrap" tabindex="0" role="region" aria-label="Check the signup requirements first: Comparison table (scroll with the left and right arrow keys)"><table>
-            <thead><tr><th>Check</th><th>What should match</th></tr></thead>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="Check the signup requirements first: Comparison table (scroll with the left and right arrow keys)"><table class="reading-responsive-table" role="table">
+            <thead><tr role="row"><th role="columnheader">Check</th><th role="columnheader">What should match</th></tr></thead>
             <tbody>
-              <tr><td>Play country</td><td>United States on the Google Play account you intend to use.</td></tr>
-              <tr><td>Account</td><td>Not managed by a school or parent; workplace accounts depend on their actual management policy.</td></tr>
-              <tr><td>Age</td><td>18 or older under Google's current Play Points learning guidance.</td></tr>
-              <tr><td>Payment</td><td>A valid payment method with a billing address that matches the Play country.</td></tr>
-              <tr><td>Device</td><td>A supported Android device or computer.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="Check">Play country</td><td role="cell" data-column-label="What should match">United States on the Google Play account you intend to use.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="Check">Account</td><td role="cell" data-column-label="What should match">Not managed by a school or parent; workplace accounts depend on their actual management policy.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="Check">Age</td><td role="cell" data-column-label="What should match">18 or older under Google's current Play Points learning guidance.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="Check">Payment</td><td role="cell" data-column-label="What should match">A valid payment method with a billing address that matches the Play country.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="Check">Device</td><td role="cell" data-column-label="What should match">A supported Android device or computer.</td></tr>
             </tbody>
           </table></div>
         </section>
         <section class="section">
           <h2 id="section-2">Match the symptom to the first check</h2>
-          <div class="table-wrap" tabindex="0" role="region" aria-label="Match the symptom to the first check: Comparison table (scroll with the left and right arrow keys)"><table>
-            <thead><tr><th>What you see</th><th>Check first</th><th>Next action</th></tr></thead>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="Match the symptom to the first check: Comparison table (scroll with the left and right arrow keys)"><table class="reading-responsive-table" role="table">
+            <thead><tr role="row"><th role="columnheader">What you see</th><th role="columnheader">Check first</th><th role="columnheader">Next action</th></tr></thead>
             <tbody>
-              <tr><td>No Play Points or Join menu</td><td>Play country, account management, age</td><td>Confirm the affected Google account and its Play country before changing settings.</td></tr>
-              <tr><td>Play Points appears, but signup will not complete</td><td>Payment method and billing address</td><td>Verify the active payment profile matches the United States.</td></tr>
-              <tr><td>You changed Play country recently</td><td>Country change status</td><td>Allow for Google's stated update window before creating a second profile.</td></tr>
-              <tr><td>You already joined, but purchase points are missing</td><td>Transaction tracking</td><td>Use the <a href="/en/articles/google-play-points-not-showing.html">missing-points troubleshooting guide</a> instead.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="What you see">No Play Points or Join menu</td><td role="cell" data-column-label="Check first">Play country, account management, age</td><td role="cell" data-column-label="Next action">Confirm the affected Google account and its Play country before changing settings.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="What you see">Play Points appears, but signup will not complete</td><td role="cell" data-column-label="Check first">Payment method and billing address</td><td role="cell" data-column-label="Next action">Verify the active payment profile matches the United States.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="What you see">You changed Play country recently</td><td role="cell" data-column-label="Check first">Country change status</td><td role="cell" data-column-label="Next action">Allow for Google's stated update window before creating a second profile.</td></tr>
+              <tr role="row"><td role="cell" data-column-label="What you see">You already joined, but purchase points are missing</td><td role="cell" data-column-label="Check first">Transaction tracking</td><td role="cell" data-column-label="Next action">Use the <a href="/en/articles/google-play-points-not-showing.html">missing-points troubleshooting guide</a> instead.</td></tr>
             </tbody>
           </table></div>
           <p>On Android, make sure you are signed into the account that will actually make purchases, then open <strong>Profile → Play Points</strong>. Membership and balance belong to the account, not to the device as a whole.</p>

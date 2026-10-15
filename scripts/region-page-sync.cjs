@@ -16,7 +16,7 @@ const REGION_PAGES = Object.freeze({
     title: 'Google Play Points 計算器（香港）｜香港等級與消費金額試算',
     description: '香港 Play Points 升級要花多少？以鉑金級 4,000 分、鑽石級 15,000 分及每 HK$7 的獲點率，估算尚欠積分與港元消費金額。',
     mainTitle: 'Google Play Points 計算器（香港）',
-    siteDescription: '依照香港 Google Play Points 的等級與獲點率，估算升級所需消費金額。<br>輸入目前等級、目標等級及尚欠點數，即可用港元計算。',
+    siteDescription: "輸入目前等級與尚欠積分，試算香港升級所需的港元消費金額。",
     factNote: `<div class="region-fact-note" role="note" aria-label="香港 Play Points 官方條件"><p><strong>香港版：</strong>基本獲點率以每 HK$7 計算。香港目前有銅級、銀級、金級、鉑金級、鑽石級五個等級。鉑金級需要一年度內賺取 4,000 分，鑽石級需要 15,000 分；升級看的是年度積分進度，不是兌換後剩下的積分餘額。</p><p><strong>升級要花多少？</strong>例如剛達到金級、年度進度為 1,000 分，升至鉑金級尚欠 3,000 分。按金級每 HK$7 賺 1.5 分計算，約需 HK$14,000。若剛達到鉑金級、年度進度為 4,000 分，升至鑽石級尚欠 11,000 分，按每 HK$7 賺 1.75 分計算，約需 HK$44,000。</p><p>以上是維持該基本獲點率、不計活動或獎賞的稅前試算；Google 會按每筆購買四捨五入。你的年度進度通常不會剛好停在門檻，將 Play Points 畫面顯示的尚欠分數填入下方，會更貼近自己的情況。</p><p><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DHK&hl=zh-HK" target="_blank" rel="noopener noreferrer">香港官方等級與獲點率</a> · <a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DHK&hl=zh-HK" target="_blank" rel="noopener noreferrer">年度進度、兌換與獲點計算方式</a></p></div>`
   },
   in: {
@@ -27,7 +27,7 @@ const REGION_PAGES = Object.freeze({
     title: 'Google Play Points Calculator for India | INR level-up estimate',
     description: 'Calculate Play Points earned from Indian rupee spending and the INR needed to level up. Bronze earns 1 point per ₹5 spent; reward redemption values are separate.',
     mainTitle: 'Google Play Points Calculator — India',
-    siteDescription: 'Estimate the spending needed to reach your next Google Play Points level using India-specific levels and earn rates.<br>Enter your current level, target level, and points needed to calculate in INR.',
+    siteDescription: "Enter your levels and points needed to estimate spending in Indian rupees.",
     factNote: `<div class="region-fact-note" role="note" aria-label="India Play Points official conditions"><p><strong>India edition:</strong> Bronze earns 1 point per ₹5 of eligible pre-tax spending; ₹5 is the earning unit, not the rupee cash value of a point. Google currently lists Bronze, Silver, Gold, and Platinum for India, with Platinum starting at 4,000 points.</p><p>For example, ₹500 of eligible spending earns about 100 points at Bronze; to value points you already have, compare the reward and required points in your Play Points Use tab. Points cannot be converted to cash.</p><p><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DIN&hl=en-IN" target="_blank" rel="noopener noreferrer">Check the official Google Play India level and earn-rate table</a> · <a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DIN&hl=en" target="_blank" rel="noopener noreferrer">India earning and redemption rules</a></p></div>`
   }
 });
@@ -104,7 +104,7 @@ function buildHongKongPage(source) {
   html = html.replace(/(<h1 id="main-title"[^>]*>)[\s\S]*?(<\/h1>)/, `$1${config.mainTitle}$2`);
   html = html.replace(/(<p id="site-description"[^>]*>)[\s\S]*?(<\/p>)/, `$1${config.siteDescription}$2`);
   // HK$14などの金額を置換文字列の$1として解釈させず、そのまま挿入する。
-  html = html.replace(/(<p id="site-description"[^>]*>[\s\S]*?<\/p>)/, (_match, description) => `${description}\n\n    ${config.factNote}`);
+  html = html.replace(/(<footer class="page-footer">)/, (_match, footer) => `${config.factNote}\n\n${footer}`);
   html = html.replace('每 NT$30 獲得點數（自動帶入，可修改）', '每 HK$7 獲得點數（自動帶入，可修改）');
   html = html.replace('每 NT$30 回饋率（直接輸入）', '每 HK$7 獲得點數（自動帶入，可修改）');
   html = html.replace('placeholder="例如：1500" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"', 'placeholder="例如：350" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"');
@@ -139,7 +139,7 @@ function buildIndiaPage(source) {
   html = labelFallbackAuthorLinks(html, 'en', ' (English)');
   html = html.replace(/(<h1 id="main-title"[^>]*>)[\s\S]*?(<\/h1>)/, `$1${config.mainTitle}$2`);
   html = html.replace(/(<p id="site-description"[^>]*>)[\s\S]*?(<\/p>)/, `$1${config.siteDescription}$2`);
-  html = html.replace(/(<p id="site-description"[^>]*>[\s\S]*?<\/p>)/, `$1\n\n    ${config.factNote}`);
+  html = html.replace(/(<footer class="page-footer">)/, (_match, footer) => `${config.factNote}\n\n${footer}`);
   html = html.replace('Points per $1 (auto-filled, editable)', 'Points per ₹5 (auto-filled, editable)');
   html = html.replace('Earn rate per $1 (direct entry)', 'Points per ₹5 (auto-filled, editable)');
   html = html.replace('placeholder="e.g., 50" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"', 'placeholder="e.g. 500" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"');

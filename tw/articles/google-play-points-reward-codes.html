@@ -15,7 +15,7 @@
                         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
   <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=2f0b4eec92">
 <meta property="og:type" content="article">
     <meta property="og:site_name" content="Google Play Points 計算器">
     <meta property="og:title" content="Google Play Points 序號在哪裡？獎勵代碼的查找與使用方法">
@@ -66,7 +66,7 @@
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -80,7 +80,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/tw/author/katakata.html">關於 Katakata</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
+      <summary data-region-code="TW" aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play 國家／地區</p>
         <a href="/">日本</a>
@@ -91,6 +91,15 @@
         <a href="/in/">印度</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>選單</summary><nav aria-label="主要導覽">
+        <a href="/tw/">計算機</a>
+        <a href="/tw/articles/">指南</a>
+        <a href="/tw/articles/#intl-hub-trouble">問題排解</a>
+        <a href="/tw/articles/#intl-hub-earn">積點與使用</a>
+        <a href="/tw/articles/#intl-hub-levels">等級與回饋</a>
+        <a href="/tw/articles/#intl-hub-account">帳號與基本</a>
+        <a href="/tw/author/katakata.html">關於 Katakata</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="切換主題">☀️</button>
     </div>
   </div>
@@ -130,7 +139,7 @@
 
     <article class="content">
 <div class="intro"><p>用 Play Points 換了獎勵，接下來卻不知道序號在哪裡、要去哪裡輸入？先別急著再兌換一次。不同獎勵的保存位置和使用方式不一樣；找到自己換到的是哪一種，就能少繞一圈。</p></div>
-<section class="section answer-box" aria-labelledby="code-types"><h2 id="code-types">Play Points 獎勵不是每一種都有序號</h2><p><strong>合作夥伴優待券到 Play 點數的「獎勵」分頁找；Google Play 內購折扣到「通知與優惠」找。</strong>抵用金則成為付款餘額，遊戲內商品要到遊戲中查看。不要把這幾種獎勵都當成需要輸入的 Google Play 兌換碼。</p><div class="table-wrap" tabindex="0" role="region" aria-label="Play Points 獎勵的保存位置"><table><caption>先用獎勵名稱找到正確入口</caption><thead><tr><th scope="col">換到的獎勵</th><th scope="col">到哪裡找</th><th scope="col">如何使用</th></tr></thead><tbody><tr><th scope="row">第三方合作夥伴優待券</th><td>Play 點數 → 獎勵</td><td>依該獎勵的說明到合作夥伴使用</td></tr><tr><th scope="row">Google Play 內購折扣</th><td>通知與優惠 → 已儲存的優惠</td><td>符合條件的內購自動套用</td></tr><tr><th scope="row">Play 抵用金</th><td>付款方式中的 Google Play 餘額</td><td>支援的結帳畫面選餘額付款</td></tr><tr><th scope="row">遊戲內商品</th><td>對應的 App 或遊戲</td><td>確認該遊戲帳號是否收到商品</td></tr></tbody></table></div><p class="reader-source">依據：<a href="https://support.google.com/googleplay/answer/15776916?co=GENIE.Platform%3DAndroid&amp;hl=zh-Hant">Google 官方使用 Play 點數說明</a>。</p></section>
+<section class="section answer-box" aria-labelledby="code-types"><h2 id="code-types">Play Points 獎勵不是每一種都有序號</h2><p><strong>合作夥伴優待券到 Play 點數的「獎勵」分頁找；Google Play 內購折扣到「通知與優惠」找。</strong>抵用金則成為付款餘額，遊戲內商品要到遊戲中查看。不要把這幾種獎勵都當成需要輸入的 Google Play 兌換碼。</p><div class="table-wrap" tabindex="0" role="region" aria-label="Play Points 獎勵的保存位置"><table class="reading-responsive-table" role="table"><caption>先用獎勵名稱找到正確入口</caption><thead><tr role="row"><th scope="col" role="columnheader">換到的獎勵</th><th scope="col" role="columnheader">到哪裡找</th><th scope="col" role="columnheader">如何使用</th></tr></thead><tbody><tr role="row"><th scope="row" role="rowheader" data-column-label="換到的獎勵">第三方合作夥伴優待券</th><td role="cell" data-column-label="到哪裡找">Play 點數 → 獎勵</td><td role="cell" data-column-label="如何使用">依該獎勵的說明到合作夥伴使用</td></tr><tr role="row"><th scope="row" role="rowheader" data-column-label="換到的獎勵">Google Play 內購折扣</th><td role="cell" data-column-label="到哪裡找">通知與優惠 → 已儲存的優惠</td><td role="cell" data-column-label="如何使用">符合條件的內購自動套用</td></tr><tr role="row"><th scope="row" role="rowheader" data-column-label="換到的獎勵">Play 抵用金</th><td role="cell" data-column-label="到哪裡找">付款方式中的 Google Play 餘額</td><td role="cell" data-column-label="如何使用">支援的結帳畫面選餘額付款</td></tr><tr role="row"><th scope="row" role="rowheader" data-column-label="換到的獎勵">遊戲內商品</th><td role="cell" data-column-label="到哪裡找">對應的 App 或遊戲</td><td role="cell" data-column-label="如何使用">確認該遊戲帳號是否收到商品</td></tr></tbody></table></div><p class="reader-source">依據：<a href="https://support.google.com/googleplay/answer/15776916?co=GENIE.Platform%3DAndroid&amp;hl=zh-Hant">Google 官方使用 Play 點數說明</a>。</p></section>
 <nav class="intl-article-toc" aria-label="目錄"><h2 id="article-section-1">目錄</h2><ol><li><a href="#find-code">查找合作夥伴獎勵代碼</a></li><li><a href="#redeem">確認序號的兌換位置</a></li><li><a href="#no-code">沒有序號的優惠券與抵用金</a></li><li><a href="#trouble">找不到或無法使用時</a></li></ol></nav>
 <section class="section"><h2 id="find-code">先確認兌換帳號，再打開「獎勵」</h2><ol><li>打開 Play 商店的個人資料選單，選擇兌換時使用的 Google 帳號。</li><li>進入「Play 點數」→「獎勵」，找到換取的合作夥伴優待券。</li><li>閱讀獎勵名稱、使用期限、適用平台與使用說明。若提供代碼，依該說明取得並使用。</li></ol><p>「點數記錄」能協助你比對是否有兌換紀錄，但它不是所有獎勵代碼的共同保存欄。先對上特典名稱，再到對應位置查看，比反覆找同一個序號輸入框更容易找到答案。</p><p>台灣帳號當下能換的獎勵，以自己 Play Points 畫面列出的項目為準。這裡介紹的是查找方式，不是每個帳號都能領到同一組代碼的清單。</p></section>
 <section class="section"><h2 id="redeem">Google Play 兌換碼，還是合作夥伴的代碼？</h2><p>如果說明寫的是 Google Play 兌換碼，可以依官方流程到 <a href="https://play.google.com/redeem">Google Play 兌換頁面</a>輸入，再核對接收的帳號。Android 也可從 Play 商店的「付款與訂閱」→「兌換代碼」進入。操作前先讀代碼的適用地區與條件。</p><p>如果換到的是第三方合作夥伴優待券，就照獎勵指定的網站或 App 使用。把合作夥伴的序號貼進 Google Play 禮物卡輸入框，不會把它變成 Play 餘額。</p><p>從海外網站取得的 Google Play 禮物卡，也要另外確認台灣帳號能否使用。<a href="/tw/articles/google-play-points-gift-cards.html">台灣帳號與 Google Play 禮物卡的地區條件</a>處理這個問題；它和找 Play Points 交換獎勵代碼是不同的步驟。</p><p class="reader-source">操作依據：<a href="https://support.google.com/googleplay/answer/3422659?co=GENIE.Platform%3DAndroid&amp;hl=zh-Hant">Google Play 兌換碼使用方式</a>。</p></section>

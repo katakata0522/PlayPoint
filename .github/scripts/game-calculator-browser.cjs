@@ -52,6 +52,12 @@ async function verifyGameCalculators(browser, baseUrl, blockExternalRequests, ar
         if (/^\/games\/[^/]+\/$/.test(target.pathname) || await page.locator('.game-offers').count()) {
           const offers = page.locator('.game-offers');
           assert.equal(await offers.count(), 1, '全ゲームで特別商品から選べる');
+          const purchaseDetails = page.locator('.game-purchase-details');
+          if (await purchaseDetails.count()) {
+            assert.equal(await purchaseDetails.getAttribute('open'), null, '計算機への入口では商品説明を閉じておく');
+            await purchaseDetails.locator(':scope > summary').click();
+            assert.equal(await offers.isVisible(), true, '商品比較は必要なときに開ける');
+          }
           assert.ok(await page.evaluate(() => Boolean(document.querySelector('.game-offers').compareDocumentPosition(document.querySelector('#game-calculator')) & Node.DOCUMENT_POSITION_FOLLOWING)), '商品紹介は計算より前');
           const more = offers.locator('summary');
           if (await more.count()) await more.click();

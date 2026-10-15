@@ -290,6 +290,20 @@ async function inspectIntlReading(browser, baseUrl) {
       await page.goto(new URL('/' + item.locale + '/articles/', baseUrl).href, { waitUntil: 'load' });
       const search = page.locator('[data-guide-search]');
       await search.waitFor({ state: 'visible' });
+      if (item.width <= 760) {
+        const menu = page.locator('.intl-mobile-menu');
+        await menu.locator(':scope > summary').click();
+        assert(await menu.locator('nav a:visible').count() === 7, item.locale + ': mobile menu links must be visible');
+        const menuBounds = await menu.locator('nav').boundingBox();
+        assert(menuBounds && menuBounds.x >= 0 && menuBounds.x + menuBounds.width <= item.width, item.locale + ': mobile menu must fit the screen');
+        await menu.locator(':scope > summary').click();
+        const regions = page.locator('.site-region-switcher');
+        await regions.locator(':scope > summary').click();
+        assert(await regions.locator('.site-region-menu a:visible').count() === 5, item.locale + ': region destinations must be visible');
+        const regionBounds = await regions.locator('.site-region-menu').boundingBox();
+        assert(regionBounds && regionBounds.x >= 0 && regionBounds.x + regionBounds.width <= item.width, item.locale + ': region menu must fit the screen');
+        await regions.locator(':scope > summary').click();
+      }
       const bounds = await search.boundingBox();
       assert(bounds && bounds.y + bounds.height < 900, item.locale + ': guide search must be reachable in the first viewport');
       const start = page.locator('[data-guide-start]');
@@ -301,12 +315,12 @@ async function inspectIntlReading(browser, baseUrl) {
       assert(await page.locator('.search-recovery button').count() >= 1, item.locale + ': empty search has no recovery');
       await search.fill('');
       await start.waitFor({ state: 'visible' });
-      await page.locator('[data-guide-filter="levels"]').click();
+      await page.locator('[data-guide-category]').selectOption('levels');
       assert(await page.locator('[data-guide-filter="levels"]').getAttribute('aria-pressed') === 'true', item.locale + ': selected category state missing');
       assert(!await start.isVisible(), item.locale + ': curated entrances obscure filtered results');
       const categories = await page.locator('[data-guide-grid] [data-guide-card]:visible').evaluateAll(cards => cards.map(card => card.dataset.category));
       assert(categories.length && categories.every(category => category === 'levels'), item.locale + ': category filter returned unrelated guides');
-      await page.locator('[data-guide-filter="all"]').click();
+      await page.locator('[data-guide-category]').selectOption('all');
       for (const theme of ['light', 'dark']) {
         if (theme === 'dark') await page.locator('.reading-theme-toggle').click();
         const state = await page.evaluate(() => ({ theme: document.documentElement.dataset.readingTheme, overflow: document.documentElement.scrollWidth - innerWidth }));

@@ -216,8 +216,8 @@ html[lang="ja"] body.blog-index-compact .article-card .card-thumb--app-icon img 
   }
   html[lang="ja"] body.blog-index-compact .article-card,
   html[lang="ja"] body.blog-index-compact .article-card.article-card--visual {
-    grid-template-columns:88px minmax(0,1fr);
-    gap:12px;
+    grid-template-columns:64px minmax(0,1fr);
+    gap:8px;
   }
 }
 

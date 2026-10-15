@@ -16,7 +16,7 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
     <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=2f0b4eec92">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Google Play Points Calculator">
     <meta property="og:title" content="Google Play Points guides">
@@ -40,7 +40,7 @@
   "inLanguage": "en"
 }
     </script>
-    <link rel="stylesheet" href="/articles/intl-hub.css?v=198d62f622" data-intl-hub-discovery-style>
+    <link rel="stylesheet" href="/articles/intl-hub.css?v=7dedb8ae5b" data-intl-hub-discovery-style>
 <link rel="stylesheet" href="/articles/japanese-shell.css?v=d181c50417">
 <link rel="stylesheet" href="/articles/guide-navigation.css?v=f0ef72caa9">
 <link rel="stylesheet" href="/articles/guide-editorial.css?v=d5aeedb04a">
@@ -49,7 +49,7 @@
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/article-search.js?v=8a48bca9d4"></script>
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <!-- discovery-assets:end -->
@@ -63,7 +63,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/en/author/katakata.html">About Katakata</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play country: United States"><span aria-hidden="true">🌐</span><span>United States</span></summary>
+      <summary data-region-code="US" aria-label="Play country: United States"><span aria-hidden="true">🌐</span><span>United States</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play country</p>
         <a href="/">Japan</a>
@@ -74,6 +74,15 @@
         <a href="/in/">India</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>Menu</summary><nav aria-label="Primary navigation">
+        <a href="/en/">Calculator</a>
+        <a href="/en/articles/">Guides</a>
+        <a href="/en/articles/#intl-hub-trouble">Troubleshooting</a>
+        <a href="/en/articles/#intl-hub-earn">Earn &amp; spend</a>
+        <a href="/en/articles/#intl-hub-levels">Levels &amp; rewards</a>
+        <a href="/en/articles/#intl-hub-account">Account &amp; basics</a>
+        <a href="/en/author/katakata.html">About Katakata</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="Switch theme">☀️</button>
     </div>
   </div>
@@ -104,11 +113,14 @@
       <p class="hero-meta">Last updated 2026-10-15</p>
     </header>
     <article class="content">
-      <div class="intl-hub-intro">Choose the rule that matches your situation. Each guide gives the answer first, then shows what to verify in Google Play.</div>
-    <div class="intl-guide-controls" data-intl-guide-controls>
-      <div class="intl-game-discovery" id="intl-hub-games"><div><label for="intl-guide-game">Find your game</label><select id="intl-guide-game" data-guide-game><option value="all">All topics and games</option><option value="games">All game guides</option><option value="fgo">Fate/Grand Order</option><option value="genshin">Genshin Impact</option><option value="monst">Monster Strike</option><option value="starrail">Honkai: Star Rail</option><option value="zzz">Zenless Zone Zero</option><option value="umamusume">Umamusume</option><option value="proseka">COLORFUL STAGE!</option><option value="pokepoke">Pokémon TCG Pocket</option><option value="pad">Puzzle &amp; Dragons</option><option value="arknights">Arknights</option><option value="dokkan">Dokkan Battle</option><option value="hbr">Heaven Burns Red</option><option value="honkai3rd">Honkai Impact 3rd</option><option value="phantomparade">Phantom Parade</option><option value="prospi-a">Prospi A</option><option value="pokemon-go">Pokémon GO</option><option value="efootball">eFootball</option></select></div><div><label for="intl-guide-topic">What are you comparing?</label><select id="intl-guide-topic" data-guide-topic><option value="all">Any purchase topic</option><option value="pass">Passes &amp; daily packs</option><option value="trial">Free trials</option><option value="shop">App vs web shop</option><option value="rewards">Currencies &amp; rewards</option><option value="version">Japan-version reference</option></select></div></div>
+      <div class="intl-guide-controls" data-intl-guide-controls>
       <label for="intl-guide-search">Search guides</label>
       <input id="intl-guide-search" type="search" autocomplete="off" placeholder="Search by topic or keyword" data-guide-search>
+      <label class="intl-category-label" for="intl-guide-category">Browse all guides</label>
+      <select id="intl-guide-category" data-guide-category><option value="all">All guides (65)</option><option value="account">Account &amp; basics (10)</option><option value="earn">Earning &amp; spending (39)</option><option value="levels">Levels &amp; rewards (10)</option><option value="troubleshooting">Troubleshooting (6)</option></select>
+      <details class="intl-guide-more" data-guide-more><summary>Filter by game or purchase</summary>
+      <div class="intl-game-discovery" id="intl-hub-games"><div><label for="intl-guide-game">Find your game</label><select id="intl-guide-game" data-guide-game><option value="all">All topics and games</option><option value="games">All game guides</option><option value="fgo">Fate/Grand Order</option><option value="genshin">Genshin Impact</option><option value="monst">Monster Strike</option><option value="starrail">Honkai: Star Rail</option><option value="zzz">Zenless Zone Zero</option><option value="umamusume">Umamusume</option><option value="proseka">COLORFUL STAGE!</option><option value="pokepoke">Pokémon TCG Pocket</option><option value="pad">Puzzle &amp; Dragons</option><option value="arknights">Arknights</option><option value="dokkan">Dokkan Battle</option><option value="hbr">Heaven Burns Red</option><option value="honkai3rd">Honkai Impact 3rd</option><option value="phantomparade">Phantom Parade</option><option value="prospi-a">Prospi A</option><option value="pokemon-go">Pokémon GO</option><option value="efootball">eFootball</option></select></div><div><label for="intl-guide-topic">What are you comparing?</label><select id="intl-guide-topic" data-guide-topic><option value="all">Any purchase topic</option><option value="pass">Passes &amp; daily packs</option><option value="trial">Free trials</option><option value="shop">App vs web shop</option><option value="rewards">Currencies &amp; rewards</option><option value="version">Japan-version reference</option></select></div></div>
+      </details>
       <div class="intl-guide-filters" role="group" aria-label="Browse all guides">
         <button type="button" class="intl-guide-filter is-active" data-guide-filter="all" aria-pressed="true">All guides <span>65</span></button>
         <button id="intl-hub-account" type="button" class="intl-guide-filter" data-guide-filter="account" aria-pressed="false">Account &amp; basics <span>10</span></button>
@@ -118,38 +130,7 @@
       </div>
     </div>
     <p class="intl-guide-result" data-guide-result aria-live="polite">65 guides shown</p>
-    <section class="intl-hub-start" aria-labelledby="intl-hub-start" data-guide-start>
-      <div class="intl-hub-section-heading">
-        <div><h2 id="intl-hub-start">Start here</h2><p>Five common questions to get you to the right rule quickly.</p></div>
-      </div>
-      <div class="intl-guide-start-grid">
-        <a class="intl-guide-card intl-guide-card--featured" href="/en/articles/google-play-points-cash-conversion.html" data-guide-card data-category="earn" data-search="can you cash out google play points? earning &amp; spending  ">
 
-        <span class="intl-guide-card__category">Earning &amp; spending</span>
-        <span class="intl-guide-card__title">Can you cash out Google Play Points?</span>
-      </a>
-        <a class="intl-guide-card intl-guide-card--featured" href="/en/articles/google-play-quests.html" data-guide-card data-category="earn" data-search="google play quest not working? check progress and purchase rules earning &amp; spending  ">
-
-        <span class="intl-guide-card__category">Earning &amp; spending</span>
-        <span class="intl-guide-card__title">Google Play quest not working? Check progress and purchase rules</span>
-      </a>
-        <a class="intl-guide-card intl-guide-card--featured" href="/en/articles/google-play-points-not-showing.html" data-guide-card data-category="troubleshooting" data-search="google play points not showing up: what to check troubleshooting  ">
-
-        <span class="intl-guide-card__category">Troubleshooting</span>
-        <span class="intl-guide-card__title">Google Play Points not showing up: what to check</span>
-      </a>
-        <a class="intl-guide-card intl-guide-card--featured" href="/en/articles/google-play-points-country-differences.html" data-guide-card data-category="account" data-search="google play points country differences account &amp; basics  ">
-
-        <span class="intl-guide-card__category">Account &amp; basics</span>
-        <span class="intl-guide-card__title">Google Play Points country differences</span>
-      </a>
-        <a class="intl-guide-card intl-guide-card--featured" href="/en/articles/google-play-points-gift-cards.html" data-guide-card data-category="earn" data-search="do gift cards earn google play points? earning &amp; spending  ">
-
-        <span class="intl-guide-card__category">Earning &amp; spending</span>
-        <span class="intl-guide-card__title">Do gift cards earn Google Play Points?</span>
-      </a>
-      </div>
-    </section>
     <section class="intl-hub-browser" aria-labelledby="intl-hub-browse">
       <div class="intl-hub-section-heading"><h2 id="intl-hub-browse">Browse all guides</h2></div>
       <div class="intl-guide-grid" data-guide-grid data-result-template="{count} guides shown">
@@ -481,6 +462,39 @@
       </div>
       <p class="intl-guide-empty" data-guide-empty hidden>No guides match this search. Try another keyword or category.</p>
     </section>
+    <details class="intl-hub-start" data-guide-start><summary>Start here</summary><section aria-labelledby="intl-hub-start">
+      <div class="intl-hub-intro">Choose the rule that matches your situation. Each guide gives the answer first, then shows what to verify in Google Play.</div>
+      <div class="intl-hub-section-heading">
+        <div><h2 id="intl-hub-start">Start here</h2><p>Five common questions to get you to the right rule quickly.</p></div>
+      </div>
+      <div class="intl-guide-start-grid">
+        <a class="intl-guide-card intl-guide-card--featured" href="/en/articles/google-play-points-cash-conversion.html" data-guide-card data-category="earn" data-search="can you cash out google play points? earning &amp; spending  ">
+
+        <span class="intl-guide-card__category">Earning &amp; spending</span>
+        <span class="intl-guide-card__title">Can you cash out Google Play Points?</span>
+      </a>
+        <a class="intl-guide-card intl-guide-card--featured" href="/en/articles/google-play-quests.html" data-guide-card data-category="earn" data-search="google play quest not working? check progress and purchase rules earning &amp; spending  ">
+
+        <span class="intl-guide-card__category">Earning &amp; spending</span>
+        <span class="intl-guide-card__title">Google Play quest not working? Check progress and purchase rules</span>
+      </a>
+        <a class="intl-guide-card intl-guide-card--featured" href="/en/articles/google-play-points-not-showing.html" data-guide-card data-category="troubleshooting" data-search="google play points not showing up: what to check troubleshooting  ">
+
+        <span class="intl-guide-card__category">Troubleshooting</span>
+        <span class="intl-guide-card__title">Google Play Points not showing up: what to check</span>
+      </a>
+        <a class="intl-guide-card intl-guide-card--featured" href="/en/articles/google-play-points-country-differences.html" data-guide-card data-category="account" data-search="google play points country differences account &amp; basics  ">
+
+        <span class="intl-guide-card__category">Account &amp; basics</span>
+        <span class="intl-guide-card__title">Google Play Points country differences</span>
+      </a>
+        <a class="intl-guide-card intl-guide-card--featured" href="/en/articles/google-play-points-gift-cards.html" data-guide-card data-category="earn" data-search="do gift cards earn google play points? earning &amp; spending  ">
+
+        <span class="intl-guide-card__category">Earning &amp; spending</span>
+        <span class="intl-guide-card__title">Do gift cards earn Google Play Points?</span>
+      </a>
+      </div>
+    </section></details>
     <div data-intl-reading-library-slot>
 <!-- reading-tools:start --><details id="reading-library" class="reading-library"><summary>Saved articles & reading history</summary><p>Stored only on this device: up to 100 saved articles and 20 recent articles. Clearing browser data removes these lists.</p></details><!-- reading-tools:end -->
 </div>
@@ -554,7 +568,7 @@
 <script src="/js/analytics-core.js?v=2a21f6d951"></script>
 <script src="/js/intent-tracking.js?v=cdaccb870f"></script>
 <script src="/js/third-party.js?v=34ee3a19ae"></script>
-<script src="/js/intl-guide-hub.js?v=8504850cf6" defer data-intl-hub-discovery-script></script>
+<script src="/js/intl-guide-hub.js?v=0c4eb25432" defer data-intl-hub-discovery-script></script>
 <script src="/js/site-reader-tools.js?v=04636b5ced" defer data-site-reader-tools></script>
 </body>
 </html>

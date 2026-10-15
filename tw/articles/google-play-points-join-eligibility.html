@@ -18,7 +18,7 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
   <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=2f0b4eec92">
 <meta property="og:type" content="article">
     <meta property="og:site_name" content="Google Play Points 計算器">
     <meta property="og:title" content="台灣 Google Play Points 無法加入｜加入按鈕、帳號與付款資料檢查">
@@ -142,7 +142,7 @@
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -156,7 +156,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/tw/author/katakata.html">關於 Katakata</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
+      <summary data-region-code="TW" aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play 國家／地區</p>
         <a href="/">日本</a>
@@ -167,6 +167,15 @@
         <a href="/in/">印度</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>選單</summary><nav aria-label="主要導覽">
+        <a href="/tw/">計算機</a>
+        <a href="/tw/articles/">指南</a>
+        <a href="/tw/articles/#intl-hub-trouble">問題排解</a>
+        <a href="/tw/articles/#intl-hub-earn">積點與使用</a>
+        <a href="/tw/articles/#intl-hub-levels">等級與回饋</a>
+        <a href="/tw/articles/#intl-hub-account">帳號與基本</a>
+        <a href="/tw/author/katakata.html">關於 Katakata</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="切換主題">☀️</button>
     </div>
   </div>
@@ -222,13 +231,13 @@
         <nav class="intl-article-toc" aria-label="目錄"><h2 id="article-section-3">目錄</h2><ol><li><a href="#section-1">你現在是哪一種情況？</a></li><li><a href="#section-2">一次確認官方加入條件</a></li><li><a href="#section-3">最近變更國家／地區時</a></li><li><a href="#section-4">什麼時候找 Google 支援</a></li></ol></nav>
         <section class="section">
           <h2 id="section-1">你現在是哪一種情況？</h2>
-          <div class="table-wrap" tabindex="0" role="region" aria-label="你現在是哪一種情況？: 比較表（使用左右方向鍵捲動）"><table>
-            <thead><tr><th>畫面狀況</th><th>先看哪裡</th><th>下一步</th></tr></thead>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="你現在是哪一種情況？: 比較表（使用左右方向鍵捲動）"><table class="reading-responsive-table" role="table">
+            <thead><tr role="row"><th role="columnheader">畫面狀況</th><th role="columnheader">先看哪裡</th><th role="columnheader">下一步</th></tr></thead>
             <tbody>
-              <tr><td>完全看不到 Play Points 或「加入」</td><td>Play 國家／地區、受管理帳號、年齡</td><td>先確認實際付款帳號的 Play 國家／地區。</td></tr>
-              <tr><td>看得到 Play Points，但無法完成加入</td><td>付款方式、帳單地址</td><td>確認目前啟用的付款資料是否屬於台灣。</td></tr>
-              <tr><td>最近才變更 Play 國家／地區</td><td>變更是否已完成</td><td>把最多 48 小時的更新時間和真正的資格問題分開判斷。</td></tr>
-              <tr><td>已經加入，只是購買後沒拿到點數</td><td>交易與入帳</td><td>改看<a href="/tw/articles/google-play-points-not-showing.html">點數未顯示問題排解</a>。</td></tr>
+              <tr role="row"><td role="cell" data-column-label="畫面狀況">完全看不到 Play Points 或「加入」</td><td role="cell" data-column-label="先看哪裡">Play 國家／地區、受管理帳號、年齡</td><td role="cell" data-column-label="下一步">先確認實際付款帳號的 Play 國家／地區。</td></tr>
+              <tr role="row"><td role="cell" data-column-label="畫面狀況">看得到 Play Points，但無法完成加入</td><td role="cell" data-column-label="先看哪裡">付款方式、帳單地址</td><td role="cell" data-column-label="下一步">確認目前啟用的付款資料是否屬於台灣。</td></tr>
+              <tr role="row"><td role="cell" data-column-label="畫面狀況">最近才變更 Play 國家／地區</td><td role="cell" data-column-label="先看哪裡">變更是否已完成</td><td role="cell" data-column-label="下一步">把最多 48 小時的更新時間和真正的資格問題分開判斷。</td></tr>
+              <tr role="row"><td role="cell" data-column-label="畫面狀況">已經加入，只是購買後沒拿到點數</td><td role="cell" data-column-label="先看哪裡">交易與入帳</td><td role="cell" data-column-label="下一步">改看<a href="/tw/articles/google-play-points-not-showing.html">點數未顯示問題排解</a>。</td></tr>
             </tbody>
           </table></div>
         </section>

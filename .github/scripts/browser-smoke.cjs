@@ -666,7 +666,7 @@ async function verifyBlogPage(browser, baseUrl) {
     // 記事種別に関係なく同じ正方形スロットを使う。通常画像はcrop、ゲームアイコンだけ余白付きcontain。
     for (const width of [320, 390, 760, 768, 1280]) {
       await page.setViewportSize({ width, height: 900 });
-      const expectedThumbWidth = width <= 360 ? 88 : width <= 760 ? 96 : 120;
+      const expectedThumbWidth = width <= 360 ? 64 : width <= 760 ? 96 : 120;
       await page.waitForFunction(({ expectedWidth, expectedThumbWidth }) => {
         if (innerWidth !== expectedWidth) return false;
         const thumbnails = [...document.querySelectorAll('.article-card .card-thumb')];

@@ -18,7 +18,7 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
   <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=2f0b4eec92">
 <meta property="og:type" content="article">
     <meta property="og:site_name" content="Google Play Points 계산기">
     <meta property="og:title" content="한국 Google Play Points 등급표｜조건·적립률·주간 리워드">
@@ -142,7 +142,7 @@
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -156,7 +156,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/ko/author/katakata.html">Katakata 소개</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play 국가: 대한민국"><span aria-hidden="true">🌐</span><span>대한민국</span></summary>
+      <summary data-region-code="KR" aria-label="Play 국가: 대한민국"><span aria-hidden="true">🌐</span><span>대한민국</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play 국가</p>
         <a href="/">일본</a>
@@ -167,6 +167,15 @@
         <a href="/in/">인도</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>메뉴</summary><nav aria-label="주요 탐색">
+        <a href="/ko/">계산기</a>
+        <a href="/ko/articles/">가이드</a>
+        <a href="/ko/articles/#intl-hub-trouble">문제 해결</a>
+        <a href="/ko/articles/#intl-hub-earn">적립·사용</a>
+        <a href="/ko/articles/#intl-hub-levels">등급·리워드</a>
+        <a href="/ko/articles/#intl-hub-account">계정·기본</a>
+        <a href="/ko/author/katakata.html">Katakata 소개</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="테마 전환">☀️</button>
     </div>
   </div>
@@ -205,11 +214,11 @@
     <article class="content">
         <div class="intro">이 글은 대한민국 Play 국가 기준입니다. 한국 실버는 연간 150포인트부터이며, 브론즈 일반 적립은 세금 제외 대상 금액 ₩1,000당 1포인트입니다. 일본이나 대만의 포인트 기준을 그대로 적용하지 말고 Google Play 앱의 연간 등급 진행도를 최종 기준으로 보세요.</div>
         <nav class="intl-article-toc" aria-label="목차"><h2 id="article-section-1">목차</h2><ol><li><a href="#section-1">한국 공식 등급표</a></li><li><a href="#section-2">등급 기준과 실제 결제액의 차이</a></li><li><a href="#section-3">한국 주간 리워드 범위</a></li><li><a href="#section-4">계산기에 넣을 숫자</a></li></ol></nav>
-        <section class="section"><h2 id="section-1">한국 공식 등급표</h2><div class="table-wrap" tabindex="0" role="region" aria-label="한국 공식 등급표: 비교표 (왼쪽 및 오른쪽 화살표 키로 스크롤)"><table class="comparison-table"><thead><tr><th>등급</th><th>연간 포인트</th><th>일반 적립률</th></tr></thead><tbody><tr><td>브론즈</td><td>0~149</td><td>₩1,000당 1포인트</td></tr>
-<tr><td>실버</td><td>150~599</td><td>₩1,000당 1.1포인트</td></tr>
-<tr><td>골드</td><td>600~2,399</td><td>₩1,000당 1.3포인트</td></tr>
-<tr><td>플래티넘</td><td>2,400~14,999</td><td>₩1,000당 1.6포인트</td></tr>
-<tr><td>다이아몬드</td><td>15,000 이상</td><td>₩1,000당 2포인트</td></tr></tbody></table></div>
+        <section class="section"><h2 id="section-1">한국 공식 등급표</h2><div class="table-wrap" tabindex="0" role="region" aria-label="한국 공식 등급표: 비교표 (왼쪽 및 오른쪽 화살표 키로 스크롤)"><table class="comparison-table reading-responsive-table" role="table"><thead><tr role="row"><th role="columnheader">등급</th><th role="columnheader">연간 포인트</th><th role="columnheader">일반 적립률</th></tr></thead><tbody><tr role="row"><td role="cell" data-column-label="등급">브론즈</td><td role="cell" data-column-label="연간 포인트">0~149</td><td role="cell" data-column-label="일반 적립률">₩1,000당 1포인트</td></tr>
+<tr role="row"><td role="cell" data-column-label="등급">실버</td><td role="cell" data-column-label="연간 포인트">150~599</td><td role="cell" data-column-label="일반 적립률">₩1,000당 1.1포인트</td></tr>
+<tr role="row"><td role="cell" data-column-label="등급">골드</td><td role="cell" data-column-label="연간 포인트">600~2,399</td><td role="cell" data-column-label="일반 적립률">₩1,000당 1.3포인트</td></tr>
+<tr role="row"><td role="cell" data-column-label="등급">플래티넘</td><td role="cell" data-column-label="연간 포인트">2,400~14,999</td><td role="cell" data-column-label="일반 적립률">₩1,000당 1.6포인트</td></tr>
+<tr role="row"><td role="cell" data-column-label="등급">다이아몬드</td><td role="cell" data-column-label="연간 포인트">15,000 이상</td><td role="cell" data-column-label="일반 적립률">₩1,000당 2포인트</td></tr></tbody></table></div>
 <p>사용 가능한 포인트 잔액과 연간 등급 포인트는 다른 숫자입니다. 포인트를 리워드로 사용해도 연간 등급 진행도는 줄지 않지만, 환불이나 취소는 해당 구매에서 얻은 포인트를 차감할 수 있습니다.</p></section><section class="section"><h2 id="section-2">등급 기준과 실제 결제액의 차이</h2><p>등급 기준은 포인트이며 고정 결제액이 아닙니다. 브론즈 적립률은 해당 등급 동안 적용되고, 승급 후 구매는 새 적립률로 계산될 수 있습니다. 현재 연간 진행도와 새 적립률 적용 시점을 확인한 뒤 부족분을 계산하세요.</p>
 <p>상품별로 포인트를 계산하고 가장 가까운 정수로 반올림하므로 실제 결과는 단순 총액 계산과 달라질 수 있습니다.</p></section><section class="section"><h2 id="section-3">한국 주간 리워드 범위</h2><p>일반 주간 리워드는 실버 이상이며 금요일에 갱신됩니다. 한국 공식 등급표에는 실버 최대 50, 골드 최대 100, 플래티넘 최대 500, 다이아몬드 최대 1,000포인트가 표시됩니다.</p>
 <p>Play Pass 주간 보너스·부스터는 목요일에 갱신되는 별도 혜택입니다. 구독자와 대상 가족 구성원은 Play Pass 화면을 확인하세요.</p></section><section class="section"><h2 id="section-4">계산기에 넣을 숫자</h2><p>현재 잔액이 아니라 목표 등급까지 부족한 포인트를 입력하세요. 일반 적립률을 기준으로 본 뒤, 본인 계정에 실제로 표시된 대상 오퍼만 비교합니다.</p>
