@@ -15,7 +15,7 @@
   <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/maintenance/platinum/">
   <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/maintenance/platinum/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/maintenance/intl-maintenance.css?v=006153a433">
+<link rel="stylesheet" href="/maintenance/intl-maintenance.css?v=8d01d61d41">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PlayPoint">
   <meta property="og:title" content="Google Play Points Platinum maintenance calculator">
@@ -48,7 +48,7 @@
   <header class="maintenance-hero">
     <p class="maintenance-eyebrow">Year-end maintenance check</p>
     <h1>Platinum maintenance calculator</h1>
-    <p class="maintenance-hero__lead">Enter your calendar-year level progress. The calculator shows the maintenance gap first, then the base-rate spend estimate and the pace needed before year-end.</p>
+
     <ul class="maintenance-hero__facts">
       <li>Platinum: 3,000 points</li>
       <li>1.4 points per $1</li>
@@ -60,7 +60,7 @@
     <section class="maintenance-input-panel" aria-labelledby="maintenance-input-title">
       <span class="maintenance-section-label">Official maintenance line for <span data-output="year"></span></span>
       <h2 id="maintenance-input-title">Start with the number Google Play shows</h2>
-      <p>This page subtracts your calendar-year progress from the official maintenance line. It does not try to reconstruct every purchase.</p>
+
       <form data-maintenance-form novalidate>
         <label class="maintenance-label" for="level-progress">
           Calendar-year level progress
@@ -70,6 +70,7 @@
         <p class="maintenance-error" data-input-error role="alert" hidden></p>
         <button class="maintenance-button" type="submit">Update estimate</button>
       </form>
+      <details class="maintenance-input-explainer"><summary>How this estimate works</summary>    <p class="maintenance-hero__lead">Enter your calendar-year level progress. The calculator shows the maintenance gap first, then the base-rate spend estimate and the pace needed before year-end.</p><p>This page subtracts your calendar-year progress from the official maintenance line. It does not try to reconstruct every purchase.</p></details>
       <p class="maintenance-input-note">The base-rate estimate assumes you start the year at the level being maintained and eligible purchases earn at that level’s normal rate.</p>
     </section>
 

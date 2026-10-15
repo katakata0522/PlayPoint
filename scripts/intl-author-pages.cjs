@@ -156,6 +156,8 @@ function renderIntlAuthorPage(localeKey, assetVersions = {}) {
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="${sharedHref}">
   <link rel="stylesheet" href="${intlHref}">
+  <script src="/js/reading-theme.js"></script>
+  <link rel="stylesheet" href="/articles/reading-theme.css">
   <meta property="og:type" content="profile">
   <meta property="og:site_name" content="${escapeHtml(locale.siteName)}">
   <meta property="og:title" content="${escapeHtml(content.title)}">

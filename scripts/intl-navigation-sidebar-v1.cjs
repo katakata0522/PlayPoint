@@ -76,7 +76,7 @@ function renderRegionSwitcher(localeKey, copy) {
   });
   return [
     '    <details class="site-region-switcher">',
-    '      <summary aria-label="' + escapeHtml(copy.regionLabel + ': ' + copy.regionNames[localeKey]) + '"><span aria-hidden="true">🌐</span><span>' + escapeHtml(copy.regionNames[localeKey]) + '</span></summary>',
+    '      <summary data-region-code="' + ({ en: 'US', ko: 'KR', tw: 'TW' })[localeKey] + '" aria-label="' + escapeHtml(copy.regionLabel + ': ' + copy.regionNames[localeKey]) + '"><span aria-hidden="true">🌐</span><span>' + escapeHtml(copy.regionNames[localeKey]) + '</span></summary>',
     '      <div class="site-region-menu">',
     '        <p class="site-region-menu-label">' + escapeHtml(copy.regionLabel) + '</p>',
     ...options,
@@ -179,6 +179,10 @@ function renderChrome(localeKey, title, section, variant, newline) {
     '    <div class="site-header-links site-header-tools">',
     '      <a class="site-about-link" href="' + policyHref + '">' + escapeHtml(copy.about) + '</a>',
     ...renderRegionSwitcher(localeKey, copy),
+    '      <details class="intl-mobile-menu"><summary>' + ({ en: 'Menu', ko: '메뉴', tw: '選單' })[localeKey] + '</summary><nav aria-label="' + escapeHtml(copy.primary) + '">',
+    ...SECTION_ORDER.map(key => '        <a href="' + navLinks[key][0] + '">' + escapeHtml(navLinks[key][1]) + '</a>'),
+    '        <a href="' + policyHref + '">' + escapeHtml(copy.about) + '</a>',
+    '      </nav></details>',
     '      <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="' + escapeHtml(copy.themeLabel) + '">☀️</button>',
     '    </div>',
     '  </div>',

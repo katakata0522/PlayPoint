@@ -13,7 +13,7 @@
     <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-refund.html" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
   <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d2d70fcc2c">
 <meta property="og:type" content="article"><meta property="og:site_name" content="Google Play Points 계산기"><meta property="og:title" content="Google Play 환불 후 Play Points는 어떻게 될까? 잔액·등급 영향"><meta property="og:description" content="Google Play 구매가 환불되면 적립 포인트가 잔액과 등급 진행도에서 차감됩니다. 마이너스 잔액, 등급 하락, 포인트 결제 환불을 정리합니다."><meta property="og:url" content="https://playpoint-sim.com/ko/articles/google-play-points-refund.html"><meta property="og:image" content="https://playpoint-sim.com/articles/ogp/ko-google-play-points-refund.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -74,11 +74,11 @@
 <meta name="playpoint:anchor-ads" content="collapsed-bottom">
 <link rel="stylesheet" href="/articles/japanese-shell.css?v=d181c50417">
 <link rel="stylesheet" href="/articles/guide-navigation.css?v=f0ef72caa9">
-<link rel="stylesheet" href="/articles/guide-editorial.css?v=d5aeedb04a">
+<link rel="stylesheet" href="/articles/guide-editorial.css?v=c679428ba0">
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -92,7 +92,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/ko/author/katakata.html">Katakata 소개</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play 국가: 대한민국"><span aria-hidden="true">🌐</span><span>대한민국</span></summary>
+      <summary data-region-code="KR" aria-label="Play 국가: 대한민국"><span aria-hidden="true">🌐</span><span>대한민국</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play 국가</p>
         <a href="/">일본</a>
@@ -103,6 +103,15 @@
         <a href="/in/">인도</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>메뉴</summary><nav aria-label="주요 탐색">
+        <a href="/ko/">계산기</a>
+        <a href="/ko/articles/">가이드</a>
+        <a href="/ko/articles/#intl-hub-trouble">문제 해결</a>
+        <a href="/ko/articles/#intl-hub-earn">적립·사용</a>
+        <a href="/ko/articles/#intl-hub-levels">등급·리워드</a>
+        <a href="/ko/articles/#intl-hub-account">계정·기본</a>
+        <a href="/ko/author/katakata.html">Katakata 소개</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="테마 전환">☀️</button>
     </div>
   </div>
@@ -139,7 +148,7 @@
   <article class="content">
     <div class="intro"><strong>Google Play 구매가 환불되면 해당 구매로 적립한 포인트가 Play Points 잔액과 등급 진행도에서 모두 차감됩니다.</strong> 이미 포인트를 사용했다면 잔액이 마이너스가 될 수 있고, 진행도가 부족해지면 등급이 내려갈 수 있습니다.</div>
     <nav class="intl-article-toc" aria-label="목차"><h2 id="article-section-1">목차</h2><ol><li><a href="#earned">구매로 적립한 포인트</a></li><li><a href="#negative">마이너스 잔액과 등급</a></li><li><a href="#spent">포인트로 교환한 상품의 환불</a></li><li><a href="#check">확인하고 기록할 항목</a></li></ol></nav>
-    <section class="section"><h2 id="earned">환불된 구매로 적립한 포인트</h2><div class="table-wrap" tabindex="0" role="region" aria-label="환불된 구매로 적립한 포인트: 비교표 (왼쪽 및 오른쪽 화살표 키로 스크롤)"><table><thead><tr><th>상황</th><th>처리</th></tr></thead><tbody><tr><td>구매로 Play Points 적립</td><td>잔액과 등급 진행도에서 차감</td></tr><tr><td>적립 포인트를 이미 사용</td><td>잔액이 마이너스가 될 수 있음</td></tr><tr><td>차감 후 등급 기준 미달</td><td>등급이 내려갈 수 있음</td></tr><tr><td>향후 구독만 취소</td><td>실제 결제 환불이 없으면 환불 차감과 구분</td></tr></tbody></table></div><p>구독 취소와 환불은 다릅니다. 자동 갱신 취소는 보통 다음 결제를 막는 것이고, 환불은 이미 완료된 거래를 정책에 따라 되돌리는 처리입니다.</p></section>
+    <section class="section"><h2 id="earned">환불된 구매로 적립한 포인트</h2><div class="table-wrap" tabindex="0" role="region" aria-label="환불된 구매로 적립한 포인트: 비교표 (왼쪽 및 오른쪽 화살표 키로 스크롤)"><table class="reading-responsive-table" role="table"><thead><tr role="row"><th role="columnheader">상황</th><th role="columnheader">처리</th></tr></thead><tbody><tr role="row"><td role="cell" data-column-label="상황">구매로 Play Points 적립</td><td role="cell" data-column-label="처리">잔액과 등급 진행도에서 차감</td></tr><tr role="row"><td role="cell" data-column-label="상황">적립 포인트를 이미 사용</td><td role="cell" data-column-label="처리">잔액이 마이너스가 될 수 있음</td></tr><tr role="row"><td role="cell" data-column-label="상황">차감 후 등급 기준 미달</td><td role="cell" data-column-label="처리">등급이 내려갈 수 있음</td></tr><tr role="row"><td role="cell" data-column-label="상황">향후 구독만 취소</td><td role="cell" data-column-label="처리">실제 결제 환불이 없으면 환불 차감과 구분</td></tr></tbody></table></div><p>구독 취소와 환불은 다릅니다. 자동 갱신 취소는 보통 다음 결제를 막는 것이고, 환불은 이미 완료된 거래를 정책에 따라 되돌리는 처리입니다.</p></section>
     <section class="section"><h2 id="negative">마이너스 잔액과 등급 변화</h2><p>환불 전에 적립 포인트를 사용했더라도 Google은 해당 포인트를 차감할 수 있습니다. 그래서 잔액이 0 아래로 내려갈 수 있으며, 이후 적립 포인트가 먼저 마이너스분을 상쇄합니다.</p><p>같은 포인트가 등급 진행도에서도 빠지므로 현재 적립률과 혜택이 달라질 수 있습니다. 환불 완료 후 등급 화면을 다시 확인하세요.</p></section>
     <section class="section"><h2 id="spent">포인트로 교환한 상품의 환불</h2><p>포인트를 앱·게임 내 상품, 서비스, Play 잔액 또는 기부에 직접 교환한 경우 일반적으로 환불되지 않습니다. 쿠폰은 별도입니다. 포인트 쿠폰을 적용한 구매가 환불 승인되면 실제 결제액과 쿠폰에 사용한 포인트를 돌려받을 수 있지만 쿠폰 자체는 복원되지 않습니다.</p><p>구매 환불 가능 여부는 Google Play 또는 개발자의 환불 정책에 따릅니다.</p></section>
     <section class="section"><h2 id="check">확인하고 기록할 항목</h2><ol><li>주문 번호와 환불 승인 내용을 저장합니다.</li><li>Play Points → 포인트 내역에서 원래 적립 포인트를 확인합니다.</li><li>환불 후 잔액과 등급 진행도를 비교합니다.</li><li>예상대로 반영되지 않으면 캡처와 주문 번호를 함께 준비해 문의합니다.</li></ol></section>

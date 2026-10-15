@@ -18,7 +18,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
   <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d2d70fcc2c">
 <meta property="og:type" content="article">
   <meta property="og:site_name" content="Google Play Points 計算器">
   <meta property="og:title" content="Google Play 抵用金無法使用：兌換前後的排解順序">
@@ -124,11 +124,11 @@
 <meta name="playpoint:anchor-ads" content="collapsed-bottom">
 <link rel="stylesheet" href="/articles/japanese-shell.css?v=d181c50417">
 <link rel="stylesheet" href="/articles/guide-navigation.css?v=f0ef72caa9">
-<link rel="stylesheet" href="/articles/guide-editorial.css?v=d5aeedb04a">
+<link rel="stylesheet" href="/articles/guide-editorial.css?v=c679428ba0">
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -142,7 +142,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/tw/author/katakata.html">關於 Katakata</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
+      <summary data-region-code="TW" aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play 國家／地區</p>
         <a href="/">日本</a>
@@ -153,6 +153,15 @@
         <a href="/in/">印度</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>選單</summary><nav aria-label="主要導覽">
+        <a href="/tw/">計算機</a>
+        <a href="/tw/articles/">指南</a>
+        <a href="/tw/articles/#intl-hub-trouble">問題排解</a>
+        <a href="/tw/articles/#intl-hub-earn">積點與使用</a>
+        <a href="/tw/articles/#intl-hub-levels">等級與回饋</a>
+        <a href="/tw/articles/#intl-hub-account">帳號與基本</a>
+        <a href="/tw/author/katakata.html">關於 Katakata</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="切換主題">☀️</button>
     </div>
   </div>
@@ -192,11 +201,11 @@
     <section class="section answer-box">
       <div class="intro"><strong>Google Play 抵用金無法使用時，先不要重複兌換或為了測試再次付款。</strong>先判斷問題發生在「還不能兌換」、「兌換後餘額沒有出現」，還是「有餘額但結帳不能用」。這三種情況要檢查的地方不同；最常見的是點數或獎勵資格、Google 帳號、Play 國家/地區、幣別、到期日與購買項目。</div>
       <h2 id="quick-check">先判斷是哪一種「無法使用」</h2>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="先判斷是哪一種「無法使用」: 比較表（使用左右方向鍵捲動）"><table><thead><tr><th>目前狀況</th><th>先檢查</th></tr></thead><tbody>
-        <tr><td>Play Points「使用」中無法選擇 Play 抵用金／項目呈灰色</td><td>目前點數是否足夠，以及該獎勵是否真的出現在這個帳號</td></tr>
-        <tr><td>已用點數兌換，但 Google Play 餘額沒有增加或看不到</td><td>兌換記錄、目前登入帳號、抵用金到期日</td></tr>
-        <tr><td>餘額看得到，但結帳時不能選用</td><td>帳號、Play 國家/地區、商品幣別、購買資格與付款方式</td></tr>
-        <tr><td>最近變更過 Play 國家/地區</td><td>舊地區餘額不能在新地區使用；餘額仍綁定原地區</td></tr>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="先判斷是哪一種「無法使用」: 比較表（使用左右方向鍵捲動）"><table class="reading-responsive-table" role="table"><thead><tr role="row"><th role="columnheader">目前狀況</th><th role="columnheader">先檢查</th></tr></thead><tbody>
+        <tr role="row"><td role="cell" data-column-label="目前狀況">Play Points「使用」中無法選擇 Play 抵用金／項目呈灰色</td><td role="cell" data-column-label="先檢查">目前點數是否足夠，以及該獎勵是否真的出現在這個帳號</td></tr>
+        <tr role="row"><td role="cell" data-column-label="目前狀況">已用點數兌換，但 Google Play 餘額沒有增加或看不到</td><td role="cell" data-column-label="先檢查">兌換記錄、目前登入帳號、抵用金到期日</td></tr>
+        <tr role="row"><td role="cell" data-column-label="目前狀況">餘額看得到，但結帳時不能選用</td><td role="cell" data-column-label="先檢查">帳號、Play 國家/地區、商品幣別、購買資格與付款方式</td></tr>
+        <tr role="row"><td role="cell" data-column-label="目前狀況">最近變更過 Play 國家/地區</td><td role="cell" data-column-label="先檢查">舊地區餘額不能在新地區使用；餘額仍綁定原地區</td></tr>
       </tbody></table></div>
     </section>
     <nav class="intl-article-toc" aria-label="目錄">

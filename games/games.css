@@ -761,4 +761,33 @@ line-height: 1.7;
 .games-grid .game-card-desc { font-size:14px; line-height:1.65; }
 .other-game-directory .game-card-desc { display:none; }
 .other-game-directory > summary { cursor:pointer; font-size:18px; font-weight:700; padding:8px 0; }
-.game-portal-card[hidden] { display:none !important; }
+.game-portal-card[hidden] { display:none !important; }/* 商品の比較も残し、計算したい人の入口を短くする。 */
+.game-purchase-details { margin:12px 0; border-block:1px solid var(--game-border); }
+.game-purchase-details > summary { min-height:44px; padding:12px 4px; color:var(--game-primary); font-weight:700; cursor:pointer; }
+.game-purchase-details .game-offers { margin:8px 0 16px; }
+@media(max-width:760px) {
+body .site-header .site-header-inner { min-height:56px; padding-block:8px; }
+body .site-header .site-logo-text { font-size:17px; }
+body .site-header .site-tagline { display:none; }
+body .global-nav .global-nav-inner { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0; overflow:visible; }
+body .global-nav .nav-item { min-width:0; min-height:44px; padding:8px 4px; white-space:normal; font-size:12px; text-align:center; }
+body .breadcrumbs-wrapper { margin-block:10px; }
+.game-main-content { padding:16px 12px; }
+.games-grid { gap:10px; }
+.game-portal-card { display:grid; grid-template-columns:42px minmax(0,1fr); gap:5px 12px; padding:14px; }
+.game-portal-card > div:first-child { display:contents; }
+.game-portal-card .game-card-icon { grid-column:1; grid-row:1 / span 3; margin:0; font-size:28px; }
+.game-portal-card .game-card-title { grid-column:2; margin:0; font-size:17px; }
+.game-portal-card .game-card-desc { grid-column:2; margin:0; font-size:13px; }
+.game-portal-card .game-card-action { grid-column:2; font-size:13px; }
+.game-header { padding-bottom:8px; margin-bottom:8px; }
+.game-header + p { font-size:14px; line-height:1.65; }
+}
+.game-directory-notes { margin:8px 0 14px; }
+.game-directory-notes > summary { min-height:44px; padding:9px 0; color:var(--game-primary); cursor:pointer; font-weight:650; }
+@media(max-width:760px) {
+body .site-header .site-header-inner { justify-content:flex-start; min-height:56px; }
+body .site-header .site-logo { justify-content:flex-start; }
+.game-header .game-badge { display:none; }
+.game-header .game-title { font-size:22px; line-height:1.45; margin-top:0; }
+}

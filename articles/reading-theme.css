@@ -86,4 +86,14 @@ html[data-reading-theme] .lp-affiliate-box { background:var(--reading-warning-bg
 html[data-reading-theme] :is(.lp-affiliate-box-title,.lp-affiliate-box-text) { color:var(--reading-warning); }
 html[data-reading-theme] :is(.lp-affiliate-sublink,.page-footer a) { color:var(--reading-link); }
 html[data-reading-theme] :is(.site-footer-trademark,.copyright) { color:var(--reading-muted); }
-html[data-reading-theme] .lp-note { color:var(--reading-muted); }
+html[data-reading-theme] .lp-note { color:var(--reading-muted); }/* 単純な比較は、スマホでは見出しと値を1項目ずつ読む。 */
+@media(max-width:600px) {
+html body table.reading-responsive-table { display:block; width:100%; min-width:0; table-layout:auto; }
+html body table.reading-responsive-table thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+html body table.reading-responsive-table tbody { display:block; }
+html body table.reading-responsive-table tr { display:block; padding:10px 0; border-bottom:1px solid var(--reading-border,#cbd5e1); }
+html body table.reading-responsive-table :is(td,tbody th) { display:block; width:auto; min-width:0; padding:7px 10px; border:0; white-space:normal; overflow-wrap:anywhere; word-break:normal; text-align:left; }
+html body table.reading-responsive-table :is(td,tbody th)::before { content:attr(data-column-label); display:block; margin-bottom:3px; font-size:.8em; font-weight:750; color:var(--reading-muted,#526176); }
+html body :is(.table-wrap,.table-card,.table-wrapper,.lp-table-wrap):has(>table.reading-responsive-table) { overflow:visible; }
+html body .reading-table-hint:has(+ :is(.table-wrap,.table-card,.table-wrapper) >table.reading-responsive-table) { display:none; }
+}

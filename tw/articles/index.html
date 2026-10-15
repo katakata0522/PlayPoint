@@ -16,7 +16,7 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
     <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d2d70fcc2c">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Google Play Points 計算器">
     <meta property="og:title" content="Google Play Points 指南">
@@ -40,16 +40,16 @@
   "inLanguage": "zh-TW"
 }
     </script>
-    <link rel="stylesheet" href="/articles/intl-hub.css?v=198d62f622" data-intl-hub-discovery-style>
+    <link rel="stylesheet" href="/articles/intl-hub.css?v=7dedb8ae5b" data-intl-hub-discovery-style>
 <link rel="stylesheet" href="/articles/japanese-shell.css?v=d181c50417">
 <link rel="stylesheet" href="/articles/guide-navigation.css?v=f0ef72caa9">
-<link rel="stylesheet" href="/articles/guide-editorial.css?v=d5aeedb04a">
+<link rel="stylesheet" href="/articles/guide-editorial.css?v=c679428ba0">
 <script type="application/ld+json" data-intl-breadcrumbs>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"計算機","item":"https://playpoint-sim.com/tw/"},{"@type":"ListItem","position":2,"name":"指南","item":"https://playpoint-sim.com/tw/articles/"}]}</script>
 <meta name="playpoint:anchor-ads" content="collapsed-bottom">
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/article-search.js?v=8a48bca9d4"></script>
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <!-- discovery-assets:end -->
@@ -63,7 +63,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/tw/author/katakata.html">關於 Katakata</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
+      <summary data-region-code="TW" aria-label="Play 國家／地區: 台灣"><span aria-hidden="true">🌐</span><span>台灣</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play 國家／地區</p>
         <a href="/">日本</a>
@@ -74,6 +74,15 @@
         <a href="/in/">印度</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>選單</summary><nav aria-label="主要導覽">
+        <a href="/tw/">計算機</a>
+        <a href="/tw/articles/">指南</a>
+        <a href="/tw/articles/#intl-hub-trouble">問題排解</a>
+        <a href="/tw/articles/#intl-hub-earn">積點與使用</a>
+        <a href="/tw/articles/#intl-hub-levels">等級與回饋</a>
+        <a href="/tw/articles/#intl-hub-account">帳號與基本</a>
+        <a href="/tw/author/katakata.html">關於 Katakata</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="切換主題">☀️</button>
     </div>
   </div>
@@ -104,11 +113,14 @@
       <p class="hero-meta">更新日期 2026-10-15</p>
     </header>
     <article class="content">
-      <div class="intl-hub-intro">先選擇最符合目前問題的規則。每篇指南先提供結論，再列出應在 Google Play 確認的項目。</div>
-    <div class="intl-guide-controls" data-intl-guide-controls>
-      <div class="intl-game-discovery" id="intl-hub-games"><div><label for="intl-guide-game">依遊戲尋找</label><select id="intl-guide-game" data-guide-game><option value="all">全部主題與遊戲</option><option value="games">所有遊戲指南</option><option value="fgo">Fate/Grand Order</option><option value="genshin">原神</option><option value="monst">怪物彈珠</option><option value="starrail">崩壞：星穹鐵道</option><option value="zzz">絕區零</option><option value="umamusume">賽馬娘</option><option value="proseka">世界計畫</option><option value="pokepoke">Pokémon TCG Pocket</option><option value="pad">Puzzle &amp; Dragons</option><option value="arknights">明日方舟</option><option value="dokkan">七龍珠Z 爆裂激戰</option><option value="hbr">緋染天空</option><option value="honkai3rd">崩壞3rd</option><option value="phantomparade">咒術迴戰 幻影夜行</option><option value="prospi-a">Prospi A</option><option value="pokemon-go">Pokémon GO</option><option value="efootball">eFootball</option></select></div><div><label for="intl-guide-topic">想比較什麼？</label><select id="intl-guide-topic" data-guide-topic><option value="all">全部消費主題</option><option value="pass">通行證與每日包</option><option value="trial">免費試用</option><option value="shop">App與網路商店</option><option value="rewards">貨幣與回饋</option><option value="version">日版參考</option></select></div></div>
+      <div class="intl-guide-controls" data-intl-guide-controls>
       <label for="intl-guide-search">搜尋指南</label>
       <input id="intl-guide-search" type="search" autocomplete="off" placeholder="依主題或關鍵字搜尋" data-guide-search>
+      <label class="intl-category-label" for="intl-guide-category">瀏覽所有指南</label>
+      <select id="intl-guide-category" data-guide-category><option value="all">全部 (65)</option><option value="account">帳號與基本 (10)</option><option value="earn">積點與使用 (41)</option><option value="levels">等級與回饋 (10)</option><option value="troubleshooting">問題排解 (4)</option></select>
+      <details class="intl-guide-more" data-guide-more><summary>依遊戲或購買類型篩選</summary>
+      <div class="intl-game-discovery" id="intl-hub-games"><div><label for="intl-guide-game">依遊戲尋找</label><select id="intl-guide-game" data-guide-game><option value="all">全部主題與遊戲</option><option value="games">所有遊戲指南</option><option value="fgo">Fate/Grand Order</option><option value="genshin">原神</option><option value="monst">怪物彈珠</option><option value="starrail">崩壞：星穹鐵道</option><option value="zzz">絕區零</option><option value="umamusume">賽馬娘</option><option value="proseka">世界計畫</option><option value="pokepoke">Pokémon TCG Pocket</option><option value="pad">Puzzle &amp; Dragons</option><option value="arknights">明日方舟</option><option value="dokkan">七龍珠Z 爆裂激戰</option><option value="hbr">緋染天空</option><option value="honkai3rd">崩壞3rd</option><option value="phantomparade">咒術迴戰 幻影夜行</option><option value="prospi-a">Prospi A</option><option value="pokemon-go">Pokémon GO</option><option value="efootball">eFootball</option></select></div><div><label for="intl-guide-topic">想比較什麼？</label><select id="intl-guide-topic" data-guide-topic><option value="all">全部消費主題</option><option value="pass">通行證與每日包</option><option value="trial">免費試用</option><option value="shop">App與網路商店</option><option value="rewards">貨幣與回饋</option><option value="version">日版參考</option></select></div></div>
+      </details>
       <div class="intl-guide-filters" role="group" aria-label="瀏覽所有指南">
         <button type="button" class="intl-guide-filter is-active" data-guide-filter="all" aria-pressed="true">全部 <span>65</span></button>
         <button id="intl-hub-account" type="button" class="intl-guide-filter" data-guide-filter="account" aria-pressed="false">帳號與基本 <span>10</span></button>
@@ -118,38 +130,7 @@
       </div>
     </div>
     <p class="intl-guide-result" data-guide-result aria-live="polite">顯示 65 篇指南</p>
-    <section class="intl-hub-start" aria-labelledby="intl-hub-start" data-guide-start>
-      <div class="intl-hub-section-heading">
-        <div><h2 id="intl-hub-start">先從這裡開始</h2><p>先從 5 個常見問題快速找到最符合目前情況的規則。</p></div>
-      </div>
-      <div class="intl-guide-start-grid">
-        <a class="intl-guide-card intl-guide-card--featured" href="/tw/articles/google-play-points-weekly-reward.html" data-guide-card data-category="levels" data-search="每週 play points 獎勵 等級與回饋  ">
 
-        <span class="intl-guide-card__category">等級與回饋</span>
-        <span class="intl-guide-card__title">每週 Play Points 獎勵</span>
-      </a>
-        <a class="intl-guide-card intl-guide-card--featured" href="/tw/articles/google-play-points-platinum-diamond-cost.html" data-guide-card data-category="levels" data-search="google play points 白金與鑽石比較｜點數、維持金額與福利 等級與回饋  ">
-
-        <span class="intl-guide-card__category">等級與回饋</span>
-        <span class="intl-guide-card__title">Google Play Points 白金與鑽石比較｜點數、維持金額與福利</span>
-      </a>
-        <a class="intl-guide-card intl-guide-card--featured" href="/tw/articles/google-play-points-play-credit-not-working.html" data-guide-card data-category="troubleshooting" data-search="play 抵用金無法兌換或使用時 問題排解  ">
-
-        <span class="intl-guide-card__category">問題排解</span>
-        <span class="intl-guide-card__title">Play 抵用金無法兌換或使用時</span>
-      </a>
-        <a class="intl-guide-card intl-guide-card--featured" href="/tw/articles/google-play-points-coupon-not-applied.html" data-guide-card data-category="troubleshooting" data-search="折價券沒有自動套用時 問題排解  ">
-
-        <span class="intl-guide-card__category">問題排解</span>
-        <span class="intl-guide-card__title">折價券沒有自動套用時</span>
-      </a>
-        <a class="intl-guide-card intl-guide-card--featured" href="/tw/articles/google-play-quests.html" data-guide-card data-category="earn" data-search="google play 任務沒有顯示或無法完成 積點與使用  ">
-
-        <span class="intl-guide-card__category">積點與使用</span>
-        <span class="intl-guide-card__title">Google Play 任務沒有顯示或無法完成</span>
-      </a>
-      </div>
-    </section>
     <section class="intl-hub-browser" aria-labelledby="intl-hub-browse">
       <div class="intl-hub-section-heading"><h2 id="intl-hub-browse">瀏覽所有指南</h2></div>
       <div class="intl-guide-grid" data-guide-grid data-result-template="顯示 {count} 篇指南">
@@ -481,6 +462,39 @@
       </div>
       <p class="intl-guide-empty" data-guide-empty hidden>找不到符合條件的指南，請改用其他關鍵字或分類。</p>
     </section>
+    <details class="intl-hub-start" data-guide-start><summary>先從這裡開始</summary><section aria-labelledby="intl-hub-start">
+      <div class="intl-hub-intro">先選擇最符合目前問題的規則。每篇指南先提供結論，再列出應在 Google Play 確認的項目。</div>
+      <div class="intl-hub-section-heading">
+        <div><h2 id="intl-hub-start">先從這裡開始</h2><p>先從 5 個常見問題快速找到最符合目前情況的規則。</p></div>
+      </div>
+      <div class="intl-guide-start-grid">
+        <a class="intl-guide-card intl-guide-card--featured" href="/tw/articles/google-play-points-weekly-reward.html" data-guide-card data-category="levels" data-search="每週 play points 獎勵 等級與回饋  ">
+
+        <span class="intl-guide-card__category">等級與回饋</span>
+        <span class="intl-guide-card__title">每週 Play Points 獎勵</span>
+      </a>
+        <a class="intl-guide-card intl-guide-card--featured" href="/tw/articles/google-play-points-platinum-diamond-cost.html" data-guide-card data-category="levels" data-search="google play points 白金與鑽石比較｜點數、維持金額與福利 等級與回饋  ">
+
+        <span class="intl-guide-card__category">等級與回饋</span>
+        <span class="intl-guide-card__title">Google Play Points 白金與鑽石比較｜點數、維持金額與福利</span>
+      </a>
+        <a class="intl-guide-card intl-guide-card--featured" href="/tw/articles/google-play-points-play-credit-not-working.html" data-guide-card data-category="troubleshooting" data-search="play 抵用金無法兌換或使用時 問題排解  ">
+
+        <span class="intl-guide-card__category">問題排解</span>
+        <span class="intl-guide-card__title">Play 抵用金無法兌換或使用時</span>
+      </a>
+        <a class="intl-guide-card intl-guide-card--featured" href="/tw/articles/google-play-points-coupon-not-applied.html" data-guide-card data-category="troubleshooting" data-search="折價券沒有自動套用時 問題排解  ">
+
+        <span class="intl-guide-card__category">問題排解</span>
+        <span class="intl-guide-card__title">折價券沒有自動套用時</span>
+      </a>
+        <a class="intl-guide-card intl-guide-card--featured" href="/tw/articles/google-play-quests.html" data-guide-card data-category="earn" data-search="google play 任務沒有顯示或無法完成 積點與使用  ">
+
+        <span class="intl-guide-card__category">積點與使用</span>
+        <span class="intl-guide-card__title">Google Play 任務沒有顯示或無法完成</span>
+      </a>
+      </div>
+    </section></details>
     <div data-intl-reading-library-slot>
 <!-- reading-tools:start --><details id="reading-library" class="reading-library"><summary>已儲存文章與閱讀紀錄</summary><p>只儲存在此裝置：最多 100 篇收藏、20 篇閱讀紀錄。清除瀏覽器資料後，清單也會刪除。</p></details><!-- reading-tools:end -->
 </div>
@@ -554,7 +568,7 @@
 <script src="/js/analytics-core.js?v=2a21f6d951"></script>
 <script src="/js/intent-tracking.js?v=cdaccb870f"></script>
 <script src="/js/third-party.js?v=34ee3a19ae"></script>
-<script src="/js/intl-guide-hub.js?v=8504850cf6" defer data-intl-hub-discovery-script></script>
+<script src="/js/intl-guide-hub.js?v=0c4eb25432" defer data-intl-hub-discovery-script></script>
 <script src="/js/site-reader-tools.js?v=04636b5ced" defer data-site-reader-tools></script>
 </body>
 </html>

@@ -263,9 +263,9 @@ test('Super Ticketは現行の対象条件と保存・使用期限を分け、FA
   const html = readArticle('2026-09-19-google-play-super-ticket.html');
   const body = html.slice(html.indexOf('<body'));
   assert.match(body, /answer\/9080348\?co=GENIE.CountryCode%3DJP/);
-  assert.match(body, /プラチナ・ダイヤモンド（Play Passなし）<\/td><td>1枚<\/td><td>対象外/);
-  assert.match(body, /ゴールド＋Play Pass<\/td><td>対象外<\/td><td>1枚/);
-  assert.match(body, /プラチナ・ダイヤモンド＋Play Pass<\/td><td>1枚<\/td><td>さらに1枚/);
+  assert.match(body, /プラチナ・ダイヤモンド（Play Passなし）<\/td><td\b[^>]*>1枚<\/td><td\b[^>]*>対象外/);
+  assert.match(body, /ゴールド＋Play Pass<\/td><td\b[^>]*>対象外<\/td><td\b[^>]*>1枚/);
+  assert.match(body, /プラチナ・ダイヤモンド＋Play Pass<\/td><td\b[^>]*>1枚<\/td><td\b[^>]*>さらに1枚/);
   assert.match(body, /保存できる期間：48時間/);
   assert.match(body, /利用可能になってから8週間後の最初の木曜日/);
   assert.match(body, /引き直すと元の報酬は受け取れません/);

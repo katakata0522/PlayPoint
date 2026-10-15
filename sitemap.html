@@ -152,7 +152,7 @@
     }
     @media (max-width: 420px) { .region-grid { grid-template-columns: 1fr; } }
   </style>
-  <link rel="stylesheet" href="/site-shell-vnext.css?v=28f1ecc228">
+  <link rel="stylesheet" href="/site-shell-vnext.css?v=d2b6777cec">
 </head>
 <body>
   <header class="site-header">
@@ -171,11 +171,11 @@
     <section class="hero">
       <p class="eyebrow">目的から探す</p>
       <h1>Playポイント計算機 サイト案内</h1>
-      <p>URLを全部並べる一覧ではなく、「何をしたいか」から必要なページへ進める人向け案内です。記事の完全一覧は記事・ガイド、検索エンジン向けURL一覧はXMLサイトマップが担当します。</p>
+      <p>計算する、特典を探す、記事を読む。目的から必要なページへ進めます。</p><nav class="fixed-page-quicklinks" aria-label="目的への近道"><a href="/">計算する</a><a href="/latest/">今の特典</a><a href="/blog/">記事を探す</a><a href="/games/">ゲーム別に探す</a><a href="#site-help">困りごと</a><a href="#site-overseas">海外版</a></nav>
     </section>
 
     <div class="hub-grid">
-      <section class="group">
+      <section class="group" id="site-calculators">
         <h2>🧮 計算する</h2>
         <p class="group-lead">不足ポイントや予定課金額から、必要額・獲得ポイントを確認します。</p>
         <ul>
@@ -191,7 +191,7 @@
         </ul>
       </section>
 
-      <section class="group">
+      <section class="group" id="site-games">
         <h2>🎮 ゲーム別に調べる</h2>
         <p class="group-lead">ゲームごとの課金額・月額商品・天井・Play Pointsを確認します。</p>
         <ul>
@@ -204,7 +204,7 @@
         </ul>
       </section>
 
-      <section class="group">
+      <section class="group" id="site-help">
         <h2>🆘 困りごと・制度を調べる</h2>
         <p class="group-lead">使い方、未反映、キャンペーン、ランク制度などを記事・ガイドから探します。</p>
         <ul>
@@ -217,7 +217,7 @@
         </ul>
       </section>
 
-      <section class="group">
+      <section class="group" id="site-overseas">
         <h2>🌐 海外向けガイド</h2>
         <p class="group-lead">各地域向けの計算機と、対応している言語別ガイドへ移動します。</p>
         <ul>
@@ -242,7 +242,7 @@
         <p class="group-lead" style="margin-top:12px;"><a href="attention.html">Country &amp; Region Guide</a> では、6地域のランク条件・通貨・獲得率の違いをまとめています。</p>
       </section>
 
-      <section class="group">
+      <section class="group" id="site-author">
         <h2>👤 運営・検証</h2>
         <p class="group-lead">サイトの運営者、確認方針、更新履歴を確認できます。</p>
         <ul>
@@ -253,7 +253,7 @@
         </ul>
       </section>
 
-      <section class="group">
+      <section class="group" id="site-policy">
         <h2>🔒 ポリシー</h2>
         <p class="group-lead">利用条件やデータ・広告・アクセス解析の取り扱いを確認できます。</p>
         <ul>
@@ -269,7 +269,8 @@
     </aside>
   </main>
 
-  <footer class="page-footer">
+  <details class="technical-note"><summary>このサイト案内について</summary><p>URLを全部並べる一覧ではなく、「何をしたいか」から必要なページへ進める人向け案内です。記事の完全一覧は記事・ガイド、検索エンジン向けURL一覧はXMLサイトマップが担当します。</p></details>
+<footer class="page-footer">
     <p>
       <a href="./">トップ計算機</a>
       <a href="games/">ゲーム計算機</a>

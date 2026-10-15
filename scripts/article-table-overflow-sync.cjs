@@ -73,7 +73,8 @@ function syncScrollableRegions(rootDir) {
   for (const file of listPublicHtmlFiles(rootDir)) {
     const current = fs.readFileSync(file, 'utf8');
     summary.checked += 1;
-    const next = makeScrollableRegionsAccessible(current);
+    const readingPage = /intl-layout-container|main-content-column|lp-wrapper|maintenance-shell/.test(current);
+    const next = makeScrollableRegionsAccessible(readingPage ? markResponsiveTables(current) : current);
     if (next === current) continue;
     fs.writeFileSync(file, next, 'utf8');
     summary.changed += 1;
@@ -81,4 +82,30 @@ function syncScrollableRegions(rootDir) {
   return summary;
 }
 
-module.exports = { ARTICLE_TABLE_OVERFLOW_PATHS, WRAPPED_TABLE_PREFIX, wrapUnwrappedTables, syncArticleTableOverflow, makeScrollableRegionsAccessible, syncScrollableRegions };
+// 単純な2・3列表だけを縦読みへ。結合セルや複雑な表は既存の横スクロールを保つ。
+function markResponsiveTables(html) {
+  const attribute = value => value.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return html.replace(/<table\b[^>]*>[\s\S]*?<\/table>/gi, table => {
+    if (/reading-responsive-table/.test(table)) return table.replace(/(<th\b[^>]*\brole=)"cell"/gi, '$1"rowheader"');
+    if (/\b(?:rowspan|colspan)\s*=/i.test(table)) return table;
+    const rows = [...table.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)];
+    if (rows.length < 2) return table;
+    const headers = [...rows[0][1].matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/gi)];
+    if (headers.length < 2 || headers.length > 3 || /<td\b/i.test(rows[0][1])) return table;
+    if (!rows.slice(1).every(row => [...row[1].matchAll(/<t[dh]\b/gi)].length === headers.length)) return table;
+    const labels = headers.map(h => normalizeText(h[1].replace(/<[^>]*>/g, ' ')));
+    let rowIndex = 0;
+    table = table.replace(/<tr\b[^>]*>[\s\S]*?<\/tr>/gi, row => {
+      const header = rowIndex++ === 0;
+      let cellIndex = 0;
+      return row.replace(/<tr\b([^>]*)>/i, (all, attrs) => '<tr' + attrs + (/\brole=/.test(attrs) ? '' : ' role="row"') + '>').replace(/<(t[dh])\b([^>]*)>/gi, (all, tag, attrs) => {
+        const label = labels[cellIndex++];
+        const role = /\brole=/.test(attrs) ? '' : ' role="' + (header ? 'columnheader' : tag.toLowerCase() === 'th' ? 'rowheader' : 'cell') + '"';
+        return '<' + tag + attrs + role + (header ? '' : ' data-column-label="' + attribute(label) + '"') + '>';
+      });
+    });
+    return table.replace(/<table\b([^>]*)>/i, (all, attrs) => '<table' + (/\bclass=/.test(attrs) ? attrs.replace(/class=(["'])(.*?)\1/, (_all, quote, classes) => 'class=' + quote + classes + ' reading-responsive-table' + quote) : attrs + ' class="reading-responsive-table"') + (/\brole=/.test(attrs) ? '' : ' role="table"') + '>');
+  });
+}
+
+module.exports = { ARTICLE_TABLE_OVERFLOW_PATHS, WRAPPED_TABLE_PREFIX, wrapUnwrappedTables, syncArticleTableOverflow, makeScrollableRegionsAccessible, syncScrollableRegions, markResponsiveTables };

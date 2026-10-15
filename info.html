@@ -28,8 +28,8 @@
     <meta name="twitter:description" content="Playポイント計算機への感謝、開発秘話、アップデート情報をまとめたページです。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    
-    <link rel="stylesheet" href="style.css?v=ce3c7c73b5">
+
+    <link rel="stylesheet" href="style.css?v=cf9672d999">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -61,7 +61,7 @@
       }
     }
     </script>
-  <link rel="stylesheet" href="/site-shell-vnext.css?v=28f1ecc228">
+  <link rel="stylesheet" href="/site-shell-vnext.css?v=d2b6777cec">
     <style>
       /* 本人のあとがきは保ち、更新一覧と詳細への入口だけを整える。 */
       #update-section .update-highlights { list-style: none; padding: 0; margin: 1.2em 0; }
@@ -77,10 +77,27 @@
       #update-section .update-history-link:focus-visible { background: #0842a0; color: #fff !important; }
     </style>
 </head>
-<body>
+<body class="info-page">
 
 <main class="calculator-wrapper">
     <h1>あとがき・アップデート情報</h1>
+    <nav class="fixed-page-quicklinks" aria-label="ページの案内"><a href="/">計算機に戻る</a><a href="/blog/">記事を探す</a><a href="#thanks-section">あとがきを読む</a></nav>
+    <div class="section" id="update-section">
+      <h2>アップデート情報</h2>
+      <p>主なアップデートを、新しい順に5件紹介します。</p>
+      <ul class="update-highlights">
+        <li><time datetime="2026-09-22">2026/09/22</time><a href="changelog.html#purpose-guides"><strong>目的から選べる4つの記事</strong></a><br>ダイヤモンド・クエスト・ポイントの使い道・ギフトコードへ、トップから迷わず移動。</li>
+        <li><time datetime="2026-09-21">2026/09/21</time><a href="changelog.html#clear-results"><strong>必要な金額をひと目で</strong></a><br>必要な金額を大きく表示し、結果の読み取りやすさを改善。</li>
+        <li><time datetime="2026-09-19">2026/09/19</time><a href="changelog.html#article-discovery"><strong>記事検索と人気記事を追加</strong></a><br>記事一覧の検索と、記事横の検索・人気記事5件を整備。</li>
+        <li><time datetime="2026-09-19">2026/09/19</time><a href="changelog.html#weekly-diary"><strong>リワード日記のグラフを充実</strong></a><br>今週の入力・記録状態・週ごとの積み上げを分かりやすく。</li>
+        <li><time datetime="2026-09-19">2026/09/19</time><a href="changelog.html#monst-packs"><strong>モンストのパックを計算・比較</strong></a><br>ゲーム別計算にパックを追加し、購入先比較やカレンダーの記事を公開。</li>
+      </ul>
+      <div style="margin-top: 1.5em; text-align: center;">
+        <a href="changelog.html" class="btn-back-home update-history-link"><span aria-hidden="true">👉</span><span>アップデートの歴史は<wbr>こちら！</span></a>
+      </div>
+    </div>
+
+
 
     <div class="section" id="thanks-section">
       <h2>ご利用ありがとうございます！</h2>
@@ -114,21 +131,6 @@
       </p>
     </div>
 
-
-    <div class="section" id="update-section">
-      <h2>アップデート情報</h2>
-      <p>主なアップデートを、新しい順に5件紹介します。</p>
-      <ul class="update-highlights">
-        <li><time datetime="2026-09-22">2026/09/22</time><a href="changelog.html#purpose-guides"><strong>目的から選べる4つの記事</strong></a><br>ダイヤモンド・クエスト・ポイントの使い道・ギフトコードへ、トップから迷わず移動。</li>
-        <li><time datetime="2026-09-21">2026/09/21</time><a href="changelog.html#clear-results"><strong>必要な金額をひと目で</strong></a><br>必要な金額を大きく表示し、結果の読み取りやすさを改善。</li>
-        <li><time datetime="2026-09-19">2026/09/19</time><a href="changelog.html#article-discovery"><strong>記事検索と人気記事を追加</strong></a><br>記事一覧の検索と、記事横の検索・人気記事5件を整備。</li>
-        <li><time datetime="2026-09-19">2026/09/19</time><a href="changelog.html#weekly-diary"><strong>リワード日記のグラフを充実</strong></a><br>今週の入力・記録状態・週ごとの積み上げを分かりやすく。</li>
-        <li><time datetime="2026-09-19">2026/09/19</time><a href="changelog.html#monst-packs"><strong>モンストのパックを計算・比較</strong></a><br>ゲーム別計算にパックを追加し、購入先比較やカレンダーの記事を公開。</li>
-      </ul>
-      <div style="margin-top: 1.5em; text-align: center;">
-        <a href="changelog.html" class="btn-back-home update-history-link"><span aria-hidden="true">👉</span><span>アップデートの歴史は<wbr>こちら！</span></a>
-      </div>
-    </div>
 
     <div class="back-link-wrapper">
         <a href="index.html" class="btn-back-home" id="btn-back-home">← 計算ツールに戻る</a>

@@ -8,6 +8,8 @@
   const start = document.querySelector('[data-guide-start]');
   const gameFilter = document.querySelector('[data-guide-game]');
   const topicFilter = document.querySelector('[data-guide-topic]');
+  const categoryFilter = document.querySelector('[data-guide-category]');
+  const moreFilters = document.querySelector('[data-guide-more]');
   if (!grid || !search || !buttons.length || !result || !empty) return;
   const locale = location.pathname.split('/')[1];
   const copy = {
@@ -64,6 +66,7 @@
     const query = search.value.trim(), engine = window.PlayPointSearch; let visible = 0;
     // 検索・分類の選択中は一致する結果を検索欄の直後に見せる。
     if (start) start.hidden = Boolean(query) || activeCategory !== 'all' || Boolean(gameFilter && gameFilter.value !== 'all') || Boolean(topicFilter && topicFilter.value !== 'all');
+    if (moreFilters && (gameFilter?.value !== 'all' || topicFilter?.value !== 'all')) moreFilters.open = true;
     const byPath = new Map(articles.map(article => [article.path, article]));
     const ordered = cards.map(card => {
       const sourceArticle = byPath.get(new URL(card.href).pathname);
@@ -94,10 +97,12 @@
   }
   function selectCategory(category, { focus = false } = {}) {
     activeCategory = category;
+    if (categoryFilter) categoryFilter.value = category;
     for (const button of buttons) { const active = button.dataset.guideFilter === category; button.classList.toggle('is-active', active); button.setAttribute('aria-pressed', String(active)); if (active && focus) button.focus({ preventScroll: true }); }
     applyFilters();
   }
   buttons.forEach(button => button.addEventListener('click', () => { selectCategory(button.dataset.guideFilter); writeUrl(true); trackFilter(); }));
+  categoryFilter?.addEventListener('change', () => { selectCategory(categoryFilter.value); writeUrl(true); trackFilter(); });
   [gameFilter, topicFilter].filter(Boolean).forEach(select => select.addEventListener('change', () => { applyFilters(); writeUrl(true); trackFilter(); }));
   search.addEventListener('focus', loadBodySearch, { once: true });
   search.addEventListener('input', () => { applyFilters(); writeUrl(); if (search.value.trim()) loadBodySearch(); clearTimeout(searchTimer); searchTimer = setTimeout(() => window.PlayPointAnalytics?.track('search', { results_count: cards.filter(card => !card.hidden).length }), 400); });

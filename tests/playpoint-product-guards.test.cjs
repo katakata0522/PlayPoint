@@ -303,12 +303,13 @@ test('日記の重複通知を表示せず、カレンダー登録は残す', ()
   }
 });
 
-test('地域差案内は日本語トップでも英語の注意導線として表示する', () => {
+test('地域差案内は見える位置に残し、海外版では現地語の条件へ案内する', () => {
   for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
     const html = read(file);
     const links = openingTags(html).filter(node => node.tag === 'a' && /\bdata-country-notes-link\b/.test(html.slice(node.index, html.indexOf('>', node.index) + 1)));
     assert.equal(links.length, 1, file);
-    assert.ok(links[0].attrs.href?.endsWith('attention.html'), file);
+    const target = file === 'index.html' ? 'attention.html' : 'articles/google-play-points-country-differences.html';
+    assert.ok(links[0].attrs.href?.endsWith(target), file);
     assert.ok(!Object.hasOwn(links[0].attrs, 'hidden') && !/\shidden(?:\s|>)/.test(html.slice(links[0].index, html.indexOf('>', links[0].index) + 1)), file);
     if (file === 'index.html') assert.match(html.slice(links[0].index).split(/<\/a\s*>/i)[0], /For users outside Japan/);
   }

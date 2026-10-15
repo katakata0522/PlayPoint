@@ -19,7 +19,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/articles/article-shared.css?v=686f14082a">
   <link rel="stylesheet" href="/articles/intl-article.css?v=234134b4cb">
-<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d17f14b190">
+<link rel="stylesheet" href="/articles/intl-shell-v1.css?v=d2d70fcc2c">
 <meta property="og:type" content="article">
   <meta property="og:site_name" content="Google Play Points Calculator">
   <meta property="og:title" content="Google Play Points locked? Error message and support steps">
@@ -86,11 +86,11 @@
 <meta name="playpoint:anchor-ads" content="collapsed-bottom">
 <link rel="stylesheet" href="/articles/japanese-shell.css?v=d181c50417">
 <link rel="stylesheet" href="/articles/guide-navigation.css?v=f0ef72caa9">
-<link rel="stylesheet" href="/articles/guide-editorial.css?v=d5aeedb04a">
+<link rel="stylesheet" href="/articles/guide-editorial.css?v=c679428ba0">
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
 <link rel="stylesheet" href="/articles/article-discovery.css?v=c4ff7564bf">
-<link rel="stylesheet" href="/articles/reading-theme.css?v=723b6ef8aa">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=ccb88ea62c">
 <script defer src="/js/reading-library.js?v=1625f00f75"></script>
 <script defer src="/js/reading-experience.js?v=526b4fab89"></script>
 <!-- discovery-assets:end -->
@@ -104,7 +104,7 @@
     <div class="site-header-links site-header-tools">
       <a class="site-about-link" href="/en/author/katakata.html">About Katakata</a>
     <details class="site-region-switcher">
-      <summary aria-label="Play country: United States"><span aria-hidden="true">🌐</span><span>United States</span></summary>
+      <summary data-region-code="US" aria-label="Play country: United States"><span aria-hidden="true">🌐</span><span>United States</span></summary>
       <div class="site-region-menu">
         <p class="site-region-menu-label">Play country</p>
         <a href="/">Japan</a>
@@ -115,6 +115,15 @@
         <a href="/in/">India</a>
       </div>
     </details>
+      <details class="intl-mobile-menu"><summary>Menu</summary><nav aria-label="Primary navigation">
+        <a href="/en/">Calculator</a>
+        <a href="/en/articles/">Guides</a>
+        <a href="/en/articles/#intl-hub-trouble">Troubleshooting</a>
+        <a href="/en/articles/#intl-hub-earn">Earn &amp; spend</a>
+        <a href="/en/articles/#intl-hub-levels">Levels &amp; rewards</a>
+        <a href="/en/articles/#intl-hub-account">Account &amp; basics</a>
+        <a href="/en/author/katakata.html">About Katakata</a>
+      </nav></details>
       <button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="Switch theme">☀️</button>
     </div>
   </div>
@@ -165,11 +174,11 @@
     <section class="section">
       <h2 id="restriction-scope">Which part of your account is restricted?</h2>
       <p>The word "unavailable" can describe several situations. Use the screen you have, rather than someone else's screenshot, to choose the next step.</p>
-      <div class="table-wrap" tabindex="0" role="region" aria-label="Restriction scope: comparison table, scroll with the left and right arrow keys"><table><thead><tr><th>What you see</th><th>Where to start</th></tr></thead><tbody>
-        <tr><td>Play Points opens but says you cannot access or use your points</td><td>Read the error instructions and use the Play Points support route below.</td></tr>
-        <tr><td>No Play Points menu, or a purchase's points are missing</td><td><a href="/en/articles/google-play-points-not-showing.html">Check the account, eligibility and missing-points guide.</a></td></tr>
-        <tr><td>Points are visible, but an in-app coupon or credit will not apply</td><td><a href="/en/articles/google-play-points-coupon-not-applied.html">Check that reward's checkout conditions.</a></td></tr>
-        <tr><td>Google says your entire Google Account is disabled when you sign in</td><td>Use <a href="https://support.google.com/accounts/answer/40695?hl=en" target="_blank" rel="noopener noreferrer">Google's disabled-account instructions</a>, which include the account appeal route.</td></tr>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Restriction scope: comparison table, scroll with the left and right arrow keys"><table class="reading-responsive-table" role="table"><thead><tr role="row"><th role="columnheader">What you see</th><th role="columnheader">Where to start</th></tr></thead><tbody>
+        <tr role="row"><td role="cell" data-column-label="What you see">Play Points opens but says you cannot access or use your points</td><td role="cell" data-column-label="Where to start">Read the error instructions and use the Play Points support route below.</td></tr>
+        <tr role="row"><td role="cell" data-column-label="What you see">No Play Points menu, or a purchase's points are missing</td><td role="cell" data-column-label="Where to start"><a href="/en/articles/google-play-points-not-showing.html">Check the account, eligibility and missing-points guide.</a></td></tr>
+        <tr role="row"><td role="cell" data-column-label="What you see">Points are visible, but an in-app coupon or credit will not apply</td><td role="cell" data-column-label="Where to start"><a href="/en/articles/google-play-points-coupon-not-applied.html">Check that reward's checkout conditions.</a></td></tr>
+        <tr role="row"><td role="cell" data-column-label="What you see">Google says your entire Google Account is disabled when you sign in</td><td role="cell" data-column-label="Where to start">Use <a href="https://support.google.com/accounts/answer/40695?hl=en" target="_blank" rel="noopener noreferrer">Google's disabled-account instructions</a>, which include the account appeal route.</td></tr>
       </tbody></table></div>
       <p>A Play Points warning alone does not establish that Gmail, Drive and every other Google service have been disabled. Conversely, if you cannot sign in to the Google Account at all and see a disabled-account notice, changing Play Store settings does not address that wider problem.</p>
     </section>

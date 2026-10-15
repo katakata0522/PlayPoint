@@ -14,7 +14,7 @@
   <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/maintenance/platinum/">
   <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/maintenance/platinum/">
   <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/maintenance/platinum/">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/maintenance/intl-maintenance.css?v=006153a433">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/maintenance/intl-maintenance.css?v=8d01d61d41">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="PlayPoint">
   <meta property="og:title" content="Google Play Points 플래티넘 유지 계산기">
@@ -47,7 +47,7 @@
   <header class="maintenance-hero">
     <p class="maintenance-eyebrow">연말 등급 유지 확인</p>
     <h1>플래티넘 유지 계산기</h1>
-    <p class="maintenance-hero__lead">올해 등급 진행 포인트를 입력하면 유지까지 부족한 포인트를 먼저 보여주고, 기본 적립률 예상액과 연말까지 필요한 월·주·일 속도를 계산합니다.</p>
+
     <ul class="maintenance-hero__facts">
       <li>플래티넘: 2,400 포인트</li>
       <li>1,000원당 1.6포인트</li>
@@ -59,7 +59,7 @@
     <section class="maintenance-input-panel" aria-labelledby="maintenance-input-title">
       <span class="maintenance-section-label"><span data-output="year"></span>년 공식 유지 기준</span>
       <h2 id="maintenance-input-title">Google Play에 표시된 숫자부터 입력하세요</h2>
-      <p>올해 등급 진행 포인트를 공식 유지 기준에서 빼서 부족분을 계산합니다. 구매 내역을 임의로 재구성하지 않습니다.</p>
+
       <form data-maintenance-form novalidate>
         <label class="maintenance-label" for="level-progress">
           올해 등급 진행 포인트
@@ -69,6 +69,7 @@
         <p class="maintenance-error" data-input-error role="alert" hidden></p>
         <button class="maintenance-button" type="submit">예상치 다시 계산</button>
       </form>
+      <details class="maintenance-input-explainer"><summary>계산 방식 보기</summary>    <p class="maintenance-hero__lead">올해 등급 진행 포인트를 입력하면 유지까지 부족한 포인트를 먼저 보여주고, 기본 적립률 예상액과 연말까지 필요한 월·주·일 속도를 계산합니다.</p><p>올해 등급 진행 포인트를 공식 유지 기준에서 빼서 부족분을 계산합니다. 구매 내역을 임의로 재구성하지 않습니다.</p></details>
       <p class="maintenance-input-note">연초부터 유지 대상 등급이며, 대상 결제가 그 등급의 일반 적립률로 계산된다는 단순한 유지 예상치입니다.</p>
     </section>
 

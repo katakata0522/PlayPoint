@@ -415,3 +415,26 @@ a:hover { text-decoration-thickness: 2px; }
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; }
 }
+/* 維持費ページも同じ配色と、入力を優先する余白へ。 */
+:root { --maintenance-brand:#176773; --maintenance-brand-dark:#12525c; --maintenance-action:#176773; --maintenance-shadow:0 4px 18px #173d4310; }
+@media(max-width:760px) {
+.maintenance-shell { margin-top:12px; }
+.maintenance-topbar { font-size:13px; gap:8px; margin-bottom:10px; }
+.maintenance-topbar__links a,.maintenance-language-links a { display:inline-flex; align-items:center; min-height:36px; }
+.maintenance-language-links { gap:4px 12px; }
+.maintenance-hero { padding:18px 16px; border-radius:12px 12px 0 0; }
+.maintenance-hero h1 { font-size:27px; line-height:1.4; letter-spacing:0; }
+.maintenance-hero__lead { margin-top:10px; font-size:15px; }
+.maintenance-hero__facts { gap:4px 10px; margin-top:12px; }
+.maintenance-hero__facts li { padding:0; border:0; background:none; border-radius:0; font-size:13px; }
+.maintenance-input-panel { padding:18px 16px; }
+.maintenance-input-panel h2 { margin-top:0; }
+}
+@media(max-width:760px) {
+.maintenance-input-panel h2 { font-size:19px; line-height:1.5; }
+.maintenance-label { margin-top:14px; }
+.maintenance-hero__facts { margin-top:10px; }
+}
+.maintenance-input-explainer { margin:12px 0; }
+.maintenance-input-explainer summary { min-height:44px; padding:9px 0; color:var(--maintenance-action); cursor:pointer; font-weight:650; }
+.maintenance-input-panel .maintenance-hero__lead { color:var(--maintenance-muted); font-size:15px; }
