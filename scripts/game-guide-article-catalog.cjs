@@ -44,7 +44,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'monst-google-play-vs-webshop-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-16',
     listDescription: "同じ1万円でアプリ180個、Web190個、月イチ200個。ポイントの利用価値も含めて購入先を選べます。",
     title: "モンストのオーブはどこで買う？アプリ180個・Web190個・月イチ200個を比較",
     category: '使い方',

@@ -58,6 +58,22 @@ function eventCalls(context, eventName) {
     .map(item => JSON.parse(JSON.stringify(item[2])));
 }
 
+test('購入先比較は共有の同意を守り、入力した特典価値を送信しない', () => {
+  for (const consent of ['granted', 'denied']) {
+    const { context } = createRuntime(consent);
+    const analytics = context.PlayPointAnalytics;
+    analytics.markAnalyticsReady();
+    for (const event of ['purchase_comparison_opened', 'purchase_comparison_completed']) {
+      analytics.track(event, { game_id: 'monst', region: 'JP', play_value: 700, web_value: 200, query: 'private@example.com' });
+      const calls = eventCalls(context, event);
+      assert.equal(calls.length, consent === 'granted' ? 1 : 0);
+      if (calls.length) assert.deepEqual(calls[0], { game_id: 'monst', region: 'JP' });
+      analytics.track(event, { game_id: 'unknown', region: 'JP' });
+      assert.equal(eventCalls(context, event).length, calls.length);
+    }
+  }
+});
+
 test('絞り込みと確認日のダウンロードは同意を守り、固定選択肢と件数だけ記録する', () => {
   for (const consent of ['granted', 'denied']) {
     const { context } = createRuntime(consent), analytics = context.PlayPointAnalytics;

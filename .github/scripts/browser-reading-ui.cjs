@@ -698,6 +698,46 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       assert.equal(await visibleGuides.count(),1,locale+': shared URL restores text and game');
       report.interactions.internationalResources.at(-1).gameDiscovery=true;
     }
+    // 同じ公開導線で、条件変更・同額・不正値・JS失敗時の本文保持を確認する。
+    {
+      const comparisonContext = await context(), page = await comparisonContext.newPage();
+      await goto(page, '/games/monst/google-play-vs-webshop/');
+      const comparison = page.locator('#monst-comparison');
+      await comparison.waitFor({state:'visible'});
+      assert.equal(await comparison.getAttribute('open'), null);
+      await comparison.locator('summary').first().click();
+      await page.locator('#monst-play-value').fill('700');
+      await page.getByRole('button',{name:'この条件で比べる',exact:true}).click();
+      assert.match(await page.locator('#monst-comparison-conclusion').innerText(), /Google Play/);
+      assert.match(await page.locator('#monst-comparison-today').innerText(), /180個/);
+      assert.equal(await page.locator('#monst-monthly-row').isVisible(), false, 'Unavailable monthly purchase stays hidden');
+      await page.locator('#monst-monthly-available').check();
+      assert.equal(await page.locator('#monst-comparison-result').isVisible(), false);
+      await page.getByRole('button',{name:'この条件で比べる',exact:true}).click();
+      assert.match(await page.locator('#monst-comparison-conclusion').innerText(), /Web月イチ/);
+      await page.locator('#monst-play-value').fill('1000');
+      await page.getByRole('button',{name:'この条件で比べる',exact:true}).click();
+      assert.match(await page.locator('#monst-comparison-conclusion').innerText(), /同じ/);
+      await page.locator('#monst-play-value').fill('-1');
+      await page.getByRole('button',{name:'この条件で比べる',exact:true}).click();
+      assert.equal(await page.locator('#monst-comparison-error').isVisible(), true);
+      assert.equal(await page.locator('#monst-comparison-result').isVisible(), false);
+      await page.locator('#monst-play-value').fill('700');
+      await page.getByRole('button',{name:'この条件で比べる',exact:true}).click();
+      for (const width of [320,768]) {
+        await page.setViewportSize({width,height:844});
+        assert.equal(await comparison.evaluate(el => el.scrollWidth > el.clientWidth + 1), false, 'Comparison overflows at '+width);
+      }
+      await page.setViewportSize({width:390,height:844});
+      await page.evaluate(() => { document.documentElement.style.fontSize = '200%'; });
+      assert.equal(await comparison.evaluate(el => el.scrollWidth > el.clientWidth + 1), false, 'Comparison overflows with enlarged text');
+      const fallback = await comparisonContext.newPage();
+      await fallback.route('**/js/monst-purchase-comparison.js*', route => route.abort());
+      await goto(fallback, '/games/monst/google-play-vs-webshop/');
+      assert.equal(await fallback.locator('#monst-comparison').isVisible(), false);
+      assert.match(await fallback.locator('#main-content > article.content').innerText(), /190個/);
+      report.interactions.monstComparison = { userChangedConditions:true, exactTie:true, invalidInput:true, narrowLayout:true, scriptFailureKeepsArticle:true };
+    }
     fs.writeFileSync(path.join(artifactDir,'reading-ui-report.json'),JSON.stringify(report,null,2));
     return report;
   } catch(error) {

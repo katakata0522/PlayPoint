@@ -28,6 +28,8 @@
         destination_type: new Set(['internal', 'external', 'official_google_support'])
     });
     const ENUM_PARAM_VALUES = Object.freeze({
+        purchase_comparison_opened: Object.freeze({ game_id: new Set(['monst']), region: new Set(['JP']) }),
+        purchase_comparison_completed: Object.freeze({ game_id: new Set(['monst']), region: new Set(['JP']) }),
         game_form_started: Object.freeze({
             game_id: new Set(['genshin', 'starrail', 'zzz', 'bluearchive', 'pokepoke', 'fgo', 'umamusume', 'monst', 'gakumas', 'proseka', 'nikke', 'wutheringwaves', 'dokkan', 'pad', 'arknights', 'hbr', 'mementomori', 'phantomparade', 'reverse1999', 'honkai3rd', 'shadowversewb', 'prospi-a', 'pokemon-go', 'efootball']),
             region: new Set(['JP', 'US', 'KR', 'TW'])
@@ -60,12 +62,16 @@
         result_decision_link_clicked: RESULT_LINK_PARAM_VALUES
     });
     const REQUIRED_PARAMS = Object.freeze({
+        purchase_comparison_opened: Object.freeze(['game_id', 'region']),
+        purchase_comparison_completed: Object.freeze(['game_id', 'region']),
         game_form_started: Object.freeze(['game_id', 'region']),
         game_calculation_completed: Object.freeze(['game_id', 'region', 'amount_bucket', 'calculation_basis']),
         guide_filter_changed: Object.freeze(['locale', 'game_id', 'purchase_topic', 'category_name']),
         article_navigation_click: Object.freeze(['source_path', 'component', 'locale', 'article_role', 'article_category', 'destination_type'])
     });
     const ALLOWED_PARAMS = Object.freeze({
+        purchase_comparison_opened: ['game_id', 'region'],
+        purchase_comparison_completed: ['game_id', 'region'],
         page_view: [],
         calculation_completed: ['calculation_mode', 'region', 'target_status', 'entry_source', 'entry_medium', 'entry_campaign', 'entry_source_path', 'entry_link_context', 'calculator_preset'],
         reverse_calculation_completed: ['calculation_mode', 'region', 'entry_source', 'entry_medium', 'entry_campaign', 'entry_source_path', 'entry_link_context', 'calculator_preset'],
