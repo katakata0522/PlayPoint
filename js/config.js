@@ -147,7 +147,7 @@ export const CONFIGS = {
             linkQA: { text: "あとがき・アップデート情報", href: "info.html" },
             linkFeedback: { text: "ご意見・ご感想", href: "https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" },
             linkAbout: { text: "Playポイントとは？", href: "about-playpoints.html" },
-            linkWidget: { text: "無料ウィジェット", href: "embed.html" },
+            linkWidget: { text: "計算機をブログに設置", href: "embed.html" },
             linkDiscount: { text: "💡 お得に課金する", href: "articles/2026-06-20-discount-gift-cards.html" },
             linkAuthor: { text: "運営者・検証方針", href: "author/katakata.html" },
             linkAttention: { text: "⚠️ For users outside Japan", href: "attention.html" },
