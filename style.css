@@ -141,6 +141,7 @@ color: #ffffff;
 }
 .comparison-reference-table-wrap {
 overflow-x: auto;
+container: comparison-reference-table / inline-size;
 -webkit-overflow-scrolling: touch;
 max-width: 100%;
 margin: 1.2rem 0;
@@ -175,8 +176,13 @@ border-bottom: 2px solid rgba(0, 0, 0, 0.12);
 .comparison-reference-table-wrap tbody th { white-space:nowrap; }
 .comparison-reference-table-wrap table:not(.comparison-reference-numeric) td { white-space:nowrap; }
 .comparison-reference-numeric td { text-align:right; }
-.comparison-reference-numeric :is(tbody th,thead th:first-child) { position:sticky; left:0; z-index:1; background:var(--section-bg-color,#fff); }
+.comparison-reference-numeric :is(tbody th,thead th:first-child) { background:var(--section-bg-color,#fff); }
 .comparison-reference-numeric thead th:first-child { z-index:2; background:#f1f5f9; }
+/* 小型画面や文字拡大時は、固定見出しで数値を覆わない。 */
+@container comparison-reference-table (min-width:18rem) {
+.comparison-reference-numeric :is(tbody th,thead th:first-child) { position:sticky; left:0; z-index:1; }
+.comparison-reference-numeric thead th:first-child { z-index:2; }
+}
 .comparison-reference-page .reading-table-hint { margin:0.6rem 0 0; font-size:0.8rem; text-align:right; color:var(--link-color); }
 .comparison-reference-table-wrap tbody tr {
 transition: background 0.15s ease;
