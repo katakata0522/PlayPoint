@@ -25,7 +25,8 @@ test('日本語の全公開記事は検索・人気5件・次行動1件を持ち
     assert.ok(!/\bPV\b|ページビュー/.test(sidebar), article.path + ': PV数は公開しない');
     assert.equal((sidebar.match(/class="sidebar-next-link"/g) || []).length, 1, article.path);
     const links = [...sidebar.matchAll(/class="sidebar-related-link" href="([^"]+)"/g)].map(m => m[1]);
-    assert.equal(links.length, 0, article.path + ': 本文の関連記事をサイドバーに重複させない');
+    assert.ok(links.length <= 1, article.path + ': 次の関連記事は1件に絞る');
+    assert.ok(sidebar.indexOf('sidebar-widget--next') < sidebar.indexOf('sidebar-widget--popular'), article.path + ': 記事に合う次の行動を先にする');
     assert.match(html, /related-links-section|contextual-guide-links|article-related-guides/, article.path);
     assert.ok(sidebar.includes('sidebar-widget--author'), article.path + ': 運営者の紹介を残す');
     assert.ok(sidebar.includes('href="/author/katakata.html"'), article.path + ': 運営者の確認先を残す');

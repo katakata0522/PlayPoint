@@ -26,7 +26,7 @@ function slugFromPath(value) {
 }
 
 function meaningfulTokens(slug) {
-  return new Set(slug.split('-').filter(token => token && !GENERIC_TOKENS.has(token)));
+  return new Set(slug.split('-').filter(token => token && !GENERIC_TOKENS.has(token) && !/^(?:19|20)\d{2}$/.test(token)));
 }
 
 function topicTags(slug) {
@@ -71,14 +71,16 @@ function scoreRelatedArticle(currentPath, candidate) {
   return contextual + (sharedTokens * 12) + (sharedTopics * 5);
 }
 
-function selectRelatedArticles(catalog, currentPath, limit = 4) {
+function selectRelatedArticles(catalog, currentPath, limit = 4, { preferredPaths = [] } = {}) {
   if (!Array.isArray(catalog) || limit <= 0) return [];
+  const preferred = new Set(preferredPaths);
 
   return catalog
     .map((candidate, index) => ({
       ...candidate,
       index,
-      score: scoreRelatedArticle(currentPath, candidate)
+      // 本文の編集済みリンクを優先するが、別サービスの除外や強い文脈一致は維持する。
+      score: scoreRelatedArticle(currentPath, candidate) + (preferred.has(candidate.path) ? 10 : 0)
     }))
     .filter(candidate => Number.isFinite(candidate.score))
     .sort((left, right) => right.score - left.score
