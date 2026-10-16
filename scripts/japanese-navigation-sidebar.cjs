@@ -73,7 +73,7 @@ function nextFor(role, related, article) {
   if (article?.path === 'articles/2026-10-10-diamond-play-pass-value.html') return ['/articles/2026-08-16-play-pass-worth-it.html', 'Play Passの基本と加入条件を確かめる'];
   if (/pixel-discount/.test(article?.path || '')) return ['/latest/', '最新情報の「その他の特典」を確認する'];
   if (role === 'calculator_bridge') return ['/', 'あなたの必要額を計算する'];
-  if (role === 'retention') return ['/latest/', '次回の特典・確認日を調べる'];
+  if (role === 'retention') return ['/latest/', '開催中の特典を確認する'];
   if (role === 'game_decision') {
     const match = String(article?.path || '').match(/^games\/([^/]+)\/[^/]+\/index\.html$/);
     if (match) return ['/games/' + match[1] + '/', '同じゲームの課金額を計算する'];
@@ -211,12 +211,13 @@ function syncGuideHubs(root, catalog) {
 
 function renderSidebar(article, role, related, catalog = []) {
   const [href, label] = nextFor(role, related, article);
+  const nextRead = related.find(item => item.href !== href);
   return `<aside class="sidebar-column ja-article-sidebar" aria-label="記事検索・カテゴリー・人気記事・次の行動" data-article-role="${role}" data-article-category="${categoryFor(article, role)}">
 ${renderSearchWidget()}
+  <section class="sidebar-widget sidebar-widget--next sidebar-widget--role-${role}"><h2 class="sidebar-widget-title">次にやること</h2><div class="sidebar-widget-body"><a class="sidebar-next-link" href="${escapeHtml(href)}">${escapeHtml(label)}</a>${nextRead ? '<p class="reader-next-read"><a class="sidebar-related-link" href="' + escapeHtml(nextRead.href) + '">' + escapeHtml(nextRead.label) + '</a></p>' : ''}</div></section>
+${renderPopularWidget(article, catalog)}
 ${renderBrowseWidget(catalog, article)}
 ${renderGamesWidget(catalog)}
-${renderPopularWidget(article, catalog)}
-  <section class="sidebar-widget sidebar-widget--next sidebar-widget--role-${role}"><h2 class="sidebar-widget-title">次にやること</h2><div class="sidebar-widget-body"><a class="sidebar-next-link" href="${escapeHtml(href)}">${escapeHtml(label)}</a></div></section>
 ${renderAuthorWidget()}
 </aside>`;
 }

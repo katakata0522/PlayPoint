@@ -6,8 +6,9 @@ const { createHash } = require('node:crypto');
 const { LOCALES } = require('./intl-seo-content.cjs');
 const { getIntlGuideCategory } = require('./intl-guide-taxonomy.cjs');
 const { selectRelatedArticles } = require('./intl-related-guides.cjs');
+const { extractRelatedTargets } = require('./article-role-next-action-audit.cjs');
 const { classifyArticleRole } = require('./article-role-registry.cjs');
-const { getPopularGuides, POPULAR_GUIDES_SNAPSHOT, POPULAR_GUIDES_WINDOW_START } = require('./intl-popular-guides.cjs');
+const { getPopularGuides, POPULAR_GUIDES_SNAPSHOT, POPULAR_GUIDES_WINDOW_START, POPULAR_GUIDES_WINDOW_END } = require('./intl-popular-guides.cjs');
 const { COPY } = require('./intl-shell-copy.cjs');
 
 const CHROME_START = '<!-- INTL_ARTICLE_CHROME_START -->';
@@ -181,6 +182,7 @@ function renderChrome(localeKey, title, section, variant, newline) {
     ...renderRegionSwitcher(localeKey, copy),
     '      <details class="intl-mobile-menu"><summary>' + ({ en: 'Menu', ko: '메뉴', tw: '選單' })[localeKey] + '</summary><nav aria-label="' + escapeHtml(copy.primary) + '">',
     ...SECTION_ORDER.map(key => '        <a href="' + navLinks[key][0] + '">' + escapeHtml(navLinks[key][1]) + '</a>'),
+    '        <a href="#reader-popular" data-reader-popular>' + escapeHtml(copy.popularTitle) + '</a>',
     '        <a href="' + guidesHref + '#reading-library" data-reading-library-menu>' + ({ en: 'Saved articles & reading history', ko: '저장한 글·최근 읽은 글', tw: '已儲存文章與閱讀紀錄' })[localeKey] + '</a>',
     '        <a href="' + policyHref + '">' + escapeHtml(copy.about) + '</a>',
     '      </nav></details>',
@@ -241,10 +243,10 @@ function renderPopularWidget(localeKey, currentPath, catalog = [], rootDir = pat
   const popular = getPopularGuides(localeKey, currentPath, 5);
   const byHref = new Map(catalog.map(item => [item.href, item]));
   return [
-    '  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="' + escapeHtml(POPULAR_GUIDES_SNAPSHOT) + '">',
+    '  <section class="sidebar-widget sidebar-widget--popular" id="reader-popular" data-popular-snapshot="' + escapeHtml(POPULAR_GUIDES_SNAPSHOT) + '">',
     '    <h2 class="sidebar-widget-title">' + escapeHtml(copy.popularTitle) + '</h2>',
     '    <div class="sidebar-widget-body">',
-    '      <p class="sidebar-widget-note">' + escapeHtml(({ en: 'Readership: ', ko: '읽기 집계: ', tw: '閱讀統計：' })[localeKey] + POPULAR_GUIDES_WINDOW_START + '–' + POPULAR_GUIDES_SNAPSHOT) + '</p>',
+    '      <p class="sidebar-widget-note">' + escapeHtml(({ en: 'Readership: ', ko: '읽기 집계: ', tw: '閱讀統計：' })[localeKey] + POPULAR_GUIDES_WINDOW_START + '–' + POPULAR_GUIDES_WINDOW_END) + '</p>',
     '      <ol class="sidebar-popular-list">',
     ...popular.map(item => {
       const rank = String(item.rank).padStart(2, '0');
@@ -449,7 +451,12 @@ function syncIntlNavigationSidebarV1(rootDir) {
   for (const localeKey of Object.keys(COPY)) {
     const catalog = buildCatalog(rootDir, localeKey);
     for (const article of catalog) {
-      const relatedArticles = selectRelatedArticles(catalog, article.path, 3);
+      const html = fs.readFileSync(path.join(rootDir, article.path), 'utf8');
+      const byPath = new Map(catalog.map(item => [item.path, item]));
+      const curated = extractRelatedTargets(article.path, html).filter(target => target !== article.path && byPath.has(target));
+      // ゲーム課金の記事は、購入・獲得率・税の既存3導線を維持する。
+      const game = require('./intl-game-article-discovery.cjs').metadata('/' + article.path);
+      const relatedArticles = selectRelatedArticles(catalog, article.path, game ? 3 : 2, { preferredPaths: curated });
       const section = article.section || 'guides';
       const role = classifyArticleRole(article.path) || 'reference';
       summary.checked++;

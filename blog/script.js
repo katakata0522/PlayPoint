@@ -777,6 +777,7 @@
         let filtered = filterArticles();
         // 絞り込み中は検索結果を優先し、解除すると入門案内を戻す。
         document.body.classList.toggle('blog-is-filtered', Boolean(currentSearch || currentGameTitle || currentBrowseCategory || currentCategory !== 'all'));
+        document.body.classList.remove('reader-initial-filter');
         renderSearchDestinations();
 
         updateSortControl();

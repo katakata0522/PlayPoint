@@ -73,6 +73,8 @@
   }
   function applyFilters() {
     const query = search.value.trim(), engine = window.PlayPointSearch; let visible = 0;
+    document.body.classList.toggle('guide-is-filtered', Boolean(query) || activeCategory !== 'all' || Boolean(gameFilter && gameFilter.value !== 'all') || Boolean(topicFilter && topicFilter.value !== 'all'));
+    document.body.classList.remove('reader-initial-filter');
     // 検索・分類の選択中は一致する結果を検索欄の直後に見せる。
     if (start) start.hidden = Boolean(query) || activeCategory !== 'all' || Boolean(gameFilter && gameFilter.value !== 'all') || Boolean(topicFilter && topicFilter.value !== 'all');
     if (moreFilters && (gameFilter?.value !== 'all' || topicFilter?.value !== 'all')) moreFilters.open = true;

@@ -5,6 +5,31 @@ html[lang][data-reading-theme="light"] {
 --reading-action:#126458; --reading-on-action:#fff;
 --reading-selected:#126458; --reading-on-selected:#fff; --reading-note-bg:#edf4f1;
 }
+
+/* 新着の並びは保ち、期限付きの注目だけを短く案内する。 */
+html[lang] body .reader-spotlight { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:baseline; gap:8px 12px; margin:12px 0; padding:12px 0; border-bottom:1px solid var(--reading-border); color:var(--reading-text); }
+html[lang] body .reader-spotlight[hidden], html[lang] body:is(.blog-is-filtered,.guide-is-filtered,.reader-initial-filter) .reader-spotlight { display:none; }
+.reader-spotlight-label { color:var(--reading-link); font-size:12px; font-weight:800; }
+.reader-spotlight a { color:var(--reading-link); font-size:15px; line-height:1.6; font-weight:750; text-decoration:underline; text-underline-offset:3px; overflow-wrap:anywhere; }
+.reader-spotlight-until { color:var(--reading-muted); font-size:11px; white-space:nowrap; }
+html[lang="ko"] .reader-spotlight a { word-break:keep-all; }
+html[lang] body .sidebar-widget .reader-next-read { margin:12px 0 0; }
+.reader-follow { display:none; }
+#reader-popular h2 { scroll-margin-top:96px; }
+@media(min-width:1024px) {
+  html[lang] body .reader-has-follow { align-self:stretch; }
+  html[lang] body .reader-follow { display:block; position:sticky; top:96px; max-height:min(440px,calc(100dvh - 220px)); overflow:auto; padding:12px 0; border-top:1px solid var(--reading-border); font-size:13px; line-height:1.6; scrollbar-gutter:stable; }
+  .reader-follow-title { margin:0 0 8px; font-weight:750; color:var(--reading-text); }
+  .reader-follow ol { margin:0; padding-left:20px; }
+  .reader-follow a { display:block; padding:7px 0; color:var(--reading-link); overflow-wrap:anywhere; text-underline-offset:3px; }
+  .reader-follow-next { margin-top:8px; border-top:1px solid var(--reading-border); font-weight:650; }
+}
+@media(max-width:760px) {
+  html[lang] body .reader-spotlight { grid-template-columns:auto minmax(0,1fr); gap:4px 10px; margin:8px 0; padding:10px 0; }
+  .reader-spotlight a { font-size:14px; }
+  .reader-spotlight-until { grid-column:2; }
+}
+@media(max-width:950px) { html[lang] body aside.ja-article-sidebar.reader-has-follow { display:none; } }
 html[lang] body .guide-header { background:var(--reading-surface); }
 html[lang] body .guide-header .site-header-inner { max-width:1160px; min-height:76px; }
 html[lang] body .guide-header .guide-brand-full { display:flex; align-items:center; gap:24px; }

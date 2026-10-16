@@ -27,6 +27,66 @@
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', init, { once: true }); else init();
 })();
 
+/* 注目記事は期限付きの1件。本文の追従案内はPCの長い記事だけで使う。 */
+(function () {
+  'use strict';
+  function init() {
+    const doc = document;
+    const locale = ({ja:'ja',en:'en',ko:'ko','zh-TW':'tw'})[doc.documentElement.lang];
+    if (!locale) return;
+    const pick = doc.querySelector('[data-reader-spotlight]');
+    if (pick) {
+      const params = new URLSearchParams(location.search);
+      const initialFilter = ['q','game','topic','category'].some(key => params.get(key) && params.get(key) !== 'all');
+      if (initialFilter) doc.body.classList.add('reader-initial-filter');
+      const update = () => { pick.hidden = !(Date.now() < Date.parse(pick.dataset.expires)); };
+      update();
+      doc.addEventListener('visibilitychange', update);
+      // 開いたまま期限を越えた場合も、古いおすすめを固定し続けない。
+      const remaining = Date.parse(pick.dataset.expires) - Date.now();
+      if (remaining > 0 && remaining < 2147483647) setTimeout(update, remaining + 1);
+    }
+    doc.addEventListener('click', event => {
+      const link = event.target.closest('[data-reader-popular]');
+      const target = link && doc.getElementById('reader-popular');
+      if (!target) return;
+      event.preventDefault();
+      link.closest('details').open = false;
+      for (let parent = target.parentElement; parent; parent = parent.parentElement) if (parent.tagName === 'DETAILS') parent.open = true;
+      const title = target.querySelector('h2');
+      title.tabIndex = -1;
+      title.focus({ preventScroll: true });
+      title.scrollIntoView({ block: 'start' });
+    });
+    const article = doc.querySelector('article.content, article.main-content-column');
+    const sidebar = doc.querySelector('aside.sidebar-column');
+    if (!article || !sidebar || sidebar.querySelector('.reader-follow')) return;
+    const headings = [...article.querySelectorAll('h2')].filter(h => !h.closest('summary,.inpage-toc,.reader-toc,.intl-article-toc,.answer-box,.editorial-answer,.article-calculator-prompt,.related-links-section,.article-related-guides,.contextual-guide-links,.reader-followthrough,.author-profile-box,.faq,aside,.article-next-step-cta'));
+    if (headings.length < 3 || article.scrollHeight < innerHeight * 2) return;
+    const labels = {ja:['主な見出し','次に読む'],en:['Key sections','Read next'],ko:['주요 내용','다음 글'],tw:['重點章節','接著閱讀']}[locale];
+    const nav = doc.createElement('nav'); nav.className = 'reader-follow'; nav.setAttribute('aria-label', labels[0]);
+    const title = doc.createElement('p'); title.className = 'reader-follow-title'; title.textContent = labels[0]; nav.append(title);
+    const list = doc.createElement('ol');
+    for (const [index, heading] of headings.slice(0, 5).entries()) {
+      if (!heading.id) {
+        let id = 'reader-section-' + (index + 1);
+        while (doc.getElementById(id)) id += '-toc';
+        heading.id = id;
+      }
+      const li = doc.createElement('li'), link = doc.createElement('a');
+      link.href = '#' + heading.id; link.textContent = heading.textContent.trim(); li.append(link); list.append(li);
+    }
+    nav.append(list);
+    const next = sidebar.querySelector('.sidebar-related-link:not([aria-current])') || sidebar.querySelector('.sidebar-next-link[href]');
+    if (next) {
+      const link = next.cloneNode(true); link.className = 'reader-follow-next';
+      link.textContent = labels[1] + '：' + next.textContent.trim(); nav.append(link);
+    }
+    sidebar.append(nav); sidebar.classList.add('reader-has-follow');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => queueMicrotask(init), { once:true }); else queueMicrotask(init);
+})();
+
 /* スマホでは既存の入口をメニューへ移す。複製せず、保存状態や操作を引き継ぐ。 */
 (function () {
   'use strict';
@@ -100,6 +160,7 @@
     }
     moveLater(sidebar?.querySelector('.sidebar-widget--search'));
     moveLater(doc.querySelector('.ja-global-nav'));
+    moveLater(sidebar?.querySelector('.sidebar-widget--popular'), 'よく読まれている記事');
     moveLater(sidebar?.querySelector('.sidebar-widget--browse'), 'すべてのカテゴリー');
     moveLater(sidebar?.querySelector('.sidebar-widget--games'), 'ゲーム別に探す');
     const libraryInline = doc.body.classList.contains('blog-index-compact');
@@ -108,7 +169,6 @@
     if (sidebar) for (const widget of sidebar.querySelectorAll(':scope > .sidebar-widget')) {
       if (moves.some(item => item.node === widget)) continue;
       if (widget.matches('.sidebar-widget--author')) continue;
-      if (widget.matches('.sidebar-widget--popular') && doc.body.classList.contains('blog-index-compact')) continue;
       moveLater(widget, widget.querySelector('h2')?.textContent || '関連リンク');
     }
     const settings = header.querySelector('.site-header-links');

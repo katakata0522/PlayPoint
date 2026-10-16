@@ -201,6 +201,7 @@ const { syncTopicGuides } = require('./reader-topic-guides.cjs');
 const { syncBlogStaticPages } = require('./blog-static-pages.cjs');
 console.log('[build-html] synchronized purpose guides:', syncTopicGuides(rootDir));
 syncReaderFoundations(rootDir, { hubOnly: true });
+require('./reader-spotlight.cjs').syncReaderSpotlights(rootDir);
 console.log('[build-html] synchronized crawlable article pages:', syncBlogStaticPages(rootDir));
 syncSitemap(rootDir);
 syncRegionSitemap(rootDir);
