@@ -280,6 +280,17 @@
       transform: scale(0.98);
     }
 
+    .usage-examples { margin-top: 32px; }
+    .usage-examples > p { line-height: 1.7; }
+    .usage-examples-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 20px; }
+    .usage-example { min-width: 0; }
+    .usage-example h3 { margin: 0 0 10px; font-size: 1rem; }
+    .usage-example p { line-height: 1.7; color: var(--text-sub); }
+    .usage-example button { min-height: 44px; padding: 10px 14px; border: 1px solid var(--primary-color); border-radius: 8px; background: #fff; color: var(--primary-color); font: inherit; font-weight: 700; cursor: pointer; }
+    .usage-example button:focus-visible { outline: 3px solid var(--primary-color); outline-offset: 3px; }
+    .usage-example-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    #example-status:empty { display: none; }
+
     footer {
       text-align: center;
       padding: 30px 20px;
@@ -423,6 +434,33 @@
       </div>
     </div>
   </div>
+
+  <section class="panel usage-examples" id="usage-examples" aria-labelledby="usage-examples-title">
+    <h2 id="usage-examples-title">記事に合わせた設置例</h2>
+    <p>読者が知りたいことに合わせて、最初に開く計算と言語を選べます。例を適用したら、上のプレビューで確認してコードをコピーしてください。</p>
+    <div class="usage-examples-grid">
+      <div class="usage-example">
+        <h3>年末のランク維持を解説する記事</h3>
+        <p>「あと何ポイント必要？」から、購入額の目安を試せる形に。読者自身の不足ポイントを入力してもらいます。</p>
+        <button type="button" data-widget-example data-mode="main" data-lang="ja">不足ポイントから計算する例</button>
+      </div>
+      <div class="usage-example">
+        <h3>購入額やキャンペーンを比べる記事</h3>
+        <p>予定している購入額から、獲得ポイントを試算できます。特別獲得率は、読者の対象条件を確認して選びます。</p>
+        <button type="button" data-widget-example data-mode="reverse" data-lang="ja">購入額から計算する例</button>
+      </div>
+      <div class="usage-example">
+        <h3>韓国・台湾の読者向けの記事</h3>
+        <p>韓国語はウォン、繁體中文は台湾ドルの条件です。言語だけを変える例ではなく、読者のGoogle Playの国に合わせます。</p>
+        <div class="usage-example-actions">
+          <button type="button" data-widget-example data-mode="main" data-lang="ko">韓国向けの例</button>
+          <button type="button" data-widget-example data-mode="main" data-lang="zh">台湾向けの例</button>
+        </div>
+      </div>
+    </div>
+    <p id="example-status" role="status" aria-live="polite"></p>
+    <p class="usage-note">JavaScriptを設置できる場所では埋め込みコードを使えます。設置できない媒体では、<a href="/">通常の計算機へのリンク</a>で案内できます。表示結果は税や購入ごとの丸めで変わる概算です。実際の対象額と獲得予定ポイントは購入画面で確認してください。</p>
+  </section>
 </div>
 
 <footer>
@@ -559,6 +597,16 @@
     selectTheme.addEventListener('change', updateWidget);
     selectLang.addEventListener('change', updateWidget);
     selectMode.addEventListener('change', updateWidget);
+
+    document.querySelectorAll('[data-widget-example]').forEach(button => {
+      button.addEventListener('click', () => {
+        selectMode.value = button.dataset.mode;
+        selectLang.value = button.dataset.lang;
+        updateWidget();
+        document.getElementById('example-status').textContent = `${button.textContent}を適用しました。上のプレビューと埋め込みコードで確認できます。`;
+        selectMode.focus();
+      });
+    });
 
     // ドラッグ中のリアルタイム幅プレビュー＆コード生成同期
     inputWidth.addEventListener('input', () => {
