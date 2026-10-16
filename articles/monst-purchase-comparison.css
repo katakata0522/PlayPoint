@@ -1,0 +1,58 @@
+.monst-comparison {
+    margin: 1.25rem 0;
+    border: 1px solid var(--reading-border);
+    border-radius: .5rem;
+    color: var(--reading-text);
+    background: var(--reading-soft);
+}
+.monst-comparison[hidden], .monst-comparison [hidden] { display: none; }
+.monst-comparison > summary { padding: .8rem 1rem; cursor: pointer; font-weight: 650; }
+.monst-comparison-body { padding: 0 1rem 1rem; }
+.monst-comparison form > label:not(.monst-comparison-check),
+.monst-comparison-extra label { display: block; margin-top: .8rem; font-weight: 600; }
+.monst-comparison input[type="number"] {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 20rem;
+    min-height: 44px;
+    padding: .5rem .65rem;
+    border: 1px solid var(--reading-border);
+    border-radius: .3rem;
+    font: inherit;
+    font-size: max(1rem, 16px);
+    background: var(--reading-surface);
+    color: var(--reading-text);
+}
+.monst-comparison .monst-comparison-check { display: flex; align-items: center; gap: .6rem; min-height: 44px; margin: .8rem 0; }
+.monst-comparison-check input { flex: 0 0 auto; width: 1.2rem; height: 1.2rem; margin: 0; }
+.monst-comparison .monst-comparison-help { margin: .5rem 0; font-size: .9rem; color: var(--reading-muted); }
+.monst-comparison-extra > summary { cursor: pointer; padding: .5rem 0; }
+.monst-comparison button {
+    min-height: 44px;
+    max-width: 100%;
+    margin-top: .7rem;
+    padding: .6rem 1rem;
+    border: 0;
+    border-radius: .35rem;
+    font: inherit;
+    font-weight: 650;
+    color: var(--reading-on-action);
+    background: var(--reading-action);
+    cursor: pointer;
+}
+.monst-comparison :is(input, button, summary):focus-visible { outline: 3px solid var(--reading-link); outline-offset: 3px; }
+.monst-comparison .monst-comparison-error { color: var(--reading-warning); }
+.monst-comparison-table { width: 100%; min-width: 0; table-layout: fixed; border-collapse: collapse; margin: .8rem 0; }
+.monst-comparison-table caption { text-align: left; padding-bottom: .5rem; }
+.monst-comparison-table :is(th, td) { padding: .55rem .3rem; border-bottom: 1px solid var(--reading-border); overflow-wrap: anywhere; white-space: normal; }
+.monst-comparison-table th:first-child { width: 42%; text-align: left; }
+.monst-comparison-table :is(th, td):not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+/* 3列の小さな結果表は、スマホでも同じ行で比較する。本文の一般表の縦積みを継承しない。 */
+#monst-comparison .monst-comparison-table { display: table; width: 100%; min-width: 0; table-layout: fixed; }
+#monst-comparison .monst-comparison-table thead { display: table-header-group; position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
+#monst-comparison .monst-comparison-table tbody { display: table-row-group; }
+#monst-comparison .monst-comparison-table tr { display: table-row; padding: 0; }
+#monst-comparison .monst-comparison-table :is(th, td) { display: table-cell; min-width: 0; padding: .55rem .3rem; white-space: normal; }
+#monst-comparison .monst-comparison-table :is(th, td)::before { display: none; }
+#monst-comparison .monst-comparison-table :is(th, td):not(:first-child) { text-align: right; }

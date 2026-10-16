@@ -8,6 +8,8 @@
 
 | Event | Trigger | Properties | Decision |
 | --- | --- | --- | --- |
+| `purchase_comparison_opened` | モンストの購入先比較を初めて開いた時（1ページ1回） | `game_id=monst`, `region=JP` | 購入先比較の発見。通常のゲームポイント計算と分ける |
+| `purchase_comparison_completed` | 明示的な比較操作で有効な結果を初めて表示した時（1ページ1回） | `game_id=monst`, `region=JP` | 比較の実利用。入力額・特典価値・個数・結論は送信しない |
 | `calculation_completed` | 通常計算が成功した時 | `calculation_mode`, `region`, `target_status`, 流入属性（該当時のみ） | ランク計算の利用状況と記事・LPからの完了率を判断する |
 | `reverse_calculation_completed` | 逆算が成功した時 | `calculation_mode`, `region`, 流入属性（該当時のみ） | 逆算機能の需要と記事・LPからの完了率を判断する |
 | `calculator_form_started` | 通常計算・逆算で最初の入力/変更/送信があった時（各モード1ページ1回） | `calculation_mode`, `region`, `start_field`, 流入属性（該当時のみ） | 記事・LP別のクリック→計算開始率を判断する |
