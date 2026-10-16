@@ -61,7 +61,7 @@
     const article = doc.querySelector('article.content, article.main-content-column');
     const sidebar = doc.querySelector('aside.sidebar-column');
     if (!article || !sidebar || sidebar.querySelector('.reader-follow')) return;
-    const headings = [...article.querySelectorAll('h2')].filter(h => !h.closest('.related-links-section,.article-related-guides,.contextual-guide-links,.reader-followthrough,.author-profile-box,.faq,aside,.article-next-step-cta'));
+    const headings = [...article.querySelectorAll('h2')].filter(h => !h.closest('summary,.inpage-toc,.reader-toc,.intl-article-toc,.answer-box,.editorial-answer,.article-calculator-prompt,.related-links-section,.article-related-guides,.contextual-guide-links,.reader-followthrough,.author-profile-box,.faq,aside,.article-next-step-cta'));
     if (headings.length < 3 || article.scrollHeight < innerHeight * 2) return;
     const labels = {ja:['主な見出し','次に読む'],en:['Key sections','Read next'],ko:['주요 내용','다음 글'],tw:['重點章節','接著閱讀']}[locale];
     const nav = doc.createElement('nav'); nav.className = 'reader-follow'; nav.setAttribute('aria-label', labels[0]);
