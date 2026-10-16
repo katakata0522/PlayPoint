@@ -185,13 +185,21 @@ async function inspect(browser, baseUrl, article, viewport) {
       const sidebar = page.locator('.ja-article-sidebar');
       assert(await sidebar.count() === 1, article.key + ': 日本語サイドバーがありません');
       assert(await sidebar.locator('.sidebar-next-link').count() === 1, article.key + ': 次行動は1件');
-      assert(await sidebar.locator('.sidebar-related-link').count() === 0, article.key + ': 本文の関連記事をサイドバーに重複させない');
+      const nextRead = sidebar.locator('.reader-next-read .sidebar-related-link');
+      assert(await nextRead.count() === 1, article.key + ': 次の関連記事を1件に絞る');
+      const nextReadHref = new URL(await nextRead.getAttribute('href'), page.url());
+      assert(nextReadHref.origin === origin && nextReadHref.pathname !== new URL(page.url()).pathname, article.key + ': 同じサイトの別記事へ案内する');
+      assert(await nextRead.getAttribute('href') !== await sidebar.locator('.sidebar-next-link').getAttribute('href'), article.key + ': 次行動と同じリンクを重ねない');
       assert(await relatedTarget.count() > 0, article.key + ': 本文の関連記事を残す');
       const next = sidebar.locator('.sidebar-next-link');
       await next.focus();
       const outline = await next.evaluate(el => ({ width: parseFloat(getComputedStyle(el).outlineWidth), visible: el.matches(':focus-visible') }));
       assert(outline.visible && outline.width >= 2, article.key + ': サイドバーのフォーカス表示');
       await next.click({ trial: true });
+      await nextRead.focus();
+      const relatedOutline = await nextRead.evaluate(el => ({ width: parseFloat(getComputedStyle(el).outlineWidth), visible: el.matches(':focus-visible') }));
+      assert(relatedOutline.visible && relatedOutline.width >= 2, article.key + ': 次の関連記事のフォーカス表示');
+      await nextRead.click({ trial: true });
       const bounds = await sidebar.boundingBox();
       assert(bounds && bounds.x >= 0 && bounds.x + bounds.width <= viewport.width + 1, article.key + ': サイドバーの横はみ出し');
     }
