@@ -27,6 +27,10 @@
     const RESULT_LINK_PARAM_VALUES = Object.freeze({
         destination_type: new Set(['internal', 'external', 'official_google_support'])
     });
+    const RESULT_DECISION_PARAM_VALUES = Object.freeze({
+        ...RESULT_LINK_PARAM_VALUES,
+        link_position: new Set(['purchase-check'])
+    });
     const ENUM_PARAM_VALUES = Object.freeze({
         purchase_comparison_opened: Object.freeze({ game_id: new Set(['monst']), region: new Set(['JP']) }),
         purchase_comparison_completed: Object.freeze({ game_id: new Set(['monst']), region: new Set(['JP']) }),
@@ -59,7 +63,7 @@
             destination_type: new Set(['calculator', 'diary', 'article', 'guide_hub', 'category', 'operator_profile', 'external_profile', 'region_home', 'section', 'internal', 'external', 'official_google_support'])
         }),
         result_related_article_clicked: RESULT_LINK_PARAM_VALUES,
-        result_decision_link_clicked: RESULT_LINK_PARAM_VALUES
+        result_decision_link_clicked: RESULT_DECISION_PARAM_VALUES
     });
     const REQUIRED_PARAMS = Object.freeze({
         purchase_comparison_opened: Object.freeze(['game_id', 'region']),
@@ -129,6 +133,8 @@
             return ['earn_free', 'use_points', 'current_benefits', 'rank_cost', 'weekly_rewards', 'point_value', 'troubleshooting', 'other'].includes(value) ? value : null;
         }
         if (key === 'link_position') {
+            // 数値位置は従来どおり。購入確認の固定値だけを対象イベント内で許可する。
+            if (enumRules.link_position && enumRules.link_position.has(value)) return value;
             const numberValue = Number(value);
             return Number.isInteger(numberValue) && numberValue >= 1 && numberValue <= 10
                 ? numberValue
@@ -440,11 +446,14 @@
         if (hasClass('site-logo')) return { component: 'site_identity', link_position: 1 };
         if (hasClass('nav-item') && (closest('.intl-global-nav') || closest('.ja-global-nav'))) return { component: 'global_nav', link_position: getSelectorPosition(link, '.intl-global-nav .nav-item, .ja-global-nav .nav-item') };
         if (closest('.intl-article-breadcrumbs')) return { component: 'breadcrumb', link_position: getSelectorPosition(link, '.intl-article-breadcrumbs a') };
+        if (closest('.breadcrumbs-wrapper')) return { component: 'breadcrumb', link_position: getSelectorPosition(link, '.breadcrumbs-wrapper a') };
         if (closest('.site-region-menu')) return { component: 'region_switch', link_position: getSelectorPosition(link, '.site-region-menu a') };
         if (hasClass('sidebar-next-link')) return { component: 'next_step', link_position: 1 };
         if (hasClass('sidebar-popular-link')) return { component: 'popular', link_position: getPopularPosition(link) };
         if (hasClass('sidebar-related-link')) return { component: 'related', link_position: getSelectorPosition(link, '.sidebar-related-link') };
+        if (closest('article .related-links-section')) return { component: 'related', link_position: getSelectorPosition(link, 'article .related-links-section a') };
         if (hasClass('sidebar-browse-link')) return { component: 'browse', link_position: getSelectorPosition(link, '.sidebar-browse-link') };
+        if (hasClass('sidebar-browse-category')) return { component: 'browse', link_position: getSelectorPosition(link, '.sidebar-browse-category') };
         if (hasClass('site-about-link') || closest('.sidebar-author-links, .author-box-links')) {
             const hostname = String(url.hostname || '').toLowerCase();
             const isKatakataLab = hostname === 'katakatalab.com' || hostname.endsWith('.katakatalab.com');
@@ -466,7 +475,7 @@
         if (component === 'author') return 'operator_profile';
         if (url.pathname === window.location.pathname && url.hash) return 'section';
         if (/\/(?:(?:en|ko|tw)\/)?articles\/[^/]+\.html$/.test(url.pathname)) return 'article';
-        if (/\/(?:(?:en|ko|tw)\/articles|blog)\/$/.test(url.pathname)) return url.hash || url.searchParams.has('category') ? 'category' : 'guide_hub';
+        if (/\/(?:(?:en|ko|tw)\/articles|blog)\/$/.test(url.pathname)) return url.hash || ['category', 'topic', 'game', 'q'].some(key => url.searchParams.has(key)) ? 'category' : 'guide_hub';
         return 'internal';
     }
 
