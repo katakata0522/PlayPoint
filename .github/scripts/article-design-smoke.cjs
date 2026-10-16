@@ -365,9 +365,15 @@ async function inspectIntlReading(browser, baseUrl) {
       if (item.width <= 760) {
         const menu = page.locator('.intl-mobile-menu');
         await menu.locator(':scope > summary').click();
-        assert(await menu.locator('nav a:visible').count() === 8, item.locale + ': mobile menu links must be visible');
+        assert(await menu.locator('nav a:visible').count() === 9, item.locale + ': mobile menu links including popular guides must be visible');
         const menuBounds = await menu.locator('nav').boundingBox();
         assert(menuBounds && menuBounds.x >= 0 && menuBounds.x + menuBounds.width <= item.width, item.locale + ': mobile menu must fit the screen');
+        await menu.locator('[data-reader-popular]').click();
+        assert(!await menu.evaluate(el => el.open), item.locale + ': 人気記事へ移動した後はメニューを閉じる');
+        const rankingHeading = page.locator('#reader-popular h2');
+        await rankingHeading.waitFor({ state: 'visible' });
+        assert(await rankingHeading.evaluate(el => el === document.activeElement), item.locale + ': 人気記事の見出しへフォーカスを移す');
+        await menu.locator(':scope > summary').click();
         await menu.locator('a[href="/' + item.locale + '/articles/#intl-hub-earn"]').click();
         await page.waitForFunction(() => document.querySelector('[data-guide-category]').value === 'earn');
         assert(!await menu.evaluate(el => el.open), item.locale + ': 分類へ移動した後はメニューを閉じる');
