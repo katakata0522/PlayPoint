@@ -710,6 +710,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await page.getByRole('button',{name:'この条件で比べる',exact:true}).click();
       assert.match(await page.locator('#monst-comparison-conclusion').innerText(), /Google Play/);
       assert.match(await page.locator('#monst-comparison-today').innerText(), /180個/);
+      assert.equal(await page.locator('#monst-monthly-row').isVisible(), false, 'Unavailable monthly purchase stays hidden');
       await page.locator('#monst-monthly-available').check();
       assert.equal(await page.locator('#monst-comparison-result').isVisible(), false);
       await page.getByRole('button',{name:'この条件で比べる',exact:true}).click();

@@ -53,6 +53,7 @@
 #monst-comparison .monst-comparison-table thead { display: table-header-group; position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
 #monst-comparison .monst-comparison-table tbody { display: table-row-group; }
 #monst-comparison .monst-comparison-table tr { display: table-row; padding: 0; }
+#monst-comparison .monst-comparison-table tr[hidden] { display: none; }
 #monst-comparison .monst-comparison-table :is(th, td) { display: table-cell; min-width: 0; padding: .55rem .3rem; white-space: normal; }
 #monst-comparison .monst-comparison-table :is(th, td)::before { display: none; }
 #monst-comparison .monst-comparison-table :is(th, td):not(:first-child) { text-align: right; }
