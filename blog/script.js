@@ -423,6 +423,20 @@
         return bodySearchPromise;
     }
 
+    async function renderRestoredResults(focus = false) {
+        // 本文索引が届く前の少ない件数で、復元した2ページ目以降を切り捨てない。
+        const waitForFullSearch = currentSearch && Number(currentPage) > 1 && !bodySearchReady;
+        if (waitForFullSearch) await loadBodySearch();
+        render();
+        if (focus) focusResults();
+        // 通常の初期表示・1ページ目は、これまでどおり暫定結果から操作できる。
+        if (currentSearch && !bodySearchReady && !waitForFullSearch) {
+            await loadBodySearch();
+            render();
+            if (focus) focusResults();
+        }
+    }
+
     function renderSearchDestinations() {
         const search = window.PlayPointSearch;
         const matches = currentSearch && !currentGameTitle && !currentBrowseCategory && currentCategory === 'all' && search?.intentId(currentSearch) !== 'other'
@@ -550,15 +564,12 @@
 
                 syncCategoryActiveState();
                 syncFilterPanelState();
-                if (currentSearch) loadBodySearch().then(render);
-                render();
-                focusResults();
+                renderRestoredResults(true);
             });
 
             [dom.searchInput, dom.sortToggle, dom.gameTitleFilter, dom.browseCategoryFilter].forEach(control => { if (control) control.disabled = false; });
             dom.grid?.setAttribute('aria-busy', 'false');
-            render();
-            if (currentSearch) { await loadBodySearch(); render(); }
+            await renderRestoredResults();
 
         } catch (e) {
             console.error('Article loading error:', e);

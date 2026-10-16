@@ -150,13 +150,14 @@ box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 .comparison-reference-table-wrap table {
 width: 100%;
-min-width: 620px;
+min-width: 0;
 border-collapse: collapse;
 font-size: 0.95rem;
+font-variant-numeric: tabular-nums;
 }
 .comparison-reference-table-wrap th,
 .comparison-reference-table-wrap td {
-padding: 0.9rem 1.1rem;
+padding: 0.65rem 0.6rem;
 border: 1px solid rgba(0, 0, 0, 0.06);
 text-align: left;
 }
@@ -164,9 +165,18 @@ text-align: left;
 background: #f1f5f9;
 color: #1e293b;
 font-weight: 800;
-white-space: nowrap;
+white-space: normal;
 border-bottom: 2px solid rgba(0, 0, 0, 0.12);
 }
+/* 金額の比較に必要な幅だけを保ち、表の中で横に移動する。 */
+.comparison-reference-table-wrap table.comparison-reference-numeric--amounts { min-width:26rem; }
+.comparison-reference-table-wrap table.comparison-reference-numeric--returns { min-width:29rem; }
+.comparison-reference-table-wrap .comparison-number { white-space:nowrap; }
+.comparison-reference-table-wrap tbody th { white-space:nowrap; }
+.comparison-reference-numeric td { text-align:right; }
+.comparison-reference-numeric :is(tbody th,thead th:first-child) { position:sticky; left:0; z-index:1; background:var(--section-bg-color,#fff); }
+.comparison-reference-numeric thead th:first-child { z-index:2; background:#f1f5f9; }
+.comparison-reference-page .reading-table-hint { margin:0.6rem 0 0; font-size:0.8rem; text-align:right; color:var(--link-color); }
 .comparison-reference-table-wrap tbody tr {
 transition: background 0.15s ease;
 }
@@ -417,6 +427,12 @@ text-decoration: none;
 .home-guide-shortcuts a:hover {
 background: rgba(11, 87, 208, 0.09);
 text-decoration: underline;
+}
+/* 十分な幅があるときだけ2列にし、文字拡大時は内容幅に合わせて1列へ戻す。 */
+@media (min-width: 641px) {
+.home-rank-links {
+grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}
 }
 .home-faq-section .faq-item {
 content-visibility: visible;
@@ -2073,6 +2089,7 @@ margin-top: 0.8em;
 body {
 padding: 0.65em;
 }
+.comparison-reference-section { padding-left:0.75rem; padding-right:0.75rem; }
 .home-secondary-section {
 margin: 0.5em auto;
 padding: 0.72em 0.82em;

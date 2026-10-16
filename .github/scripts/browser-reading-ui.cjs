@@ -300,6 +300,35 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     assert(await page.locator('#reading-library summary').isVisible(),'スマホもメニューから保存記事へ進める');
     await closeMenu(page);
     report.interactions.readerFlow={history:true,relevance:true,conditions:true,skip:true,mobileLibrary:true};
+    // 本文索引が遅れても、検索結果の2ページ目を暫定件数で1ページ目にしない。
+    const pagedContext = await context(), paged = await pagedContext.newPage();
+    await paged.route('**/blog/article-search-index.json', async route => {
+      await new Promise(resolve => setTimeout(resolve, 350));
+      await route.continue();
+    });
+    const searchPage = 'blog/?q=Play+Pass&sort=updated&page=2';
+    async function assertRestoredSearchPage() {
+      await cards(paged);
+      assert.equal(await paged.locator('#search-input').inputValue(), 'Play Pass');
+      assert.equal(await paged.locator('#sort-toggle').inputValue(), 'updated');
+      assert.equal(await paged.locator('.pagination-page-input').inputValue(), '2');
+      assert.equal(new URL(paged.url()).searchParams.get('page'), '2');
+      return paged.locator('.article-card').first().getAttribute('href');
+    }
+    await goto(paged, searchPage);
+    const pageTwoArticle = await assertRestoredSearchPage();
+    await paged.reload({waitUntil:'domcontentloaded'});
+    assert.equal(await assertRestoredSearchPage(), pageTwoArticle, '再読込後も同じ2ページ目を表示する');
+    await paged.locator('.article-card').first().click();
+    await paged.waitForURL(url => /\/articles\/[^/]+\.html$/.test(url.pathname));
+    await paged.goBack({waitUntil:'domcontentloaded'});
+    assert.equal(await assertRestoredSearchPage(), pageTwoArticle, '記事から戻っても同じ2ページ目を表示する');
+    await goto(paged, 'blog/?q=Play+Pass&sort=updated&page=999'); await cards(paged);
+    assert.equal(await paged.locator('.pagination-page-input').inputValue(), (await paged.locator('.pagination-page-total').textContent()).trim(), '本文検索の全件数が確定してから上限ページへ補正する');
+    await goto(paged, 'blog/?q=nonexistent-query-xyz123&page=999');
+    await paged.locator('.empty-state').waitFor({state:'visible'});
+    assert.equal(new URL(paged.url()).searchParams.has('page'), false, '0件では存在しないページ番号を残さない');
+    report.interactions.searchPageRestoration={delayedIndex:true,reload:true,articleBack:true,outOfRange:true,empty:true};
     // 入力途中の履歴ではなく、検索前と確定した検索結果を往復できる。
     await goto(page,'blog/'); await cards(page);
     for (const query of ['ポイント','ポイント 期限','ポイント 有効期限']) {
