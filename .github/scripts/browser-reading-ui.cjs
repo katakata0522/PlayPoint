@@ -735,7 +735,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await fallback.route('**/js/monst-purchase-comparison.js*', route => route.abort());
       await goto(fallback, '/games/monst/google-play-vs-webshop/');
       assert.equal(await fallback.locator('#monst-comparison').isVisible(), false);
-      assert.match(await fallback.locator('.article-content').innerText(), /190個/);
+      assert.match(await fallback.locator('#main-content > article.content').innerText(), /190個/);
       report.interactions.monstComparison = { userChangedConditions:true, exactTie:true, invalidInput:true, narrowLayout:true, scriptFailureKeepsArticle:true };
     }
     fs.writeFileSync(path.join(artifactDir,'reading-ui-report.json'),JSON.stringify(report,null,2));
