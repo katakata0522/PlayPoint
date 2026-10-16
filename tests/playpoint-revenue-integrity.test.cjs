@@ -205,7 +205,7 @@ test('日次収益の成功はGA4イベント更新失敗で巻き戻さない',
     assert.equal(request.options.method, 'post');
     c.playPointMeasurementRequest_('/customDimensions?pageSize=200', null, true);
     assert.equal(request.options.method, 'get');
-    assert.match(request.url, /^https:\/\/analyticsadmin.googleapis.com\/v1beta\/properties\/489079798\/customDimensions/);
+    assert.equal(request.url, 'https://analyticsadmin.googleapis.com/v1beta/properties/489079798/customDimensions?pageSize=200');
   });
   test('別プロパティや別ブックでは診断も書き込みも開始しない', () => {
     const c = runtime();

@@ -477,6 +477,26 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     await page.locator('h1').first().waitFor({ state: 'visible' });
     const widgetLang = await page.locator('html').getAttribute('lang');
     assert(widgetLang === 'ja', `${locale.key} widget destination language`);
+    let widgetExamples = null;
+    if (locale.key === 'JP') {
+      // 設置例で選んだ国・計算方向が、発行コードとプレビューの両方に届くことを確認する。
+      await page.locator('#select-theme').selectOption('dark');
+      const examples = [];
+      for (const [mode, lang] of [['main', 'ja'], ['reverse', 'ja'], ['main', 'ko'], ['main', 'zh']]) {
+        await page.locator(`[data-widget-example][data-mode="${mode}"][data-lang="${lang}"]`).click();
+        await page.waitForFunction(({ mode, lang }) => {
+          const preview = document.querySelector('#widget-preview-wrapper playpoint-widget');
+          return preview?.getAttribute('mode') === mode && preview?.getAttribute('lang') === lang;
+        }, { mode, lang });
+        const code = await page.locator('#code-output').textContent();
+        assert(code.includes(`data-mode="${mode}"`) && code.includes(`data-lang="${lang}"`), `Widget example code: ${mode}/${lang}`);
+        assert(code.includes('data-theme="dark"'), 'Widget examples preserve the chosen theme');
+        assert(await page.locator('#select-mode').inputValue() === mode, 'Widget example selected mode');
+        assert(await page.locator('#select-lang').inputValue() === lang, 'Widget example selected language');
+        examples.push({ mode, lang });
+      }
+      widgetExamples = { examples, preservedTheme: 'dark' };
+    }
     let diamondReference = null;
     if (locale.key === 'US') {
       const response = await page.goto(new URL('en/status/diamond/', baseUrl).href, { waitUntil: 'domcontentloaded' });
@@ -494,7 +514,7 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     }
     browserState.verify(`${locale.key} hydrated browser errors`);
     return { ...header, selectedRate, mainResult, reverseResult, serviceWorker, lazyDiary,
-      authorVisit: { path: authorPath, lang: authorLang }, widgetVisit: { path: '/embed.html', lang: widgetLang },
+      authorVisit: { path: authorPath, lang: authorLang }, widgetVisit: { path: '/embed.html', lang: widgetLang, examples: widgetExamples },
       diamondReference, errors: browserState.values };
   } catch (error) {
     await saveScreenshot(page, `${locale.key.toLowerCase()}-hydrated.png`);

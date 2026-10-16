@@ -5,30 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>Playポイント計算機をブログに設置｜無料埋め込みウィジェットジェネレーター</title>
-  <meta name="description" content="Google Play Pointsの簡易計算機ウィジェットを無料でブログや攻略サイトに設置できます。テーマやサイズをリアルタイムにカスタマイズして、コードを1クリックでコピーできます。">
+  <title>Playポイント計算機をブログに設置｜無料の埋め込みコード</title>
+  <meta name="description" content="読者が記事の中で、次のランクまでの必要額や獲得ポイントを試算できる無料の計算機です。表示を選んで確認し、設置用のコードをブログのHTML入力欄に貼り付けられます。">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://playpoint-sim.com/embed.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Playポイント計算機">
-  <meta property="og:title" content="Playポイント計算機をブログに設置｜無料埋め込みウィジェットジェネレーター">
-  <meta property="og:description" content="Google Play Pointsの簡易計算機ウィジェットを無料でブログや攻略サイトに設置できます。テーマやサイズをリアルタイムにカスタマイズして、コードを1クリックでコピーできます。">
+  <meta property="og:title" content="Playポイント計算機をブログに設置｜無料の埋め込みコード">
+  <meta property="og:description" content="読者が記事の中で、次のランクまでの必要額や獲得ポイントを試算できる無料の計算機です。表示を選んで確認し、設置用のコードをブログのHTML入力欄に貼り付けられます。">
   <meta property="og:url" content="https://playpoint-sim.com/embed.html">
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Google Play Points 計算機 埋め込みウィジェット OGP画像">
+    <meta property="og:image:alt" content="ブログに設置できるPlayポイント計算機">
   <meta property="og:image:type" content="image/png">
     <meta property="og:locale" content="ja_JP">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Playポイント計算機をブログに設置｜無料埋め込みウィジェットジェネレーター">
-  <meta name="twitter:description" content="Google Play Pointsの簡易計算機ウィジェットを無料でブログや攻略サイトに設置できます。">
+  <meta name="twitter:title" content="Playポイント計算機をブログに設置｜無料の埋め込みコード">
+  <meta name="twitter:description" content="記事の中で、次のランクまでの必要額や獲得ポイントを試算できる無料の計算機です。表示を選び、設置用コードをコピーできます。">
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Playポイント計算機をブログに設置｜無料埋め込みウィジェットジェネレーター",
+    "name": "Playポイント計算機をブログに設置｜無料の埋め込みコード",
     "description": "Google Play Pointsの簡易計算機ウィジェットを無料でブログや攻略サイトに設置し、テーマやサイズを調整して埋め込みコードを作成できるページです。",
     "url": "https://playpoint-sim.com/embed.html",
     "inLanguage": "ja",
@@ -85,10 +85,21 @@
       line-height: 1.3;
     }
 
+    .widget-name { display: inline-block; }
+
     header p {
       font-size: 1rem;
       color: var(--text-sub);
       margin: 0;
+      line-height: 1.6;
+    }
+
+    .fixed-page-quicklinks {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin: 8px 0 12px;
       line-height: 1.6;
     }
 
@@ -280,6 +291,21 @@
       transform: scale(0.98);
     }
 
+    .usage-examples { margin-top: 32px; }
+    .usage-examples > p { line-height: 1.7; }
+    .usage-examples-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 20px; }
+    .usage-example { min-width: 0; }
+    .usage-example h3 { margin: 0 0 10px; font-size: 1rem; }
+    .usage-example p { line-height: 1.7; color: var(--text-sub); }
+    .usage-example button { min-height: 44px; padding: 10px 14px; border: 1px solid var(--primary-color); border-radius: 8px; background: #fff; color: var(--primary-color); font: inherit; font-weight: 700; cursor: pointer; }
+    .usage-example button:focus-visible { outline: 3px solid var(--primary-color); outline-offset: 3px; }
+    .usage-example-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    #example-status:empty { display: none; }
+    .copy-help, .copy-status, .install-help { line-height: 1.7; font-size: 0.9rem; }
+    .copy-status:empty { display: none; }
+    .install-help { margin-top: 16px; }
+    .install-help summary { cursor: pointer; font-weight: 700; }
+
     footer {
       text-align: center;
       padding: 30px 20px;
@@ -316,6 +342,8 @@
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 1000;
       pointer-events: none;
+      max-width: calc(100% - 32px);
+      box-sizing: border-box;
     }
 
     .toast.show {
@@ -354,47 +382,45 @@
 
 <div class="container">
   <header>
-    <h1>Playポイント計算機 ウィジェットジェネレーター</h1>
+    <h1 aria-label="ブログに置けるPlayポイント計算機">ブログに置ける<span class="widget-name">Playポイント計算機</span></h1>
 <nav class="fixed-page-quicklinks" aria-label="主要ページ"><a href="/">PlayPoint 計算機</a><a href="/blog/">記事を探す</a><a href="/sitemap.html">サイト案内</a></nav>
-    <p>あなたのブログやゲーム攻略サイトに、無料のPlayポイント計算機を簡単に設置できます。</p>
+    <p>読者が記事を読みながら、次のランクまでの必要額や、購入でもらえるポイントを試算できます。無料で利用できます。</p>
   </header>
 
   <div class="main-grid">
     <!-- 設定パネル -->
     <div class="panel">
-      <h2>ウィジェットのカスタマイズ</h2>
+      <h2>1. 表示を設定する</h2>
 
       <div class="control-group">
-        <label for="select-theme">カラーテーマ</label>
+        <label for="select-theme">背景色</label>
         <select id="select-theme">
-          <option value="light">ライトテーマ（白ベース）</option>
-          <option value="dark">ダークテーマ（黒ベース）</option>
+          <option value="light">明るい背景</option>
+          <option value="dark">暗い背景</option>
         </select>
       </div>
 
-      <p class="usage-note">個人・法人を問わず無料で利用できます。コードを改変せず、計算結果を公式情報と誤認させない形で設置してください。計算結果は目安です。</p>
-
       <div class="control-group">
-        <label for="select-lang">表示言語</label>
+        <label for="select-lang">計算する国と言語</label>
         <select id="select-lang">
-          <option value="auto">自動判定（埋め込み先サイトに合わせる）</option>
-          <option value="ja">日本語固定</option>
-          <option value="en">英語固定 (English)</option>
-          <option value="ko">韓国語固定 (한국어)</option>
-          <option value="zh">繁體中文固定 (繁體中文)</option>
+          <option value="auto">自動（ページの言語）</option>
+          <option value="ja">日本・円（日本語）</option>
+          <option value="en">米国・米ドル（English）</option>
+          <option value="ko">韓国・ウォン（한국어）</option>
+          <option value="zh">台湾・NT$（繁體中文）</option>
         </select>
       </div>
 
       <div class="control-group">
-        <label for="select-mode">初期表示モード</label>
+        <label for="select-mode">最初に表示する計算</label>
         <select id="select-mode">
-          <option value="main">目標課金（通常計算）</option>
-          <option value="reverse">ポイント逆算</option>
+          <option value="main">残りポイント → 購入額</option>
+          <option value="reverse">購入額 → 獲得ポイント</option>
         </select>
       </div>
 
       <div class="control-group">
-        <label for="input-width">最大幅 (Width)</label>
+        <label for="input-width">計算機の幅（最大）</label>
         <input type="range" id="input-width" min="280" max="480" value="380" step="10">
         <div class="range-info">
           <span>280px</span>
@@ -402,37 +428,68 @@
           <span>480px</span>
         </div>
       </div>
+      <p class="usage-note">読者のGoogle Playの国に合わせて選んでください。自動判定は設置先ページの言語を基準にします。個人・法人とも無料で利用できます。コードはそのまま使い、Googleの公式ツールと誤解されない形で紹介してください。</p>
     </div>
 
     <!-- プレビュー & コード -->
     <div class="panel">
-      <h2>プレビュー ＆ コード</h2>
+      <h2>2. 確認してコピーする</h2>
 
       <div class="preview-container" id="preview-box">
-        <span class="preview-label">ライブプレビュー</span>
+        <span class="preview-label">設置したときの表示</span>
         <div id="widget-preview-wrapper" style="width: 380px; max-width: 100%;">
           <div data-playpoint-widget id="preview-widget-element"></div>
         </div>
       </div>
 
       <div class="code-box">
-        <label id="embed-code-label">埋め込みコード</label>
+        <label id="embed-code-label">設置用コード（2行）</label>
         <pre tabindex="0" role="region" aria-labelledby="embed-code-label"><code id="code-output">&lt;div data-playpoint-widget data-mode="main"&gt;&lt;/div&gt;
 &lt;script src="https://playpoint-sim.com/embed/playpoint-widget.js" defer&gt;&lt;/script&gt;</code></pre>
-        <button class="copy-btn" id="btn-copy">コードをコピーする</button>
+        <button class="copy-btn" id="btn-copy">設置用コードをコピー</button>
+        <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+        <p class="copy-help"><strong>3. ブログの記事に貼り付ける</strong><br>記事編集画面のHTML入力欄で、計算機を置きたい場所に2行まとめて貼り付けます。保存後は記事のプレビューで表示を確かめてください。</p>
+        <details class="install-help"><summary>貼り付けても表示されないとき</summary><p>ブログサービスや編集権限によっては、JavaScript（コードの2行目）を使えません。その場合は、記事に計算機のURL <a href="https://playpoint-sim.com/">https://playpoint-sim.com/</a> をリンクとして貼れます。</p><p>WordPressでは「カスタムHTML」ブロックが貼り付け先の一例です。利用条件は<a href="https://wordpress.org/documentation/article/custom-html/" target="_blank" rel="noopener noreferrer">WordPressの公式案内</a>、WordPress.comの場合は<a href="https://wordpress.com/support/wordpress-editor/blocks/custom-html-block/" target="_blank" rel="noopener noreferrer">WordPress.comの公式案内</a>で確認できます。</p></details>
       </div>
     </div>
   </div>
+
+  <section class="panel usage-examples" id="usage-examples" aria-labelledby="usage-examples-title">
+    <h2 id="usage-examples-title">記事に合わせた設置例</h2>
+    <p>用途に合うボタンを押すと、上の表示と設置用コードが切り替わります。表示を確かめてから「設置用コードをコピー」を押してください。</p>
+    <div class="usage-examples-grid">
+      <div class="usage-example">
+        <h3>次のランクまでの必要額を説明する記事</h3>
+        <p>読者が現在のランクと残りポイントを入力し、次のランクまでに必要な購入額を試算できます。</p>
+        <button type="button" data-widget-example data-mode="main" data-lang="ja">必要額の計算を選ぶ</button>
+      </div>
+      <div class="usage-example">
+        <h3>購入額やキャンペーンを比べる記事</h3>
+        <p>購入予定の金額から、獲得ポイントを試算できます。キャンペーンの獲得率は、対象条件に合う場合に選びます。</p>
+        <button type="button" data-widget-example data-mode="reverse" data-lang="ja">獲得ポイントの計算を選ぶ</button>
+      </div>
+      <div class="usage-example">
+        <h3>韓国・台湾の読者向けの記事</h3>
+        <p>韓国向けはウォン、台湾向けは台湾ドルで計算します。言語とともに、ポイントの獲得率も各国の条件に切り替わります。</p>
+        <div class="usage-example-actions">
+          <button type="button" data-widget-example data-mode="main" data-lang="ko">韓国向けを選ぶ</button>
+          <button type="button" data-widget-example data-mode="main" data-lang="zh">台湾向けを選ぶ</button>
+        </div>
+      </div>
+    </div>
+    <p id="example-status" role="status" aria-live="polite"></p>
+    <p class="usage-note">この簡易版は、次のランクまでの必要額と獲得ポイントの試算に使えます。<a href="/articles/2025-12-25-playpoints-rank-maintenance.html">今のランクを維持したい場合はこちら</a>。結果は税や購入ごとの丸めで変わるため、実際の獲得予定ポイントは購入画面で確認してください。</p>
+  </section>
 </div>
 
 <footer>
   <p>© 2026 <a href="index.html" id="footer-calculator-link">PlayPoint Simulation Tool</a> | <a href="blog/">攻略ブログ</a> | <a href="privacy.html">プライバシー</a> | <a href="terms.html">利用規約</a></p>
 </footer>
 
-<div id="toast" class="toast">クリップボードにコピーしました！</div>
+<div id="toast" class="toast" aria-hidden="true">コードをコピーしました</div>
 
-<script src="embed/playpoint-widget.js?v=0c2988afef" defer></script>
-<script src="js/third-party.js?v=d20a637c68" defer></script>
+<script src="embed/playpoint-widget.js?v=fe082e5678" defer></script>
+<script src="js/third-party.js?v=a21208612e" defer></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const footerLink = document.getElementById('footer-calculator-link');
@@ -508,6 +565,9 @@
     const codeOutput = document.getElementById('code-output');
     const btnCopy = document.getElementById('btn-copy');
     const toast = document.getElementById('toast');
+    const copyStatus = document.getElementById('copy-status');
+    const copyLabel = btnCopy.textContent;
+    let toastTimer = null;
 
     function trackWidgetCodeCopied() {
       window.PlayPointAnalytics?.track('widget_code_copied', {
@@ -518,6 +578,11 @@
     }
 
     function updateWidget() {
+      copyStatus.textContent = '';
+      toast.classList.remove('show');
+      btnCopy.textContent = copyLabel;
+      btnCopy.style.backgroundColor = '';
+      if (toastTimer) clearTimeout(toastTimer);
       const theme = selectTheme.value;
       const lang = selectLang.value;
       const mode = selectMode.value;
@@ -560,6 +625,16 @@
     selectLang.addEventListener('change', updateWidget);
     selectMode.addEventListener('change', updateWidget);
 
+    document.querySelectorAll('[data-widget-example]').forEach(button => {
+      button.addEventListener('click', () => {
+        selectMode.value = button.dataset.mode;
+        selectLang.value = button.dataset.lang;
+        updateWidget();
+        document.getElementById('example-status').textContent = '上の表示と設置用コードを切り替えました。表示を確認してから「設置用コードをコピー」を押してください。';
+        selectMode.focus();
+      });
+    });
+
     // ドラッグ中のリアルタイム幅プレビュー＆コード生成同期
     inputWidth.addEventListener('input', () => {
       widthVal.textContent = `${inputWidth.value}px`;
@@ -568,30 +643,34 @@
     });
 
     // 1クリックコピー機能
-    let toastTimer = null;
-    btnCopy.addEventListener('click', () => {
-      navigator.clipboard.writeText(codeOutput.textContent)
-        .then(() => {
+    btnCopy.addEventListener('click', async () => {
+      try {
+          if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+          await navigator.clipboard.writeText(codeOutput.textContent);
           trackWidgetCodeCopied();
+          copyStatus.textContent = 'コピーしました。記事のHTML入力欄に、2行まとめて貼り付けてください。';
           toast.classList.add('show');
-          btnCopy.textContent = 'コピー完了！';
-          btnCopy.style.backgroundColor = '#10b981';
+          btnCopy.textContent = 'コピーしました';
+          btnCopy.style.backgroundColor = '#087f5b';
 
           if (toastTimer) clearTimeout(toastTimer);
           toastTimer = setTimeout(() => {
             toast.classList.remove('show');
-            btnCopy.textContent = 'コードをコピーする';
+            btnCopy.textContent = copyLabel;
             btnCopy.style.backgroundColor = '';
           }, 2000);
-        })
-        .catch(err => {
-          console.error('Failed to copy: ', err);
-          alert('コピーに失敗しました。お手数ですが手動でコピーしてください。');
-        });
+      } catch {
+          if (toastTimer) clearTimeout(toastTimer);
+          toast.classList.remove('show');
+          btnCopy.textContent = copyLabel;
+          btnCopy.style.backgroundColor = '';
+          copyStatus.textContent = '自動コピーができませんでした。上のコードを2行とも選択してコピーし、記事のHTML入力欄に貼り付けてください。';
+          codeOutput.closest('pre').focus();
+      }
     });
 
-    // WebコンポーネントがDOM追加されるまで少々待って初期化
-    setTimeout(updateWidget, 150);
+    // deferのウィジェット読込後、初期表示と設置用コードを揃える。
+    updateWidget();
   });
 </script>
 </body>
