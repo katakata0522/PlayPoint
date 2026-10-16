@@ -1,4 +1,4 @@
-/* 記事の表だけを拡張する。表の値や見出し・リンクは変更しない。 */
+/* 記事・比較ページの表だけを拡張する。表の値や見出し・リンクは変更しない。 */
 (function (root) {
   'use strict';
   if (!root?.document) return;
@@ -20,10 +20,10 @@
     });
   }
   function init() {
-    doc.querySelectorAll('article table, .main-content-column table').forEach(table => {
+    doc.querySelectorAll('article table, .main-content-column table, .comparison-reference-page table').forEach(table => {
       if (table.closest('[data-reading-table]')) return;
       let wrapper = table.parentElement;
-      if (!wrapper.matches('.table-wrap,.table-card,.pack-table-wrap,.table-scroll,.comparison-table-wrap,.intl-table-wrap')) {
+      if (!wrapper.matches('.table-wrap,.table-card,.pack-table-wrap,.table-scroll,.comparison-table-wrap,.intl-table-wrap,.comparison-reference-table-wrap')) {
         wrapper = doc.createElement('div'); wrapper.className = 'table-wrap'; table.before(wrapper); wrapper.append(table);
       }
       wrapper.setAttribute('data-reading-table', '');
