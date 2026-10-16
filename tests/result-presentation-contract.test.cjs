@@ -100,8 +100,9 @@ test('日本語見出しは単語の途中で折らず、説明文の途中改�
 
   assert.match(css, /h1,[\r\n]+\.lp-hero h1,[\r\n]+\.article-link-title,[\r\n]+\.home-rank-hint \{[\r\n]+word-break: keep-all;[\r\n]+overflow-wrap: break-word;[\r\n]+line-break: strict;[\r\n]+\}/);
   assert.doesNotMatch(css, /h1 \{[\r\n]+font-size: 1\.38em;[\r\n]+line-height: 1\.35;[\r\n]+overflow-wrap: anywhere;[\r\n]+\}/);
-  assert.doesNotMatch(description, /何ポイント？」\s*<br>/);
-  assert.match(description, /何ポイント？」といった逆算/);
+  const intro = description.match(/<p class="home-description-lead">([\s\S]*?)<\/p>/)?.[1] || '';
+  assert.ok(intro.trim(), '機能説明の導入文が存在すること');
+  assert.doesNotMatch(intro, /<br\b/i, '導入文を任意の途中位置で強制改行しないこと');
   assert.match(articles, /ダイヤモンドに<wbr>なるには？/);
   assert.match(articles, /クエストって何？<wbr>どう達成する？/);
   assert.match(articles, /貯まったポイント、<wbr>何に使う？/);

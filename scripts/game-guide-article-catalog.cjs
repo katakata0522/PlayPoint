@@ -49,7 +49,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
     title: "モンストのオーブはどこで買う？アプリ180個・Web190個・月イチ200個を比較",
     category: '使い方',
     gameTitle: 'モンスト',
-    listTitle: "モンスト1万円でオーブ何個？アプリ・Web・月イチを比較",
+    listTitle: "モンストの購入先早見表｜1万円でオーブ何個？",
     tags: ['モンスト', 'Webショップ', 'オーブ', 'Play Points'],
     description: "モンストの1万円課金を比較。アプリ内180個、Webショップ190個、月イチ200個の差とGoogle Play Pointsを含めた選び方を整理します。",
     file: '../games/monst/google-play-vs-webshop/index.html',

@@ -340,9 +340,9 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、目�
 
   assert.ok(description.includes('class="home-description-lead"'));
   assert.match(description, /class="home-description-lead"[^>]*>\s*[^<\s]/, '機能説明の導入文が空でないこと');
-  assert.match(description, /目標ステータスまでに必要な課金額/);
-  assert.match(description, /○○円なら何ポイント？」といった逆算/);
-  assert.match(description, /毎週お楽しみのウィークリーリワード記録/);
+  assert.match(description, /必要[^<。]*課金額/, '目標までの必要額を計算する説明を保持する');
+  assert.match(description, /課金額[^<。]*ポイント/, '課金額から獲得ポイントを求める説明を保持する');
+  assert.match(description, /ウィークリーリワード[^<。]*記録/, '週次リワードを記録する説明を保持する');
   assert.doesNotMatch(description, /<br>/);
   assert.match(description, /<strong>こんな人におすすめ<\/strong>/);
   assert.doesNotMatch(description, /<strong>目標ステータス|<strong>5,000円|<strong>毎週のウィークリー|ランクアップ<\/strong>|あと1,000pt。<\/strong>|1年分まとめて振り返りたい<\/strong>/);
