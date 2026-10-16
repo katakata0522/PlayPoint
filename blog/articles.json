@@ -85,7 +85,7 @@
     "title": "モンストのオーブはどこで買う？アプリ180個・Web190個・月イチ200個を比較",
     "category": "使い方",
     "gameTitle": "モンスト",
-    "listTitle": "モンスト1万円でオーブ何個？アプリ・Web・月イチを比較",
+    "listTitle": "モンストの購入先早見表｜1万円でオーブ何個？",
     "tags": [
       "モンスト",
       "Webショップ",
@@ -860,7 +860,7 @@
         "Super Ticketの配布・使い方"
       ]
     ],
-    "listDescription": "ダイヤモンドならPlay Passは元が取れる？実際の魔法石・オーブ・割引・有料ゲームと年額5,400円を比較。"
+    "listDescription": "魔法石・オーブ・割引・有料ゲームの特典を比較。普段使う特典から、年会費に見合うか考えます。"
   },
   {
     "id": "google-play-fest-2026-editorial",
@@ -1012,7 +1012,7 @@
     "thumbnail": "../articles/thumbnails/super-weekly-reward-prize-history-square-v1.webp",
     "thumbnailKind": "generic",
     "listed": true,
-    "listDescription": "スーパーウィークリーの賞品を確認したい方へ。現在の掲載と過去の賞品例、対象ランク、参加条件の確認先が分かります。"
+    "listDescription": "確認日付きのランク別一覧と過去の賞品例を紹介。自分の特典画面で、残数や参加条件を確認する場所も分かります。"
   },
   {
     "id": "suikoden-star-leap-google-play-vs-store",
@@ -1295,8 +1295,8 @@
     "thumbnailKind": "app-icon",
     "source": "article",
     "listed": true,
-    "listTitle": "モンスト1万円の損得分岐点｜Webの増量とポイント価値",
-    "listDescription": "1万円でアプリ180個、Web190個・月1回200個。将来使えるポイントが何円分あれば逆転するか確認できます。",
+    "listTitle": "モンスト1万円の損得計算｜Webとの差をポイントで比べる",
+    "listDescription": "将来使うポイントが何円分ならWebの増量分を上回るか、計算式と条件別の表で比べられます。",
     "browseCategory": "ゲーム別課金",
     "ogp": "../articles/ogp/2026-09-19-monst-web-shop-vs-google-play.png",
     "thumbnail2x": "../images/game-icons/monst-2x.webp"
@@ -2051,8 +2051,8 @@
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/2026-07-31-super-weekly-reward.png",
     "thumbnailKind": "generic",
-    "listDescription": "スーパーウィークリーの対象ランクと過去の賞品例を確認。通常週次との違いと、金曜に見る場所が分かります。確率は非公開です。",
-    "listTitle": "スーパーウィークリーリワードで何が当たる？Google Play Pointsの賞品と対象ランク"
+    "listDescription": "通常週次との違いと金曜の受取方法を解説。Super Ticketの再抽選で、最初の特典が残らない点も確認できます。",
+    "listTitle": "スーパーウィークリーの仕組み｜対象ランク・受取方法"
   },
   {
     "id": "google-play-quests",
