@@ -52,7 +52,7 @@ test('注目記事は並び順に依存せず、期限を過ぎると開いた�
   let now = Date.parse('2026-10-19T12:00:00-07:00');
   const timers=[];
   const pick={hidden:true,dataset:{expires:'2026-10-20T00:00:00-07:00'}};
-  const document={readyState:'complete',documentElement:{lang:'en'},body:{dataset:{},classList:{add(){}}},querySelector:selector=>selector==='[data-reader-spotlight]'?pick:null,addEventListener(){}};
+  const document={readyState:'complete',documentElement:{lang:'en'},body:{dataset:{blogPage:'2'},classList:{add(){}}},querySelector:selector=>selector==='[data-reader-spotlight]'?pick:null,addEventListener(){}};
   const context={document,window:{},location:{search:'?sort=oldest'},URLSearchParams,Date:class extends Date {static now(){return now;}},queueMicrotask:fn=>fn(),setTimeout:fn=>timers.push(fn)};
   vm.runInNewContext(fs.readFileSync(path.join(root,'js/guide-navigation.js'),'utf8'),context);
   assert.equal(pick.hidden,false);

@@ -39,7 +39,7 @@
       const params = new URLSearchParams(location.search);
       const initialFilter = ['q','game','topic','category'].some(key => params.get(key) && params.get(key) !== 'all');
       if (initialFilter) doc.body.classList.add('reader-initial-filter');
-      const update = () => { pick.hidden = !(Date.now() < Date.parse(pick.dataset.expires)) || Number(doc.body.dataset.blogPage || 1) > 1; };
+      const update = () => { pick.hidden = !(Date.now() < Date.parse(pick.dataset.expires)); };
       update();
       doc.addEventListener('visibilitychange', update);
       // 開いたまま期限を越えた場合も、古いおすすめを固定し続けない。
