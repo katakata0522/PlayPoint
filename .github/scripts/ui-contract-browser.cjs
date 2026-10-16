@@ -197,22 +197,57 @@ async function verifyUiContracts(browser, baseUrl, locales, blockExternalRequest
     // clipboardはテスト内へ差し替え、成功時だけ共通trackを呼ぶ。
     results.embed=[];
     for(const [locale,expected] of [['zh-HK','/hk/'],['en-IN','/in/']]) {
-      const {page}=await open('embed.html',{locale},()=>{
+      const {page,errors}=await open('embed.html',{locale},()=>{
         window.__copies=[];window.__copyEvents=[];
-        Object.defineProperty(navigator,'clipboard',{value:{writeText(value){window.__copies.push(value);return window.__copyReject?Promise.reject(Error('fixture denied')):Promise.resolve();}}});
+        Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText(value){window.__copies.push(value);return window.__copyReject?Promise.reject(Error('fixture denied')):Promise.resolve();}}});
       });
       await page.evaluate(()=>{window.PlayPointAnalytics={track:(...args)=>{window.__copyEvents.push(args);return true;}};});
       assert.equal(new URL(await page.locator('#footer-calculator-link').getAttribute('href'),page.url()).pathname,expected);
+      await page.locator('#select-lang').selectOption('ja');
+      await page.locator('#select-mode').selectOption('reverse');
       await page.locator('#btn-copy').click();
       await page.waitForFunction(()=>window.__copyEvents.length===1);
       assert.equal(await page.evaluate(()=>window.__copies[0]),await page.locator('#code-output').textContent());
       assert.equal(await page.evaluate(()=>window.__copyEvents[0][0]),'widget_code_copied');
-      page.on('dialog',dialog=>dialog.dismiss());
+      assert.match(await page.locator('#copy-status').innerText(),/HTML/,'コピー後の貼り付け先を案内する');
       await page.evaluate(()=>window.__copyReject=true);
       await page.locator('#btn-copy').click();
       await page.waitForFunction(()=>window.__copies.length===2);
       assert.equal(await page.evaluate(()=>window.__copyEvents.length),1,'失敗コピーを計測しない');
-      results.embed.push({locale,path:expected,successOnly:true});
+      assert.match(await page.locator('#copy-status').innerText(),/2行とも/,'拒否時は手動コピーを案内する');
+      assert.ok(await page.locator('#code-output').evaluate(el=>el.closest('pre')===document.activeElement),'手動コピー対象へフォーカスする');
+      await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:undefined}));
+      await page.locator('#btn-copy').click();
+      assert.match(await page.locator('#copy-status').innerText(),/HTML/,'API非対応でも貼り付け先を案内する');
+      assert.equal(await page.evaluate(()=>window.__copyEvents.length),1,'API非対応を成功として計測しない');
+      assert.deepEqual(errors,[],'コピーAPI非対応でも未処理例外を出さない');
+      results.embed.push({locale,path:expected,successOnly:true,deniedAndUnavailableExplained:true});
+    }
+
+    // 成功経路は実ブラウザのクリップボードを読み、コピーした2行をそのまま記事へ貼る。
+    {
+      const {page,context,errors}=await open('embed.html',{locale:'ja-JP',permissions:['clipboard-read','clipboard-write']});
+      await page.bringToFront();
+      await page.locator('#select-lang').selectOption('ja');
+      await page.locator('#select-mode').selectOption('reverse');
+      await page.locator('#btn-copy').click();
+      await page.waitForFunction(()=>document.querySelector('#copy-status').textContent.startsWith('コピーしました'));
+      const snippet=await page.evaluate(()=>navigator.clipboard.readText());
+      assert.equal(snippet,await page.locator('#code-output').textContent(),'実クリップボードと表示コードが一致する');
+      const article=await context.newPage();
+      const articleErrors=[];
+      article.on('pageerror',e=>articleErrors.push(e.message));
+      // 発行URLは保ち、配布JSは検証対象SHAのファイルへ解決する。公開JS自体はembed-widget-smokeが別途検証する。
+      await article.route('https://playpoint-sim.com/embed/playpoint-widget.js',route=>route.fulfill({path:path.resolve(__dirname,'../../embed/playpoint-widget.js'),contentType:'text/javascript'}));
+      await article.setContent(`<!doctype html><html lang="ja"><body><article><h1>購入予定のポイントを計算</h1>${snippet}</article></body></html>`,{waitUntil:'load'});
+      const widget=article.locator('playpoint-widget');
+      await widget.locator('#amount').fill('10000');
+      await widget.locator('#reverse-status').selectOption('1.5');
+      await widget.locator('#calculate').click();
+      assert.match(await widget.locator('#result').innerText(),/150\s*pt/,'貼り付けた計算機で1万円・ゴールド→150pt');
+      assert.equal(await widget.locator('a').getAttribute('href'),'https://playpoint-sim.com/?entry=widget');
+      assert.deepEqual(errors.concat(articleErrors),[],'コピーから貼り付けまでの実行エラー');
+      results.embedPaste={realClipboard:true,copiedCodeUnchanged:true,amount:10000,points:150};
     }
 
     // サンプル全12記事の文脈navがanswer/calloutに入らず実リンクとして表示される。

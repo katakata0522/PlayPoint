@@ -55,7 +55,7 @@ const targets = [
   { url: 'https://playpoint-sim.com/atom.xml', contains: '<feed xmlns="http://www.w3.org/2005/Atom">', contentType: 'application/atom+xml', cacheControlIncludes: 'max-age=1800' },
   { url: 'https://playpoint-sim.com/manifest.json', contains: '"name":', contentType: 'application/manifest+json', cacheControlIncludes: 'max-age=86400' },
   { url: 'https://playpoint-sim.com/author/katakata.html', contains: 'かたかた' },
-  { url: 'https://playpoint-sim.com/embed.html', contains: 'ウィジェットジェネレーター' },
+  { url: 'https://playpoint-sim.com/embed.html', contains: 'ブログに置けるPlayポイント計算機' },
   { url: 'https://playpoint-sim.com/js/calculator.js', contains: 'Number.isFinite(value)' },
   { url: 'https://playpoint-sim.com/ogp.png', contentType: 'image/png', minimumBytes: 10000 }
 ];
