@@ -82,7 +82,8 @@ function getValidationErrorType(mode) {
     const candidates = mode === CONSTANTS.MODE_REVERSE
         ? [
             ['errorInputReverse', 'amount_or_rate_input'],
-            ['errorRateReverse', 'rate']
+            ['errorRateReverse', 'rate'],
+            ['errorEligibleAmount', 'eligible_amount']
         ]
         : [
             ['errorNeededPoints', 'needed_points'],
