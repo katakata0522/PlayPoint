@@ -31,8 +31,10 @@ test('実際のrsync引数で秘密・旧公開物を除外し、公開サブ階
     '.env', '.env.local', 'credential.pem', 'credential.key', 'query.sql', 'debug.log', 'data.bak',
     'README.md', 'AGENTS.md', 'tests/spec.cjs', 'docs/private.md', 'scripts/build.js', 'tools/private.cjs', 'みんな用URL.txt', 'CNAME'];
   const publicFiles = ['index.html', 'articles/docs/readme.html', 'articles/scripts/example.js'];
+  const staging = 'stg.playpoint-sim.com';
+  const stagingFiles = [`${staging}/cms/wp-config.php`, `${staging}/cms/wp-content/uploads/keep.txt`, `${staging}/.htaccess`];
   for (const file of [...privateFiles, ...publicFiles]) put(source, file);
-  for (const file of [...privateFiles, 'stale.html', 'manner/keep.html', 'kanji-slicer/keep.html']) put(destination, file);
+  for (const file of [...privateFiles, ...stagingFiles, 'stale.html', `${staging}-old/obsolete.txt`, 'manner/keep.html', 'kanji-slicer/keep.html']) put(destination, file);
   // 捕捉したフィルター・削除オプションだけを、二つの一時ローカルディレクトリに適用。
   // -eとリモートの送受信先は引き継がない。
   const options = [];
@@ -46,7 +48,79 @@ test('実際のrsync引数で秘密・旧公開物を除外し、公開サブ階
   assert.equal(copied.status, 0, copied.stderr || copied.error?.message);
   for (const file of privateFiles) assert.equal(fs.existsSync(path.join(destination, file)), false, `非公開ファイル漏出: ${file}`);
   assert.equal(fs.existsSync(path.join(destination, 'stale.html')), false, '旧公開物が残った');
+  assert.equal(fs.existsSync(path.join(destination, `${staging}-old`)), false, '似た名前まで保護している');
   for (const file of [...publicFiles, 'manner/keep.html', 'kanji-slicer/keep.html']) assert.ok(fs.existsSync(path.join(destination, file)), `過剰な除外・削除: ${file}`);
+  const assertStaging = () => {
+    for (const file of stagingFiles) assert.equal(fs.readFileSync(path.join(destination, file), 'utf8'), file);
+    assert.equal(fs.existsSync(path.join(destination, staging, 'injected.txt')), false);
+  };
+  assertStaging();
+  // 同名ディレクトリーだけでなく、通常ファイル・リンクによる置換も防ぐ。
+  for (const kind of ['directory', 'file', 'symlink']) {
+    const collision = path.join(source, staging);
+    if (kind === 'directory') {
+      put(source, `${staging}/cms/wp-config.php`);
+      fs.writeFileSync(path.join(collision, 'cms/wp-config.php'), 'DUMMY overwrite attempt');
+      put(source, `${staging}/injected.txt`);
+    } else if (kind === 'file') fs.writeFileSync(collision, 'DUMMY same-name file');
+    else fs.symlinkSync('index.html', collision);
+    const retried = spawnSync('rsync', [...options, source + '/', destination + '/'], { encoding: 'utf8', timeout: 10000 });
+    assert.equal(retried.status, 0, retried.stderr || retried.error?.message);
+    assertStaging();
+    fs.rmSync(collision, { recursive: true, force: true });
+  }
+});
+
+test('実snapshotと復元は検証領域を保持し、混入した復元元は変更前に拒否する', t => {
+  if (process.platform === 'win32') { t.skip('実bash/rsyncはLinux CIで実行'); return; }
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pp-staging-rollback-'));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const live = path.join(dir, 'public'), snapshots = path.join(dir, 'snapshots');
+  const sha = 'a'.repeat(40), staging = 'stg.playpoint-sim.com';
+  const put = (base, file, content) => {
+    const target = path.join(base, file);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, content);
+  };
+  put(live, 'index.html', 'old verified homepage');
+  put(live, 'points-cost/index.html', 'old calculator');
+  put(live, 'status/deploy-revision.txt', sha);
+  put(live, 'status/deploy-status.json', JSON.stringify({ status: 'verified', commit: sha }, null, 2));
+  put(live, `${staging}/cms/wp-config.php`, 'DUMMY staging config');
+  put(live, `${staging}/cms/wp-content/uploads/keep.txt`, 'DUMMY staging upload');
+  const remote = (functionName, expected = 0) => {
+    const start = script.indexOf(`\n${functionName}() {`);
+    assert.ok(start >= 0, functionName);
+    const body = script.slice(start).match(/<<'REMOTE'\r?\n([\s\S]*?)\r?\nREMOTE/)?.[1];
+    assert.ok(body, 'remote body missing');
+    const input = body.replaceAll('/home/hajikkoroom/playpoint-sim.com/public_html', live)
+      .replaceAll('/home/hajikkoroom/playpoint-sim.com/.deploy-snapshots', snapshots);
+    const result = spawnSync('bash', ['-s', '--', live, snapshots, 'previous-verified', sha],
+      { input, encoding: 'utf8', timeout: 10000 });
+    assert.equal(result.status, expected, result.stderr || result.error?.message);
+  };
+  const assertStaging = () => {
+    assert.equal(fs.readFileSync(path.join(live, staging, 'cms/wp-config.php'), 'utf8'), 'DUMMY staging config');
+    assert.equal(fs.readFileSync(path.join(live, staging, 'cms/wp-content/uploads/keep.txt'), 'utf8'), 'DUMMY staging upload');
+  };
+  remote('snapshot_verified_once');
+  const snapshotSite = path.join(snapshots, 'previous-verified/site');
+  assert.equal(fs.existsSync(path.join(snapshotSite, staging)), false);
+  remote('verify_snapshot_once');
+  put(live, 'index.html', 'new homepage with different length');
+  put(live, 'points-cost/index.html', 'new calculator with different length');
+  put(live, 'new-only.html', 'new production file');
+  remote('restore_verified_snapshot_once');
+  assert.equal(fs.readFileSync(path.join(live, 'index.html'), 'utf8'), 'old verified homepage');
+  assert.equal(fs.readFileSync(path.join(live, 'points-cost/index.html'), 'utf8'), 'old calculator');
+  assert.equal(fs.existsSync(path.join(live, 'new-only.html')), false);
+  assertStaging();
+  put(snapshotSite, `${staging}/cms/wp-config.php`, 'DUMMY stale staging config');
+  const before = fs.readFileSync(path.join(live, 'status/deploy-status.json'), 'utf8');
+  remote('verify_snapshot_once', 2);
+  remote('restore_verified_snapshot_once', 2);
+  assert.equal(fs.readFileSync(path.join(live, 'status/deploy-status.json'), 'utf8'), before);
+  assertStaging();
 });
 
 test('デプロイ前snapshotはverified本番だけを公開領域外へ1世代退避する', () => {

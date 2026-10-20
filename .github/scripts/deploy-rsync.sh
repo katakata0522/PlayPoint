@@ -181,9 +181,11 @@ trap 'rm -rf "$tmp"' EXIT
 
 # manner / kanji-slicer are separate projects protected by the production mirror;
 # they are intentionally outside PlayPoint rollback ownership as well.
+# 検証用WordPressも本番の復元対象へ含めない。
 rsync -a --delete \
   --exclude '/manner/***' \
   --exclude '/kanji-slicer/***' \
+  --exclude '/stg.playpoint-sim.com' \
   "$root/" "$tmp/site/"
 
 if find "$tmp/site" -type l -print -quit | grep -q .; then
@@ -250,7 +252,7 @@ if find "$snapshot" -type l -print -quit | grep -q .; then
   echo "Rollback snapshot contains a symlink; refusing to trust it." >&2
   exit 2
 fi
-for owned_elsewhere in manner kanji-slicer; do
+for owned_elsewhere in manner kanji-slicer stg.playpoint-sim.com; do
   if [ -e "$snapshot/site/$owned_elsewhere" ] || [ -L "$snapshot/site/$owned_elsewhere" ]; then
     echo "Rollback snapshot contains separately owned path: $owned_elsewhere" >&2
     exit 2
@@ -339,7 +341,7 @@ if find "$snapshot" -type l -print -quit | grep -q .; then
   echo "Rollback snapshot contains a symlink; refusing to restore it." >&2
   exit 2
 fi
-for owned_elsewhere in manner kanji-slicer; do
+for owned_elsewhere in manner kanji-slicer stg.playpoint-sim.com; do
   if [ -e "$snapshot/site/$owned_elsewhere" ] || [ -L "$snapshot/site/$owned_elsewhere" ]; then
     echo "Rollback snapshot contains separately owned path: $owned_elsewhere" >&2
     exit 2
@@ -369,9 +371,12 @@ rollback_marker="$root/status/.deploy-status.rollback.$$"
 printf '{"status":"rolling_back","commit":"%s"}\n' "$revision" > "$rollback_marker"
 mv "$rollback_marker" "$root/status/deploy-status.json"
 
+# ルートの検証領域を送信対象外・削除保護の両方にする。同名ファイルやリンクも対象。
 rsync -a --delete-after --delay-updates \
   --filter='protect /manner/***' \
   --filter='protect /kanji-slicer/***' \
+  --filter='hide /stg.playpoint-sim.com' \
+  --filter='protect /stg.playpoint-sim.com' \
   "$snapshot/site/" "$root/"
 
 restored_revision="$(tr -d '\r\n' < "$root/status/deploy-revision.txt" | tr '[:upper:]' '[:lower:]')"
@@ -394,10 +399,13 @@ deploy_once() {
   # The source is already an explicit allowlisted public tree. The excludes are
   # intentionally retained during migration as defense in depth, not as the
   # ownership boundary that decides what is public.
+  # 検証領域は転送・上書きと --delete-excluded による削除の両方から守る。
   rsync -avz --delete-after --delete-excluded --delay-updates --timeout="$RSYNC_IO_TIMEOUT_SECONDS" \
     -e "$RSYNC_RSH" \
     --filter='protect /manner/***' \
     --filter='protect /kanji-slicer/***' \
+    --filter='hide /stg.playpoint-sim.com' \
+    --filter='protect /stg.playpoint-sim.com' \
     "$source_root/" "$REMOTE_HOST:$REMOTE_ROOT/" \
     --exclude '/.git/***' \
     --exclude '/.github/***' \

@@ -71,7 +71,7 @@ test('verified履歴はsymlink・別所有領域・metadata不一致をfail-clos
   fixture.write('site/status/deploy-revision.txt', 'b'.repeat(40));
   assert.equal(fixture.run('--verify', fixture.sha).status, 2);
   fixture.write('site/status/deploy-revision.txt', fixture.sha);
-  for (const name of ['manner', 'kanji-slicer']) {
+  for (const name of ['manner', 'kanji-slicer', 'stg.playpoint-sim.com']) {
     const owned = path.join(fixture.selected, 'site', name); fs.mkdirSync(owned);
     assert.equal(fixture.run('--verify', fixture.sha).status, 2);
     fs.rmdirSync(owned);
@@ -85,6 +85,31 @@ test('verified履歴はsymlink・別所有領域・metadata不一致をfail-clos
   assert.equal(fixture.run('--verify', fixture.sha).status, 2);
   assert.match(historyScript, /--exclude '\/manner\/\*\*\*'/);
   assert.match(historyScript, /--exclude '\/kanji-slicer\/\*\*\*'/);
+});
+
+test('実履歴保存は検証領域を除外し、汚染履歴の有効化を拒否する', t => {
+  if (process.platform === 'win32') { t.skip('実bash/rsyncはLinux CIで実行'); return; }
+  const fixture = localHistory(t);
+  const live = path.join(fixture.dir, 'public'), sha = 'b'.repeat(40), staging = 'stg.playpoint-sim.com';
+  fs.mkdirSync(path.join(live, 'status'));
+  fs.mkdirSync(path.join(live, staging, 'cms'), { recursive: true });
+  fs.writeFileSync(path.join(live, staging, 'cms/wp-config.php'), 'DUMMY staging config');
+  fs.writeFileSync(path.join(live, 'status/deploy-revision.txt'), sha);
+  fs.writeFileSync(path.join(live, 'status/deploy-status.json'), JSON.stringify({ status: 'verified', commit: sha }, null, 2));
+  assert.equal(fixture.run('--archive-live').status, 0);
+  const archived = path.join(fixture.dir, 'snapshots/verified-history', sha);
+  assert.equal(fs.readFileSync(path.join(archived, 'site/keep.txt'), 'utf8'), 'live unchanged');
+  assert.equal(fs.existsSync(path.join(archived, 'site', staging)), false);
+  assert.equal(fixture.run('--verify', sha).status, 0);
+  assert.equal(fixture.run('--activate', sha).status, 0);
+  const previous = path.join(fixture.dir, 'snapshots/previous-verified');
+  const before = fs.readFileSync(path.join(previous, 'revision.txt'), 'utf8');
+  fs.mkdirSync(path.join(archived, 'site', staging));
+  assert.equal(fixture.run('--verify', sha).status, 2);
+  assert.equal(fixture.run('--activate', sha).status, 2);
+  assert.equal(fs.readFileSync(path.join(previous, 'revision.txt'), 'utf8'), before);
+  assert.equal(fs.existsSync(path.join(previous, 'site', staging)), false);
+  assert.equal(fs.readFileSync(path.join(live, staging, 'cms/wp-config.php'), 'utf8'), 'DUMMY staging config');
 });
 
 test('verified履歴は別runnerを起動せず成功した実DeployのSSHを再利用する', () => {
