@@ -130,3 +130,31 @@ test('有効期限の記事は年間の等級進捗を毎週特典の画面へ�
     assert.ok(row.includes(destination), `${locale}: level information must use level benefits, not weekly perks`);
   }
 });
+
+for (const contract of [
+  {
+    locale: 'en', country: 'US',
+    patterns: [/PC Points Boost/, /purchases on your computer, not your phone/, /both phone and computer are not labelled/, /one game or purchases across Google Play/, /activation requirement and end date/, /does not confirm that a particular boost is available/]
+  },
+  {
+    locale: 'tw', country: 'TW',
+    patterns: [/電腦點數倍增/, /只適用於電腦購買，手機消費不適用/, /手機與電腦皆適用/, /不會特別標示「電腦」/, /單一遊戲/, /啟用要求與到期日/, /不代表每個台灣帳號目前都有同一個活動/]
+  }
+]) {
+  test(`${contract.locale} promotion diagnosis distinguishes PC-only boosts from phone purchases`, () => {
+    const html = read(`${contract.locale}/articles/google-play-points-promotion-not-applied.html`);
+    const section = html.match(/<h2 id="section-3">[\s\S]*?<\/section>/)?.[0];
+    assert.ok(section, 'Existing purchase-eligibility section must remain');
+    for (const pattern of contract.patterns) assert.match(section, pattern);
+    assert.match(html, new RegExp(`9077192\\?hl=[^"<]+(?:&amp;|&)co=GENIE.CountryCode%3D${contract.country}`));
+    // 端末による適用範囲の説明に、現在の倍率や新しい提供保証を混ぜない。
+    const paragraphs = section.match(/<p>[^<]*(?:PC Points Boost|Boosts that cover both|電腦點數倍增|手機與電腦皆適用)[^<]*<\/p>/g);
+    assert.equal(paragraphs?.length, 2);
+    assert.doesNotMatch(paragraphs.join(' '), /\b\d+x\b|\d+\s*倍|\d+%|\bguaranteed\b/i);
+    if (contract.locale === 'tw') {
+      const source = read('scripts/intl-seo-content.cjs');
+      const entry = source.split("file: 'tw/articles/google-play-points-promotion-not-applied.html'")[1].split('\n  {')[0];
+      for (const paragraph of paragraphs) assert.ok(entry.includes(paragraph.replace(/<\/?p>/g, '')), 'Generated Taiwan copy must match its source');
+    }
+  });
+}
