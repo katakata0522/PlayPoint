@@ -1,5 +1,9 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-24 本番CMS設置前のデプロイ保護
+
+本番専用 `/cms` を既存stgと同じ別管理領域として、静的転送・削除・snapshot・履歴保存から分離する。既存deploy-cleanupで実rsync／復元時の保持と同名ファイル・リンクの混入防止、snapshot-historyで保存からの除外と汚染履歴の有効化拒否、public-deployment-treeでCMS設定の公開物混入拒否を検査する。既存PR Gateを使い、新しい検査ファイルや必須ゲートは追加しない。記事、配信ルート、SWは変更せず、WP／MariaDBの検証は別途行う。
+
 ## 2026-10-21 検証用サブドメインの公開・復元保護
 
 既存のdeploy-cleanupで実rsyncによる通常更新・削除と検証領域の保持、同名ディレクトリー・通常ファイル・リンクの混入、snapshot保存・復元・汚染元の拒否を検査する。snapshot-historyは実履歴保存からの除外と汚染履歴の有効化拒否、public-deployment-treeは検証用フォルダーが公開対象生成へ紛れた場合の拒否を担当する。既存PR Gate内で実行し、新しいworkflow・必須ゲートは追加しない。Xserverの権限・HTTP設定とWordPressのDB復旧は別段階の確認事項とする。
