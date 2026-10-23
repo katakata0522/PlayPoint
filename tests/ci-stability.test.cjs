@@ -205,3 +205,132 @@ test('証跡アップロードだけの失敗を本番検証失敗と区別し�
   assert.equal(classifyJob('success', { unknown_check: upload }), 'CHECK_FAIL');
   assert.equal(classifyJob('cancelled', { upload_production_browser_evidence: upload }), 'CANCELLED');
 });
+
+
+// 採色待機は描画の安定だけを待ち、4.5の閾値・失敗・時間上限を保持する。
+{
+const vm = require('node:vm');
+const source = fs.readFileSync(path.join(root, '.github/scripts/browser-reading-ui.cjs'), 'utf8');
+const helperStart = source.indexOf('  async function palette(');
+const helperEnd = source.indexOf('\n  try {', helperStart);
+const blockStart = source.indexOf("        if (await page.locator('html').getAttribute('data-reading-theme')");
+const blockEnd = source.indexOf('        const bg = await page.evaluate', blockStart);
+assert(helperStart >= 0 && helperEnd > helperStart && blockStart >= 0 && blockEnd > blockStart, 'Exact source extraction anchors must exist');
+const helper = source.slice(helperStart, helperEnd);
+const block = source.slice(blockStart, blockEnd);
+
+async function runScenario(options = {}) {
+  const theme = options.theme || 'dark';
+  const state = { frame: 0, now: 0, samples: 0, rAF: new Map(), timers: new Map(), nextId: 1, chosen: 0 };
+  const background = options.background || (theme === 'dark' ? 'rgb(17, 25, 35)' : 'rgb(244, 247, 251)');
+  const foreground = options.foreground || (theme === 'dark' ? 'rgb(235, 240, 247)' : 'rgb(25, 52, 56)');
+  const staleForeground = theme === 'dark' ? 'rgb(25, 52, 56)' : 'rgb(235, 240, 247)';
+  const body = { key: 'body', parentElement: null };
+  function animations() {
+    if (options.throwAnimation) throw Error('Synthetic animation inspection fault');
+    if (state.frame >= (options.animationFrames || 0)) return [];
+    const animation = { playState: options.pendingAnimation ? 'idle' : 'running', pending: Boolean(options.pendingAnimation) };
+    if (options.keyframeProperty) animation.effect = { getKeyframes: () => [{ [options.keyframeProperty]: foreground }, { [options.keyframeProperty]: staleForeground }] };
+    else animation.transitionProperty = options.transitionProperty || 'color';
+    return [animation];
+  }
+  const elements = Object.fromEntries(['h1', '.article-card h3', '.article-card time', '#sort-toggle', '#search-input', '.card-category'].map(key => [key, [{ key, parentElement: body, getClientRects: () => [{}], getAnimations: () => options.ancestorAnimation ? [] : animations() }]]));
+  body.getAnimations = () => options.ancestorAnimation ? animations() : [];
+  if (options.hiddenAnimation) elements.h1.push({ key: 'h1', parentElement: body, getClientRects: () => [], getAnimations: () => [{ playState: 'running', transitionProperty: 'color' }] });
+  const style = element => {
+    if (element === body) return { backgroundColor: options.bodyNotReady ? 'rgb(128, 128, 128)' : background, color: foreground, visibility: 'visible' };
+    if (options.throwSample && state.frame >= 2) throw Error('Synthetic color sampling fault');
+    state.samples++;
+    const delayed = state.frame < (element.key === '.card-category' ? (options.categoryDelay ?? options.delay ?? 0) : options.delay || 0);
+    const bad = options.bad || delayed || state.frame >= (options.badAfter ?? Infinity);
+    const color = options.flap ? (state.frame % 2 ? foreground : staleForeground) : bad ? staleForeground : foreground;
+    return { color, backgroundColor: 'rgba(0, 0, 0, 0)', visibility: 'visible' };
+  };
+  const page = {
+    locator(selector) {
+      if (selector === 'html') return { getAttribute: async () => theme };
+      if (selector === '.guide-header .brand') return { isVisible: async () => true, innerText: async () => 'PlayPoint' };
+      if (selector === '.card-category:visible') return { count: async () => options.category ? 1 : 0 };
+      throw Error('Unexpected locator ' + selector);
+    },
+    async waitForFunction(fn, arg) { if (!fn(arg)) throw Error('Requested theme surface timeout'); },
+    async evaluate(fn, arg) { return fn(arg); }
+  };
+  const context = vm.createContext({
+    assert, page, theme, width: 390,
+    chooseTheme: async () => { state.chosen++; },
+    document: { documentElement: { dataset: { readingTheme: theme } }, body, querySelectorAll: selector => selector === options.missing ? [] : elements[selector] || [] },
+    getComputedStyle: style,
+    performance: { now: () => state.now },
+    requestAnimationFrame(fn) { const id = state.nextId++; state.rAF.set(id, fn); return id; },
+    cancelAnimationFrame(id) { state.rAF.delete(id); },
+    setTimeout(fn, delay) { const id = state.nextId++; state.timers.set(id, { fn, at: state.now + delay }); return id; },
+    clearTimeout(id) { state.timers.delete(id); }
+  });
+  let finished = false, result, failure;
+  const operation = options.direct ? "return await palette(page, ['h1']);" : block + '\n return samples;';
+  const task = vm.runInContext(helper + '\n(async () => {\n' + operation + '\n })()', context);
+  task.then(value => { result = value; finished = true; }, error => { failure = error; finished = true; });
+  // 模擬描画時計を進める前に通常の非同期処理を完了させる。
+  for (let i = 0; i < 8; i++) await new Promise(setImmediate);
+  for (let tick = 0; !finished && tick < 700; tick++) {
+    state.now += 16;
+    if (!options.frozenFrames) {
+      state.frame++;
+      const callbacks = [...state.rAF.values()]; state.rAF.clear();
+      for (const callback of callbacks) callback(state.now);
+    }
+    for (const [id, timer] of [...state.timers]) if (timer.at <= state.now) { state.timers.delete(id); timer.fn(); }
+    for (let i = 0; i < 4; i++) await new Promise(setImmediate);
+  }
+  assert(finished, 'Operation exceeded 11,200 ms synthetic bounded observation');
+  assert.equal(state.timers.size, 0, 'No timer leaked after completion');
+  assert.equal(state.rAF.size, 0, 'No animation callback leaked after completion');
+  if (failure) throw failure;
+  return { result, state };
+}
+
+test('settled dark palette keeps strict gate', async () => { const r = await runScenario(); assert(r.result.every(x => x.ratio >= 4.5)); });
+test('settled light palette keeps strict gate', async () => { const r = await runScenario({ theme: 'light' }); assert(r.result.every(x => x.ratio >= 4.5)); });
+test('dark surface ready before foreground must not sample stale text', async () => { const r = await runScenario({ delay: 3 }); assert(r.state.frame >= 3); });
+test('light surface ready before foreground must not sample stale text', async () => { const r = await runScenario({ theme: 'light', delay: 3 }); assert(r.state.frame >= 3); });
+test('optional category participates in the same settled sample', async () => { const r = await runScenario({ category: true, categoryDelay: 3 }); assert(r.result.some(x => x.selector === '.card-category')); });
+test('permanent bad dark contrast still fails', async () => { await assert.rejects(runScenario({ bad: true }), /dark\/390/); });
+test('permanent bad light contrast still fails', async () => { await assert.rejects(runScenario({ theme: 'light', bad: true }), /light\/390/); });
+for (const missing of ['h1', '.article-card h3', '.article-card time', '#sort-toggle', '#search-input']) {
+  test('missing selector remains failure: ' + missing, async () => { await assert.rejects(runScenario({ missing }), /missing/); });
+}
+test('missing visible category remains failure', async () => { await assert.rejects(runScenario({ category: true, missing: '.card-category' }), /missing/); });
+test('a wrong theme surface still fails', async () => { await assert.rejects(runScenario({ bodyNotReady: true }), /surface timeout/); });
+test('never-settling colors fail within bounded timeout', async () => { await assert.rejects(runScenario({ flap: true }), /did not settle/); });
+test('paused animation frames fail within bounded timeout', async () => { await assert.rejects(runScenario({ frozenFrames: true }), /did not settle/); });
+test('running color animation is not taken as settled', async () => { const r = await runScenario({ animationFrames: 8, delay: 6 }); assert(r.state.frame >= 8); });
+test('persistently running animation times out', async () => { await assert.rejects(runScenario({ animationFrames: Infinity }), /did not settle/); });
+test('source keeps exact 4.5 gate and no contrast-based retry', () => {
+  assert.match(block, /sample\.ratio>=4\.5/);
+  const settling = helper.slice(helper.indexOf('if (!settle)'));
+  if (settling) { assert.doesNotMatch(settling, /ratio\s*[><]=?/); assert.doesNotMatch(settling, /4\.5/); }
+});
+
+
+test('a stable failing palette is rejected before a later favorable value', async () => { await assert.rejects(runScenario({ delay: 8 }), /dark\/390/); });
+test('non-color animations do not block palette readiness', async () => { const r = await runScenario({ animationFrames: Infinity, transitionProperty: 'transform' }); assert(r.result.every(x => x.ratio >= 4.5)); });
+test('near-threshold 4.54 contrast passes unchanged', async () => { const r = await runScenario({ theme: 'light', background: 'rgb(255, 255, 255)', foreground: 'rgb(118, 118, 118)' }); assert(r.result[0].ratio > 4.5 && r.result[0].ratio < 4.6); });
+test('near-threshold 4.48 contrast still fails', async () => { await assert.rejects(runScenario({ theme: 'light', background: 'rgb(255, 255, 255)', foreground: 'rgb(119, 119, 119)' }), /light\/390/); });
+test('other palette callers retain immediate behavior by default', async () => { const r = await runScenario({ direct: true, frozenFrames: true }); assert.equal(r.state.frame, 0); assert(r.result[0].ratio >= 4.5); });
+test('default palette still reports a bad ratio without hiding it', async () => { const r = await runScenario({ direct: true, bad: true }); assert(r.result[0].ratio < 4.5); });
+
+
+test('CSSAnimation/WAAPI color keyframes wait beyond a stable initial step', async () => { const r = await runScenario({ keyframeProperty: 'color', animationFrames: 8, delay: 6 }); assert(r.state.frame >= 8); });
+test('nonterminating color keyframes time out', async () => { await assert.rejects(runScenario({ keyframeProperty: 'color', animationFrames: Infinity }), /did not settle/); });
+test('irrelevant transform keyframes do not block readiness', async () => { const r = await runScenario({ keyframeProperty: 'transform', animationFrames: Infinity }); assert(r.result[0].ratio >= 4.5); });
+test('ancestor background-color keyframes participate in readiness', async () => { const r = await runScenario({ keyframeProperty: 'backgroundColor', animationFrames: 8, ancestorAnimation: true }); assert(r.state.frame >= 8); });
+test('hidden matches do not delay visible palette', async () => { const r = await runScenario({ hiddenAnimation: true }); assert.equal(r.result.filter(x => x.selector === 'h1').length, 1); });
+test('pending palette animation is awaited', async () => { const r = await runScenario({ pendingAnimation: true, animationFrames: 8 }); assert(r.state.frame >= 8); });
+
+
+test('active keyframe animation cannot hide a later permanent failure', async () => { await assert.rejects(runScenario({ keyframeProperty: 'color', animationFrames: 8, badAfter: 8 }), /dark\/390/); });
+test('sampling exception clears scheduled timer and frame', async () => { await assert.rejects(runScenario({ throwSample: true }), /Synthetic color sampling fault/); });
+test('animation inspection exception clears scheduled timer and frame', async () => { await assert.rejects(runScenario({ throwAnimation: true }), /Synthetic animation inspection fault/); });
+
+}
