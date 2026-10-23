@@ -19,6 +19,19 @@ function decodeTitleReferences(value) {
   });
 }
 
+// Remove markup to a fixed point so deleting one token cannot expose another.
+// Unexpected raw angle brackets are rejected before decoding instead of
+// publishing a damaged title. Encoded brackets remain text for escapeHtml.
+function stripHeadingMarkup(value) {
+  let previous;
+  do {
+    previous = value;
+    value = value.replace(/<[^>]+>/g, '');
+  } while (value !== previous);
+  if (/[<>]/.test(value)) throw Error('記事タイトルに不正なHTMLがあります');
+  return value;
+}
+
 // 同じ正常なページ別集計から、各言語の記事だけを比較する。PVは公開しない。
 function prepareSnapshots(input, root, today) {
   const jaFile = 'scripts/japanese-popular-guides.snapshot.json';
@@ -36,7 +49,7 @@ function prepareSnapshots(input, root, today) {
     const registry = fs.readdirSync(directory).filter(file => file.endsWith('.html') && file !== 'index.html').map(file => {
       const html = fs.readFileSync(path.join(directory, file), 'utf8');
       const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1];
-      const title = heading === undefined ? undefined : decodeTitleReferences(heading.replace(/<[^>]+>/g, '')).trim();
+      const title = heading === undefined ? undefined : decodeTitleReferences(stripHeadingMarkup(heading)).trim();
       if (!title) throw Error('記事タイトルがありません: ' + file);
       return { file: '../' + locale + '/articles/' + file, title };
     });

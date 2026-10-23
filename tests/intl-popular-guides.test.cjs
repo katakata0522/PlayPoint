@@ -97,6 +97,15 @@ for(const l of locales){fs.mkdirSync(path.join(root,l,'articles'),{recursive:tru
 return {root,input:{source:'PlayPoint Analytics / 📄ページ別分析',status:'COMPLETE',complete:true,start:'2026-09-20',end:'2026-10-19',fetchedAt:'2026-10-20',rows}};}
 for(const [label,input,expected] of cases){const f=makeFixture('<h1>'+input+'</h1>');try{const changes=prepareSnapshots(f.input,f.root,'2026-10-20'),next=changes.find(x=>x[0].includes('intl-'))[1];for(const l of locales){check(label+'/'+l,()=>assert.equal(next.guides[l][0][1],expected));check('escape/'+label+'/'+l,()=>{const text=escapeHtml(next.guides[l][0][1]);assert(!/[<>"']/.test(text));assert(!/&(?!(amp|lt|gt|quot|#39);)/.test(text));});}check('metadata/'+label,()=>{assert.equal(next.start,f.input.start);assert.equal(next.end,f.input.end);assert.equal(next.snapshot,'2026-10-20');assert.deepEqual(Object.keys(next),['snapshot','start','end','guides']);for(const l of locales){assert.equal(next.guides[l].length,5);assert.equal(next.guides[l][0][0],'/'+l+'/articles/a0.html');assert.equal(next.guides[l][1][1],'Title 1');}});}finally{fs.rmSync(f.root,{recursive:true});}}
 for(const [name,html] of [['missing','<p>No heading</p>'],['empty','<h1> </h1>']]){const f=makeFixture(html);try{check('reject-'+name,()=>assert.throws(()=>prepareSnapshots(f.input,f.root,'2026-10-20'),/記事タイトルがありません/));}finally{fs.rmSync(f.root,{recursive:true});}}
+for(const heading of ['<script', '<<script>script>', '<img src=x', 'Title > broken']) {
+  const fixture = makeFixture('<h1>' + heading + '</h1>');
+  try {
+    check('reject-malformed-' + heading, () => assert.throws(
+      () => prepareSnapshots(fixture.input, fixture.root, '2026-10-20'),
+      /記事タイトルに不正なHTMLがあります/
+    ));
+  } finally { fs.rmSync(fixture.root, {recursive: true}); }
+}
 const f=makeFixture('<h1>OK</h1>');try{check('unchanged',()=>{const changes=prepareSnapshots(f.input,f.root,'2026-10-20');for(const [p,v] of changes)fs.writeFileSync(path.join(f.root,p),JSON.stringify(v));assert.deepEqual(prepareSnapshots(f.input,f.root,'2026-10-20'),[]);});check('invalid-source-rejected',()=>assert.throws(()=>prepareSnapshots({...f.input,source:'BAD'},f.root,'2026-10-20')));check('stale-data-rejected',()=>assert.throws(()=>prepareSnapshots(f.input,f.root,'2026-11-20')));check('no-pv-export',()=>{const out=JSON.stringify(prepareSnapshots({...f.input,start:'2026-09-19',end:'2026-10-18'},f.root,'2026-10-20'));assert(!out.includes('"pv"'));});}finally{fs.rmSync(f.root,{recursive:true});}
 assert.equal(fail, 0, JSON.stringify(results.filter(result => !result.ok)));
 
