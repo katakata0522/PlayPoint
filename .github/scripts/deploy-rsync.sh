@@ -186,6 +186,7 @@ rsync -a --delete \
   --exclude '/manner/***' \
   --exclude '/kanji-slicer/***' \
   --exclude '/stg.playpoint-sim.com' \
+  --exclude '/cms' \
   "$root/" "$tmp/site/"
 
 if find "$tmp/site" -type l -print -quit | grep -q .; then
@@ -252,7 +253,7 @@ if find "$snapshot" -type l -print -quit | grep -q .; then
   echo "Rollback snapshot contains a symlink; refusing to trust it." >&2
   exit 2
 fi
-for owned_elsewhere in manner kanji-slicer stg.playpoint-sim.com; do
+for owned_elsewhere in manner kanji-slicer stg.playpoint-sim.com cms; do
   if [ -e "$snapshot/site/$owned_elsewhere" ] || [ -L "$snapshot/site/$owned_elsewhere" ]; then
     echo "Rollback snapshot contains separately owned path: $owned_elsewhere" >&2
     exit 2
@@ -341,7 +342,7 @@ if find "$snapshot" -type l -print -quit | grep -q .; then
   echo "Rollback snapshot contains a symlink; refusing to restore it." >&2
   exit 2
 fi
-for owned_elsewhere in manner kanji-slicer stg.playpoint-sim.com; do
+for owned_elsewhere in manner kanji-slicer stg.playpoint-sim.com cms; do
   if [ -e "$snapshot/site/$owned_elsewhere" ] || [ -L "$snapshot/site/$owned_elsewhere" ]; then
     echo "Rollback snapshot contains separately owned path: $owned_elsewhere" >&2
     exit 2
@@ -377,6 +378,8 @@ rsync -a --delete-after --delay-updates \
   --filter='protect /kanji-slicer/***' \
   --filter='hide /stg.playpoint-sim.com' \
   --filter='protect /stg.playpoint-sim.com' \
+  --filter='hide /cms' \
+  --filter='protect /cms' \
   "$snapshot/site/" "$root/"
 
 restored_revision="$(tr -d '\r\n' < "$root/status/deploy-revision.txt" | tr '[:upper:]' '[:lower:]')"
@@ -406,6 +409,8 @@ deploy_once() {
     --filter='protect /kanji-slicer/***' \
     --filter='hide /stg.playpoint-sim.com' \
     --filter='protect /stg.playpoint-sim.com' \
+    --filter='hide /cms' \
+    --filter='protect /cms' \
     "$source_root/" "$REMOTE_HOST:$REMOTE_ROOT/" \
     --exclude '/.git/***' \
     --exclude '/.github/***' \

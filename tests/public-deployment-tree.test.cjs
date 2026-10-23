@@ -44,6 +44,8 @@ test('public allowlist makes operational artifacts non-public by default', () =>
 
   assert.equal(classifyRootEntry('unexpected-internal-report.txt'), 'unknown');
   assert.equal(isPublicRepositoryPath('unexpected-internal-report.txt'), false);
+  assert.equal(classifyRootEntry('cms'), 'unknown');
+  assert.equal(isPublicRepositoryPath('cms/wp-config.php'), false);
   assert.equal(classifyRootEntry('stg.playpoint-sim.com'), 'unknown');
   assert.equal(isPublicRepositoryPath('stg.playpoint-sim.com/cms/wp-config.php'), false);
   const impact = classifyDeployImpact('unexpected-internal-report.txt');
@@ -72,12 +74,14 @@ test('prepared deployment tree contains only explicit public roots', (t) => {
     fs.unlinkSync(link);
     assert.equal(fs.readFileSync(marker, 'utf8'), 'preserve');
   }
-  const staging = path.join(source, 'stg.playpoint-sim.com');
+  for (const protectedName of ['stg.playpoint-sim.com', 'cms']) {
+  const staging = path.join(source, protectedName);
   fs.mkdirSync(staging);
   fs.writeFileSync(path.join(staging, 'wp-config.php'), 'DUMMY only');
   assert.throws(() => preparePublicTree(path.join(boundary, 'candidate'), { sourceRoot: source }), /unclassified|Unknown|unknown/i);
   fs.unlinkSync(path.join(staging, 'wp-config.php'));
   fs.rmdirSync(staging);
+  }
   fs.unlinkSync(path.join(source, 'style.css'));
   assert.throws(() => preparePublicTree(path.join(boundary, 'candidate'), { sourceRoot: source }), /Allowlisted public entry is missing/);
   const destination = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-public-tree-'));
