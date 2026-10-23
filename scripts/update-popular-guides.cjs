@@ -4,6 +4,21 @@ const path = require('node:path');
 const { buildSnapshot } = require('./update-japanese-popular-guides.cjs');
 const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 
+// Decode supported references once. In particular, &amp;quot; stays literal &quot;.
+// This extracts title text only; HTML output must still use the existing escapeHtml.
+function decodeTitleReferences(value) {
+  const named = { amp: '&', quot: '"', apos: "'", lt: '<', gt: '>' };
+  return value.replace(/&(?:amp|quot|apos|lt|gt|#[0-9]+|#x[0-9a-f]+);/gi, reference => {
+    const key = reference.slice(1, -1);
+    if (key[0] !== '#') return Object.hasOwn(named, key) ? named[key] : reference;
+    const hexadecimal = key[1].toLowerCase() === 'x';
+    const code = Number.parseInt(key.slice(hexadecimal ? 2 : 1), hexadecimal ? 16 : 10);
+    // Do not invent characters for malformed, null, or surrogate references.
+    if (!Number.isSafeInteger(code) || code <= 0 || code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff)) return reference;
+    return String.fromCodePoint(code);
+  });
+}
+
 // 同じ正常なページ別集計から、各言語の記事だけを比較する。PVは公開しない。
 function prepareSnapshots(input, root, today) {
   const jaFile = 'scripts/japanese-popular-guides.snapshot.json';
@@ -20,7 +35,8 @@ function prepareSnapshots(input, root, today) {
     const directory = path.join(root, locale, 'articles');
     const registry = fs.readdirSync(directory).filter(file => file.endsWith('.html') && file !== 'index.html').map(file => {
       const html = fs.readFileSync(path.join(directory, file), 'utf8');
-      const title = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1].replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
+      const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1];
+      const title = heading === undefined ? undefined : decodeTitleReferences(heading.replace(/<[^>]+>/g, '')).trim();
       if (!title) throw Error('記事タイトルがありません: ' + file);
       return { file: '../' + locale + '/articles/' + file, title };
     });
