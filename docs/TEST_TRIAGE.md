@@ -1,5 +1,9 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-23 1記事のWordPress移行準備
+
+本番CMS `/cms` も、既存の別管理領域と同じく静的公開・削除・snapshot・履歴から分離する。既存deploy-cleanupの実rsync／復元とsnapshot-historyの保存／汚染履歴拒否をstgとCMSの両方へ適用し、public-deployment-treeでCMS設定の混入を拒否する。新しいテストファイルや必須ゲートは増やさない。1記事の内部rewriteは専用目印の存在時だけ有効にし、目印OFF時は同じURLの静的HTMLへ戻す。実サーバーでの切替・切り戻し、本番WordPressのDB復旧は別工程で検証する。
+
 ## 2026-10-21 検証用サブドメインの公開・復元保護
 
 既存のdeploy-cleanupで実rsyncによる通常更新・削除と検証領域の保持、同名ディレクトリー・通常ファイル・リンクの混入、snapshot保存・復元・汚染元の拒否を検査する。snapshot-historyは実履歴保存からの除外と汚染履歴の有効化拒否、public-deployment-treeは検証用フォルダーが公開対象生成へ紛れた場合の拒否を担当する。既存PR Gate内で実行し、新しいworkflow・必須ゲートは追加しない。Xserverの権限・HTTP設定とWordPressのDB復旧は別段階の確認事項とする。

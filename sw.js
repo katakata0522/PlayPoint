@@ -80,6 +80,9 @@ function isCacheableRequest(request) {
   if (request.method !== 'GET') return false;
   const url = new URL(request.url);
 
+  // WordPressの管理・プレビュー・認証情報を端末の補助キャッシュへ残さない。
+  if (url.pathname === '/cms' || url.pathname.startsWith('/cms/')) return false;
+
   // サービスワーカー自身やサブアプリのSWスクリプトはキャッシュしない
   if (url.pathname.endsWith('sw.js') || url.pathname.endsWith('service-worker.js')) {
     return false;
