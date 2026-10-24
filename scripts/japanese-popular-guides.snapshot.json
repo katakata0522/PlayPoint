@@ -1,8 +1,12 @@
 {
-  "snapshot": "2026-10-17",
-  "start": "2026-09-12",
-  "end": "2026-10-11",
+  "snapshot": "2026-10-24",
+  "start": "2026-09-19",
+  "end": "2026-10-18",
   "guides": [
+    [
+      "/articles/2026-10-10-google-play-fest-2026.html",
+      "Playフェス開催中！限定交換品と書籍15倍をチェック"
+    ],
     [
       "/articles/2026-07-31-google-play-quests.html",
       "Google Playクエスト｜ポイント報酬の条件と始め方"
@@ -12,16 +16,12 @@
       "Google Play Pointsの交換先おすすめ｜使い道・クーポン・Playクレジットを比較"
     ],
     [
+      "/articles/2026-07-25-play-points-coupon-not-applied.html",
+      "Google Play Pointsクーポンが使えない？「特典を適用できません」の対処"
+    ],
+    [
       "/articles/2025-12-25-weekly-reward.html",
       "ウィークリーリワード｜受取曜日・ランク別特典"
-    ],
-    [
-      "/articles/2026-07-31-super-weekly-reward.html",
-      "スーパーウィークリーの仕組み｜対象ランク・受取方法"
-    ],
-    [
-      "/articles/2026-07-24-play-points-cash-conversion.html",
-      "Google Play Pointsは現金化・PayPay交換できる？できない理由と使い道"
     ]
   ]
 }
