@@ -46,7 +46,7 @@ async function assertCacheContract(source, { outputFile = '' } = {}) {
     const uid = process.getuid();
     const gid = process.getgid();
     const q = value => '"' + value.replaceAll('\\', '/').replaceAll('"', '\\"') + '"';
-    const moduleNames = ['mpm_event', 'authz_core', 'mime', 'dir', 'headers', 'expires', 'rewrite', 'ssl', 'socache_shmcb'];
+    const moduleNames = ['mpm_event', 'authz_core', 'mime', 'dir', 'headers', 'expires', 'rewrite', 'setenvif', 'ssl', 'socache_shmcb'];
     const configuration = [
       `ServerRoot ${q(directory)}`, `DefaultRuntimeDir ${q(directory)}`, `Listen 127.0.0.1:${port}`, 'ServerName playpoint-sim.com',
       `PidFile ${q(path.join(directory, 'httpd.pid'))}`, `ErrorLog ${q(path.join(directory, 'error.log'))}`,
@@ -64,8 +64,8 @@ async function assertCacheContract(source, { outputFile = '' } = {}) {
     let stderr = '';
     child.stderr.on('data', data => { stderr += data; });
     const ca = fs.readFileSync(cert);
-    const request = url => new Promise((resolve, reject) => {
-      const req = https.get(url, { ca, servername: 'localhost', headers: { Host: 'playpoint-sim.com' } }, response => {
+    const request = (url, host = 'playpoint-sim.com') => new Promise((resolve, reject) => {
+      const req = https.get(url, { ca, servername: 'localhost', headers: { Host: host } }, response => {
         let body = '';
         response.setEncoding('utf8');
         response.on('data', data => { body += data; });
@@ -90,6 +90,47 @@ async function assertCacheContract(source, { outputFile = '' } = {}) {
     console.log(version.trim());
     const report = await verifyHttpCache({ baseUrl, fixture: true, request, outputFile, attempts: 1,
       fixtureRuntime: { apache: version.trim(), htaccessSha256: createHash('sha256').update(source).digest('hex'), tlsVerification: 'fixture CA; system trust unchanged' } });
+    if (source.includes('# BEGIN PlayPoint one-article WordPress pilot')) {
+      // 実Apacheで目印OFF→ON→OFFを確認する。PHP自体の実行は別の実WP検証が担当する。
+      const cms = path.join(root, 'cms');
+      fs.mkdirSync(cms, { recursive: true, mode: 0o755 });
+      const cmsConfig = fs.readFileSync(path.join(__dirname, '../../.github/fixtures/wordpress-cms.htaccess'), 'utf8');
+      fs.writeFileSync(path.join(cms, '.htaccess'), cmsConfig);
+      fs.writeFileSync(path.join(cms, 'index.php'), 'wordpress-fixture\n');
+      fs.writeFileSync(path.join(cms, 'wp-login.php'), 'private-login-fixture\n');
+      const article = '/articles/2026-10-13-play-fest-deals.html';
+      fs.mkdirSync(path.join(root, 'articles'), { recursive: true, mode: 0o755 });
+      fs.writeFileSync(path.join(root, article.slice(1)), 'static-article-fixture\n');
+      fs.writeFileSync(path.join(root, 'articles/other.html'), 'other-article-fixture\n');
+      const get = pathname => request(new URL(pathname, baseUrl));
+      const off = await get(article + '?source=check');
+      assert.equal(off.status, 200); assert.equal(off.body, 'static-article-fixture\n');
+      const marker = path.join(cms, '.playpoint-fest-enabled');
+      fs.writeFileSync(marker, '');
+      const on = await get(article + '?source=check');
+      assert.equal(on.status, 200); assert.equal(on.body, 'wordpress-fixture\n');
+      assert.equal(on.headers.get('location'), null);
+      assert.equal(on.headers.get('x-robots-tag'), null, '公開記事へCMSのnoindexを漏らさない');
+      assert.ok(!(on.headers.get('vary') || '').includes('*'), '公開記事へCMSの保存拒否を漏らさない');
+      const other = await get('/articles/other.html');
+      assert.equal(other.body, 'other-article-fixture\n');
+      assert.equal((await request(new URL(article, baseUrl), 'stg.playpoint-sim.com')).body, 'static-article-fixture\n');
+      const login = await get('/cms/wp-login.php');
+      assert.equal(login.status, 200); assert.match(login.headers.get('x-robots-tag'), /noindex/);
+      assert.ok((login.headers.get('vary') || '').split(',').some(v => v.trim() === '*'));
+      // PHP/DBに依存しない切り戻しを、転送先ファイルが故障した条件でも検証する。
+      fs.renameSync(path.join(cms, 'index.php'), path.join(cms, 'index.php.off'));
+      const broken = await get(article); assert.notEqual(broken.status, 200);
+      fs.renameSync(marker, marker + '.off');
+      const restored = await get(article);
+      assert.equal(restored.status, 200); assert.equal(restored.body, off.body);
+      report.wordpressPilot = { passed: true, offOnOff: true, sameUrlNoRedirect: true, unrelatedPathAndHostPreserved: true, publicNoindexAbsent: true, privateLoginNoindexAndVary: true, rollbackWithoutPhp: true, cmsHtaccessSha256: createHash('sha256').update(cmsConfig).digest('hex') };
+      if (outputFile) {
+        fs.mkdirSync(path.dirname(outputFile), {recursive: true});
+        fs.writeFileSync(outputFile, JSON.stringify(report, null, 2) + '\n');
+      }
+      console.log('Apache one-article routing and private CMS headers: passed');
+    }
     console.log(`Apache HTTPS cache contract: ${report.observations.length}/${report.observations.length} passed`);
     return report;
   } catch (error) {

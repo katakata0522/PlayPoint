@@ -46,6 +46,7 @@ test('GETかつ同一originの許可destinationだけをfetch処理する', asyn
     request('https://example.com/app.js', { destination: 'script' }),
     request(`${ORIGIN}/sw.js`, { destination: 'script' }),
     request(`${ORIGIN}/nested/service-worker.js`, { destination: 'script' }),
+    ...['/cms', '/cms/', '/cms/wp-login.php', '/cms/wp-admin/admin-post.php?preview=1', '/cms/wp-json/wp/v2/posts', '/cms/wp-content/uploads/private.png'].map(path => request(`${ORIGIN}${path}`, { destination: 'document' })),
     request(`${ORIGIN}/api`, { method: 'HEAD' }),
     ...['', 'audio', 'video', 'worker', 'object'].map(destination => request(`${ORIGIN}/api`, { destination }))
   ]) {
@@ -57,6 +58,7 @@ test('GETかつ同一originの許可destinationだけをfetch処理する', asyn
   for (const destination of ['document', 'style', 'script', 'image', 'font', 'manifest']) {
     assert.equal((await runtime.fireFetch(request(`${ORIGIN}/allowed-${destination}`, { destination }))).responded, true, destination);
   }
+  assert.equal((await runtime.fireFetch(request(`${ORIGIN}/cms-guide.html`, { destination: 'document' }))).responded, true, '似た公開パスは除外しない');
   await runtime.settleBackground();
 });
 

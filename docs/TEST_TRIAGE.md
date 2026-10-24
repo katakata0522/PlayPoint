@@ -1,8 +1,16 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-24 1記事の切替・切り戻し最終確認
+
+既存Apache HTTP検証で、実際のルート設定とCMS設定fixtureを使い、目印OFF→ON→OFF、同じURLの内部転送、対象外の記事・ホストの保持、公開記事へのnoindex／Vary:*混入防止とCMSログインの保存拒否を確認する。PHP転送先が故障しても目印OFFで静的記事へ復帰することを検査する。WordPress／MariaDB・編集保存は専用CMSで別途確認する。service-worker-behaviorの既存入力境界へCMS管理・REST・画像と似た公開パスを追加し、CMSを保存せず他の公開パスは保持することを検査する。既存PR Gateを使い、新しい必須ゲートやテストファイルは増やさない。
+
 ## 2026-10-24 本番CMS設置前のデプロイ保護
 
 本番専用 `/cms` を既存stgと同じ別管理領域として、静的転送・削除・snapshot・履歴保存から分離する。既存deploy-cleanupで実rsync／復元時の保持と同名ファイル・リンクの混入防止、snapshot-historyで保存からの除外と汚染履歴の有効化拒否、public-deployment-treeでCMS設定の公開物混入拒否を検査する。既存PR Gateを使い、新しい検査ファイルや必須ゲートは追加しない。記事、配信ルート、SWは変更せず、WP／MariaDBの検証は別途行う。
+
+## 2026-10-23 1記事のWordPress移行準備
+
+本番CMS `/cms` も、既存の別管理領域と同じく静的公開・削除・snapshot・履歴から分離する。既存deploy-cleanupの実rsync／復元とsnapshot-historyの保存／汚染履歴拒否をstgとCMSの両方へ適用し、public-deployment-treeでCMS設定の混入を拒否する。新しいテストファイルや必須ゲートは増やさない。1記事の内部rewriteは専用目印の存在時だけ有効にし、目印OFF時は同じURLの静的HTMLへ戻す。実サーバーでの切替・切り戻し、本番WordPressのDB復旧は別工程で検証する。
 
 ## 2026-10-21 検証用サブドメインの公開・復元保護
 
