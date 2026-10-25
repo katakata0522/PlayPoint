@@ -18,6 +18,18 @@ function load() {
   return context;
 }
 
+test('stg広告診断は停止理由と取得不能な通信量を区別し、URLの機密部分を保存しない', () => {
+  const probe = require('../tools/wordpress/ad-diagnostics.js');
+  assert.equal(probe.reason('Heavy Ad Intervention: CPU usage'), 'cpu');
+  assert.equal(probe.reason('Heavy Ad Intervention: network usage'), 'network');
+  assert.equal(probe.reason('Ad was removed'), 'unknown');
+  assert.equal(probe.host('https://example.com/creative?token=private'), 'example.com');
+  assert.deepEqual(probe.resources([
+    {name:'https://example.com/ad?private=1',transferSize:0},
+    {name:'https://example.com/other',transferSize:1024}
+  ]), [{host:'example.com',count:2,knownTransferBytes:1024,sizesUnavailable:1}]);
+});
+
 function daily(date, revenue, ga4Pv, adsensePv, impressions, clicks, pageCtr, pageRpm, impCtr, impRpm) {
   return {
     date,
