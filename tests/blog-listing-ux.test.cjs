@@ -17,6 +17,15 @@ const {
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
+test('移行前点検は大文字や空白・属性付きのscript終了タグでも参照と本文を記録する', async () => {
+  const {scriptBlocks}=await import(require('node:url').pathToFileURL(path.join(root,'tools/wordpress/audit-migration.mjs')).href);
+  const blocks=scriptBlocks('<SCRIPT src="calculator.js">Math.floor(2)</SCRIPT \n><script>second</script data-extra>');
+  assert.equal(blocks.length,2);
+  assert.ok(blocks[0][1].includes('calculator.js'));
+  assert.equal(blocks[0][2],'Math.floor(2)');
+  assert.equal(blocks[1][2],'second');
+});
+
 test('stg一覧のページ送り・検索・保存先を保ち、画像は固定allowlistだけへ変換する', () => {
   const {link,image}=require('../tools/wordpress/blog-links.js');
   const config={origin:'https://stg.playpoint-sim.com',paths:['/articles/one.html'],images:{'articles/thumbnails/one.webp':'image-key.webp'}};
