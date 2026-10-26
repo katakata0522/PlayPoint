@@ -99,7 +99,7 @@ test('WPメディアはstgのuploads内だけを保持し、元画像と外部�
 });
 
 test('3記事の移行パッケージは原文を再構成でき、表・画像・検索と保存コードを保持する',async()=>{
- const {buildArticleBatch}=await import('../tools/wordpress/article-batch-build.mjs');
+ const {buildArticleBatch,splitArticle,selectedPaths}=await import('../tools/wordpress/article-batch-build.mjs');
  const temporary=await fs.mkdtemp(path.join(os.tmpdir(),'playpoint-article-batch-'));
  try{
   const {data,manifest}=await buildArticleBatch(temporary);
@@ -131,6 +131,30 @@ test('3記事の移行パッケージは原文を再構成でき、表・画像�
   for(const name of new Set([...init.matchAll(/\b(setup[A-Za-z]+)\(\);/g)].map(m=>m[1])))context[name]=()=>{if(name==='setupArticleAdsense')adInitializers++;};
   await vm.runInNewContext('('+init+')()',context);
   assert.equal(adInitializers,0,'batch article must not initialize an advertisement');
+  const catalog=JSON.parse(await fs.readFile(repo+'/blog/articles.json','utf8'));
+  let commentPrefixed=0;
+  for(const row of catalog.filter(row=>row.listed!==false)){
+   const pathname=new URL(row.file,'https://playpoint-sim.com/blog/').pathname,original=await fs.readFile(repo+pathname,'utf8');
+   const inner=original.match(/<article\b[^>]*>([\s\S]*?)<\/article\s*>/i)[1];
+   const prefix=inner.slice(0,inner.indexOf('<header'));
+   if(!prefix.includes('<!--'))continue;
+   const parts=splitArticle(original),expectedHero=inner.slice(0,inner.indexOf('</header>')+'</header>'.length);
+   assert.equal(parts.hero,expectedHero,'leading comments and the complete hero retain their original bytes: '+pathname);
+   assert.equal(parts.before+parts.hero+parts.content+parts.after,original,'exact source reconstruction: '+pathname);
+   assert.equal(parts.content,inner.slice(expectedHero.length),'comments do not move into the editable article body: '+pathname);
+   assert.throws(()=>splitArticle(original.replace(prefix,prefix+'<p>先頭の本文は削らない</p>')),/source article header/,'non-comment content before the header is not silently consumed');
+   commentPrefixed++;
+  }
+  assert.ok(commentPrefixed>0,'the current catalog exercises actual comment-prefixed articles');
+  const originalSelection=selectedPaths.slice();
+  try{
+   for(const pathname of ['/games/monst/google-play-vs-webshop/index.html','/articles/2026-09-19-play-points-calendar-schedule-guide.html','/articles/2026-07-24-play-points-1-value.html']){
+    selectedPaths.splice(0,selectedPaths.length,pathname);
+    await assert.rejects(buildArticleBatch(temporary),/exclude interactive articles/,'actual source controls remain excluded: '+pathname);
+   }
+  }finally{selectedPaths.splice(0,selectedPaths.length,...originalSelection);}
+  assert.deepEqual(selectedPaths,originalSelection,'temporary control fixtures cannot change the selected three articles');
+  assert.equal(createHash('sha256').update(await fs.readFile(temporary+'/playpoint-article-batch-staging.php')).digest('hex'),manifest.phpSha256,'rejected control fixtures cannot overwrite the generated three-article candidate');
  }finally{
   const resolved=await fs.realpath(temporary),tempRoot=await fs.realpath(os.tmpdir());
   assert.ok(resolved.startsWith(tempRoot+path.sep)&&path.basename(resolved).startsWith('playpoint-article-batch-'));

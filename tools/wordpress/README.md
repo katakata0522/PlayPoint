@@ -50,6 +50,8 @@ DB復旧は、取得済みの本番専用CMSバックアップを、ループバ
 
 `node tools/wordpress/article-batch-build.mjs <生成先>` は、通常本文の `2026-10-14-play-credit-subscription`、表付きの `2026-10-13-play-points-stamp-cards`、画像付きの `2026-10-10-diamond-play-pass-value` の元HTML・本文・CSS・JS・画像参照を保持する候補を生成する。本文の完全再構成、検索と保存の元コード、生成後のJS構文を所有テストで確認する。
 
+旧記事のheader前にあるHTMLコメントはheroへ元バイトのまま保持する。先頭の本文や入力付き記事の除外条件は緩めない。これは読み取り処理の準備で、代表3件以外を取り込む変更ではない。旧広告起動方式・games階層・国際header・入力controllerは、それぞれの隔離と実行確認を終えてから対象を追加する。
+
 生成した `playpoint-article-batch-staging.php` をstgのMUプラグインへ配置し、管理者で `/cms/wp-admin/tools.php?page=playpoint-article-batch` から1回だけ取り込む。権限とnonceが必須で、匿名GETではDBを変更しない。同じ試験URLの既存記事は内容・状態を上書きせず再利用する。同時送信の排他はないため、応答不明時は再押下せず投稿一覧を確認する。新規記事の本文が原文と一致しなければ、その新規記事だけをゴミ箱へ戻して中断する。
 
 取り込み後、stgルートの既存規則より前に次の3パスだけを追加する。本番へ追加しない。連動ラッパーの `pp_catalog_mapping` 接続で一覧・分類・本文検索も現在の公開データへ揃える。

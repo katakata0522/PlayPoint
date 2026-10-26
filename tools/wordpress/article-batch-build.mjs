@@ -22,7 +22,7 @@ function local(value,base){
 export function splitArticle(source){
  const matches=[...source.matchAll(/<article\b[^>]*\bclass="[^"]*\bcontent\b[^"]*"[^>]*>([\s\S]*?)<\/article\b[^>]*>/gi)];
  assert.equal(matches.length,1,'one source article');
- const found=matches[0],inner=found[1],hero=inner.match(/^\s*<header\b[^>]*>[\s\S]*?<\/header\s*>/i)?.[0];
+ const found=matches[0],inner=found[1],hero=inner.match(/^\s*(?:<!--[\s\S]*?-->\s*)*<header\b[^>]*>[\s\S]*?<\/header\s*>/i)?.[0];
  assert.ok(hero&&/<h1\b/.test(hero),'source article header');
  const open=found[0].slice(0,found[0].indexOf('>')+1),start=found.index+open.length;
  return {before:source.slice(0,start),hero,content:inner.slice(hero.length),after:source.slice(start+inner.length)};
