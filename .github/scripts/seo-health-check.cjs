@@ -109,7 +109,7 @@ function hasSupportedArticleRuntime(body, url) {
   if (/<script\b[^>]*\bsrc="\.\.\/blog\/article\.js\?v=[^"]+"[^>]*><\/script>/i.test(body)) return true;
   // 公開済みのWP先行1記事は同じ機能をインライン配信する。他記事の外部JS検査は維持する。
   if (new URL(url).pathname !== '/articles/2026-10-13-play-fest-deals.html') return false;
-  const scripts = [...body.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
+  const scripts = [...body.matchAll(/<script\b((?:"[^"]*"|'[^']*'|[^'">])*)>([\s\S]*?)<\/script(?=[\s/>])[^>]*>/gi)]
     .filter(match => !/\b(?:src|type)\s*=/i.test(match[1])).map(match => match[2]);
   return /\bdata-reading-tools\b/.test(body)
     && scripts.some(script => /root\.PlayPointReading\s*=\s*api/.test(script))

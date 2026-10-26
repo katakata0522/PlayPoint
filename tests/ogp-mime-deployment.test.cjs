@@ -34,9 +34,11 @@ global.fetch = async input => {
   const mode = process.env.FIXTURE_MODE;
   const inlineTarget = mode === 'inline-other' ? '/articles/2026-07-24-play-points-cash-conversion.html' : '/articles/2026-10-13-play-fest-deals.html';
   if (mode.startsWith('inline-') && url.pathname === inlineTarget) {
-    let scripts = ['js/reading-library.js', 'js/reading-theme.js'].map(file => '<script>' + fs.readFileSync(path.join(process.env.FIXTURE_ROOT, file), 'utf8') + '</script>').join('');
+    let scripts = ['js/reading-library.js', 'js/reading-theme.js']
+      .filter(file => mode !== 'inline-missing-library' || file !== 'js/reading-library.js')
+      .map(file => '<script>' + fs.readFileSync(path.join(process.env.FIXTURE_ROOT, file), 'utf8') + '</script>').join('');
     if (mode !== 'inline-missing-adapter') scripts += '<script>document.addEventListener("DOMContentLoaded", () => { if (!window.PlayPointConsent) return; setupCalculatorLinkTracking(); setupArticleAdsense(); });</script>';
-    if (mode === 'inline-missing-library') scripts = scripts.replace(/<script>[\s\S]*?<\/script>/, '');
+    if (mode === 'inline-spaced-end') scripts = scripts.replaceAll('</script>', '</script >');
     body = String(body).replace(/<script\b[^>]*\bsrc="\.\.\/blog\/article\.js\?v=[^"]+"[^>]*><\/script>/i, () => scripts);
     if (mode === 'inline-json-only') body = body.replace(/<script>/g, '<script type="application/ld+json">');
   }
@@ -55,8 +57,10 @@ global.fetch = async input => {
     assert.match(broken.stderr, pattern);
     assert.doesNotMatch(broken.stdout, /SEO health check passed/);
   }
-  const inline = run('inline-good');
-  assert.equal(inline.status, 0, inline.stdout + inline.stderr);
+  for (const mode of ['inline-good', 'inline-spaced-end']) {
+    const inline = run(mode);
+    assert.equal(inline.status, 0, inline.stdout + inline.stderr);
+  }
   for (const mode of ['inline-missing-adapter', 'inline-missing-library', 'inline-json-only', 'inline-other']) {
     const broken = run(mode);
     assert.equal(broken.status, 1, broken.stdout + broken.stderr);
