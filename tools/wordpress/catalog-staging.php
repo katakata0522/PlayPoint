@@ -10,7 +10,7 @@ function ppc_mapping() {
     $map=[];
     if (function_exists('ppfn_id') && ppfn_id()) $map[ppfn_id()]=ppfn_data()['article']['path'];
     if (function_exists('ppcs_id') && ppcs_id()) $map[ppcs_id()]=ppcs_data()['article']['path'];
-    return $map;
+    return apply_filters('pp_catalog_mapping',$map);
 }
 function ppc_snapshot() {
     static $result;

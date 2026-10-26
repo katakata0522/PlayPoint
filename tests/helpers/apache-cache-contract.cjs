@@ -8,7 +8,7 @@ const net = require('node:net');
 const https = require('node:https');
 const { spawn, execFileSync } = require('node:child_process');
 const { once } = require('node:events');
-const { createHash } = require('node:crypto');
+const { createHash, randomBytes } = require('node:crypto');
 const { cacheCases, verifyHttpCache } = require('../../.github/scripts/http-cache-contract.cjs');
 const { wait } = require('../../.github/scripts/http-check-utils.cjs');
 
@@ -97,9 +97,13 @@ async function assertCacheContract(source, { outputFile = '' } = {}) {
     const privateRoot = path.join(root, '__wp-catalog-stg');
     const staticRoot = path.join(privateRoot, 'assets', 'wp-catalog');
     fs.mkdirSync(staticRoot, { recursive: true, mode: 0o755 });
-    const password = 'fixture-only-password';
+    const password = randomBytes(32).toString('hex');
     const passwordFile = path.join(directory, 'blog-fixture.htpasswd');
-    fs.writeFileSync(passwordFile, 'fixture-user:{SHA}' + createHash('sha1').update(password).digest('base64') + '\n', { mode: 0o644 });
+    execFileSync('htpasswd', ['-B', '-C', '10', '-c', '-i', passwordFile, 'fixture-user'], {
+      input: password + '\n', encoding: 'utf8', stdio: ['pipe', 'ignore', 'pipe'], timeout: 10000
+    });
+    fs.chmodSync(passwordFile, 0o644);
+    assert.match(fs.readFileSync(passwordFile, 'utf8'), /^fixture-user:\$2[aby]\$10\$/);
     const inheritedCsp = "default-src 'self'; script-src 'self'; style-src 'self'";
     fs.writeFileSync(path.join(privateRoot, '.htaccess'), [
       'AuthType Basic', 'AuthName "Blog fixture"', 'AuthUserFile ' + q(passwordFile), 'Require valid-user',
