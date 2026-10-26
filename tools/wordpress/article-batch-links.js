@@ -41,6 +41,23 @@
       if (value !== next) node.setAttribute('href', next);
     }
   }
+  // 元のGETフォームを残し、利用可能な既存の画面内検索へだけ引き継ぐ。
+  document.addEventListener('submit', event => {
+    const form = event.target;
+    if (event.defaultPrevented || !form.matches?.('.sidebar-search-form')) return;
+    const source = form.querySelector('input[name="q"]');
+    const trigger = document.querySelector('[aria-controls="guide-search"]');
+    const dialog = document.getElementById('guide-search');
+    const input = dialog?.querySelector('#guide-search-input');
+    if (!source || !trigger || trigger.disabled || !input) return;
+    const previous = input.value;
+    try {
+      input.value = source.value;
+      trigger.click();
+      if (dialog.open) event.preventDefault();
+      else input.value = previous;
+    } catch (_) { input.value = previous; }
+  });
   document.addEventListener('DOMContentLoaded', () => {
     rewrite(document);
     new MutationObserver(changes => {
