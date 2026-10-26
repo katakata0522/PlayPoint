@@ -17,6 +17,26 @@ const {
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
+test('stgへ埋め込んでも共通検索と保存コードを保持し、FGOなどの略称で検索できる', () => {
+  const tempRoot=fs.realpathSync(require('node:os').tmpdir());
+  const folder=fs.mkdtempSync(path.join(tempRoot,'pp-stg-blog-'));
+  try {
+    const built=require('node:child_process').spawnSync(process.execPath,[path.join(root,'tools/wordpress/build-blog-staging.mjs'),folder],{encoding:'utf8',windowsHide:true});
+    assert.equal(built.status,0,built.stderr);
+    const php=fs.readFileSync(path.join(folder,'playpoint-catalog-blog.php'),'utf8');
+    const marker="base64_decode('",start=php.indexOf(marker)+marker.length,end=php.indexOf("'",start);
+    const {html}=JSON.parse(require('node:zlib').gunzipSync(Buffer.from(php.slice(start,end),'base64')));
+    for(const name of ['js/article-search.js','js/reading-library.js'])assert.ok(html.includes('<script data-stage-source="'+name+'">'+read(name).replaceAll('\r\n','\n')+'</script>'),name);
+    const opening='<script data-stage-source="js/article-search.js">',first=html.indexOf(opening)+opening.length;
+    const context={module:{exports:{}}};vm.runInNewContext(html.slice(first,html.indexOf('</script>',first)),context);
+    assert.equal(context.module.exports.matches({title:'FGO天井330回の費用'},'FGO','ja'),true);
+    assert.equal(context.module.exports.matches({title:'パズル＆ドラゴンズのパス'},'パズドラ','ja'),true);
+  } finally {
+    const resolved=fs.realpathSync(folder);assert.equal(path.dirname(resolved),tempRoot);assert.ok(path.basename(resolved).startsWith('pp-stg-blog-'));
+    fs.rmSync(resolved,{recursive:true});
+  }
+});
+
 test('移行前点検は大文字や空白・属性付きのscript終了タグでも参照と本文を記録する', async () => {
   const {scriptBlocks}=await import(require('node:url').pathToFileURL(path.join(root,'tools/wordpress/audit-migration.mjs')).href);
   const blocks=scriptBlocks('<SCRIPT src="calculator.js">Math.floor(2)</SCRIPT \n><script>second</script data-extra>');

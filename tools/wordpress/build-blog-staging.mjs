@@ -28,11 +28,11 @@ async function css(name) {
   const original=await read(name);sources[name]=sha(original);let source=original;
   for(const match of [...original.matchAll(/url\(\s*(['"]?)([^)'"\n]+)\1\s*\)/g)]) {
     const value=match[2].trim();if(/^(?:data:|#|https?:|\/\/)/i.test(value))continue;
-    const replacement=await image(value,name);source=source.replace(match[0],'url("'+replacement+'")');
+    const replacement=await image(value,name);source=source.replace(match[0],()=> 'url("'+replacement+'")');
   }
   return source;
 }
-function once(source,from,to,name) {assert.equal(source.split(from).length,2,name);return source.replace(from,to);}
+function once(source,from,to,name) {assert.equal(source.split(from).length,2,name);return source.replace(from,()=>to);}
 async function script(name) {
   let s=await read(name);sources[name]=sha(s);
   if(name==='blog/script.js') {
@@ -42,7 +42,7 @@ async function script(name) {
     s=once(s,"            if (url.href !== window.location.href)","            url.pathname = '/blog/'; url.searchParams.set('pp_flow','normal'); url.searchParams.set('pp_catalog','live');\n            if (Number(state.page)>1) url.searchParams.set('page',state.page); else url.searchParams.delete('page');\n            if (url.href !== window.location.href)",'history route');
     s=once(s,'            return url.pathname + url.search;','            return window.PlayPointStagingLink(url.pathname + url.search);','pagination route');
     const category=s.match(/    const BROWSE_CATEGORIES = \[[\s\S]*?\n    \];/);assert.ok(category);
-    s=s.replace(category[0],category[0].replace('const BROWSE_CATEGORIES','const ORIGINAL_BROWSE_CATEGORIES')+"\n    const currentTopics=Object.keys(JSON.parse(document.getElementById('pp-blog-config').textContent).categories);\n    const BROWSE_CATEGORIES=[...ORIGINAL_BROWSE_CATEGORIES,...currentTopics.filter(name=>!ORIGINAL_BROWSE_CATEGORIES.includes(name))];");
+    s=s.replace(category[0],()=>category[0].replace('const BROWSE_CATEGORIES','const ORIGINAL_BROWSE_CATEGORIES')+"\n    const currentTopics=Object.keys(JSON.parse(document.getElementById('pp-blog-config').textContent).categories);\n    const BROWSE_CATEGORIES=[...ORIGINAL_BROWSE_CATEGORIES,...currentTopics.filter(name=>!ORIGINAL_BROWSE_CATEGORIES.includes(name))];");
   }
   if(name==='js/guide-navigation.js') {
     s=once(s,'    for (const link of links) {',"    for (const link of links) {\n      const oldHref=link.getAttribute('href'),nextHref=window.PlayPointStagingLink(oldHref);\n      if(oldHref!==nextHref)link.setAttribute('href',nextHref);",'owned links');
@@ -68,15 +68,16 @@ async function script(name) {
 const escapeScript=s=>s.replace(/<\/script/gi,'<\\/script');
 let html=await read('blog/index.html');sources['blog/index.html']=sha(html);
 html=html.replace(/<script type="speculationrules">[\s\S]*?<\/script>/,'<!-- stgでは既存の配信対象外ページを先読みしない。 -->');
-const scripts=[],headScripts=[];
+const scripts=[],headScripts=[],inlineScripts=[],inlineStyles=[];
 for(const match of [...html.matchAll(/<script\b([^>]*\bsrc="([^"]+)"[^>]*)>\s*<\/script>/g)]) {
   const name=resolveFile(match[2],'blog/index.html'),body='<script data-stage-source="'+name+'">'+escapeScript(await script(name))+'</script>';
+  inlineScripts.push(body);
   if(/\bdefer\b/.test(match[1])){scripts.push(body);html=html.replace(match[0],'');}else {const key='__PP_STAGE_SCRIPT_'+headScripts.length+'__';headScripts.push([key,body]);html=html.replace(match[0],key);}
 }
 for(const match of [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/g)]) {
-  const name=resolveFile(match[1],'blog/index.html');html=html.replace(match[0],'<style data-stage-source="'+name+'">'+await css(name)+'</style>');
+  const name=resolveFile(match[1],'blog/index.html'),body='<style data-stage-source="'+name+'">'+await css(name)+'</style>';inlineStyles.push(body);html=html.replace(match[0],()=>body);
 }
-html=html.replace('</head>','<style id="pp-stage-common-style">'+await css('blog/common-components.css')+'</style></head>');
+const commonStyle='<style id="pp-stage-common-style">'+await css('blog/common-components.css')+'</style>';inlineStyles.push(commonStyle);html=html.replace('</head>',()=>commonStyle+'</head>');
 for(const match of [...html.matchAll(/<(?:img|source|link)\b[^>]*>/g)]) {
   if(match[0].startsWith('<link')&&!/rel="icon"/.test(match[0]))continue;let tag=match[0];
   for(const attr of [...tag.matchAll(/\b(src|data-src|href|srcset|data-srcset)="([^"]*)"/g)]) {
@@ -84,26 +85,28 @@ for(const match of [...html.matchAll(/<(?:img|source|link)\b[^>]*>/g)]) {
     if(attr[1].includes('srcset')){
       const parts=[];for(const candidate of value.split(',')){const [url,...size]=candidate.trim().split(/\s+/);parts.push([await image(url),...size].join(' '));}value=parts.join(', ');
     }else value=await image(value);
-    tag=tag.replace(attr[0],attr[1]+'="'+value+'"');
+    tag=tag.replace(attr[0],()=>attr[1]+'="'+value+'"');
   }
-  html=html.replace(match[0],tag);
+  html=html.replace(match[0],()=>tag);
 }
 html=html.replace(/<a\b[^>]*href="([^"]+)"[^>]*>/g,(tag,href)=>{
   if(/^(?:#|mailto:|tel:|javascript:)/i.test(href))return tag;
-  return tag.replace('href="'+href+'"','href="'+new URL(href.replaceAll('&amp;','&'),'https://playpoint-sim.com/blog/').href.replaceAll('&','&amp;')+'"');
+  return tag.replace('href="'+href+'"',()=> 'href="'+new URL(href.replaceAll('&amp;','&'),'https://playpoint-sim.com/blog/').href.replaceAll('&','&amp;')+'"');
 });
 const catalog=JSON.parse(await read('blog/articles.json'));
 for(const row of catalog)for(const key of ['thumbnail','thumbnail2x','ogp'])if(row[key])await image(row[key]);
 await image('/images/article-placeholder.svg');
 html=html.replace('<html lang="ja"','<html lang="ja" data-pp-staging-blog="1"');
 const bootstrap="<meta name=\"robots\" content=\"noindex,nofollow,noarchive\"><script>window['ga-disable-G-HED6D0FR4L']=true;window['ga-disable-G-V9EZD7RBM3']=true;</script><script>"+escapeScript(await fs.readFile(here+'/blog-links.js','utf8'))+'</script>';
-html=html.replace('<head>','<head>'+bootstrap);
-for(const [key,body] of headScripts)html=html.replace(key,body);
-html=html.replace('</body>',['catalog','search','games','config'].map(name=>'<script type="application/json" id="pp-blog-'+name+'">__PP_BLOG_'+name.toUpperCase()+'__</script>').join('\n')+'\n'+scripts.join('\n')+'\n</body>');
+html=html.replace('<head>',()=>'<head>'+bootstrap);
+for(const [key,body] of headScripts)html=html.replace(key,()=>body);
+html=html.replace('</body>',()=>['catalog','search','games','config'].map(name=>'<script type="application/json" id="pp-blog-'+name+'">__PP_BLOG_'+name.toUpperCase()+'__</script>').join('\n')+'\n'+scripts.join('\n')+'\n</body>');
+// String.replaceの$&などを含む正本のコードを、置換トークンとして解釈しない。
+for(const body of [...inlineScripts,...inlineStyles])assert.ok(html.includes(body),'embedded source must remain literal');
 assert.ok(!/<script\b[^>]*\bsrc=/.test(html),'scripts are same-origin inline for the existing stg CSP');
 const payload={html,images,imageKeys,games:JSON.parse(await read('blog/game-calculators.json'))};
 const packed=gzipSync(Buffer.from(JSON.stringify(payload)),{level:9}).toString('base64');
-const php=(await fs.readFile(here+'/blog-staging.php','utf8')).replace('__PLAYPOINT_BLOG_PAYLOAD__',packed);
+const php=(await fs.readFile(here+'/blog-staging.php','utf8')).replace('__PLAYPOINT_BLOG_PAYLOAD__',()=>packed);
 assert.ok(!php.includes('__PLAYPOINT_BLOG_PAYLOAD__'));
 await fs.mkdir(out,{recursive:true});await fs.writeFile(path.join(out,'playpoint-catalog-blog.php'),php);
 const report={sources,publicImageAllowlist:Object.keys(images).length,blogBytes:Buffer.byteLength(html),phpBytes:Buffer.byteLength(php),sha256:sha(php),productionWrites:0,securityHeadersChanged:false,measurement:'Existing stg blog isolation maintained; no production analytics/ad loader'};
