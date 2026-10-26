@@ -17,6 +17,24 @@ const {
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
+test('stg一覧のページ送り・検索・保存先を保ち、画像は固定allowlistだけへ変換する', () => {
+  const {link,image}=require('../tools/wordpress/blog-links.js');
+  const config={origin:'https://stg.playpoint-sim.com',paths:['/articles/one.html'],images:{'articles/thumbnails/one.webp':'image-key.webp'}};
+  const page=new URL(link('/blog/page/2/?q=Play%20Pass',config));
+  assert.equal(page.pathname,'/blog/');
+  assert.equal(page.searchParams.get('page'),'2');
+  assert.equal(page.searchParams.get('q'),'Play Pass');
+  assert.equal(page.searchParams.get('pp_flow'),'normal');
+  assert.equal(page.searchParams.get('pp_catalog'),'live');
+  assert.equal(link('../articles/one.html#conditions',config),'https://stg.playpoint-sim.com/articles/one.html#conditions');
+  assert.equal(link('/articles/two.html',config),'https://playpoint-sim.com/articles/two.html');
+  assert.equal(link('#reading-library',config),'#reading-library');
+  assert.equal(link('https://external.example/blog/',config),'https://external.example/blog/');
+  assert.equal(image('../articles/thumbnails/one.webp',config),'/cms/index.php?pp_blog_image=image-key.webp');
+  assert.equal(image('../../wp-config.php',config),'../../wp-config.php');
+  assert.equal(image('https://external.example/one.webp',config),'https://external.example/one.webp');
+});
+
 test('listed blog search indexes title, description, tags, and category in memory', () => {
   const article = {
     title: 'パズドラ課金とPlay Points',

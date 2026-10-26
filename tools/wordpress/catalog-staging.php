@@ -22,30 +22,38 @@ function ppc_snapshot() {
     return $result;
 }
 function ppc_url($kind='list',$params=[]) {
+    if($kind==='list' && function_exists('ppcb_url'))return ppcb_url($params);
     return add_query_arg(array_merge(['pp_catalog'=>$kind],$params),'https://stg.playpoint-sim.com/cms/index.php');
 }
 function ppc_link($url) {
     $host=parse_url($url,PHP_URL_HOST);
     if ($host && !in_array(strtolower($host),['playpoint-sim.com','stg.playpoint-sim.com'],true)) return $url;
     $path=parse_url($url,PHP_URL_PATH);
-    if ($path==='/blog/' || $path==='/blog/index.html') {
+    if (preg_match('~^/blog/(?:index\.html|page/(\d+)/)?$~',$path??'',$page)) {
         parse_str(parse_url($url,PHP_URL_QUERY) ?? '',$params);
-        return ppc_url('list',array_intersect_key($params,array_flip(['topic','q'])));
+        $params=array_filter(array_intersect_key($params,array_flip(['topic','q','game','category','sort','page'])),'is_string');
+        if(!empty($page[1]))$params['page']=$page[1];
+        return ppc_url('list',$params);
     }
-    if (in_array($path,array_values(ppc_mapping()),true)) return 'https://stg.playpoint-sim.com'.$path;
+    if (in_array($path,array_values(ppc_mapping()),true)) return 'https://stg.playpoint-sim.com'.$path.(parse_url($url,PHP_URL_QUERY)!==null?'?'.parse_url($url,PHP_URL_QUERY):'').(parse_url($url,PHP_URL_FRAGMENT)!==null?'#'.parse_url($url,PHP_URL_FRAGMENT):'');
     return $url;
 }
 function ppc_html($html) {
     $dom=new DOMDocument('1.0','UTF-8');$old=libxml_use_internal_errors(true);
     $dom->loadHTML('<?xml encoding="UTF-8"><html><body>'.$html.'</body></html>',LIBXML_NONET);
-    libxml_clear_errors();libxml_use_internal_errors($old);$xp=new DOMXPath($dom);
+    libxml_clear_errors();libxml_use_internal_errors($old);ppc_rewrite_dom($dom);
+    $out='';foreach($dom->getElementsByTagName('body')->item(0)->childNodes as $child)$out.=$dom->saveHTML($child);
+    return $out;
+}
+function ppc_rewrite_dom($dom) {
+    $xp=new DOMXPath($dom);
     $original=[];foreach(ppc_base() as $row)$original[\PlayPoint\Catalog\path($row['file'])]=$row;
     $current=[];foreach(ppc_snapshot()['catalog'] as $row)$current[\PlayPoint\Catalog\path($row['file'])]=$row;
     foreach($xp->query('//form[@action]') as $form) {
         $action=$form->getAttribute('action');
         if(ppc_link($action)!==$action && in_array(parse_url($action,PHP_URL_PATH),['/blog/','/blog/index.html'],true)) {
-            $form->setAttribute('action','https://stg.playpoint-sim.com/cms/index.php');
-            $input=$dom->createElement('input');$input->setAttribute('type','hidden');$input->setAttribute('name','pp_catalog');$input->setAttribute('value','list');$form->appendChild($input);
+            $form->setAttribute('action',function_exists('ppcb_url')?'https://stg.playpoint-sim.com/blog/':'https://stg.playpoint-sim.com/cms/index.php');
+            foreach(function_exists('ppcb_url')?['pp_flow'=>'normal','pp_catalog'=>'live']:['pp_catalog'=>'list'] as $name=>$value){$input=$dom->createElement('input');$input->setAttribute('type','hidden');$input->setAttribute('name',$name);$input->setAttribute('value',$value);$form->appendChild($input);}
         }
     }
     foreach($xp->query('//a[@href]') as $link) {
@@ -56,6 +64,12 @@ function ppc_html($html) {
         if(isset($original[$key],$current[$key])) {
             $label=\PlayPoint\Catalog\plain($link->textContent);
             $oldRow=$original[$key];
+            if(in_array('article-card',explode(' ',$link->getAttribute('class')),true)) {
+                $link->setAttribute('aria-label',$current[$key]['title']);
+                foreach(['.//h3'=>$current[$key]['listTitle']??$current[$key]['title'],'.//p[contains(concat(" ",normalize-space(@class)," ")," card-desc ")]'=>$current[$key]['listDescription']??$current[$key]['description']??''] as $selector=>$text) {
+                    $node=$xp->query($selector,$link)->item(0);if($node){while($node->firstChild)$node->removeChild($node->firstChild);$node->appendChild($dom->createTextNode($text));}
+                }
+            }
             if(in_array($label,array_filter([$oldRow['title']??'', $oldRow['listTitle']??'']),true) && $current[$key]['title']!==$oldRow['title']) {
                 while($link->firstChild)$link->removeChild($link->firstChild);
                 $link->appendChild($dom->createTextNode($current[$key]['title']));
@@ -64,17 +78,28 @@ function ppc_html($html) {
         if($key==='/blog/' || $key==='/blog/index.html') {
             parse_str(parse_url($href,PHP_URL_QUERY)??'',$params);
             if(is_string($params['topic']??null)) {
+                $count=ppc_snapshot()['categories'][$params['topic']]??0;
+                $counter=$xp->query('.//*[contains(concat(" ",normalize-space(@class)," ")," sidebar-browse-count ")]',$link)->item(0);
+                if($counter){$counter->nodeValue=(string)$count;$counter->setAttribute('aria-label',$count.'件');continue;}
                 $label=\PlayPoint\Catalog\plain($link->textContent);
                 if(preg_match('/\d+件$/u',$label)) {
-                    $label=preg_replace('/\d+件$/u',(ppc_snapshot()['categories'][$params['topic']]??0).'件',$label);
+                    $label=preg_replace('/\d+件$/u',$count.'件',$label);
                     while($link->firstChild)$link->removeChild($link->firstChild);
                     $link->appendChild($dom->createTextNode($label));
                 }
             }
         }
     }
-    $out='';foreach($dom->getElementsByTagName('body')->item(0)->childNodes as $child)$out.=$dom->saveHTML($child);
-    return $out;
+    foreach($xp->query('//*[contains(concat(" ",normalize-space(@class)," ")," sidebar-browse-list ")]') as $list) {
+        $known=[];foreach($xp->query('.//a[@href]',$list) as $link){parse_str(parse_url($link->getAttribute('href'),PHP_URL_QUERY)??'',$params);if(is_string($params['topic']??null))$known[$params['topic']]=true;}
+        $template=$xp->query('./li',$list)->item(0);if(!$template)continue;
+        foreach(ppc_snapshot()['categories'] as $category=>$count)if(!isset($known[$category])){
+            $item=$template->cloneNode(true);$link=$xp->query('.//a',$item)->item(0);if(!$link)continue;
+            $link->setAttribute('href',ppc_url('list',['topic'=>$category]));$link->removeAttribute('aria-current');
+            while($link->firstChild)$link->removeChild($link->firstChild);
+            $label=$dom->createElement('span');$label->appendChild($dom->createTextNode($category));$counter=$dom->createElement('span',(string)$count);$counter->setAttribute('class','sidebar-browse-count');$counter->setAttribute('aria-label',$count.'件');$link->appendChild($label);$link->appendChild($counter);$list->appendChild($item);
+        }
+    }
 }
 add_filter('playpoint_stg_shell',function($shell){
     try {

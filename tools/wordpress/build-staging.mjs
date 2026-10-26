@@ -12,15 +12,18 @@ assert.ok(source.includes('/home/hajikkoroom/playpoint-sim.com/public_html/stg.p
 const replacements = [
   ["function ppfn_shell_data() { return ppfn_data()['shell']; }", "function ppfn_shell_data() { return apply_filters('playpoint_stg_shell',ppfn_data()['shell']); }"],
   ["  return $content;\n}\nadd_action('init',function(){", "  return apply_filters('playpoint_stg_content',$content);\n}\nadd_action('init',function(){"],
-  ["echo ppfn_data()['harness'];", "echo apply_filters('playpoint_stg_harness',ppfn_data()['harness']);"]
+  ["echo ppfn_data()['harness'];", "echo apply_filters('playpoint_stg_harness',ppfn_data()['harness']);"],
+  ["echo ppfn_data()['article']['breadcrumb'];", "echo apply_filters('playpoint_stg_content',ppfn_data()['article']['breadcrumb']);"]
 ];
 let candidate = source;
+const applied=[];
 for (const [before, after] of replacements) {
+  if(candidate.split(before).length===1 && candidate.split(after).length===2)continue;
   assert.equal(candidate.split(before).length, 2, 'exact single integration point');
-  candidate = candidate.replace(before, after);
+  candidate = candidate.replace(before, after);applied.push([before,after]);
 }
 let reversed = candidate;
-for (const [before, after] of replacements) reversed = reversed.replace(after, before);
+for (const [before, after] of applied) reversed = reversed.replace(after, before);
 assert.equal(reversed, source, 'no compressed payload, ads or design changes');
 await fs.mkdir(outputPath, { recursive: true });
 const files = {
@@ -35,4 +38,4 @@ for (const [name, bytes] of Object.entries(files)) {
   await fs.writeFile(path.join(outputPath, name), bytes);
   manifest[name] = { bytes: Buffer.byteLength(bytes), sha256: createHash('sha256').update(bytes).digest('hex') };
 }
-console.log(JSON.stringify({ integrationPoints: replacements.length, payloadUnchanged: true, files: manifest }, null, 2));
+console.log(JSON.stringify({ integrationPoints: replacements.length, newIntegrationPoints:applied.length, payloadUnchanged: true, files: manifest }, null, 2));
