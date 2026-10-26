@@ -105,6 +105,19 @@ function hasStaticRelatedSection(body) {
     .some((match) => RELATED_HEADING_PATTERN.test(stripTags(match[1])));
 }
 
+function hasSupportedArticleRuntime(body, url) {
+  if (/<script\b[^>]*\bsrc="\.\.\/blog\/article\.js\?v=[^"]+"[^>]*><\/script>/i.test(body)) return true;
+  // 公開済みのWP先行1記事は同じ機能をインライン配信する。他記事の外部JS検査は維持する。
+  if (new URL(url).pathname !== '/articles/2026-10-13-play-fest-deals.html') return false;
+  const scripts = [...body.matchAll(/<script\b((?:"[^"]*"|'[^']*'|[^'">])*)>([\s\S]*?)<\/script(?=[\s/>])[^>]*>/gi)]
+    .filter(match => !/\b(?:src|type)\s*=/i.test(match[1])).map(match => match[2]);
+  return /\bdata-reading-tools\b/.test(body)
+    && scripts.some(script => /root\.PlayPointReading\s*=\s*api/.test(script))
+    && scripts.some(script => /root\.PlayPointReadingTheme\s*=/.test(script))
+    && scripts.some(script => script.includes('PlayPointConsent')
+      && script.includes('setupCalculatorLinkTracking();') && script.includes('setupArticleAdsense();'));
+}
+
 async function checkPage(url) {
   const { response, body } = await fetchText(url);
   if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
@@ -170,7 +183,7 @@ async function checkArticle(url) {
     throw new Error(`${url}: search-intent scope note missing`);
   }
   if (url.includes(`${BASE_URL}/articles/`)) {
-    assertIncludes(body, /<script\b[^>]*\bsrc="\.\.\/blog\/article\.js\?v=[^"]+"[^>]*><\/script>/i, `${url}: shared article script missing`);
+    if (!hasSupportedArticleRuntime(body, url)) throw new Error(`${url}: shared article script missing`);
   }
 }
 
