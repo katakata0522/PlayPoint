@@ -22,7 +22,16 @@ function local(value,base){
 export function splitArticle(source){
  const matches=[...source.matchAll(/<article\b[^>]*\bclass="[^"]*\bcontent\b[^"]*"[^>]*>([\s\S]*?)<\/article\b[^>]*>/gi)];
  assert.equal(matches.length,1,'one source article');
- const found=matches[0],inner=found[1],hero=inner.match(/^\s*(?:<!--[\s\S]*?-->\s*)*<header\b[^>]*>[\s\S]*?<\/header\s*>/i)?.[0];
+ const found=matches[0],inner=found[1];
+ let cursor=0;
+ for(;;){
+  while(cursor<inner.length&&/\s/.test(inner[cursor]))cursor++;
+  if(!inner.startsWith('<!--',cursor))break;
+  const end=inner.indexOf('-->',cursor+4);assert.ok(end!==-1,'source article header');
+  cursor=end+3;
+ }
+ const header=inner.slice(cursor).match(/^<header\b[^>]*>[\s\S]*?<\/header\s*>/i)?.[0];
+ const hero=header?inner.slice(0,cursor+header.length):null;
  assert.ok(hero&&/<h1\b/.test(hero),'source article header');
  const open=found[0].slice(0,found[0].indexOf('>')+1),start=found.index+open.length;
  return {before:source.slice(0,start),hero,content:inner.slice(hero.length),after:source.slice(start+inner.length)};

@@ -146,6 +146,12 @@ test('3記事の移行パッケージは原文を再構成でき、表・画像�
    commentPrefixed++;
   }
   assert.ok(commentPrefixed>0,'the current catalog exercises actual comment-prefixed articles');
+  const comments=' \n<!-- <header>コメント内の見出し</header> -->\t'.repeat(12000);
+  const fixtureHero='<header><h1>実際の見出し</h1></header>',fixtureBody='<p>元の本文</p>';
+  const fixture='<article class="content">'+comments+fixtureHero+fixtureBody+'</article>',split=splitArticle(fixture);
+  assert.equal(split.hero,comments+fixtureHero,'many consecutive comments are preserved without selecting a header inside a comment');
+  assert.equal(split.content,fixtureBody);assert.equal(split.before+split.hero+split.content+split.after,fixture);
+  assert.throws(()=>splitArticle('<article class="content">'+comments+'<!-- 閉じ忘れ'+'x'.repeat(100000)+fixtureHero+fixtureBody+'</article>'),/source article header/,'an unterminated comment is rejected without dropping source bytes');
   const originalSelection=selectedPaths.slice();
   try{
    for(const pathname of ['/games/monst/google-play-vs-webshop/index.html','/articles/2026-09-19-play-points-calendar-schedule-guide.html','/articles/2026-07-24-play-points-1-value.html']){
