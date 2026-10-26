@@ -426,6 +426,7 @@ module.exports = {
   extractReadTime,
   extractSupplementalMetaItems,
   findVisibleDateMeta,
+  formatArticleDateTime,
   formatDate,
   getArticleFiles,
   getLocaleKey,

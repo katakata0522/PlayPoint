@@ -1,5 +1,9 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-26 プロフィール構造化データの更新日時
+
+既存author-hreflangで公開4言語と再生成3言語のProfilePageを解析し、dateModifiedがタイムゾーン付きISO日時で、既存の日付台帳・last-modifiedの日付を保持することを確認する。記事と同じ日単位→日本時間日境界の直列化を再利用し、表示日・サイトマップ・本文を変えない。新しいテストファイルや必須ゲートは追加しない。
+
 ## 2026-10-24 1記事の切替・切り戻し最終確認
 
 既存Apache HTTP検証で、実際のルート設定とCMS設定fixtureを使い、目印OFF→ON→OFF、同じURLの内部転送、対象外の記事・ホストの保持、公開記事へのnoindex／Vary:*混入防止とCMSログインの保存拒否を確認する。PHP転送先が故障しても目印OFFで静的記事へ復帰することを検査する。WordPress／MariaDB・編集保存は専用CMSで別途確認する。service-worker-behaviorの既存入力境界へCMS管理・REST・画像と似た公開パスを追加し、CMSを保存せず他の公開パスは保持することを検査する。既存PR Gateを使い、新しい必須ゲートやテストファイルは増やさない。
@@ -730,7 +734,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `japanese-guide-brand.test.cjs` | 3 | 全件維持。「Google Play Points 完全攻略ガイド」は意図的なブランドSSOT。記事ハブ・OGP・記事ヘッダー・RSS/Atomの一致とlegacy brand排除は正当な成果物契約 |
 | `all-article-quality-audit.test.cjs` | 4 | 全件維持。全公開記事のcanonical/H1/author/公式source/関連導線/Article JSON-LD/FAQ整合を維持。meta description 35文字以上という任意閾値を廃止し、非空・placeholderなしへ変更 |
 | `article-seo-normalize.test.cjs` | 6 | 全件維持。可視FAQとFAQPage同期、Article保持、robots/max-image-preview、check-onlyは実変換behavior |
-| `author-hreflang.test.cjs` | 2 | 全件維持。日本語＋生成3言語の相互hreflang clusterと冪等同期 |
+| `author-hreflang.test.cjs` | 3 | 全件維持。日本語＋生成3言語の相互hreflang clusterと冪等同期、公開・生成プロフィール更新日時のISO形式と日付保持 |
 | `human-sitemap-task-hub.test.cjs` | 2 | 全件維持。task destination・技術URL分離・full article list再生成防止を維持。emoji/見出しcopyと「60リンク未満」閾値を除外 |
 | `manual-lp-hreflang.test.cjs` | 4 | 全件維持。manual LPの完全alternate cluster、FAQ責務分離、相互clusterを実成果物で検証 |
 | `navigation-source-map.test.cjs` | 8 | 全件維持。全公開面・locale・遷移分類・generator ownership・pipeline inventoryを維持。「HTML100ページ超」「40工程超」「先頭/末尾関数完全一致」「dynamic RegExp不使用」という実装/規模固定を除外 |
@@ -1588,7 +1592,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `article-seo-normalize.test.cjs` | SEO・公開整合 | 可視本文と一致するFAQPageは保持する |
 | `article-storage-safety-contract.test.cjs` | 保存 | 記事保存とブログ設定は現行schemaだけを正常値として受け入れる |
 | `attention-country-classification.test.cjs` | 地域・翻訳 | 注意ページは現在の6地域専用モードを正確に案内する |
-| `author-hreflang.test.cjs` | SEO・公開整合 | 日本語運営者ページへ完全なhreflangクラスターを一度だけ同期する |
+| `author-hreflang.test.cjs` | SEO・公開整合 | 運営者ページの相互hreflangとプロフィール更新日時の形式・日付保持 |
 | `automatic-rollback.test.cjs` | 復旧 | rollback snapshotのSHAを本番変更前に検証してstep outputへ固定する |
 | `blog-index-sync.test.cjs` | 生成・再現性 | static blog article links follow article registry titles and remain idempotent |
 | `blog-listing-ux.test.cjs` | UI・導線 | listed blog search indexes title, description, tags, and category in memory |

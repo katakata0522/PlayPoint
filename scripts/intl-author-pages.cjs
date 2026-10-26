@@ -1,6 +1,7 @@
 'use strict';
 
 const { LOCALES } = require('./intl-seo-content.cjs');
+const { formatArticleDateTime } = require('./article-date-contract.cjs');
 const { renderArticleChrome, renderSidebar } = require('./intl-article-layout.cjs');
 
 const UPDATED_AT = '2026-10-08';
@@ -127,7 +128,7 @@ function renderIntlAuthorPage(localeKey, assetVersions = {}) {
     '@type': 'ProfilePage',
     name: content.title,
     url: canonical,
-    dateModified: UPDATED_AT,
+    dateModified: formatArticleDateTime(UPDATED_AT),
     mainEntity: {
       '@type': 'Person',
       name: 'Katakata',
