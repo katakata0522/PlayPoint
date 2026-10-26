@@ -7,6 +7,10 @@
     return 'unknown';
   }
   function host(value) { try { return new URL(value).hostname; } catch (_) { return ''; } }
+  function childFrameId(message) {
+    const id = String(message).match(/\(id=([1-9]\d{0,15});url=/)?.[1];
+    return id && Number.isSafeInteger(Number(id)) ? id : null;
+  }
   function resources(entries) {
     const byHost = new Map();
     for (const entry of entries) {
@@ -20,7 +24,7 @@
     }
     return [...byHost.values()].slice(0, 40);
   }
-  if (typeof module === 'object' && module.exports) module.exports = { reason, host, resources };
+  if (typeof module === 'object' && module.exports) module.exports = { reason, host, childFrameId, resources };
   if (typeof document === 'undefined') return;
   function start() {
     if (document.getElementById('pp-ad-diagnostics')) return;
@@ -51,16 +55,20 @@
       new PerformanceObserver(list => { for (const task of list.getEntries()) { state.mainThreadLongTasks++; state.mainThreadLongTaskMs += task.duration; } }).observe({ type: 'longtask', buffered: true });
     }
     if (state.reportingObserverAvailable) {
-      new ReportingObserver(reports => {
+      function captureReports(reports) {
         for (const report of reports) {
           if (report.body?.id !== 'HeavyAdIntervention') continue;
           const message = String(report.body.message || '');
           const frameUrl = message.match(/url=([^;)\s]+)/)?.[1];
-          state.interventions.push({ at: new Date().toISOString(), reason: reason(message), reportedDocumentHost: host(report.url), frameHost: frameUrl ? host(frameUrl) : null });
+          state.interventions.push({ at: new Date().toISOString(), reason: reason(message), childFrameId: childFrameId(message), reportedDocumentHost: host(report.url), frameHost: frameUrl ? host(frameUrl) : null });
           if (state.interventions.length > 20) state.interventions.shift();
         }
         render();
-      }, { types: ['intervention'], buffered: true }).observe();
+      }
+      const observer = new ReportingObserver(captureReports, { types: ['intervention'], buffered: true });
+      observer.observe();
+      // 未配信の報告もメモリー上の診断へ取り込み、URLや生ログは保存・送信しない。
+      window.addEventListener('pagehide', () => captureReports(observer.takeRecords()));
     }
     render();
   }

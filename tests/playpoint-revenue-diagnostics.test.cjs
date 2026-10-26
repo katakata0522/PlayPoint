@@ -24,10 +24,55 @@ test('stg広告診断は停止理由と取得不能な通信量を区別し、UR
   assert.equal(probe.reason('Heavy Ad Intervention: network usage'), 'network');
   assert.equal(probe.reason('Ad was removed'), 'unknown');
   assert.equal(probe.host('https://example.com/creative?token=private'), 'example.com');
+  assert.equal(probe.childFrameId('Ad CPU limit (id=123;url=https://example.com/creative?token=private)'), '123');
+  for (const message of ['id=123', '(id=0;url=https://example.com)', '(id=-1;url=https://example.com)', '(id=1.5;url=https://example.com)', '(id=9007199254740992;url=https://example.com)', '(id=private;url=https://example.com)', '(id=12345678901234567890;url=https://example.com)']) {
+    assert.equal(probe.childFrameId(message), null);
+  }
   assert.deepEqual(probe.resources([
     {name:'https://example.com/ad?private=1',transferSize:0},
     {name:'https://example.com/other',transferSize:1024}
   ]), [{host:'example.com',count:2,knownTransferBytes:1024,sizesUnavailable:1}]);
+});
+
+test('stg広告診断はpagehideの未配信報告も取り込み、理由・限定したframe ID・ホストだけを表示する', () => {
+  const elements = [];
+  const events = new Map();
+  let callback;
+  let pending = [];
+  let drained = 0;
+  const context = {
+    URL,
+    document: {
+      readyState: 'complete', visibilityState: 'visible', scripts: [],
+      body: { append() {} },
+      getElementById() { return null; }, querySelector() { return null; }, querySelectorAll() { return []; },
+      createElement(tag) {
+        const element = { tag, style: {}, append() {}, addEventListener() {} };
+        elements.push(element); return element;
+      }
+    },
+    window: { addEventListener(name, listener) { events.set(name, listener); } },
+    performance: { getEntriesByType() { return []; } },
+    ReportingObserver: class {
+      constructor(listener) { callback = listener; }
+      observe() {}
+      takeRecords() { drained++; const records = pending; pending = []; return records; }
+    }
+  };
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '..', 'tools', 'wordpress', 'ad-diagnostics.js'), 'utf8'), context);
+  const report = message => ({ body: { id: 'HeavyAdIntervention', message }, url: 'https://stg.playpoint-sim.com/article?secret=private' });
+  callback([report('Ad CPU limit (id=321;url=https://example.com/creative?token=private)'), { body: { id: 'OtherIntervention', message: 'private' } }]);
+  pending = [report('Ad network limit (id=654;url=https://other.example/creative?secret=private)')];
+  events.get('pagehide')();
+  const output = elements.find(element => element.tag === 'pre').textContent;
+  const rows = JSON.parse(output).interventions;
+  assert.equal(drained, 1);
+  assert.deepEqual(rows.map(({ reason, childFrameId, reportedDocumentHost, frameHost }) => ({ reason, childFrameId, reportedDocumentHost, frameHost })), [
+    { reason: 'cpu', childFrameId: '321', reportedDocumentHost: 'stg.playpoint-sim.com', frameHost: 'example.com' },
+    { reason: 'network', childFrameId: '654', reportedDocumentHost: 'stg.playpoint-sim.com', frameHost: 'other.example' }
+  ]);
+  assert.ok(!output.includes('private'));
+  assert.ok(!output.includes('https://'));
 });
 
 function daily(date, revenue, ga4Pv, adsensePv, impressions, clicks, pageCtr, pageRpm, impCtr, impRpm) {
