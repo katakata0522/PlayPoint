@@ -10,6 +10,12 @@ function ppcb_data() {
 }
 function ppcb_url($params=[]) { return add_query_arg(array_merge(['pp_flow'=>'normal','pp_catalog'=>'live'],$params),'https://stg.playpoint-sim.com/blog/'); }
 function ppcb_render() {
+    // 静的アセットを先に配置する。欠落・不一致時は壊れた一覧を出さず503にする。
+    $assetRoot=realpath(dirname(rtrim(ABSPATH,'/')).'/assets/wp-catalog');
+    foreach(ppcb_data()['assets'] as $asset) {
+        $file=$assetRoot?realpath($assetRoot.'/'.$asset['name']):false;
+        if(!$file||!str_starts_with($file,$assetRoot.DIRECTORY_SEPARATOR)||!is_file($file)||!hash_equals($asset['sha256'],hash_file('sha256',$file)))throw new RuntimeException('Static blog assets are not ready');
+    }
     $snapshot=ppc_snapshot();$catalog=$snapshot['catalog'];
     // DOMのHTML整形でスクリプト内の日本語やJSONを文字参照へ変換しない。
     $blocks=[];$template=preg_replace_callback('~<(?:script|style)\b[^>]*>[\s\S]*?</(?:script|style)>~i',function($match)use(&$blocks){$key='<!--pp-blog-block-'.count($blocks).'-->';$blocks[$key]=$match[0];return $key;},ppcb_data()['html']);

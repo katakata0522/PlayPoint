@@ -8,7 +8,18 @@ const here=path.dirname(fileURLToPath(import.meta.url)),repo=path.resolve(here,'
 const out=process.argv[2];assert.ok(out,'Usage: node build-blog-staging.mjs <output folder>');
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const read=async name=>(await fs.readFile(path.join(repo,name),'utf8')).replaceAll('\r\n','\n');
-const sources={},images={},imageKeys={};
+const sources={},images={},imageKeys={},assets=[];
+const assetBase='/assets/wp-catalog/';
+async function asset(label,extension,body,sourceNames) {
+  const digest=sha(body),name=label+'.'+digest.slice(0,20)+'.'+extension;
+  const entry={name,url:assetBase+name,sha256:digest,bytes:Buffer.byteLength(body),sources:sourceNames};
+  assets.push(entry);
+  await fs.mkdir(path.join(out,'assets/wp-catalog'),{recursive:true});
+  await fs.writeFile(path.join(out,'assets/wp-catalog',name),body);
+  return entry;
+}
+const integrity=entry=>'sha256-'+Buffer.from(entry.sha256,'hex').toString('base64');
+const scriptTag=entry=>'<script src="'+entry.url+'" integrity="'+integrity(entry)+'"></script>';
 const resolveFile=(url,base)=>{
   const parsed=new URL(url,'https://playpoint-sim.com/'+base);
   assert.equal(parsed.origin,'https://playpoint-sim.com');
@@ -65,19 +76,27 @@ async function script(name) {
   }
   return s;
 }
-const escapeScript=s=>s.replace(/<\/script/gi,'<\\/script');
 let html=await read('blog/index.html');sources['blog/index.html']=sha(html);
 html=html.replace(/<script type="speculationrules">[\s\S]*?<\/script>/,'<!-- stgでは既存の配信対象外ページを先読みしない。 -->');
-const scripts=[],headScripts=[],inlineScripts=[],inlineStyles=[];
+const scripts=[],headScripts=[],styles=[],compiledScripts=[];
+const linkHelper=await fs.readFile(here+'/blog-links.js','utf8');sources['tools/wordpress/blog-links.js']=sha(linkHelper);
+const bootstrap="window['ga-disable-G-HED6D0FR4L']=true;window['ga-disable-G-V9EZD7RBM3']=true;\n"+linkHelper+'\n;\n';
 for(const match of [...html.matchAll(/<script\b([^>]*\bsrc="([^"]+)"[^>]*)>\s*<\/script>/g)]) {
-  const name=resolveFile(match[2],'blog/index.html'),body='<script data-stage-source="'+name+'">'+escapeScript(await script(name))+'</script>';
-  inlineScripts.push(body);
-  if(/\bdefer\b/.test(match[1])){scripts.push(body);html=html.replace(match[0],'');}else {const key='__PP_STAGE_SCRIPT_'+headScripts.length+'__';headScripts.push([key,body]);html=html.replace(match[0],key);}
+  const name=resolveFile(match[2],'blog/index.html'),body=await script(name);compiledScripts.push({name,body});
+  if(/\bdefer\b/.test(match[1])){scripts.push({name,body});html=html.replace(match[0],'');}else {
+    const entry=await asset(path.basename(name,'.js'),'js',(headScripts.length===0?bootstrap:'')+body,[...(headScripts.length===0?['tools/wordpress/blog-links.js']:[]),name]);
+    const key='__PP_STAGE_SCRIPT_'+headScripts.length+'__';headScripts.push([key,scriptTag(entry)]);html=html.replace(match[0],key);
+  }
 }
 for(const match of [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/g)]) {
-  const name=resolveFile(match[1],'blog/index.html'),body='<style data-stage-source="'+name+'">'+await css(name)+'</style>';inlineStyles.push(body);html=html.replace(match[0],()=>body);
+  const name=resolveFile(match[1],'blog/index.html'),body=await css(name);
+  // noscript専用の小さな規則は、JavaScript有効時へ広げず条件内に保持する。
+  if(name==='blog/noscript.css'){html=html.replace(match[0],()=>'<style data-stage-source="'+name+'">'+body+'</style>');continue;}
+  html=html.replace(match[0],styles.length===0?'__PP_STAGE_STYLES__':'');styles.push({name,body});
 }
-const commonStyle='<style id="pp-stage-common-style">'+await css('blog/common-components.css')+'</style>';inlineStyles.push(commonStyle);html=html.replace('</head>',()=>commonStyle+'</head>');
+styles.push({name:'blog/common-components.css',body:await css('blog/common-components.css')});
+const styleAsset=await asset('blog-style','css',styles.map(row=>row.body).join('\n'),styles.map(row=>row.name));
+html=html.replace('__PP_STAGE_STYLES__',()=>'<link id="pp-stage-common-style" rel="stylesheet" href="'+styleAsset.url+'" integrity="'+integrity(styleAsset)+'">');
 for(const match of [...html.matchAll(/<(?:img|source|link)\b[^>]*>/g)]) {
   if(match[0].startsWith('<link')&&!/rel="icon"/.test(match[0]))continue;let tag=match[0];
   for(const attr of [...tag.matchAll(/\b(src|data-src|href|srcset|data-srcset)="([^"]*)"/g)]) {
@@ -97,17 +116,20 @@ const catalog=JSON.parse(await read('blog/articles.json'));
 for(const row of catalog)for(const key of ['thumbnail','thumbnail2x','ogp'])if(row[key])await image(row[key]);
 await image('/images/article-placeholder.svg');
 html=html.replace('<html lang="ja"','<html lang="ja" data-pp-staging-blog="1"');
-const bootstrap="<meta name=\"robots\" content=\"noindex,nofollow,noarchive\"><script>window['ga-disable-G-HED6D0FR4L']=true;window['ga-disable-G-V9EZD7RBM3']=true;</script><script>"+escapeScript(await fs.readFile(here+'/blog-links.js','utf8'))+'</script>';
-html=html.replace('<head>',()=>'<head>'+bootstrap);
+html=html.replace('<head>','<head><meta name="robots" content="noindex,nofollow,noarchive">');
 for(const [key,body] of headScripts)html=html.replace(key,()=>body);
-html=html.replace('</body>',()=>['catalog','search','games','config'].map(name=>'<script type="application/json" id="pp-blog-'+name+'">__PP_BLOG_'+name.toUpperCase()+'__</script>').join('\n')+'\n'+scripts.join('\n')+'\n</body>');
-// String.replaceの$&などを含む正本のコードを、置換トークンとして解釈しない。
-for(const body of [...inlineScripts,...inlineStyles])assert.ok(html.includes(body),'embedded source must remain literal');
-assert.ok(!/<script\b[^>]*\bsrc=/.test(html),'scripts are same-origin inline for the existing stg CSP');
-const payload={html,images,imageKeys,games:JSON.parse(await read('blog/game-calculators.json'))};
+const runtimeAsset=await asset('blog-runtime','js',scripts.map(row=>row.body).join('\n;\n'),scripts.map(row=>row.name));
+html=html.replace('</head>',()=>'<link rel="preload" as="script" href="'+runtimeAsset.url+'" integrity="'+integrity(runtimeAsset)+'"></head>');
+// body末尾の通常scriptとして、既存stgと同じDOMContentLoaded登録順を保持する。
+html=html.replace('</body>',()=>['catalog','search','games','config'].map(name=>'<script type="application/json" id="pp-blog-'+name+'">__PP_BLOG_'+name.toUpperCase()+'__</script>').join('\n')+'\n'+scriptTag(runtimeAsset)+'\n</body>');
+for(const {name,body} of compiledScripts){const entry=assets.find(row=>row.sources.includes(name));assert.ok((await fs.readFile(path.join(out,'assets/wp-catalog',entry.name),'utf8')).includes(body),'static source must remain literal: '+name);}
+for(const {name,body} of styles)assert.ok((await fs.readFile(path.join(out,'assets/wp-catalog',styleAsset.name),'utf8')).includes(body),'static style must remain literal: '+name);
+const cacheRules='<IfModule mod_headers.c>\n  <FilesMatch "\\.[0-9a-f]{20}\\.(css|js)$">\n    Header onsuccess unset Cache-Control\n    Header always set Cache-Control "private, max-age=31536000, immutable" "expr=%{REQUEST_STATUS} == 200 || %{REQUEST_STATUS} == 304"\n    Header always set X-Robots-Tag "noindex, nofollow, noarchive"\n    Header always set X-Content-Type-Options "nosniff"\n  </FilesMatch>\n</IfModule>\n';
+await fs.writeFile(path.join(out,'assets/wp-catalog/.htaccess'),cacheRules);
+const payload={html,assets,images,imageKeys,games:JSON.parse(await read('blog/game-calculators.json'))};
 const packed=gzipSync(Buffer.from(JSON.stringify(payload)),{level:9}).toString('base64');
 const php=(await fs.readFile(here+'/blog-staging.php','utf8')).replace('__PLAYPOINT_BLOG_PAYLOAD__',()=>packed);
 assert.ok(!php.includes('__PLAYPOINT_BLOG_PAYLOAD__'));
 await fs.mkdir(out,{recursive:true});await fs.writeFile(path.join(out,'playpoint-catalog-blog.php'),php);
-const report={sources,publicImageAllowlist:Object.keys(images).length,blogBytes:Buffer.byteLength(html),phpBytes:Buffer.byteLength(php),sha256:sha(php),productionWrites:0,securityHeadersChanged:false,measurement:'Existing stg blog isolation maintained; no production analytics/ad loader'};
+const report={sources,assets,assetCache:{path:assetBase+'.htaccess',sha256:sha(cacheRules),value:'private, max-age=31536000, immutable',statuses:[200,304]},publicImageAllowlist:Object.keys(images).length,blogBytes:Buffer.byteLength(html),phpBytes:Buffer.byteLength(php),sha256:sha(php),productionWrites:0,existingSecurityHeadersChanged:false,measurement:'Existing stg blog isolation maintained; no production analytics/ad loader'};
 await fs.writeFile(path.join(out,'blog-build.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));

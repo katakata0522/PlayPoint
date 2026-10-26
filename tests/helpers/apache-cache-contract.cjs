@@ -46,7 +46,7 @@ async function assertCacheContract(source, { outputFile = '' } = {}) {
     const uid = process.getuid();
     const gid = process.getgid();
     const q = value => '"' + value.replaceAll('\\', '/').replaceAll('"', '\\"') + '"';
-    const moduleNames = ['mpm_event', 'authz_core', 'mime', 'dir', 'headers', 'expires', 'rewrite', 'setenvif', 'ssl', 'socache_shmcb'];
+    const moduleNames = ['mpm_event', 'authz_core', 'authn_core', 'authn_file', 'authz_user', 'auth_basic', 'mime', 'dir', 'headers', 'expires', 'rewrite', 'setenvif', 'ssl', 'socache_shmcb'];
     const configuration = [
       `ServerRoot ${q(directory)}`, `DefaultRuntimeDir ${q(directory)}`, `Listen 127.0.0.1:${port}`, 'ServerName playpoint-sim.com',
       `PidFile ${q(path.join(directory, 'httpd.pid'))}`, `ErrorLog ${q(path.join(directory, 'error.log'))}`,
@@ -64,8 +64,8 @@ async function assertCacheContract(source, { outputFile = '' } = {}) {
     let stderr = '';
     child.stderr.on('data', data => { stderr += data; });
     const ca = fs.readFileSync(cert);
-    const request = (url, host = 'playpoint-sim.com') => new Promise((resolve, reject) => {
-      const req = https.get(url, { ca, servername: 'localhost', headers: { Host: host } }, response => {
+    const request = (url, host = 'playpoint-sim.com', extraHeaders = {}) => new Promise((resolve, reject) => {
+      const req = https.get(url, { ca, servername: 'localhost', headers: { Host: host, ...extraHeaders } }, response => {
         let body = '';
         response.setEncoding('utf8');
         response.on('data', data => { body += data; });
@@ -90,6 +90,45 @@ async function assertCacheContract(source, { outputFile = '' } = {}) {
     console.log(version.trim());
     const report = await verifyHttpCache({ baseUrl, fixture: true, request, outputFile, attempts: 1,
       fixtureRuntime: { apache: version.trim(), htaccessSha256: createHash('sha256').update(source).digest('hex'), tlsVerification: 'fixture CA; system trust unchanged' } });
+    // stgだけの静的アセットは親のBasicを継承し、成功した指紋ファイルだけをprivate保存する。
+    const blogBuild = path.join(directory, 'blog-build');
+    execFileSync(process.execPath, [path.join(__dirname, '../../tools/wordpress/build-blog-staging.mjs'), blogBuild], { encoding: 'utf8', timeout: 15000 });
+    const blogManifest = JSON.parse(fs.readFileSync(path.join(blogBuild, 'blog-build.json'), 'utf8'));
+    const privateRoot = path.join(root, '__wp-catalog-stg');
+    const staticRoot = path.join(privateRoot, 'assets', 'wp-catalog');
+    fs.mkdirSync(staticRoot, { recursive: true, mode: 0o755 });
+    const password = 'fixture-only-password';
+    const passwordFile = path.join(directory, 'blog-fixture.htpasswd');
+    fs.writeFileSync(passwordFile, 'fixture-user:{SHA}' + createHash('sha1').update(password).digest('base64') + '\n', { mode: 0o644 });
+    const inheritedCsp = "default-src 'self'; script-src 'self'; style-src 'self'";
+    fs.writeFileSync(path.join(privateRoot, '.htaccess'), [
+      'AuthType Basic', 'AuthName "Blog fixture"', 'AuthUserFile ' + q(passwordFile), 'Require valid-user',
+      'Header always set Cache-Control "private, no-store"',
+      'Header always set Content-Security-Policy "' + inheritedCsp + '"'
+    ].join('\n') + '\n');
+    fs.cpSync(path.join(blogBuild, 'assets', 'wp-catalog'), staticRoot, { recursive: true });
+    const auth = { Authorization: 'Basic ' + Buffer.from('fixture-user:' + password).toString('base64') };
+    const asset = blogManifest.assets.find(entry => entry.name.endsWith('.js'));
+    const assetUrl = new URL('/__wp-catalog-stg' + asset.url, baseUrl);
+    const unauthenticated = await request(assetUrl);
+    assert.equal(unauthenticated.status, 401);
+    assert.equal(unauthenticated.headers.get('cache-control'), 'private, no-store');
+    const validAsset = await request(assetUrl, 'playpoint-sim.com', auth);
+    assert.equal(validAsset.status, 200);
+    assert.equal(validAsset.headers.get('cache-control'), 'private, max-age=31536000, immutable');
+    assert.equal(validAsset.headers.get('content-security-policy'), inheritedCsp, 'asset headers preserve parent CSP');
+    assert.match(validAsset.headers.get('content-type'), /javascript/);
+    assert.equal(createHash('sha256').update(validAsset.body).digest('hex'), asset.sha256);
+    const etag = validAsset.headers.get('etag'); assert.ok(etag, 'static asset validator');
+    const notModified = await request(assetUrl, 'playpoint-sim.com', { ...auth, 'If-None-Match': etag });
+    assert.equal(notModified.status, 304);
+    assert.equal(notModified.headers.get('cache-control'), 'private, max-age=31536000, immutable');
+    const missingAsset = await request(new URL('/__wp-catalog-stg/assets/wp-catalog/missing.' + '0'.repeat(20) + '.js', baseUrl), 'playpoint-sim.com', auth);
+    assert.equal(missingAsset.status, 404);
+    assert.equal(missingAsset.headers.get('cache-control'), 'private, no-store');
+    report.wordpressBlogAssets = { passed: true, basicAuthenticationInherited: true, parentCspUnchanged: true, privateImmutable200: true, privateImmutable304: true, unauthorized401NoStore: true, missing404NoStore: true, assetSha256Matched: true };
+    if (outputFile) fs.writeFileSync(outputFile, JSON.stringify(report, null, 2) + '\n');
+    console.log('Apache staging blog static assets/authentication/cache: passed');
     if (source.includes('# BEGIN PlayPoint one-article WordPress pilot')) {
       // 実Apacheで目印OFF→ON→OFFを確認する。PHP自体の実行は別の実WP検証が担当する。
       const cms = path.join(root, 'cms');

@@ -17,7 +17,7 @@ const {
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
-test('stgへ埋め込んでも共通検索と保存コードを保持し、FGOなどの略称で検索できる', () => {
+test('stgの静的アセットでも共通検索と保存コード・実行順・指紋を保持し、FGOなどの略称で検索できる', () => {
   const tempRoot=fs.realpathSync(require('node:os').tmpdir());
   const folder=fs.mkdtempSync(path.join(tempRoot,'pp-stg-blog-'));
   try {
@@ -25,10 +25,29 @@ test('stgへ埋め込んでも共通検索と保存コードを保持し、FGO�
     assert.equal(built.status,0,built.stderr);
     const php=fs.readFileSync(path.join(folder,'playpoint-catalog-blog.php'),'utf8');
     const marker="base64_decode('",start=php.indexOf(marker)+marker.length,end=php.indexOf("'",start);
-    const {html}=JSON.parse(require('node:zlib').gunzipSync(Buffer.from(php.slice(start,end),'base64')));
-    for(const name of ['js/article-search.js','js/reading-library.js'])assert.ok(html.includes('<script data-stage-source="'+name+'">'+read(name).replaceAll('\r\n','\n')+'</script>'),name);
-    const opening='<script data-stage-source="js/article-search.js">',first=html.indexOf(opening)+opening.length;
-    const context={module:{exports:{}}};vm.runInNewContext(html.slice(first,html.indexOf('</script>',first)),context);
+    const {html,assets}=JSON.parse(require('node:zlib').gunzipSync(Buffer.from(php.slice(start,end),'base64')));
+    assert.equal(assets.length,4);
+    const bodies=new Map(assets.map(asset=>{
+      const body=fs.readFileSync(path.join(folder,'assets/wp-catalog',asset.name),'utf8');
+      const sha=require('node:crypto').createHash('sha256').update(body).digest('hex');
+      assert.equal(sha,asset.sha256);assert.ok(asset.name.includes(sha.slice(0,20)));
+      assert.ok(html.includes(asset.url));assert.ok(html.includes('sha256-'+Buffer.from(sha,'hex').toString('base64')));
+      return [asset.name,body];
+    }));
+    const runtime=assets.find(asset=>asset.sources.includes('blog/script.js'));
+    assert.deepEqual(runtime.sources,['js/article-search.js','js/reading-library.js','blog/utils.js','blog/components.js','blog/script.js']);
+    for(const name of ['js/article-search.js','js/reading-library.js'])assert.ok(bodies.get(runtime.name).includes(read(name).replaceAll('\r\n','\n')),name);
+    const guide=assets.find(asset=>asset.sources.includes('js/guide-navigation.js')),theme=assets.find(asset=>asset.sources.includes('js/reading-theme.js'));
+    assert.ok(html.indexOf(guide.url)<html.indexOf(theme.url));
+    const runtimeScript=html.indexOf('<script src="'+runtime.url+'"');
+    assert.ok(runtimeScript>html.indexOf('id="pp-blog-config"'));assert.ok(!html.slice(runtimeScript,html.indexOf('>',runtimeScript)).includes('defer'));
+    assert.ok(!/<script\b(?![^>]*\btype="application\/(?:json|ld\+json)")[^>]*>[^<]+<\/script>/i.test(html),'executable code is external');
+    assert.ok(html.includes('<noscript>'));assert.ok(html.includes('<style data-stage-source="blog/noscript.css">'));
+    assert.ok(!bodies.get(assets.find(asset=>asset.sources.includes('blog/style.css')).name).includes('.skeleton-card {\n    display: none !important;'));
+    const headers=fs.readFileSync(path.join(folder,'assets/wp-catalog/.htaccess'),'utf8');
+    assert.ok(headers.includes('private, max-age=31536000, immutable'));assert.ok(headers.includes('%{REQUEST_STATUS} == 200 || %{REQUEST_STATUS} == 304'));assert.ok(!/AuthType|AuthUserFile|Content-Security-Policy/.test(headers));
+    const engine=read('js/article-search.js').replaceAll('\r\n','\n'),emitted=bodies.get(runtime.name),first=emitted.indexOf(engine);
+    const context={module:{exports:{}}};vm.runInNewContext(emitted.slice(first,first+engine.length),context);
     assert.equal(context.module.exports.matches({title:'FGO天井330回の費用'},'FGO','ja'),true);
     assert.equal(context.module.exports.matches({title:'パズル＆ドラゴンズのパス'},'パズドラ','ja'),true);
   } finally {
