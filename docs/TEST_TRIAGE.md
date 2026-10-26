@@ -1716,6 +1716,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `remaining-calendar-days.test.cjs` | 計算 | remaining calendar days uses date-only boundaries |
 | `repository-integrity-audit.test.cjs` | 横断監査 | ファイル名はOS差で衝突せず、一時ファイルを追跡しない |
 | `test-audit-ledger-consistency.test.cjs` | 横断監査 | 現行tests全ファイルが分類台帳に含まれることを確認する。過去の監査記録は公開の合否条件にしない |
+| `wordpress-article-batch.test.cjs` | WordPress移行・stg | 代表3記事の原文再構成、検索・保存・計算機のURL保持、生成後JSの実行と広告・計測初期化の隔離を確認する。DB取り込み・下書き・復旧と実画面は隔離WPおよびstgで別途検証する |
 | `rescued-pad-and-articles.test.cjs` | 内容・事実・対象範囲 | PAD is published for every generated game locale and linked from each portal |
 | `result-navigation-config.test.cjs` | UI・導線 | 結果ナビ設定は公開6地域を明示的に解決し未知地域はJPへ戻す |
 | `result-presentation-contract.test.cjs` | UI・導線 | 計算結果の金額主役、空カード非表示、日本語折り返し、早見表の円を検証 |

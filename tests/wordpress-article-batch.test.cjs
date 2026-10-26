@@ -8,6 +8,14 @@ const {createHash}=require('node:crypto');
 const links=require('../tools/wordpress/article-batch-links.js');
 const repo=path.resolve(__dirname,'..');
 
+test('HTML文字参照は一層だけ復号し、復号後に現れた文字参照を再処理しない',async()=>{
+ const {decodeHtmlReferences}=await import('../tools/wordpress/article-batch-build.mjs');
+ assert.equal(decodeHtmlReferences('&amp; &quot; &#39;'),'& " \'');
+ assert.equal(decodeHtmlReferences('&amp;quot; &amp;#39; &amp;amp;'),'&quot; &#39; &amp;');
+ assert.equal(decodeHtmlReferences('A&amp;amp;quot; B&amp;quot; C&amp;#39;'),'A&amp;quot; B&quot; C&#39;');
+ assert.equal(decodeHtmlReferences('&lt; &#34; &AMP; &quot'), '&lt; &#34; &AMP; &quot');
+});
+
 test('stg記事のURL接続は保存先・元URL・画像asset入口を保持し、外部URLを変えない',()=>{
  const config={path:'/articles/test.html',paths:['/articles/test.html'],assets:{'/images/test.webp':'/cms/index.php?pp_batch_asset=123/images/test.webp'}};
  assert.equal(links.asset('../images/test.webp',config),'/cms/index.php?pp_batch_asset=123/images/test.webp');

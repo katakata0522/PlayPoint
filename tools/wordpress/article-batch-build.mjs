@@ -12,10 +12,10 @@ export const selectedPaths=[
  '/articles/2026-10-10-diamond-play-pass-value.html'
 ];
 const sha=value=>createHash('sha256').update(value).digest('hex');
-const decode=value=>value.replaceAll('&amp;','&').replaceAll('&quot;','"').replaceAll('&#39;',"'");
+export const decodeHtmlReferences=value=>value.replace(/&(?:amp|quot|#39);/g,reference=>({'&amp;':'&','&quot;':'"','&#39;':"'"}[reference]));
 function local(value,base){
  if(!value||/^(?:#|data:|mailto:|tel:|javascript:)/i.test(value))return null;
- const url=new URL(decode(value),'https://playpoint-sim.com'+base);
+ const url=new URL(decodeHtmlReferences(value),'https://playpoint-sim.com'+base);
  if(url.origin!=='https://playpoint-sim.com')return null;
  return decodeURIComponent(url.pathname);
 }
@@ -46,8 +46,8 @@ export async function buildArticleBatch(output){
   const source=await fs.readFile(repo+pathname,'utf8'),parts=splitArticle(source),row=catalog.find(r=>new URL(r.file,'https://playpoint-sim.com/blog/').pathname===pathname);
   assert.ok(row,'catalog row');
   assert.ok(!/<(?:form|input|select)\b/i.test(parts.content),'exclude interactive articles');
-  const title=decode(source.match(/<title>([\s\S]*?)<\/title>/i)?.[1]||'');
-  const description=decode(source.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1]||'');
+  const title=decodeHtmlReferences(source.match(/<title>([\s\S]*?)<\/title>/i)?.[1]||'');
+  const description=decodeHtmlReferences(source.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1]||'');
   const counts={headings:(parts.content.match(/<h[23]\b/gi)||[]).length,tables:(parts.content.match(/<table\b/gi)||[]).length,images:(parts.content.match(/<img\b/gi)||[]).length};
   articles.push({path:pathname,slug:path.basename(pathname,'.html'),sourceSha256:sha(source),contentSha256:sha(parts.content),title,description,published:row.date,modified:row.modified||row.date,category:row.browseCategory||row.category,tags:row.tags||[],listTitle:row.listTitle||title,counts,...parts});
   for(const match of source.matchAll(/<(?:script|img|source|link)\b[^>]*>/gi)){
