@@ -5,6 +5,7 @@ const path=require('node:path');
 const os=require('node:os');
 const vm=require('node:vm');
 const {createHash}=require('node:crypto');
+const {spawnSync}=require('node:child_process');
 const links=require('../tools/wordpress/article-batch-links.js');
 const repo=path.resolve(__dirname,'..');
 
@@ -54,6 +55,47 @@ test('stg記事のURL接続は保存先・元URL・画像asset入口を保持し
  trigger.disabled=true;assert.equal(submit().defaultPrevented,false);
  dialog=null;assert.equal(submit().defaultPrevented,false);
  assert.equal(submit({matches:()=>false}).defaultPrevented,false,'other forms are not intercepted');
+});
+
+test('WPメディアはstgのuploads内だけを保持し、元画像と外部画像の接続先を変えない',async t=>{
+ const config={path:'/articles/test.html',paths:['/articles/test.html'],assets:{'/images/test.webp':'/cms/index.php?pp_batch_asset=fixture/images/test.webp'}};
+ const media='/cms/wp-content/uploads/2026/10/editor-image.webp?size=large&v=1#preview';
+ const expected='https://stg.playpoint-sim.com'+media;
+ const inputs=[media,'../cms/wp-content/uploads/2026/10/editor-image.webp?size=large&v=1#preview',expected,'//stg.playpoint-sim.com'+media];
+ for(const value of inputs){
+  assert.equal(links.link(value,config),expected);
+  assert.equal(links.link(links.link(value,config),config),expected,'PHP出力後の動的変換でもstgを保持する');
+  assert.equal(links.asset(value,config),value,'固定assetの許可リストへ追加しない');
+ }
+ const unchanged=['https://playpoint-sim.com'+media,'https://elsewhere.example'+media,'//stg.playpoint-sim.com.evil.example'+media];
+ for(const value of unchanged)assert.equal(links.link(value,config),value);
+ for(const value of ['/cms/wp-content/uploads-old/editor.webp','/cms/wp-content/uploads','/cms/wp-content/uploads/../outside.webp','/cms/wp-content/uploads/%2e%2e/outside.webp']){
+  const target=new URL(value,'https://playpoint-sim.com');
+  assert.equal(links.link(value,config),target.href,'uploads以外の従来の接続先を保持する');
+ }
+ const template=await fs.readFile(repo+'/tools/wordpress/article-batch-staging.php','utf8');
+ const functions=template.slice(template.indexOf('function ppab_asset_url('),template.indexOf('function ppab_replace_meta('));
+ const cases=[...inputs,...unchanged,'/cms/wp-content/uploads-old/editor.webp','/cms/wp-content/uploads','/cms/wp-content/uploads/../outside.webp','/cms/wp-content/uploads/%2e%2e/outside.webp'];
+ const html='<a href="'+expected.replaceAll('&','&amp;')+'"><img src="'+media.replaceAll('&','&amp;')+'" srcset="'+media.replaceAll('&','&amp;')+' 640w, https://playpoint-sim.com'+media.replaceAll('&','&amp;')+' 1280w"><source srcset="'+expected.replaceAll('&','&amp;')+' 2x, https://elsewhere.example'+media.replaceAll('&','&amp;')+' 3x"></a><img src="/images/test.webp">';
+ const fixture=Buffer.from(JSON.stringify({cases,html})).toString('base64');
+ const php='<?php function ppab_data(){return ["generation"=>"fixture","assets"=>["fixture/images/test.webp"=>[]]];} function ppab_entries(){return [["path"=>"/articles/test.html"]];}\n'+functions+'\n$fixture=json_decode(base64_decode("'+fixture+'"),true);echo json_encode(["urls"=>array_map(fn($value)=>ppab_public_url($value,"/articles/test.html"),$fixture["cases"]),"html"=>ppab_rewrite_html($fixture["html"],"/articles/test.html")],JSON_UNESCAPED_SLASHES);';
+ const result=spawnSync(process.env.PLAYPOINT_PHP_BINARY||'php',['-n'],{input:php,encoding:'utf8'});
+ if(result.error?.code==='ENOENT'){t.diagnostic('PHP実行環境なし。JS境界は検査済み、PHP経路は対応環境で検査する。');return;}
+ assert.ifError(result.error);assert.equal(result.status,0,result.stderr);
+ const actual=JSON.parse(result.stdout);
+ assert.deepEqual(actual.urls.slice(0,inputs.length),inputs.map(()=>expected));
+ assert.deepEqual(actual.urls.slice(inputs.length,inputs.length+unchanged.length),unchanged);
+ assert.equal(actual.urls.at(-4),'https://playpoint-sim.com/cms/wp-content/uploads-old/editor.webp');
+ assert.equal(actual.urls.at(-3),'https://playpoint-sim.com/cms/wp-content/uploads');
+ assert.equal(actual.urls.at(-2),'https://playpoint-sim.com/cms/wp-content/uploads/../outside.webp');
+ assert.equal(actual.urls.at(-1),'https://playpoint-sim.com/cms/wp-content/uploads/%2e%2e/outside.webp');
+ const escaped=expected.replaceAll('&','&amp;'),production=('https://playpoint-sim.com'+media).replaceAll('&','&amp;');
+ assert.ok(actual.html.includes('href="'+escaped+'"'));
+ assert.ok(actual.html.includes('src="'+escaped+'"'));
+ assert.ok(actual.html.includes('srcset="'+escaped+' 640w, '+production+' 1280w"'));
+ assert.ok(actual.html.includes('srcset="'+escaped+' 2x, '+('https://elsewhere.example'+media).replaceAll('&','&amp;')+' 3x"'));
+ assert.ok(actual.html.includes('src="/cms/index.php?pp_batch_asset=fixture/images/test.webp"'),'既存の固定画像assetを保持する');
+ assert.equal(links.link(actual.urls[0],config),expected);
 });
 
 test('3記事の移行パッケージは原文を再構成でき、表・画像・検索と保存コードを保持する',async()=>{

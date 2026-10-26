@@ -38,6 +38,8 @@ function ppab_public_url($value,$sourcePath) {
         $pathname='/'.implode('/',$segments).($segments&&$trailing?'/':'');
     }
     $suffix=(isset($parts['query'])?'?'.$parts['query']:'').(isset($parts['fragment'])?'#'.$parts['fragment']:'');
+    // WPで追加したstgメディアは固定assetへ加えず、既存の保護下にある元URLを使う。
+    if(str_starts_with($pathname,'/cms/wp-content/uploads/')&&(!isset($parts['host'])||strtolower($parts['host'])==='stg.playpoint-sim.com')&&!preg_match('~(?:^|/)(?:\.|%2e){1,2}(?:/|$)~i',$pathname))return 'https://stg.playpoint-sim.com'.$pathname.$suffix;
     if(preg_match('~^/blog/(?:index\.html)?$~',$pathname)) {
         parse_str($parts['query']??'',$query);
         $query=array_filter(array_intersect_key($query,array_flip(['topic','q','game','category','sort','page'])),'is_string');

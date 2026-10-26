@@ -1,8 +1,8 @@
 /* stgの試験3記事だけに適用するURL接続。保存データは変更しない。 */
 (function (root) {
   'use strict';
-  function url(value, config) {
-    try { return new URL(value, 'https://playpoint-sim.com' + config.path); }
+  function url(value, config, origin = 'https://playpoint-sim.com') {
+    try { return new URL(value, origin + config.path); }
     catch (_) { return null; }
   }
   function local(value) { return value && ['playpoint-sim.com', 'stg.playpoint-sim.com'].includes(value.hostname); }
@@ -16,6 +16,11 @@
     if (!local(target)) return value;
     // 画像を開くリンクを公開CMSへ戻さず、stgの固定asset入口に保つ。
     if (target.pathname === '/cms/index.php' && target.searchParams.has('pp_batch_asset')) return value;
+    // stgの絶対URLとサイト相対のメディアだけを保持し、本番の画像は移さない。
+    if (target.pathname.startsWith('/cms/wp-content/uploads/') && url(value, config, 'https://stg.playpoint-sim.com')?.hostname === 'stg.playpoint-sim.com') {
+      target.hostname = 'stg.playpoint-sim.com';
+      return target.href;
+    }
     if (/^\/blog\/(?:index\.html)?$/.test(target.pathname)) {
       target.hostname = 'stg.playpoint-sim.com';
       target.searchParams.set('pp_flow', 'normal'); target.searchParams.set('pp_catalog', 'live');
