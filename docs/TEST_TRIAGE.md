@@ -1,5 +1,9 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-27 CSPを変えないメディア操作の代替
+
+既存wordpress-article-batchで、stg専用メディア補助のhost・ABSPATH・管理画面・権限の境界、画像の実体／URL検査、生成HTMLのエスケープと読取り専用動作、配列入力・0件・20件区切り・標準一覧へのフォールバックを確認する。アップロードは標準media-newのHTMLフォームとコアのnonce／権限／ファイル検査を使い、独自の書込みAPIを増やさない。隔離WordPressのHTTP操作と実stgのブラウザー受入を区別し、標準グリッド・選択モーダル・画像加工を復旧済みとしない。既存public-deployment-tree・pr-gate-impact・http-cache-contract・service-worker-behavior・security-seo-hardeningの保証を維持し、CSP・公開物・必須チェックを追加変更しない。
+
 ## 2026-10-27 stg記事へのWP画像追加
 
 既存wordpress-article-batchで、stgのuploads画像のsrc・srcset・拡大リンクをstgへ保持し、本番・外部の画像と固定assetの許可範囲を変更しないことを確認する。PHPのHTML変換とJSの再変換を通し、似たパスと親階層への参照を対象外として検査する。実stgでは既存メディアの仮挿入・画像表示・リンク先を確認した後、投稿本文と題名を元へ戻して照合する。新しいテストファイルや必須ゲートは追加しない。

@@ -9,6 +9,75 @@ const {spawnSync}=require('node:child_process');
 const links=require('../tools/wordpress/article-batch-links.js');
 const repo=path.resolve(__dirname,'..');
 
+test('CSP対応メディア補助はstgの管理者に限定し、安全な画像HTMLを読取りだけで作る',async t=>{
+ const temporary=await fs.mkdtemp(path.join(os.tmpdir(),'playpoint-media-'));
+ try{
+  await fs.mkdir(temporary+'/uploads');await fs.mkdir(temporary+'/uploads-other');
+  await fs.writeFile(temporary+'/uploads/image.png','fixture');await fs.writeFile(temporary+'/uploads-other/image.png','outside');
+  const fixture=`<?php
+define('ABSPATH',($argv[1]??'stg')==='path' ? '/production/cms/' : '/home/hajikkoroom/playpoint-sim.com/public_html/stg.playpoint-sim.com/cms/');
+$_SERVER['HTTP_HOST']=($argv[1]??'stg')==='host' ? 'playpoint-sim.com' : 'stg.playpoint-sim.com';
+$hooks=[];$allowed=true;$uploadAllowed=true;$admin=($argv[1]??'stg')!=='public';
+function is_admin(){global $admin;return $admin;}
+function add_filter($name,$fn){global $hooks;$hooks[$name]=$fn;}
+function add_action($name,$fn){global $hooks;$hooks[$name]=$fn;}
+function current_user_can($cap,...$args){global $allowed,$uploadAllowed;return $allowed&&($cap!=='upload_files'||$uploadAllowed);}
+$post=(object)['ID'=>12,'post_type'=>'attachment','post_status'=>'inherit','post_mime_type'=>'image/png','post_title'=>'長い題名 <script>alert(1)</script>'];
+$root=__DIR__.'/uploads';$file=$root.'/image.png';$url='https://stg.playpoint-sim.com/cms/wp-content/uploads/2026/10/image.png';$width=520;
+function get_post($id){global $post;return $id===12?$post:null;}
+function wp_get_upload_dir(){global $root;return ['basedir'=>$root];}
+function get_attached_file($id){global $file;return $file;}
+function wp_get_attachment_image_src($id,$size){global $url,$width;return [$url,$width,472,false];}
+function wp_parse_url($url){return parse_url($url);}
+function get_post_meta(...$args){return '説明 " onerror="alert(1) </textarea><script>bad</script>' ;}
+function esc_attr($value){return htmlspecialchars((string)$value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
+function esc_url($value){return esc_attr($value);}
+function esc_html($value){return esc_attr($value);}
+function esc_textarea($value){return esc_attr($value);}
+function wp_basename($value){return basename($value);}
+function admin_url($path){return 'https://stg.playpoint-sim.com/cms/wp-admin/'.$path;}
+function sanitize_text_field($value){return strip_tags($value);}
+function wp_unslash($value){return stripslashes($value);}
+function get_edit_post_link($id,$context){return admin_url('post.php?post='.$id.'&action=edit');}
+function add_query_arg($args,$base){return $base.'&'.http_build_query($args);}
+function wp_die(...$args){throw new RuntimeException('denied');}
+class WP_Query {public $posts,$max_num_pages=2;function __construct($args){global $post,$queryArgs;$this->posts=[$post];$queryArgs=$args;}}
+require ${JSON.stringify(repo+'/tools/wordpress/media-staging.php')};
+if(($argv[1]??'stg')!=='stg'){echo json_encode(['hooks'=>array_keys($hooks)]);exit;}
+$good=ppms_image(12);$rejected=[];
+foreach(['https://playpoint-sim.com/cms/wp-content/uploads/x.png','https://stg.playpoint-sim.com.evil.example/cms/wp-content/uploads/x.png','http://stg.playpoint-sim.com/cms/wp-content/uploads/x.png','//stg.playpoint-sim.com/cms/wp-content/uploads/x.png','https://stg.playpoint-sim.com:8443/cms/wp-content/uploads/x.png','https://u:p@stg.playpoint-sim.com/cms/wp-content/uploads/x.png','https://stg.playpoint-sim.com/cms/wp-content/uploads-old/x.png','https://stg.playpoint-sim.com/cms/wp-content/uploads/%2e%2e/x.png','https://stg.playpoint-sim.com/cms/wp-content/uploads/%252e%252e/x.png','https://stg.playpoint-sim.com/cms/wp-content/uploads/a%5cb.png'] as $bad){$url=$bad;$rejected[]=ppms_image(12)===null;}
+$url=$good['url'];$file=__DIR__.'/uploads-other/image.png';$rejected[]=ppms_image(12)===null;
+$file=$root.'/missing.png';$rejected[]=ppms_image(12)===null;$file=$root.'/image.png';
+$post->post_mime_type='image/svg+xml';$rejected[]=ppms_image(12)===null;$post->post_mime_type='image/png';
+$post->post_status='trash';$rejected[]=ppms_image(12)===null;$post->post_status='inherit';
+$width=0;$rejected[]=ppms_image(12)===null;$width=520;
+$allowed=false;$rejected[]=ppms_image(12)===null;try{ppms_page();$denied=false;}catch(RuntimeException $error){$denied=true;}$allowed=true;
+$uploadAllowed=false;try{ppms_page();$uploadDenied=false;}catch(RuntimeException $error){$uploadDenied=true;}$uploadAllowed=true;
+$_GET=['image'=>'12','s'=>'<script>search</script>','paged'=>'1'];ob_start();ppms_page();$html=ob_get_clean();
+$_GET=['image'=>['12'],'s'=>['array'],'paged'=>['2']];ob_start();ppms_page();$arrayHtml=ob_get_clean();
+$_GET=['paged'=>'99999999999999999999999999'];ob_start();ppms_page();ob_end_clean();
+$mode=$hooks['get_user_option_media_library_mode']('grid');$allowed=false;$nonAdminMode=$hooks['get_user_option_media_library_mode']('grid');
+echo json_encode(['good'=>$good,'rejected'=>$rejected,'denied'=>$denied,'uploadDenied'=>$uploadDenied,'html'=>$html,'arrayHtml'=>$arrayHtml,'pageSize'=>$queryArgs['posts_per_page'],'maxPage'=>$queryArgs['paged'],'mode'=>$mode,'nonAdminMode'=>$nonAdminMode,'missing'=>ppms_image(404)]);
+`;
+  await fs.writeFile(temporary+'/fixture.php',fixture);
+  const run=mode=>spawnSync(process.env.PLAYPOINT_PHP_BINARY||'php',['-n',temporary+'/fixture.php',mode],{encoding:'utf8'});
+  const result=run('stg');
+  if(result.error?.code==='ENOENT'){t.diagnostic('PHP実行環境なし。メディア補助のPHP検査は対応環境で実行する。');return;}
+  assert.ifError(result.error);assert.equal(result.status,0,result.stderr);assert.equal(result.stderr,'');
+  const actual=JSON.parse(result.stdout);
+  assert.equal(actual.good.width,520);assert.equal(actual.good.height,472);
+  assert.ok(actual.good.html.includes('alt="説明 &quot; onerror=&quot;alert(1) &lt;/textarea&gt;&lt;script&gt;bad&lt;/script&gt;"'));
+  assert.ok(actual.rejected.every(Boolean));assert.equal(actual.rejected.length,16);
+  assert.equal(actual.denied,true);assert.equal(actual.uploadDenied,true);assert.equal(actual.missing,null);
+  assert.equal(actual.mode,'list');assert.equal(actual.nonAdminMode,'grid');assert.equal(actual.pageSize,20);assert.equal(actual.maxPage,10000);
+  assert.ok(actual.html.includes('media-new.php?browser-uploader=1'));assert.ok(actual.html.includes('upload.php?mode=list'));
+  assert.ok(actual.html.includes('id="ppms-html"'));assert.ok(actual.html.includes('&lt;img src='));
+  assert.ok(!actual.html.includes('<script>'));assert.ok(!actual.html.includes('onerror="'));assert.ok(!actual.html.includes('<form method="post"'));
+  assert.ok(actual.arrayHtml.includes('この画像は利用できません'));assert.ok(!actual.arrayHtml.includes('id="ppms-html"'));
+  for(const mode of ['host','path','public']){const boundary=run(mode);assert.equal(boundary.status,0,boundary.stderr);assert.deepEqual(JSON.parse(boundary.stdout).hooks,[],mode+' cannot register admin hooks');}
+ }finally{await fs.rm(temporary,{recursive:true});}
+});
+
 test('HTML文字参照は一層だけ復号し、復号後に現れた文字参照を再処理しない',async()=>{
  const {decodeHtmlReferences}=await import('../tools/wordpress/article-batch-build.mjs');
  assert.equal(decodeHtmlReferences('&amp; &quot; &#39;'),'& " \'');
