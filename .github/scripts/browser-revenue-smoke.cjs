@@ -156,6 +156,47 @@ async function main() {
       console.log('ok - actual ad entry permission boundary: ' + target);
     }
 
+
+    // 既存目次は重複させず、記事タイトルと導入を先に読めるようにする。
+    {
+      const pages = ["articles/2026-10-10-diamond-play-pass-value.html","articles/2026-10-10-google-play-fest-2026.html","articles/2026-10-10-play-pass-double-points-6x.html","articles/2026-10-10-super-weekly-reward-results.html","articles/2026-06-20-discount-gift-cards.html","articles/2025-12-25-multiple-accounts.html","articles/2025-12-25-expiration.html","articles/2025-12-25-promo-code.html","articles/2025-12-25-refund.html","articles/2025-12-25-gift-card.html","articles/2025-12-25-family-sharing.html","articles/2025-12-25-getting-started.html","articles/2025-12-25-new-year-campaign.html","articles/2025-12-25-diamond-vip.html","articles/2025-12-25-diamond-worth-it.html","articles/2026-07-31-super-weekly-reward.html","articles/2026-03-10-play-points-reflection-timing.html","articles/2025-12-25-weekly-reward.html"];
+      const duplicates = new Set(["articles/2026-07-31-super-weekly-reward.html","articles/2026-06-20-discount-gift-cards.html","articles/2026-03-10-play-points-reflection-timing.html","articles/2025-12-25-weekly-reward.html"]);
+      const context = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
+      try {
+        await configureContext(context, origin);
+        const page = await context.newPage();
+        for (const width of [390, 1280]) {
+          await page.setViewportSize({ width, height: 844 });
+          for (const articlePath of pages) {
+            await page.goto(new URL(articlePath, baseUrl).href, { waitUntil: 'domcontentloaded' });
+            await page.waitForFunction(() => document.documentElement.classList.contains('guide-navigation-ready'));
+            assert(await page.locator('article .inpage-toc').count() === 1, articlePath + ': 目次が１つではない');
+            const order = await page.evaluate(() => {
+              const title = document.querySelector('article h1'), toc = document.querySelector('article .inpage-toc');
+              return !!(title && toc && (title.compareDocumentPosition(toc) & Node.DOCUMENT_POSITION_FOLLOWING));
+            });
+            assert(order, articlePath + ': 目次がタイトルより前');
+            if (duplicates.has(articlePath)) {
+              const hidden = await page.evaluate(() => [...document.querySelectorAll('article section[id]')].some(section => {
+                const anchor = document.querySelector('article a[href="#' + section.id + '"]');
+                return anchor && parseFloat(getComputedStyle(section).scrollMarginTop) < 76;
+              }));
+              assert(!hidden, articlePath + ': 節の移動位置に余白がない');
+            }
+          }
+          await page.goto(new URL('articles/2026-03-10-play-points-reflection-timing.html', baseUrl).href, { waitUntil: 'domcontentloaded' });
+          await page.waitForFunction(() => document.documentElement.classList.contains('guide-navigation-ready'));
+          await page.locator('a[href="#first-check"]').first().click();
+          const bounds = await page.evaluate(() => ({ header: document.querySelector('.guide-header').getBoundingClientRect().bottom, heading: document.querySelector('#first-check h2').getBoundingClientRect().top }));
+          assert(bounds.heading >= bounds.header, '見出しがヘッダーに隠れた: ' + JSON.stringify(bounds));
+        }
+        await page.goto(new URL('articles/2026-10-10-google-play-fest-2026.html', baseUrl).href);
+        assert((await page.locator('article h1').innerText()).includes('終了'), 'Playフェスの終了表示がない');
+        assert((await page.locator('article').innerText()).includes('10月19日に終了'), 'Playフェス本文の終了案内がない');
+        console.log('ok - article toc order, heading navigation and ended event');
+      } finally { await context.close(); }
+    }
+
     // ランク維持記事は目次を重複させず、既存の節へのリンクも固定ヘッダーに隠さない。
     // 広告の横幅が画面変更後に残っても、広告を切らず枠内で最後まで閲覧できる。
     {
