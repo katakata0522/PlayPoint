@@ -1,5 +1,21 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-27 CSPを変えないメディア操作の代替
+
+既存wordpress-article-batchで、stg専用メディア補助のhost・ABSPATH・管理画面・権限の境界、画像の実体／URL検査、生成HTMLのエスケープと読取り専用動作、配列入力・0件・20件区切り・標準一覧へのフォールバックを確認する。アップロードは標準media-newのHTMLフォームとコアのnonce／権限／ファイル検査を使い、独自の書込みAPIを増やさない。隔離WordPressのHTTP操作と実stgのブラウザー受入を区別し、標準グリッド・選択モーダル・画像加工を復旧済みとしない。既存public-deployment-tree・pr-gate-impact・http-cache-contract・service-worker-behavior・security-seo-hardeningの保証を維持し、CSP・公開物・必須チェックを追加変更しない。
+
+## 2026-10-27 stg記事へのWP画像追加
+
+既存wordpress-article-batchで、stgのuploads画像のsrc・srcset・拡大リンクをstgへ保持し、本番・外部の画像と固定assetの許可範囲を変更しないことを確認する。PHPのHTML変換とJSの再変換を通し、似たパスと親階層への参照を対象外として検査する。実stgでは既存メディアの仮挿入・画像表示・リンク先を確認した後、投稿本文と題名を元へ戻して照合する。新しいテストファイルや必須ゲートは追加しない。
+
+同じ所有テストで、現台帳の先頭コメント付き記事を実ファイルから全件読み、コメント・hero・本文のバイト保持と完全再構成を確認する。先頭の非コメント本文を黙って捨てずに拒否し、入力付き3種類は実buildで引き続き拒否する。代表3記事の選定と生成済み候補を変えず、旧広告・ゲーム・国際記事の実行対応が完了したとは扱わない。
+
+先頭コメントはカーソルを前進させて読み、繰返し正規表現を使わない。大量の連続コメント内に偽headerを含む入力と、閉じ忘れの長い入力も検査し、元バイトを保持するか明示的に拒否する。
+
+## 2026-10-26 stg記事のサイドバー検索接続
+
+既存wordpress-article-batchで、サイドバーの検索語を既存ヘッダー検索へ引き継ぎ、ダイアログが開いた時だけ通常GETを止めることを検査する。未初期化・無効・開けない場合は元のactionとhiddenパラメーターを保持した通常検索へ戻す。検索エンジン、記事本文、保存、広告処理は変更しない。実stgのデスクトップ／スマホで候補・URL保持・閉じる操作を確認する。
+
 ## 2026-10-26 プロフィール構造化データの更新日時
 
 既存author-hreflangで公開4言語と再生成3言語のProfilePageを解析し、dateModifiedがタイムゾーン付きISO日時で、既存の日付台帳・last-modifiedの日付を保持することを確認する。記事と同じ日単位→日本時間日境界の直列化を再利用し、表示日・サイトマップ・本文を変えない。新しいテストファイルや必須ゲートは追加しない。
@@ -1722,6 +1738,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `remaining-calendar-days.test.cjs` | 計算 | remaining calendar days uses date-only boundaries |
 | `repository-integrity-audit.test.cjs` | 横断監査 | ファイル名はOS差で衝突せず、一時ファイルを追跡しない |
 | `test-audit-ledger-consistency.test.cjs` | 横断監査 | 現行tests全ファイルが分類台帳に含まれることを確認する。過去の監査記録は公開の合否条件にしない |
+| `wordpress-article-batch.test.cjs` | WordPress移行・stg | 代表3記事の原文再構成、検索・保存・計算機のURL保持、サイドバーから既存検索ダイアログへの接続とGET fallback、生成後JSの実行と広告・計測初期化の隔離を確認する。DB取り込み・下書き・復旧と実画面は隔離WPおよびstgで別途検証する |
 | `rescued-pad-and-articles.test.cjs` | 内容・事実・対象範囲 | PAD is published for every generated game locale and linked from each portal |
 | `result-navigation-config.test.cjs` | UI・導線 | 結果ナビ設定は公開6地域を明示的に解決し未知地域はJPへ戻す |
 | `result-presentation-contract.test.cjs` | UI・導線 | 計算結果の金額主役、空カード非表示、日本語折り返し、早見表の円を検証 |
