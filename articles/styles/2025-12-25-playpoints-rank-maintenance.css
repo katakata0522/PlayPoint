@@ -217,3 +217,23 @@ padding: 0.8rem 1.5rem;
 font-size: 1rem;
 }
 }
+/* 元の目次が指す節も、固定ヘッダーの下に収める。 */
+article.content section[id] {
+scroll-margin-top: 90px;
+}
+
+/* 配信済み広告を切り取らず、画面幅変更時は広告枠内で横スクロールできるようにする。 */
+article.content :is(.google-auto-placed, .article-ad-container) {
+box-sizing: border-box;
+min-width: 0;
+max-width: 100% !important;
+overflow-x: auto;
+}
+article.content .author-info {
+min-width: 0;
+}
+
+/* 広告が返らなかったことを確認できた枠だけ、余白を残さない。 */
+article.content ins.adsbygoogle[data-ad-status="unfilled"] {
+display: none !important;
+}
