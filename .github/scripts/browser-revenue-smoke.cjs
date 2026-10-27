@@ -156,6 +156,65 @@ async function main() {
       console.log('ok - actual ad entry permission boundary: ' + target);
     }
 
+    // ランク維持記事は目次を重複させず、既存の節へのリンクも固定ヘッダーに隠さない。
+    // 広告の横幅が画面変更後に残っても、広告を切らず枠内で最後まで閲覧できる。
+    {
+      const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: 'block' });
+      try {
+        await configureContext(context, origin);
+        const page = await context.newPage();
+        const target = new URL('articles/2025-12-25-playpoints-rank-maintenance.html', baseUrl);
+        await page.goto(target.href, { waitUntil: 'load' });
+        await page.waitForFunction(() => document.documentElement.classList.contains('guide-navigation-ready'));
+        assert(await page.locator('article .inpage-toc').count() === 1, 'ランク維持記事: 目次が重複している');
+        const label = await page.locator('#example .table-card').getAttribute('aria-label');
+        assert(label && label.includes('2026年にゴールドへ到達したら'), 'ランク維持記事: 表の読み上げラベルが見出しと違う');
+        await page.evaluate(() => {
+          const addAd = (parent, status) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'google-auto-placed ap_container';
+            const ins = document.createElement('ins');
+            ins.className = 'adsbygoogle';
+            ins.dataset.adStatus = status;
+            const creative = document.createElement('div');
+            creative.style.cssText = 'width:815px;height:90px';
+            ins.append(creative); wrapper.append(ins); parent.append(wrapper);
+          };
+          addAd(document.querySelector('#example'), 'filled');
+          addAd(document.querySelector('.author-info'), 'filled');
+          addAd(document.querySelector('#calculator-input'), 'unfilled');
+        });
+        for (const width of [390, 320, 1280]) {
+          await page.setViewportSize({ width, height: 844 });
+          const layout = await page.evaluate(() => ({
+            pageOverflow: document.documentElement.scrollWidth > innerWidth + 1,
+            ads: [...document.querySelectorAll('article .google-auto-placed')]
+              .filter(ad => ad.querySelector('ins[data-ad-status="filled"]'))
+              .map(ad => {
+                ad.scrollLeft = ad.scrollWidth;
+                return {
+                  height: ad.getBoundingClientRect().height,
+                  reachable: ad.scrollWidth <= ad.clientWidth || ad.scrollLeft > 0
+                };
+              }),
+            emptyHidden: getComputedStyle(document.querySelector('article ins[data-ad-status="unfilled"]')).display === 'none'
+          }));
+          assert(!layout.pageOverflow && layout.ads.length === 2 &&
+            layout.ads.every(ad => ad.height > 0 && ad.reachable) && layout.emptyHidden,
+            `ランク維持記事/${width}: 広告枠の表示が不正 ${JSON.stringify(layout)}`);
+        }
+        await page.setViewportSize({ width: 390, height: 844 });
+        await page.goto(target.href + '#example', { waitUntil: 'load' });
+        await page.waitForFunction(() => document.documentElement.classList.contains('guide-navigation-ready'));
+        const positions = await page.evaluate(() => ({
+          header: document.querySelector('.guide-header').getBoundingClientRect().bottom,
+          heading: document.querySelector('#article-section-4').getBoundingClientRect().top
+        }));
+        assert(positions.heading >= positions.header, `ランク維持記事: 見出しがヘッダーに隠れる ${JSON.stringify(positions)}`);
+        console.log('ok - rank article toc, anchor, ad resize and unfilled space');
+      } finally { await context.close(); }
+    }
+
     // 最新情報ページでも、配信済み広告と自動配置広告が狭い画面で本文を押し広げない。
     {
       const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: 'block' });
