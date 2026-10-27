@@ -5,8 +5,15 @@
     <link>https://playpoint-sim.com/blog/</link>
     <description>Google Play PointsとPlay Passの違い、ランクの特典、ポイントの使い道を、知りたいことから探せる記事ガイドです。必要額の計算や週次リワードの記録にも進めます。</description>
     <language>ja</language>
-    <lastBuildDate>Tue, 27 Oct 2026 03:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 28 Oct 2026 03:00:00 GMT</lastBuildDate>
     <atom:link href="https://playpoint-sim.com/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ブラックダイヤモンドは実在する？ ダイヤモンドVIPの噂をTGSの体験と最新情報から追ってみた</title>
+      <link>https://playpoint-sim.com/articles/2026-10-01-black-diamond-diamond-vip.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-10-01-black-diamond-diamond-vip.html</guid>
+      <pubDate>Thu, 01 Oct 2026 03:00:00 GMT</pubDate>
+      <description>Google Play PointsのダイヤモンドVIPとブラックダイヤモンドは実在する？TGS2026での現地体験、公式キャンペーン、アプリ解析と利用者報告から、分かっていることを追います。</description>
+    </item>
     <item>
       <title>Google Playフェス2026の記録｜限定交換品・書籍15倍【開催終了】</title>
       <link>https://playpoint-sim.com/articles/2026-10-10-google-play-fest-2026.html</link>
@@ -48,13 +55,6 @@
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-10-03-suikoden-star-leap-google-play-vs-store.html</guid>
       <pubDate>Sat, 03 Oct 2026 03:00:00 GMT</pubDate>
       <description>幻想水滸伝 STAR LEAPの公式公開案内から、通常商品と初回セールの幻想石を比較。Play Pointsの将来の利用価値、購入OS、有償石の注意点まで整理します。</description>
-    </item>
-    <item>
-      <title>ブラックダイヤモンドの噂を追う！Google Play Pointsの新ランク説とダイヤモンドVIP</title>
-      <link>https://playpoint-sim.com/articles/2026-10-01-black-diamond-diamond-vip.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-10-01-black-diamond-diamond-vip.html</guid>
-      <pubDate>Thu, 01 Oct 2026 03:00:00 GMT</pubDate>
-      <description>Google Play Pointsに未発表の上位ステータス「Diamond VIP」「Black Diamond」はある？公式の5段階表、TGS2026の招待制VIPラウンジ、公式キャンペーン表記、PlayストアのAPK解析を分けて検証します。必要ポイントや開始日は未確定として整理。</description>
     </item>
     <item>
       <title>Play Pointsが利用停止・ロックされた時の対処法｜アカウント問題の確認順</title>
