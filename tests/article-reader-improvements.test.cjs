@@ -95,6 +95,14 @@ test('eFootball記事のFAQは目次から既存の見出しへ移動できる',
   assert.match(html, /<h2 id="article-section-7">よくある質問<\/h2>/);
 });
 
+test('FGO記事のFAQは目次から既存の見出しへ移動できる', () => {
+  const html = read('games/fgo/pity-cost/index.html');
+  const toc = html.match(/<!-- reader-toc:start -->([\s\S]*?)<!-- reader-toc:end -->/)?.[1] || '';
+  assert.equal((toc.match(/href="#article-section-7"/g) || []).length, 1);
+  assert.match(toc, /href="#article-section-7">よくある質問<\/a>/);
+  assert.match(html, /<h2 id="article-section-7">よくある質問<\/h2>/);
+});
+
 test('購入比較は即時の個数と将来の還元を分け、Pokémon GOのReward RoadをWeb専用として扱わない', () => {
   const pokemon = read('games/pokemon-go/google-play-vs-webstore/index.html');
   const table = pokemon.match(/<section class="section reader-comparison"[\s\S]*?<\/section>/)?.[0] || '';

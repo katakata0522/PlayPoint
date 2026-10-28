@@ -10,14 +10,14 @@ const MODIFIED_AT = '2026-10-08';
 const GAME_GUIDE_ARTICLES = Object.freeze([
   {
     id: 'fgo-pity-cost-2026',
-    modified: '2026-10-14',
-    listDescription: "天井330回までの費用を知りたい方へ。必要な聖晶石、最小購入例、福袋の有償15個とポイント還元を確認できます。",
-    title: "FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】",
+    modified: '2026-10-28',
+    listDescription: "天井330回の必要数と2022年の公式価格を基にした購入例、終了した福袋の例とポイントの目安を紹介します。",
+    title: "FGO天井330回の予算目安｜2022年公式価格の試算と福袋の例",
     category: '使い方',
     gameTitle: 'FGO',
-    listTitle: "FGO天井330回の予算と福袋｜聖晶石の購入例を確認",
+    listTitle: "FGO天井330回の予算｜2022年価格の試算と福袋の例",
     tags: ['FGO', '聖晶石', '天井', '福袋', 'Play Points'],
-    description: "FGOの確定召喚330回に必要な聖晶石と課金額を、現行の公式価格から計算。ゼロからの最小購入例、福袋の有償15個、Google Play Points還元をまとめます。",
+    description: "FGOの確定召喚330回に必要な聖晶石を解説。2022年に告知された価格表を使った予算例と、終了した2026年11周年福袋の例を紹介します。現在のGoogle Play版の全価格は購入画面で確認してください。",
     file: '../games/fgo/pity-cost/index.html',
     related: [
       ["/articles/2026-08-05-play-points-multiplier-stacking.html","倍率キャンペーン時のPlay Pointsを確認する"],

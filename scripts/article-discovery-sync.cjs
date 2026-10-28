@@ -154,7 +154,7 @@ function prepareDiscoveryArticle(html, entry) {
     const articleBody = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1] || '';
     const headings = [...articleBody.matchAll(/<h2\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)]
       .map(match => ({ id: match[1], label: text(match[2]) }))
-      .filter(heading => (entry.path === "games/efootball/google-play-points-vs-efootball-points/index.html" && heading.id === "article-section-7" && heading.label === "よくある質問") || !/公式ソース|出典|次にやること|別の疑問|あわせて|よくある質問|関連|運営者|この記事の著者/.test(heading.label));
+      .filter(heading => (["games/efootball/google-play-points-vs-efootball-points/index.html", "games/fgo/pity-cost/index.html"].includes(entry.path) && heading.id === "article-section-7" && heading.label === "よくある質問") || !/公式ソース|出典|次にやること|別の疑問|あわせて|よくある質問|関連|運営者|この記事の著者/.test(heading.label));
     if (headings.length > 1) {
       const toc = '<!-- reader-toc:start --><details class="inpage-toc reader-toc"><summary class="inpage-toc-title">目次を開く</summary><nav aria-label="この記事の目次"><ol>' + headings.map(heading => `<li><a href="#${heading.id}">${heading.label}</a></li>`).join('') + '</ol></nav></details><!-- reader-toc:end -->';
       html = html.replace(/(<section\b[^>]*class="[^"]*answer-box[^"]*"[^>]*>[\s\S]*?<\/section>)/, '$1\n' + toc);

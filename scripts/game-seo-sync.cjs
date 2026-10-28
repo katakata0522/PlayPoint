@@ -99,17 +99,20 @@ function renderFgoGuide() {
   const data = GAME_SEO.fgo;
   const packRows = data.packsJa.map(pack => `<tr><td>有償${pack.paid} + 無償${pack.free}</td><td>${pack.total}</td><td>${yen(pack.price)}</td></tr>`).join('\n');
   const faq = [
-    { q: 'FGOの確定召喚330回まで、ゼロから課金するといくら必要ですか？', a: '現在確認できるGoogle Play版の聖晶石販売単位を使い、無料石や呼符を0として900個以上を最小金額で用意する組み合わせでは54,600円で902個です。実際は所持石・呼符・1日1回有償召喚などで必要額が下がります。' },
-    { q: 'FGOの福袋に必要な有償聖晶石15個は、ゼロからいくらですか？', a: '有償4個+無償1個の480円パックを4回購入すると有償16個になり、1,920円です。購入時のおまけ無償石は有償15個の条件には数えません。' }
+    { q: 'FGOの確定召喚330回まで、ゼロから課金するといくら必要ですか？', a: '2022年のGoogle Play版の公式告知価格を使い、聖晶石と呼符の手持ちがなく、1日1回の有償召喚を使わずに11回召喚を30セット行い、900個以上を最小金額で用意する試算では54,600円で902個です。現在のゲーム内価格は未確認のため購入画面で確認してください。実際は所持石・呼符・1日1回有償召喚などで必要額が下がります。' },
+    { q: 'FGOの終了した2026年11周年福袋の有償聖晶石15個は、ゼロからいくらですか？', a: '終了した2026年11周年福袋の有償15個は、2022年の公式価格表による試算では有償4個+無償1個の480円パックを4回購入すると有償16個になり、1,920円です。現在のゲーム内価格は未確認です。購入時のおまけ無償石は有償15個の条件には数えません。' }
   ];
   const body = `
-      <section class="section"><h2>先に結論：330回の上限をゼロから用意するなら54,600円</h2><p>FGOの確定召喚は、対象の★5ピックアップを329回以内に引けなかった場合、330回目で確定します。10回召喚ごとの「+1回ボーナス召喚」も確定召喚の回数に数えられるため、330回を30セットの11回召喚で到達する前提では消費聖晶石は900個です。</p><p><strong>確認済み販売単位だけで900個以上を最安にそろえると、10,000円パック×5 + 3,000円パック×1 + 1,600円パック×1 = 54,600円で計902個</strong>です。無料石、呼符、既に持っている聖晶石を使う場合はこの金額より下がります。</p></section>
-      <section class="section"><h2>現在確認できるFGOの聖晶石価格</h2><div class="pack-table-wrap"><table class="pack-table"><thead><tr><th>内訳</th><th>合計聖晶石</th><th>価格</th></tr></thead><tbody>${packRows}</tbody></table></div><p>有償1個だけの販売は終了しています。価格表はFate/Grand Order公式のお知らせを基準にしています。</p></section>
-      <section class="section"><h2>54,600円の課金でPlay Pointsはどれくらい？</h2>${pointTableHtml(data.pity.cheapestVerifiedSpendFromZero)}<p>ここでのポイント数は税込支払額から税抜額へ換算した概算です。商品ごとの税額と端数処理によって差が出るため、最終的な獲得数はGoogle Playの購入確認画面に表示される値を正としてください。</p></section>
-      <section class="section"><h2>福袋の有償15個は、ゼロからなら1,920円</h2><p>2026年の福袋召喚は<strong>有償聖晶石15個</strong>が必要です。現在の最小販売単位は有償4個+無償1個で480円なので、4回購入すると有償16個となり<strong>1,920円</strong>です。無料分4個は福袋の有償条件には入りません。</p>${pointTableHtml(data.luckyBag.cheapestVerifiedSpendFromZero)}</section>
+      <section class="section"><h2>先に結論：330回の上限をゼロから用意する2022年価格の例</h2><p>FGOの確定召喚は、対象の★5ピックアップを329回以内に引けなかった場合、330回目で確定します。10回召喚ごとの「+1回ボーナス召喚」も確定召喚の回数に数えられるため、330回を30セットの11回召喚で到達する前提では消費聖晶石は900個です。</p><p><strong>2022年に告知されたGoogle Play版の販売単位で900個以上を最安にそろえる試算では、10,000円パック×5 + 3,000円パック×1 + 1,600円パック×1 = 54,600円で計902個</strong>です。現在のゲーム内価格は未確認のため、購入画面で価格と個数を確かめてください。無料石、呼符、既に持っている聖晶石を使う場合は必要額が変わります。</p></section>
+      <section class="section"><h2>2022年に告知されたFGOの聖晶石価格</h2><div class="pack-table-wrap"><table class="pack-table"><thead><tr><th>内訳</th><th>合計聖晶石</th><th>価格</th></tr></thead><tbody>${packRows}</tbody></table></div><p>価格表は2022年のFate/Grand Order公式のお知らせに基づく参考例です。現在のGoogle Play版の価格と個数はゲーム内購入画面で確認してください。</p></section>
+      <section class="section"><h2>2022年価格例54,600円でPlay Pointsはどれくらい？</h2>${pointTableHtml(data.pity.cheapestVerifiedSpendFromZero)}<p>ここでのポイント数は税込支払額から税抜額へ換算した概算です。商品ごとの税額と端数処理によって差が出るため、最終的な獲得数はGoogle Playの購入確認画面に表示される値を正としてください。</p></section>
+      <section class="section"><h2>【終了】2026年11周年福袋の有償15個を2022年価格で試算</h2><p>2026年11周年の福袋召喚は終了しており、当時は<strong>有償聖晶石15個</strong>が必要でした。2022年公式価格表の有償4個+無償1個で480円を使う試算では、4回購入すると有償16個となり<strong>1,920円</strong>です。無料分4個は福袋の有償条件には入りません。現在のゲーム内価格は未確認です。次回の条件は開催時に確認してください。</p>${pointTableHtml(data.luckyBag.cheapestVerifiedSpendFromZero)}</section>
       <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.fgoPrice}" target="_blank" rel="noopener noreferrer">FGO公式：聖晶石販売価格</a></li><li><a href="${SOURCES.fgoPity}" target="_blank" rel="noopener noreferrer">FGO公式FAQ：確定召喚330回</a></li><li><a href="${SOURCES.fgoLuckyBag2026}" target="_blank" rel="noopener noreferrer">FGO公式：2026年11周年福袋（有償15個）</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
       <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">FGO Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'fgo', slug: 'pity-cost', lead: '「FGOの天井は結局いくら？」「福袋の有償15個をゼロから買うと何円？」「その課金でPlay Pointsは何ポイント？」を、確認済みの公式価格だけで計算します。', body, faq });
+  const escapeFaq = value => String(value).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+  const visibleFaq = `<section class="section game-guide-visible-faq"><h2>よくある質問</h2>${faq.map(item => `<div class="faq-item"><h3>Q. ${escapeFaq(item.q)}</h3><p>A. ${escapeFaq(item.a)}</p></div>`).join('')}</section>`;
+  return guideShell({ gameId: 'fgo', slug: 'pity-cost', lead: 'FGOの確定召喚と終了した2026年11周年福袋について、2022年の公式価格表を使った予算例とPlay Pointsを計算します。現在のGoogle Play版の価格と個数はゲーム内購入画面で確認してください。', body: body + visibleFaq, faq })
+    .replace(`最終確認：${VERIFIED_AT}`, `最終確認：${data.verifiedAt}`);
 }
 
 function renderGenshinGuide() {
@@ -151,10 +154,17 @@ function renderMonstGuide() {
 function syncFgo(rootDir) {
   const file = 'games/fgo/index.html';
   let html = read(rootDir, file);
-  html = html.replaceAll('FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？', 'FGOの確定召喚330回を石0から用意するといくら？');
-  html = html.replaceAll('通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。', '確認済みの現行価格だけで聖晶石900個以上を最安にそろえる例は54,600円・902個です。ブロンズ通常獲得率なら税込額ベースの概算で約546pt、5pt/100円の特別獲得率なら約2,730ptです。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。');
-  html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `FGO価格・確定召喚・Play Points確認：${VERIFIED_AT}`);
-  const block = `<section class="section" data-game-seo-guide="fgo"><h2>2026年の価格・天井を公式情報で再計算</h2><p>有償1個販売終了後の現行パック、確定召喚330回、福袋の有償15個を分けて再計算しました。石0から確定召喚の上限まで用意する例は54,600円、2026年福袋の有償15個を石0から用意する最小例は1,920円です。</p><p><a href="./pity-cost/">FGO天井330回・福袋・Play Pointsの詳しい計算を見る ➔</a></p></section>`;
+  const question = 'FGOの確定召喚330回を石0から用意するといくら？';
+  const answer = '2022年のFGO公式価格表を前提に、聖晶石・呼符の手持ちがなく、1日1回の有償召喚を使わずに11回召喚を30セット行う試算では、必要な900個以上を54,600円で902個用意できます。現在のGoogle Play版のゲーム内価格は未確認のため、購入画面の価格と個数を確かめてください。計算機のポイント参考表は税未調整の支払額ベース、関連記事は税込額に税10%を仮定して除いた概算です。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。';
+  html = html.replaceAll('FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？', question);
+  for (const old of [
+    '通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。',
+    '確認済みの現行価格だけで聖晶石900個以上を最安にそろえる例は54,600円・902個です。ブロンズ通常獲得率なら税込額ベースの概算で約546pt、5pt/100円の特別獲得率なら約2,730ptです。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。'
+  ]) html = html.replaceAll(old, answer);
+  html = html.replaceAll('FGO価格・確定召喚・Play Points確認：2026-09-13', '聖晶石価格は2022年公式表の参考値（現在のGoogle Play版は購入画面で確認）');
+  html = html.replaceAll('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', '聖晶石価格は2022年公式表の参考値（現在のGoogle Play版は購入画面で確認）');
+  const block = `<section class="section" data-game-seo-guide="fgo"><h2>確定召喚の予算と福袋の例</h2><p>2022年の公式価格表を前提とした試算では、石0から900個以上を用意する最小例は54,600円です。2026年11周年の福袋は終了済みで、有償15個に対する2022年の価格表での最小例は1,920円です。現在のGoogle Play版の価格・個数は未確認のため、購入画面を確認してください。</p><p><a href="./pity-cost/">FGO天井330回・福袋・Play Pointsの詳しい計算を見る ➔</a></p></section>`;
+  html = html.replace(/<section class="section" data-game-seo-guide="fgo">[\s\S]*?<\/section>/, block);
   html = insertBeforeRequired(html, '<section class="section game-source-section">', block, 'data-game-seo-guide="fgo"', 'FGO guide block');
   return writeIfChanged(rootDir, file, html);
 }
