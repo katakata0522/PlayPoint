@@ -37,7 +37,7 @@ function getJapaneseCalculator(game) {
   let presets = [];
   let budgets = [];
   if (game.id === 'fgo') {
-    packs = GAME_SEO.fgo.packsJa.map(p => ({ id: `quartz-${p.paid}`, name: `聖晶石 有償${p.paid}+無償${p.free}個（計${p.total}個 / ${p.price.toLocaleString('ja-JP')}円）`, tableName: `聖晶石 有償${p.paid}+無償${p.free}個（計${p.total}個）`, price: p.price }));
+    packs = GAME_SEO.fgo.packsJa.map(p => ({ id: `quartz-${p.paid}`, name: `聖晶石 有償${p.paid}+無償${p.free}個（計${p.total}個 / ${p.price.toLocaleString('ja-JP')}円・2022年参考）`, tableName: `聖晶石 有償${p.paid}+無償${p.free}個（計${p.total}個・2022年参考）`, price: p.price }));
     // 複数購入の組み合わせは記事で説明し、ここでは支払額の入力ショートカットにする。
     budgets = [GAME_SEO.fgo.luckyBag.cheapestVerifiedSpendFromZero, 10000, GAME_SEO.fgo.pity.cheapestVerifiedSpendFromZero];
   } else if (game.id === 'umamusume') {
