@@ -54,10 +54,21 @@ test('不正な購入回数と獲得率を拒否する', () => {
 
 test('記事は税抜・四捨五入・機能の限界を明示する', () => {
   const html = fs.readFileSync(articlePath, 'utf8');
-  assert.match(html, /税金を除いた対象価格/);
-  assert.match(html, /その結果を<strong>最も近い整数へ丸める（四捨五入する）<\/strong>/);
-  assert.match(html, /分割購入と合計計算で差が出る理由/);
-  assert.match(html, /税額や対象可否を判定せず/);
+  const section = id => {
+    const match = html.match(new RegExp(`<section\\b[^>]*>\\s*<h2 id="${id}">[\\s\\S]*?<\\/section>`));
+    assert.ok(match, `${id}: 対応する本文セクションが必要`);
+    return normalizeText(match[0]);
+  };
+  const formula = section('article-section-4');
+  const comparison = section('article-section-6');
+  const simulator = section('article-section-7');
+  assert.match(formula, /税金を除(?:いた|く)対象(?:アイテム)?価格/);
+  assert.match(formula, /最も近い整数(?:へ|に)丸める/);
+  assert.match(comparison, /購入ごとに丸める/);
+  assert.match(comparison, /合計80円として一度だけ丸める/);
+  assert.match(comparison, /地域の最低条件などを計算に入れず/);
+  assert.match(comparison, /この購入で実際に2ポイント付くことを示すものではありません/);
+  assert.match(simulator, /税額、購入の対象可否や地域の最低条件を判定せず/);
   assert.match(html, /play-points-rounding\.js/);
   assert.match(html, /support\.google\.com\/googleplay\/answer\/9077192/);
   assert.match(html, /support\.google\.com\/googleplay\/answer\/9080348/);
@@ -66,10 +77,12 @@ test('記事は税抜・四捨五入・機能の限界を明示する', () => {
 
 test('記事冒頭は通常獲得率と交換価値を分けて即答する', () => {
   const html = fs.readFileSync(articlePath, 'utf8');
-  assert.match(html, /結論：通常のブロンズは対象価格100円で1ポイント/);
-  assert.match(html, /税金を除いた対象アイテム価格100円あたり1ポイント/);
-  assert.match(html, /1ポイントを貯めるための購入額/);
-  assert.match(html, /使うときの円換算は別で、交換先によって変わります/);
+  const answer = html.match(/<section\b[^>]*class="answer-box"[^>]*>[\s\S]*?<\/section>/)?.[0];
+  assert.ok(answer, '冒頭の回答欄が必要');
+  const text = normalizeText(answer);
+  assert.match(text, /日本のブロンズでは通常、税金を除いた対象価格100円あたり1ポイント/);
+  assert.match(text, /ポイントを貯めるときの金額/);
+  assert.match(text, /ポイントを使うときの価値は交換先によって変わります/);
 });
 
 test("記事固有の導線だけを1つずつ表示し、自動導線の重複を防ぐ", () => {
@@ -120,10 +133,15 @@ test('記事固有の条件説明は生成後も読める', () => {
   const config = EDITORIAL_TARGETS['articles/2026-07-24-play-points-1-value.html'];
   const rendered = renderKnowledgeBoundary(config);
   const html = fs.readFileSync(articlePath, 'utf8');
-  for (const text of ['税金を除いた対象アイテム価格', '最も近い整数', '購入前', '購入後']) {
-    assert.ok(rendered.includes(text));
-    assert.ok(html.includes(text));
-  }
+  assert.equal(config.manualStructure, true, '記事固有の手書き構成を維持');
+  for (const text of ['税金を除いた対象アイテム価格', '最も近い整数', '購入前', '購入後']) assert.ok(rendered.includes(text));
+  const boundary = html.match(/<section\b[^>]*class="knowledge-boundary"[^>]*>[\s\S]*?<\/section>/)?.[0];
+  assert.ok(boundary, '手書きの獲得・交換条件の説明が必要');
+  const text = normalizeText(boundary);
+  assert.match(text, /貯まったポイントを何に使えるかは、交換先の条件次第/);
+  assert.match(text, /2023年.*100ポイント.*100円分.*Playクレジット/);
+  assert.match(text, /現在の交換条件は、自分の「使う」画面/);
+  assert.match(normalizeText(html), /購入前の獲得予定ポイント、購入後の履歴/);
   assert.doesNotMatch(rendered, /knowledge-boundary__grid/);
 });
 
@@ -153,5 +171,9 @@ test('記事台帳は既存記事の役割を維持して更新日と説明を�
   assert.ok(entry);
   assert.ok(modified, 'article last-modified is required');
   assert.equal(entry.modified, modified);
-  assert.match(entry.description, /商品ごとの四捨五入/);
+  const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1];
+  assert.equal(entry.description, description, '記事と台帳の説明文は一致');
+  assert.match(entry.description, /貯める金額と交換価値の違い/);
+  assert.match(entry.description, /税抜対象価格と獲得率/);
+  assert.match(entry.description, /購入ごとと合計後の丸め方/);
 });
