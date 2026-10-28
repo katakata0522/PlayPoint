@@ -79,19 +79,24 @@ function improveGameGuide(html, article) {
 }
 
 function improveDiagnostic(html) {
-  html = html.replace(/<!-- reader-diagnostic:start -->[\s\S]*?<!-- reader-diagnostic:end -->\s*/g, '');
-  const choices = `<nav class="reader-situation-links" aria-label="消えたものから確認する"><a href="#check">ポイント残高が減った</a><a href="/articles/2026-08-16-january-rank-reset.html">今年のランク進捗が戻った</a><a href="/articles/2026-08-16-weekly-reward-not-showing.html">週次の特典カードが消えた</a><a href="/articles/2026-03-10-play-points-reflection-timing.html">購入したポイントが付かない</a></nav>`;
-  const quick = /(<section\b[^>]*aria-labelledby="quick-answer"[^>]*>)[\s\S]*?(<\/section>)/;
-  return html.replace(quick, '$1<h2 id="quick-answer">まず、消えたものを選んでください</h2><p>ポイント残高、今年のランク進捗、週次の特典カードは別の数字です。購入後に増えていない場合は、残高の失効より先に付与条件を確認します。</p><!-- reader-diagnostic:start -->' + choices + '<!-- reader-diagnostic:end -->$2');
+  const choices = `<nav class="reader-situation-links" aria-label="消えたものから確認する"><a href="#check">ポイント残高が減った</a><a href="/articles/2026-08-16-january-rank-reset.html">今年のランク進捗が戻った</a><a href="/articles/2026-08-16-weekly-reward-not-showing.html">週次の特典カードが消えた</a><a href="/articles/2026-03-10-play-points-reflection-timing.html">購入で獲得するポイントが付かない</a></nav>`;
+  const marker = /<!-- reader-diagnostic:start -->[\s\S]*?<!-- reader-diagnostic:end -->/;
+  if (marker.test(html)) return html.replace(marker, '<!-- reader-diagnostic:start -->' + choices + '<!-- reader-diagnostic:end -->');
+  const quick = /(<section\b[^>]*aria-labelledby="quick-answer"[^>]*>[\s\S]*?)(<\/section>)/;
+  return html.replace(quick, '$1<!-- reader-diagnostic:start -->' + choices + '<!-- reader-diagnostic:end -->$2');
 }
 
 function improveBeginner(html) {
-  html = html.replace(/<!-- reader-steps:start -->[\s\S]*?<!-- reader-steps:end -->\s*/g, '');
+  const hasSteps = /<!-- reader-steps:start -->[\s\S]*?<!-- reader-steps:end -->/.test(html);
   const figure = '<!-- reader-steps:start --><figure class="reader-step-figure"><img src="/images/guides/play-points-start.svg" width="480" height="540" loading="lazy" alt="Google Playストアを開く、プロフィールを選ぶ、Play Pointsを選ぶ、無料で開始の順番"><figcaption>Androidでの登録手順。操作の順番を示した図です。表示名や位置はアプリのバージョンで異なる場合があります。</figcaption></figure><p class="reader-source"><a href="https://support.google.com/googleplay/answer/9077312?co=GENIE.CountryCode%3DJP&amp;hl=ja">Google公式の登録手順（日本向け、2026年10月4日確認）</a></p><!-- reader-steps:end -->';
-  html = html.replace(/(<div class="steps">[\s\S]*?<\/div>)/, '$1\n' + figure);
-  html = html.replace(/<!-- reader-calculation:start -->[\s\S]*?<!-- reader-calculation:end -->\s*/g, '');
-  const example = '<!-- reader-calculation:start --><aside class="callout"><h3>対象額500円の計算例</h3><p>日本の通常獲得率なら、税を除いた対象額500円でブロンズは5ポイント、シルバーは6ポイントです。シルバーの計算値6.25を購入ごとに四捨五入します。税込の支払額や複数購入の合計を、そのまま対象額と混同しないでください。</p><p><a href="/">自分の購入額・ランクで計算する</a> ／ <a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja">Google公式の計算例（日本）</a></p></aside><!-- reader-calculation:end -->';
-  html = html.replace(/(<p class="small">※対象購入ごとに計算され[\s\S]*?<\/p>)/, '$1\n' + example);
+  if (!hasSteps) html = html.replace(/(<div class="steps">[\s\S]*?<\/div>)/, '$1\n' + figure);
+  const hasCalculation = /<!-- reader-calculation:start -->[\s\S]*?<!-- reader-calculation:end -->/.test(html);
+  const example = '<!-- reader-calculation:start --><aside class="callout"><h3>対象額500円の計算例</h3><p>日本の通常獲得率なら、税を除いた対象額500円でブロンズは5ポイント、シルバーは6ポイントです。シルバーの計算値6.25を購入ごとに四捨五入します。税込の支払額や複数購入の合計を、そのまま対象額と混同しないでください。</p><p>購入額からポイントを計算するときは、計算機を開いて「逆算モード」を選んでください。</p><p><a href="/">自分の購入額・ランクで計算する</a> ／ <a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja">Google公式の計算例（日本）</a></p></aside><!-- reader-calculation:end -->';
+  if (!hasCalculation) {
+    const legacy = /(<p class="small">※対象購入ごとに計算され[\s\S]*?<\/p>)/;
+    const current = /(<p class="small">税金はポイント計算の対象外です。[\s\S]*?<\/p>)/;
+    html = html.replace(legacy.test(html) ? legacy : current, '$1\n' + example);
+  }
   return html.replace('画面の案内に従って<strong>「参加」または「有効にする」</strong>を選ぶ', '画面の案内に従って<strong>「無料で開始」</strong>を選ぶ');
 }
 
@@ -106,7 +111,7 @@ function syncReaderImprovements(root) {
     if (after !== before) { fs.writeFileSync(file, after); changed++; }
   }
   for (const [name, transform] of [['2026-08-16-points-disappeared.html', improveDiagnostic], ['2025-12-25-getting-started.html', improveBeginner]]) {
-    const file = path.join(root, 'articles', name), before = fs.readFileSync(file, 'utf8'), after = updateDate(transform(before), name === '2026-08-16-points-disappeared.html' ? '2026-10-14' : modified);
+    const file = path.join(root, 'articles', name), before = fs.readFileSync(file, 'utf8'), after = transform(before);
     if (after !== before) { fs.writeFileSync(file, after); changed++; }
   }
   const calendarFile = path.join(root, 'articles/2026-09-19-play-points-calendar-schedule-guide.html');
@@ -136,7 +141,7 @@ function syncReaderImprovements(root) {
     const after = improveReaderLinks(before, article, byId);
     if (after !== before) { fs.writeFileSync(articleFile, after); changed++; }
   }
-  for (const article of manifest) if (article.source === 'game-guide' || ['getting-started', 'points-disappeared'].includes(article.id)) article.modified = article.source === 'game-guide' ? GAME_GUIDE_ARTICLES.find(guide => guide.id === article.id).modified : article.id === 'points-disappeared' ? '2026-10-14' : modified;
+  for (const article of manifest) if (article.source === 'game-guide') article.modified = GAME_GUIDE_ARTICLES.find(guide => guide.id === article.id).modified;
   const calendarEntry = manifest.find(article => article.id === 'play-points-calendar-schedule-guide-2026');
   if (calendarEntry) calendarEntry.modified = calendarModified;
   fs.writeFileSync(file, JSON.stringify(manifest, null, 2) + '\n');
