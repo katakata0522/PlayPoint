@@ -1,3 +1,11 @@
 html[data-reading-theme] .main-content-column .article-calculator-prompt__button {
   color: #fff !important;
 }
+
+@media (max-width: 600px) {
+  html body .main-content-column table.reading-responsive-table > caption {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
