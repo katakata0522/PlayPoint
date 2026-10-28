@@ -1784,7 +1784,7 @@ const MANUAL_FEST_ARTICLES = [
   {
     "file": "en/articles/2026-10-12-google-play-fest-2026.html",
     "lang": "en",
-    "title": "Google Play Fest 2026 is live! US rewards, boosts and key dates",
+    "title": "Google Play Fest 2026 recap: US sweepstakes and past offers",
     "publishedAt": "2026-10-12",
     "modifiedAt": "2026-10-12",
     "manual": true
@@ -1792,7 +1792,7 @@ const MANUAL_FEST_ARTICLES = [
   {
     "file": "en/articles/2026-10-12-play-pass-double-points-6x.html",
     "lang": "en",
-    "title": "Play Pass double points and 6x boosts: the US Play Fest 2026 offer",
+    "title": "Play Pass double points and 6x boosts: US Play Fest 2026 recap",
     "publishedAt": "2026-10-12",
     "modifiedAt": "2026-10-12",
     "manual": true
@@ -1800,7 +1800,7 @@ const MANUAL_FEST_ARTICLES = [
   {
     "file": "ko/articles/2026-10-12-google-play-fest-2026.html",
     "lang": "ko",
-    "title": "한국 Play 페스타 2026 시작! 교환 상품과 해피 아워 한눈에",
+    "title": "한국 Play 페스타 2026 기록｜교환 상품과 해피 아워",
     "publishedAt": "2026-10-12",
     "modifiedAt": "2026-10-12",
     "manual": true
@@ -1808,7 +1808,7 @@ const MANUAL_FEST_ARTICLES = [
   {
     "file": "ko/articles/2026-10-12-play-pass-double-points-6x.html",
     "lang": "ko",
-    "title": "Play Pass 포인트 2배·6배 부스트: 한국 Play 페스타 2026 혜택",
+    "title": "Play Pass 포인트 2배·6배 부스트: 한국 Play 페스타 2026 기록",
     "publishedAt": "2026-10-12",
     "modifiedAt": "2026-10-12",
     "manual": true
@@ -1816,7 +1816,7 @@ const MANUAL_FEST_ARTICLES = [
   {
     "file": "tw/articles/2026-10-12-google-play-fest-2026.html",
     "lang": "zh-TW",
-    "title": "台灣 Play 盛典 2026 開跑！聯賽、任務與每日點數優惠",
+    "title": "台灣 Play 盛典 2026 回顧：聯賽、任務與點數優惠",
     "publishedAt": "2026-10-12",
     "modifiedAt": "2026-10-12",
     "manual": true
@@ -1824,7 +1824,7 @@ const MANUAL_FEST_ARTICLES = [
   {
     "file": "tw/articles/2026-10-12-play-pass-double-points-6x.html",
     "lang": "zh-TW",
-    "title": "Play Pass 雙倍點數與 6 倍優惠：台灣 Play 盛典 2026 使用指南",
+    "title": "Play Pass 雙倍點數與 6 倍優惠：台灣 Play 盛典 2026 紀錄",
     "publishedAt": "2026-10-12",
     "modifiedAt": "2026-10-12",
     "manual": true
