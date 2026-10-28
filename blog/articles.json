@@ -2192,13 +2192,13 @@
       "ウィークリーリワード",
       "クエスト"
     ],
-    "description": "Google Play Pointsを予定購入以外で受け取れる正規特典を、通常週次、スーパー週次、アプリ体験、クエスト、Play Passに分けて選べる入口ガイドです。",
+    "description": "追加購入なしの週次リワードやアプリ体験、クエストの条件を紹介。Play Passや購入が必要な特典は費用を分けて解説します。",
     "file": "../articles/2026-07-24-earn-play-points-free.html",
     "thumbnail": "../articles/thumbnails/earn-play-points-free-square-v1.webp",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/2026-07-24-earn-play-points-free.png",
     "thumbnailKind": "generic",
-    "listDescription": "予定購入以外でもらえる正規の特典を探す方へ。週次、アプリ体験、クエスト、Play Passの条件から選べます。"
+    "listDescription": "追加購入なしで試せる週次・アプリ体験と、購入やPlay Pass契約が必要な特典の違いを確認できます。"
   },
   {
     "id": "points-value-100",
