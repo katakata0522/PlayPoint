@@ -1473,7 +1473,7 @@
     "description": "アプリを試すPlay Points特典が付かない時に、初回インストール、24時間以内に2分以上利用、パーソナライズ設定、対象アカウントを順番に確認します。",
     "file": "../articles/2026-08-19-install-offer-points-not-received.html",
     "thumbnail": "../articles/thumbnails/install-offer-points-not-received-square-v1.webp",
-    "modified": "2026-10-14",
+    "modified": "2026-10-28",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-19-install-offer-points-not-received.png",
     "thumbnailKind": "generic",
