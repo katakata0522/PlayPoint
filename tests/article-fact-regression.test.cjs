@@ -157,13 +157,13 @@ test('1月1日再判定記事は残高リセットと到達年の即日降格を
 
 test('Play Pass記事は日本の木曜週次と加入時Gold特典を別制度として扱う', () => {
   const html = readArticle('2026-08-16-play-pass-worth-it.html');
-  assert.match(html, /日本は、Play Pass加入者向けPlay Points週次ボーナス・ブースターの公式対象地域に含まれます/);
+  assert.match(html, /日本も対象地域に含まれていて、利用にはPlay Pointsへの参加が必要/);
   assert.match(html, /木曜日/);
-  assert.match(html, /金曜のステータス別週次リワードとは別制度/);
-  assert.match(html, /ゴールド・プラチナ・ダイヤモンド.*毎週木曜日.*Super Ticket|毎週木曜日.*Super Ticket/);
+  assert.match(html, /金曜更新の通常のウィークリーリワードとは、別に楽しめる/);
+  assert.match(html, /Play Pass加入者向けの追加Super Ticket.*ゴールド・プラチナ・ダイヤモンドの加入者に木曜1枚/);
   assert.match(html, /answer\/16507543/);
   assert.match(html, /answer\/14673382/);
-  assert.match(html, /日本はその対象国リストに入っていません/);
+  assert.match(html, /日本は含まれていません/);
   assert.doesNotMatch(html, /日本でPlay Passに入るとゴールドになります[^か]/);
 });
 
