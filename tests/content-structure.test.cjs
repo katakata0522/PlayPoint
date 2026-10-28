@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
-const { insertStaticPrompt } = require('../scripts/article-static-usability.cjs');
+const { insertStaticPrompt, DEFAULT_PROMPT_COPY } = require('../scripts/article-static-usability.cjs');
 
 const root = path.resolve(__dirname, '..');
 
@@ -191,3 +191,54 @@ test('公開記事のknowledge boundaryは見出しと説明を持つ', () => {
   }
   assert.ok(boundaries > 0, 'knowledge-boundary coverage must not be empty');
 });
+
+// 編集済みCTAと従来の自動生成CTAは別の契約として検証する。
+{
+const files = [
+  '2026-07-24-play-points-100-value.html',
+  '2026-07-24-play-points-500-1000-value.html',
+  '2026-08-05-fastest-silver.html',
+  '2026-08-16-fastest-gold.html',
+  '2026-08-16-fastest-platinum.html'
+];
+const options = file => ({ relativePath: `articles/${file}`, listed: true });
+const shell = '<article class="content"><section class="answer-box"><h2>答え</h2></section></article>';
+
+test('編集済みの計算CTAは文言・リンク・見出しをそのまま保持する', () => {
+  const custom = '<article class="content"><section class="answer-box"><h2>答え</h2></section><aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" data-editorial-article-prompt="true"><h2 id="article-section-1">専用</h2><a href="/points-cost/?points=500">試算</a></aside></article>';
+  assert.equal(insertStaticPrompt(custom, options(files[1])), custom);
+});
+
+test('編集済みマーカーのない自動生成CTAは従来どおり更新する', () => {
+  const old = '<article class="content"><section class="answer-box"><h2>答え</h2></section><aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true"><p>旧文</p></aside></article>';
+  const updated = insertStaticPrompt(old, options(files[1]));
+  assert.ok(!updated.includes('旧文'));
+  assert.ok(updated.includes(DEFAULT_PROMPT_COPY.body));
+  assert.ok(!updated.includes('data-editorial-article-prompt'));
+  assert.equal(insertStaticPrompt(updated, options(files[1])), updated);
+});
+
+test('CTA欠落時は対象5記事のアンカーを復元し、専用計算機も維持する', () => {
+  for (const file of files) {
+    const result = insertStaticPrompt(shell, options(file));
+    assert.match(result, /id="article-section-1"/);
+    assert.match(result, /data-editorial-article-prompt="true"/);
+    assert.equal(insertStaticPrompt(result, options(file)), result);
+    if (file.includes('500-1000')) assert.ok(result.includes('href="/points-cost/?points=500"'));
+  }
+});
+
+test('公開済みの編集済み導線には欠落・重複した見出しIDがない', () => {
+  for (const file of files) {
+    const html = fs.readFileSync(path.join(root, 'articles', file), 'utf8');
+    if (!html.includes('data-editorial-article-prompt="true"')) continue;
+    const prompt = html.match(/<aside\b[^>]*data-editorial-article-prompt="true"[^>]*>[\s\S]*?<\/aside>/)?.[0] || '';
+    const footer = html.match(/<!-- reader-followthrough:start -->[\s\S]*?<!-- reader-followthrough:end -->/)?.[0] || '';
+    assert.ok(prompt.includes('id="article-section-1"'), file);
+    assert.ok(footer.includes('data-editorial-followthrough="true"') && footer.includes('id="article-section-2"'), file);
+    assert.equal((html.match(/id="article-section-1"/g) || []).length, 1, file);
+    assert.equal((html.match(/id="article-section-2"/g) || []).length, 1, file);
+  }
+});
+
+}

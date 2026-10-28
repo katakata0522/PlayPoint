@@ -6,6 +6,14 @@ const { classifyArticleRole } = require('./article-role-registry.cjs');
 const { RELATED_CHOICES } = require('./reader-related-choices.cjs');
 const escape = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 const { GUIDE_H1: HUB_TITLE, GUIDE_DESCRIPTION: HUB_DESCRIPTION } = require('./japanese-guide-brand.cjs');
+// 個別に編集されたランク・ポイント記事の末尾導線とアンカーを守る。
+const PRESERVED_FOLLOWTHROUGH = new Set([
+  'articles/2026-07-24-play-points-100-value.html',
+  'articles/2026-07-24-play-points-500-1000-value.html',
+  'articles/2026-08-05-fastest-silver.html',
+  'articles/2026-08-16-fastest-gold.html',
+  'articles/2026-08-16-fastest-platinum.html'
+]);
 const QUESTIONS = [
   ['Google Play Passって何？', '定額サービスとポイント特典の関係', '/articles/2026-08-16-play-pass-worth-it.html#play-pass-basics'],
   ['ゴールドになると何が変わる？', '必要ポイントとランク別の特典', '/articles/2026-08-05-play-points-levels-guide.html'],
@@ -84,11 +92,18 @@ function syncReaderFoundations(root, { hubOnly = false } = {}) {
     const primaryHrefs = [...primaryAction.matchAll(/href="([^"]+)"/g)].map(match => new URL(match[1], 'https://playpoint-sim.com/' + article.file.replace(/^\.\.\//, '')).pathname);
     const uniqueActions = actions.filter(([url]) => !primaryHrefs.includes(new URL(url, 'https://playpoint-sim.com/').pathname));
     const actionList = uniqueActions.length ? `<ul>${uniqueActions.map(([url, name]) => `<li><a href="${escape(url)}">${escape(name)} →</a></li>`).join('')}</ul>` : '';
-    const body = `<nav class="reader-followthrough" aria-label="読んだ後の確認先"><h2>${uniqueActions.length ? 'このあと確認すること' : '別の疑問を調べる'}</h2>${actionList}<p><a href="/blog/">記事トップから別の疑問を探す</a></p></nav>`;
+    const preserveFollowthrough = PRESERVED_FOLLOWTHROUGH.has(article.file.replace(/^\.\.\//, ''));
+    const existingFollowthrough = /<!-- reader-followthrough:start -->[\s\S]*?<!-- reader-followthrough:end -->/.exec(html)?.[0] || '';
+    const keepEditorialFollowthrough = preserveFollowthrough && /\bdata-editorial-followthrough=["']true["']/.test(existingFollowthrough);
+    const headingId = preserveFollowthrough && !existingFollowthrough && !/\bid=["']article-section-2["']/.test(html) ? ' id="article-section-2"' : '';
+    const editorialMarker = preserveFollowthrough && !existingFollowthrough ? ' data-editorial-followthrough="true"' : '';
+    const body = `<nav class="reader-followthrough"${editorialMarker} aria-label="読んだ後の確認先"><h2${headingId}>${uniqueActions.length ? 'このあと確認すること' : '別の疑問を調べる'}</h2>${actionList}<p><a href="/blog/">記事トップから別の疑問を探す</a></p></nav>`;
     // 個別のおすすめ欄がある記事では、同じ記事への追加導線を重ねない。
-    html = html.includes('data-editorial-next="true"') || (!uniqueActions.length && primaryHrefs.length)
-      ? html.replace(/<!-- reader-followthrough:start -->[\s\S]*?<!-- reader-followthrough:end -->\s*/g, '')
-      : replaceBlock(html, 'reader-followthrough', body, (source, block) => source.replace(/(<(?:div|section)\b[^>]*class="[^"]*author-profile-box[^\"]*"[^>]*>)/, block + '$1'));
+    if (!keepEditorialFollowthrough) {
+      html = html.includes('data-editorial-next="true"') || (!uniqueActions.length && primaryHrefs.length)
+        ? html.replace(/<!-- reader-followthrough:start -->[\s\S]*?<!-- reader-followthrough:end -->\s*/g, '')
+        : replaceBlock(html, 'reader-followthrough', body, (source, block) => source.replace(/(<(?:div|section)\b[^>]*class="[^"]*author-profile-box[^\"]*"[^>]*>)/, block + '$1'));
+    }
     // 古い相対リンクも、用途が分かる名称に統一する。
     html = html.replace(/(<a\b[^>]*href="(?:\.\.\/blog\/|\/blog\/)"[^>]*>)\s*(?:記事一覧(?:へ)?|攻略記事一覧)\s*(<\/a>)/g, '$1記事トップ$2');
     fs.writeFileSync(file, html);
