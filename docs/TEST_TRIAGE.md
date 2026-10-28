@@ -1,5 +1,9 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-28 POSA3記事の公開準備
+
+既存article-image-assetsの冪等性fixtureを.jpgへ切り替え、台帳・head・JSON-LD・TwitterでJPEG名が保持されることを確認する。ogp-standardizationは.pngの既存契約と新規.jpgを両方検査し、全画像のJPEG実体・1200×630・一意性を維持する。台帳の件数を3記事増加分に同期する。記事の公式条件・期限切れ状態は既存article-fact-regressionで確認する。新しいテストファイル・必須ゲートは追加しない。
+
 ## 2026-10-26 プロフィール構造化データの更新日時
 
 既存author-hreflangで公開4言語と再生成3言語のProfilePageを解析し、dateModifiedがタイムゾーン付きISO日時で、既存の日付台帳・last-modifiedの日付を保持することを確認する。記事と同じ日単位→日本時間日境界の直列化を再利用し、表示日・サイトマップ・本文を変えない。新しいテストファイルや必須ゲートは追加しない。
