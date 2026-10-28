@@ -10,3 +10,7 @@
     box-sizing: border-box;
   }
 }
+
+html[data-reading-theme="dark"] #main-content .intro strong {
+  color: inherit;
+}
