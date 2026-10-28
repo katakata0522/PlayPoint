@@ -9,6 +9,33 @@ function readArticle(fileName) {
   return fs.readFileSync(path.join(root, 'articles', fileName), 'utf8');
 }
 
+test('POSA3記事は保証額・締切・終了した楽天クーポンを区別する', () => {
+  const seven = readArticle('2026-10-23-seven-eleven-gift-card-lottery.html');
+  const family = readArticle('2026-10-23-familymart-gift-card-lottery.html');
+  const comparison = readArticle('2026-10-23-google-play-gift-card-comparison.html');
+  for (const html of [seven, family, comparison]) {
+    assert.match(html, /専用の?[「]?10口抽選|専用の「10口抽選」/);
+    assert.match(html, /support\.google\.com\/googleplay\/answer\/16585331/);
+    assert.match(html, /ogp\/2026-10-23-[a-z-]+\.jpg/);
+  }
+  assert.match(seven, /1,000円につき1口/);
+  assert.match(seven, /11月17日[\s\S]{0,40}23:59/);
+  assert.match(seven, /1口ずつ10回引いても保証にはなりません/);
+  assert.match(family, /11月2日23:59/);
+  assert.match(family, /11月3日23:59/);
+  assert.match(family, /累計30,000円/);
+  assert.match(family, /1対象期間につき3,000円相当が上限/);
+  assert.match(family, /予定当選本数に達した場合/);
+  assert.match(family, /PayPayマネーライト/);
+  assert.doesNotMatch(family, /対象期間はまだ始まっていません/);
+  for (const html of [comparison, readArticle('2026-06-20-discount-gift-cards.html')]) {
+    assert.match(html, /200円OFFクーポンは10月27日9:59に終了/);
+    assert.match(html, /利用開始前/);
+    assert.match(html, /11\/4 20:00[〜～]11\/11 1:59/);
+    assert.doesNotMatch(html, /楽天が向く人｜200円OFF|クーポン利用10\/24|まだ使えません。利用開始は10月24日/);
+  }
+});
+
 test('ランク別週次・Super Ticket・Play Pass週次を現行仕様で区別する', () => {
   const html = readArticle('2025-12-25-weekly-reward.html');
   assert.match(html, /シルバー.*ウィークリーリワード/);
@@ -157,13 +184,13 @@ test('1月1日再判定記事は残高リセットと到達年の即日降格を
 
 test('Play Pass記事は日本の木曜週次と加入時Gold特典を別制度として扱う', () => {
   const html = readArticle('2026-08-16-play-pass-worth-it.html');
-  assert.match(html, /日本は、Play Pass加入者向けPlay Points週次ボーナス・ブースターの公式対象地域に含まれます/);
+  assert.match(html, /日本も対象地域に含まれていて、利用にはPlay Pointsへの参加が必要/);
   assert.match(html, /木曜日/);
-  assert.match(html, /金曜のステータス別週次リワードとは別制度/);
-  assert.match(html, /ゴールド・プラチナ・ダイヤモンド.*毎週木曜日.*Super Ticket|毎週木曜日.*Super Ticket/);
+  assert.match(html, /金曜更新の通常のウィークリーリワードとは、別に楽しめる/);
+  assert.match(html, /Play Pass加入者向けの追加Super Ticket.*ゴールド・プラチナ・ダイヤモンドの加入者に木曜1枚/);
   assert.match(html, /answer\/16507543/);
   assert.match(html, /answer\/14673382/);
-  assert.match(html, /日本はその対象国リストに入っていません/);
+  assert.match(html, /日本は含まれていません/);
   assert.doesNotMatch(html, /日本でPlay Passに入るとゴールドになります[^か]/);
 });
 

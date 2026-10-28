@@ -17,6 +17,7 @@ function syncHtmlFile(rootDir, file, assetVersions, todayStr) {
   content = replaceAssetVersion(content, 'article-shared.css', assetVersions.articleSharedCssVersion);
   content = replaceAssetVersion(content, 'article.js', assetVersions.articleScriptVersion);
   content = replaceDateMetadata(content, todayStr, {
+    dateModifiedAsDateTime: file === 'author/katakata.html',
     includeEnglish: true,
     includeTraditionalChinese: true
   });

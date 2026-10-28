@@ -1,5 +1,7 @@
 'use strict';
 
+const { formatArticleDateTime } = require('./article-date-contract.cjs');
+
 function replaceAssetVersion(content, assetPath, version) {
   if (!version) return content;
   const escapedAssetPath = assetPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -19,7 +21,8 @@ function replaceDateMetadata(content, todayStr, options = {}) {
     /(<meta property="article:modified_time" content=")[^"]+("\s*\/?>)/g,
     `$1${todayStr}T00:00:00+09:00$2`
   );
-  output = output.replace(/"dateModified": "[^"]+"/g, `"dateModified": "${todayStr}"`);
+  const modifiedAt = options.dateModifiedAsDateTime ? formatArticleDateTime(todayStr) : todayStr;
+  output = output.replace(/"dateModified": "[^"]+"/g, `"dateModified": "${modifiedAt}"`);
   output = output.replace(/最終更新: \d{4}-\d{2}-\d{2}/g, `最終更新: ${todayStr}`);
 
   if (includeEnglish) {

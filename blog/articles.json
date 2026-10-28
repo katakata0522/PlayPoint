@@ -864,9 +864,9 @@
   },
   {
     "id": "google-play-fest-2026-editorial",
-    "title": "Google Playフェス2026開催中！限定交換品・書籍15倍と、今チェックしたいこと",
-    "listTitle": "Playフェス開催中！限定交換品と書籍15倍をチェック",
-    "description": "Google Playフェス2026の日本向け公式情報を10月16日に再確認。書籍15倍は10月16〜18日。週次ボーナス2倍・40ptと6倍の案内、交換条件を整理。",
+    "title": "Google Playフェス2026の記録｜限定交換品・書籍15倍【開催終了】",
+    "listTitle": "Playフェス2026の記録｜限定交換品と書籍15倍【終了】",
+    "description": "Google Playフェス2026は10月19日に終了。限定交換品や書籍15倍、Play Pass特典について、開催時に確認した内容を振り返ります。",
     "category": "キャンペーン",
     "browseCategory": "最新情報・イベント",
     "tags": [
@@ -879,9 +879,9 @@
     "file": "../articles/2026-10-10-google-play-fest-2026.html",
     "thumbnail": "../articles/thumbnails/google-play-fest-2026-editorial-square-v1.webp",
     "ogp": "../articles/ogp/google-play-fest-2026-editorial.png",
-    "listDescription": "10/13〜19開催中。書籍15倍の日程と、週次ボーナス2倍・40pt＋6倍の公式案内をチェック。",
+    "listDescription": "10月13〜19日の開催は終了。限定交換品、書籍15倍、Play Pass特典の記録を振り返ります。",
     "date": "2026-10-10",
-    "modified": "2026-10-16",
+    "modified": "2026-10-27",
     "thumbnailKind": "generic",
     "listed": true,
     "related": [
@@ -897,9 +897,9 @@
   },
   {
     "id": "play-fest-2026-deals",
-    "title": "Google Playフェス2026がついに開幕！無料特典・マンガ割引・ギフトカードがお得",
-    "listTitle": "Playフェス開幕！無料体験・マンガ割引・生活ギフトをチェック",
-    "description": "Google Playフェス2026の無料体験、マンガの最大90%オフや無料レンタル、Uber Eatsなどのギフトカード10%割引を紹介。対象者と受付期間も特典ごとに確認できます。",
+    "title": "Google Playフェス2026の特典まとめ｜無料体験・マンガ割引・ギフトカード【開催終了】",
+    "listTitle": "Playフェス2026の特典まとめ【開催終了】",
+    "description": "Google Playフェス2026（10月13〜19日）は終了しました。無料体験、マンガ割引、ギフトカード特典の開催時記録と、個別の受付期限をまとめています。",
     "category": "キャンペーン",
     "browseCategory": "最新情報・イベント",
     "tags": [
@@ -914,9 +914,9 @@
     "file": "../articles/2026-10-13-play-fest-deals.html",
     "thumbnail": "../articles/thumbnails/play-fest-2026-deals-square-v1.webp",
     "ogp": "../articles/ogp/2026-10-13-play-fest-deals.png",
-    "listDescription": "Google Playフェス2026の無料体験、マンガの最大90%オフや無料レンタル、Uber Eatsなどのギフトカード10%割引を紹介。対象者と受付期間も特典ごとに確認できます。",
+    "listDescription": "Google Playフェス2026（10月13〜19日）は終了しました。無料体験、マンガ割引、ギフトカード特典の開催時記録と、個別の受付期限をまとめています。",
     "date": "2026-10-13",
-    "modified": "2026-10-14",
+    "modified": "2026-10-23",
     "thumbnailKind": "generic",
     "listed": true,
     "related": [
@@ -1041,9 +1041,9 @@
   },
   {
     "id": "black-diamond-diamond-vip-2026",
-    "title": "ブラックダイヤモンドの噂を追う！Google Play Pointsの新ランク説とダイヤモンドVIP",
+    "title": "ブラックダイヤモンドは実在する？ ダイヤモンドVIPの噂をTGSの体験と最新情報から追ってみた",
     "date": "2026-10-01",
-    "modified": "2026-10-16",
+    "modified": "2026-10-28",
     "category": "ランク",
     "tags": [
       "Play Points",
@@ -1052,7 +1052,7 @@
       "ダイヤモンド",
       "TGS2026"
     ],
-    "description": "Google Play Pointsに未発表の上位ステータス「Diamond VIP」「Black Diamond」はある？公式の5段階表、TGS2026の招待制VIPラウンジ、公式キャンペーン表記、PlayストアのAPK解析を分けて検証します。必要ポイントや開始日は未確定として整理。",
+    "description": "Google Play PointsのダイヤモンドVIPとブラックダイヤモンドは実在する？TGS2026での現地体験、公式キャンペーン、アプリ解析と利用者報告から、分かっていることを追います。",
     "file": "../articles/2026-10-01-black-diamond-diamond-vip.html",
     "related": [
       [
@@ -1071,8 +1071,8 @@
     "thumbnail": "../articles/thumbnails/black-diamond-diamond-vip-2026-square-v1.webp",
     "source": "article",
     "listed": true,
-    "listTitle": "ブラックダイヤモンドの噂を追う！新ランク説と現地のVIPラウンジ",
-    "listDescription": "公式の公開ランクは5段階。Black Diamond・Diamond VIPの確認できた痕跡と、未確定の条件を分けて確認できます。",
+    "listTitle": "ブラックダイヤモンドは実在する？ ダイヤモンドVIPの噂を追う",
+    "listDescription": "公式キャンペーンやTGSでの体験、利用者の報告をたどり、ダイヤモンドの先について分かっていることを紹介します。",
     "browseCategory": "ランク・ステータス",
     "thumbnailKind": "generic",
     "thumbnailPosition": "left",
@@ -1625,7 +1625,7 @@
   },
   {
     "id": "play-pass-worth-it",
-    "title": "Google Play Passで増える楽しみ｜定額ゲーム・木曜のポイント特典と加入条件",
+    "title": "Google Play Passは何がうれしい？遊び放題と木曜特典、加入前に見たいこと",
     "date": "2026-08-16",
     "category": "キャンペーン",
     "tags": [
@@ -1634,15 +1634,15 @@
       "ウィークリーリワード",
       "ゴールド"
     ],
-    "description": "Google Play Passの定額ゲームと、木曜更新のPlay Pointsボーナス・ブースターを解説。Super Ticket、家族メンバー、新端末での表示条件も確認できます。",
+    "description": "Google Play Passのカタログで遊ぶ楽しみと、木曜更新のポイント特典を紹介。家族共有・無料試用・PC利用の違いや、加入前に見たい料金と条件も確認できます。",
     "file": "../articles/2026-08-16-play-pass-worth-it.html",
     "thumbnail": "../articles/thumbnails/play-pass-worth-it-square-v1.webp",
-    "modified": "2026-10-14",
+    "modified": "2026-10-28",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/play-pass-worth-it.png",
     "thumbnailKind": "generic",
-    "listDescription": "Google Play Passの定額ゲームと、木曜更新のPlay Pointsボーナス・ブースターを解説。Super Ticket、家族メンバー、新端末での表示条件も確認できます。",
-    "listTitle": "Google Play Passの楽しみ方｜定額ゲーム・木曜特典・加入条件"
+    "listDescription": "遊びたいゲームを探すところから、木曜のポイント特典まで。家族共有や無料試用、PC利用の条件も紹介します。",
+    "listTitle": "Google Play Passは何がうれしい？ 遊び放題と木曜特典"
   },
   {
     "id": "pc-play-games-points",
@@ -1721,7 +1721,7 @@
     "description": "ゴールドとプラチナの獲得率・週次特典・サポートを比較。追加約20万円は今年の進捗1,000ポイントからの概算で、現在の不足分と購入予定に合わせて判断します。",
     "file": "../articles/2026-08-16-gold-platinum-worth-it.html",
     "thumbnail": "../articles/thumbnails/gold-platinum-worth-it-square-v1.webp",
-    "modified": "2026-10-14",
+    "modified": "2026-10-28",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/gold-platinum-worth-it.png",
     "thumbnailKind": "generic",
@@ -2235,7 +2235,7 @@
     "description": "楽天市場のGoogle Playギフトコード認定店で、還元上限・エントリー・使い切り期限を買う前に確認する方法です。正規販売と実質負担の見方も整理します。",
     "file": "../articles/2026-06-20-discount-gift-cards.html",
     "thumbnail": "../articles/thumbnails/discount-gift-cards-square-v1.webp",
-    "modified": "2026-10-14",
+    "modified": "2026-10-28",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/discount-gift-cards.png",
     "thumbnailKind": "generic",
@@ -2619,7 +2619,7 @@
     "description": "Google Play Pointsのランクはいつ下がる？到達したランクは翌年12月31日まで維持され、その年のステータス判定ポイントをもとに次の年のランクが再判定されます。",
     "file": "../articles/2025-12-25-playpoints-rank-maintenance.html",
     "thumbnail": "../articles/thumbnails/playpoints-rank-maintenance-square-v1.webp",
-    "modified": "2026-10-16",
+    "modified": "2026-10-27",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/playpoints-rank-maintenance.png",
     "thumbnailKind": "generic",
@@ -2660,5 +2660,116 @@
     "browseCategory": "はじめて・基本",
     "thumbnail": "../articles/thumbnails/google-play-purchase-history-budget-square-v1.webp",
     "thumbnailKind": "generic"
+  },
+  {
+    "id": "2026-10-23-seven-eleven-gift-card-lottery",
+    "title": "【11/15まで】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件",
+    "date": "2026-10-28",
+    "modified": "2026-10-28",
+    "category": "キャンペーン",
+    "tags": [
+      "Google Play",
+      "ギフトカード",
+      "POSA",
+      "セブン‐イレブン"
+    ],
+    "description": "セブンのGoogle Playギフトカード購入で1,000円につき抽選1口。1万円分の10口まとめ抽選で100ポイント保証になる条件と、購入・応募・抽選の締切を解説します。",
+    "listTitle": "【11/15まで】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件",
+    "listDescription": "セブンのGoogle Playギフトカード購入で1,000円につき抽選1口。1万円分の10口まとめ抽選で100ポイント保証になる条件と、購入・応募・抽選の締切を解説します。",
+    "file": "../articles/2026-10-23-seven-eleven-gift-card-lottery.html",
+    "ogp": "../articles/ogp/2026-10-23-seven-eleven-gift-card-lottery.jpg",
+    "thumbnail": "../articles/thumbnails/2026-10-23-seven-eleven-gift-card-lottery-square-v1.webp",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2026-10-23-familymart-gift-card-lottery.html",
+        "【11/2まで】ファミマのGoogle Playギフトカード抽選｜ファミペイ2％相当の条件"
+      ],
+      [
+        "/articles/2026-10-23-google-play-gift-card-comparison.html",
+        "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10月】"
+      ],
+      [
+        "/articles/2026-06-20-discount-gift-cards.html",
+        "通常のギフトコード購入条件を確認する"
+      ]
+    ],
+    "source": "editorial",
+    "listed": true,
+    "browseCategory": "貯める・キャンペーン"
+  },
+  {
+    "id": "2026-10-23-familymart-gift-card-lottery",
+    "title": "【11/2まで】ファミマのGoogle Playギフトカード抽選｜ファミペイ2％相当の条件",
+    "date": "2026-10-28",
+    "modified": "2026-10-28",
+    "category": "キャンペーン",
+    "tags": [
+      "Google Play",
+      "ギフトカード",
+      "POSA",
+      "ファミリーマート"
+    ],
+    "description": "ファミマのGoogle Playギフトカード抽選は購入11月2日、応募11月3日まで。3,000円で1口、3万円分の10口まとめ抽選で100円分保証。ファミペイ2％相当の対象日・上限も整理します。",
+    "listTitle": "【11/2まで】ファミマのGoogle Playギフトカード抽選｜ファミペイ2％相当の条件",
+    "listDescription": "ファミマのGoogle Playギフトカード抽選は購入11月2日、応募11月3日まで。3,000円で1口、3万円分の10口まとめ抽選で100円分保証。ファミペイ2％相当の対象日・上限も整理します。",
+    "file": "../articles/2026-10-23-familymart-gift-card-lottery.html",
+    "ogp": "../articles/ogp/2026-10-23-familymart-gift-card-lottery.jpg",
+    "thumbnail": "../articles/thumbnails/2026-10-23-familymart-gift-card-lottery-square-v1.webp",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2026-10-23-seven-eleven-gift-card-lottery.html",
+        "【11/15まで】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件"
+      ],
+      [
+        "/articles/2026-10-23-google-play-gift-card-comparison.html",
+        "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10月】"
+      ],
+      [
+        "/articles/2026-06-20-discount-gift-cards.html",
+        "通常のギフトコード購入条件を確認する"
+      ]
+    ],
+    "source": "editorial",
+    "listed": true,
+    "browseCategory": "貯める・キャンペーン"
+  },
+  {
+    "id": "2026-10-23-google-play-gift-card-comparison",
+    "title": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10月】",
+    "date": "2026-10-28",
+    "modified": "2026-10-28",
+    "category": "キャンペーン",
+    "tags": [
+      "Google Play",
+      "ギフトカード",
+      "POSA",
+      "購入先比較"
+    ],
+    "description": "10月28日の公式条件で購入先を比較。セブンの100pt保証、ファミマの抽選とファミペイ2％相当、終了した楽天200円引き、11月4日開始の500円引きを分けて紹介します。",
+    "listTitle": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10月】",
+    "listDescription": "10月28日の公式条件で購入先を比較。セブンの100pt保証、ファミマの抽選とファミペイ2％相当、終了した楽天200円引き、11月4日開始の500円引きを分けて紹介します。",
+    "file": "../articles/2026-10-23-google-play-gift-card-comparison.html",
+    "ogp": "../articles/ogp/2026-10-23-google-play-gift-card-comparison.jpg",
+    "thumbnail": "../articles/thumbnails/2026-10-23-google-play-gift-card-comparison-square-v1.webp",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2026-10-23-seven-eleven-gift-card-lottery.html",
+        "【11/15まで】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件"
+      ],
+      [
+        "/articles/2026-10-23-familymart-gift-card-lottery.html",
+        "【11/2まで】ファミマのGoogle Playギフトカード抽選｜ファミペイ2％相当の条件"
+      ],
+      [
+        "/articles/2026-06-20-discount-gift-cards.html",
+        "通常のギフトコード購入条件を確認する"
+      ]
+    ],
+    "source": "editorial",
+    "listed": true,
+    "browseCategory": "貯める・キャンペーン"
   }
 ]

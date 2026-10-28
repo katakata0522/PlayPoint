@@ -52,11 +52,11 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
   async function openOptionalFilters(page) {
     await page.locator('#sort-toggle').waitFor({state:'visible',timeout:10000});
   }
-  async function palette(page, selectors) {
-    return page.evaluate(selectors => {
+  async function palette(page, selectors, { settle = false } = {}) {
+    return page.evaluate(({ selectors, settle }) => {
       const rgb = color => (color.match(/[\d.]+/g)||[]).map(Number).slice(0,3);
       const luminance = color => rgb(color).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((s,v,i)=>s+v*[.2126,.7152,.0722][i],0);
-      return selectors.flatMap(selector=>{
+      const sample = () => selectors.flatMap(selector=>{
         const elements=[...document.querySelectorAll(selector)].filter(el=>el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden');
         if(!elements.length) return [{selector,missing:true}];
         return elements.map((el,index)=>{
@@ -66,7 +66,42 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
           return {selector,index,fg,bg,ratio:(Math.max(a,b)+.05)/(Math.min(a,b)+.05)};
         });
       });
-    },selectors);
+      if (!settle) return sample();
+      // 対象の文字色・背景色が描画上安定してから同時に採色する。
+      // 合格する色を待つ処理ではない。安定した低コントラストは従来どおり不合格にする。
+      return new Promise((resolve, reject) => {
+        let frameId, timer, previous, stableFrames = 0;
+        const colorProperties = new Set(['color', 'background', 'background-color', 'backgroundColor', '-webkit-text-fill-color', 'webkitTextFillColor', 'WebkitTextFillColor']);
+        const finish = (error, values) => {
+          clearTimeout(timer);
+          cancelAnimationFrame(frameId);
+          if (error) reject(error); else resolve(values);
+        };
+        const frame = () => {
+          try {
+            const values = sample(), signature = JSON.stringify(values);
+            const transitioning = selectors.some(selector => [...document.querySelectorAll(selector)].filter(element =>
+              element.getClientRects().length && getComputedStyle(element).visibility !== 'hidden').some(element => {
+              for (let ancestor = element; ancestor; ancestor = ancestor.parentElement) {
+                if (ancestor.getAnimations?.().some(animation => {
+                  if (animation.playState !== 'running' && !animation.pending) return false;
+                  if (colorProperties.has(animation.transitionProperty)) return true;
+                  return animation.effect?.getKeyframes?.().some(keyframe =>
+                    Object.keys(keyframe).some(property => colorProperties.has(property)));
+                })) return true;
+              }
+              return false;
+            }));
+            stableFrames = !transitioning && signature === previous ? stableFrames + 1 : 0;
+            previous = signature;
+            if (stableFrames >= 3) return finish(null, values);
+            frameId = requestAnimationFrame(frame);
+          } catch (error) { finish(error); }
+        };
+        timer = setTimeout(() => finish(new Error('Text palette did not settle within 10000 ms')), 10000);
+        frameId = requestAnimationFrame(frame);
+      });
+    }, { selectors, settle });
   }
   try {
     // 台帳の通信を止めても、最初の12件の本文・リンクを利用できる。
@@ -119,8 +154,9 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
         },theme,{timeout:10000});
         const brand = page.locator('.guide-header .brand');
         assert(await brand.isVisible() && (await brand.innerText()).includes(width <= 760 ? 'PlayPoint' : 'Google Play Points'),`${theme}/${width}: header brand must be visible`);
-        const samples = await palette(page,['h1','.article-card h3','.article-card time','#sort-toggle','#search-input']);
-        if(await page.locator('.card-category:visible').count()) samples.push(...await palette(page,['.card-category']));
+        const selectors = ['h1','.article-card h3','.article-card time','#sort-toggle','#search-input'];
+        if(await page.locator('.card-category:visible').count()) selectors.push('.card-category');
+        const samples = await palette(page, selectors, { settle: true });
         for(const sample of samples) assert(!sample.missing && sample.ratio>=4.5,`${theme}/${width}: ${JSON.stringify(sample)}`);
         const bg = await page.evaluate(()=>getComputedStyle(document.body).backgroundColor);
         report.themes.push({width,theme,bg,samples});

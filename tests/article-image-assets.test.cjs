@@ -17,13 +17,13 @@ const {
   syncArticleImageRoles
 } = require('../scripts/article-image-assets.cjs');
 
-test('画像役割台帳は29ゲーム記事・67一般記事・24専用OGP登録対象を持つ', () => {
+test('画像役割台帳は29ゲーム記事・70一般記事・24専用OGP登録対象を持つ', () => {
   assert.equal(Object.keys(GAME_THUMBNAILS).length, 29);
-  assert.equal(GENERIC_ARTICLE_IDS.size, 67);
+  assert.equal(GENERIC_ARTICLE_IDS.size, 70);
   assert.equal(DEDICATED_OGP_IDS.size, 24);
   const manifest = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8'));
   const mappedIds = new Set([...Object.keys(GAME_THUMBNAILS), ...GENERIC_ARTICLE_IDS]);
-  assert.equal(mappedIds.size, 96);
+  assert.equal(mappedIds.size, 99);
   assert.ok([...mappedIds].every(id => manifest.some(article => article.id === id)), '画像役割台帳の全記事が実manifestに存在する');
   assert.ok([...DEDICATED_OGP_IDS].every(id => manifest.some(article => article.id === id)), '専用OGP対象の全記事が実manifestに存在する');
   assert.ok([...Object.values(GAME_THUMBNAILS)].every(value => /^\.\.\/images\/game-icons\/[a-z0-9-]+\.webp$/.test(value)));
@@ -49,7 +49,7 @@ test('再生成してもmanifest・head・JSON-LDの画像役割が一致し、�
   fs.mkdirSync(path.join(fixture, 'images/game-icons'), { recursive: true });
   for (const file of [
     'articles/ogp/fgo-pity-cost-2026.png',
-    'articles/ogp/example.png',
+    'articles/ogp/example.jpg',
     'articles/thumbnails/super-weekly-reward-prize-history-square-v1.webp',
     'images/game-icons/fgo.webp'
   ]) fs.writeFileSync(path.join(fixture, file), 'asset');
@@ -61,15 +61,15 @@ test('再生成してもmanifest・head・JSON-LDの画像役割が一致し、�
     '<script type="application/ld+json">{"@type":"Article","image":"https://playpoint-sim.com/ogp.png"}</script>' +
     '</head><body><article>本文</article></body></html>';
   const genericHtml = '<!doctype html><html><head>' +
-    '<meta property="og:image" content="https://playpoint-sim.com/articles/ogp/example.png">' +
-    '<meta name="twitter:image" content="https://playpoint-sim.com/articles/ogp/example.png">' +
+    '<meta property="og:image" content="https://playpoint-sim.com/articles/ogp/example.jpg">' +
+    '<meta name="twitter:image" content="https://playpoint-sim.com/articles/ogp/example.jpg">' +
     '<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","image":{"@type":"ImageObject","url":"https://playpoint-sim.com/organization.png"}},{"@type":"Article","image":"https://playpoint-sim.com/articles/ogp/old.png"}]}</script>' +
     '</head><body><article>本文</article></body></html>';
   fs.writeFileSync(path.join(fixture, 'games/fgo/pity-cost/index.html'), gameHtml);
   fs.writeFileSync(path.join(fixture, 'articles/example.html'), genericHtml);
   fs.writeFileSync(path.join(fixture, 'blog/articles.json'), JSON.stringify([
     { id: 'fgo-pity-cost-2026', file: '../games/fgo/pity-cost/index.html', ogp: '../ogp.png', thumbnail: '../ogp.png' },
-    { id: 'super-weekly-reward-prize-history', file: '../articles/example.html', ogp: '../articles/ogp/campaign.png', thumbnail: '../articles/ogp/example.png' }
+    { id: 'super-weekly-reward-prize-history', file: '../articles/example.html', ogp: '../articles/ogp/campaign.png', thumbnail: '../articles/ogp/example.jpg' }
   ], null, 2) + '\n');
 
   const first = syncArticleImageRoles(fixture);
@@ -85,7 +85,7 @@ test('再生成してもmanifest・head・JSON-LDの画像役割が一致し、�
   assert.equal(manifest[0].ogp, '../articles/ogp/fgo-pity-cost-2026.png');
   assert.equal(manifest[1].thumbnail, '../articles/thumbnails/super-weekly-reward-prize-history-square-v1.webp');
   assert.equal(manifest[1].thumbnailKind, 'generic');
-  assert.equal(manifest[1].ogp, '../articles/ogp/example.png');
+  assert.equal(manifest[1].ogp, '../articles/ogp/example.jpg');
   const gameAfter = fs.readFileSync(path.join(fixture, 'games/fgo/pity-cost/index.html'), 'utf8');
   assert.match(gameAfter, /property="og:image" content="https:\/\/playpoint-sim\.com\/articles\/ogp\/fgo-pity-cost-2026\.png"/);
   assert.match(gameAfter, /property="og:image:type" content="image\/jpeg"/);
@@ -95,7 +95,7 @@ test('再生成してもmanifest・head・JSON-LDの画像役割が一致し、�
   const genericSchema = JSON.parse(genericAfter.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   const genericArticle = genericSchema['@graph'].find(node => node['@type'] === 'Article');
   const genericOrganization = genericSchema['@graph'].find(node => node['@type'] === 'Organization');
-  assert.equal(genericArticle.image, 'https://playpoint-sim.com/articles/ogp/example.png');
+  assert.equal(genericArticle.image, 'https://playpoint-sim.com/articles/ogp/example.jpg');
   assert.equal(genericOrganization.image.url, 'https://playpoint-sim.com/organization.png');
   assert.equal(publicUrlForManifestPath(manifest[0].ogp), 'https://playpoint-sim.com/articles/ogp/fgo-pity-cost-2026.png');
 

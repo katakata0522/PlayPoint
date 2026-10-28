@@ -97,7 +97,7 @@ validate_snapshot_dir() {
     echo "Verified history snapshot contains a symlink: $snapshot" >&2
     return 2
   fi
-  for owned_elsewhere in manner kanji-slicer stg.playpoint-sim.com; do
+  for owned_elsewhere in manner kanji-slicer stg.playpoint-sim.com cms; do
     if [ -e "$snapshot/site/$owned_elsewhere" ] || [ -L "$snapshot/site/$owned_elsewhere" ]; then
       echo "Verified history snapshot contains separately owned path: $owned_elsewhere" >&2
       return 2
@@ -209,6 +209,7 @@ archive_live_verified() {
       --exclude '/manner/***' \
       --exclude '/kanji-slicer/***' \
       --exclude '/stg.playpoint-sim.com' \
+      --exclude '/cms' \
       "$root/" "$tmp/site/"
 
     if find "$tmp/site" -type l -print -quit | grep -q .; then
