@@ -42,3 +42,7 @@
 - 英語・韓国語・繁体字の個別記事は `articles/ogp/<locale>-<slug>.png` を専用画像とする。画像実体は共通のJPEG契約に従う。
 - `scripts/generate-intl-article-ogp.cjs` は公開記事の見出し・地域・ゲームアイコンから1200×630の画像を生成する。タイトル改稿時は画像も再生成して視認する。
 - `scripts/intl-article-images.cjs` がビルド中にhead・Article JSON-LDを同期し、既存のSEO最終同期で実体・補助タグを照合する。画像が無い場合に共通画像へ戻さない。
+
+## 2026年10月28日 新規画像の拡張子
+
+新規POSA3記事のOGPは、拡張子とJPEG実体を一致させるため `.jpg` を使用する。1200×630、image/jpeg、記事ごとの一意性、台帳・head・JSON-LD・Twitterの一致は同じ検査で維持する。既存の `.png` 共有URLとApacheによるJPEG配信は互換性のため維持し、一括変更しない。
