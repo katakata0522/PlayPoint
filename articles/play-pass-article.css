@@ -2,3 +2,11 @@
   content-visibility: visible;
   contain-intrinsic-size: none;
 }
+
+@media (max-width: 600px) {
+  #main-content .reading-responsive-table > caption {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
