@@ -92,7 +92,7 @@ async function inspect(browser, baseUrl, article, viewport) {
       const image = await page.locator('.article-eyecatch-wrap img').evaluate(img => ({ loaded: img.complete && img.naturalWidth === 1200 && img.naturalHeight === 630, width: img.getBoundingClientRect().width }));
       assert(image.loaded && image.width <= viewport.width, article.key + '/' + viewport.key + ': dedicated image missing or overflowing');
       const toc = page.locator('.inpage-toc a[href^="#"]').first();
-      const tocDetails = page.locator('details').filter({ has: toc });
+      const tocDetails = page.locator('details.inpage-toc');
       if (await tocDetails.count() && await tocDetails.first().getAttribute('open') === null) await tocDetails.first().locator('summary').click();
       const anchor = await toc.getAttribute('href');
       await toc.click();
