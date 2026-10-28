@@ -79,7 +79,7 @@ test('日本語記事全体は一意の専用OGP画像URL・実体を持ち、ma
     assert.ok(page.manifest, page.file + ': blog/articles.jsonに対応する記事があること');
     const html = fs.readFileSync(htmlPath, 'utf8');
     const url = value(html, 'og:image');
-    assert.match(url, /^https:\/\/playpoint-sim\.com\/articles\/ogp\/[^/]+\.png$/, page.file);
+    assert.match(url, /^https:\/\/playpoint-sim\.com\/articles\/ogp\/[^/]+\.(?:png|jpg)$/, page.file);
     assert.ok(!urls.has(url), page.file + ': duplicate URL');
     urls.add(url);
 
@@ -91,7 +91,7 @@ test('日本語記事全体は一意の専用OGP画像URL・実体を持ち、ma
     images.set(hash, page.file);
 
     if (page.manifest.listed !== false) {
-      assert.match(String(page.manifest.ogp || ''), /^\.\.\/articles\/ogp\/[^/]+\.png$/i, page.file + ': manifest.ogp');
+      assert.match(String(page.manifest.ogp || ''), /^\.\.\/articles\/ogp\/[^/]+\.(?:png|jpg)$/i, page.file + ': manifest.ogp');
       assert.equal(publicManifestUrl(page.manifest.ogp), url, page.file + ': manifest.ogpとog:imageが一致');
       assert.ok(page.manifest.thumbnail, page.file + ': manifest.thumbnailが存在すること');
       assert.notEqual(publicManifestUrl(page.manifest.thumbnail), url, page.file + ': thumbnailをOGPに流用しない');
@@ -115,8 +115,8 @@ test('日本語記事全体はOGP・Twitterの必須タグを実metaとして持
   }
 });
 
-test('articles/ogp/ 内の全PNG画像は1200x630のJPEG実体である', () => {
-  const files = fs.readdirSync(ogpDir).filter(f => f.endsWith('.png'));
+test('articles/ogp/ 内の全記事OGP画像は1200x630のJPEG実体である', () => {
+  const files = fs.readdirSync(ogpDir).filter(f => /\.(?:png|jpg)$/i.test(f));
   assert.ok(files.length > 0, '記事OGPの検査対象が空でないこと');
 
   for (const file of files) {
