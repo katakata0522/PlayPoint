@@ -2140,7 +2140,7 @@
     "id": "points-value-1",
     "title": "Google Play Pointsは何円で1ポイント貯まる？獲得率と交換価値の違い",
     "date": "2026-07-24",
-    "modified": "2026-10-14",
+    "modified": "2026-10-28",
     "category": "使い方",
     "tags": [
       "Play Points",
@@ -2150,13 +2150,13 @@
       "丸め",
       "税抜"
     ],
-    "description": "Google Play Pointsの計算を、税抜の対象価格、商品ごとの四捨五入、分割購入と合計計算の差から解説。日本のステータス別獲得率を使える比較シミュレーター付きです。",
+    "description": "Google Play Pointsを貯める金額と交換価値の違いを解説。税抜対象価格と獲得率、購入ごとと合計後の丸め方の比較をシミュレーターで確認できます。",
     "file": "../articles/2026-07-24-play-points-1-value.html",
     "thumbnail": "../articles/thumbnails/points-value-1-square-v1.webp",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/2026-07-24-play-points-1-value.png",
     "thumbnailKind": "generic",
-    "listDescription": "税抜価格から付くポイントを計算。商品ごとの四捨五入と、分割購入・合計計算の差を確認できます。",
+    "listDescription": "税抜対象額と獲得率からポイントを計算。購入ごとと合計後の丸め方の違いを比較できます。",
     "listTitle": "Google Play Pointsは何円で1ポイント貯まる？獲得率と交換価値の違い"
   },
   {
