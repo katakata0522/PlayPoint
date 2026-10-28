@@ -1739,10 +1739,10 @@
       "プラチナ",
       "ダイヤモンド"
     ],
-    "description": "日本向け公式特典表では、チャットと電話のプレミアムサポートはプラチナとダイヤモンドです。ログインが必要で、すべての問題が対象ではなく、待ち時間の短縮は保証されません。",
+    "description": "日本向けの公式案内では、プレミアムサポートはプラチナとダイヤモンドが対象です。対象アカウントでログインし、利用できる問い合わせ方法を確認しましょう。待ち時間の短縮は保証されません。",
     "file": "../articles/2026-08-16-premium-support.html",
     "thumbnail": "../articles/thumbnails/premium-support-square-v1.webp",
-    "modified": "2026-10-14",
+    "modified": "2026-10-28",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/premium-support.png",
     "thumbnailKind": "generic",
