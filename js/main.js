@@ -188,12 +188,13 @@ function getResultLinkDestinationType(targetUrl) {
 function getResultLinkAnalyticsParams(link) {
     const targetUrl = new URL(link.href, window.location.href);
     const destinationType = getResultLinkDestinationType(targetUrl);
+    const isReverseResult = Boolean(STATE.dom.reverseResult?.contains(link));
     return {
         source_path: window.location.pathname,
         target_path: destinationType === 'internal' ? targetUrl.pathname : undefined,
         destination_type: destinationType,
-        target_status: STATE.dom.result?.dataset?.targetStatusLabel || '',
-        calculation_mode: 'rank_up',
+        target_status: isReverseResult ? undefined : STATE.dom.result?.dataset?.targetStatusLabel || '',
+        calculation_mode: isReverseResult ? 'spend_to_points' : 'rank_up',
         link_position: link.dataset.linkPosition
     };
 }

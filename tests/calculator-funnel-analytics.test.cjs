@@ -76,12 +76,53 @@ test("結果リンク計測は外部URLを内部pathへ偽装せず遷移種別�
     assert.ok(!JSON.stringify(sent).includes('amount='));
   }
 });
+
+test('通常計算後の逆算結果リンクは通常の目標ランクを引き継がない', () => {
+  const context = createRuntime();
+  const { trackResultLinkClicks } = loadMain(context);
+  const clickPurchaseLink = (parentElement) => {
+    const link = {
+      href: 'https://playpoint-sim.com/articles/2026-06-20-discount-gift-cards.html',
+      dataset: { linkPosition: 'purchase-check' },
+      parentElement
+    };
+    trackResultLinkClicks({ target: { closest(selector) { return selector === '[data-result-decision-link]' ? link : null; } } });
+    return latestEventParams(context, 'result_decision_link_clicked');
+  };
+
+  const main = clickPurchaseLink(context.STATE.dom.resultDetails);
+  assert.equal(main.calculation_mode, 'rank_up');
+  assert.equal(main.target_status, 'Platinum');
+
+  const reverse = clickPurchaseLink({ parentElement: context.STATE.dom.reverseResult });
+  assert.equal(reverse.calculation_mode, 'spend_to_points');
+  assert.ok(!Object.hasOwn(reverse, 'target_status'));
+  assert.equal(reverse.link_position, 'purchase-check');
+  assert.equal(reverse.target_path, '/articles/2026-06-20-discount-gift-cards.html');
+
+  context.STATE.dom.result.dataset.targetStatusLabel = 'Diamond';
+  const mainAgain = clickPurchaseLink(context.STATE.dom.resultDetails);
+  assert.equal(mainAgain.calculation_mode, 'rank_up');
+  assert.equal(mainAgain.target_status, 'Diamond');
+});
 // main全体のトップレベルと実ファネルを実行する。DOM初期化・ESMリンクは既存ブラウザ検証が担当。
 function loadMain(context) {
   context.ANALYTICS = context.PlayPointAnalytics;
   context.initWebVitalsMonitoring = () => {};
   context.initPwaInstallPrompt = () => {};
-  context.STATE = { currentRegion: 'JP', dom: { result: { dataset: { targetStatusLabel: 'Platinum' } } } };
+  context.STATE = {
+    currentRegion: 'JP',
+    dom: {
+      result: { dataset: { targetStatusLabel: 'Platinum' } },
+      resultDetails: {},
+      reverseResult: {
+        contains(node) {
+          for (; node; node = node.parentElement) if (node === this) return true;
+          return false;
+        }
+      }
+    }
+  };
   context.CONSTANTS = { MODE_MAIN: 'main', MODE_REVERSE: 'reverse', MODE_DIARY: 'diary' };
   vm.runInContext(fs.readFileSync(path.join(root, 'js/calculator-funnel-analytics.js'), 'utf8').replace(/^export\s+/gm, ''), context);
   vm.runInContext(mainSource.replace(/^import[\s\S]*?;\s*$/gm, '').replace(/^export\s*\{[^}]*\};/gm, '').replace(/^export\s+/gm, ''), context, { filename: 'main.js' });

@@ -62,7 +62,7 @@ test('週次親記事はランク別週次・Super Ticket・Play Passを分け�
   assert.ok(html.includes('スーパーウィークリーリワード'));
   assert.ok(html.includes('Super Ticket'));
   assert.ok(html.includes('Play Passの週次ボーナス・ブースター'));
-  assert.ok(html.includes('ほくほくリワード日記'));
+  assert.ok(html.includes('ウィークリーリワード記録'));
   assert.ok(html.includes('./2026-07-31-super-weekly-reward.html'));
   assert.ok(html.includes('./2026-09-19-google-play-super-ticket.html'));
 });

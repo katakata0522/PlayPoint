@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-15",
+  "version": "2026-10-28",
   "gameThumbnails": {
     "fgo-pity-cost-2026": "../images/game-icons/fgo.webp",
     "genshin-welkin-value-2026": "../images/game-icons/genshin.webp",
@@ -98,7 +98,10 @@
     "super-weekly-results-2026-10",
     "diamond-play-pass-break-even-2026",
     "play-credit-subscription-2026",
-    "google-play-purchase-history-budget"
+    "google-play-purchase-history-budget",
+    "2026-10-23-seven-eleven-gift-card-lottery",
+    "2026-10-23-familymart-gift-card-lottery",
+    "2026-10-23-google-play-gift-card-comparison"
   ],
   "dedicatedOgpIds": [
     "fgo-pity-cost-2026",
