@@ -1947,7 +1947,7 @@
     "description": "Google Play Pointsへ登録できない時に、18歳以上の年齢条件、対応国、アカウント、支払い方法、請求先住所、保護者・学校管理、端末を順に確認します。",
     "file": "../articles/2026-08-05-play-points-cannot-join.html",
     "thumbnail": "../articles/thumbnails/play-points-cannot-join-square-v1.webp",
-    "modified": "2026-09-12",
+    "modified": "2026-10-28",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-05-play-points-cannot-join.png",
     "thumbnailKind": "generic",
