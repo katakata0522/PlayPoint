@@ -1,5 +1,9 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-28 eFootball記事の改稿と再生成
+
+既存game-seo-wave5のeFootball検査は旧本文の逐語固定を、両ポイントの区別・4種類の比較表の確認に置き換える。記事欠落時の再生成ではFAQと構造化データ、国・地域とUTC期限、KONAMI ID連携、編集済み記事の保持と再同期を検証する。新しいテストファイルや必須ゲートは追加しない。
+
 ## 2026-10-28 POSA3記事の公開準備
 
 既存article-image-assetsの冪等性fixtureを.jpgへ切り替え、台帳・head・JSON-LD・TwitterでJPEG名が保持されることを確認する。ogp-standardizationは.pngの既存契約と新規.jpgを両方検査し、全画像のJPEG実体・1200×630・一意性を維持する。台帳の件数を3記事増加分に同期する。記事の公式条件・期限切れ状態は既存article-fact-regressionで確認する。新しいテストファイル・必須ゲートは追加しない。

@@ -145,10 +145,50 @@ test('eFootball guide explicitly separates Google Play Points from KONAMI eFootb
   const points = GAME_SEO_WAVE5.efootball.efootballPoints;
   assert.match(html, /Google Play Points/);
   assert.match(html, /eFootball™ポイント/);
-  assert.match(html, /完全に別のポイント/);
+  assert.match(html, /残高も使い道も管理先も別/);
   assert.ok(html.includes(String(points.expiryMonthsAfterClaim) + 'か月後'));
-  assert.match(html, /eFootballコイン、GP、eFootballポイントは、それぞれ用途の違う/);
+  for (const name of ['eFootballコイン', 'GP', 'eFootball™ポイント', 'Google Play Points']) {
+    assert.ok(html.includes(`<th scope="row">${name}</th>`), `comparison row missing: ${name}`);
+  }
   assert.match(html, /<h2\b[^>]*>/);
+});
+
+test('eFootballの再生成は重要条件とFAQを保ち、編集済み記事を上書きしない', () => {
+  const os = require('node:os');
+  const { syncGameSeoWave5 } = require('../scripts/game-seo-wave5-sync.cjs');
+  const { articleForPath } = require('../scripts/game-guide-article-catalog.cjs');
+  const officialDates = require('../scripts/article-official-verification-dates.json');
+  const file = 'games/efootball/google-play-points-vs-efootball-points/index.html';
+  const escapeHtml = value => String(value).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+  const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pp-efootball-fallback-'));
+  try {
+    for (const locale of ['', 'en', 'ko', 'tw']) {
+      const games = path.join(temporaryRoot, locale, 'games');
+      fs.mkdirSync(games, { recursive: true });
+      fs.writeFileSync(path.join(games, 'index.html'), '<div data-game-seo-wave5="true"></div>');
+    }
+    assert.ok(syncGameSeoWave5(temporaryRoot).changedFiles.includes(file));
+    const fullPath = path.join(temporaryRoot, file);
+    const html = fs.readFileSync(fullPath, 'utf8');
+    for (const text of ['Play Pointsへの参加が前提', '税金は計算対象に含まれない', 'ゲームアカウントとKONAMI IDの連携は原則解除できません', '同意済みのKONAMI IDと連携したゲームアカウントは解除できない', '国・地域によって異なる', 'UTC（協定世界時）', '月末23時59分59秒', '通貨追加告知（モンゴル）']) assert.ok(html.includes(text), text);
+    const objects = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(x => JSON.parse(x[1]));
+    const faq = objects.find(x => x['@type'] === 'FAQPage');
+    assert.equal(faq.mainEntity.length, 2);
+    for (const item of faq.mainEntity) assert.ok(html.includes('Q. ' + escapeHtml(item.name) + '</h3><p>A. ' + escapeHtml(item.acceptedAnswer.text) + '</p>'));
+    assert.equal(objects.find(x => x['@type'] === 'Article').dateModified, articleForPath(file).modified);
+    assert.ok(html.includes('最終確認：' + officialDates[file]));
+    assert.ok(html.includes('<meta name="last-modified" content="' + articleForPath(file).modified + '"'));
+    assert.equal(syncGameSeoWave5(temporaryRoot).changedFiles.length, 0);
+    const edited = '<!doctype html><body data-editorial-flow="2026-10">保護対象の本文</body>';
+    fs.writeFileSync(fullPath, edited);
+    assert.ok(!syncGameSeoWave5(temporaryRoot).changedFiles.includes(file));
+    assert.equal(fs.readFileSync(fullPath, 'utf8'), edited);
+  } finally {
+    const tempBase = fs.realpathSync(os.tmpdir());
+    const target = fs.realpathSync(temporaryRoot);
+    if (!target.startsWith(tempBase + path.sep) || !path.basename(target).startsWith('pp-efootball-fallback-')) throw new Error('unexpected test cleanup path');
+    fs.rmSync(target, { recursive: true, force: true });
+  }
 });
 
 test('all locale game portals discover every Wave 5 parent page exactly once', () => {

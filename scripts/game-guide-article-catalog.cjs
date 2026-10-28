@@ -285,7 +285,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'efootball-google-play-points-vs-efootball-points-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-28',
     listDescription: "コイン、eFootballポイント、GP、Play Pointsは別のもの。課金で増える数字と使い道を確認できます。",
     title: "eFootballコイン購入でGoogle Play Pointsは貯まる？eFootballポイントとの違い【2026年】",
     category: '使い方',
