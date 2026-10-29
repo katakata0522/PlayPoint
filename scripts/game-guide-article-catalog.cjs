@@ -217,14 +217,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'honkai3rd-google-play-vs-charge-center-2026',
-    modified: '2026-10-14',
-    listDescription: "崩壊3rdの水晶2倍チャージボーナスを、公式チャージセンターとゲーム内で共有する仕組みから解説。月パスの延長条件、Google Play Pointsとの違いを確認できます。",
+    modified: '2026-10-29',
+    listDescription: "崩壊3rdの水晶2倍ボーナスは購入先を変えても別々にもらえる？公式案内をもとに、チャージセンターとGoogle Playの選び方を整理します。",
     title: "崩壊3rdの水晶2倍ボーナスと購入先｜公式チャージセンター・Google Playの違い",
     category: '使い方',
     gameTitle: '崩壊3rd',
     listTitle: "崩壊3rdの水晶2倍ボーナス｜チャージセンターとゲーム内で共通",
     tags: ['崩壊3rd', 'チャージセンター', '月パス', 'Play Points'],
-    description: "崩壊3rdの水晶2倍チャージボーナスを、公式チャージセンターとゲーム内で共有する仕組みから解説。月パスの延長条件、Google Play Pointsとの違いを確認できます。",
+    description: "崩壊3rdの水晶2倍ボーナスは購入先を変えても別々にもらえる？公式案内をもとに、チャージセンターとGoogle Playの選び方を整理します。",
     file: '../games/honkai3rd/google-play-vs-charge-center/index.html',
     related: [
       ["/articles/2026-08-19-web-store-external-billing-points.html","外部決済とGoogle Play課金の違いを見る"],
