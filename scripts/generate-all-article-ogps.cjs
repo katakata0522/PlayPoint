@@ -11,6 +11,22 @@ const ogpDir = path.join(articlesDir, 'ogp');
 
 // Mapping for the 22 articles that had shared images or ogp.png
 const DISTINCT_MAPPING = {
+  '2026-08-16-gold-platinum-worth-it.html': {
+    image: 'gold-platinum-worth-it.png',
+    template: 'gold-platinum-compare',
+    category: 'ランク解説',
+    subtitle: '目指せるならプラチナ、その理由は？',
+    points: ['特典の違い', '年間進捗から必要額を確認', '無理のない範囲で判断'],
+    accentColor: '#10b981'
+  },
+  '2026-08-16-play-points-day.html': {
+    image: 'play-points-day.png',
+    template: 'points-day',
+    category: '貯める・キャンペーン',
+    subtitle: '過去の開催例と、今の条件の確認方法',
+    points: ['過去に最大7倍の案内', '倍率は対象者ごとに確認', '開催・期限は都度確認'],
+    accentColor: '#10b981'
+  },
   // Previously ogp.png (4)
   '2026-08-17-diamond-valley-festival-guide.html': {
     image: '2026-08-17-diamond-valley-festival-guide.png',
@@ -100,8 +116,8 @@ const DISTINCT_MAPPING = {
     image: '2026-07-24-play-points-cash-conversion.png',
     template: 'cash-conversion',
     category: '交換・換金の注意点',
-    subtitle: '換金できない公式理由とお得な使い道まとめ',
-    points: ['現金化・PayPay不可', '公式規約の理由', 'Playクレジット交換が最得'],
+    subtitle: '換金できない理由と使い道の選び方',
+    points: ['現金化・PayPay不可', '交換先と条件を比べる', '使う予定に合わせて選ぶ'],
     accentColor: '#ef4444'
   },
   '2026-08-05-play-points-cannot-join.html': {
