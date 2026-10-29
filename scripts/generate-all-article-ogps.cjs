@@ -12,7 +12,7 @@ const ogpDir = path.join(articlesDir, 'ogp');
 // Mapping for the 22 articles that had shared images or ogp.png
 const DISTINCT_MAPPING = {
   '2026-09-26-bluearchive-monthly-packs-guide.html': {
-    image: '2026-09-26-bluearchive-monthly-packs-guide.png',
+    image: '2026-09-26-bluearchive-monthly-packs-guide-20261030.png',
     template: 'bluearchive-monthly-compare',
     category: 'ブルアカの購入ガイド',
     subtitle: 'マンスリーとハーフ、どちらから選ぶ？',
@@ -20,7 +20,7 @@ const DISTINCT_MAPPING = {
     accentColor: '#38bdf8'
   },
   '2026-08-16-gold-platinum-worth-it.html': {
-    image: 'gold-platinum-worth-it.png',
+    image: 'gold-platinum-worth-it-20261030.png',
     template: 'gold-platinum-compare',
     category: 'ランク解説',
     subtitle: '目指せるならプラチナ、その理由は？',
@@ -28,7 +28,7 @@ const DISTINCT_MAPPING = {
     accentColor: '#10b981'
   },
   '2026-08-16-play-points-day.html': {
-    image: 'play-points-day.png',
+    image: 'play-points-day-20261030.png',
     template: 'points-day',
     category: '貯める・キャンペーン',
     subtitle: '過去の開催例と、今の条件の確認方法',
@@ -53,7 +53,7 @@ const DISTINCT_MAPPING = {
     accentColor: '#f59e0b'
   },
   '2026-09-19-monst-web-shop-vs-google-play.html': {
-    image: '2026-09-19-monst-web-shop-vs-google-play.png',
+    image: '2026-09-19-monst-web-shop-vs-google-play-20261030.png',
     template: 'monst-vs',
     category: 'モンスト損得分岐点',
     subtitle: '公式Webショップ vs Google Play どっちが得？',
@@ -61,7 +61,7 @@ const DISTINCT_MAPPING = {
     accentColor: '#38bdf8'
   },
   '2026-09-19-play-points-calendar-schedule-guide.html': {
-    image: '2026-09-19-play-points-calendar-schedule-guide.png',
+    image: '2026-09-19-play-points-calendar-schedule-guide-20261030.png',
     template: 'calendar',
     category: '年間スケジュール',
     subtitle: '自分に届く特典を、曜日と条件から探す',
@@ -79,7 +79,7 @@ const DISTINCT_MAPPING = {
     accentColor: '#06b6d4'
   },
   '2026-08-05-play-points-multiplier-stacking.html': {
-    image: '2026-08-05-play-points-multiplier-stacking.png',
+    image: '2026-08-05-play-points-multiplier-stacking-20261030.png',
     template: 'multiplier-stacking',
     category: '還元率の計算ルール',
     subtitle: '通常率と増量率は足さず、高い方を確認',
@@ -121,7 +121,7 @@ const DISTINCT_MAPPING = {
     accentColor: '#0ea5e9'
   },
   '2026-07-24-play-points-cash-conversion.html': {
-    image: '2026-07-24-play-points-cash-conversion.png',
+    image: '2026-07-24-play-points-cash-conversion-20261030.png',
     template: 'cash-conversion',
     category: '交換・換金の注意点',
     subtitle: '換金できない理由と使い道の選び方',
@@ -129,7 +129,7 @@ const DISTINCT_MAPPING = {
     accentColor: '#ef4444'
   },
   '2026-08-05-play-points-cannot-join.html': {
-    image: '2026-08-05-play-points-cannot-join.png',
+    image: '2026-08-05-play-points-cannot-join-20261030.png',
     template: 'cannot-join',
     category: 'トラブル解決',
     subtitle: '参加条件・年齢制限・国設定の確認手順',
@@ -139,7 +139,7 @@ const DISTINCT_MAPPING = {
 
   // Previously weekly-reward.png (4)
   '2026-07-24-earn-play-points-free.html': {
-    image: '2026-07-24-earn-play-points-free.png',
+    image: '2026-07-24-earn-play-points-free-20261030.png',
     template: 'earn-free',
     category: '無料ポイント獲得',
     subtitle: '週次リワード・アプリ体験・クエスト',
@@ -217,7 +217,7 @@ const DISTINCT_MAPPING = {
     accentColor: '#0d9488'
   },
   '2026-08-05-play-country-change-points.html': {
-    image: '2026-08-05-play-country-change-points.png',
+    image: '2026-08-05-play-country-change-points-20261030.png',
     template: 'country-change',
     category: '国・地域設定',
     subtitle: 'ポイント・残高と、国変更の条件を確認',
