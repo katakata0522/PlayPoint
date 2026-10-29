@@ -192,8 +192,8 @@ const VISUAL_CARDS = {
         <div style="font-size: 26px; font-weight: 900; color: #ef4444; margin-top: 2px;">公式規約で不可 ✕</div>
       </div>
       <div style="background: rgba(16, 185, 129, 0.15); border: 1.5px solid rgba(16, 185, 129, 0.5); border-radius: 12px; padding: 12px 18px; width: 100%; text-align: center;">
-        <div style="font-size: 14px; color: #6ee7b7; font-weight: 700;">推奨する賢い使い道</div>
-        <div style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 2px;">Playクレジット・割引 ◎</div>
+        <div style="font-size: 14px; color: #6ee7b7; font-weight: 700;">使う予定に合わせて選ぶ</div>
+        <div style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 2px;">クレジット・ゲームアイテム</div>
       </div>
     </div>
   `,
