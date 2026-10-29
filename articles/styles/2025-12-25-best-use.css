@@ -235,3 +235,13 @@ font-size: 1.25rem;
 padding: 1.5rem;
 }
 }
+/* 横スクロール中も交換先名を見失わない。 */
+@media (max-width: 760px) {
+  html[data-reading-theme] .exchange-comparison table { min-width: 760px; }
+  html[data-reading-theme] .exchange-comparison tr > :first-child {
+    position: sticky; left: 0; z-index: 1; background: var(--reading-surface, #fff);
+  }
+  html[data-reading-theme] .exchange-comparison tr:first-child > :first-child {
+    z-index: 2; background: var(--reading-soft, #f1f5f9);
+  }
+}
