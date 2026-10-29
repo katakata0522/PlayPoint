@@ -8,7 +8,7 @@ function renderMonstComparison(data) {
   }
   return `<details class="monst-comparison" id="monst-comparison" hidden
       data-price="${app.price}" data-app-orbs="${app.orbs}" data-web-orbs="${web.orbs}" data-monthly-orbs="${monthly.orbs}">
-    <summary>自分の特典で1万円の購入先を比べる</summary>
+    <summary>自分の特典で1万円の購入先を比べる</summary><p class="monst-comparison-help">この試算はアプリ内180個という2024年の例を仮定します。現在のアプリ内個数は未確認なので、結果は購入画面の条件と照らしてください。</p>
     <div class="monst-comparison-body">
       <form id="monst-comparison-form" novalidate>
         <label for="monst-play-value">Google Play側の特典価値（円分）</label>
@@ -26,10 +26,10 @@ function renderMonstComparison(data) {
       <div id="monst-comparison-result" aria-live="polite" aria-atomic="true" hidden>
         <p id="monst-comparison-today"></p>
         <table class="monst-comparison-table">
-          <caption>特典を使い切れた場合の比較単価</caption>
+          <caption>2024年のアプリ内例を仮定した比較単価</caption>
           <thead><tr><th scope="col">購入先</th><th scope="col">受取個数</th><th scope="col">円／個</th></tr></thead>
           <tbody>
-            <tr><th scope="row">Google Play</th><td>${app.orbs}個</td><td id="monst-app-unit"></td></tr>
+            <tr><th scope="row">Google Play（2024年例）</th><td>${app.orbs}個</td><td id="monst-app-unit"></td></tr>
             <tr><th scope="row">Web通常</th><td>${web.orbs}個</td><td id="monst-web-unit"></td></tr>
             <tr id="monst-monthly-row" hidden><th scope="row">Web月イチ</th><td>${monthly.orbs}個</td><td id="monst-monthly-unit"></td></tr>
           </tbody>
