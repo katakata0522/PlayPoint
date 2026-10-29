@@ -1265,7 +1265,7 @@
     "id": "monst-web-shop-vs-google-play-2026",
     "title": "モンスト1万円課金の損得分岐点｜Web190・200個とポイント価値を計算",
     "date": "2026-09-19",
-    "modified": "2026-10-14",
+    "modified": "2026-10-29",
     "category": "使い方",
     "gameTitle": "モンスト",
     "tags": [
@@ -1275,7 +1275,7 @@
       "Google Play Points",
       "課金比較"
     ],
-    "description": "アプリ180個・Web通常190個・月1回200個を1万円で比較。ポイントを将来使える価値として評価したとき、何円分で逆転するかを計算式と条件別の表で確認できます。",
+    "description": "アプリ内180個という2024年の例を仮定し、Web通常190個・月イチ200個とPlay Pointsの価値を比較します。現在のアプリ内個数は購入画面で確認してください。",
     "file": "../articles/2026-09-19-monst-web-shop-vs-google-play.html",
     "related": [
       [
@@ -1296,7 +1296,7 @@
     "source": "article",
     "listed": true,
     "listTitle": "モンスト1万円の損得計算｜Webとの差をポイントで比べる",
-    "listDescription": "将来使うポイントが何円分ならWebの増量分を上回るか、計算式と条件別の表で比べられます。",
+    "listDescription": "2024年のアプリ内例を使い、Webのオーブ数とポイント価値の分岐点を計算。現在の個数は購入画面で確認します。",
     "browseCategory": "ゲーム別課金",
     "ogp": "../articles/ogp/2026-09-19-monst-web-shop-vs-google-play.png",
     "thumbnail2x": "../images/game-icons/monst-2x.webp"
