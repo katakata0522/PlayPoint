@@ -2,6 +2,18 @@
 
 // Visual cards for the 28 custom OGP designs
 const VISUAL_CARDS = {
+  'bluearchive-monthly-compare': `
+    <div style="display:flex; flex-direction:column; gap:14px; width:100%; text-align:center;">
+      <div style="background:rgba(56,189,248,.18);border:1.5px solid rgba(56,189,248,.5);border-radius:14px;padding:15px;">
+        <div style="font-size:20px;color:#fff;font-weight:900;">マンスリー</div>
+        <div style="font-size:15px;color:#bae6fd;font-weight:700;">AP軽減を重視するなら</div>
+      </div>
+      <div style="background:rgba(16,185,129,.14);border:1.5px solid rgba(16,185,129,.4);border-radius:14px;padding:15px;">
+        <div style="font-size:20px;color:#fff;font-weight:900;">マンスリー（ハーフ）</div>
+        <div style="font-size:15px;color:#a7f3d0;font-weight:700;">価格や受取内容を比べる</div>
+      </div>
+    </div>
+  `,
   'gold-platinum-compare': `
     <div style="display:flex; flex-direction:column; gap:14px; width:100%; text-align:center;">
       <div style="background:rgba(245,158,11,.16);border:1.5px solid rgba(245,158,11,.45);border-radius:14px;padding:16px;">
