@@ -251,7 +251,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'prospi-a-google-play-vs-konami-store-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-29',
     listDescription: "プロスピAのウェブストア「KONAMI Gamesストア」の還元を解説。パワスピ・ゴールドとdポイント、Google Play Pointsの違い、エナジーの価格と個数を比べる手順を紹介します。",
     title: "プロスピAのエナジー購入ガイド｜KONAMIストアの還元とGoogle Play Points",
     category: '使い方',
