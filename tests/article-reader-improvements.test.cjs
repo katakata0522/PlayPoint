@@ -106,8 +106,8 @@ test('FGO記事のFAQは目次から既存の見出しへ移動できる', () =>
 test('購入比較は即時の個数と将来の還元を分け、Pokémon GOのReward RoadをWeb専用として扱わない', () => {
   const pokemon = read('games/pokemon-go/google-play-vs-webstore/index.html');
   const table = pokemon.match(/<section class="section reader-comparison"[\s\S]*?<\/section>/)?.[0] || '';
-  assert.match(table, /Google Play[\s\S]*?対象の現金購入はReward Roadも確認/);
-  assert.match(table, /公式Web Store[\s\S]*?対象の現金購入はReward Roadも確認/);
+  assert.match(table, /Google Play[\s\S]*?対象購入はReward Roadも確認/);
+  assert.match(table, /公式Web Store[\s\S]*?対象購入はReward Roadも確認/);
   assert.match(table, /支払額 ÷ ボーナス込みの受取個数/);
   assert.match(table, /今すぐ受け取るポケコインに足しません/);
   assert.ok(pokemon.match(/<h1\b[^>]*>([^<]+)<\/h1>/)[1].length < 60);
