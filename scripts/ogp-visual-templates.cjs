@@ -2,6 +2,19 @@
 
 // Visual cards for the 28 custom OGP designs
 const VISUAL_CARDS = {
+  'gold-platinum-compare': `
+    <div style="display:flex; flex-direction:column; gap:14px; width:100%; text-align:center;">
+      <div style="background:rgba(245,158,11,.16);border:1.5px solid rgba(245,158,11,.45);border-radius:14px;padding:16px;">
+        <div style="font-size:16px;color:#fde68a;font-weight:700;">ゴールド</div>
+        <div style="font-size:23px;color:#fff;font-weight:900;">100円につき1.5ポイント</div>
+      </div>
+      <div style="background:rgba(56,189,248,.14);border:1.5px solid rgba(56,189,248,.4);border-radius:14px;padding:16px;">
+        <div style="font-size:16px;color:#bae6fd;font-weight:700;">プラチナ</div>
+        <div style="font-size:23px;color:#fff;font-weight:900;">100円につき1.75ポイント</div>
+      </div>
+      <div style="font-size:14px;color:#cbd5e1;">対象購入の通常獲得率（税抜）</div>
+    </div>
+  `,
   'points-day': `
     <div style="display:flex; flex-direction:column; gap:14px; width:100%; text-align:center;">
       <div style="background:rgba(16,185,129,.18);border:1.5px solid rgba(16,185,129,.5);border-radius:14px;padding:18px;">

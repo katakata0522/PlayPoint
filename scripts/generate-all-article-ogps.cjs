@@ -11,6 +11,14 @@ const ogpDir = path.join(articlesDir, 'ogp');
 
 // Mapping for the 22 articles that had shared images or ogp.png
 const DISTINCT_MAPPING = {
+  '2026-08-16-gold-platinum-worth-it.html': {
+    image: 'gold-platinum-worth-it.png',
+    template: 'gold-platinum-compare',
+    category: 'ランク解説',
+    subtitle: '目指せるならプラチナ、その理由は？',
+    points: ['特典の違い', '年間進捗から必要額を確認', '無理のない範囲で判断'],
+    accentColor: '#10b981'
+  },
   '2026-08-16-play-points-day.html': {
     image: 'play-points-day.png',
     template: 'points-day',
