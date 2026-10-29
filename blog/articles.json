@@ -1967,6 +1967,7 @@
     "description": "Google Playの国を変更するとPlay Pointsとステータスは新しい国へ引き継がれません。Play残高、定期購入、ファミリーグループ、90日制限、変更前チェックを整理します。",
     "file": "../articles/2026-08-05-play-country-change-points.html",
     "thumbnail": "../articles/thumbnails/play-country-change-points-square-v1.webp",
+    "modified": "2026-10-29",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-05-play-country-change-points.png",
     "thumbnailKind": "generic",
