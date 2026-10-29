@@ -1494,7 +1494,7 @@
     "description": "Play Pointsで交換したゲーム内アイテムが届かない時に、ポイント履歴、再起動、Playストア更新、ゲーム運営への問い合わせまで順番に切り分けます。",
     "file": "../articles/2026-08-19-redeemed-item-not-received.html",
     "thumbnail": "../articles/thumbnails/redeemed-item-not-received-square-v1.webp",
-    "modified": "2026-10-14",
+    "modified": "2026-10-28",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-19-redeemed-item-not-received.png",
     "thumbnailKind": "generic",
