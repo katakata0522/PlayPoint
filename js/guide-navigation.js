@@ -197,6 +197,12 @@
             }
           }
           details.classList.add('reader-toc');
+          const tocSummary = details.querySelector(':scope > summary');
+          if (tocSummary && tocSummary.textContent.trim() === '目次を開く') {
+            const updateTocLabel = () => { tocSummary.textContent = details.open ? '目次を閉じる' : '目次を開く'; };
+            details.addEventListener('toggle', updateTocLabel);
+            updateTocLabel();
+          }
           details.addEventListener('click', event => {
             const link = event.target.closest('a[href^="#"]'), heading = link && doc.getElementById(link.hash.slice(1));
             if (heading) { heading.tabIndex = -1; heading.focus({ preventScroll: true }); }
