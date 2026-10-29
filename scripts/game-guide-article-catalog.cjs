@@ -45,13 +45,13 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   {
     id: 'monst-google-play-vs-webshop-2026',
     modified: '2026-10-29',
-    listDescription: "同じ1万円でアプリ180個、Web190個、月イチ200個。ポイントの利用価値も含めて購入先を選べます。",
-    title: "モンストのオーブはどこで買う？アプリ180個・Web190個・月イチ200個を比較",
+    listDescription: "Web商品のオーブ数と過去のアプリ内販売例を確認。ポイントの使い道も含めて購入先を選べます。",
+    title: "モンストのオーブはどこで買う？WebショップとGoogle Playを比較",
     category: '使い方',
     gameTitle: 'モンスト',
     listTitle: "モンストの購入先早見表｜1万円でオーブ何個？",
     tags: ['モンスト', 'Webショップ', 'オーブ', 'Play Points'],
-    description: "モンストの1万円課金を比較。アプリ内180個、Webショップ190個、月イチ200個の差とGoogle Play Pointsを含めた選び方を整理します。",
+    description: "モンストのWebショップとGoogle Playを比較。商品の個数、Play Points、過去のアプリ内販売例を分けて購入先を選びます。",
     file: '../games/monst/google-play-vs-webshop/index.html',
     related: [
       ["/articles/2026-09-19-monst-web-shop-vs-google-play.html","1万円課金のポイント価値・損得分岐点を計算する"],
