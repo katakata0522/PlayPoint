@@ -43,6 +43,13 @@
       <description>Play Pointsでは複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。直接レート、倍率表記、税抜価格、商品ごとの四捨五入を例付きで解説します。</description>
     </item>
     <item>
+      <title>Google Play Pointsは返金でどうなる？残高・ランクへの影響</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-refund.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-refund.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>Google Playの返金後は獲得ポイントが残高とレベル進捗から減算されます。マイナス残高、ランク低下、定期購入キャンセルとの違いを解説します。</description>
+    </item>
+    <item>
       <title>Google Play Pointsのキャンペーンは待つべき？増量率の確認と課金判断</title>
       <link>https://playpoint-sim.com/articles/2025-12-25-campaign.html</link>
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-campaign.html</guid>
@@ -699,13 +706,6 @@
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-05-play-country-change-points.html</guid>
       <pubDate>Wed, 05 Aug 2026 03:00:00 GMT</pubDate>
       <description>Google Playの国を変更するとPlay Pointsとステータスは新しい国へ引き継がれません。Play残高、定期購入、ファミリーグループ、90日制限、変更前チェックを整理します。</description>
-    </item>
-    <item>
-      <title>Google Play Pointsは返金でどうなる？残高・ランクへの影響</title>
-      <link>https://playpoint-sim.com/articles/2025-12-25-refund.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-refund.html</guid>
-      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
-      <description>Google Playの返金後は獲得ポイントが残高とレベル進捗から減算されます。マイナス残高、ランク低下、定期購入キャンセルとの違いを解説します。</description>
     </item>
   </channel>
 </rss>
