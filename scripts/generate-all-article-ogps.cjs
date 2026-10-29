@@ -33,15 +33,15 @@ const DISTINCT_MAPPING = {
     template: 'monst-vs',
     category: 'モンスト損得分岐点',
     subtitle: '公式Webショップ vs Google Play どっちが得？',
-    points: ['Web190個 vs 200個', '実質単価シミュレーション', '損得分岐点を計算'],
+    points: ['Web通常190・月イチ200', 'アプリ内の現在値は要確認', '条件別の損得を計算'],
     accentColor: '#38bdf8'
   },
   '2026-09-19-play-points-calendar-schedule-guide.html': {
     image: '2026-09-19-play-points-calendar-schedule-guide.png',
     template: 'calendar',
     category: '年間スケジュール',
-    subtitle: '毎日・毎週・毎月・年間イベント完全網羅',
-    points: ['毎月1日 最大7倍', '毎週金曜リワード', '有効期限・失効対策'],
+    subtitle: '自分に届く特典を、曜日と条件から探す',
+    points: ['月初の増量案内を確認', '毎週金曜リワード', '対象・期限を確認'],
     accentColor: '#10b981'
   },
 
@@ -58,8 +58,8 @@ const DISTINCT_MAPPING = {
     image: '2026-08-05-play-points-multiplier-stacking.png',
     template: 'multiplier-stacking',
     category: '還元率の計算ルール',
-    subtitle: 'ランク倍率 × キャンペーン増量の正しい計算式',
-    points: ['倍率は加算で計算', 'ランク別最大倍率', '実質還元率早見表'],
+    subtitle: '通常率と増量率は足さず、高い方を確認',
+    points: ['獲得率は足し算しない', '適用される率を確認', '条件別の計算例'],
     accentColor: '#8b5cf6'
   },
   '2026-08-17-tgs-google-play-vip.html': {
@@ -109,7 +109,7 @@ const DISTINCT_MAPPING = {
     template: 'cannot-join',
     category: 'トラブル解決',
     subtitle: '参加条件・年齢制限・国設定の確認手順',
-    points: ['13歳以上が条件', '日本Google Play設定', '支払いプロファイルの確認'],
+    points: ['18歳以上が条件', '日本Google Play設定', '支払い方法を確認'],
     accentColor: '#f59e0b'
   },
 
@@ -118,8 +118,8 @@ const DISTINCT_MAPPING = {
     image: '2026-07-24-earn-play-points-free.png',
     template: 'earn-free',
     category: '無料ポイント獲得',
-    subtitle: '無課金OK！正規特典・ウィークリー・アンケート',
-    points: ['毎週金曜リワード', '無料アプリアンケート', '無課金で貯めるコツ'],
+    subtitle: '週次リワード・アプリ体験・クエスト',
+    points: ['対象ランクの週次特典', 'アプリ体験特典', '購入不要のクエスト'],
     accentColor: '#10b981'
   },
   '2026-07-31-super-weekly-reward.html': {
@@ -196,8 +196,8 @@ const DISTINCT_MAPPING = {
     image: '2026-08-05-play-country-change-points.png',
     template: 'country-change',
     category: '国・地域設定',
-    subtitle: '残高失効・年1回制限・ランク維持の注意点',
-    points: ['国変更は年1回のみ', 'ポイント引き継ぎ不可', '残高利用の事前対策'],
+    subtitle: 'ポイント・残高と、国変更の条件を確認',
+    points: ['変更間隔は90日以上', 'ポイント引き継ぎ不可', '追加制限の場合も'],
     accentColor: '#dc2626'
   }
 };
