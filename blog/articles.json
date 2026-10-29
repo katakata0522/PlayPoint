@@ -1800,10 +1800,10 @@
       "子ども",
       "対象外"
     ],
-    "description": "Family Linkで管理されているアカウントは、Playポイントプログラムの参加対象外です。年齢や国を変える回避策は公式にありません。家族の他メンバーは、自身がポイント会員なら参加できます。",
+    "description": "Family Linkで管理されているアカウントと、家族の別アカウントの参加条件を整理。Play Pass週次特典は、一般ヘルプと個別規約の案内の違いも確認します。",
     "file": "../articles/2026-08-16-family-link-play-points.html",
     "thumbnail": "../articles/thumbnails/family-link-play-points-square-v1.webp",
-    "modified": "2026-10-14",
+    "modified": "2026-10-29",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/family-link-play-points.png",
     "thumbnailKind": "generic",
