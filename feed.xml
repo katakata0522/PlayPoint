@@ -5,8 +5,15 @@
     <link>https://playpoint-sim.com/blog/</link>
     <description>Google Play PointsとPlay Passの違い、ランクの特典、ポイントの使い道を、知りたいことから探せる記事ガイドです。必要額の計算や週次リワードの記録にも進めます。</description>
     <language>ja</language>
-    <lastBuildDate>Thu, 29 Oct 2026 03:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 30 Oct 2026 03:00:00 GMT</lastBuildDate>
     <atom:link href="https://playpoint-sim.com/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Google Play Pointsは複数アカウントで合算できる？管理の注意点</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-multiple-accounts.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-multiple-accounts.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>Google Play Pointsは複数のGoogleアカウント間で合算・移動できません。購入アカウントの確認方法、ポイント分散がランクへ与える影響を解説します。</description>
+    </item>
     <item>
       <title>原神「空月の祝福」で次のガチャに備える｜最大3,000原石相当と受取日数</title>
       <link>https://playpoint-sim.com/games/genshin/welkin-value/index.html</link>
@@ -461,13 +468,6 @@
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-03-10-play-points-reflection-timing.html</guid>
       <pubDate>Tue, 10 Mar 2026 03:00:00 GMT</pubDate>
       <description>Google Play Pointsが反映されない時に、通常購入とアプリ体験特典の待ち時間、注文・履歴・アカウントの確認順を解説。交換後のPlayクレジット・クーポン・ゲーム内アイテムの確認先も案内します。</description>
-    </item>
-    <item>
-      <title>Google Play Pointsは複数アカウントで合算できる？管理の注意点</title>
-      <link>https://playpoint-sim.com/articles/2025-12-25-multiple-accounts.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-multiple-accounts.html</guid>
-      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
-      <description>Google Play Pointsは複数のGoogleアカウント間で合算・移動できません。購入アカウントの確認方法、ポイント分散がランクへ与える影響を解説します。</description>
     </item>
     <item>
       <title>Google Play Gamesで遊ぶとポイントは貯まる？Play Pointsとの違い</title>
