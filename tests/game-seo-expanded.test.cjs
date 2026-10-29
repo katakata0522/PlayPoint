@@ -109,7 +109,9 @@ test('ウマスク深掘りはSSOTの現行公式特典と未受取仕様を説�
   const umasuku = GAME_SEO.umamusume.umasuku;
   assert.match(html, /販売終了/);
   assert.ok(html.includes('有償ジュエル' + umasuku.paidJewelsOnPurchaseOrRenewal + '個'));
-  assert.ok(html.includes('無償ジュエル' + umasuku.freeJewelsOnPurchaseOrRenewal + '個'));
+  assert.ok(html.includes('WebStoreでは追加で無償ジュエル' + umasuku.webStoreBonusFreeJewelsOnPurchaseOrRenewal + '個'));
+  assert.match(html, /下の表には含めていません/);
+  assert.match(html, /50×30＝1,500/);
   assert.ok(html.includes('次回ログイン'));
   assert.match(html, /Google Play.*Cygames WebStore|Cygames WebStore.*Google Play/);
 });
