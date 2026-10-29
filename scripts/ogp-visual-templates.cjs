@@ -2,6 +2,31 @@
 
 // Visual cards for the 28 custom OGP designs
 const VISUAL_CARDS = {
+  'bluearchive-monthly-compare': `
+    <div style="display:flex; flex-direction:column; gap:14px; width:100%; text-align:center;">
+      <div style="background:rgba(56,189,248,.18);border:1.5px solid rgba(56,189,248,.5);border-radius:14px;padding:15px;">
+        <div style="font-size:20px;color:#fff;font-weight:900;">マンスリー</div>
+        <div style="font-size:15px;color:#bae6fd;font-weight:700;">AP軽減を重視するなら</div>
+      </div>
+      <div style="background:rgba(16,185,129,.14);border:1.5px solid rgba(16,185,129,.4);border-radius:14px;padding:15px;">
+        <div style="font-size:20px;color:#fff;font-weight:900;">マンスリー（ハーフ）</div>
+        <div style="font-size:15px;color:#a7f3d0;font-weight:700;">価格や受取内容を比べる</div>
+      </div>
+    </div>
+  `,
+  'gold-platinum-compare': `
+    <div style="display:flex; flex-direction:column; gap:14px; width:100%; text-align:center;">
+      <div style="background:rgba(245,158,11,.16);border:1.5px solid rgba(245,158,11,.45);border-radius:14px;padding:16px;">
+        <div style="font-size:16px;color:#fde68a;font-weight:700;">ゴールド</div>
+        <div style="font-size:23px;color:#fff;font-weight:900;">100円につき1.5ポイント</div>
+      </div>
+      <div style="background:rgba(56,189,248,.14);border:1.5px solid rgba(56,189,248,.4);border-radius:14px;padding:16px;">
+        <div style="font-size:16px;color:#bae6fd;font-weight:700;">プラチナ</div>
+        <div style="font-size:23px;color:#fff;font-weight:900;">100円につき1.75ポイント</div>
+      </div>
+      <div style="font-size:14px;color:#cbd5e1;">対象購入の通常獲得率（税抜）</div>
+    </div>
+  `,
   'points-day': `
     <div style="display:flex; flex-direction:column; gap:14px; width:100%; text-align:center;">
       <div style="background:rgba(16,185,129,.18);border:1.5px solid rgba(16,185,129,.5);border-radius:14px;padding:18px;">
@@ -192,8 +217,8 @@ const VISUAL_CARDS = {
         <div style="font-size: 26px; font-weight: 900; color: #ef4444; margin-top: 2px;">公式規約で不可 ✕</div>
       </div>
       <div style="background: rgba(16, 185, 129, 0.15); border: 1.5px solid rgba(16, 185, 129, 0.5); border-radius: 12px; padding: 12px 18px; width: 100%; text-align: center;">
-        <div style="font-size: 14px; color: #6ee7b7; font-weight: 700;">推奨する賢い使い道</div>
-        <div style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 2px;">Playクレジット・割引 ◎</div>
+        <div style="font-size: 14px; color: #6ee7b7; font-weight: 700;">使う予定に合わせて選ぶ</div>
+        <div style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 2px;">クレジット・ゲームアイテム</div>
       </div>
     </div>
   `,
