@@ -44,7 +44,7 @@ function renderHi3Guide() {
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.hi3ChargeCenterLaunch}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：チャージセンターの案内（2024年）</a></li><li><a href="${SOURCES.hi3TopUpDiscount2026}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：過去の海外向け割引イベント</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">崩壊3rd Play Points計算機へ戻る ➔</a></p>`;
   return guideShell({ gameId: 'honkai3rd', slug: 'google-play-vs-charge-center', pageDescription: '崩壊3rdの水晶2倍ボーナスは購入先を変えても別々にもらえる？公式案内をもとに、チャージセンターとGoogle Playの選び方を整理します。', lead: '水晶2倍ボーナスは購入先で共有。価格や使える特典を分けて比較します。', body, faq: [
-    { q: '崩壊3rdの公式チャージセンターでも初回2倍は使えますか？', a: '公式案内では、月パス以外の水晶2倍チャージボーナスはゲーム内と公式チャージセンターで共有されます。' },
+    { q: '崩壊3rdの公式チャージセンターでも初回2倍は使えますか？', a: '2024年の公式案内では、月パスを除く商品の水晶2倍チャージボーナスが対象です。ボーナスの利用状況はゲーム内と公式チャージセンターで共通とされています。現在の対象商品と利用状況は購入画面で確認してください。' },
     { q: '公式チャージセンター購入でGoogle Play Pointsは貯まりますか？', a: '公式チャージセンターはGoogle Play上の購入ではありません。Google Play側の対象購入で確認してください。' }
   ] });
 }
