@@ -2379,7 +2379,7 @@
     "description": "Google Play Pointsの残高・履歴の見方を整理。Play Points残高、ランク判定用の年間進捗、Google Play残高、交換後のPlayクレジットの違いと、購入・交換・返金でどの数字が変わるかを解説します。",
     "file": "../articles/2025-12-25-check-balance.html",
     "thumbnail": "../articles/thumbnails/check-balance-square-v1.webp",
-    "modified": "2026-10-28",
+    "modified": "2026-10-30",
     "browseCategory": "はじめて・基本",
     "ogp": "../articles/ogp/check-balance.png",
     "thumbnailKind": "generic",
