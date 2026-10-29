@@ -11,6 +11,14 @@ const ogpDir = path.join(articlesDir, 'ogp');
 
 // Mapping for the 22 articles that had shared images or ogp.png
 const DISTINCT_MAPPING = {
+  '2026-08-16-play-points-day.html': {
+    image: 'play-points-day.png',
+    template: 'points-day',
+    category: '貯める・キャンペーン',
+    subtitle: '過去の開催例と、今の条件の確認方法',
+    points: ['過去に最大7倍の案内', '倍率は対象者ごとに確認', '開催・期限は都度確認'],
+    accentColor: '#10b981'
+  },
   // Previously ogp.png (4)
   '2026-08-17-diamond-valley-festival-guide.html': {
     image: '2026-08-17-diamond-valley-festival-guide.png',

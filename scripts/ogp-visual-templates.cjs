@@ -2,6 +2,18 @@
 
 // Visual cards for the 28 custom OGP designs
 const VISUAL_CARDS = {
+  'points-day': `
+    <div style="display:flex; flex-direction:column; gap:14px; width:100%; text-align:center;">
+      <div style="background:rgba(16,185,129,.18);border:1.5px solid rgba(16,185,129,.5);border-radius:14px;padding:18px;">
+        <div style="font-size:16px;color:#a7f3d0;font-weight:700;">過去の開催例</div>
+        <div style="font-size:26px;color:#fff;font-weight:900;">最大7倍の案内</div>
+      </div>
+      <div style="background:rgba(56,189,248,.14);border:1.5px solid rgba(56,189,248,.4);border-radius:14px;padding:18px;">
+        <div style="font-size:16px;color:#bae6fd;font-weight:700;">今の条件</div>
+        <div style="font-size:21px;color:#fff;font-weight:900;">自分の画面で確認</div>
+      </div>
+    </div>
+  `,
   'spending-history': `
     <div style="width:100%;padding:24px;border:2px solid #5ee0c4;border-radius:18px;background:#153632;color:#fff;text-align:left;">
       <div style="font-size:24px;font-weight:800;margin-bottom:20px;">購入先から確認</div>
