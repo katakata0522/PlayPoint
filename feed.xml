@@ -92,6 +92,13 @@
       <description>Play Pointsのステータスは毎年初めに、前年の獲得ポイントで変わることがあります。1月1日に下がってもポイント残高は消えません。別アカウントや有効期限と切り分けます。</description>
     </item>
     <item>
+      <title>Google Playの国を変更するとPlay Pointsはどうなる？残高・ランクの注意点</title>
+      <link>https://playpoint-sim.com/articles/2026-08-05-play-country-change-points.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-05-play-country-change-points.html</guid>
+      <pubDate>Wed, 05 Aug 2026 03:00:00 GMT</pubDate>
+      <description>Google Playの国を変更するとPlay Pointsとステータスは新しい国へ引き継がれません。Play残高、定期購入、ファミリーグループ、90日制限、変更前チェックを整理します。</description>
+    </item>
+    <item>
       <title>Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法</title>
       <link>https://playpoint-sim.com/articles/2026-08-05-play-points-multiplier-stacking.html</link>
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-05-play-points-multiplier-stacking.html</guid>
@@ -699,13 +706,6 @@
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-16-payment-methods-points.html</guid>
       <pubDate>Sun, 16 Aug 2026 03:00:00 GMT</pubDate>
       <description>キャリア決済・クレカ・Google PlayギフトカードのPlay Points獲得条件を整理。ドコモ・au・ソフトバンク・楽天モバイルの具体例と、税抜のポイント計算・独自還元を分けて比較します。</description>
-    </item>
-    <item>
-      <title>Google Playの国を変更するとPlay Pointsはどうなる？残高・ランクの注意点</title>
-      <link>https://playpoint-sim.com/articles/2026-08-05-play-country-change-points.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-05-play-country-change-points.html</guid>
-      <pubDate>Wed, 05 Aug 2026 03:00:00 GMT</pubDate>
-      <description>Google Playの国を変更するとPlay Pointsとステータスは新しい国へ引き継がれません。Play残高、定期購入、ファミリーグループ、90日制限、変更前チェックを整理します。</description>
     </item>
   </channel>
 </rss>
