@@ -131,7 +131,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'pokepoke-premium-pass-guide-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-29',
     listDescription: "プレミアムパスを試す前に、14日無料体験と定期購入の条件を確認。Googleアカウントとの紐付けにも注意できます。",
     title: "ポケポケのプレミアムパスで1日1パック追加！特典と14日無料体験",
     category: '使い方',
