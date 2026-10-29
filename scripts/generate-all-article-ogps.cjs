@@ -11,6 +11,14 @@ const ogpDir = path.join(articlesDir, 'ogp');
 
 // Mapping for the 22 articles that had shared images or ogp.png
 const DISTINCT_MAPPING = {
+  '2026-09-26-bluearchive-monthly-packs-guide.html': {
+    image: '2026-09-26-bluearchive-monthly-packs-guide-20261030.png',
+    template: 'bluearchive-monthly-compare',
+    category: 'ブルアカの購入ガイド',
+    subtitle: 'マンスリーとハーフ、どちらから選ぶ？',
+    points: ['学園交流会のAP軽減', '受取日と購入先の違い', '価格は購入画面で確認'],
+    accentColor: '#38bdf8'
+  },
   '2026-08-16-gold-platinum-worth-it.html': {
     image: 'gold-platinum-worth-it-20261030.png',
     template: 'gold-platinum-compare',
