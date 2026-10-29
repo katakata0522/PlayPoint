@@ -154,7 +154,7 @@ const GAME_SEO = {
     umasuku: {
       price: 980,
       paidJewelsOnPurchaseOrRenewal: 500,
-      freeJewelsOnPurchaseOrRenewal: 50,
+      webStoreBonusFreeJewelsOnPurchaseOrRenewal: 50,
       freeJewelsPerDay: 50,
       dailyReset: '05:00',
       missedDailyDeliveredOnNextLogin: true,

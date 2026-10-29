@@ -42,7 +42,7 @@ function getJapaneseCalculator(game) {
     budgets = [GAME_SEO.fgo.luckyBag.cheapestVerifiedSpendFromZero, 10000, GAME_SEO.fgo.pity.cheapestVerifiedSpendFromZero];
   } else if (game.id === 'umamusume') {
     packs = [
-      { id: 'umasuku', name: `ウマスク（${GAME_SEO.umamusume.umasuku.price}円）`, tableName: 'ウマスク（月額）', price: GAME_SEO.umamusume.umasuku.price, billing: 'subscription', detail: '自動更新。購入・更新時に有償ジュエル500個＋無償50個、毎日無償50個。育成報酬2倍など。', source: SOURCES.umamusumeUmasuku },
+      { id: 'umasuku', name: `ウマスク（${GAME_SEO.umamusume.umasuku.price}円）`, tableName: 'ウマスク（月額）', price: GAME_SEO.umamusume.umasuku.price, billing: 'subscription', detail: '自動更新。購入・更新時に有償ジュエル500個、毎日無償50個。育成報酬2倍など。', source: SOURCES.umamusumeUmasuku },
       { id: 'umaplan', name: `ウマプラン（${GAME_SEO.umamusume.umaplan.price.toLocaleString('ja-JP')}円）`, tableName: 'ウマプラン（月額・機能系）', price: GAME_SEO.umamusume.umaplan.price, billing: 'subscription', detail: '自動更新。継承因子を2候補から選ぶ機能、継承専用ウマ娘の獲得など。ウマスクとは別契約で、併用できます。', source: SOURCES.umamusumeUmaplanDetails }
     ];
     presets = packs.map(p => ({ label: p.name, amount: p.price, mult: 1 }));
