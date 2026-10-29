@@ -1820,10 +1820,10 @@
       "毎月1日",
       "キャンペーン"
     ],
-    "description": "Playポイントデーは、Google Play公式アカウントが毎月1日0:00〜23:59に案内するポイント増量日です。最大7倍は全員共通ではなく、自分の倍率は「貯める」画面で確認します。",
+    "description": "Playポイントデーの過去の最大7倍案内と、2026年10月1日に確認した5倍・3倍の表示を紹介。今の対象や期限は自分の「貯める」画面で確認します。",
     "file": "../articles/2026-08-16-play-points-day.html",
     "thumbnail": "../articles/thumbnails/play-points-day-square-v1.webp",
-    "modified": "2026-10-14",
+    "modified": "2026-10-29",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/play-points-day.png",
     "thumbnailKind": "generic",
