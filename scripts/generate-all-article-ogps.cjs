@@ -108,8 +108,8 @@ const DISTINCT_MAPPING = {
     image: '2026-07-24-play-points-cash-conversion.png',
     template: 'cash-conversion',
     category: '交換・換金の注意点',
-    subtitle: '換金できない公式理由とお得な使い道まとめ',
-    points: ['現金化・PayPay不可', '公式規約の理由', 'Playクレジット交換が最得'],
+    subtitle: '換金できない理由と使い道の選び方',
+    points: ['現金化・PayPay不可', '交換先と条件を比べる', '使う予定に合わせて選ぶ'],
     accentColor: '#ef4444'
   },
   '2026-08-05-play-points-cannot-join.html': {
