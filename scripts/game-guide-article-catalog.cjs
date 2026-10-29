@@ -165,7 +165,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'arknights-monthly-pass-limited-scout-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-29',
     listDescription: "アークナイツの月パスで受け取れる純正源石6個、毎日の合成玉200個と理性回復剤を解説。スカウトまでの受取日数、購入額とPlay Points、限定300回の補足も掲載します。",
     title: "アークナイツの月パスでスカウトに備える｜30日間の合成玉と受取日数",
     category: '使い方',
