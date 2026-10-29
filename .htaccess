@@ -8,6 +8,9 @@ Options -Indexes
   RewriteCond %{HTTP_HOST} ^www\.playpoint-sim\.com$ [NC]
   RewriteRule ^ https://playpoint-sim.com%{REQUEST_URI} [R=301,L]
 
+  # 共有済みの旧表紙URLを修正済み画像へ案内する
+  RewriteRule ^articles/ogp/(2026-07-24-earn-play-points-free|2026-07-24-play-points-cash-conversion|2026-08-05-play-country-change-points|2026-08-05-play-points-cannot-join|2026-08-05-play-points-multiplier-stacking|2026-09-19-monst-web-shop-vs-google-play|2026-09-19-play-points-calendar-schedule-guide|gold-platinum-worth-it|play-points-day)\.png$ /articles/ogp/$1-20261030.png [R=302,L,NE]
+
   # 旧URLをトップへ統一
   RewriteCond %{THE_REQUEST} \s/+calculator\.html[\s?] [NC]
   RewriteRule ^calculator\.html$ / [R=301,L,NE]

@@ -1043,7 +1043,7 @@
     "id": "black-diamond-diamond-vip-2026",
     "title": "ブラックダイヤモンドは実在する？ ダイヤモンドVIPの噂をTGSの体験と最新情報から追ってみた",
     "date": "2026-10-01",
-    "modified": "2026-10-28",
+    "modified": "2026-10-30",
     "category": "ランク",
     "tags": [
       "Play Points",
@@ -1298,7 +1298,7 @@
     "listTitle": "モンスト1万円の損得計算｜Webとの差をポイントで比べる",
     "listDescription": "2024年のアプリ内例を使い、Webのオーブ数とポイント価値の分岐点を計算。現在の個数は購入画面で確認します。",
     "browseCategory": "ゲーム別課金",
-    "ogp": "../articles/ogp/2026-09-19-monst-web-shop-vs-google-play.png",
+    "ogp": "../articles/ogp/2026-09-19-monst-web-shop-vs-google-play-20261030.png",
     "thumbnail2x": "../images/game-icons/monst-2x.webp"
   },
   {
@@ -1336,7 +1336,7 @@
     "listTitle": "Play Pointsのお得カレンダー｜毎週・毎月の確認日",
     "listDescription": "金曜の週次特典、毎月1日のポイントデーなど、確認する日を一覧で把握。毎日・毎週・毎月の特典を見落としにくくなります。",
     "browseCategory": "最新情報・イベント",
-    "ogp": "../articles/ogp/2026-09-19-play-points-calendar-schedule-guide.png",
+    "ogp": "../articles/ogp/2026-09-19-play-points-calendar-schedule-guide-20261030.png",
     "thumbnailKind": "generic"
   },
   {
@@ -1723,7 +1723,7 @@
     "thumbnail": "../articles/thumbnails/gold-platinum-worth-it-square-v1.webp",
     "modified": "2026-10-28",
     "browseCategory": "ランク・ステータス",
-    "ogp": "../articles/ogp/gold-platinum-worth-it.png",
+    "ogp": "../articles/ogp/gold-platinum-worth-it-20261030.png",
     "thumbnailKind": "generic",
     "listDescription": "ゴールドで止めるか、プラチナを目指すか。週次特典・サポートの差と、自分の不足ポイント・購入予定で判断できます。",
     "listTitle": "ゴールドで十分？プラチナの特典と追加費用"
@@ -1825,7 +1825,7 @@
     "thumbnail": "../articles/thumbnails/play-points-day-square-v1.webp",
     "modified": "2026-10-29",
     "browseCategory": "貯める・キャンペーン",
-    "ogp": "../articles/ogp/play-points-day.png",
+    "ogp": "../articles/ogp/play-points-day-20261030.png",
     "thumbnailKind": "generic",
     "listDescription": "毎月1日のポイントデーで、自分に表示された倍率を確認。最大7倍が全員に適用されるわけではありません。",
     "listTitle": "Playポイントデーとは？過去の最大7倍と自分の倍率の確認方法"
@@ -1930,7 +1930,7 @@
     "listDescription": "ブロンズからダイヤモンドまでの必要ポイント・獲得率・特典を一覧比較。自分の目標ランクと購入額の目安を確認できます。",
     "browseCategory": "ランク・ステータス",
     "thumbnailKind": "generic",
-    "modified": "2026-10-28",
+    "modified": "2026-10-30",
     "ogp": "../articles/ogp/2026-08-05-play-points-levels-guide.png"
   },
   {
@@ -1949,7 +1949,7 @@
     "thumbnail": "../articles/thumbnails/play-points-cannot-join-square-v1.webp",
     "modified": "2026-10-28",
     "browseCategory": "トラブル・アカウント",
-    "ogp": "../articles/ogp/2026-08-05-play-points-cannot-join.png",
+    "ogp": "../articles/ogp/2026-08-05-play-points-cannot-join-20261030.png",
     "thumbnailKind": "generic",
     "listDescription": "登録できない方へ。年齢、国、アカウント、支払い方法、管理設定、端末を順番に確認できます。"
   },
@@ -1969,7 +1969,7 @@
     "thumbnail": "../articles/thumbnails/play-country-change-points-square-v1.webp",
     "modified": "2026-10-29",
     "browseCategory": "トラブル・アカウント",
-    "ogp": "../articles/ogp/2026-08-05-play-country-change-points.png",
+    "ogp": "../articles/ogp/2026-08-05-play-country-change-points-20261030.png",
     "thumbnailKind": "generic",
     "listDescription": "国を変えるとPlay Pointsとランクは引き継げません。残高、定期購入、ファミリー、変更制限を事前に確認できます。"
   },
@@ -1989,7 +1989,7 @@
     "thumbnail": "../articles/thumbnails/play-points-multiplier-stacking-square-v1.webp",
     "modified": "2026-10-29",
     "browseCategory": "貯める・キャンペーン",
-    "ogp": "../articles/ogp/2026-08-05-play-points-multiplier-stacking.png",
+    "ogp": "../articles/ogp/2026-08-05-play-points-multiplier-stacking-20261030.png",
     "thumbnailKind": "generic",
     "listDescription": "複数の増量特典は併用されず、最も高い獲得率が適用されます。倍率・税抜価格・商品ごとの丸めを例で確認できます。"
   },
@@ -2133,7 +2133,7 @@
     "file": "../articles/2026-07-24-play-points-cash-conversion.html",
     "thumbnail": "../articles/thumbnails/play-points-cash-conversion-square-v1.webp",
     "browseCategory": "使う・交換",
-    "ogp": "../articles/ogp/2026-07-24-play-points-cash-conversion.png",
+    "ogp": "../articles/ogp/2026-07-24-play-points-cash-conversion-20261030.png",
     "thumbnailKind": "generic",
     "listDescription": "Play Pointsは現金・PayPay・銀行口座へ交換できません。Playクレジットやクーポンなど、公式の使い道が分かります。"
   },
@@ -2197,7 +2197,7 @@
     "file": "../articles/2026-07-24-earn-play-points-free.html",
     "thumbnail": "../articles/thumbnails/earn-play-points-free-square-v1.webp",
     "browseCategory": "貯める・キャンペーン",
-    "ogp": "../articles/ogp/2026-07-24-earn-play-points-free.png",
+    "ogp": "../articles/ogp/2026-07-24-earn-play-points-free-20261030.png",
     "thumbnailKind": "generic",
     "listDescription": "追加購入なしで試せる週次・アプリ体験と、購入やPlay Pass契約が必要な特典の違いを確認できます。"
   },
