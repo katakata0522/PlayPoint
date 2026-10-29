@@ -182,7 +182,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'dokkan-google-play-vs-webstore-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-29',
     editorialNext: true,
     listDescription: "公式Web StoreとGoogle Playは別決済。価格とポイントの対象経路を、購入前に比べられます。",
     title: "ドッカンバトルの龍石購入ガイド｜Web Storeの特典・受取場所と比較のコツ",
