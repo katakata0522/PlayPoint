@@ -12,7 +12,8 @@ const ogpDir = path.join(articlesDir, 'ogp');
 // Mapping for the 22 articles that had shared images or ogp.png
 const DISTINCT_MAPPING = {
   '2026-09-26-bluearchive-monthly-packs-guide.html': {
-    image: '2026-09-26-bluearchive-monthly-packs-guide-20261030.png',
+    image: '2026-09-26-bluearchive-monthly-packs-guide-20261030-v2.png',
+    title: 'ブルアカのマンスリー<br>通常版とハーフを比較',
     template: 'bluearchive-monthly-compare',
     category: 'ブルアカの購入ガイド',
     subtitle: 'マンスリーとハーフ、どちらから選ぶ？',
@@ -504,10 +505,12 @@ async function run() {
     let points = [];
     let accentColor = '#38bdf8';
     let visualHtml = '';
+    let coverTitle = articleTitle;
 
     if (DISTINCT_MAPPING[file]) {
       const cfg = DISTINCT_MAPPING[file];
       imgName = cfg.image;
+      coverTitle = cfg.title || articleTitle;
       category = cfg.category;
       subtitle = cfg.subtitle;
       points = cfg.points;
@@ -557,7 +560,7 @@ async function run() {
     // Render 1200x630 OGP image
     const cardHtml = buildHtml({
       category,
-      title: articleTitle,
+      title: coverTitle,
       subtitle,
       points,
       accentColor,
