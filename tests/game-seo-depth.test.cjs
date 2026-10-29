@@ -119,7 +119,10 @@ test('原神は未確認の固定価格を使わず、購入予定額を自由�
 test('原神の空月記事はSSOTの受取条件・通常チャージとの差・Play Points経路を分ける', () => {
   const html = read('games/genshin/welkin-value/index.html');
   const welkin = GAME_SEO.genshin.welkin;
-  assert.ok(html.includes('合計最大' + formatNumber(welkin.maxPrimogemEquivalent) + '原石相当'));
+  const answer = html.match(/<section\b[^>]*class="[^"]*\banswer-box\b[^"]*"[^>]*>[\s\S]*?<\/section>/)?.[0] || '';
+  const text = answer.replace(/<[^>]*>/g, '');
+  assert.ok(text.includes('最大' + formatNumber(welkin.maxPrimogemEquivalent) + '原石相当'));
+  assert.ok(text.includes('創世結晶300個を1:1で原石に交換'));
   assert.ok(html.includes(String(welkin.days) + '日'));
   assert.ok(html.includes('Google Play経由'));
   assert.equal(welkin.price, undefined);
