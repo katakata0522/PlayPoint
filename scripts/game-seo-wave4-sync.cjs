@@ -37,15 +37,15 @@ function renderHbrGuide() {
 
 function renderHi3Guide() {
   const body = `
-    <section class="section"><h2>公式チャージセンターとゲーム内は、特典の一部を共有</h2><p>崩壊3rd公式は、HoYoverse公式チャージセンターを提供しています。公式案内では、<strong>月パス以外の水晶2倍チャージボーナスはゲーム内とチャージセンターで共有</strong>され、チャージセンターで購入してもゲーム内のチャージ特典を受け取れると説明しています。</p></section>
-    <section class="section"><h2>月パスは有効期間180日未満なら延長購入可能</h2><p>公式案内では、月パスの残り有効期間が180日未満の場合に追加購入して期間を延長できます。現行日本Google Playの月パス価格は公開一次情報で固定できないため、本サイトでは旧600円を現行価格として扱いません。</p></section>
-    <section class="section"><h2>チャージセンターでは独自割引キャンペーンもあり得る</h2><p>海外向けの公式案内では、2026年3月5日〜4月16日にチャージセンター向けの5%・10%割引クーポンを配布する期間限定イベントが実施されました。これは海外向けの終了済みキャンペーンの例です。日本向けの開催を示すものではなく、恒常割引ではありません。現在のお得度はチャージセンターの決済直前表示で確認してください。</p></section>
-    <section class="section"><h2>Google Play PointsはGoogle Play購入と分ける</h2><p>HoYoverse公式チャージセンターはGoogle Play上の購入ではありません。Google Play Pointsを重視する場合は、Google Play側の購入確認画面に表示されるポイントと、チャージセンター側の割引・特典を別軸で比較します。</p></section>
-    <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.hi3ChargeCenterLaunch}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：チャージセンター</a></li><li><a href="${SOURCES.hi3TopUpDiscount2026}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：2026年チャージセンター割引イベント</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
+    <section class="section"><h2>2倍ボーナスは購入先ごとにもう一度もらえる？</h2><p>ゲーム内で2倍ボーナスを使ったあと、公式チャージセンターでもう一度もらえたら嬉しい。でも、<strong>2024年の崩壊3rd公式案内では、月パス以外の水晶2倍チャージボーナスはゲーム内とチャージセンターで共有</strong>されます。購入先を変えるだけで別々に2倍を受け取れるわけではありません。</p><p>購入先を選ぶなら、同じ商品で支払額を見比べ、使える割引とGoogle Play Pointsをそれぞれ確認しましょう。現在の価格やボーナスの利用状況は、購入画面で確かめてください。</p></section>
+    <section class="section"><h2>Google Playとチャージセンター、どちらを選ぶ？</h2><p>同じ商品を比べたとき、まず見るのは<strong>購入画面の支払額と水晶数</strong>です。そのうえで、自分が使える特典も判断に入れます。</p><p>Google Play側に使いたいクーポンやポイント増量があり、Play Pointsの交換先にも欲しいものがあるなら、Google Playで買う価値があります。一方、チャージセンター側で自分に使える割引が表示されているなら、割引後の金額と比べてみましょう。</p><p>チャージセンターでの購入はGoogle Play上の購入ではないため、Play Points獲得は前提にできません。Google Play側も、対象購入かどうかと獲得予定ポイントを購入画面で確認してください。</p></section>
+    <section class="section"><h2>月パスを重ねて買うときの確認</h2><p>水晶を毎日受け取る月パスを延長したい場合は、残り期間にも注意。2024年の公式案内では、<strong>残り有効期間が180日未満</strong>なら追加購入で期間を延長でき、180日以上では延長できないとされています。</p><p>この条件と両方の価格は購入前に表示を確認しましょう。月パスは、上で説明した水晶2倍チャージボーナスとは別に考えます。</p></section>
+    <section class="section"><h2>割引クーポンは期間と対象を確認</h2><p>チャージセンターの割引は、いつでも同じ条件で使えるとは限りません。海外向けの公式案内には、2026年3月5日から4月16日までの5%・10%クーポンの例がありました。これは終了した海外向けイベントで、日本の現在の割引を示すものではなく、恒常割引ではありません。</p><p>今使えるクーポンがあれば、期限・対象商品・割引上限を確認し、決済前の最終金額で比べましょう。</p></section>
+    <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.hi3ChargeCenterLaunch}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：チャージセンターの案内（2024年）</a></li><li><a href="${SOURCES.hi3TopUpDiscount2026}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：過去の海外向け割引イベント</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">崩壊3rd Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'honkai3rd', slug: 'google-play-vs-charge-center', pageDescription: '崩壊3rdのGoogle Play購入とHoYoverse公式チャージセンターを、2倍チャージ特典、月パス延長、期間限定割引、Play Pointsの違いから整理します。', lead: '崩壊3rdは公式チャージセンターがあり、ゲーム内と共有する特典もあります。ただしGoogle Play Pointsとは別経路なので、購入目的ごとに比較します。', body, faq: [
-    { q: '崩壊3rdの公式チャージセンターでも初回2倍は使えますか？', a: '公式案内では、月パス以外の水晶2倍チャージボーナスはゲーム内と公式チャージセンターで共有されます。' },
-    { q: '公式チャージセンター購入でGoogle Play Pointsは貯まりますか？', a: '公式チャージセンターはGoogle Play上の購入ではありません。Google Play PointsはGoogle Play側の対象購入で確認してください。' }
+  return guideShell({ gameId: 'honkai3rd', slug: 'google-play-vs-charge-center', pageDescription: '崩壊3rdの水晶2倍ボーナスは購入先を変えても別々にもらえる？公式案内をもとに、チャージセンターとGoogle Playの選び方を整理します。', lead: '水晶2倍ボーナスは購入先で共有。価格や使える特典を分けて比較します。', body, faq: [
+    { q: '崩壊3rdの公式チャージセンターでも初回2倍は使えますか？', a: '2024年の公式案内では、月パスを除く商品の水晶2倍チャージボーナスが対象です。ボーナスの利用状況はゲーム内と公式チャージセンターで共通とされています。現在の対象商品と利用状況は購入画面で確認してください。' },
+    { q: '公式チャージセンター購入でGoogle Play Pointsは貯まりますか？', a: '公式チャージセンターはGoogle Play上の購入ではありません。Google Play側の対象購入で確認してください。' }
   ] });
 }
 
