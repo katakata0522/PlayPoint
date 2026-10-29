@@ -56,6 +56,19 @@ test('最新情報ハブは週次3制度とクエストを別項目として扱�
   assert.ok(latestHtml.includes('../articles/2026-07-31-google-play-quests.html'));
 });
 
+test('Play Pass週次は対象家族とGoogle公式の確認場所を明示し、通常週次と混同しない', () => {
+  const card = latestHtml.match(/<article[^>]*data-benefit-id="play-pass"[^>]*>[\s\S]*?<\/article>/)?.[0];
+  assert.ok(card, 'Play Pass card is required');
+  assert.match(card, /ファミリーグループメンバー/, '対象家族を除外しない');
+  assert.match(card, /Google Playストア下部の「Play Pass」/, '確認先はPlay Passタブ');
+  assert.match(card, /個別の適用可否はアカウント内の表示が優先/, '全員への提供を断定しない');
+  assert.match(card, /answer\/16507543/, 'Play Pass公式情報への参照を維持する');
+
+  const ordinaryCard = latestHtml.match(/<article[^>]*data-benefit-id="weekly-points"[^>]*>[\s\S]*?<\/article>/)?.[0];
+  assert.ok(ordinaryCard, 'ordinary weekly card is required');
+  assert.match(ordinaryCard, /「Play Points」→「特典」/, '通常週次の確認先はPlay Pointsの特典');
+});
+
 test('生成処理は公開ページの公式確認日を内容日SSOTとして使う', () => {
   assert.equal(CONTENT_DATE_OVERRIDES['latest/index.html'], verificationDate);
 });
