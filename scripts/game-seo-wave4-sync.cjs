@@ -50,17 +50,16 @@ function renderHi3Guide() {
 }
 
 function renderPhantomGuide() {
-  const shop = GAME_SEO_WAVE4.phantomparade.webShop;
   const body = `
-    <section class="section"><h2>公式WEBショップは増量・マイルが明示されている</h2><p>2026年9月13日のファンパレ公式WEBショップでは、有償廻珠A〜Gを160円〜10,000円で掲載し、初回は<strong>${shop.currentPaidBeadFirstBonusPercentRange[0]}〜${shop.currentPaidBeadFirstBonusPercentRange[1]}%増量</strong>を表示しています。期間商品には4〜5%増量や、WEB限定100%増量商品も表示されています。内容は時期で変わるため現在表示を優先してください。</p></section>
-    <section class="section"><h2>WEBショップでは購入金額に応じたマイルptも表示</h2><p>2026年10月9日の公式WEBショップでは、有償廻珠Cは1,000円・初回19%増量・1,000マイルpt、WEB限定の毎月切り替えお得廻珠パックは1,000円・4%増量・1,000マイルptと表示されています。同じ支払額・マイル数でも、増量率と購入条件は商品によって違います。マイルptはGoogle Play Pointsとは別の仕組みです。</p><p><strong>1,000マイルptを、そのまま1,000円の還元として計算しない</strong>ようにしましょう。マイルの円換算や交換条件は商品カードの獲得表示だけでは分からないため、利用時の案内を確認します。比較する順番は、廻珠の内訳と総数、初回・回数制限、マイルの使い道です。</p><p class="reader-source"><a href="${SOURCES.phantomWebShop}" target="_blank" rel="noopener noreferrer">公式WEBショップ：商品ごとの増量・マイル表示（2026年10月9日確認）</a></p></section>
-    <section class="section"><h2>パス類もWEBショップにあるが、Google Play価格とは分ける</h2><p>現在のWEBショップではファンパレボーナス610円、毎日廻珠ボーナス480円などが表示されています。これらはWEBショップの現在価格であり、Google Play側の価格として流用しません。Google Play購入では購入画面の実額を本サイトへ入力してください。</p></section>
-    <section class="section"><h2>Google Play Pointsを含めた比較</h2><p>WEBショップ購入はGoogle Play上の購入ではないため、Google Play Points獲得を前提にしません。「WEB増量・マイル」と「Google Play Points」を別々に見て、自分の購入額と現在のキャンペーンに合わせて選ぶのが安全です。</p></section>
-    <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.phantomWebShop}" target="_blank" rel="noopener noreferrer">ファンパレ公式WEBショップ：現在の商品・増量表示</a></li><li><a href="${SOURCES.phantomWebShopLogin}" target="_blank" rel="noopener noreferrer">公式WEBショップ：アカウント連携</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
+    <section class="section"><h2>同じ1,000円でも、まず商品を選ぶ</h2><p>引きたいガチャが来た。廻珠を買うなら、公式WEBショップの増量も気になりますよね。まずは<strong>同じ1,000円でも、初回商品と毎月の商品は別物</strong>というところから見てみましょう。</p><p>2026年10月29日の公式WEBショップでは、有償廻珠Cは1,000円で初回19%増量、WEB限定の毎月切り替えお得廻珠パックは1,000円で4%増量と表示されていました。どちらにも1,000マイルptの獲得表示があります。有償廻珠A〜Gの初回は<strong>17〜20%増量</strong>、ほかに4〜5%増量の商品も確認できました。</p><p>数字だけを見て決めず、商品ごとの有償・無償の内訳や購入回数を確認してから、Google Play側で欲しい商品と比べるのがおすすめです。Google Play側の現在の価格・内容は確認できていません。</p></section>
+    <section class="section"><h2>マイルptとPlay Pointsは別々に考える</h2><p>WEBショップの商品には、廻珠の増量に加えてマイルptの獲得数が表示されています。マイルptはGoogle Play Pointsとは別の仕組みです。一方、Google Play PointsはGoogle Play上の対象購入で貯まるもの。WEBショップの購入で両方が付く前提にはできません。</p><p>たとえば表示された1,000マイルptを、そのまま<strong>1,000円の値引きや1,000 Play Pointsと同じもの</strong>として計算しないこと。マイルptの利用条件や特典は購入前にショップ内の案内を確認し、Play Pointsも自分が欲しい交換先と必要ポイントを見て比べましょう。</p></section>
+    <section class="section"><h2>毎日のボーナスを選ぶなら、受け取る予定日も見る</h2><p>2026年10月29日のWEBショップには、ファンパレボーナス610円、毎日廻珠ボーナス480円も掲載されていました。これらはWEBショップ側の表示価格です。Google Play側の価格とは限らないため、購入画面を見比べてください。</p><p>今すぐ廻珠が欲しいのか、毎日の受け取りで次のガチャに備えたいのか。受取条件と、欲しいガチャまでの日数も合わせて見ると選びやすくなります。</p></section>
+    <section class="section"><h2>Google PlayとWEBショップ、どちらを選ぶ？</h2><p>廻珠の増量やWEB限定商品を重視するなら、まず公式WEBショップの対象商品を確認。Google Play側のクーポンやポイント増量が使え、獲得ポイントにも欲しい交換先があるなら、Google Playの購入画面も候補に入れましょう。</p><p>両方で同じ商品を買える場合は、支払額、廻珠の内訳、購入回数、使える特典を一つずつ比べます。期間商品や初回特典は変わるので、決済前の表示が最終確認です。</p></section>
+    <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.phantomWebShop}" target="_blank" rel="noopener noreferrer">ファンパレ公式WEBショップ：商品表示</a></li><li><a href="${SOURCES.phantomWebShopLogin}" target="_blank" rel="noopener noreferrer">公式WEBショップ：アカウント連携</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ファンパレ Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'phantomparade', slug: 'google-play-vs-webshop', pageDescription: 'ファンパレ公式WEBショップの増量率、マイルpt、パス商品とGoogle Play Pointsを別軸で比較。Google Play価格は推測せず購入画面で確認します。', lead: 'ファンパレ公式WEBショップには増量商品とマイルptがあります。Google Play Pointsと同じものではないため、現在の増量・支払経路・ポイントを分けて比較します。', body, faq: [
-    { q: 'ファンパレWEBショップには増量がありますか？', a: '2026年9月13日の公式WEBショップでは、有償廻珠の初回17〜20%増量や、期間商品4〜5%増量などが表示されています。内容は時期で変わります。' },
-    { q: 'WEBショップでGoogle Play Pointsは貯まりますか？', a: 'WEBショップはGoogle Play上の購入ではありません。Google Play PointsはGoogle Play上の対象購入で確認してください。' }
+  return guideShell({ gameId: 'phantomparade', slug: 'google-play-vs-webshop', pageDescription: 'ファンパレ公式WEBショップの廻珠増量とマイルpt、Google Play Pointsを比較。初回と毎月の商品例を見ながら購入先を選びます。', lead: '初回と毎月の商品、マイルpt、Play Pointsを分けて比べます。', body, faq: [
+    { q: 'ファンパレWEBショップには増量がありますか？', a: '2026年10月29日の公式WEBショップでは、有償廻珠A〜Gの初回17〜20%増量などを確認しました。商品や条件は変わるため、購入画面で確認してください。' },
+    { q: 'WEBショップでGoogle Play Pointsは貯まりますか？', a: 'WEBショップはGoogle Play上の購入ではありません。Google Play上の対象購入で確認してください。' }
   ] });
 }
 
