@@ -78,7 +78,14 @@ test('ゼンゼロ深掘りはSSOTの会員総量を即時チャージと混同�
   const html = read('games/zzz/membership-value/index.html');
   const membership = GAME_SEO.zzz.membership;
   assert.equal(membership.price, undefined);
-  assert.ok(html.includes('https://store.playstation.com/ja-jp/product/EP7711-PPSA20599_00-NAPPS5VIPUSD0499'));
+  const sourceHrefs = [...html.matchAll(/href="([^"]+)"/g)].map(match => match[1]);
+  assert.ok(sourceHrefs.some(href => {
+    try {
+      const url = new URL(href);
+      return url.protocol === 'https:' && url.hostname === 'store.playstation.com' &&
+        url.pathname === '/ja-jp/product/EP7711-PPSA20599_00-NAPPS5VIPUSD0499';
+    } catch { return false; }
+  }));
   assert.ok(html.includes('最大' + formatNumber(membership.maxPolychromeEquivalent) + 'ポリクローム相当'));
   assert.ok(html.includes(String(membership.days) + '日'));
   assert.match(html, /3,000個相当が購入直後にそろう商品ではありません/);
