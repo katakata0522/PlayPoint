@@ -96,7 +96,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'umamusume-umasuku-value-2026',
-    modified: '2026-10-29',
+    modified: '2026-10-30',
     listDescription: "月980円のウマスクを使い切れるか確認。ジュエル、未受取時の扱い、WebStoreとGoogle Playの違いが分かります。",
     title: "ウマ娘のウマスクは月980円｜毎日のジュエルと育成特典をチェック",
     category: '使い方',
