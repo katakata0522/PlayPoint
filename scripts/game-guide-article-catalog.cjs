@@ -79,7 +79,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'zzz-membership-value-2026',
-    modified: '2026-10-29',
+    modified: '2026-10-30',
     listDescription: "ゼンゼロのインターノット会員は購入時のモノクローム300個と毎日90ポリクローム。10日・20日・30日に使える量と、即時チャージとの違いを解説します。",
     title: "ゼンゼロのインターノット会員で毎日90ポリクローム！30日間の受取内容",
     category: '使い方',
