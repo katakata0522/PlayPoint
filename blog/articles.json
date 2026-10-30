@@ -1906,7 +1906,7 @@
     "description": "Play Pointsのステータスは毎年初めに、前年の獲得ポイントで変わることがあります。1月1日に下がってもポイント残高は消えません。別アカウントや有効期限と切り分けます。",
     "file": "../articles/2026-08-16-january-rank-reset.html",
     "thumbnail": "../articles/thumbnails/january-rank-reset-square-v1.webp",
-    "modified": "2026-10-29",
+    "modified": "2026-10-30",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/january-rank-reset.png",
     "thumbnailKind": "generic",
