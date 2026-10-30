@@ -170,7 +170,8 @@ test('eFootballの再生成は重要条件とFAQを保ち、編集済み記事�
     assert.ok(syncGameSeoWave5(temporaryRoot).changedFiles.includes(file));
     const fullPath = path.join(temporaryRoot, file);
     const html = fs.readFileSync(fullPath, 'utf8');
-    for (const text of ['Play Pointsへの参加が前提', '税金は計算対象に含まれない', 'ゲームアカウントとKONAMI IDの連携は原則解除できません', '同意済みのKONAMI IDと連携したゲームアカウントは解除できない', '国・地域によって異なる', 'UTC（協定世界時）', '月末23時59分59秒', '通貨追加告知（モンゴル）']) assert.ok(html.includes(text), text);
+    for (const text of ['Play Pointsへの参加が前提', '税金は計算対象に含まれない', 'ゲームアカウントとKONAMI IDの連携は原則解除できません', '同意済みのKONAMI IDと連携したゲームアカウントは解除できない', '国・地域によって異なる', 'UTC（協定世界時）', '月末23時59分59秒', 'https://www.konami.com/wepes/efootball_point/ja/']) assert.ok(html.includes(text), text);
+    assert.ok(html.indexOf('<h2 id="article-section-4">') < html.indexOf('<h2 id="article-section-3">'), '4種類の比較を交換・期限の詳細より先に置く');
     const objects = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(x => JSON.parse(x[1]));
     const faq = objects.find(x => x['@type'] === 'FAQPage');
     assert.equal(faq.mainEntity.length, 2);
