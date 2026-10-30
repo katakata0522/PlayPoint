@@ -148,7 +148,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'pad-pass-value-2026',
-    modified: '2026-10-29',
+    modified: '2026-10-30',
     listDescription: "月980円のパズドラパスと1週間無料トライアルの条件を確認。毎日のダンジョンや特典を使い切れるか判断できます。",
     title: "パズドラパスは月額980円で何が得？無料トライアル・特典・Play Points【2026年】",
     category: '使い方',
