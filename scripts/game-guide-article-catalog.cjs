@@ -200,7 +200,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'hbr-google-play-vs-webshop-2026',
-    modified: '2026-10-29',
+    modified: '2026-10-30',
     listDescription: "WEB SHOPの5%OFFと専用ポイントを、Google Playの還元と比較。Webでは加入できない月額パスにも注意できます。",
     title: "ヘブバンWEB SHOPで5%OFF｜パス・独自ポイントとGoogle Playの違い",
     category: '使い方',
