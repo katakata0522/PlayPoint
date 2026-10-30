@@ -5,8 +5,29 @@
     <link>https://playpoint-sim.com/blog/</link>
     <description>Google Play PointsとPlay Passの違い、ランクの特典、ポイントの使い道を、知りたいことから探せる記事ガイドです。必要額の計算や週次リワードの記録にも進めます。</description>
     <language>ja</language>
-    <lastBuildDate>Fri, 30 Oct 2026 03:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 31 Oct 2026 03:00:00 GMT</lastBuildDate>
     <atom:link href="https://playpoint-sim.com/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>「みんなには出てるのに自分にはない」Google Play Pointsの増量キャンペーンが表示されない理由</title>
+      <link>https://playpoint-sim.com/articles/2026-09-19-play-points-promotion-not-showing.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-09-19-play-points-promotion-not-showing.html</guid>
+      <pubDate>Sat, 19 Sep 2026 03:00:00 GMT</pubDate>
+      <description>Google Play Pointsのポイント増量・ポイントアップキャンペーンが自分だけ表示されない時の確認順を解説。全員対象とは限らない理由、Playのカスタマイズ設定、Play Pass、PC限定、新端末、国・通貨条件まで整理します。</description>
+    </item>
+    <item>
+      <title>Playポイントが消えたときの確認順｜期限・未反映・ランク</title>
+      <link>https://playpoint-sim.com/articles/2026-08-16-points-disappeared.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-16-points-disappeared.html</guid>
+      <pubDate>Sun, 16 Aug 2026 03:00:00 GMT</pubDate>
+      <description>Play Pointsは最後の獲得または使用から1年。使える残高、年次ランク進捗、未受領の週次特典を分け、履歴・アカウント・期限からポイント消失の原因を確認します。</description>
+    </item>
+    <item>
+      <title>Google Play Pointsに登録できない・表示されない原因｜参加条件の確認順</title>
+      <link>https://playpoint-sim.com/articles/2026-08-05-play-points-cannot-join.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-05-play-points-cannot-join.html</guid>
+      <pubDate>Wed, 05 Aug 2026 03:00:00 GMT</pubDate>
+      <description>Google Play Pointsへ登録できない時に、18歳以上の年齢条件、対応国、アカウント、支払い方法、請求先住所、保護者・学校管理、端末を順に確認します。</description>
+    </item>
     <item>
       <title>ゼンゼロのインターノット会員で毎日90ポリクローム！30日間の受取内容</title>
       <link>https://playpoint-sim.com/games/zzz/membership-value/index.html</link>
@@ -372,13 +393,6 @@
       <description>パズドラパスを使い切れるか、魔法石セットと確定セットをどう比べるかを具体例で解説。自動更新、受け取り条件、Google Play Pointsの獲得と交換価値を分けて判断できます。</description>
     </item>
     <item>
-      <title>「みんなには出てるのに自分にはない」Google Play Pointsの増量キャンペーンが表示されない理由</title>
-      <link>https://playpoint-sim.com/articles/2026-09-19-play-points-promotion-not-showing.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-09-19-play-points-promotion-not-showing.html</guid>
-      <pubDate>Sat, 19 Sep 2026 03:00:00 GMT</pubDate>
-      <description>Google Play Pointsのポイント増量・ポイントアップキャンペーンが自分だけ表示されない時の確認順を解説。全員対象とは限らない理由、Playのカスタマイズ設定、Play Pass、PC限定、新端末、国・通貨条件まで整理します。</description>
-    </item>
-    <item>
       <title>Playポイントデーとは？過去の最大7倍と自分の倍率の確認方法</title>
       <link>https://playpoint-sim.com/articles/2026-08-16-play-points-day.html</link>
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-16-play-points-day.html</guid>
@@ -435,25 +449,11 @@
       <description>日本向けの公式案内では、プレミアムサポートはプラチナとダイヤモンドが対象です。対象アカウントでログインし、利用できる問い合わせ方法を確認しましょう。待ち時間の短縮は保証されません。</description>
     </item>
     <item>
-      <title>Playポイントが消えたときの確認順｜期限・未反映・ランク</title>
-      <link>https://playpoint-sim.com/articles/2026-08-16-points-disappeared.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-16-points-disappeared.html</guid>
-      <pubDate>Sun, 16 Aug 2026 03:00:00 GMT</pubDate>
-      <description>Play Pointsは最後の獲得または使用から1年。使える残高、年次ランク進捗、未受領の週次特典を分け、履歴・アカウント・期限からポイント消失の原因を確認します。</description>
-    </item>
-    <item>
       <title>Play PointsのPixel割引クーポンを探す｜特典タブ・交換先・使い方</title>
       <link>https://playpoint-sim.com/articles/2026-08-16-pixel-discount-coupon.html</link>
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-16-pixel-discount-coupon.html</guid>
       <pubDate>Sun, 16 Aug 2026 03:00:00 GMT</pubDate>
       <description>Play PointsのPixel割引クーポンを、個別配布の特典タブとポイント交換の「使う」から探す方法を解説。Google Storeでのコード利用と確認点も紹介します。</description>
-    </item>
-    <item>
-      <title>Google Play Pointsに登録できない・表示されない原因｜参加条件の確認順</title>
-      <link>https://playpoint-sim.com/articles/2026-08-05-play-points-cannot-join.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-05-play-points-cannot-join.html</guid>
-      <pubDate>Wed, 05 Aug 2026 03:00:00 GMT</pubDate>
-      <description>Google Play Pointsへ登録できない時に、18歳以上の年齢条件、対応国、アカウント、支払い方法、請求先住所、保護者・学校管理、端末を順に確認します。</description>
     </item>
     <item>
       <title>Google Play Pointsクーポンが使えない？「特典を適用できません」の対処</title>
