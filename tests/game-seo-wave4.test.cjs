@@ -64,7 +64,7 @@ test('HBR parent fails closed while the guide reflects the Web Shop SSOT', () =>
   assert.ok(guide.includes('購入金額の<strong>' + webShop.basePointPercent + '%分のWEB SHOPポイント'));
   assert.match(guide, /パス.*WEB SHOP.*加入できない/);
   for (const example of webShop.currentQuartzExamples.filter(item => item.quartz >= 10000)) {
-    assert.ok(guide.includes(formatNumber(example.quartz) + '個/' + formatNumber(example.price) + '円'));
+    assert.ok(guide.includes(formatNumber(example.quartz) + '個（' + formatNumber(example.price) + '円）'), 'Each product amount should be paired with its price');
   }
 });
 
