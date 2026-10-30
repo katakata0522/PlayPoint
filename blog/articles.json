@@ -1453,7 +1453,7 @@
     "description": "Google Play Pointsが『利用できません』『アカウントに問題があります』と表示された時に、表示不具合とアカウント制限を切り分け、サポートへ伝える情報まで整理します。",
     "file": "../articles/2026-08-19-play-points-locked.html",
     "thumbnail": "../articles/thumbnails/play-points-locked-square-v1.webp",
-    "modified": "2026-10-29",
+    "modified": "2026-10-30",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-19-play-points-locked.png",
     "thumbnailKind": "generic",
