@@ -241,8 +241,10 @@ test('ポイント消失記事は1年期限とランクリセットを分けて�
 test('Family Link記事は管理アカウントを対象外とし回避策を書かない', () => {
   const html = readArticle('2026-08-16-family-link-play-points.html');
   assert.match(html, /参加対象外/);
-  assert.match(html, /公式の回避策はありません/);
+  assert.match(html, /Family Linkなどで管理されている間は参加対象外/);
+  assert.match(html, /管理状態が変わった場合も、年齢や国、支払い方法など、本人のアカウントの参加条件を確認/);
   assert.doesNotMatch(html, /Family Linkを外す手順/);
+  assert.doesNotMatch(html, /(?:管理を解除|年齢を偽れ)ば参加できます/);
 });
 
 test('救出3記事はPlay Pointsを還元率パーセントやランク1.5倍として案内しない', () => {
