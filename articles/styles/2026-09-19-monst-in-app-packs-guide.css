@@ -1,0 +1,15 @@
+/* スマホで横へ動かしても商品名を見失わない。 */
+@media (max-width: 760px) {
+  html[data-reading-theme] .monst-packs-comparison table { min-width: 760px; }
+  html[data-reading-theme] .monst-packs-comparison tr > :first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    min-width: 120px;
+    background: var(--reading-surface, #fff);
+  }
+  html[data-reading-theme] .monst-packs-comparison thead tr > :first-child {
+    z-index: 2;
+    background: var(--reading-soft, #f1f5f9);
+  }
+}
