@@ -2028,7 +2028,7 @@
     "description": "機種変更後も同じGoogleアカウントならPlay Pointsの残高・ランク・履歴は通常引き継がれます。別アカウント、国変更、Play Pass特典の最長15日遅延など、表示されない時の確認順を解説します。",
     "file": "../articles/2026-08-03-play-points-device-change.html",
     "thumbnail": "../articles/thumbnails/device-change-square-v1.webp",
-    "modified": "2026-10-28",
+    "modified": "2026-10-30",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-08-03-play-points-device-change.png",
     "thumbnailKind": "generic",
