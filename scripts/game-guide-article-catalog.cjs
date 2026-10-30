@@ -113,7 +113,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'proseka-google-play-vs-webstore-2026',
-    modified: '2026-10-29',
+    modified: '2026-10-30',
     editorialNext: true,
     listDescription: "カラフルパス3種とミッションパス、公式WebStoreを比較。商品ごとの内容と購入経路の違いを確認できます。",
     title: "プロセカの課金はどこで買う？公式WebStore・カラフルパスの選び方",
