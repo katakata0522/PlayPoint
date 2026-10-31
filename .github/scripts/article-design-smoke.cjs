@@ -23,6 +23,7 @@ const REPRESENTATIVE_CASES = [
   ].map(([key, articlePath]) => ({ key, path: articlePath, allArticle: true, related: true })),
   ...['monst-in-app-packs-guide', 'pokemon-sleep-play-points-coupon', 'gakumas-webshop-google-play', 'bluearchive-monthly-packs-guide', 'nikke-monthly-card-midasbuy'].map(slug => ({ key: slug, path: 'articles/' + (slug.startsWith('monst') ? '2026-09-19-' : '2026-09-26-') + slug + '.html', allArticle: true, related: true })),
   { key: 'decision-normalized', path: 'articles/2025-12-25-best-use.html', noIntro: true, summary: true, related: true },
+  { key: 'saved-coupon-deletion', path: 'articles/2026-07-25-play-points-coupon-not-applied.html', allArticle: true, related: true },
   { key: 'troubleshooting-modern', path: 'articles/2026-03-10-play-points-reflection-timing.html', related: true },
   { key: 'retention-super-ticket', path: 'articles/2026-09-19-google-play-super-ticket.html', related: true },
   { key: 'retention-quests', path: 'articles/2026-07-31-google-play-quests.html', related: true },
@@ -222,6 +223,12 @@ async function inspect(browser, baseUrl, article, viewport) {
     const evidenceName = 'article-design-' + article.key + '-' + viewport.key;
     await page.screenshot({ path: path.join(ARTIFACT_DIR, evidenceName + '.png'), fullPage: true });
     fs.writeFileSync(path.join(ARTIFACT_DIR, evidenceName + '.json'), JSON.stringify({ article, viewport, result, focus }, null, 2));
+    if (article.key === 'saved-coupon-deletion') {
+      for (const id of ['saved-coupon-deletion', 'remove-checkout-offer', 'coupon-expiration']) {
+        await page.locator('.answer-box a[href="#' + id + '"]').click();
+        assert(new URL(page.url()).hash === '#' + id, article.key + '/' + viewport.key + ': answer link did not reach ' + id);
+      }
+    }
     if (article.key === 'retention-super-ticket') {
       // 遅延描画される追記部分も、画面内へ移動して証跡に残す。
       for (const id of ['article-section-3', 'save-use-deadlines', 'article-section-5']) {
