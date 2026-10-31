@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="2026-10-07" />
+  <meta name="last-modified" content="2026-10-28" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>Fate/Grand Order (FGO) - Playポイント計算機</title>
@@ -92,7 +92,7 @@
       "name": "FGOの確定召喚330回を石0から用意するといくら？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "確認済みの現行価格だけで聖晶石900個以上を最安にそろえる例は54,600円・902個です。ブロンズ通常獲得率なら税込額ベースの概算で約546pt、5pt/100円の特別獲得率なら約2,730ptです。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。"
+        "text": "2022年のFGO公式価格表を前提に、聖晶石・呼符の手持ちがなく、1日1回の有償召喚を使わずに11回召喚を30セット行う試算では、必要な900個以上を54,600円で902個用意できます。現在のGoogle Play版のゲーム内価格は未確認のため、購入画面の価格と個数を確かめてください。計算機のポイント参考表は税未調整の支払額ベース、関連記事は税込額に税10%を仮定して除いた概算です。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。"
       }
     }
   ]
@@ -144,7 +144,7 @@
           <header class="game-header">
               <span class="game-badge">⚔️ 人気ゲーム別シミュレーター</span>
               <h1 class="game-title">Fate/Grand Order (FGO)</h1>
-              <p class="game-meta">FGO価格・確定召喚・Play Points確認：2026-09-13 ｜ Google Play Points (100円=1pt)</p>
+              <p class="game-meta">聖晶石価格は2022年公式表の参考値（現在のGoogle Play版は購入画面で確認） ｜ Google Play Points (100円=1pt)</p>
           </header>
 
           <p>聖晶石を何パック買うか、福袋の予算をどうするか。FGOの購入額を選んで、貯まるPlayポイントを計算できます。福袋や確定召喚までの聖晶石・購入額の考え方は、関連記事で詳しく紹介しています。</p>
@@ -162,22 +162,25 @@
               <h2 class="game-sim-title">🧮 FGO</h2>
 
               <p class="preset-heading">金額をすぐ入力：</p>
+              <p>1,920円と54,600円は2022年の公式価格表を使った参考予算で、現在の購入価格を示すものではありません。</p>
               <div class="preset-buttons">
                   <button type="button" class="preset-btn active" data-amount="1920" data-input-kind="budget" aria-pressed="true">予算 1,920円</button>
               <button type="button" class="preset-btn " data-amount="10000" data-input-kind="budget" aria-pressed="false">予算 10,000円</button>
               <button type="button" class="preset-btn " data-amount="54600" data-input-kind="budget" aria-pressed="false">予算 54,600円</button>
               </div>
 
+              <p>商品選択肢は2022年の公式価格表を使った参考例です。現在のGoogle Play版の価格と個数は未確認のため、購入画面を確認し、異なる場合は自由入力を使ってください。</p>
+              <p>ポイントは税を除く対象額が基準です。初期状態では支払額を対象額に仮置きし、税を差し引いていません。税抜の対象額が分かる場合は「獲得率・対象額を調整」から入力できます。</p>
               <form id="game-sim-form" data-initial-input-kind="budget">
                   <div class="input-grid">
                       <div class="input-field">
                           <label for="sim-pack-select">商品を選ぶ：</label>
                           <select id="sim-pack-select">
-                              <option value="480" data-product-id="quartz-4">聖晶石 有償4+無償1個（計5個 / 480円）</option>
-                  <option value="1600" data-product-id="quartz-13">聖晶石 有償13+無償8個（計21個 / 1,600円）</option>
-                  <option value="3000" data-product-id="quartz-25">聖晶石 有償25+無償16個（計41個 / 3,000円）</option>
-                  <option value="4900" data-product-id="quartz-42">聖晶石 有償42+無償35個（計77個 / 4,900円）</option>
-                  <option value="10000" data-product-id="quartz-86">聖晶石 有償86+無償82個（計168個 / 10,000円）</option>
+                              <option value="480" data-product-id="quartz-4">聖晶石 有償4+無償1個（計5個 / 480円・2022年参考）</option>
+                  <option value="1600" data-product-id="quartz-13">聖晶石 有償13+無償8個（計21個 / 1,600円・2022年参考）</option>
+                  <option value="3000" data-product-id="quartz-25">聖晶石 有償25+無償16個（計41個 / 3,000円・2022年参考）</option>
+                  <option value="4900" data-product-id="quartz-42">聖晶石 有償42+無償35個（計77個 / 4,900円・2022年参考）</option>
+                  <option value="10000" data-product-id="quartz-86">聖晶石 有償86+無償82個（計168個 / 10,000円・2022年参考）</option>
                               <option value="custom">自由入力（カスタム金額）</option>
                           </select>
                       </div>
@@ -218,7 +221,7 @@
                           <strong id="res-total-amount" class="result-stat-value">-</strong>
                       </div>
                       <div class="result-stat-box">
-                          <span class="result-stat-label">獲得予定 Playポイント</span>
+                          <span class="result-stat-label">獲得ポイントの試算</span>
                           <strong id="res-earned-points" class="result-stat-value highlight">- pt</strong>
                           <span id="res-calculation-basis" class="game-basis-badge"></span>
                       </div>
@@ -275,21 +278,22 @@
 
           <section class="section">
               <h2>FGO 商品の購入額とポイント</h2>
+              <p>商品一覧は2022年の公式価格表に基づく参考例です。現在のGoogle Play版の価格と個数は購入画面で確認してください。</p>
 
               <div class="pack-table-wrap" tabindex="0" role="region" aria-label="FGO 商品の購入額とポイント: 比較表（左右矢印キーでスクロール）">
                   <table class="pack-table" data-table-kind="products">
                       <caption>支払額による参考値（税は未調整）。税抜対象額を指定した計算結果とは前提が異なります。</caption>
                       <thead><tr><th>商品</th><th>価格 (税込)</th><th>基本獲得率（100円あたり1pt）</th><th>特別獲得率 5pt/100円時</th></tr></thead>
-                      <tbody><tr data-product-id="quartz-4"><td>聖晶石 有償4+無償1個（計5個）</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
-<tr data-product-id="quartz-13"><td>聖晶石 有償13+無償8個（計21個）</td><td>1,600 円</td><td>約 16 pt</td><td>約 80 pt</td></tr>
-<tr data-product-id="quartz-25"><td>聖晶石 有償25+無償16個（計41個）</td><td>3,000 円</td><td>約 30 pt</td><td>約 150 pt</td></tr>
-<tr data-product-id="quartz-42"><td>聖晶石 有償42+無償35個（計77個）</td><td>4,900 円</td><td>約 49 pt</td><td>約 245 pt</td></tr>
-<tr data-product-id="quartz-86"><td>聖晶石 有償86+無償82個（計168個）</td><td>10,000 円</td><td>約 100 pt</td><td>約 500 pt</td></tr></tbody>
+                      <tbody><tr data-product-id="quartz-4"><td>聖晶石 有償4+無償1個（計5個・2022年参考）</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
+<tr data-product-id="quartz-13"><td>聖晶石 有償13+無償8個（計21個・2022年参考）</td><td>1,600 円</td><td>約 16 pt</td><td>約 80 pt</td></tr>
+<tr data-product-id="quartz-25"><td>聖晶石 有償25+無償16個（計41個・2022年参考）</td><td>3,000 円</td><td>約 30 pt</td><td>約 150 pt</td></tr>
+<tr data-product-id="quartz-42"><td>聖晶石 有償42+無償35個（計77個・2022年参考）</td><td>4,900 円</td><td>約 49 pt</td><td>約 245 pt</td></tr>
+<tr data-product-id="quartz-86"><td>聖晶石 有償86+無償82個（計168個・2022年参考）</td><td>10,000 円</td><td>約 100 pt</td><td>約 500 pt</td></tr></tbody>
                   </table>
               </div>
 
               <h2>予算別のポイント目安</h2>
-              <p>以下は商品価格ではなく、購入額を変えた計算例です。天井や進化までに必要な費用を示すものではありません。</p>
+              <p>以下は商品価格ではなく、購入額を変えた計算例です。天井や進化までに必要な費用を示すものではありません。ポイントは税未調整の支払額ベースで、関連記事の消費税10%を仮定して除いた試算とは前提が異なります。</p>
               <div class="pack-table-wrap" tabindex="0" role="region" aria-label="予算別のポイント目安: 比較表（左右矢印キーでスクロール）"><table class="pack-table" data-table-kind="budgets">
                 <thead><tr><th>予算（計算例）</th><th>基本獲得率（100円あたり1pt）</th><th>特別獲得率 5pt/100円時</th></tr></thead>
                 <tbody><tr><td>1,920円</td><td>約 19 pt</td><td>約 96 pt</td></tr><tr><td>10,000円</td><td>約 100 pt</td><td>約 500 pt</td></tr><tr><td>54,600円</td><td>約 546 pt</td><td>約 2,730 pt</td></tr></tbody>
@@ -335,10 +339,10 @@
           <section class="section">
               <h2>よくある質問（FAQ）</h2>
               <h3>FGOの確定召喚330回を石0から用意するといくら？</h3>
-<p>確認済みの現行価格だけで聖晶石900個以上を最安にそろえる例は54,600円・902個です。ブロンズ通常獲得率なら税込額ベースの概算で約546pt、5pt/100円の特別獲得率なら約2,730ptです。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。</p>
+<p>2022年のFGO公式価格表を前提に、聖晶石・呼符の手持ちがなく、1日1回の有償召喚を使わずに11回召喚を30セット行う試算では、必要な900個以上を54,600円で902個用意できます。現在のGoogle Play版のゲーム内価格は未確認のため、購入画面の価格と個数を確かめてください。計算機のポイント参考表は税未調整の支払額ベース、関連記事は税込額に税10%を仮定して除いた概算です。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。</p>
           </section>
 
-          <section class="section" data-game-seo-guide="fgo"><h2>2026年の価格・天井を公式情報で再計算</h2><p>有償1個販売終了後の現行パック、確定召喚330回、福袋の有償15個を分けて再計算しました。石0から確定召喚の上限まで用意する例は54,600円、2026年福袋の有償15個を石0から用意する最小例は1,920円です。</p><p><a href="./pity-cost/">FGO天井330回・福袋・Play Pointsの詳しい計算を見る ➔</a></p></section>
+          <section class="section" data-game-seo-guide="fgo"><h2>確定召喚の予算と福袋の例</h2><p>2022年の公式価格表を前提とした試算では、石0から900個以上を用意する最小例は54,600円です。2026年11周年の福袋は終了済みで、有償15個に対する2022年の価格表での最小例は1,920円です。現在のGoogle Play版の価格・個数は未確認のため、購入画面を確認してください。</p><p><a href="./pity-cost/">FGO天井330回・福袋・Play Pointsの詳しい計算を見る ➔</a></p></section>
 
           <section class="section game-source-section">
               <h2>出典・確認範囲</h2>

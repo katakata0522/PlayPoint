@@ -2,6 +2,43 @@
 
 // Visual cards for the 28 custom OGP designs
 const VISUAL_CARDS = {
+  'bluearchive-monthly-compare': `
+    <div style="display:flex; flex-direction:column; gap:14px; width:100%; text-align:center;">
+      <div style="background:rgba(56,189,248,.18);border:1.5px solid rgba(56,189,248,.5);border-radius:14px;padding:15px;">
+        <div style="font-size:20px;color:#fff;font-weight:900;">マンスリー</div>
+        <div style="font-size:15px;color:#bae6fd;font-weight:700;">AP軽減を重視するなら</div>
+      </div>
+      <div style="background:rgba(16,185,129,.14);border:1.5px solid rgba(16,185,129,.4);border-radius:14px;padding:15px;">
+        <div style="font-size:20px;color:#fff;font-weight:900;">マンスリー（ハーフ）</div>
+        <div style="font-size:15px;color:#a7f3d0;font-weight:700;">価格や受取内容を比べる</div>
+      </div>
+    </div>
+  `,
+  'gold-platinum-compare': `
+    <div style="display:flex; flex-direction:column; gap:14px; width:100%; text-align:center;">
+      <div style="background:rgba(245,158,11,.16);border:1.5px solid rgba(245,158,11,.45);border-radius:14px;padding:16px;">
+        <div style="font-size:16px;color:#fde68a;font-weight:700;">ゴールド</div>
+        <div style="font-size:23px;color:#fff;font-weight:900;">100円につき1.5ポイント</div>
+      </div>
+      <div style="background:rgba(56,189,248,.14);border:1.5px solid rgba(56,189,248,.4);border-radius:14px;padding:16px;">
+        <div style="font-size:16px;color:#bae6fd;font-weight:700;">プラチナ</div>
+        <div style="font-size:23px;color:#fff;font-weight:900;">100円につき1.75ポイント</div>
+      </div>
+      <div style="font-size:14px;color:#cbd5e1;">対象購入の通常獲得率（税抜）</div>
+    </div>
+  `,
+  'points-day': `
+    <div style="display:flex; flex-direction:column; gap:14px; width:100%; text-align:center;">
+      <div style="background:rgba(16,185,129,.18);border:1.5px solid rgba(16,185,129,.5);border-radius:14px;padding:18px;">
+        <div style="font-size:16px;color:#a7f3d0;font-weight:700;">過去の開催例</div>
+        <div style="font-size:26px;color:#fff;font-weight:900;">最大7倍の案内</div>
+      </div>
+      <div style="background:rgba(56,189,248,.14);border:1.5px solid rgba(56,189,248,.4);border-radius:14px;padding:18px;">
+        <div style="font-size:16px;color:#bae6fd;font-weight:700;">今の条件</div>
+        <div style="font-size:21px;color:#fff;font-weight:900;">自分の画面で確認</div>
+      </div>
+    </div>
+  `,
   'spending-history': `
     <div style="width:100%;padding:24px;border:2px solid #5ee0c4;border-radius:18px;background:#153632;color:#fff;text-align:left;">
       <div style="font-size:24px;font-weight:800;margin-bottom:20px;">購入先から確認</div>
@@ -51,12 +88,12 @@ const VISUAL_CARDS = {
     <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%;">
       <div style="background: rgba(56, 189, 248, 0.15); border: 1.5px solid rgba(56, 189, 248, 0.4); border-radius: 14px; padding: 12px 18px; width: 100%; text-align: center;">
         <div style="font-size: 14px; color: #94a3b8; font-weight: 600;">公式 Webショップ</div>
-        <div style="font-size: 28px; font-weight: 900; color: #f8fafc; margin-top: 2px;">オーブ <span style="color: #38bdf8;">190</span> 個</div>
+        <div style="font-size: 22px; font-weight: 900; color: #f8fafc; margin-top: 2px;">通常190個・月イチ200個</div>
       </div>
       <div style="font-size: 18px; font-weight: 900; color: #f59e0b; background: rgba(245, 158, 11, 0.15); padding: 2px 16px; border-radius: 9999px; border: 1px solid #f59e0b55;">VS</div>
       <div style="background: rgba(16, 185, 129, 0.15); border: 1.5px solid rgba(16, 185, 129, 0.4); border-radius: 14px; padding: 12px 18px; width: 100%; text-align: center;">
         <div style="font-size: 14px; color: #94a3b8; font-weight: 600;">Google Play (アプリ内)</div>
-        <div style="font-size: 26px; font-weight: 900; color: #f8fafc; margin-top: 2px;">200個 <span style="font-size: 16px; color: #34d399;">+ Play pt</span></div>
+        <div style="font-size: 19px; font-weight: 900; color: #f8fafc; margin-top: 2px;">現在の個数は要確認</div>
       </div>
     </div>
   `,
@@ -64,8 +101,8 @@ const VISUAL_CARDS = {
   'calendar': `
     <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
       <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(16, 185, 129, 0.15); border: 1.5px solid rgba(16, 185, 129, 0.4); border-radius: 12px; padding: 10px 16px;">
-        <span style="font-size: 15px; color: #a7f3d0; font-weight: 700;">毎月1日</span>
-        <span style="font-size: 18px; color: #ffffff; font-weight: 900;">Playポイントデー (最大7倍)</span>
+        <span style="font-size: 15px; color: #a7f3d0; font-weight: 700;">月初</span>
+        <span style="font-size: 18px; color: #ffffff; font-weight: 900;">増量案内を確認</span>
       </div>
       <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(56, 189, 248, 0.15); border: 1.5px solid rgba(56, 189, 248, 0.4); border-radius: 12px; padding: 10px 16px;">
         <span style="font-size: 15px; color: #bae6fd; font-weight: 700;">毎週金曜</span>
@@ -98,17 +135,17 @@ const VISUAL_CARDS = {
       <div style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
         <div style="background: rgba(139, 92, 246, 0.2); border: 1.5px solid rgba(139, 92, 246, 0.5); border-radius: 12px; padding: 12px; text-align: center; flex: 1;">
           <div style="font-size: 12px; color: #ddd6fe; font-weight: 600;">ランク基本</div>
-          <div style="font-size: 22px; font-weight: 900; color: #ffffff;">1〜2%</div>
+          <div style="font-size: 20px; font-weight: 900; color: #ffffff;">1〜2pt / 100円</div>
         </div>
-        <div style="font-size: 24px; font-weight: 900; color: #a78bfa;">+</div>
+        <div style="font-size: 18px; font-weight: 900; color: #a78bfa;">比較</div>
         <div style="background: rgba(245, 158, 11, 0.2); border: 1.5px solid rgba(245, 158, 11, 0.5); border-radius: 12px; padding: 12px; text-align: center; flex: 1;">
           <div style="font-size: 12px; color: #fde68a; font-weight: 600;">増量枠</div>
-          <div style="font-size: 22px; font-weight: 900; color: #ffffff;">+2〜6倍</div>
+          <div style="font-size: 22px; font-weight: 900; color: #ffffff;">表示された率</div>
         </div>
       </div>
       <div style="background: rgba(16, 185, 129, 0.2); border: 1.5px solid rgba(16, 185, 129, 0.5); border-radius: 14px; padding: 12px; width: 100%; text-align: center;">
         <div style="font-size: 13px; color: #a7f3d0; font-weight: 700;">計算ルール</div>
-        <div style="font-size: 20px; font-weight: 900; color: #ffffff; margin-top: 2px;">乗算ではなく加算で計算</div>
+        <div style="font-size: 20px; font-weight: 900; color: #ffffff; margin-top: 2px;">足さずに高い方を適用</div>
       </div>
     </div>
   `,
@@ -180,8 +217,8 @@ const VISUAL_CARDS = {
         <div style="font-size: 26px; font-weight: 900; color: #ef4444; margin-top: 2px;">公式規約で不可 ✕</div>
       </div>
       <div style="background: rgba(16, 185, 129, 0.15); border: 1.5px solid rgba(16, 185, 129, 0.5); border-radius: 12px; padding: 12px 18px; width: 100%; text-align: center;">
-        <div style="font-size: 14px; color: #6ee7b7; font-weight: 700;">推奨する賢い使い道</div>
-        <div style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 2px;">Playクレジット・割引 ◎</div>
+        <div style="font-size: 14px; color: #6ee7b7; font-weight: 700;">使う予定に合わせて選ぶ</div>
+        <div style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 2px;">クレジット・ゲームアイテム</div>
       </div>
     </div>
   `,
@@ -190,7 +227,7 @@ const VISUAL_CARDS = {
     <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
       <div style="display: flex; align-items: center; gap: 10px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); padding: 10px 14px; border-radius: 10px;">
         <span style="color: #fbbf24; font-weight: 900;">1.</span>
-        <span style="color: #ffffff; font-weight: 700; font-size: 16px;">年齢制限（13歳以上）</span>
+        <span style="color: #ffffff; font-weight: 700; font-size: 16px;">年齢条件（18歳以上）</span>
       </div>
       <div style="display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.05); padding: 10px 14px; border-radius: 10px;">
         <span style="color: #94a3b8; font-weight: 900;">2.</span>
@@ -215,7 +252,7 @@ const VISUAL_CARDS = {
       </div>
       <div style="background: rgba(255, 255, 255, 0.06); border-radius: 12px; padding: 10px 16px;">
         <div style="font-size: 13px; color: #cbd5e1; font-weight: 700;">方法 3</div>
-        <div style="font-size: 18px; font-weight: 900; color: #ffffff;">Google アンケートモニター併用</div>
+        <div style="font-size: 18px; font-weight: 900; color: #ffffff;">購入不要のクエスト</div>
       </div>
     </div>
   `,
@@ -353,7 +390,7 @@ const VISUAL_CARDS = {
     <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
       <div style="background: rgba(220, 38, 38, 0.2); border: 1.5px solid #dc2626; border-radius: 12px; padding: 10px 16px;">
         <div style="font-size: 13px; color: #fca5a5; font-weight: 700;">重要制限</div>
-        <div style="font-size: 18px; font-weight: 900; color: #ffffff;">国変更は 365日に1回 だけ</div>
+        <div style="font-size: 18px; font-weight: 900; color: #ffffff;">変更間隔は少なくとも90日</div>
       </div>
       <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 10px 16px;">
         <div style="font-size: 13px; color: #cbd5e1; font-weight: 700;">残高・ポイント</div>

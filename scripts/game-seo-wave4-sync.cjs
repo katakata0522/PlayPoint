@@ -23,7 +23,7 @@ function renderHbrGuide() {
   const web = GAME_SEO_WAVE4.hbr.webShop;
   const body = `
     <section class="section"><h2>結論：WEB SHOPはアプリ内商品より5%OFF、ただしPlay Pointsとは別軸</h2><p>ヘブバン公式WEB SHOPは、対象のパック商品やクォーツ商品を<strong>アプリ内より5%OFF</strong>で購入できると公式ヘルプで案内しています。さらにWEB SHOP購入では、基本として購入金額の<strong>${web.basePointPercent}%分のWEB SHOPポイント</strong>を獲得できます。</p></section>
-    <section class="section"><h2>現在のWEB SHOPにはWEB限定クォーツもある</h2><p>2026年9月13日の公式WEB SHOP表示では、クォーツ30,000個/28,500円、20,000個/19,000円のWEB限定商品や、10,000個/9,500円・4,750個/4,655円の5%OFF商品が表示されています。商品・期間限定パックは変動するため、購入時の公式WEB SHOP表示を優先してください。</p></section>
+    <section class="section"><h2>現在のWEB SHOPにはWEB限定クォーツもある</h2><p>2026年10月29日に公式WEB SHOPで確認した例です。WEB限定の商品と、5%OFFと表示された商品を分けてみましょう。</p><ul><li><strong>WEB限定：</strong>30,000個（28,500円）、20,000個（19,000円）</li><li><strong>5%OFF表示：</strong>10,000個（9,500円）、4,750個（4,655円）</li></ul><p>WEB限定の商品はアプリ内の同じ商品と単純に比べられません。上の金額は確認時の例で、商品や価格は変わることがあります。アプリ内の現行価格もこの記事では確認できていません。</p><p>また、公式は<strong>回数限定商品の購入回数はアプリ版とWEB SHOPで共有</strong>されると案内しています。有償クォーツは購入時に指定したプラットフォーム以外では利用できないため、受け取る先も購入前に確認しましょう。</p></section>
     <section class="section"><h2>プレミアムパス・ライトパスはWEB SHOP加入不可</h2><p>公式ヘルプは、<strong>プレミアムパス/ライトパスはWEB SHOPから加入できない</strong>と明記しています。したがって「WEB SHOPが常に全商品で有利」とは言えません。月額サービスはゲーム内の購入経路で現在価格と条件を確認します。</p></section>
     <section class="section"><h2>Google Play Pointsを重視するなら</h2><p>WEB SHOPはGoogle Play上の購入ではありません。Google Play Pointsを貯めたい場合は、Google Play側の対象購入で表示される獲得予定ポイントと、WEB SHOPの5%OFF・WEB SHOPポイントを別々に比較してください。両者を同じポイントとして合算しません。</p></section>
     <section class="section" aria-labelledby="hbr-shop-points"><h2 id="hbr-shop-points">WEB SHOPポイントは何に使える？</h2><p>貯まったポイントは、WEB SHOP内の「ポイント交換所」で<strong>ゲーム内アイテムと交換</strong>します。購入代金の値引きと同じ扱いにせず、交換先に自分が欲しいアイテムがあるかで判断しましょう。</p><p>たとえばレギュラーステータス・キャンペーンなしで、WEB SHOPでの支払額が10,000円なら基本分は100ポイントです。これは計算例で、100円の値引きを示すものではありません。実際には基本・ステータス・キャンペーンの倍率を加算し、それぞれの獲得分の小数点以下を切り捨てます。</p><p>ポイントは決済完了後に付与され、有効期限は<strong>最後の獲得から365日後</strong>。新しく獲得すると保有分すべての期限が延長されます。5%OFFで今の支払額が下がる効果と、後からアイテムへ交換する効果を分けて比較すると分かりやすくなります。</p><p class="reader-source"><a href="${SOURCES.hbrWebShopPoints}" target="_blank" rel="noopener noreferrer">公式ヘルプ：交換先・計算方法・有効期限（2026年10月9日確認）</a></p></section>
@@ -37,30 +37,29 @@ function renderHbrGuide() {
 
 function renderHi3Guide() {
   const body = `
-    <section class="section"><h2>公式チャージセンターとゲーム内は、特典の一部を共有</h2><p>崩壊3rd公式は、HoYoverse公式チャージセンターを提供しています。公式案内では、<strong>月パス以外の水晶2倍チャージボーナスはゲーム内とチャージセンターで共有</strong>され、チャージセンターで購入してもゲーム内のチャージ特典を受け取れると説明しています。</p></section>
-    <section class="section"><h2>月パスは有効期間180日未満なら延長購入可能</h2><p>公式案内では、月パスの残り有効期間が180日未満の場合に追加購入して期間を延長できます。現行日本Google Playの月パス価格は公開一次情報で固定できないため、本サイトでは旧600円を現行価格として扱いません。</p></section>
-    <section class="section"><h2>チャージセンターでは独自割引キャンペーンもあり得る</h2><p>海外向けの公式案内では、2026年3月5日〜4月16日にチャージセンター向けの5%・10%割引クーポンを配布する期間限定イベントが実施されました。これは海外向けの終了済みキャンペーンの例です。日本向けの開催を示すものではなく、恒常割引ではありません。現在のお得度はチャージセンターの決済直前表示で確認してください。</p></section>
-    <section class="section"><h2>Google Play PointsはGoogle Play購入と分ける</h2><p>HoYoverse公式チャージセンターはGoogle Play上の購入ではありません。Google Play Pointsを重視する場合は、Google Play側の購入確認画面に表示されるポイントと、チャージセンター側の割引・特典を別軸で比較します。</p></section>
-    <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.hi3ChargeCenterLaunch}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：チャージセンター</a></li><li><a href="${SOURCES.hi3TopUpDiscount2026}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：2026年チャージセンター割引イベント</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
+    <section class="section"><h2>2倍ボーナスは購入先ごとにもう一度もらえる？</h2><p>ゲーム内で2倍ボーナスを使ったあと、公式チャージセンターでもう一度もらえたら嬉しい。でも、<strong>2024年の崩壊3rd公式案内では、月パス以外の水晶2倍チャージボーナスはゲーム内とチャージセンターで共有</strong>されます。購入先を変えるだけで別々に2倍を受け取れるわけではありません。</p><p>購入先を選ぶなら、同じ商品で支払額を見比べ、使える割引とGoogle Play Pointsをそれぞれ確認しましょう。現在の価格やボーナスの利用状況は、購入画面で確かめてください。</p></section>
+    <section class="section"><h2>Google Playとチャージセンター、どちらを選ぶ？</h2><p>同じ商品を比べたとき、まず見るのは<strong>購入画面の支払額と水晶数</strong>です。そのうえで、自分が使える特典も判断に入れます。</p><p>Google Play側に使いたいクーポンやポイント増量があり、Play Pointsの交換先にも欲しいものがあるなら、Google Playで買う価値があります。一方、チャージセンター側で自分に使える割引が表示されているなら、割引後の金額と比べてみましょう。</p><p>チャージセンターでの購入はGoogle Play上の購入ではないため、Play Points獲得は前提にできません。Google Play側も、対象購入かどうかと獲得予定ポイントを購入画面で確認してください。</p></section>
+    <section class="section"><h2>月パスを重ねて買うときの確認</h2><p>水晶を毎日受け取る月パスを延長したい場合は、残り期間にも注意。2024年の公式案内では、<strong>残り有効期間が180日未満</strong>なら追加購入で期間を延長でき、180日以上では延長できないとされています。</p><p>この条件と両方の価格は購入前に表示を確認しましょう。月パスは、上で説明した水晶2倍チャージボーナスとは別に考えます。</p></section>
+    <section class="section"><h2>割引クーポンは期間と対象を確認</h2><p>チャージセンターの割引は、いつでも同じ条件で使えるとは限りません。海外向けの公式案内には、2026年3月5日から4月16日までの5%・10%クーポンの例がありました。これは終了した海外向けイベントで、日本の現在の割引を示すものではなく、恒常割引ではありません。</p><p>今使えるクーポンがあれば、期限・対象商品・割引上限を確認し、決済前の最終金額で比べましょう。</p></section>
+    <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.hi3ChargeCenterLaunch}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：チャージセンターの案内（2024年）</a></li><li><a href="${SOURCES.hi3TopUpDiscount2026}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：過去の海外向け割引イベント</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">崩壊3rd Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'honkai3rd', slug: 'google-play-vs-charge-center', pageDescription: '崩壊3rdのGoogle Play購入とHoYoverse公式チャージセンターを、2倍チャージ特典、月パス延長、期間限定割引、Play Pointsの違いから整理します。', lead: '崩壊3rdは公式チャージセンターがあり、ゲーム内と共有する特典もあります。ただしGoogle Play Pointsとは別経路なので、購入目的ごとに比較します。', body, faq: [
-    { q: '崩壊3rdの公式チャージセンターでも初回2倍は使えますか？', a: '公式案内では、月パス以外の水晶2倍チャージボーナスはゲーム内と公式チャージセンターで共有されます。' },
-    { q: '公式チャージセンター購入でGoogle Play Pointsは貯まりますか？', a: '公式チャージセンターはGoogle Play上の購入ではありません。Google Play PointsはGoogle Play側の対象購入で確認してください。' }
+  return guideShell({ gameId: 'honkai3rd', slug: 'google-play-vs-charge-center', pageDescription: '崩壊3rdの水晶2倍ボーナスは購入先を変えても別々にもらえる？公式案内をもとに、チャージセンターとGoogle Playの選び方を整理します。', lead: '水晶2倍ボーナスは購入先で共有。価格や使える特典を分けて比較します。', body, faq: [
+    { q: '崩壊3rdの公式チャージセンターでも初回2倍は使えますか？', a: '2024年の公式案内では、月パスを除く商品の水晶2倍チャージボーナスが対象です。ボーナスの利用状況はゲーム内と公式チャージセンターで共通とされています。現在の対象商品と利用状況は購入画面で確認してください。' },
+    { q: '公式チャージセンター購入でGoogle Play Pointsは貯まりますか？', a: '公式チャージセンターはGoogle Play上の購入ではありません。Google Play側の対象購入で確認してください。' }
   ] });
 }
 
 function renderPhantomGuide() {
-  const shop = GAME_SEO_WAVE4.phantomparade.webShop;
   const body = `
-    <section class="section"><h2>公式WEBショップは増量・マイルが明示されている</h2><p>2026年9月13日のファンパレ公式WEBショップでは、有償廻珠A〜Gを160円〜10,000円で掲載し、初回は<strong>${shop.currentPaidBeadFirstBonusPercentRange[0]}〜${shop.currentPaidBeadFirstBonusPercentRange[1]}%増量</strong>を表示しています。期間商品には4〜5%増量や、WEB限定100%増量商品も表示されています。内容は時期で変わるため現在表示を優先してください。</p></section>
-    <section class="section"><h2>WEBショップでは購入金額に応じたマイルptも表示</h2><p>2026年10月9日の公式WEBショップでは、有償廻珠Cは1,000円・初回19%増量・1,000マイルpt、WEB限定の毎月切り替えお得廻珠パックは1,000円・4%増量・1,000マイルptと表示されています。同じ支払額・マイル数でも、増量率と購入条件は商品によって違います。マイルptはGoogle Play Pointsとは別の仕組みです。</p><p><strong>1,000マイルptを、そのまま1,000円の還元として計算しない</strong>ようにしましょう。マイルの円換算や交換条件は商品カードの獲得表示だけでは分からないため、利用時の案内を確認します。比較する順番は、廻珠の内訳と総数、初回・回数制限、マイルの使い道です。</p><p class="reader-source"><a href="${SOURCES.phantomWebShop}" target="_blank" rel="noopener noreferrer">公式WEBショップ：商品ごとの増量・マイル表示（2026年10月9日確認）</a></p></section>
-    <section class="section"><h2>パス類もWEBショップにあるが、Google Play価格とは分ける</h2><p>現在のWEBショップではファンパレボーナス610円、毎日廻珠ボーナス480円などが表示されています。これらはWEBショップの現在価格であり、Google Play側の価格として流用しません。Google Play購入では購入画面の実額を本サイトへ入力してください。</p></section>
-    <section class="section"><h2>Google Play Pointsを含めた比較</h2><p>WEBショップ購入はGoogle Play上の購入ではないため、Google Play Points獲得を前提にしません。「WEB増量・マイル」と「Google Play Points」を別々に見て、自分の購入額と現在のキャンペーンに合わせて選ぶのが安全です。</p></section>
-    <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.phantomWebShop}" target="_blank" rel="noopener noreferrer">ファンパレ公式WEBショップ：現在の商品・増量表示</a></li><li><a href="${SOURCES.phantomWebShopLogin}" target="_blank" rel="noopener noreferrer">公式WEBショップ：アカウント連携</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
+    <section class="section"><h2>同じ1,000円でも、まず商品を選ぶ</h2><p>引きたいガチャが来た。廻珠を買うなら、公式WEBショップの増量も気になりますよね。まずは<strong>同じ1,000円でも、初回商品と毎月の商品は別物</strong>というところから見てみましょう。</p><p>2026年10月29日の公式WEBショップでは、有償廻珠Cは1,000円で初回19%増量、WEB限定の毎月切り替えお得廻珠パックは1,000円で4%増量と表示されていました。どちらにも1,000マイルptの獲得表示があります。有償廻珠A〜Gの初回は<strong>17〜20%増量</strong>、ほかに4〜5%増量の商品も確認できました。</p><p>数字だけを見て決めず、商品ごとの有償・無償の内訳や購入回数を確認してから、Google Play側で欲しい商品と比べるのがおすすめです。Google Play側の現在の価格・内容は確認できていません。</p></section>
+    <section class="section"><h2>マイルptとPlay Pointsは別々に考える</h2><p>WEBショップの商品には、廻珠の増量に加えてマイルptの獲得数が表示されています。マイルptはGoogle Play Pointsとは別の仕組みです。一方、Google Play PointsはGoogle Play上の対象購入で貯まるもの。WEBショップの購入で両方が付く前提にはできません。</p><p>たとえば表示された1,000マイルptを、そのまま<strong>1,000円の値引きや1,000 Play Pointsと同じもの</strong>として計算しないこと。マイルptの利用条件や特典は購入前にショップ内の案内を確認し、Play Pointsも自分が欲しい交換先と必要ポイントを見て比べましょう。</p></section>
+    <section class="section"><h2>毎日のボーナスを選ぶなら、受け取る予定日も見る</h2><p>2026年10月29日のWEBショップには、ファンパレボーナス610円、毎日廻珠ボーナス480円も掲載されていました。これらはWEBショップ側の表示価格です。Google Play側の価格とは限らないため、購入画面を見比べてください。</p><p>今すぐ廻珠が欲しいのか、毎日の受け取りで次のガチャに備えたいのか。受取条件と、欲しいガチャまでの日数も合わせて見ると選びやすくなります。</p></section>
+    <section class="section"><h2>Google PlayとWEBショップ、どちらを選ぶ？</h2><p>廻珠の増量やWEB限定商品を重視するなら、まず公式WEBショップの対象商品を確認。Google Play側のクーポンやポイント増量が使え、獲得ポイントにも欲しい交換先があるなら、Google Playの購入画面も候補に入れましょう。</p><p>両方で同じ商品を買える場合は、支払額、廻珠の内訳、購入回数、使える特典を一つずつ比べます。期間商品や初回特典は変わるので、決済前の表示が最終確認です。</p></section>
+    <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.phantomWebShop}" target="_blank" rel="noopener noreferrer">ファンパレ公式WEBショップ：商品表示</a></li><li><a href="${SOURCES.phantomWebShopLogin}" target="_blank" rel="noopener noreferrer">公式WEBショップ：アカウント連携</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ファンパレ Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'phantomparade', slug: 'google-play-vs-webshop', pageDescription: 'ファンパレ公式WEBショップの増量率、マイルpt、パス商品とGoogle Play Pointsを別軸で比較。Google Play価格は推測せず購入画面で確認します。', lead: 'ファンパレ公式WEBショップには増量商品とマイルptがあります。Google Play Pointsと同じものではないため、現在の増量・支払経路・ポイントを分けて比較します。', body, faq: [
-    { q: 'ファンパレWEBショップには増量がありますか？', a: '2026年9月13日の公式WEBショップでは、有償廻珠の初回17〜20%増量や、期間商品4〜5%増量などが表示されています。内容は時期で変わります。' },
-    { q: 'WEBショップでGoogle Play Pointsは貯まりますか？', a: 'WEBショップはGoogle Play上の購入ではありません。Google Play PointsはGoogle Play上の対象購入で確認してください。' }
+  return guideShell({ gameId: 'phantomparade', slug: 'google-play-vs-webshop', pageDescription: 'ファンパレ公式WEBショップの廻珠増量とマイルpt、Google Play Pointsを比較。初回と毎月の商品例を見ながら購入先を選びます。', lead: '初回と毎月の商品、マイルpt、Play Pointsを分けて比べます。', body, faq: [
+    { q: 'ファンパレWEBショップには増量がありますか？', a: '2026年10月29日の公式WEBショップでは、有償廻珠A〜Gの初回17〜20%増量などを確認しました。商品や条件は変わるため、購入画面で確認してください。' },
+    { q: 'WEBショップでGoogle Play Pointsは貯まりますか？', a: 'WEBショップはGoogle Play上の購入ではありません。Google Play上の対象購入で確認してください。' }
   ] });
 }
 

@@ -1,0 +1,7 @@
+html[data-reading-theme] .main-content-column .cta-box #calculator-cta {
+  color: #fff;
+}
+
+html[data-reading-theme] .main-content-column .article-calculator-prompt__button {
+  color: #fff !important;
+}

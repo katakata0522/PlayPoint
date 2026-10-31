@@ -30,8 +30,11 @@ test('スーパーウィークリー記事は一般条件と個別条件を分�
   assert.ok(html.includes('金曜日の午前0時以降'));
   assert.ok(html.includes('賞品数には限り'));
   assert.ok(html.includes('id="known-unknown"'));
-  assert.ok(html.includes('現在の賞品、残りの賞品数、追加条件'));
-  assert.ok(html.includes('自分の特典画面で今週の内容を探してみましょう'));
+  const guidance = html.match(/<section\b[^>]*aria-labelledby="known-unknown"[^>]*>([\s\S]*?)<\/section>/)?.[1] || '';
+  const guidanceText = guidance.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
+  assert.match(guidanceText, /特典.*画面.*スーパーウィークリー.*カード/);
+  assert.match(guidanceText, /現在の賞品.*残りの賞品数.*追加条件/);
+  assert.match(guidanceText, /自分のアカウント.*今週/);
   assert.ok(html.includes('play.google.com/store/apps/editorial'));
   assert.ok(html.includes('./2025-12-25-weekly-reward.html'));
 
@@ -62,7 +65,7 @@ test('週次親記事はランク別週次・Super Ticket・Play Passを分け�
   assert.ok(html.includes('スーパーウィークリーリワード'));
   assert.ok(html.includes('Super Ticket'));
   assert.ok(html.includes('Play Passの週次ボーナス・ブースター'));
-  assert.ok(html.includes('ほくほくリワード日記'));
+  assert.ok(html.includes('ウィークリーリワード記録'));
   assert.ok(html.includes('./2026-07-31-super-weekly-reward.html'));
   assert.ok(html.includes('./2026-09-19-google-play-super-ticket.html'));
 });

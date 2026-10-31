@@ -99,17 +99,20 @@ function renderFgoGuide() {
   const data = GAME_SEO.fgo;
   const packRows = data.packsJa.map(pack => `<tr><td>有償${pack.paid} + 無償${pack.free}</td><td>${pack.total}</td><td>${yen(pack.price)}</td></tr>`).join('\n');
   const faq = [
-    { q: 'FGOの確定召喚330回まで、ゼロから課金するといくら必要ですか？', a: '現在確認できるGoogle Play版の聖晶石販売単位を使い、無料石や呼符を0として900個以上を最小金額で用意する組み合わせでは54,600円で902個です。実際は所持石・呼符・1日1回有償召喚などで必要額が下がります。' },
-    { q: 'FGOの福袋に必要な有償聖晶石15個は、ゼロからいくらですか？', a: '有償4個+無償1個の480円パックを4回購入すると有償16個になり、1,920円です。購入時のおまけ無償石は有償15個の条件には数えません。' }
+    { q: 'FGOの確定召喚330回まで、ゼロから課金するといくら必要ですか？', a: '2022年のGoogle Play版の公式告知価格を使い、聖晶石と呼符の手持ちがなく、1日1回の有償召喚を使わずに11回召喚を30セット行い、900個以上を最小金額で用意する試算では54,600円で902個です。現在のゲーム内価格は未確認のため購入画面で確認してください。実際は所持石・呼符・1日1回有償召喚などで必要額が下がります。' },
+    { q: 'FGOの終了した2026年11周年福袋の有償聖晶石15個は、ゼロからいくらですか？', a: '終了した2026年11周年福袋の有償15個は、2022年の公式価格表による試算では有償4個+無償1個の480円パックを4回購入すると有償16個になり、1,920円です。現在のゲーム内価格は未確認です。購入時のおまけ無償石は有償15個の条件には数えません。' }
   ];
   const body = `
-      <section class="section"><h2>先に結論：330回の上限をゼロから用意するなら54,600円</h2><p>FGOの確定召喚は、対象の★5ピックアップを329回以内に引けなかった場合、330回目で確定します。10回召喚ごとの「+1回ボーナス召喚」も確定召喚の回数に数えられるため、330回を30セットの11回召喚で到達する前提では消費聖晶石は900個です。</p><p><strong>確認済み販売単位だけで900個以上を最安にそろえると、10,000円パック×5 + 3,000円パック×1 + 1,600円パック×1 = 54,600円で計902個</strong>です。無料石、呼符、既に持っている聖晶石を使う場合はこの金額より下がります。</p></section>
-      <section class="section"><h2>現在確認できるFGOの聖晶石価格</h2><div class="pack-table-wrap"><table class="pack-table"><thead><tr><th>内訳</th><th>合計聖晶石</th><th>価格</th></tr></thead><tbody>${packRows}</tbody></table></div><p>有償1個だけの販売は終了しています。価格表はFate/Grand Order公式のお知らせを基準にしています。</p></section>
-      <section class="section"><h2>54,600円の課金でPlay Pointsはどれくらい？</h2>${pointTableHtml(data.pity.cheapestVerifiedSpendFromZero)}<p>ここでのポイント数は税込支払額から税抜額へ換算した概算です。商品ごとの税額と端数処理によって差が出るため、最終的な獲得数はGoogle Playの購入確認画面に表示される値を正としてください。</p></section>
-      <section class="section"><h2>福袋の有償15個は、ゼロからなら1,920円</h2><p>2026年の福袋召喚は<strong>有償聖晶石15個</strong>が必要です。現在の最小販売単位は有償4個+無償1個で480円なので、4回購入すると有償16個となり<strong>1,920円</strong>です。無料分4個は福袋の有償条件には入りません。</p>${pointTableHtml(data.luckyBag.cheapestVerifiedSpendFromZero)}</section>
+      <section class="section"><h2>先に結論：330回の上限をゼロから用意する2022年価格の例</h2><p>FGOの確定召喚は、対象の★5ピックアップを329回以内に引けなかった場合、330回目で確定します。10回召喚ごとの「+1回ボーナス召喚」も確定召喚の回数に数えられるため、330回を30セットの11回召喚で到達する前提では消費聖晶石は900個です。</p><p><strong>2022年に告知されたGoogle Play版の販売単位で900個以上を最安にそろえる試算では、10,000円パック×5 + 3,000円パック×1 + 1,600円パック×1 = 54,600円で計902個</strong>です。現在のゲーム内価格は未確認のため、購入画面で価格と個数を確かめてください。無料石、呼符、既に持っている聖晶石を使う場合は必要額が変わります。</p></section>
+      <section class="section"><h2>2022年に告知されたFGOの聖晶石価格</h2><div class="pack-table-wrap"><table class="pack-table"><thead><tr><th>内訳</th><th>合計聖晶石</th><th>価格</th></tr></thead><tbody>${packRows}</tbody></table></div><p>価格表は2022年のFate/Grand Order公式のお知らせに基づく参考例です。現在のGoogle Play版の価格と個数はゲーム内購入画面で確認してください。</p></section>
+      <section class="section"><h2>2022年価格例54,600円でPlay Pointsはどれくらい？</h2>${pointTableHtml(data.pity.cheapestVerifiedSpendFromZero)}<p>ここでのポイント数は税込支払額から税抜額へ換算した概算です。商品ごとの税額と端数処理によって差が出るため、最終的な獲得数はGoogle Playの購入確認画面に表示される値を正としてください。</p></section>
+      <section class="section"><h2>【終了】2026年11周年福袋の有償15個を2022年価格で試算</h2><p>2026年11周年の福袋召喚は終了しており、当時は<strong>有償聖晶石15個</strong>が必要でした。2022年公式価格表の有償4個+無償1個で480円を使う試算では、4回購入すると有償16個となり<strong>1,920円</strong>です。無料分4個は福袋の有償条件には入りません。現在のゲーム内価格は未確認です。次回の条件は開催時に確認してください。</p>${pointTableHtml(data.luckyBag.cheapestVerifiedSpendFromZero)}</section>
       <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.fgoPrice}" target="_blank" rel="noopener noreferrer">FGO公式：聖晶石販売価格</a></li><li><a href="${SOURCES.fgoPity}" target="_blank" rel="noopener noreferrer">FGO公式FAQ：確定召喚330回</a></li><li><a href="${SOURCES.fgoLuckyBag2026}" target="_blank" rel="noopener noreferrer">FGO公式：2026年11周年福袋（有償15個）</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
       <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">FGO Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'fgo', slug: 'pity-cost', lead: '「FGOの天井は結局いくら？」「福袋の有償15個をゼロから買うと何円？」「その課金でPlay Pointsは何ポイント？」を、確認済みの公式価格だけで計算します。', body, faq });
+  const escapeFaq = value => String(value).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+  const visibleFaq = `<section class="section game-guide-visible-faq"><h2>よくある質問</h2>${faq.map(item => `<div class="faq-item"><h3>Q. ${escapeFaq(item.q)}</h3><p>A. ${escapeFaq(item.a)}</p></div>`).join('')}</section>`;
+  return guideShell({ gameId: 'fgo', slug: 'pity-cost', lead: 'FGOの確定召喚と終了した2026年11周年福袋について、2022年の公式価格表を使った予算例とPlay Pointsを計算します。現在のGoogle Play版の価格と個数はゲーム内購入画面で確認してください。', body: body + visibleFaq, faq })
+    .replace(`最終確認：${VERIFIED_AT}`, `最終確認：${data.verifiedAt}`);
 }
 
 function renderGenshinGuide() {
@@ -134,27 +137,34 @@ function renderMonstGuide() {
   const webGain = ((data.webStore.orbs / data.appStoreReference.orbs) - 1) * 100;
   const monthlyGain = ((data.monthlyWebStore.orbs / data.appStoreReference.orbs) - 1) * 100;
   const faq = [
-    { q: 'モンストで1万円課金するならアプリ内とWebショップのどちらがお得ですか？', a: 'オーブ数だけなら、アプリ内180個に対してWebショップ通常190個、月1回の商品は200個なのでWeb側が多いです。一方、Google Play Pointsを貯めたい場合はGoogle Play経由のアプリ内購入を比較対象に残す必要があります。' },
+    { q: 'モンストで1万円課金するならアプリ内とWebショップのどちらがお得ですか？', a: 'アプリ内180個は2024年の公式案内による例で、現在の個数は未確認です。Webショップの2026年10月29日の表示では通常190個、月イチ200個を確認しました。オーブ数を重視するなら月イチの購入枠を確認し、Play Pointsも使いたいならGoogle Play側の獲得予定ポイントと合わせて比べましょう。最新の価格と個数は購入画面を確認してください。' },
     { q: 'モンストWebショップでもGoogle Play Pointsは貯まりますか？', a: 'WebショップはGoogle Play上の購入ではありません。Google Play PointsはGoogle Playでの対象購入に対して付くため、Webショップの購入ではPlay Points獲得を前提にしません。' }
   ];
   const body = `
-      <section class="section"><h2>結論：オーブ数ならWeb、Play Pointsならアプリ内も比較</h2><div class="pack-table-wrap"><table class="pack-table"><thead><tr><th>購入経路</th><th>1万円で得るオーブ</th><th>アプリ内180個との比較</th><th>Google Play Points</th></tr></thead><tbody><tr><td>Google Playアプリ内</td><td>180個</td><td>基準</td><td>対象購入なら獲得</td></tr><tr><td>モンストWebショップ通常</td><td>190個</td><td>+10個 / 約${webGain.toFixed(1)}%</td><td>Google Play購入ではない</td></tr><tr><td>月イチお得オーブ</td><td>200個</td><td>+20個 / 約${monthlyGain.toFixed(1)}%</td><td>Google Play購入ではない</td></tr></tbody></table></div><p>2026年9月時点でも公式Webショップの取引表示に190個/10,000円、月1回200個/10,000円が掲載されています。</p></section>
+      <section class="section"><h2>結論：Webの商品とPlay Pointsを比べる</h2><p>1万円分を買うなら、まずWebショップの月イチ商品を見てみましょう。2026年10月29日に確認した販売表示は200個です。Google Playアプリ内の現在の個数は確認できていないため、購入画面で比べてください。</p><p>ただし、Google Playには対象購入でPlay Pointsが貯まる楽しみもあります。増量キャンペーン中や、ランクを目指しているときは、オーブの差と自分が使えるポイント特典を一緒に比べましょう。</p><div class="pack-table-wrap"><table class="pack-table"><thead><tr><th>購入経路</th><th>1万円で得るオーブ</th><th>2024年のアプリ内例との比較</th><th>Google Play Points</th></tr></thead><tbody><tr><td>Google Playアプリ内（2024年の例）</td><td>180個</td><td>基準</td><td>対象購入なら獲得</td></tr><tr><td>モンストWebショップ通常</td><td>190個</td><td>+10個 / 約${webGain.toFixed(1)}%</td><td>Google Play購入ではない</td></tr><tr><td>月イチお得オーブ</td><td>200個</td><td>+20個 / 約${monthlyGain.toFixed(1)}%</td><td>Google Play購入ではない</td></tr></tbody></table></div><p>Webショップの法令に基づく表示では、2026年10月29日に通常190個と月イチ200個を確認しました。アプリ内180個との差は、モンスト公式の2024年のお知らせによる例です。購入前にそれぞれの画面で最新の内容を確認してください。</p></section>
       ${renderMonstComparison(data)}
-      <section class="section"><h2>Google Playで1万円課金したときのポイント</h2><p>Play PointsはGoogle Play経由の対象購入で獲得します。購入前にアカウントの通常獲得率・対象オファー・有効化を確認し、購入画面の獲得予定ポイントを基準にしてください。Google公式では税抜価格がポイント計算の対象です。</p><p>特別獲得率が表示されている期間は、オーブ10〜20個の差だけではなく、Play Pointsの増加とステータス進捗も一緒に比較できます。逆に特別獲得率がなく、Play Pointsを重視しない場合は、純粋なオーブ数ではWebショップが強いです。</p></section>
-      <section class="section"><h2>「どっちが得？」を一律の円換算にしない</h2><p>Play Pointsはゲーム内アイテム、クーポン、Google Playクレジットなど交換先と条件がアカウントや時期で変わります。そのため「500pt=必ず○円」と固定して、Webショップの20オーブと無理に同じ円価値へ換算しません。Play画面で現在使える交換先を確認し、オーブ増量とポイント価値を分けて判断するのが正確です。</p><p><a href="/articles/2026-09-19-monst-web-shop-vs-google-play.html">1万円課金で、ポイントを何円分として使えれば逆転するか計算する →</a></p></section>
+      <section class="section"><h2>Google Playで1万円課金したときのポイント</h2><p>Google Play経由の対象購入なら、オーブに加えてPlay Pointsを獲得できます。ポイントは後からゲーム内アイテムやPlayクレジットなどに交換できるほか、獲得分はステータスの進捗にも反映されます。</p><p>何ポイント付くかは、そのときのランクや対象オファーで変わります。キャンペーンに有効化が必要かを確認し、購入画面の獲得予定ポイントを見てみましょう。Google公式では税金を除く商品価格が計算の対象です。</p><p>例えば、もう少しで目標のランクに届きそうなら、Google Playで貯まる進捗も気になるところ。一方、特典の利用予定がなく、オーブの数を重視するなら、Webショップの商品も確認する価値があります。</p></section>
+      <section class="section"><h2>「どっちが得？」を一律の円換算にしない</h2><p>2024年のアプリ内180個を基準にすると、Webの月イチ200個との差は20個です。現在のアプリ内個数は購入画面で確認してください。Google Play側で得られるポイントを比べるなら、まず「使う」画面で、自分が本当に欲しい交換先を見てみましょう。</p><p>交換先や必要ポイントは時期やアカウントによって変わります。ゲーム内アイテムやクーポンが表示されても、使う予定がなければ価値を十分に生かせません。ポイントの数字だけで決めず、受け取った後に何に使うかまで考えるのがコツです。</p><p><a href="/articles/2026-09-19-monst-web-shop-vs-google-play.html">1万円課金で、ポイントを何円分として使えれば逆転するか計算する →</a></p></section>
       <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.monstMonthlyWeb}" target="_blank" rel="noopener noreferrer">モンスト公式：月イチお得オーブ200個/10,000円</a></li><li><a href="${SOURCES.monstWebLaunch}" target="_blank" rel="noopener noreferrer">モンスト公式：Web190個とアプリ内との差</a></li><li><a href="${SOURCES.monstWebCurrent}" target="_blank" rel="noopener noreferrer">モンスト公式Webショップ：現在の商品表示</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの対象と計算</a></li></ul></section>
       <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">モンスト Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'monst', slug: 'google-play-vs-webshop', pageDescription: 'モンストの1万円課金を比較。アプリ内180個、Webショップ190個、月イチ200個の差と、Google Play Pointsを含めた選び方を公式情報ベースで整理します。', lead: '1万円という同じ支出でも、購入経路でオーブ数とPlay Pointsの条件が変わります。どちらかを一律に「最強」とせず、オーブ数とポイントを別々に比較します。', body, faq })
+  return guideShell({ gameId: 'monst', slug: 'google-play-vs-webshop', pageDescription: 'モンストのWebショップとGoogle Playを比較。商品の個数、Play Points、過去のアプリ内販売例を分けて購入先を選びます。', lead: '1万円という同じ支出でも、購入経路でオーブ数とPlay Pointsの条件が変わります。どちらかを一律に「最強」とせず、オーブ数とポイントを別々に比較します。', body, faq })
     .replace('</head>', '  <link rel="stylesheet" href="/articles/monst-purchase-comparison.css" />\n  <script defer src="/js/monst-purchase-comparison.js"></script>\n</head>');
 }
 
 function syncFgo(rootDir) {
   const file = 'games/fgo/index.html';
   let html = read(rootDir, file);
-  html = html.replaceAll('FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？', 'FGOの確定召喚330回を石0から用意するといくら？');
-  html = html.replaceAll('通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。', '確認済みの現行価格だけで聖晶石900個以上を最安にそろえる例は54,600円・902個です。ブロンズ通常獲得率なら税込額ベースの概算で約546pt、5pt/100円の特別獲得率なら約2,730ptです。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。');
-  html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `FGO価格・確定召喚・Play Points確認：${VERIFIED_AT}`);
-  const block = `<section class="section" data-game-seo-guide="fgo"><h2>2026年の価格・天井を公式情報で再計算</h2><p>有償1個販売終了後の現行パック、確定召喚330回、福袋の有償15個を分けて再計算しました。石0から確定召喚の上限まで用意する例は54,600円、2026年福袋の有償15個を石0から用意する最小例は1,920円です。</p><p><a href="./pity-cost/">FGO天井330回・福袋・Play Pointsの詳しい計算を見る ➔</a></p></section>`;
+  const question = 'FGOの確定召喚330回を石0から用意するといくら？';
+  const answer = '2022年のFGO公式価格表を前提に、聖晶石・呼符の手持ちがなく、1日1回の有償召喚を使わずに11回召喚を30セット行う試算では、必要な900個以上を54,600円で902個用意できます。現在のGoogle Play版のゲーム内価格は未確認のため、購入画面の価格と個数を確かめてください。計算機のポイント参考表は税未調整の支払額ベース、関連記事は税込額に税10%を仮定して除いた概算です。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。';
+  html = html.replaceAll('FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？', question);
+  for (const old of [
+    '通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。',
+    '確認済みの現行価格だけで聖晶石900個以上を最安にそろえる例は54,600円・902個です。ブロンズ通常獲得率なら税込額ベースの概算で約546pt、5pt/100円の特別獲得率なら約2,730ptです。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。'
+  ]) html = html.replaceAll(old, answer);
+  html = html.replaceAll('FGO価格・確定召喚・Play Points確認：2026-09-13', '聖晶石価格は2022年公式表の参考値（現在のGoogle Play版は購入画面で確認）');
+  html = html.replaceAll('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', '聖晶石価格は2022年公式表の参考値（現在のGoogle Play版は購入画面で確認）');
+  const block = `<section class="section" data-game-seo-guide="fgo"><h2>確定召喚の予算と福袋の例</h2><p>2022年の公式価格表を前提とした試算では、石0から900個以上を用意する最小例は54,600円です。2026年11周年の福袋は終了済みで、有償15個に対する2022年の価格表での最小例は1,920円です。現在のGoogle Play版の価格・個数は未確認のため、購入画面を確認してください。</p><p><a href="./pity-cost/">FGO天井330回・福袋・Play Pointsの詳しい計算を見る ➔</a></p></section>`;
+  html = html.replace(/<section class="section" data-game-seo-guide="fgo">[\s\S]*?<\/section>/, block);
   html = insertBeforeRequired(html, '<section class="section game-source-section">', block, 'data-game-seo-guide="fgo"', 'FGO guide block');
   return writeIfChanged(rootDir, file, html);
 }
