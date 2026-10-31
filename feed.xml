@@ -22,11 +22,25 @@
       <description>日本向けの公式案内では、プレミアムサポートはプラチナとダイヤモンドが対象です。対象アカウントでログインし、利用できる問い合わせ方法を確認しましょう。待ち時間の短縮は保証されません。</description>
     </item>
     <item>
+      <title>キャリア決済・クレカ・ギフトカードでPlayポイントは貯まる？還元の違い</title>
+      <link>https://playpoint-sim.com/articles/2026-08-16-payment-methods-points.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-16-payment-methods-points.html</guid>
+      <pubDate>Sun, 16 Aug 2026 03:00:00 GMT</pubDate>
+      <description>キャリア決済・クレカ・Google PlayギフトカードのPlay Points獲得条件を整理。ドコモ・au・ソフトバンク・楽天モバイルの具体例と、税抜のポイント計算・独自還元を分けて比較します。</description>
+    </item>
+    <item>
       <title>Playポイントが消えたときの確認順｜期限・未反映・ランク</title>
       <link>https://playpoint-sim.com/articles/2026-08-16-points-disappeared.html</link>
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-16-points-disappeared.html</guid>
       <pubDate>Sun, 16 Aug 2026 03:00:00 GMT</pubDate>
       <description>Play Pointsは最後の獲得または使用から1年。使える残高、年次ランク進捗、未受領の週次特典を分け、履歴・アカウント・期限からポイント消失の原因を確認します。</description>
+    </item>
+    <item>
+      <title>ウィークリーリワードが受け取れない・ボタンが無い時の確認順</title>
+      <link>https://playpoint-sim.com/articles/2026-08-16-weekly-reward-not-showing.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-16-weekly-reward-not-showing.html</guid>
+      <pubDate>Sun, 16 Aug 2026 03:00:00 GMT</pubDate>
+      <description>通常のウィークリーリワードはシルバー以上、日本の金曜日にリセットされます。ボタンが無い時はランク、アカウント、受取済み、Play Pass木曜特典の取り違えを順に確認します。</description>
     </item>
     <item>
       <title>Google Play Pointsに登録できない・表示されない原因｜参加条件の確認順</title>
@@ -48,6 +62,34 @@
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-05-play-points-multiplier-stacking.html</guid>
       <pubDate>Wed, 05 Aug 2026 03:00:00 GMT</pubDate>
       <description>Play Pointsでは複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。直接レート、倍率表記、税抜価格、商品ごとの四捨五入を例付きで解説します。</description>
+    </item>
+    <item>
+      <title>Google Play Pointsクーポンが使えない？「特典を適用できません」の対処</title>
+      <link>https://playpoint-sim.com/articles/2026-07-25-play-points-coupon-not-applied.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-07-25-play-points-coupon-not-applied.html</guid>
+      <pubDate>Sat, 25 Jul 2026 03:00:00 GMT</pubDate>
+      <description>Google Play Pointsクーポンが使えない・「特典を適用できません」と表示される時の確認順。対象アカウント、保存場所、金額・対象アプリ・期限を分けて確認します。</description>
+    </item>
+    <item>
+      <title>Google Play Pointsが反映されない・遅い時は？いつ付くかと確認する順番</title>
+      <link>https://playpoint-sim.com/articles/2026-03-10-play-points-reflection-timing.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-03-10-play-points-reflection-timing.html</guid>
+      <pubDate>Tue, 10 Mar 2026 03:00:00 GMT</pubDate>
+      <description>Google Play Pointsが反映されない時に、通常購入とアプリ体験特典の待ち時間、注文・履歴・アカウントの確認順を解説。交換後のPlayクレジット・クーポン・ゲーム内アイテムの確認先も案内します。</description>
+    </item>
+    <item>
+      <title>Google Play Pointsの有効期限｜失効日・確認方法・期限切れ対策</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-expiration.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-expiration.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>Google Play Pointsは最後の獲得・使用から1年で失効します。期限の確認方法、ランク進捗や交換後クレジットとの違い、失効対策を解説します。</description>
+    </item>
+    <item>
+      <title>Google PlayギフトカードでPlay Pointsは貯まる？付与タイミング</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-gift-card.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-gift-card.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>Google Playギフトカードの購入、残高へのチャージ、対象コンテンツ購入を分け、Play Pointsが貯まるタイミングと対象外条件を解説します。</description>
     </item>
     <item>
       <title>ゼンゼロのインターノット会員で毎日90ポリクローム！30日間の受取内容</title>
@@ -188,13 +230,6 @@
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-16-family-link-play-points.html</guid>
       <pubDate>Sun, 16 Aug 2026 03:00:00 GMT</pubDate>
       <description>Family Linkで管理されているアカウントと、家族の別アカウントの参加条件を整理。Play Pass週次特典は、一般ヘルプと個別規約の案内の違いも確認します。</description>
-    </item>
-    <item>
-      <title>ウィークリーリワードが受け取れない・ボタンが無い時の確認順</title>
-      <link>https://playpoint-sim.com/articles/2026-08-16-weekly-reward-not-showing.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-16-weekly-reward-not-showing.html</guid>
-      <pubDate>Sun, 16 Aug 2026 03:00:00 GMT</pubDate>
-      <description>通常のウィークリーリワードはシルバー以上、日本の金曜日にリセットされます。ボタンが無い時はランク、アカウント、受取済み、Play Pass木曜特典の取り違えを順に確認します。</description>
     </item>
     <item>
       <title>1月1日にPlay Pointsのランクが下がった？再判定と残高の違い</title>
@@ -456,13 +491,6 @@
       <description>Play PointsのPixel割引クーポンを、個別配布の特典タブとポイント交換の「使う」から探す方法を解説。Google Storeでのコード利用と確認点も紹介します。</description>
     </item>
     <item>
-      <title>Google Play Pointsクーポンが使えない？「特典を適用できません」の対処</title>
-      <link>https://playpoint-sim.com/articles/2026-07-25-play-points-coupon-not-applied.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-07-25-play-points-coupon-not-applied.html</guid>
-      <pubDate>Sat, 25 Jul 2026 03:00:00 GMT</pubDate>
-      <description>Google Play Pointsクーポンが使えない・「特典を適用できません」と表示される時の確認順。対象アカウント、保存場所、金額・対象アプリ・期限を分けて確認します。</description>
-    </item>
-    <item>
       <title>Google Play Pointsは現金化・PayPay交換できる？できない理由と使い道</title>
       <link>https://playpoint-sim.com/articles/2026-07-24-play-points-cash-conversion.html</link>
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-07-24-play-points-cash-conversion.html</guid>
@@ -498,13 +526,6 @@
       <description>楽天市場のGoogle Playギフトコード認定店で、還元上限・エントリー・使い切り期限を買う前に確認する方法です。正規販売と実質負担の見方も整理します。</description>
     </item>
     <item>
-      <title>Google Play Pointsが反映されない・遅い時は？いつ付くかと確認する順番</title>
-      <link>https://playpoint-sim.com/articles/2026-03-10-play-points-reflection-timing.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-03-10-play-points-reflection-timing.html</guid>
-      <pubDate>Tue, 10 Mar 2026 03:00:00 GMT</pubDate>
-      <description>Google Play Pointsが反映されない時に、通常購入とアプリ体験特典の待ち時間、注文・履歴・アカウントの確認順を解説。交換後のPlayクレジット・クーポン・ゲーム内アイテムの確認先も案内します。</description>
-    </item>
-    <item>
       <title>Google Play Gamesで遊ぶとポイントは貯まる？Play Pointsとの違い</title>
       <link>https://playpoint-sim.com/articles/2025-12-25-play-games.html</link>
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-play-games.html</guid>
@@ -517,20 +538,6 @@
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-movies-books.html</guid>
       <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
       <description>Google Play Pointsが電子書籍、有料アプリ、ゲーム本体などの買い切り購入で貯まる条件を解説。購入前のPlay Points参加、Google Play経由、対象国・アカウント、端末とポイント履歴の確認方法を整理します。</description>
-    </item>
-    <item>
-      <title>Google Play Pointsの有効期限｜失効日・確認方法・期限切れ対策</title>
-      <link>https://playpoint-sim.com/articles/2025-12-25-expiration.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-expiration.html</guid>
-      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
-      <description>Google Play Pointsは最後の獲得・使用から1年で失効します。期限の確認方法、ランク進捗や交換後クレジットとの違い、失効対策を解説します。</description>
-    </item>
-    <item>
-      <title>Google PlayギフトカードでPlay Pointsは貯まる？付与タイミング</title>
-      <link>https://playpoint-sim.com/articles/2025-12-25-gift-card.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-gift-card.html</guid>
-      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
-      <description>Google Playギフトカードの購入、残高へのチャージ、対象コンテンツ購入を分け、Play Pointsが貯まるタイミングと対象外条件を解説します。</description>
     </item>
     <item>
       <title>Google Play Pointsは家族と共有できる？ファミリー利用の注意点</title>
@@ -699,13 +706,6 @@
       <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-diamond-vip.html</guid>
       <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
       <description>Google Play Pointsのダイヤモンドで楽しめるスーパーウィークリーリワード、Super Ticket、イベントやプレミアムサポートを紹介。プラチナとの違いと個別条件も解説します。</description>
-    </item>
-    <item>
-      <title>キャリア決済・クレカ・ギフトカードでPlayポイントは貯まる？還元の違い</title>
-      <link>https://playpoint-sim.com/articles/2026-08-16-payment-methods-points.html</link>
-      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-08-16-payment-methods-points.html</guid>
-      <pubDate>Sun, 16 Aug 2026 03:00:00 GMT</pubDate>
-      <description>キャリア決済・クレカ・Google PlayギフトカードのPlay Points獲得条件を整理。ドコモ・au・ソフトバンク・楽天モバイルの具体例と、税抜のポイント計算・独自還元を分けて比較します。</description>
     </item>
   </channel>
 </rss>
