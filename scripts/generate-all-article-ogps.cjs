@@ -38,11 +38,12 @@ const DISTINCT_MAPPING = {
   },
   // Previously ogp.png (4)
   '2026-08-17-diamond-valley-festival-guide.html': {
-    image: '2026-08-17-diamond-valley-festival-guide.png',
+    image: 'diamond-valley-history-20261101.jpg',
+    title: 'Diamond Valley<br>宝探しと景品応募のしくみ',
     template: 'diamond-valley',
-    category: '限定イベント攻略',
-    subtitle: '歴代実績・2026年の注目ポイント完全攻略',
-    points: ['Diamond Valley', '特別ポイント獲得', '2026年最新'],
+    category: 'Google Playのイベント解説',
+    subtitle: '過去の開催例と、日本向け情報の見分け方',
+    points: ['ゲーム内でダイヤを集める', '開催年・地域を確認', '日本2026は条件未確認'],
     accentColor: '#818cf8'
   },
   '2026-09-19-monst-in-app-packs-guide.html': {

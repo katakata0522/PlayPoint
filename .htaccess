@@ -23,6 +23,9 @@ Options -Indexes
   # 先に公開した改行版も最新の表紙へ案内する
   RewriteRule ^articles/ogp/2026-09-26-bluearchive-monthly-packs-guide-20261030\.png$ /articles/ogp/2026-09-26-bluearchive-monthly-packs-guide-20261030-v2.png [R=302,L,NE]
 
+  # Diamond Valleyの旧表紙も開催地域・年を明示した画像へ案内する
+  RewriteRule ^articles/ogp/2026-08-17-diamond-valley-festival-guide\.png$ /articles/ogp/diamond-valley-history-20261101.jpg [R=302,L,NE]
+
   # 旧URLをトップへ統一
   RewriteCond %{THE_REQUEST} \s/+calculator\.html[\s?] [NC]
   RewriteRule ^calculator\.html$ / [R=301,L,NE]

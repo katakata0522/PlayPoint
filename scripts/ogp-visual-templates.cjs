@@ -60,7 +60,7 @@ const VISUAL_CARDS = {
       </div>
       <div style="background: linear-gradient(135deg, rgba(129, 140, 248, 0.2) 0%, rgba(99, 102, 241, 0.1) 100%); border: 1.5px solid rgba(129, 140, 248, 0.5); border-radius: 12px; padding: 10px 24px; text-align: center;">
         <div style="font-size: 14px; color: #c7d2fe; font-weight: 700; letter-spacing: 1px;">GOOGLE PLAY EVENT</div>
-        <div style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 2px;">2026 DIAMOND VALLEY</div>
+        <div style="font-size: 22px; font-weight: 900; color: #ffffff; margin-top: 2px;">DIAMOND VALLEY</div>
       </div>
     </div>
   `,

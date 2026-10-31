@@ -1615,13 +1615,13 @@
       "公式情報",
       "開催情報"
     ],
-    "description": "Diamond Valleyの過去開催で公式に確認できる仕組みを整理します。2026年の日本向け日程・対象ステータス・特典はGoogle Play公式発表待ちとして、未確定情報と分けて案内します。",
+    "description": "Diamond Valleyは、宝探しで集めたダイヤを景品への応募に使うGoogle Playのミニゲーム。日本向けサイトの現在の表示と、地域・年を分けた過去の開催例、参加前に見る条件を紹介します。",
     "file": "../articles/2026-08-17-diamond-valley-festival-guide.html",
     "thumbnail": "../articles/ogp/campaign.png",
     "listed": false,
     "browseCategory": "貯める・キャンペーン",
-    "ogp": "../articles/ogp/2026-08-17-diamond-valley-festival-guide.png",
-    "modified": "2026-08-18"
+    "ogp": "../articles/ogp/diamond-valley-history-20261101.jpg",
+    "modified": "2026-11-01"
   },
   {
     "id": "play-pass-worth-it",
@@ -2669,7 +2669,7 @@
     "id": "2026-10-23-seven-eleven-gift-card-lottery",
     "title": "【11/15まで】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件",
     "date": "2026-10-28",
-    "modified": "2026-10-28",
+    "modified": "2026-11-01",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2691,7 +2691,7 @@
       ],
       [
         "/articles/2026-10-23-google-play-gift-card-comparison.html",
-        "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10月】"
+        "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】"
       ],
       [
         "/articles/2026-06-20-discount-gift-cards.html",
@@ -2706,7 +2706,7 @@
     "id": "2026-10-23-familymart-gift-card-lottery",
     "title": "【11/2まで】ファミマのGoogle Playギフトカード抽選｜ファミペイ2％相当の条件",
     "date": "2026-10-28",
-    "modified": "2026-10-28",
+    "modified": "2026-11-01",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2728,7 +2728,7 @@
       ],
       [
         "/articles/2026-10-23-google-play-gift-card-comparison.html",
-        "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10月】"
+        "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】"
       ],
       [
         "/articles/2026-06-20-discount-gift-cards.html",
@@ -2741,9 +2741,9 @@
   },
   {
     "id": "2026-10-23-google-play-gift-card-comparison",
-    "title": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10月】",
+    "title": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】",
     "date": "2026-10-28",
-    "modified": "2026-10-28",
+    "modified": "2026-11-01",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2752,7 +2752,7 @@
       "購入先比較"
     ],
     "description": "10月28日の公式条件で購入先を比較。セブンの100pt保証、ファミマの抽選とファミペイ2％相当、終了した楽天200円引き、11月4日開始の500円引きを分けて紹介します。",
-    "listTitle": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10月】",
+    "listTitle": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】",
     "listDescription": "10月28日の公式条件で購入先を比較。セブンの100pt保証、ファミマの抽選とファミペイ2％相当、終了した楽天200円引き、11月4日開始の500円引きを分けて紹介します。",
     "file": "../articles/2026-10-23-google-play-gift-card-comparison.html",
     "ogp": "../articles/ogp/2026-10-23-google-play-gift-card-comparison.jpg",
