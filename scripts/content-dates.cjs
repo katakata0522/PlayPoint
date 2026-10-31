@@ -93,7 +93,9 @@ const GAME_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
   'games/efootball/google-play-points-vs-efootball-points/index.html': GAME_SEO_WAVE5_VERIFIED_AT,
   ...Object.fromEntries(GAME_GUIDE_ARTICLES.map(article => [article.file.slice(3), article.modified])),
   ...Object.fromEntries(Object.keys(SPECIAL_OFFERS).map(id => [`games/${id}/index.html`, SPECIAL_OFFERS_REVIEWED_AT])),
-  ...Object.fromEntries(INTL_GAME_LOCALES.flatMap(locale => ['index', ...Object.keys(GAME_EVIDENCE)].map(id => [`${locale}/games/${id === 'index' ? '' : id + '/'}index.html`, id === 'index' ? INTL_GAME_REVIEWED_AT : getIntlGameReviewedAt(locale, id)])))
+  ...Object.fromEntries(INTL_GAME_LOCALES.flatMap(locale => ['index', ...Object.keys(GAME_EVIDENCE)].map(id => [`${locale}/games/${id === 'index' ? '' : id + '/'}index.html`, id === 'index' ? INTL_GAME_REVIEWED_AT : getIntlGameReviewedAt(locale, id)]))),
+  // 個別改稿の日付は特別商品共通の確認日より優先する。
+  'games/fgo/index.html': '2026-10-28'
 });
 const LATEST_HUB_VERIFICATION_DATE = getLatestHubVerificationDate(rootDir);
 

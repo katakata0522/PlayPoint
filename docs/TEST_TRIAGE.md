@@ -1,8 +1,34 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-29 原神・空月記事の改稿
+
+既存 `game-seo-depth.test.cjs` の旧表現「合計最大」の逐語固定を、HTMLの強調タグを除いた表示文で最大3,000原石相当と創世結晶の1:1換算が示される検査へ変更する。30日・Google Play経由・未確認価格と公式リンクの保証は維持する。新しいテストファイルや必須ゲートは追加しない。
+
+## 2026-10-28 eFootball記事の改稿と再生成
+
+既存game-seo-wave5のeFootball検査は旧本文の逐語固定を、両ポイントの区別・4種類の比較表の確認に置き換える。記事欠落時の再生成ではFAQと構造化データ、国・地域とUTC期限、KONAMI ID連携、編集済み記事の保持と再同期を検証する。新しいテストファイルや必須ゲートは追加しない。
+
+## 2026-10-28 POSA3記事の公開準備
+
+既存article-image-assetsの冪等性fixtureを.jpgへ切り替え、台帳・head・JSON-LD・TwitterでJPEG名が保持されることを確認する。ogp-standardizationは.pngの既存契約と新規.jpgを両方検査し、全画像のJPEG実体・1200×630・一意性を維持する。台帳の件数を3記事増加分に同期する。記事の公式条件・期限切れ状態は既存article-fact-regressionで確認する。新しいテストファイル・必須ゲートは追加しない。
+
+## 2026-10-26 プロフィール構造化データの更新日時
+
+既存author-hreflangで公開4言語と再生成3言語のProfilePageを解析し、dateModifiedがタイムゾーン付きISO日時で、既存の日付台帳・last-modifiedの日付を保持することを確認する。記事と同じ日単位→日本時間日境界の直列化を再利用し、表示日・サイトマップ・本文を変えない。新しいテストファイルや必須ゲートは追加しない。
+
+既存ogp-mime-deploymentの実SEOコマンドfixtureで、公開済みWP先行1記事のインライン処理を識別し、保存・テーマ・同意／計算機アダプターの欠落、JSON-LDへの偽装、対象外記事での外部JS欠落は引き続き失敗することを確認する。公開物・配信切替・広告設定は変更せず、今回の公開を妨げる旧検査との不整合だけを修正する。
+
+## 2026-10-24 1記事の切替・切り戻し最終確認
+
+既存Apache HTTP検証で、実際のルート設定とCMS設定fixtureを使い、目印OFF→ON→OFF、同じURLの内部転送、対象外の記事・ホストの保持、公開記事へのnoindex／Vary:*混入防止とCMSログインの保存拒否を確認する。PHP転送先が故障しても目印OFFで静的記事へ復帰することを検査する。WordPress／MariaDB・編集保存は専用CMSで別途確認する。service-worker-behaviorの既存入力境界へCMS管理・REST・画像と似た公開パスを追加し、CMSを保存せず他の公開パスは保持することを検査する。既存PR Gateを使い、新しい必須ゲートやテストファイルは増やさない。
+
 ## 2026-10-24 本番CMS設置前のデプロイ保護
 
 本番専用 `/cms` を既存stgと同じ別管理領域として、静的転送・削除・snapshot・履歴保存から分離する。既存deploy-cleanupで実rsync／復元時の保持と同名ファイル・リンクの混入防止、snapshot-historyで保存からの除外と汚染履歴の有効化拒否、public-deployment-treeでCMS設定の公開物混入拒否を検査する。既存PR Gateを使い、新しい検査ファイルや必須ゲートは追加しない。記事、配信ルート、SWは変更せず、WP／MariaDBの検証は別途行う。
+
+## 2026-10-23 1記事のWordPress移行準備
+
+本番CMS `/cms` も、既存の別管理領域と同じく静的公開・削除・snapshot・履歴から分離する。既存deploy-cleanupの実rsync／復元とsnapshot-historyの保存／汚染履歴拒否をstgとCMSの両方へ適用し、public-deployment-treeでCMS設定の混入を拒否する。新しいテストファイルや必須ゲートは増やさない。1記事の内部rewriteは専用目印の存在時だけ有効にし、目印OFF時は同じURLの静的HTMLへ戻す。実サーバーでの切替・切り戻し、本番WordPressのDB復旧は別工程で検証する。
 
 ## 2026-10-21 検証用サブドメインの公開・復元保護
 
@@ -722,7 +748,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `japanese-guide-brand.test.cjs` | 3 | 全件維持。「Google Play Points 完全攻略ガイド」は意図的なブランドSSOT。記事ハブ・OGP・記事ヘッダー・RSS/Atomの一致とlegacy brand排除は正当な成果物契約 |
 | `all-article-quality-audit.test.cjs` | 4 | 全件維持。全公開記事のcanonical/H1/author/公式source/関連導線/Article JSON-LD/FAQ整合を維持。meta description 35文字以上という任意閾値を廃止し、非空・placeholderなしへ変更 |
 | `article-seo-normalize.test.cjs` | 6 | 全件維持。可視FAQとFAQPage同期、Article保持、robots/max-image-preview、check-onlyは実変換behavior |
-| `author-hreflang.test.cjs` | 2 | 全件維持。日本語＋生成3言語の相互hreflang clusterと冪等同期 |
+| `author-hreflang.test.cjs` | 3 | 全件維持。日本語＋生成3言語の相互hreflang clusterと冪等同期、公開・生成プロフィール更新日時のISO形式と日付保持 |
 | `human-sitemap-task-hub.test.cjs` | 2 | 全件維持。task destination・技術URL分離・full article list再生成防止を維持。emoji/見出しcopyと「60リンク未満」閾値を除外 |
 | `manual-lp-hreflang.test.cjs` | 4 | 全件維持。manual LPの完全alternate cluster、FAQ責務分離、相互clusterを実成果物で検証 |
 | `navigation-source-map.test.cjs` | 8 | 全件維持。全公開面・locale・遷移分類・generator ownership・pipeline inventoryを維持。「HTML100ページ超」「40工程超」「先頭/末尾関数完全一致」「dynamic RegExp不使用」という実装/規模固定を除外 |
@@ -1580,7 +1606,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `article-seo-normalize.test.cjs` | SEO・公開整合 | 可視本文と一致するFAQPageは保持する |
 | `article-storage-safety-contract.test.cjs` | 保存 | 記事保存とブログ設定は現行schemaだけを正常値として受け入れる |
 | `attention-country-classification.test.cjs` | 地域・翻訳 | 注意ページは現在の6地域専用モードを正確に案内する |
-| `author-hreflang.test.cjs` | SEO・公開整合 | 日本語運営者ページへ完全なhreflangクラスターを一度だけ同期する |
+| `author-hreflang.test.cjs` | SEO・公開整合 | 運営者ページの相互hreflangとプロフィール更新日時の形式・日付保持 |
 | `automatic-rollback.test.cjs` | 復旧 | rollback snapshotのSHAを本番変更前に検証してstep outputへ固定する |
 | `blog-index-sync.test.cjs` | 生成・再現性 | static blog article links follow article registry titles and remain idempotent |
 | `blog-listing-ux.test.cjs` | UI・導線 | listed blog search indexes title, description, tags, and category in memory |
@@ -1894,3 +1920,15 @@ Head監査はファイル名の例外を廃止し、全サイトマップURLへ�
 | `reader-outcomes.test.cjs` | 未登録定義・取得0件・部分取得の区別、台帳の役割結合、成熟したコホート、順序付き計算ファネル、数式注入防止 |
 
 記事トップを読む入口とし、記事の戻り先と構造化パンくずを一致させる。台帳に合わせた本文見出し・検索・共有・Articleデータの同期、Play Passの基本説明への直接リンク、履歴を停止した場合を含む再訪入口は既存の記事検査と必須ブラウザsuiteで確認する。最初の画面は疑問の入口と記事一覧へのスキップを保証し、一覧へ進んだ後の先頭記事・画像・操作の確認を保持する。人気記事の既存テストは、正常な新期間なら同じ順位でも更新すること、同期間の再実行と不完全データでは変更しないことを保証する。
+
+## 2026-10-29 ゼンゼロ会員記事の改稿
+
+`game-seo-expanded.test.cjs` はCOGNOSPHEREの日本語商品ページを確認し、30日間の受取・1:1換算・即時受取との違い・Google Play価格未確認を引き続き検証する。旧英語URLと改稿前の固定文言を前提にしない。
+
+## 2026-10-29 パズドラパス記事の改稿
+
+`game-seo-wave3.test.cjs` は記事内の編成枠とランク経験値の特典を改稿後の文で確認し、無料体験の自動更新と停止期限も保護する。
+
+## 2026-10-29 ウマスクの購入経路
+
+`game-seo-expanded.test.cjs` はWebStore購入・更新時の無償50個を同経路に限定し、Google Play側の毎日分の計算に混ぜないことを確認する。公式サポートとWebStoreの個別案内を併記。

@@ -68,8 +68,10 @@ test('PAD keeps the SSOT-verified pass and explains trial and persistent benefit
   const trialWeeks = pass.freeTrialDays / 7;
   assert.ok(Number.isInteger(trialWeeks) && trialWeeks > 0, 'PAD free trial should convert to whole weeks');
   assert.ok(guide.includes(String(trialWeeks) + '週間の無料トライアル'));
-  assert.ok(guide.includes('チーム枠+' + pass.benefits.extraTeamSlots));
-  assert.ok(guide.includes('ランク経験値' + pass.benefits.rankExpBonusPercent + '%アップ'));
+  assert.ok(guide.includes('チーム編成枠が' + pass.benefits.extraTeamSlots + '枠増える'));
+  assert.ok(guide.includes('ランク経験値' + pass.benefits.rankExpBonusPercent + '％アップ'));
+  assert.match(guide, /無料期間だけで終えたい場合も、自動更新の停止手続きが必要/);
+  assert.match(guide, /終了する日（0:00）の24時間以上前/);
 });
 
 test('Arknights preserves SSOT-verified mechanics but removes unverified price and fixed cash pity claims', () => {

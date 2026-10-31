@@ -1,7 +1,7 @@
 {
-  "snapshot": "2026-10-16",
-  "start": "2026-09-12",
-  "end": "2026-10-11",
+  "snapshot": "2026-10-31",
+  "start": "2026-09-26",
+  "end": "2026-10-25",
   "guides": {
     "en": [
       [
@@ -9,12 +9,12 @@
         "Google Play quest not working? Check progress and purchase rules"
       ],
       [
-        "/en/articles/google-play-points-cash-conversion.html",
-        "Can You Redeem Google Play Points for Cash?"
+        "/en/articles/2026-10-12-google-play-fest-2026.html",
+        "Google Play Fest 2026 recap: US sweepstakes and past offers"
       ],
       [
-        "/en/articles/google-play-points-country-differences.html",
-        "Google Play Points rules differ by Play country"
+        "/en/articles/google-play-points-cash-conversion.html",
+        "Can You Redeem Google Play Points for Cash?"
       ],
       [
         "/en/articles/google-play-points-join-eligibility.html",
@@ -35,38 +35,38 @@
         "구글 플레이 슈퍼티켓 얻는 법·사용법｜Super Weekly Prize"
       ],
       [
-        "/ko/articles/google-play-points-use-coupons.html",
-        "Google Play Points 사용법｜쿠폰·Play 크레딧 교환 방법"
+        "/ko/articles/2026-10-12-google-play-fest-2026.html",
+        "한국 Play 페스타 2026 기록｜교환 상품과 해피 아워"
       ],
       [
         "/ko/articles/google-play-points-join-eligibility.html",
         "한국에서 Google Play Points 가입이 안 될 때｜가입 버튼·계정·결제 프로필 확인"
       ],
       [
-        "/ko/articles/google-play-points-play-credit-not-working.html",
-        "Google Play 크레딧 교환·사용이 안 될 때 확인할 것"
+        "/ko/articles/google-play-points-use-coupons.html",
+        "Google Play Points 사용법｜쿠폰·Play 크레딧 교환 방법"
       ]
     ],
     "tw": [
       [
-        "/tw/articles/google-play-points-play-credit-not-working.html",
-        "Google Play 抵用金無法使用：兌換前後的排解順序"
+        "/tw/articles/2026-10-12-google-play-fest-2026.html",
+        "台灣 Play 盛典 2026 回顧：聯賽、任務與點數優惠"
       ],
       [
-        "/tw/articles/google-play-points-use-coupons.html",
-        "Google Play Points 怎麼用？優惠券、Play 抵用金與兌換方式"
+        "/tw/articles/google-play-quests.html",
+        "Google Play 任務：沒有顯示或無法完成時怎麼查"
+      ],
+      [
+        "/tw/articles/google-play-points-play-credit-not-working.html",
+        "Google Play 抵用金無法使用：兌換前後的排解順序"
       ],
       [
         "/tw/articles/google-play-points-platinum-diamond-cost.html",
         "台灣 Google Play Points 白金與鑽石：升級金額、積點率和福利比較"
       ],
       [
-        "/tw/articles/google-play-points-weekly-reward.html",
-        "Google Play Points 每週獎勵不見？台灣星期五重設與 Play Pass 星期四差異"
-      ],
-      [
-        "/tw/articles/google-play-quests.html",
-        "Google Play 任務：沒有顯示或無法完成時怎麼查"
+        "/tw/articles/google-play-points-use-coupons.html",
+        "Google Play Points 怎麼用？優惠券、Play 抵用金與兌換方式"
       ]
     ]
   }

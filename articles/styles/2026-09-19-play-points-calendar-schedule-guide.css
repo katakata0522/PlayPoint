@@ -1,0 +1,10 @@
+.calendar-overview-table tr > :first-child { white-space: nowrap; }
+@media (max-width: 760px) {
+  html[data-reading-theme] .calendar-overview-table table { min-width: 720px; }
+  html[data-reading-theme] .calendar-overview-table tr > :first-child {
+    position: sticky; left: 0; z-index: 1; background: var(--reading-surface, #fff);
+  }
+  html[data-reading-theme] .calendar-overview-table thead tr > :first-child {
+    z-index: 2; background: var(--reading-soft, #f1f5f9);
+  }
+}

@@ -30,8 +30,11 @@ test('スーパーウィークリー記事は一般条件と個別条件を分�
   assert.ok(html.includes('金曜日の午前0時以降'));
   assert.ok(html.includes('賞品数には限り'));
   assert.ok(html.includes('id="known-unknown"'));
-  assert.ok(html.includes('現在の賞品、残りの賞品数、追加条件'));
-  assert.ok(html.includes('自分の特典画面で今週の内容を探してみましょう'));
+  const guidance = html.match(/<section\b[^>]*aria-labelledby="known-unknown"[^>]*>([\s\S]*?)<\/section>/)?.[1] || '';
+  const guidanceText = guidance.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
+  assert.match(guidanceText, /特典.*画面.*スーパーウィークリー.*カード/);
+  assert.match(guidanceText, /現在の賞品.*残りの賞品数.*追加条件/);
+  assert.match(guidanceText, /自分のアカウント.*今週/);
   assert.ok(html.includes('play.google.com/store/apps/editorial'));
   assert.ok(html.includes('./2025-12-25-weekly-reward.html'));
 
@@ -62,7 +65,7 @@ test('週次親記事はランク別週次・Super Ticket・Play Passを分け�
   assert.ok(html.includes('スーパーウィークリーリワード'));
   assert.ok(html.includes('Super Ticket'));
   assert.ok(html.includes('Play Passの週次ボーナス・ブースター'));
-  assert.ok(html.includes('ほくほくリワード日記'));
+  assert.ok(html.includes('ウィークリーリワード記録'));
   assert.ok(html.includes('./2026-07-31-super-weekly-reward.html'));
   assert.ok(html.includes('./2026-09-19-google-play-super-ticket.html'));
 });
@@ -97,13 +100,15 @@ test('Black Diamond記事は確定情報と未発表情報を分離する', () =
 
   assert.ok(fs.existsSync(path.join(root, blackDiamondPath)));
   assert.ok(articles.some(article => article.id === 'black-diamond-diamond-vip-2026'));
-  assert.ok(html.includes('公開ステータスは今も5段階'));
-  assert.ok(html.includes('完全招待制のVIPラウンジ'));
-  assert.ok(html.includes('この区画の正式名称はDiamond VIPです'));
-  assert.ok(html.includes('確認したわけではありません'));
-  assert.ok(html.includes('Black Diamondが第7ランクに確定'));
-  assert.ok(html.includes('とは書かず'));
-  assert.ok(html.includes('30,000pt・45,000pt説は、今のところ昇格条件として載せない'));
+  assert.ok(html.includes('通常のステータス表は、ブロンズからダイヤモンドまでの5段階'));
+  assert.ok(html.includes('Googleから招待された人向けのVIPラウンジ'));
+  assert.ok(html.includes('正式名称が「ダイヤモンドVIP」だとは確認していません'));
+  assert.ok(html.includes('未追認の解析報告'));
+  assert.ok(html.includes('当サイトではその画面を直接確認していません'));
+  assert.ok(html.includes('どの範囲で提供されているのか'));
+  assert.ok(html.includes('日本向けの公式な到達条件としては確認できません'));
+  assert.ok(html.includes('pc.asobu.co.jp/google-play-diamond-vip-benefits/'));
+  assert.ok(!html.includes('日本での一般提供や実アカウントでの運用は確認できていません'));
   assert.ok(html.includes('support.google.com/googleplay/answer/9080348'));
   assert.ok(html.includes('playpoints.withgoogle.com/tgs/2026/offline'));
   assert.ok(html.includes('jetstream.blog/2026/09/09/google-play-points-black-diamond-diamond-vip-app-teardown'));

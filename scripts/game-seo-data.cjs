@@ -54,8 +54,10 @@ const FGO_PACKS_JP = [
 
 const GAME_SEO = {
   fgo: {
-    verifiedAt: VERIFIED_AT,
-    verification: 'official',
+    verifiedAt: '2026-10-28',
+    verification: 'official-2022-price-current-google-play-pending',
+    priceSourceDate: '2022-09-30',
+    currentGooglePlayPricesVerified: false,
     sources: [SOURCES.fgoPrice, SOURCES.fgoPity, SOURCES.fgoLuckyBag2026, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
     packsJa: FGO_PACKS_JP,
     pity: {
@@ -152,7 +154,7 @@ const GAME_SEO = {
     umasuku: {
       price: 980,
       paidJewelsOnPurchaseOrRenewal: 500,
-      freeJewelsOnPurchaseOrRenewal: 50,
+      webStoreBonusFreeJewelsOnPurchaseOrRenewal: 50,
       freeJewelsPerDay: 50,
       dailyReset: '05:00',
       missedDailyDeliveredOnNextLogin: true,

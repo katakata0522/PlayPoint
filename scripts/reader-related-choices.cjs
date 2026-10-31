@@ -1,6 +1,9 @@
 'use strict';
 // 各記事を読んだ後の確認順。テーマの一致だけで他ゲームや低頻度の手続きへ誘導しない。
 const RELATED_CHOICES = {
+  '2026-10-23-seven-eleven-gift-card-lottery': ["2026-10-23-familymart-gift-card-lottery", "2026-10-23-google-play-gift-card-comparison", "discount-gift-cards"],
+  '2026-10-23-familymart-gift-card-lottery': ["2026-10-23-seven-eleven-gift-card-lottery", "2026-10-23-google-play-gift-card-comparison", "discount-gift-cards"],
+  '2026-10-23-google-play-gift-card-comparison': ["2026-10-23-seven-eleven-gift-card-lottery", "2026-10-23-familymart-gift-card-lottery", "discount-gift-cards"],
   'best-use': ['points-value-100', 'expiration', 'play-points-coupon-not-applied'],
   'google-play-quests': ['install-offer-points-not-received', 'play-points-reflection-timing', 'earn-play-points-free'],
   'super-weekly-reward': ['super-weekly-reward-prize-history', 'google-play-super-ticket-2026', 'weekly-reward-not-showing'],

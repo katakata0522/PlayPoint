@@ -157,6 +157,9 @@ padding: 1.5rem;
 margin: 1.5rem 0;
 border-left: 4px solid var(--gold);
 }
+.highlight-box .rank-card-value {
+white-space: nowrap;
+}
 .diamond-box {
 background: linear-gradient(135deg, #b9f2ff33 0%, #667eea33 100%);
 border-left: 4px solid #667eea;

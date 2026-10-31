@@ -191,3 +191,6 @@ font-size: 1.25rem;
 padding: 1.5rem;
 }
 }
+html[data-reading-theme="dark"] #main-content .highlight-box p {
+  color: #78350f;
+}

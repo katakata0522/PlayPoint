@@ -178,7 +178,7 @@
     if (article) {
       const headings = [...article.querySelectorAll('h2[id]')].filter(h => !h.closest('.author-profile-box,.related-links-section,.article-ad-container,.faq,.contextual-guide-links,.article-calculator-prompt,.article-next-step-cta'));
       if (headings.length) {
-          let details = article.querySelector('.reader-toc');
+          let details = article.querySelector('.reader-toc, .inpage-toc');
           if (!details) {
             details = el('details', 'inpage-toc reader-toc'); details.append(el('summary', 'inpage-toc-title', '目次を開く'));
             const list = el('ol', ''), nav = el('nav', ''); nav.setAttribute('aria-label', 'この記事の目次');
@@ -187,7 +187,21 @@
             }
             nav.append(list); details.append(nav);
             const answer = article.querySelector('.answer-box,.editorial-answer');
-            if (answer) answer.after(details); else article.prepend(details);
+            if (answer) answer.after(details);
+            else {
+              // 題名と導入を先に見せ、最初の本文見出しの直前に目次を置く。
+              let firstSection = headings[0];
+              while (firstSection.parentElement && firstSection.parentElement !== article) firstSection = firstSection.parentElement;
+              if (firstSection.parentElement === article) firstSection.before(details);
+              else article.append(details);
+            }
+          }
+          details.classList.add('reader-toc');
+          const tocSummary = details.querySelector(':scope > summary');
+          if (tocSummary && tocSummary.textContent.trim() === '目次を開く') {
+            const updateTocLabel = () => { tocSummary.textContent = details.open ? '目次を閉じる' : '目次を開く'; };
+            details.addEventListener('toggle', updateTocLabel);
+            updateTocLabel();
           }
           details.addEventListener('click', event => {
             const link = event.target.closest('a[href^="#"]'), heading = link && doc.getElementById(link.hash.slice(1));

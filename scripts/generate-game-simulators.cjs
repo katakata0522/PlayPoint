@@ -859,7 +859,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？', a: '通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。' }
+        { q: 'FGOの確定召喚330回を石0から用意するといくら？', a: '2022年のFGO公式価格表を前提に、聖晶石・呼符の手持ちがなく、1日1回の有償召喚を使わずに11回召喚を30セット行う試算では、必要な900個以上を54,600円で902個用意できます。現在のGoogle Play版のゲーム内価格は未確認のため、購入画面の価格と個数を確かめてください。計算機のポイント参考表は税未調整の支払額ベース、関連記事は税込額に税10%を仮定して除いた概算です。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。' }
       ],
       en: [
         { q: 'How many points for 330-pull pity in FGO?', a: 'Spending ~$440 earns ~440 pts normally, or ~2,200 pts during a 5x promotion.' }
@@ -2159,11 +2159,11 @@ ${offersHtml ? `          <details class="game-purchase-details"><summary id="ga
               <h2 class="game-sim-title">🧮 ${gameShort}</h2>
 
 ${gamePresets.length ? `              <p class="preset-heading">${localeKey === 'ja' ? '金額をすぐ入力：' : loc.presetHeading}</p>
-              <div class="preset-buttons">
+${localeKey === 'ja' && game.id === 'fgo' ? '              <p>1,920円と54,600円は2022年の公式価格表を使った参考予算で、現在の購入価格を示すものではありません。</p>\n' : ''}              <div class="preset-buttons">
                   ${presetButtons}
               </div>` : ''}
 ${amountOnly ? '              <p class="game-sim-lead">Google Play購入画面の金額を入力すると、貯まるポイントが分かります。</p>' : ''}
-              <form id="game-sim-form"${amountOnly ? ' data-input-mode="amount"' : ''}${presentation?.presets[0]?.kind === 'budget' ? ' data-initial-input-kind="budget"' : ''}>
+${localeKey === 'ja' && game.id === 'fgo' ? '              <p>商品選択肢は2022年の公式価格表を使った参考例です。現在のGoogle Play版の価格と個数は未確認のため、購入画面を確認し、異なる場合は自由入力を使ってください。</p>\n              <p>ポイントは税を除く対象額が基準です。初期状態では支払額を対象額に仮置きし、税を差し引いていません。税抜の対象額が分かる場合は「獲得率・対象額を調整」から入力できます。</p>\n' : ''}              <form id="game-sim-form"${amountOnly ? ' data-input-mode="amount"' : ''}${presentation?.presets[0]?.kind === 'budget' ? ' data-initial-input-kind="budget"' : ''}>
                   <div class="input-grid">
 ${amountOnly ? '' : `                      <div class="input-field">
                           <label for="sim-pack-select">${localeKey === 'ja' ? '商品を選ぶ：' : loc.packSelectLabel}</label>
@@ -2209,7 +2209,7 @@ ${amountOnly ? '' : `                      <div class="input-field">
                           <strong id="res-total-amount" class="result-stat-value">-</strong>
                       </div>
                       <div class="result-stat-box">
-                          <span class="result-stat-label">${loc.resEarnedLabel}</span>
+                          <span class="result-stat-label">${localeKey === 'ja' && game.id === 'fgo' ? '獲得ポイントの試算' : loc.resEarnedLabel}</span>
                           <strong id="res-earned-points" class="result-stat-value highlight">- pt</strong>
                           <span id="res-calculation-basis" class="game-basis-badge"></span>
                       </div>
@@ -2268,7 +2268,7 @@ ${amountOnly ? '' : `                      <div class="input-field">
 
           <section class="section${gamePacks.length || presentation?.budgets.length ? '' : ' game-ad-section'}">
 ${gamePacks.length ? `              <h2>${gameShort} ${localeKey === 'ja' ? '商品の購入額とポイント' : loc.tableTitle}</h2>
-${localeKey === 'ja' && game.id === 'monst' ? '              <p>通常オーブ購入はアプリ内の商品です。Webショップの増量商品とは別です。<a href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式の商品表</a>も確認できます。</p>' : ''}
+${localeKey === 'ja' && game.id === 'fgo' ? '              <p>商品一覧は2022年の公式価格表に基づく参考例です。現在のGoogle Play版の価格と個数は購入画面で確認してください。</p>\n' : ''}${localeKey === 'ja' && game.id === 'monst' ? '              <p>通常オーブ購入はアプリ内の商品です。Webショップの増量商品とは別です。<a href="https://www.monster-strike.com/transaction/" target="_blank" rel="noopener noreferrer">公式の商品表</a>も確認できます。</p>' : ''}
               <div class="pack-table-wrap">
                   <table class="pack-table"${localeKey === 'ja' ? ' data-table-kind="products"' : ''}>
                       <caption>${({ ja: '支払額による参考値（税は未調整）。税抜対象額を指定した計算結果とは前提が異なります。', en: 'Payment-based estimates before tax adjustment. Enter an eligible pre-tax price in the calculator for that basis.', ko: '세금 미조정 결제액 기준 참고값. 세전 대상 금액을 입력한 계산 결과와 기준이 다릅니다.', 'zh-TW': '以付款金額估算，尚未調整稅額；與輸入不含稅商品價格的計算結果使用不同前提。' })[loc.lang]}</caption>
@@ -2278,7 +2278,7 @@ ${localeKey === 'ja' && game.id === 'monst' ? '              <p>通常オーブ�
               </div>
 ${gamePacks.some(p => p.billing === 'subscription') ? '              <p>月額サービスはGoogle Playで支払う1回分の料金で計算します。更新時は通常のステータス別獲得率が基本です。初回・請求時の個別特典がある場合だけ、その条件に合わせて獲得率を選んでください。Webショップ・iOSなどでの支払いはPlayポイントの対象になりません。</p>' : ''}` : ''}
 ${presentation?.budgets.length ? `              <h2>予算別のポイント目安</h2>
-              <p>以下は商品価格ではなく、購入額を変えた計算例です。天井や進化までに必要な費用を示すものではありません。</p>
+              <p>以下は商品価格ではなく、購入額を変えた計算例です。天井や進化までに必要な費用を示すものではありません。${localeKey === 'ja' && game.id === 'fgo' ? 'ポイントは税未調整の支払額ベースで、関連記事の消費税10%を仮定して除いた試算とは前提が異なります。' : ''}</p>
               <div class="pack-table-wrap"><table class="pack-table" data-table-kind="budgets">
                 <thead><tr><th>予算（計算例）</th><th>${loc.tableThNormal}</th><th>${loc.tableThCp}</th></tr></thead>
                 <tbody>${presentation.budgets.map(amount => `<tr><td>${amount.toLocaleString('ja-JP')}円</td><td>約 ${Math.round(amount / loc.unitSpend).toLocaleString('ja-JP')} pt</td><td>約 ${Math.round(amount / loc.unitSpend * 5).toLocaleString('ja-JP')} pt</td></tr>`).join('')}</tbody>
