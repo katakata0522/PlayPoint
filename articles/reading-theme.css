@@ -91,6 +91,7 @@ html[data-reading-theme] :is(.site-footer-trademark,.copyright) { color:var(--re
 html[data-reading-theme] .lp-note { color:var(--reading-muted); }/* 単純な比較は、スマホでは見出しと値を1項目ずつ読む。 */
 @media(max-width:600px) {
 html body table.reading-responsive-table { display:block; width:100%; min-width:0; table-layout:auto; }
+html body table.reading-responsive-table > caption { display:block; width:100%; box-sizing:border-box; }
 html body table.reading-responsive-table thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
 html body table.reading-responsive-table tbody { display:block; }
 html body table.reading-responsive-table tr { display:block; padding:10px 0; border-bottom:1px solid var(--reading-border,#cbd5e1); }

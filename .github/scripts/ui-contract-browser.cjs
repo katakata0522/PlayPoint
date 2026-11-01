@@ -135,6 +135,29 @@ async function verifyUiContracts(browser, baseUrl, locales, blockExternalRequest
     assert.ok(paper.every(v=>v==='visible'),'印刷時のsection描画');
     results.print={screen,paper};
 
+    // 初回表示で未描画の画像付き節を越えても、目次のEnterで後半の見出しへ着地する。
+    const lateArticle = await open('articles/2026-10-10-diamond-play-pass-value.html');
+    const latePage = lateArticle.page;
+    await latePage.waitForFunction(()=>document.documentElement.classList.contains('guide-navigation-ready'));
+    await latePage.locator('.reader-toc > summary').click();
+    await latePage.locator('.reader-toc a[href="#article-section-10"]').focus();
+    await latePage.keyboard.press('Enter');
+    await latePage.waitForFunction(()=>{
+      const heading=document.getElementById('article-section-10');
+      if(!heading)return false;
+      const bounds=heading.getBoundingClientRect();
+      const headerBottom=document.querySelector('.guide-header')?.getBoundingClientRect().bottom || 0;
+      return location.hash==='#article-section-10' && bounds.top>=headerBottom-1 && bounds.bottom<=innerHeight+1;
+    });
+    assert.ok(await latePage.locator('#article-section-10').evaluate(el=>el===document.activeElement),'目次のEnter後は選んだ見出しから読み進められる');
+    const captionLayout=await latePage.locator('#breakeven table.reading-responsive-table').evaluate(table=>{
+      const caption=table.caption?.getBoundingClientRect();
+      return caption ? {tableWidth:table.getBoundingClientRect().width,width:caption.width,height:caption.height} : null;
+    });
+    assert.ok(captionLayout && captionLayout.tableWidth>0 && captionLayout.width>=captionLayout.tableWidth*0.9 && captionLayout.width<=captionLayout.tableWidth+2 && captionLayout.height>0 && captionLayout.height<captionLayout.width,'スマホの損益表captionが表幅を使い、1文字ずつ縦に折れない: '+JSON.stringify(captionLayout));
+    assert.deepEqual(lateArticle.errors,[],'後半の目次移動');
+    results.articleAnchor={firstVisit:true,keyboard:true,target:'#article-section-10',viewport:390,captionLayout};
+
     const home=await open('');
     await home.page.waitForFunction(()=>document.querySelector('#currentStatus')?.options.length>1);
     assert.equal(await home.page.evaluate(()=>performance.getEntriesByType('resource').some(entry=>new URL(entry.name).pathname==='/js/home-experience.js')),false,'初期表示で補助ガイドを先読みしない');
