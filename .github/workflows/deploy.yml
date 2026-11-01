@@ -245,7 +245,7 @@ jobs:
         id: upload_production_browser_evidence
         if: ${{ always() && steps.deploy-impact.outputs.deploy_needed == 'true' && (steps.production-browser.outcome == 'success' || steps.production-browser.outcome == 'failure') }}
         continue-on-error: true
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: deploy-production-browser-${{ github.run_id }}
           path: browser-smoke-artifacts/
@@ -349,7 +349,7 @@ jobs:
       - name: Upload auto-rollback browser evidence
         id: upload_auto_rollback_browser_evidence
         if: ${{ failure() && steps.auto-rollback.outcome == 'success' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: auto-rollback-browser-${{ github.run_id }}
           path: auto-rollback-verifier/browser-smoke-artifacts/
@@ -372,7 +372,7 @@ jobs:
       - name: Preserve CI environment and phase evidence
         id: preserve_ci_environment_and_phase_evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: ci-evidence-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/playpoint-ci-evidence/
