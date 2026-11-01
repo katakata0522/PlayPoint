@@ -26,7 +26,14 @@
       target.searchParams.set('pp_flow', 'normal'); target.searchParams.set('pp_catalog', 'live');
       return target.href;
     }
-    if (/^\/+$/u.test(target.pathname)) return 'https://stg.playpoint-sim.com/points-cost/?pp_flow=normal';
+    if (/^\/+$/u.test(target.pathname)) {
+      // 日記は未検証のstg計算画面へ置き換えず、元の表示モード・週指定を公開先へ渡す。
+      if (target.searchParams.get('mode') === 'diary') {
+        target.hostname = 'playpoint-sim.com';
+        return target.href;
+      }
+      return 'https://stg.playpoint-sim.com/points-cost/?pp_flow=normal';
+    }
     if (/^\/points-cost\/(?:index\.html)?$/u.test(target.pathname)) {
       target.hostname = 'stg.playpoint-sim.com'; target.pathname = '/points-cost/';
       target.searchParams.set('pp_flow', 'normal');

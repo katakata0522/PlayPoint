@@ -9,6 +9,8 @@ function ppab_data() {
     if ($value === null) $value=json_decode(gzdecode(base64_decode('__PLAYPOINT_ARTICLE_BATCH__')),true,512,JSON_THROW_ON_ERROR);
     return $value;
 }
+// ローカル操作検証候補は関数だけを提供し、実WordPressへ経路・管理UIを登録しない。
+if (!empty(ppab_data()['previewOnly'])) return;
 function ppab_entries() { return ppab_data()['articles']; }
 function ppab_ids() {
     $result=[];
@@ -46,7 +48,11 @@ function ppab_public_url($value,$sourcePath) {
         $url=function_exists('ppcb_url')?ppcb_url($query):'https://stg.playpoint-sim.com/blog/?'.http_build_query(array_merge(['pp_flow'=>'normal','pp_catalog'=>'live'],$query));
         return $url.(isset($parts['fragment'])?'#'.$parts['fragment']:'');
     }
-    if(preg_match('~^/+$~D',$pathname))return 'https://stg.playpoint-sim.com/points-cost/?pp_flow=normal';
+    if(preg_match('~^/+$~D',$pathname)){
+        parse_str($parts['query']??'',$query);
+        if(($query['mode']??null)==='diary')return 'https://playpoint-sim.com'.$pathname.$suffix;
+        return 'https://stg.playpoint-sim.com/points-cost/?pp_flow=normal';
+    }
     if(preg_match('~^/points-cost/(?:index\.html)?$~D',$pathname)){
         parse_str($parts['query']??'',$query);$query=array_filter($query,'is_string');$query['pp_flow']='normal';
         return 'https://stg.playpoint-sim.com/points-cost/?'.http_build_query($query).(isset($parts['fragment'])?'#'.$parts['fragment']:'');
@@ -56,13 +62,18 @@ function ppab_public_url($value,$sourcePath) {
     return (in_array($pathname,$known,true)?'https://stg.playpoint-sim.com':'https://playpoint-sim.com').$pathname.$suffix;
 }
 function ppab_attr($value){return htmlspecialchars($value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
+function ppab_search_form($tag) {
+    if(!preg_match('~\sclass=(["\'])(.*?)\1~is',$tag,$match))return false;
+    return in_array('sidebar-search-form',preg_split('/\s+/',trim($match[2])),true);
+}
 function ppab_rewrite_html($html,$sourcePath) {
     $protected=[];
     $html=preg_replace_callback('~<(script|style)\b[^>]*>[\s\S]*?</\1\s*>~i',function($match)use(&$protected){$key='PPAB_PROTECTED_'.count($protected).'_END';$protected[$key]=$match[0];return $key;},$html);
     $html=preg_replace_callback('~<(a|link|script|img|source|form)\b[^>]*>~i',function($match)use($sourcePath){
         $tag=strtolower($match[1]);
+        if($tag==='form'&&!ppab_search_form($match[0]))return $match[0];
         if($tag==='link'&&preg_match('~\brel=["\'](?:canonical|alternate)["\']~i',$match[0]))return $match[0];
-        return preg_replace_callback('~\b(href|src|srcset|data-search-module|action)=(["\'])(.*?)\2~is',function($attr)use($tag,$sourcePath){
+        $rewritten=preg_replace_callback('~\b(href|src|srcset|data-search-module|action)=(["\'])(.*?)\2~is',function($attr)use($tag,$sourcePath){
             $name=strtolower($attr[1]);$value=html_entity_decode($attr[3],ENT_QUOTES|ENT_HTML5,'UTF-8');
             if($name==='srcset') {
                 $items=[];foreach(explode(',',$value) as $item){$pair=preg_split('/\s+/',trim($item),2);$url=ppab_public_url($pair[0],$sourcePath);$path=parse_url($url,PHP_URL_PATH);$items[]=(ppab_asset_url($path)??$url).(isset($pair[1])?' '.$pair[1]:'');}$value=implode(', ',$items);
@@ -75,6 +86,7 @@ function ppab_rewrite_html($html,$sourcePath) {
             }
             return $attr[1].'='.$attr[2].ppab_attr($value).$attr[2];
         },$match[0]);
+        return $rewritten.($tag==='form'?'<input type="hidden" name="pp_flow" value="normal"><input type="hidden" name="pp_catalog" value="live">':'');
     },$html);
     // 外部scriptの開始タグも属性だけ接続し、スクリプト本文を再シリアライズしない。
     foreach($protected as $key=>$block) {
@@ -82,7 +94,6 @@ function ppab_rewrite_html($html,$sourcePath) {
         $block=preg_replace_callback('~\bdata-search-module=(["\'])(.*?)\1~is',function($m)use($sourcePath){$url=ppab_public_url($m[2],$sourcePath);return 'data-search-module='.$m[1].ppab_attr(ppab_asset_url(parse_url($url,PHP_URL_PATH))??$url).$m[1];},$block);
         $html=str_replace($key,$block,$html);
     }
-    $html=preg_replace_callback('~<form\b[^>]*>~i',fn($m)=>$m[0].'<input type="hidden" name="pp_flow" value="normal"><input type="hidden" name="pp_catalog" value="live">',$html);
     return $html;
 }
 function ppab_replace_meta($html,$name,$value) {
@@ -92,7 +103,9 @@ function ppab_render($entry,$post) {
     if(($post['status']??'')!=='publish'||($post['password']??'')!=='')return null;
     $title=trim(strip_tags($post['title']??''));if($title==='')throw new RuntimeException('試験記事の題名が空です。');
     $description=$post['description']??$entry['description'];
-    $hero=preg_replace_callback('~(<h1\b[^>]*>)[\s\S]*?(</h1\s*>)~i',fn($m)=>$m[1].ppab_attr($title).$m[2],$entry['hero']);
+    $hero=$entry['hero'];
+    // 元titleにサイト名が付いていても、未編集のh1へその接尾辞を足さない。
+    if($title!==$entry['title'])$hero=preg_replace_callback('~(<h1\b[^>]*>)[\s\S]*?(</h1\s*>)~i',fn($m)=>$m[1].ppab_attr($title).$m[2],$hero);
     foreach(['published','modified'] as $dateName) {
         $date=substr($post[$dateName]??$entry[$dateName],0,10);
         $hero=preg_replace_callback('~(<time\b[^>]*\bdata-article-date="'.$dateName.'"[^>]*\bdatetime=")[^"]*("[^>]*>)[\s\S]*?(</time>)~i',fn($m)=>$m[1].$date.$m[2].str_replace('-','/',$date).$m[3],$hero);
@@ -125,6 +138,7 @@ function ppab_render($entry,$post) {
 }
 
 function ppab_import() {
+    if(!empty(ppab_data()['previewOnly']))throw new RuntimeException('ローカル検証候補は取り込めません。');
     if(!current_user_can('manage_options'))throw new RuntimeException('管理者だけが取り込めます。');
     $result=[];
     foreach(ppab_entries() as $entry) {
