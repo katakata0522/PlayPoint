@@ -11,13 +11,39 @@ const ogpDir = path.join(articlesDir, 'ogp');
 
 // Mapping for the 22 articles that had shared images or ogp.png
 const DISTINCT_MAPPING = {
+  '2026-09-26-bluearchive-monthly-packs-guide.html': {
+    image: '2026-09-26-bluearchive-monthly-packs-guide-20261030-v2.png',
+    title: 'ブルアカのマンスリー<br>通常版とハーフを比較',
+    template: 'bluearchive-monthly-compare',
+    category: 'ブルアカの購入ガイド',
+    subtitle: 'マンスリーとハーフ、どちらから選ぶ？',
+    points: ['学園交流会のAP軽減', '受取日と購入先の違い', '価格は購入画面で確認'],
+    accentColor: '#38bdf8'
+  },
+  '2026-08-16-gold-platinum-worth-it.html': {
+    image: 'gold-platinum-worth-it-20261030.png',
+    template: 'gold-platinum-compare',
+    category: 'ランク解説',
+    subtitle: '目指せるならプラチナ、その理由は？',
+    points: ['特典の違い', '年間進捗から必要額を確認', '無理のない範囲で判断'],
+    accentColor: '#10b981'
+  },
+  '2026-08-16-play-points-day.html': {
+    image: 'play-points-day-20261030.png',
+    template: 'points-day',
+    category: '貯める・キャンペーン',
+    subtitle: '過去の開催例と、今の条件の確認方法',
+    points: ['過去に最大7倍の案内', '倍率は対象者ごとに確認', '開催・期限は都度確認'],
+    accentColor: '#10b981'
+  },
   // Previously ogp.png (4)
   '2026-08-17-diamond-valley-festival-guide.html': {
-    image: '2026-08-17-diamond-valley-festival-guide.png',
+    image: 'diamond-valley-history-20261101.jpg',
+    title: 'Diamond Valley<br>宝探しと景品応募のしくみ',
     template: 'diamond-valley',
-    category: '限定イベント攻略',
-    subtitle: '歴代実績・2026年の注目ポイント完全攻略',
-    points: ['Diamond Valley', '特別ポイント獲得', '2026年最新'],
+    category: 'Google Playのイベント解説',
+    subtitle: '過去の開催例と、日本向け情報の見分け方',
+    points: ['ゲーム内でダイヤを集める', '開催年・地域を確認', '日本2026は条件未確認'],
     accentColor: '#818cf8'
   },
   '2026-09-19-monst-in-app-packs-guide.html': {
@@ -29,19 +55,19 @@ const DISTINCT_MAPPING = {
     accentColor: '#f59e0b'
   },
   '2026-09-19-monst-web-shop-vs-google-play.html': {
-    image: '2026-09-19-monst-web-shop-vs-google-play.png',
+    image: '2026-09-19-monst-web-shop-vs-google-play-20261030.png',
     template: 'monst-vs',
     category: 'モンスト損得分岐点',
     subtitle: '公式Webショップ vs Google Play どっちが得？',
-    points: ['Web190個 vs 200個', '実質単価シミュレーション', '損得分岐点を計算'],
+    points: ['Web通常190・月イチ200', 'アプリ内の現在値は要確認', '条件別の損得を計算'],
     accentColor: '#38bdf8'
   },
   '2026-09-19-play-points-calendar-schedule-guide.html': {
-    image: '2026-09-19-play-points-calendar-schedule-guide.png',
+    image: '2026-09-19-play-points-calendar-schedule-guide-20261030.png',
     template: 'calendar',
     category: '年間スケジュール',
-    subtitle: '毎日・毎週・毎月・年間イベント完全網羅',
-    points: ['毎月1日 最大7倍', '毎週金曜リワード', '有効期限・失効対策'],
+    subtitle: '自分に届く特典を、曜日と条件から探す',
+    points: ['月初の増量案内を確認', '毎週金曜リワード', '対象・期限を確認'],
     accentColor: '#10b981'
   },
 
@@ -55,11 +81,11 @@ const DISTINCT_MAPPING = {
     accentColor: '#06b6d4'
   },
   '2026-08-05-play-points-multiplier-stacking.html': {
-    image: '2026-08-05-play-points-multiplier-stacking.png',
+    image: '2026-08-05-play-points-multiplier-stacking-20261030.png',
     template: 'multiplier-stacking',
     category: '還元率の計算ルール',
-    subtitle: 'ランク倍率 × キャンペーン増量の正しい計算式',
-    points: ['倍率は加算で計算', 'ランク別最大倍率', '実質還元率早見表'],
+    subtitle: '通常率と増量率は足さず、高い方を確認',
+    points: ['獲得率は足し算しない', '適用される率を確認', '条件別の計算例'],
     accentColor: '#8b5cf6'
   },
   '2026-08-17-tgs-google-play-vip.html': {
@@ -97,29 +123,29 @@ const DISTINCT_MAPPING = {
     accentColor: '#0ea5e9'
   },
   '2026-07-24-play-points-cash-conversion.html': {
-    image: '2026-07-24-play-points-cash-conversion.png',
+    image: '2026-07-24-play-points-cash-conversion-20261030.png',
     template: 'cash-conversion',
     category: '交換・換金の注意点',
-    subtitle: '換金できない公式理由とお得な使い道まとめ',
-    points: ['現金化・PayPay不可', '公式規約の理由', 'Playクレジット交換が最得'],
+    subtitle: '換金できない理由と使い道の選び方',
+    points: ['現金化・PayPay不可', '交換先と条件を比べる', '使う予定に合わせて選ぶ'],
     accentColor: '#ef4444'
   },
   '2026-08-05-play-points-cannot-join.html': {
-    image: '2026-08-05-play-points-cannot-join.png',
+    image: '2026-08-05-play-points-cannot-join-20261030.png',
     template: 'cannot-join',
     category: 'トラブル解決',
     subtitle: '参加条件・年齢制限・国設定の確認手順',
-    points: ['13歳以上が条件', '日本Google Play設定', '支払いプロファイルの確認'],
+    points: ['18歳以上が条件', '日本Google Play設定', '支払い方法を確認'],
     accentColor: '#f59e0b'
   },
 
   // Previously weekly-reward.png (4)
   '2026-07-24-earn-play-points-free.html': {
-    image: '2026-07-24-earn-play-points-free.png',
+    image: '2026-07-24-earn-play-points-free-20261030.png',
     template: 'earn-free',
     category: '無料ポイント獲得',
-    subtitle: '無課金OK！正規特典・ウィークリー・アンケート',
-    points: ['毎週金曜リワード', '無料アプリアンケート', '無課金で貯めるコツ'],
+    subtitle: '週次リワード・アプリ体験・クエスト',
+    points: ['対象ランクの週次特典', 'アプリ体験特典', '購入不要のクエスト'],
     accentColor: '#10b981'
   },
   '2026-07-31-super-weekly-reward.html': {
@@ -193,11 +219,11 @@ const DISTINCT_MAPPING = {
     accentColor: '#0d9488'
   },
   '2026-08-05-play-country-change-points.html': {
-    image: '2026-08-05-play-country-change-points.png',
+    image: '2026-08-05-play-country-change-points-20261030.png',
     template: 'country-change',
     category: '国・地域設定',
-    subtitle: '残高失効・年1回制限・ランク維持の注意点',
-    points: ['国変更は年1回のみ', 'ポイント引き継ぎ不可', '残高利用の事前対策'],
+    subtitle: 'ポイント・残高と、国変更の条件を確認',
+    points: ['変更間隔は90日以上', 'ポイント引き継ぎ不可', '追加制限の場合も'],
     accentColor: '#dc2626'
   }
 };
@@ -480,10 +506,12 @@ async function run() {
     let points = [];
     let accentColor = '#38bdf8';
     let visualHtml = '';
+    let coverTitle = articleTitle;
 
     if (DISTINCT_MAPPING[file]) {
       const cfg = DISTINCT_MAPPING[file];
       imgName = cfg.image;
+      coverTitle = cfg.title || articleTitle;
       category = cfg.category;
       subtitle = cfg.subtitle;
       points = cfg.points;
@@ -533,7 +561,7 @@ async function run() {
     // Render 1200x630 OGP image
     const cardHtml = buildHtml({
       category,
-      title: articleTitle,
+      title: coverTitle,
       subtitle,
       points,
       accentColor,

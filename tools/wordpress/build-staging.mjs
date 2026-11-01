@@ -30,6 +30,7 @@ const files = {
   'playpoint-catalog-library.php': await fs.readFile(here + '/catalog.php'),
   'playpoint-catalog-staging.php': await fs.readFile(here + '/catalog-staging.php'),
   'playpoint-catalog-base.json': await fs.readFile(here + '/../../blog/articles.json'),
+  'playpoint-article-search-index.json': await fs.readFile(here + '/../../blog/article-search-index.json'),
   'playpoint-ad-diagnostics.js': await fs.readFile(here + '/ad-diagnostics.js'),
   'playpoint-fest-candidate-staging.php': candidate
 };

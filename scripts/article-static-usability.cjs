@@ -34,11 +34,20 @@ const DEFAULT_PROMPT_COPY = Object.freeze({
   href: '../'
 });
 
-function renderPromptHtml(copy) {
+// 改稿済みの具体的な導線は、共通CTAの再生成で上書きしない。
+const ARTICLE_PROMPT_COPY = Object.freeze({
+  'articles/2026-07-24-play-points-100-value.html': { ...DEFAULT_PROMPT_COPY, label: '自分の条件で試す', heading: 'あと何円くらいで届く？', body: 'いまのステータスや倍率に合わせて、購入額の目安を計算できます。' },
+  'articles/2026-07-24-play-points-500-1000-value.html': { ...DEFAULT_PROMPT_COPY, label: '自分の条件で試す', heading: 'あと何ポイント？ いくらくらい？', body: '目標から残高を引いた「あと何ポイント」を入力して、購入額の目安を計算できます。', cta: 'ポイントから必要額を計算する', href: '/points-cost/?points=500' },
+  'articles/2026-08-05-fastest-silver.html': { ...DEFAULT_PROMPT_COPY, body: '残りのポイントと、使える獲得率から購入額の目安を見てみましょう。' },
+  'articles/2026-08-16-fastest-gold.html': { ...DEFAULT_PROMPT_COPY, body: '残りポイントと適用される獲得率が分かったら、計算機でも目安を確認できます。' },
+  'articles/2026-08-16-fastest-platinum.html': { ...DEFAULT_PROMPT_COPY, body: '今のランクと不足ポイントが分かったら、計算機で目安を見てみましょう。' }
+});
+
+function renderPromptHtml(copy, headingId = '', specific = false) {
   return `
-            <aside class="article-calculator-prompt cta-box" ${GENERATED_PROMPT_ATTRIBUTE} aria-label="${copy.aria}">
+            <aside class="article-calculator-prompt cta-box" ${GENERATED_PROMPT_ATTRIBUTE}${specific ? ' data-editorial-article-prompt="true"' : ''} aria-label="${copy.aria}">
                 <p class="article-calculator-prompt__label">${copy.label}</p>
-                <h2>${copy.heading}</h2>
+                <h2${headingId ? ` id="${headingId}"` : ''}>${copy.heading}</h2>
                 <p>${copy.body}</p>
                 <a class="article-calculator-prompt__button" href="${copy.href}">${copy.cta}</a>
             </aside>`;
@@ -140,6 +149,13 @@ function insertStaticPrompt(html, options = {}) {
     throw new Error('insertStaticPrompt requires relativePath for Article Role classification');
   }
 
+  const specificCopy = ARTICLE_PROMPT_COPY[options.relativePath];
+  const hasPrompt = ARTICLE_PROMPT_PATTERN.test(html);
+  const hasEditorialPrompt = /<aside\b(?=[^>]*class=["'][^"']*\barticle-calculator-prompt\b[^"']*["'])(?=[^>]*\bdata-editorial-article-prompt=["']true["'])[^>]*>/i.test(html);
+  if (specificCopy && shouldGenerateGenericCalculatorPrompt(options.relativePath, { listed: options.listed !== false }) && hasPrompt && hasEditorialPrompt) {
+    return html;
+  }
+
   const withoutGeneratedPrompt = removeStaticPrompt(html);
   if (ARTICLE_PROMPT_PATTERN.test(withoutGeneratedPrompt)) {
     return withoutGeneratedPrompt;
@@ -151,7 +167,10 @@ function insertStaticPrompt(html, options = {}) {
 
   const anchorEnd = findPromptAnchorEnd(withoutGeneratedPrompt);
   if (anchorEnd < 0) return html;
-  return `${withoutGeneratedPrompt.slice(0, anchorEnd)}${PROMPT_HTML}${withoutGeneratedPrompt.slice(anchorEnd)}`;
+  const fallbackCopy = !hasPrompt ? specificCopy : null;
+  const headingId = fallbackCopy && !/\bid=["']article-section-1["']/.test(withoutGeneratedPrompt) ? 'article-section-1' : '';
+  const prompt = fallbackCopy ? renderPromptHtml(fallbackCopy, headingId, true) : PROMPT_HTML;
+  return `${withoutGeneratedPrompt.slice(0, anchorEnd)}${prompt}${withoutGeneratedPrompt.slice(anchorEnd)}`;
 }
 
 function normalizeSharedArticleCopy(html) {

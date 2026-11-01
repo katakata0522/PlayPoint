@@ -22,8 +22,11 @@ if [ "$(node -p 'process.versions.node')" != "$expected_node" ]; then
   exit 2
 fi
 
-sudo apt-get update -qq
-sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+# ミラー停止でフォント取得だけが10分以上続いた実例への上限。
+# 検査時間・フォント・固定Chromiumは維持し、準備不能は非ゼロで止める。
+apt_options=(-o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30)
+timeout --kill-after=10s 120s sudo apt-get "${apt_options[@]}" update -qq
+timeout --kill-after=10s 180s sudo apt-get "${apt_options[@]}" install -y --no-install-recommends fonts-noto-cjk
 fc-match sans-serif:lang=ja
 
 npm ci --prefix "$runtime_dir" --ignore-scripts --no-audit --no-fund

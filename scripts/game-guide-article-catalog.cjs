@@ -10,14 +10,14 @@ const MODIFIED_AT = '2026-10-08';
 const GAME_GUIDE_ARTICLES = Object.freeze([
   {
     id: 'fgo-pity-cost-2026',
-    modified: '2026-10-14',
-    listDescription: "天井330回までの費用を知りたい方へ。必要な聖晶石、最小購入例、福袋の有償15個とポイント還元を確認できます。",
-    title: "FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】",
+    modified: '2026-10-28',
+    listDescription: "天井330回の必要数と2022年の公式価格を基にした購入例、終了した福袋の例とポイントの目安を紹介します。",
+    title: "FGO天井330回の予算目安｜2022年公式価格の試算と福袋の例",
     category: '使い方',
     gameTitle: 'FGO',
-    listTitle: "FGO天井330回の予算と福袋｜聖晶石の購入例を確認",
+    listTitle: "FGO天井330回の予算｜2022年価格の試算と福袋の例",
     tags: ['FGO', '聖晶石', '天井', '福袋', 'Play Points'],
-    description: "FGOの確定召喚330回に必要な聖晶石と課金額を、現行の公式価格から計算。ゼロからの最小購入例、福袋の有償15個、Google Play Points還元をまとめます。",
+    description: "FGOの確定召喚330回に必要な聖晶石を解説。2022年に告知された価格表を使った予算例と、終了した2026年11周年福袋の例を紹介します。現在のGoogle Play版の全価格は購入画面で確認してください。",
     file: '../games/fgo/pity-cost/index.html',
     related: [
       ["/articles/2026-08-05-play-points-multiplier-stacking.html","倍率キャンペーン時のPlay Pointsを確認する"],
@@ -27,7 +27,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'genshin-welkin-value-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-29',
     listDescription: "原神の空月の祝福でもらえる創世結晶・原石と、10日・20日・30日の受取量を解説。ガチャの期限に合わせた選び方、Google Play Pointsと購入経路の違いも確認できます。",
     title: "原神「空月の祝福」で次のガチャに備える｜最大3,000原石相当と受取日数",
     category: '使い方',
@@ -44,14 +44,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'monst-google-play-vs-webshop-2026',
-    modified: '2026-10-16',
-    listDescription: "同じ1万円でアプリ180個、Web190個、月イチ200個。ポイントの利用価値も含めて購入先を選べます。",
-    title: "モンストのオーブはどこで買う？アプリ180個・Web190個・月イチ200個を比較",
+    modified: '2026-10-29',
+    listDescription: "Web商品のオーブ数と過去のアプリ内販売例を確認。ポイントの使い道も含めて購入先を選べます。",
+    title: "モンストのオーブはどこで買う？WebショップとGoogle Playを比較",
     category: '使い方',
     gameTitle: 'モンスト',
     listTitle: "モンストの購入先早見表｜1万円でオーブ何個？",
     tags: ['モンスト', 'Webショップ', 'オーブ', 'Play Points'],
-    description: "モンストの1万円課金を比較。アプリ内180個、Webショップ190個、月イチ200個の差とGoogle Play Pointsを含めた選び方を整理します。",
+    description: "モンストのWebショップとGoogle Playを比較。商品の個数、Play Points、過去のアプリ内販売例を分けて購入先を選びます。",
     file: '../games/monst/google-play-vs-webshop/index.html',
     related: [
       ["/articles/2026-09-19-monst-web-shop-vs-google-play.html","1万円課金のポイント価値・損得分岐点を計算する"],
@@ -61,7 +61,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'starrail-supply-pass-value-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-29',
     editorialNext: true,
     listDescription: "列車補給標章を毎日受け取れる場合と、すぐ星玉が必要な場合を比較。通常購入との違いを確認できます。",
     title: "スタレの列車補給標章で次のガチャに備える｜毎日受取と即時チャージの違い",
@@ -79,7 +79,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'zzz-membership-value-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-30',
     listDescription: "ゼンゼロのインターノット会員は購入時のモノクローム300個と毎日90ポリクローム。10日・20日・30日に使える量と、即時チャージとの違いを解説します。",
     title: "ゼンゼロのインターノット会員で毎日90ポリクローム！30日間の受取内容",
     category: '使い方',
@@ -96,7 +96,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'umamusume-umasuku-value-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-30',
     listDescription: "月980円のウマスクを使い切れるか確認。ジュエル、未受取時の扱い、WebStoreとGoogle Playの違いが分かります。",
     title: "ウマ娘のウマスクは月980円｜毎日のジュエルと育成特典をチェック",
     category: '使い方',
@@ -113,7 +113,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'proseka-google-play-vs-webstore-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-30',
     editorialNext: true,
     listDescription: "カラフルパス3種とミッションパス、公式WebStoreを比較。商品ごとの内容と購入経路の違いを確認できます。",
     title: "プロセカの課金はどこで買う？公式WebStore・カラフルパスの選び方",
@@ -131,7 +131,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'pokepoke-premium-pass-guide-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-29',
     listDescription: "プレミアムパスを試す前に、14日無料体験と定期購入の条件を確認。Googleアカウントとの紐付けにも注意できます。",
     title: "ポケポケのプレミアムパスで1日1パック追加！特典と14日無料体験",
     category: '使い方',
@@ -148,7 +148,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'pad-pass-value-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-30',
     listDescription: "月980円のパズドラパスと1週間無料トライアルの条件を確認。毎日のダンジョンや特典を使い切れるか判断できます。",
     title: "パズドラパスは月額980円で何が得？無料トライアル・特典・Play Points【2026年】",
     category: '使い方',
@@ -165,7 +165,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'arknights-monthly-pass-limited-scout-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-30',
     listDescription: "アークナイツの月パスで受け取れる純正源石6個、毎日の合成玉200個と理性回復剤を解説。スカウトまでの受取日数、購入額とPlay Points、限定300回の補足も掲載します。",
     title: "アークナイツの月パスでスカウトに備える｜30日間の合成玉と受取日数",
     category: '使い方',
@@ -182,7 +182,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'dokkan-google-play-vs-webstore-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-29',
     editorialNext: true,
     listDescription: "公式Web StoreとGoogle Playは別決済。価格とポイントの対象経路を、購入前に比べられます。",
     title: "ドッカンバトルの龍石購入ガイド｜Web Storeの特典・受取場所と比較のコツ",
@@ -200,7 +200,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'hbr-google-play-vs-webshop-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-30',
     listDescription: "WEB SHOPの5%OFFと専用ポイントを、Google Playの還元と比較。Webでは加入できない月額パスにも注意できます。",
     title: "ヘブバンWEB SHOPで5%OFF｜パス・独自ポイントとGoogle Playの違い",
     category: '使い方',
@@ -217,14 +217,14 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'honkai3rd-google-play-vs-charge-center-2026',
-    modified: '2026-10-14',
-    listDescription: "崩壊3rdの水晶2倍チャージボーナスを、公式チャージセンターとゲーム内で共有する仕組みから解説。月パスの延長条件、Google Play Pointsとの違いを確認できます。",
+    modified: '2026-10-29',
+    listDescription: "崩壊3rdの水晶2倍ボーナスは購入先を変えても別々にもらえる？公式案内をもとに、チャージセンターとGoogle Playの選び方を整理します。",
     title: "崩壊3rdの水晶2倍ボーナスと購入先｜公式チャージセンター・Google Playの違い",
     category: '使い方',
     gameTitle: '崩壊3rd',
     listTitle: "崩壊3rdの水晶2倍ボーナス｜チャージセンターとゲーム内で共通",
     tags: ['崩壊3rd', 'チャージセンター', '月パス', 'Play Points'],
-    description: "崩壊3rdの水晶2倍チャージボーナスを、公式チャージセンターとゲーム内で共有する仕組みから解説。月パスの延長条件、Google Play Pointsとの違いを確認できます。",
+    description: "崩壊3rdの水晶2倍ボーナスは購入先を変えても別々にもらえる？公式案内をもとに、チャージセンターとGoogle Playの選び方を整理します。",
     file: '../games/honkai3rd/google-play-vs-charge-center/index.html',
     related: [
       ["/articles/2026-08-19-web-store-external-billing-points.html","外部決済とGoogle Play課金の違いを見る"],
@@ -234,7 +234,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'phantomparade-google-play-vs-webshop-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-29',
     listDescription: "ファンパレ公式WEBショップで確認した廻珠増量・マイルpt・パスの内容を紹介。初回条件と使い道、Google Play Pointsを含めて購入先を比べる手順を解説します。",
     title: "ファンパレWEBショップで廻珠増量！初回特典・マイルと購入先の選び方",
     category: '使い方',
@@ -251,7 +251,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'prospi-a-google-play-vs-konami-store-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-29',
     listDescription: "プロスピAのウェブストア「KONAMI Gamesストア」の還元を解説。パワスピ・ゴールドとdポイント、Google Play Pointsの違い、エナジーの価格と個数を比べる手順を紹介します。",
     title: "プロスピAのエナジー購入ガイド｜KONAMIストアの還元とGoogle Play Points",
     category: '使い方',
@@ -268,7 +268,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'pokemon-go-google-play-vs-webstore-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-29',
     listDescription: "ポケコインを買う前に、公式Web StoreのボーナスとGoogle Playの還元を比較。Reward RoadやGalaxy Storeとの違いも確認できます。",
     title: "ポケモンGOの課金はどこがお得？Google PlayとWeb Storeを比較",
     category: '使い方',
@@ -285,7 +285,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'efootball-google-play-points-vs-efootball-points-2026',
-    modified: '2026-10-14',
+    modified: '2026-10-30',
     listDescription: "コイン、eFootballポイント、GP、Play Pointsは別のもの。課金で増える数字と使い道を確認できます。",
     title: "eFootballコイン購入でGoogle Play Pointsは貯まる？eFootballポイントとの違い【2026年】",
     category: '使い方',

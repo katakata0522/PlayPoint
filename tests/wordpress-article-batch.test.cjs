@@ -167,6 +167,28 @@ test('WPメディアはstgのuploads内だけを保持し、元画像と外部�
  assert.equal(links.link(actual.urls[0],config),expected);
 });
 
+test('stg更新パッケージは同じcheckoutの台帳と本文索引をそろえ、記事本文を変更しない',async()=>{
+ const temporary=await fs.mkdtemp(path.join(os.tmpdir(),'playpoint-catalog-bundle-'));
+ try{
+  const source="<?php\n// /home/hajikkoroom/playpoint-sim.com/public_html/stg.playpoint-sim.com/cms\nfunction ppfn_shell_data() { return ppfn_data()['shell']; }\nfunction fixture($content) {\n  return $content;\n}\nadd_action('init',function(){\necho ppfn_data()['harness'];\necho ppfn_data()['article']['breadcrumb'];\n});\n";
+  const input=path.join(temporary,'previous.php'),output=path.join(temporary,'candidate');
+  await fs.writeFile(input,source);
+  const result=spawnSync(process.execPath,[repo+'/tools/wordpress/build-staging.mjs',input,output],{encoding:'utf8'});
+  assert.equal(result.status,0,result.stderr);const report=JSON.parse(result.stdout);
+  for(const [generated,original] of [['playpoint-catalog-base.json','blog/articles.json'],['playpoint-article-search-index.json','blog/article-search-index.json']]){
+   const actual=await fs.readFile(path.join(output,generated)),expected=await fs.readFile(path.join(repo,original));
+   assert.deepEqual(actual,expected,'the candidate uses the current repository bytes: '+original);
+   assert.equal(report.files[generated].sha256,createHash('sha256').update(expected).digest('hex'));
+  }
+  assert.equal(await fs.readFile(input,'utf8'),source,'the backed-up plugin is not overwritten');
+  assert.equal(report.payloadUnchanged,true);assert.equal(report.newIntegrationPoints,4);
+  const catalog=JSON.parse(await fs.readFile(path.join(output,'playpoint-catalog-base.json'),'utf8'));
+  const index=JSON.parse(await fs.readFile(path.join(output,'playpoint-article-search-index.json'),'utf8'));
+  const listed=catalog.filter(row=>row.listed!==false).map(row=>new URL(row.file,'https://playpoint-sim.com/blog/').pathname).sort();
+  assert.deepEqual(index.articles.map(row=>row.path).sort(),listed,'every currently listed article is searchable');
+ }finally{await fs.rm(temporary,{recursive:true});}
+});
+
 test('3記事の移行パッケージは原文を再構成でき、表・画像・検索と保存コードを保持する',async()=>{
  const {buildArticleBatch,splitArticle,selectedPaths}=await import('../tools/wordpress/article-batch-build.mjs');
  const temporary=await fs.mkdtemp(path.join(os.tmpdir(),'playpoint-article-batch-'));

@@ -236,3 +236,7 @@ font-size: 1.25rem;
 padding: 1.5rem;
 }
 }
+/* 暗い背景でも冒頭の強調文を読みやすくする。 */
+html[data-reading-theme="dark"] .intro strong {
+color: #a0ddb6;
+}

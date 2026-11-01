@@ -12,6 +12,8 @@ const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
 const CHROME_PATH = process.env.CHROME_PATH;
 const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
 const REPRESENTATIVE_CASES = [
+  ...['seven-eleven-gift-card-lottery', 'familymart-gift-card-lottery', 'google-play-gift-card-comparison']
+    .map(slug => ({ key: 'posa-' + slug, path: 'articles/2026-10-23-' + slug + '.html', allArticle: true, related: true, posa: true })),
   // 2026年10月の実測4記事はPC／390px／320pxを毎回検査する。
   ...[
     ['play-fest-2026', 'articles/2026-10-10-google-play-fest-2026.html'],
@@ -21,6 +23,7 @@ const REPRESENTATIVE_CASES = [
   ].map(([key, articlePath]) => ({ key, path: articlePath, allArticle: true, related: true })),
   ...['monst-in-app-packs-guide', 'pokemon-sleep-play-points-coupon', 'gakumas-webshop-google-play', 'bluearchive-monthly-packs-guide', 'nikke-monthly-card-midasbuy'].map(slug => ({ key: slug, path: 'articles/' + (slug.startsWith('monst') ? '2026-09-19-' : '2026-09-26-') + slug + '.html', allArticle: true, related: true })),
   { key: 'decision-normalized', path: 'articles/2025-12-25-best-use.html', noIntro: true, summary: true, related: true },
+  { key: 'saved-coupon-deletion', path: 'articles/2026-07-25-play-points-coupon-not-applied.html', allArticle: true, related: true },
   { key: 'troubleshooting-modern', path: 'articles/2026-03-10-play-points-reflection-timing.html', related: true },
   { key: 'retention-super-ticket', path: 'articles/2026-09-19-google-play-super-ticket.html', related: true },
   { key: 'retention-quests', path: 'articles/2026-07-31-google-play-quests.html', related: true },
@@ -49,7 +52,7 @@ const VIEWPORTS = [
   { key: 'mobile', width: 390, height: 844 },
   { key: 'narrow', width: 320, height: 800 }
 ];
-const MIME = { '.css': 'text/css; charset=utf-8', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml' };
+const MIME = { '.css': 'text/css; charset=utf-8', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml' };
 
 function assert(value, message) { if (!value) throw new Error(message); }
 function normalizeBaseUrl(value) { const url = new URL(value); if (!url.pathname.endsWith('/')) url.pathname += '/'; url.search = ''; url.hash = ''; return url.href; }
@@ -86,6 +89,18 @@ async function inspect(browser, baseUrl, article, viewport) {
     const response = await page.goto(new URL(article.path, baseUrl).href, { waitUntil: 'load', timeout: 45000 });
     assert(response && response.ok(), article.key + '/' + viewport.key + ': HTTP failure');
     await page.locator('.content').waitFor({ state: 'attached', timeout: 15000 });
+    if (article.posa) {
+      const image = await page.locator('.article-eyecatch-wrap img').evaluate(img => ({ loaded: img.complete && img.naturalWidth === 1200 && img.naturalHeight === 630, width: img.getBoundingClientRect().width }));
+      assert(image.loaded && image.width <= viewport.width, article.key + '/' + viewport.key + ': dedicated image missing or overflowing');
+      const toc = page.locator('.inpage-toc a[href^="#"]').first();
+      const tocDetails = page.locator('details.inpage-toc');
+      if (await tocDetails.count() && await tocDetails.first().getAttribute('open') === null) await tocDetails.first().locator('summary').click();
+      const anchor = await toc.getAttribute('href');
+      await toc.click();
+      assert(new URL(page.url()).hash === anchor, article.key + '/' + viewport.key + ': table of contents navigation failed');
+      assert(await page.locator(anchor).count() === 1, article.key + ': missing table of contents target');
+      await page.evaluate(() => window.scrollTo(0, 0));
+    }
     const result = await page.evaluate(answerSelector => {
       const content = document.querySelector('.content');
       const answer = content?.querySelector(answerSelector || ':scope > .answer-box, :scope > .editorial-answer');
@@ -208,6 +223,12 @@ async function inspect(browser, baseUrl, article, viewport) {
     const evidenceName = 'article-design-' + article.key + '-' + viewport.key;
     await page.screenshot({ path: path.join(ARTIFACT_DIR, evidenceName + '.png'), fullPage: true });
     fs.writeFileSync(path.join(ARTIFACT_DIR, evidenceName + '.json'), JSON.stringify({ article, viewport, result, focus }, null, 2));
+    if (article.key === 'saved-coupon-deletion') {
+      for (const id of ['saved-coupon-deletion', 'remove-checkout-offer', 'coupon-expiration']) {
+        await page.locator('.answer-box a[href="#' + id + '"]').click();
+        assert(new URL(page.url()).hash === '#' + id, article.key + '/' + viewport.key + ': answer link did not reach ' + id);
+      }
+    }
     if (article.key === 'retention-super-ticket') {
       // 遅延描画される追記部分も、画面内へ移動して証跡に残す。
       for (const id of ['article-section-3', 'save-use-deadlines', 'article-section-5']) {
