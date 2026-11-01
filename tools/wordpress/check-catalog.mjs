@@ -1,0 +1,14 @@
+import { spawnSync } from 'node:child_process';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+import assert from 'node:assert/strict';
+const require=createRequire(import.meta.url),search=require('../../js/article-search.js');
+const result=spawnSync(process.argv[2]||'php',[fileURLToPath(new URL('./check-catalog.php',import.meta.url))],{encoding:'utf8',windowsHide:true});
+assert.equal(result.status,0,result.stderr||result.stdout||String(result.error));
+const report=JSON.parse(result.stdout),article=report.fixture.articles[0];
+assert.equal(search.matches(article,'復旧検証語','ja'),true);
+assert.equal(search.matches(article,'隠し検証語','ja'),false);
+assert.equal(search.matches(article,'復旧検証語 未知条件','ja'),false);
+assert.equal(search.excerpt(article,'復旧検証語','ja').id,'stable-id');
+assert.equal(search.matches(report.fixture.articles[1],'復旧検証語','ja'),false);
+console.log(JSON.stringify({status:report.status,phpChecks:report.checks,existingSearchEngineChecks:5}));
