@@ -58,6 +58,18 @@ DB復旧は、取得済みの本番専用CMSバックアップを、ループバ
 
 既存投稿がある状態での再生成は、本文の更新を意味しない。生成PHPのhero・外枠とDBの本文を組み合わせるため、元HTMLが更新された場合は新しい外枠と旧本文が混在し得る。再配置前に、現在のWP本文・題名・説明・日付と、取り込み時の元HTML、今回の候補を比較する。WPで行った編集を保護し、差分を統合して本文と外枠を同時に確認できる更新・復旧手順を用意するまで再配置しない。取り込みボタンの再実行で既存本文を更新する処理はない。
 
+読取り専用の三者比較は次のコマンドを使う。入力PHPは実行せず圧縮済みJSONだけを読む。JSON形式ならbuilderの完全なdata（本文と外枠を含む）を渡し、hashだけのmanifestは使わない。
+
+```text
+node tools/wordpress/article-batch-diagnose.mjs <取り込み時のpackage.php|json> <現在のWP読戻し.json|-> <新候補package.php|json>
+```
+
+現在の読戻しJSONは、認証済みの別工程で実投稿から取得し、公開repoの外の私用フォルダーに保存する。構造は `{version:1, source:"wordpress-readback", site:"https://stg.playpoint-sim.com", capturedAt:"取得時刻のUTC ISO日時", posts:[...]}`。各postには `ID`、`post_status`、パスワードそのものではなく真偽値の `post_password_present`、未加工の `post_title`・`post_content`・`post_excerpt`、ローカル日時 `post_date`・`post_modified`（`YYYY-MM-DD HH:mm:ss`）、catalogが使う最初の既定外分類名 `category` とタグ名配列 `tags` を含める。`meta` には `playpoint_batch_path`、`playpoint_batch_source_sha256`、`the_page_meta_description`、`playpoint_list_title`、`playpoint_batch_auto_list_title`、`playpoint_batch_auto_post_title` の実値を含める。空値と未取得は区別し、未取得項目を候補原稿から補わない。
+
+取り込み時のsource hashと読戻しmetaが一致した記事だけを比較する。この一致は日付・一覧名・分類・タグ等のpackage付随情報の出所まで証明しないため、記録した取り込み時の成果物そのものを使う。本文・題名・説明・抜粋・日付・一覧見出し・分類・タグの `source-only` は旧WPが取り込み時のまま、`wordpress-only` はWP側変更、`conflict` は双方が異なる値へ変更、`converged` は双方が同じ値へ変更されたことを示す。日付は現在の描画と同じローカル日単位で比べ、WordPressが管理する時刻の変化は別に記録する。外枠の公式確認日・OGP画像・FAQ等は候補packageの所有で、WPの本文や題名と自動統合しない。
+
+WP入力を `-` にした場合、投稿未取得、取り込み元hash不一致は `unverified`（終了コード2）。不正入力は終了コード1。通常比較の終了コード0も配置許可ではなく、常に `deploymentApproved:false` を出す。読戻しの鮮度はオフラインでは検証できない。診断は通信・DB操作・ファイル更新をせず、出力に本文や題名の実値を含めない。出力も私用フォルダーに保存し、差分の自動統合・投稿更新・再配置には使わない。
+
 取り込み後、stgルートの既存規則より前に次の3パスだけを追加する。本番へ追加しない。連動ラッパーの `pp_catalog_mapping` 接続で一覧・分類・本文検索も現在の公開データへ揃える。
 
 ```apache

@@ -167,6 +167,60 @@ test('WPメディアはstgのuploads内だけを保持し、元画像と外部�
  assert.equal(links.link(actual.urls[0],config),expected);
 });
 
+test('三者比較は旧WP本文の再利用・WP編集・双方の衝突を区別し、未取得を成功扱いしない',async()=>{
+ const {diagnoseArticleBatch}=await import('../tools/wordpress/article-batch-diagnose.mjs');
+ const hash=value=>createHash('sha256').update(value).digest('hex');
+ const pack=changes=>{
+  const entry={path:'/articles/fixture.html',before:'<html><article>',hero:'<header><h1>題名</h1></header>',content:'<p>非公開の読戻し本文</p>',after:'</article></html>',title:'題名',description:'元の説明',published:'2026-10-01',modified:'2026-10-02',listTitle:'一覧名',category:'分類',tags:['B','A'],...changes};
+  entry.sourceSha256=hash(entry.before+entry.hero+entry.content+entry.after);entry.contentSha256=hash(entry.content);return {version:1,articles:[entry]};
+ };
+ const base=pack(),entry=base.articles[0];
+ const current={version:1,source:'wordpress-readback',site:'https://stg.playpoint-sim.com',capturedAt:'2026-11-01T00:00:00Z',posts:[{ID:34,post_status:'publish',post_password_present:false,post_title:entry.title,post_content:entry.content,post_excerpt:entry.description,post_date:entry.published+' 00:00:00',post_modified:entry.modified+' 00:00:00',category:entry.category,tags:['A','B'],meta:{playpoint_batch_path:entry.path,playpoint_batch_source_sha256:entry.sourceSha256,the_page_meta_description:entry.description,playpoint_list_title:entry.listTitle,playpoint_batch_auto_list_title:entry.listTitle,playpoint_batch_auto_post_title:entry.title}}]};
+ const original=JSON.stringify({base,current});
+ const candidate=pack({content:'<p>新しい原稿</p>',hero:'<header><h1>新しい外枠</h1></header>'});
+ let report=diagnoseArticleBatch(base,candidate,current),article=report.articles[0];
+ assert.equal(article.status,'source-update-needed');assert.equal(article.fields.content.state,'source-only');assert.equal(article.wouldCombineNewShellWithDifferentWordPress,true);
+ assert.equal(article.fields.tags.state,'unchanged','tag order does not create a false edit');
+ assert.equal(report.deploymentApproved,false);assert.equal(report.wordpressWrites,0);assert.equal(report.networkRequests,0);
+ assert.ok(!JSON.stringify(report).includes('非公開の読戻し本文'),'the report must not expose body text');
+ const edited=structuredClone(current);edited.posts[0].post_content='<p>WPで編集した本文</p>';
+ article=diagnoseArticleBatch(base,base,edited).articles[0];assert.equal(article.status,'preserve-wordpress-edits');assert.equal(article.fields.content.state,'wordpress-only');
+ article=diagnoseArticleBatch(base,candidate,edited).articles[0];assert.equal(article.status,'conflict');assert.deepEqual(article.conflictingFields,['content']);
+ edited.posts[0].post_content=candidate.articles[0].content;
+ article=diagnoseArticleBatch(base,candidate,edited).articles[0];assert.equal(article.fields.content.state,'converged');assert.equal(article.status,'no-owned-field-difference');
+ const metaCandidate=pack({title:'候補題名',description:'候補説明',published:'2026-10-03',modified:'2026-10-04'}),metaEdit=structuredClone(current);
+ metaEdit.posts[0].post_title='WP題名';metaEdit.posts[0].meta.the_page_meta_description='';metaEdit.posts[0].post_excerpt='WP抜粋';metaEdit.posts[0].post_date='2026-10-05 15:00:00';metaEdit.posts[0].post_modified='2026-10-06 16:00:00';
+ article=diagnoseArticleBatch(base,metaCandidate,metaEdit).articles[0];
+ for(const field of ['title','description','excerpt','published','modified'])assert.equal(article.fields[field].state,'conflict',field+' has an independent owner');
+ assert.equal(article.autoTitleTrackingMatchesPost,false);
+ const sameDay=structuredClone(current);sameDay.posts[0].post_modified='2026-10-02 16:00:00';sameDay.posts[0].meta.playpoint_list_title='手書きの一覧名';
+ article=diagnoseArticleBatch(base,base,sameDay).articles[0];assert.equal(article.fields.modified.state,'unchanged');assert.equal(article.wordpressTimestampChanged.modified,true);assert.equal(article.customListTitle,true);
+ const hidden=structuredClone(current);hidden.posts[0].post_status='draft';hidden.posts[0].post_password_present=true;
+ report=diagnoseArticleBatch(base,base,hidden);assert.equal(report.status,'review-required');assert.equal(report.articles[0].wordpressState.rendered,false);
+ report=diagnoseArticleBatch(base,candidate);assert.equal(report.status,'unverified');assert.equal(report.articles[0].reason,'current-wordpress-not-read');assert.equal(report.articles[0].fields,undefined);
+ report=diagnoseArticleBatch(base,candidate,{...current,posts:[]});assert.equal(report.articles[0].reason,'current-post-not-read');
+ const mismatched=structuredClone(current);mismatched.posts[0].meta.playpoint_batch_source_sha256='0'.repeat(64);
+ report=diagnoseArticleBatch(base,candidate,mismatched);assert.equal(report.status,'unverified');assert.equal(report.articles[0].reason,'baseline-source-meta-mismatch');assert.equal(report.articles[0].fields,undefined);
+ const incomplete=structuredClone(current);delete incomplete.posts[0].meta.the_page_meta_description;
+ assert.throws(()=>diagnoseArticleBatch(base,candidate,incomplete),/missing the_page_meta_description/);
+ assert.throws(()=>diagnoseArticleBatch(base,candidate,{...current,posts:[...current.posts,...current.posts]}),/duplicate WordPress/);
+ const corrupted=structuredClone(candidate);corrupted.articles[0].content+='changed';
+ assert.throws(()=>diagnoseArticleBatch(base,corrupted,current),/package source hash mismatch/);
+ assert.equal(JSON.stringify({base,current}),original,'diagnosis must not mutate package or readback data');
+ const temporary=await fs.mkdtemp(path.join(os.tmpdir(),'playpoint-three-way-'));
+ try{
+  const {gzipSync}=require('node:zlib'),baselineFile=path.join(temporary,'import.php'),currentFile=path.join(temporary,'current.json'),candidateFile=path.join(temporary,'candidate.json');
+  const baselineText="<?php throw new Exception('must not execute'); base64_decode('"+gzipSync(Buffer.from(JSON.stringify(base))).toString('base64')+"');";
+  await fs.writeFile(baselineFile,baselineText);await fs.writeFile(currentFile,JSON.stringify(current));await fs.writeFile(candidateFile,JSON.stringify(candidate));
+  const run=file=>spawnSync(process.execPath,[repo+'/tools/wordpress/article-batch-diagnose.mjs',baselineFile,file,candidateFile],{encoding:'utf8'});
+  const unknown=run('-');assert.equal(unknown.status,2,unknown.stderr);assert.equal(JSON.parse(unknown.stdout).status,'unverified');
+  const known=run(currentFile);assert.equal(known.status,0,known.stderr);assert.equal(JSON.parse(known.stdout).articles[0].status,'source-update-needed');
+  await fs.writeFile(currentFile,'{"sensitive": NOT_VALID_PRIVATE_CONTENT}');const invalid=run(currentFile);
+  assert.equal(invalid.status,1);assert.ok(!invalid.stderr.includes('NOT_VALID_PRIVATE_CONTENT'),'JSON parsing errors do not echo private data');
+  assert.equal(await fs.readFile(baselineFile,'utf8'),baselineText);assert.deepEqual((await fs.readdir(temporary)).sort(),['candidate.json','current.json','import.php'],'CLI writes no files');
+ }finally{await fs.rm(temporary,{recursive:true});}
+});
+
 test('stg更新パッケージは同じcheckoutの台帳と本文索引をそろえ、記事本文を変更しない',async()=>{
  const temporary=await fs.mkdtemp(path.join(os.tmpdir(),'playpoint-catalog-bundle-'));
  try{
