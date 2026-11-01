@@ -94,6 +94,34 @@ test('可視FAQが無いFAQPageだけを除去しArticleは残す', () => {
   assert.match(result.html, /"@type": "Article"/);
 });
 
+test('本文の公式FAQリンクから後続の計算機CTAをFAQにしない', () => {
+  const body = '<section><h2>パスの選び方</h2><p><a href="https://example.com/faq.html">公式FAQ</a>で条件を確認できます。</p></section>'
+    + '<h2>ポイントを比べる</h2><p>対象価格から計算します。</p>'
+    + '<div class="article-next-step-cta"><h3>購入分を試算する</h3><p>計算機を使えます。</p></div>'
+    + '<section><h2>関連記事</h2><p>次に読む記事です。</p></section>';
+
+  for (const jsonLd of ['', `<script type="application/ld+json">${faqJson('購入分を試算する', '計算機を使えます。')}</script>`]) {
+    const result = normalizeArticleHtml(htmlTemplate({ body, jsonLd }));
+    assert.doesNotMatch(result.html, /FAQPage/);
+    assert.ok(result.html.includes(body), 'visible copy and CTA must be preserved');
+    assert.equal(normalizeArticleHtml(result.html).changed, false);
+  }
+});
+
+test('装飾や「よくある疑問」のFAQ見出しから可視質問だけを構造化する', () => {
+  for (const heading of ['<span>よくある質問</span>', 'サービスのよくある疑問']) {
+    const body = '<section><h2>概要</h2><p>通常の本文です。</p></section>'
+      + `<section><h2>${heading}</h2><h3>Q. 解約はどこからできますか？</h3><p>A. 契約画面から手続きできます。</p></section>`
+      + '<section><h2>次の行動</h2><h3>計算機を使う</h3><p>予算を試算します。</p></section>';
+    const result = normalizeArticleHtml(htmlTemplate({ body }));
+    const schema = JSON.parse(result.html.match(/<script\b[^>]*>([\s\S]*?)<\/script\b[^>]*>/i)[1]);
+    assert.deepEqual(schema.mainEntity.map(item => [item.name, item.acceptedAnswer.text]), [
+      ['解約はどこからできますか?', '契約画面から手続きできます。']
+    ]);
+    assert.equal(normalizeArticleHtml(result.html).changed, false);
+  }
+});
+
 test('既存robots指示を保ったままmax-image-previewをlargeへ統一する', () => {
   const html = htmlTemplate({ robots: 'index, follow, max-image-preview:standard' });
   const result = normalizeArticleHtml(html);
