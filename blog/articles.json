@@ -866,7 +866,7 @@
     "id": "google-play-fest-2026-editorial",
     "title": "Google Playフェス2026の記録｜限定交換品・書籍15倍【開催終了】",
     "listTitle": "Playフェス2026の記録｜限定交換品と書籍15倍【終了】",
-    "description": "Google Playフェス2026は10月19日に終了。限定交換品や書籍15倍、Play Pass特典について、開催時に確認した内容を振り返ります。",
+    "description": "10月13〜19日に開催されたPlayフェスを、本人撮影の画面と当時の公式案内で振り返ります。ホテルのクーポンなどの交換品、書籍15倍、Play Passの40pt受取を記録しました。",
     "category": "キャンペーン",
     "browseCategory": "最新情報・イベント",
     "tags": [
@@ -879,9 +879,9 @@
     "file": "../articles/2026-10-10-google-play-fest-2026.html",
     "thumbnail": "../articles/thumbnails/google-play-fest-2026-editorial-square-v1.webp",
     "ogp": "../articles/ogp/google-play-fest-2026-editorial.png",
-    "listDescription": "10月13〜19日の開催は終了。限定交換品、書籍15倍、Play Pass特典の記録を振り返ります。",
+    "listDescription": "10月に終了したフェスの記録。ホテルのクーポンなどの交換品、書籍15倍、Play Passの40pt受取を振り返ります。",
     "date": "2026-10-10",
-    "modified": "2026-10-27",
+    "modified": "2026-11-01",
     "thumbnailKind": "generic",
     "listed": true,
     "related": [
@@ -1386,14 +1386,14 @@
       "パズドラパス",
       "Play Points"
     ],
-    "description": "パズドラパスを使い切れるか、魔法石セットと確定セットをどう比べるかを具体例で解説。自動更新、受け取り条件、Google Play Pointsの獲得と交換価値を分けて判断できます。",
+    "description": "欲しいキャラが決まっているなら確定セット、毎日のプレイに特典を足すならパズドラパス。魔法石の単品購入との選び分けを、販売終了したハロウィン商品の例や月額980円の特典から考えます。",
     "file": "../articles/2026-08-25-pad-puzzle-and-dragons-play-points.html",
     "thumbnail": "../images/game-icons/pad.webp",
-    "modified": "2026-10-29",
+    "modified": "2026-11-01",
     "thumbnailKind": "app-icon",
     "ogp": "../articles/ogp/2026-08-25-pad-puzzle-and-dragons-play-points.png",
     "browseCategory": "ゲーム別課金",
-    "listDescription": "パスを使い切れるか、魔法石セットと確定セットのどちらを選ぶかを比較。自動更新と受取条件も確認できます。",
+    "listDescription": "目当ての1体は確定セット、毎日遊ぶならパズパス。終了したハロウィン商品を例に、目的別の選び方を紹介します。",
     "thumbnail2x": "../images/game-icons/pad-2x.webp",
     "listTitle": "パズドラの課金商品選び｜パズパス・魔法石・確定セット"
   },

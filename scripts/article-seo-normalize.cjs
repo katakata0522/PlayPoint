@@ -62,7 +62,8 @@ function extractVisibleFaqPairs(html) {
   const text = String(html);
 
   // 1. Support <section ...> with <h2>FAQ / よくある質問 / ...</h2>
-  const faqSectionRegex = /<section\b[^>]*>[\s\S]*?<h2\b[^>]*>[\s\S]*?(?:よくある質問|FAQ|常問問題|常見問題|자주\s*묻는\s*질문|Frequently\s*Asked\s*Questions)[\s\S]*?<\/h2>([\s\S]*?)<\/section>/gi;
+  // FAQという語が本文の出典リンクにあるだけでは、後続のCTAを質問として扱わない。
+  const faqSectionRegex = /<section\b[^>]*>[\s\S]*?<h2\b[^>]*>(?:(?!<\/h2>)[\s\S])*?(?:よくある(?:質問|疑問)|FAQ|常問問題|常見問題|자주\s*묻는\s*질문|Frequently\s*Asked\s*Questions)(?:(?!<\/h2>)[\s\S])*?<\/h2>([\s\S]*?)<\/section>/gi;
   for (const sectionMatch of text.matchAll(faqSectionRegex)) {
     const body = sectionMatch[1];
 
