@@ -59,6 +59,9 @@ margin-bottom: 2rem;
 .intro strong {
 color: #be185d;
 }
+html[data-reading-theme="dark"] .intro strong {
+color: #f472b6;
+}
 .section h2 {
 font-size: 1.2rem;
 color: #be185d;

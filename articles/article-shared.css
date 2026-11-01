@@ -907,6 +907,13 @@ text-align: left;
 content-visibility: auto;
 contain-intrinsic-size: auto 480px;
 }
+/* 目次で移動するときは、画面外の仮の高さによる着地点のずれを防ぐ。 */
+.content:has(:target) > .section,
+.content:has(:target) > .related-links-section,
+.content:has(:target) > .recommended-section {
+content-visibility: visible;
+contain-intrinsic-size: none;
+}
 }
 @media print {
 .content > .section,
