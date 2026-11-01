@@ -98,6 +98,11 @@ test('stg記事のURL接続は保存先・元URL・画像asset入口を保持し
  assert.equal(links.link('/',config),'https://stg.playpoint-sim.com/points-cost/?pp_flow=normal');
  assert.equal(links.link('../',config),'https://stg.playpoint-sim.com/points-cost/?pp_flow=normal');
  assert.equal(links.link('https://playpoint-sim.com//',config),'https://stg.playpoint-sim.com/points-cost/?pp_flow=normal');
+ const diary='https://playpoint-sim.com/?mode=diary&week=current#weekly-reward-record';
+ for(const source of ['/?mode=diary&week=current#weekly-reward-record','../?mode=diary&week=current#weekly-reward-record',diary,diary.replace('playpoint-sim.com','stg.playpoint-sim.com')]){
+  assert.equal(links.link(source,config),diary,'diary links retain their original mode, week and fragment on the public site');
+  assert.equal(links.link(links.link(source,config),config),diary,'the second URL pass must not turn the diary into the normal calculator');
+ }
  assert.equal(links.link('https://stg.playpoint-sim.com/points-cost/?pp_flow=normal',config),'https://stg.playpoint-sim.com/points-cost/?pp_flow=normal');
  assert.equal(links.link('/points-cost/?target=500&pp_flow=normal#result',config),'https://stg.playpoint-sim.com/points-cost/?target=500&pp_flow=normal#result');
  const calculator=links.link('../',config);assert.equal(links.link(calculator,config),calculator,'initial PHP calculator destination must remain stable after the dynamic pass');
@@ -126,7 +131,7 @@ test('stg記事のURL接続は保存先・元URL・画像asset入口を保持し
  assert.equal(submit({matches:()=>false}).defaultPrevented,false,'other forms are not intercepted');
 });
 
-test('WPメディアはstgのuploads内だけを保持し、元画像と外部画像の接続先を変えない',async t=>{
+test('WP画像と検索フォームをstgへ接続し、計算用フォームの属性と内容を保持する',async t=>{
  const config={path:'/articles/test.html',paths:['/articles/test.html'],assets:{'/images/test.webp':'/cms/index.php?pp_batch_asset=fixture/images/test.webp'}};
  const media='/cms/wp-content/uploads/2026/10/editor-image.webp?size=large&v=1#preview';
  const expected='https://stg.playpoint-sim.com'+media;
@@ -145,13 +150,22 @@ test('WPメディアはstgのuploads内だけを保持し、元画像と外部�
  const template=await fs.readFile(repo+'/tools/wordpress/article-batch-staging.php','utf8');
  const functions=template.slice(template.indexOf('function ppab_asset_url('),template.indexOf('function ppab_replace_meta('));
  const cases=[...inputs,...unchanged,'/cms/wp-content/uploads-old/editor.webp','/cms/wp-content/uploads','/cms/wp-content/uploads/../outside.webp','/cms/wp-content/uploads/%2e%2e/outside.webp'];
- const html='<a href="'+expected.replaceAll('&','&amp;')+'"><img src="'+media.replaceAll('&','&amp;')+'" srcset="'+media.replaceAll('&','&amp;')+' 640w, https://playpoint-sim.com'+media.replaceAll('&','&amp;')+' 1280w"><source srcset="'+expected.replaceAll('&','&amp;')+' 2x, https://elsewhere.example'+media.replaceAll('&','&amp;')+' 3x"></a><img src="/images/test.webp">';
- const fixture=Buffer.from(JSON.stringify({cases,html})).toString('base64');
- const php='<?php function ppab_data(){return ["generation"=>"fixture","assets"=>["fixture/images/test.webp"=>[]]];} function ppab_entries(){return [["path"=>"/articles/test.html"]];}\n'+functions+'\n$fixture=json_decode(base64_decode("'+fixture+'"),true);echo json_encode(["urls"=>array_map(fn($value)=>ppab_public_url($value,"/articles/test.html"),$fixture["cases"]),"html"=>ppab_rewrite_html($fixture["html"],"/articles/test.html")],JSON_UNESCAPED_SLASHES);';
+ const calculator='<form id="calculator" action="/calculate?x=1&amp;y=2" method="post" onsubmit="return false"><input id="amount" name="amount" value="10"><button type="submit">計算</button></form>';
+ const noAction='<form id="calendar"><input type="checkbox" name="day" value="friday"></form>';
+ const similarClass='<form class="sidebar-search-form-extra" action="/original"><input name="original"></form>';
+ const search='<form class="other sidebar-search-form" action="/blog/" method="get"><input name="q"></form>';
+ const inline='<script>const example = \'<form class="sidebar-search-form" action="/keep"><input name="keep"></form>\';</script>';
+ const html='<a href="'+expected.replaceAll('&','&amp;')+'"><img src="'+media.replaceAll('&','&amp;')+'" srcset="'+media.replaceAll('&','&amp;')+' 640w, https://playpoint-sim.com'+media.replaceAll('&','&amp;')+' 1280w"><source srcset="'+expected.replaceAll('&','&amp;')+' 2x, https://elsewhere.example'+media.replaceAll('&','&amp;')+' 3x"></a><img src="/images/test.webp">'+calculator+noAction+similarClass+search+inline;
+ const diary='https://playpoint-sim.com/?mode=diary&week=current#weekly-reward-record';
+ const diaries=['/?mode=diary&week=current#weekly-reward-record','../?mode=diary&week=current#weekly-reward-record',diary,diary.replace('playpoint-sim.com','stg.playpoint-sim.com')];
+ const fixture=Buffer.from(JSON.stringify({cases,html,diaries})).toString('base64');
+ const php='<?php function ppab_data(){return ["generation"=>"fixture","assets"=>["fixture/images/test.webp"=>[]]];} function ppab_entries(){return [["path"=>"/articles/test.html"]];}\n'+functions+'\n$fixture=json_decode(base64_decode("'+fixture+'"),true);echo json_encode(["urls"=>array_map(fn($value)=>ppab_public_url($value,"/articles/test.html"),$fixture["cases"]),"diaries"=>array_map(fn($value)=>ppab_public_url($value,"/articles/test.html"),$fixture["diaries"]),"html"=>ppab_rewrite_html($fixture["html"],"/articles/test.html")],JSON_UNESCAPED_SLASHES);';
  const result=spawnSync(process.env.PLAYPOINT_PHP_BINARY||'php',['-n'],{input:php,encoding:'utf8'});
  if(result.error?.code==='ENOENT'){t.diagnostic('PHP実行環境なし。JS境界は検査済み、PHP経路は対応環境で検査する。');return;}
  assert.ifError(result.error);assert.equal(result.status,0,result.stderr);
  const actual=JSON.parse(result.stdout);
+ assert.deepEqual(actual.diaries,diaries.map(()=>diary));
+ for(const url of actual.diaries)assert.equal(links.link(url,config),diary,'PHP output and the later JavaScript pass preserve the same diary destination');
  assert.deepEqual(actual.urls.slice(0,inputs.length),inputs.map(()=>expected));
  assert.deepEqual(actual.urls.slice(inputs.length,inputs.length+unchanged.length),unchanged);
  assert.equal(actual.urls.at(-4),'https://playpoint-sim.com/cms/wp-content/uploads-old/editor.webp');
@@ -165,6 +179,10 @@ test('WPメディアはstgのuploads内だけを保持し、元画像と外部�
  assert.ok(actual.html.includes('srcset="'+escaped+' 2x, '+('https://elsewhere.example'+media).replaceAll('&','&amp;')+' 3x"'));
  assert.ok(actual.html.includes('src="/cms/index.php?pp_batch_asset=fixture/images/test.webp"'),'既存の固定画像assetを保持する');
  assert.equal(links.link(actual.urls[0],config),expected);
+ for(const original of [calculator,noAction,similarClass,inline])assert.ok(actual.html.includes(original),'non-search forms and script literals retain their original bytes');
+ assert.ok(actual.html.includes('class="other sidebar-search-form" action="https://stg.playpoint-sim.com/blog/" method="get"'));
+ assert.equal((actual.html.match(/name="pp_flow"/g)||[]).length,1);
+ assert.equal((actual.html.match(/name="pp_catalog"/g)||[]).length,1);
 });
 
 test('三者比較は旧WP本文の再利用・WP編集・双方の衝突を区別し、未取得を成功扱いしない',async()=>{
@@ -243,7 +261,7 @@ test('stg更新パッケージは同じcheckoutの台帳と本文索引をそろ
  }finally{await fs.rm(temporary,{recursive:true});}
 });
 
-test('3記事の移行パッケージは原文を再構成でき、表・画像・検索と保存コードを保持する',async()=>{
+test('記事パッケージは原文と入力操作を保持し、未受入形式のpreviewではWP登録と取り込みを行わない',async t=>{
  const {buildArticleBatch,splitArticle,selectedPaths}=await import('../tools/wordpress/article-batch-build.mjs');
  const temporary=await fs.mkdtemp(path.join(os.tmpdir(),'playpoint-article-batch-'));
  try{
@@ -306,6 +324,33 @@ test('3記事の移行パッケージは原文を再構成でき、表・画像�
   }finally{selectedPaths.splice(0,selectedPaths.length,...originalSelection);}
   assert.deepEqual(selectedPaths,originalSelection,'temporary control fixtures cannot change the selected three articles');
   assert.equal(createHash('sha256').update(await fs.readFile(temporary+'/playpoint-article-batch-staging.php')).digest('hex'),manifest.phpSha256,'rejected control fixtures cannot overwrite the generated three-article candidate');
+  const previewPaths=['/games/monst/google-play-vs-webshop/index.html','/articles/2026-09-19-play-points-calendar-schedule-guide.html','/articles/2026-07-24-play-points-1-value.html','/articles/2026-08-17-diamond-valley-festival-guide.html'];
+  const preview=await buildArticleBatch(temporary+'/preview',{previewPaths});
+  assert.equal(preview.manifest.previewOnly,true);assert.equal(preview.manifest.importAllowed,false);assert.equal(preview.manifest.wordpressHooksEnabled,false);assert.equal(preview.manifest.deploymentPath,null);
+  for(const entry of preview.data.articles){
+   const original=await fs.readFile(repo+entry.path,'utf8');
+   assert.equal(entry.before+entry.hero+entry.content+entry.after,original,'all controls, scripts, styles and identifiers reconstruct exactly: '+entry.path);
+  }
+  const diamond=preview.data.articles.at(-1);
+  assert.ok(diamond.hero.includes('<nav class="breadcrumb-nav"'));assert.ok(diamond.hero.includes('<h1>'));assert.ok(diamond.hero.includes('data-article-date="modified"'));
+  assert.ok(!diamond.hero.includes('ゲームの中で集めたダイヤ'));assert.ok(diamond.content.trimStart().startsWith('<p>ゲームの中で集めたダイヤ'));
+  assert.throws(()=>splitArticle((diamond.before+diamond.hero+diamond.content+diamond.after).replace('<h1>','<p>先頭本文を隠さない</p><h1>')),/source article header/);
+  assert.throws(()=>splitArticle((diamond.before+diamond.hero+diamond.content+diamond.after).replace('class="article-meta"','class="unrelated"')),/source article header/);
+  for(const name of ['/js/monst-purchase-comparison.js','/js/reader-calendar.js','/js/play-points-rounding.js'])assert.equal(preview.data.assets[preview.data.generation+name].text,await fs.readFile(repo+name,'utf8'),'interactive controllers retain their original code');
+  await assert.rejects(buildArticleBatch(temporary+'/invalid',{previewPaths:['/articles/../private.html']}),/source path boundary/);
+  const php='<?php define("ABSPATH","/home/hajikkoroom/playpoint-sim.com/public_html/stg.playpoint-sim.com/cms/");$_SERVER["HTTP_HOST"]="stg.playpoint-sim.com";$hooks=[];function add_action(...$args){global $hooks;$hooks[]=$args[0];}function add_filter(...$args){global $hooks;$hooks[]=$args[0];}require '+JSON.stringify(temporary+'/preview/playpoint-article-batch-staging.php')+';$pages=[];foreach(ppab_entries() as $entry){$pages[]=ppab_render($entry,["status"=>"publish","title"=>$entry["title"],"description"=>$entry["description"],"html"=>$entry["content"],"published"=>$entry["published"],"modified"=>$entry["modified"]]);}try{ppab_import();$blocked=false;}catch(RuntimeException $error){$blocked=true;}echo json_encode(["hooks"=>$hooks,"importBlocked"=>$blocked,"pages"=>$pages]);';
+  const rendered=spawnSync(process.env.PLAYPOINT_PHP_BINARY||'php',['-n'],{input:php,encoding:'utf8'});
+  if(rendered.error?.code==='ENOENT'){t.diagnostic('PHP実行環境なし。previewのPHP描画・操作検証は未完了。');return;}
+  assert.ifError(rendered.error);assert.equal(rendered.status,0,rendered.stderr);const actual=JSON.parse(rendered.stdout);
+  assert.deepEqual(actual.hooks,[],'preview cannot register WordPress routes or management actions');assert.equal(actual.importBlocked,true,'preview cannot import even when its function is called directly');
+  for(const [index,html] of actual.pages.entries()){
+   const entry=preview.data.articles[index],original=entry.before+entry.hero+entry.content+entry.after;
+   for(const form of original.matchAll(/<form\b[^>]*>/gi))if(!form[0].includes('sidebar-search-form'))assert.ok(html.includes(form[0]),'the rendered input form keeps its attributes: '+entry.path);
+   for(const script of original.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi))if(!/application\/ld\+json/.test(script[1])&&script[2].trim())assert.ok(html.includes(script[2]),'inline executable code remains intact: '+entry.path);
+   const canonical=original.match(/<link\b[^>]*\brel="canonical"[^>]*>/i)?.[0];
+   assert.ok(canonical&&html.includes(canonical),'the original canonical, including directory-style game URLs, is retained');
+   assert.ok(html.includes(original.match(/<h1\b[^>]*>[\s\S]*?<\/h1>/i)[0]),'an unchanged source title must not add its site-name suffix to h1');
+  }
  }finally{
   const resolved=await fs.realpath(temporary),tempRoot=await fs.realpath(os.tmpdir());
   assert.ok(resolved.startsWith(tempRoot+path.sep)&&path.basename(resolved).startsWith('playpoint-article-batch-'));

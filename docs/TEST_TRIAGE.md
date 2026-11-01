@@ -1,5 +1,9 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-11-01 WordPressの旧外枠と入力付き記事のローカル候補
+
+既存 `wordpress-article-batch` がDiamond Valleyのnav・h1・日付外枠、入力付き3記事の完全再構成、元操作JS・canonical保持を実ファイルで確認する。既知外枠の欠落や先頭本文の混入は拒否する。実PHPで検索formだけの接続、他formの属性・内容とscript文字列の保持、preview候補のhook未登録・直接import拒否を検証する。日記のmode・week・fragmentがPHP→JSの両変換後も公開元へ保持され、通常計算へ変わらないことも確認する。通常3件の選定・入力拒否・既存WP編集保護は維持する。ローカルfixtureの計算/予定操作と実stgの編集保存・両幅受入は別工程で、PHP単体成功を実移行完了と数えない。新しい必須ゲートやテストファイルは追加しない。
+
 ## 2026-11-01 WordPress候補と最新記事台帳の統合
 
 既存wordpress-article-batchで、stg更新パッケージが同じcheckoutの台帳と本文検索索引をバイト単位で出力し、表示対象全記事のURLが索引と一致することを確認する。読戻した記事PHPを上書きせず、既存の本文payloadを保持する保証も確認する。既存WP投稿の自動上書きや本番切替は追加しない。

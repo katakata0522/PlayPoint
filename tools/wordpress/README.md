@@ -52,7 +52,17 @@ DB復旧は、取得済みの本番専用CMSバックアップを、ループバ
 
 `node tools/wordpress/article-batch-build.mjs <生成先>` は、通常本文の `2026-10-14-play-credit-subscription`、表付きの `2026-10-13-play-points-stamp-cards`、画像付きの `2026-10-10-diamond-play-pass-value` の元HTML・本文・CSS・JS・画像参照を保持する候補を生成する。本文の完全再構成、検索と保存の元コード、生成後のJS構文を所有テストで確認する。
 
-旧記事のheader前にあるHTMLコメントはheroへ元バイトのまま保持する。先頭の本文や入力付き記事の除外条件は緩めない。これは読み取り処理の準備で、代表3件以外を取り込む変更ではない。旧広告起動方式・games階層・国際header・入力controllerは、それぞれの隔離と実行確認を終えてから対象を追加する。
+旧記事のheader前にあるHTMLコメントはheroへ元バイトのまま保持する。Diamond Valleyの `article.article-content` は、先頭の `nav.breadcrumb-nav`・`h1`・公開日/更新日を持つ `p.article-meta` を外枠として保持する。既知の並びが欠ける場合や間に本文が入る場合は推測して読み飛ばさず拒否する。未掲載の記事を一覧へ追加する変更ではない。
+
+入力付き記事は通常の取り込み候補では引き続き拒否する。元フォーム・DOM ID・inline/external JSを実PHPのrendererで確認する場合は、同じ生成器のローカル専用previewを明示的に使う。
+
+```text
+node tools/wordpress/article-batch-build.mjs <私用生成先> --preview-only /games/monst/google-play-vs-webshop/index.html /articles/2026-09-19-play-points-calendar-schedule-guide.html /articles/2026-07-24-play-points-1-value.html /articles/2026-08-17-diamond-valley-festival-guide.html
+```
+
+このPHPはWordPressのhook・経路・管理画面を登録せず、取り込み関数を直接呼んでも拒否する。ローカルfixtureから `ppab_render` に元本文を渡すための候補であり、実stgへ配置しない。manifestは `previewOnly:true`、`importAllowed:false`、`deploymentPath:null` を記録する。元HTMLの再構成と操作JSの保持は、編集・保存後の挙動を保証しない。実WPでの本文保存、フォームやIDの保持、計算・カレンダー操作、元URL、PC/スマホ表示と広告の分離を確認するまで取り込み対象を増やさない。本人の既存WP編集を更新する処理は追加しない。
+
+rendererは `.sidebar-search-form` だけをstgのブログ検索へ接続する。計算用やカレンダー用のformのaction・method・属性を変更せず、検索用hidden値も挿入しない。script内の文字列をフォームとして書き換えない。日記を開く `/?mode=diary&week=current` は、PHPと後続JSの両方でモード・週指定・fragmentを保持して元の公開サイトへ渡す。実stgの日記を確認するまで通常計算画面へ置き換えない。旧広告起動方式・games階層・入力controllerの実stg受入は、このローカル候補とは区別する。
 
 生成した `playpoint-article-batch-staging.php` をstgのMUプラグインへ配置し、管理者で `/cms/wp-admin/tools.php?page=playpoint-article-batch` から1回だけ取り込む。権限とnonceが必須で、匿名GETではDBを変更しない。同じ試験URLの既存記事は内容・状態を上書きせず再利用する。同時送信の排他はないため、応答不明時は再押下せず投稿一覧を確認する。新規記事の本文が原文と一致しなければ、その新規記事だけをゴミ箱へ戻して中断する。
 
