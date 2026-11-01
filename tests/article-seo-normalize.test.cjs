@@ -114,7 +114,7 @@ test('装飾や「よくある疑問」のFAQ見出しから可視質問だけ�
       + `<section><h2>${heading}</h2><h3>Q. 解約はどこからできますか？</h3><p>A. 契約画面から手続きできます。</p></section>`
       + '<section><h2>次の行動</h2><h3>計算機を使う</h3><p>予算を試算します。</p></section>';
     const result = normalizeArticleHtml(htmlTemplate({ body }));
-    const schema = JSON.parse(result.html.match(/<script[^>]*>([\s\S]*?)<\/script>/)[1]);
+    const schema = JSON.parse(result.html.match(/<script[^>]*>([\s\S]*?)<\/script>/i)[1]);
     assert.deepEqual(schema.mainEntity.map(item => [item.name, item.acceptedAnswer.text]), [
       ['解約はどこからできますか?', '契約画面から手続きできます。']
     ]);
