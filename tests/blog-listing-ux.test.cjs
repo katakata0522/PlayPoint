@@ -17,6 +17,72 @@ const {
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
+test('stgの静的アセットでも共通検索と保存コード・実行順・指紋を保持し、FGOなどの略称で検索できる', () => {
+  const tempRoot=fs.realpathSync(require('node:os').tmpdir());
+  const folder=fs.mkdtempSync(path.join(tempRoot,'pp-stg-blog-'));
+  try {
+    const built=require('node:child_process').spawnSync(process.execPath,[path.join(root,'tools/wordpress/build-blog-staging.mjs'),folder],{encoding:'utf8',windowsHide:true});
+    assert.equal(built.status,0,built.stderr);
+    const php=fs.readFileSync(path.join(folder,'playpoint-catalog-blog.php'),'utf8');
+    const marker="base64_decode('",start=php.indexOf(marker)+marker.length,end=php.indexOf("'",start);
+    const {html,assets}=JSON.parse(require('node:zlib').gunzipSync(Buffer.from(php.slice(start,end),'base64')));
+    assert.equal(assets.length,4);
+    const bodies=new Map(assets.map(asset=>{
+      const body=fs.readFileSync(path.join(folder,'assets/wp-catalog',asset.name),'utf8');
+      const sha=require('node:crypto').createHash('sha256').update(body).digest('hex');
+      assert.equal(sha,asset.sha256);assert.ok(asset.name.includes(sha.slice(0,20)));
+      assert.ok(html.includes(asset.url));assert.ok(html.includes('sha256-'+Buffer.from(sha,'hex').toString('base64')));
+      return [asset.name,body];
+    }));
+    const runtime=assets.find(asset=>asset.sources.includes('blog/script.js'));
+    assert.deepEqual(runtime.sources,['js/article-search.js','js/reading-library.js','blog/utils.js','blog/components.js','blog/script.js']);
+    for(const name of ['js/article-search.js','js/reading-library.js'])assert.ok(bodies.get(runtime.name).includes(read(name).replaceAll('\r\n','\n')),name);
+    const guide=assets.find(asset=>asset.sources.includes('js/guide-navigation.js')),theme=assets.find(asset=>asset.sources.includes('js/reading-theme.js'));
+    assert.ok(html.indexOf(guide.url)<html.indexOf(theme.url));
+    const runtimeScript=html.indexOf('<script src="'+runtime.url+'"');
+    assert.ok(runtimeScript>html.indexOf('id="pp-blog-config"'));assert.ok(!html.slice(runtimeScript,html.indexOf('>',runtimeScript)).includes('defer'));
+    assert.ok(!/<script\b(?![^>]*\btype="application\/(?:json|ld\+json)")[^>]*>[^<]+<\/script>/i.test(html),'executable code is external');
+    assert.ok(html.includes('<noscript>'));assert.ok(html.includes('<style data-stage-source="blog/noscript.css">'));
+    assert.ok(!bodies.get(assets.find(asset=>asset.sources.includes('blog/style.css')).name).includes('.skeleton-card {\n    display: none !important;'));
+    const headers=fs.readFileSync(path.join(folder,'assets/wp-catalog/.htaccess'),'utf8');
+    assert.ok(headers.includes('private, max-age=31536000, immutable'));assert.ok(headers.includes('%{REQUEST_STATUS} == 200 || %{REQUEST_STATUS} == 304'));assert.ok(!/AuthType|AuthUserFile|Content-Security-Policy/.test(headers));
+    const engine=read('js/article-search.js').replaceAll('\r\n','\n'),emitted=bodies.get(runtime.name),first=emitted.indexOf(engine);
+    const context={module:{exports:{}}};vm.runInNewContext(emitted.slice(first,first+engine.length),context);
+    assert.equal(context.module.exports.matches({title:'FGO天井330回の費用'},'FGO','ja'),true);
+    assert.equal(context.module.exports.matches({title:'パズル＆ドラゴンズのパス'},'パズドラ','ja'),true);
+  } finally {
+    const resolved=fs.realpathSync(folder);assert.equal(path.dirname(resolved),tempRoot);assert.ok(path.basename(resolved).startsWith('pp-stg-blog-'));
+    fs.rmSync(resolved,{recursive:true});
+  }
+});
+
+test('移行前点検は大文字や空白・属性付きのscript終了タグでも参照と本文を記録する', async () => {
+  const {scriptBlocks}=await import(require('node:url').pathToFileURL(path.join(root,'tools/wordpress/audit-migration.mjs')).href);
+  const blocks=scriptBlocks('<SCRIPT src="calculator.js">Math.floor(2)</SCRIPT \n><script>second</script data-extra>');
+  assert.equal(blocks.length,2);
+  assert.ok(blocks[0][1].includes('calculator.js'));
+  assert.equal(blocks[0][2],'Math.floor(2)');
+  assert.equal(blocks[1][2],'second');
+});
+
+test('stg一覧のページ送り・検索・保存先を保ち、画像は固定allowlistだけへ変換する', () => {
+  const {link,image}=require('../tools/wordpress/blog-links.js');
+  const config={origin:'https://stg.playpoint-sim.com',paths:['/articles/one.html'],images:{'articles/thumbnails/one.webp':'image-key.webp'}};
+  const page=new URL(link('/blog/page/2/?q=Play%20Pass',config));
+  assert.equal(page.pathname,'/blog/');
+  assert.equal(page.searchParams.get('page'),'2');
+  assert.equal(page.searchParams.get('q'),'Play Pass');
+  assert.equal(page.searchParams.get('pp_flow'),'normal');
+  assert.equal(page.searchParams.get('pp_catalog'),'live');
+  assert.equal(link('../articles/one.html#conditions',config),'https://stg.playpoint-sim.com/articles/one.html#conditions');
+  assert.equal(link('/articles/two.html',config),'https://playpoint-sim.com/articles/two.html');
+  assert.equal(link('#reading-library',config),'#reading-library');
+  assert.equal(link('https://external.example/blog/',config),'https://external.example/blog/');
+  assert.equal(image('../articles/thumbnails/one.webp',config),'/cms/index.php?pp_blog_image=image-key.webp');
+  assert.equal(image('../../wp-config.php',config),'../../wp-config.php');
+  assert.equal(image('https://external.example/one.webp',config),'https://external.example/one.webp');
+});
+
 test('listed blog search indexes title, description, tags, and category in memory', () => {
   const article = {
     title: 'パズドラ課金とPlay Points',
