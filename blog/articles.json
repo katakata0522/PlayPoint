@@ -2144,7 +2144,7 @@
     "id": "points-value-1",
     "title": "Google Play Pointsは何円で1ポイント貯まる？獲得率と交換価値の違い",
     "date": "2026-07-24",
-    "modified": "2026-10-28",
+    "modified": "2026-11-01",
     "category": "使い方",
     "tags": [
       "Play Points",
@@ -2319,14 +2319,14 @@
       "有料アプリ",
       "買い切り"
     ],
-    "description": "Google Play Pointsが電子書籍、有料アプリ、ゲーム本体などの買い切り購入で貯まる条件を解説。購入前のPlay Points参加、Google Play経由、対象国・アカウント、端末とポイント履歴の確認方法を整理します。",
+    "description": "読みたい本や使いたい有料アプリの購入も、Play Pointsを貯める機会に。Google Playでの対象購入、ポイント増量の条件、購入後の履歴の見方を分かりやすく紹介します。",
     "file": "../articles/2025-12-25-movies-books.html",
     "thumbnail": "../articles/thumbnails/movies-books-square-v1.webp",
-    "modified": "2026-10-28",
+    "modified": "2026-11-01",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/movies-books.png",
     "thumbnailKind": "generic",
-    "listDescription": "電子書籍・有料アプリ・買い切りゲームで貯まる条件を確認。購入前の参加と決済経路、対象国・アカウントが分かります。"
+    "listDescription": "読みたい本や使いたい有料アプリでポイントを貯めるには。対象となる購入、ポイント増量、購入後の履歴の見方を紹介します。"
   },
   {
     "id": "expiration",
