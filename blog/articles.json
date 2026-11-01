@@ -761,13 +761,13 @@
     "id": "pokemon-sleep-premium-plans-2026",
     "title": "ポケモンスリープのプレミアムパスは1か月と6か月どっち？毎日の特典と継続の注意点【2026年】",
     "date": "2026-10-14",
-    "modified": "2026-10-14",
+    "modified": "2026-11-01",
     "category": "使い方",
     "browseCategory": "ゲーム別課金",
     "gameTitle": "ポケモンスリープ",
     "listTitle": "ポケモンスリープのプレミアムパス｜毎日の特典と期間の選び方",
-    "listDescription": "1か月と6か月の選び方。100スリープポイントや継続特典、Android切替時の注意点が分かります。",
-    "description": "ポケモンスリープのプレミアムパスは1か月・6か月どちらが得？スリープポイントや継続特典、Androidでのプラン変更を比較します。",
+    "listDescription": "ポケスリのプレミアムパスは、試したいなら1か月、半年使う見込みなら6か月を比較。毎日の特典と料金の見方、Androidでプラン変更すると継続期間がリセットされる注意点を解説します。",
+    "description": "ポケスリのプレミアムパスは、試したいなら1か月、半年使う見込みなら6か月を比較。毎日の特典と料金の見方、Androidでプラン変更すると継続期間がリセットされる注意点を解説します。",
     "tags": [
       "ポケモンスリープ",
       "ポケスリ",
@@ -961,9 +961,9 @@
   },
   {
     "id": "super-weekly-results-2026-10",
-    "title": "今週のスーパーウィークリー、ダイヤモンドでも3pt。プラチナは45ptでした【2026年10月】",
-    "listTitle": "ダイヤ3pt、プラチナ45pt！今週のスーパーウィークリーは逆転",
-    "description": "ダイヤモンド3pt・14ptとプラチナ45ptの実際の画面から、スーパーウィークリーの結果とSuper Ticketの注意点をまとめた週次レポート。",
+    "title": "ダイヤモンドでも3pt、プラチナは45pt。スーパーウィークリーの記録【2026年10月】",
+    "listTitle": "スーパーウィークリーの記録｜ダイヤ3pt・プラチナ45pt【2026年10月】",
+    "description": "2026年10月に確認したプラチナ45pt、ダイヤモンド3pt・14ptの画面を紹介。上位ランクでも少額の日がある週次リワードの実感と、Super Ticketで再挑戦する前に考えたいことをまとめました。",
     "category": "ランク",
     "browseCategory": "最新情報・イベント",
     "tags": [
@@ -976,9 +976,9 @@
     "file": "../articles/2026-10-10-super-weekly-reward-results.html",
     "thumbnail": "../articles/thumbnails/super-weekly-results-2026-10-square-v1.webp",
     "ogp": "../articles/ogp/super-weekly-results-2026-10.png",
-    "listDescription": "プラチナ45pt、ダイヤモンド3pt・14ptのスクショ記録。上位ランクでも毎回大当たりとは限らない。",
+    "listDescription": "2026年10月に確認したプラチナ45pt、ダイヤモンド3pt・14ptの画面を紹介。上位ランクでも少額の日がある週次リワードの実感と、Super Ticketで再挑戦する前に考えたいことをまとめました。",
     "date": "2026-10-10",
-    "modified": "2026-10-14",
+    "modified": "2026-11-01",
     "thumbnailKind": "generic",
     "listed": true,
     "related": [
@@ -1399,7 +1399,7 @@
   },
   {
     "id": "dokkan-battle-dragon-ball-play-points",
-    "title": "ドッカンバトルの課金商品を選ぶ前に｜龍石・デイリー商品・コインの違い",
+    "title": "ドッカンバトルの龍石選び｜今のガシャに使う分と、次に備える分",
     "date": "2026-08-25",
     "category": "使い方",
     "tags": [
@@ -1407,16 +1407,16 @@
       "龍石",
       "Play Points"
     ],
-    "description": "龍石の総数だけでなく、ガシャ期限までに受け取れる数でデイリー型商品と即時購入を比較。コインの対象条件とPlayポイントを分け、予算内で選ぶ方法を解説します。",
+    "description": "ドッカンバトルの龍石商品を、ガシャの期限までに使う分と次に備える分で比較。デイリー型の受取時期、ガシャコイン、300ptのポイントチケット、Play Pointsの違いを解説します。",
     "file": "../articles/2026-08-25-dokkan-battle-dragon-ball-play-points.html",
     "thumbnail": "../images/game-icons/dokkan.webp",
-    "modified": "2026-10-14",
+    "modified": "2026-11-01",
     "thumbnailKind": "app-icon",
     "ogp": "../articles/ogp/2026-08-25-dokkan-battle-dragon-ball-play-points.png",
     "browseCategory": "ゲーム別課金",
-    "listDescription": "ガシャ期限までに受け取れる龍石の数で、デイリー型と即時購入を比較。コインの条件とポイント還元も分けて判断できます。",
+    "listDescription": "ドッカンバトルの龍石商品を、ガシャの期限までに使う分と次に備える分で比較。デイリー型の受取時期、ガシャコイン、300ptのポイントチケット、Play Pointsの違いを解説します。",
     "thumbnail2x": "../images/game-icons/dokkan-2x.webp",
-    "listTitle": "ドッカンの課金商品選び｜龍石・デイリー・コインの違い"
+    "listTitle": "ドッカンの龍石選び｜今引く分・次に備える分"
   },
   {
     "id": "umamusume-half-anniversary-points",
