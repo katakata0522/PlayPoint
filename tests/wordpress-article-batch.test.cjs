@@ -346,7 +346,7 @@ test('記事パッケージは原文と入力操作を保持し、未受入形�
   for(const [index,html] of actual.pages.entries()){
    const entry=preview.data.articles[index],original=entry.before+entry.hero+entry.content+entry.after;
    for(const form of original.matchAll(/<form\b[^>]*>/gi))if(!form[0].includes('sidebar-search-form'))assert.ok(html.includes(form[0]),'the rendered input form keeps its attributes: '+entry.path);
-   for(const script of original.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi))if(!/application\/ld\+json/.test(script[1])&&script[2].trim())assert.ok(html.includes(script[2]),'inline executable code remains intact: '+entry.path);
+   for(const script of original.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\b[^>]*>/gi))if(!/application\/ld\+json/.test(script[1])&&script[2].trim())assert.ok(html.includes(script[2]),'inline executable code remains intact: '+entry.path);
    const canonical=original.match(/<link\b[^>]*\brel="canonical"[^>]*>/i)?.[0];
    assert.ok(canonical&&html.includes(canonical),'the original canonical, including directory-style game URLs, is retained');
    assert.ok(html.includes(original.match(/<h1\b[^>]*>[\s\S]*?<\/h1>/i)[0]),'an unchanged source title must not add its site-name suffix to h1');
