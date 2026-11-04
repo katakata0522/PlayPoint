@@ -62,7 +62,7 @@ echo json_encode(['good'=>$good,'rejected'=>$rejected,'denied'=>$denied,'uploadD
   await fs.writeFile(temporary+'/fixture.php',fixture);
   const run=mode=>spawnSync(process.env.PLAYPOINT_PHP_BINARY||'php',['-n',temporary+'/fixture.php',mode],{encoding:'utf8'});
   const result=run('stg');
-  if(result.error?.code==='ENOENT'){t.diagnostic('PHP実行環境なし。メディア補助のPHP検査は対応環境で実行する。');return;}
+  if(result.error?.code==='ENOENT'){assert.ok(!process.env.CI&&!process.env.GITHUB_ACTIONS,'CIではPHP実行環境が必須。PLAYPOINT_PHP_BINARYまたはPATHを確認する。');t.skip('PHP実行環境なし。メディア補助のPHP検査は対応環境で実行する。');return;}
   assert.ifError(result.error);assert.equal(result.status,0,result.stderr);assert.equal(result.stderr,'');
   const actual=JSON.parse(result.stdout);
   assert.equal(actual.good.width,520);assert.equal(actual.good.height,472);
@@ -161,7 +161,7 @@ test('WP画像と検索フォームをstgへ接続し、計算用フォームの
  const fixture=Buffer.from(JSON.stringify({cases,html,diaries})).toString('base64');
  const php='<?php function ppab_data(){return ["generation"=>"fixture","assets"=>["fixture/images/test.webp"=>[]]];} function ppab_entries(){return [["path"=>"/articles/test.html"]];}\n'+functions+'\n$fixture=json_decode(base64_decode("'+fixture+'"),true);echo json_encode(["urls"=>array_map(fn($value)=>ppab_public_url($value,"/articles/test.html"),$fixture["cases"]),"diaries"=>array_map(fn($value)=>ppab_public_url($value,"/articles/test.html"),$fixture["diaries"]),"html"=>ppab_rewrite_html($fixture["html"],"/articles/test.html")],JSON_UNESCAPED_SLASHES);';
  const result=spawnSync(process.env.PLAYPOINT_PHP_BINARY||'php',['-n'],{input:php,encoding:'utf8'});
- if(result.error?.code==='ENOENT'){t.diagnostic('PHP実行環境なし。JS境界は検査済み、PHP経路は対応環境で検査する。');return;}
+ if(result.error?.code==='ENOENT'){assert.ok(!process.env.CI&&!process.env.GITHUB_ACTIONS,'CIではPHP実行環境が必須。PLAYPOINT_PHP_BINARYまたはPATHを確認する。');t.skip('PHP実行環境なし。JS境界は検査済み、PHP経路は対応環境で検査する。');return;}
  assert.ifError(result.error);assert.equal(result.status,0,result.stderr);
  const actual=JSON.parse(result.stdout);
  assert.deepEqual(actual.diaries,diaries.map(()=>diary));
@@ -340,7 +340,7 @@ test('記事パッケージは原文と入力操作を保持し、未受入形�
   await assert.rejects(buildArticleBatch(temporary+'/invalid',{previewPaths:['/articles/../private.html']}),/source path boundary/);
   const php='<?php define("ABSPATH","/home/hajikkoroom/playpoint-sim.com/public_html/stg.playpoint-sim.com/cms/");$_SERVER["HTTP_HOST"]="stg.playpoint-sim.com";$hooks=[];function add_action(...$args){global $hooks;$hooks[]=$args[0];}function add_filter(...$args){global $hooks;$hooks[]=$args[0];}require '+JSON.stringify(temporary+'/preview/playpoint-article-batch-staging.php')+';$pages=[];foreach(ppab_entries() as $entry){$pages[]=ppab_render($entry,["status"=>"publish","title"=>$entry["title"],"description"=>$entry["description"],"html"=>$entry["content"],"published"=>$entry["published"],"modified"=>$entry["modified"]]);}try{ppab_import();$blocked=false;}catch(RuntimeException $error){$blocked=true;}echo json_encode(["hooks"=>$hooks,"importBlocked"=>$blocked,"pages"=>$pages]);';
   const rendered=spawnSync(process.env.PLAYPOINT_PHP_BINARY||'php',['-n'],{input:php,encoding:'utf8'});
-  if(rendered.error?.code==='ENOENT'){t.diagnostic('PHP実行環境なし。previewのPHP描画・操作検証は未完了。');return;}
+  if(rendered.error?.code==='ENOENT'){assert.ok(!process.env.CI&&!process.env.GITHUB_ACTIONS,'CIではPHP実行環境が必須。PLAYPOINT_PHP_BINARYまたはPATHを確認する。');t.skip('PHP実行環境なし。previewのPHP描画・操作検証は未完了。');return;}
   assert.ifError(rendered.error);assert.equal(rendered.status,0,rendered.stderr);const actual=JSON.parse(rendered.stdout);
   assert.deepEqual(actual.hooks,[],'preview cannot register WordPress routes or management actions');assert.equal(actual.importBlocked,true,'preview cannot import even when its function is called directly');
   for(const [index,html] of actual.pages.entries()){
