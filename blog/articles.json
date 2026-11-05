@@ -1305,7 +1305,7 @@
     "id": "play-points-calendar-schedule-guide-2026",
     "title": "Play Pointsのお得カレンダー｜毎週・毎月の確認日",
     "date": "2026-09-19",
-    "modified": "2026-10-30",
+    "modified": "2026-11-06",
     "category": "キャンペーン",
     "tags": [
       "Play Points",
@@ -2104,7 +2104,7 @@
     "id": "play-credit-not-working",
     "title": "Play PointsをPlayクレジットへ交換できない・使えない原因",
     "date": "2026-07-25",
-    "modified": "2026-10-30",
+    "modified": "2026-11-06",
     "category": "トラブル",
     "tags": [
       "Play Points",
@@ -2775,5 +2775,42 @@
     "source": "editorial",
     "listed": true,
     "browseCategory": "貯める・キャンペーン"
+  },
+  {
+    "id": "play-points-pc-redeem-2026",
+    "title": "PCでGoogle Play Pointsを交換する方法｜ブラウザとPlay Gamesの違い",
+    "date": "2026-11-06",
+    "modified": "2026-11-06",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "source": "editorial",
+    "listed": true,
+    "listTitle": "PCでPlay Pointsを交換する手順｜ブラウザとPlay Games",
+    "listDescription": "PCブラウザからPlay Pointsを交換する手順を解説。PC版Google Play Gamesに出ない交換品、保存済みクーポン、交換後の受取先と期限を整理します。",
+    "description": "PCブラウザからPlay Pointsを交換する手順を解説。PC版Google Play Gamesに出ない交換品、保存済みクーポン、交換後の受取先と期限を整理します。",
+    "tags": [
+      "Play Points",
+      "パソコン",
+      "Google Play Games",
+      "クーポン"
+    ],
+    "file": "../articles/2026-10-14-play-points-pc-redeem.html",
+    "ogp": "../articles/ogp/play-points-pc-redeem-2026.jpg",
+    "thumbnail": "../articles/thumbnails/play-points-pc-redeem-2026-square-v1.webp",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2025-12-25-best-use.html",
+        "Play Pointsの交換先を比較する"
+      ],
+      [
+        "/articles/2026-08-16-pc-play-games-points.html",
+        "PC版Play Gamesでポイントを貯める条件"
+      ],
+      [
+        "/articles/2026-07-25-play-credit-not-working.html",
+        "交換したクレジットを使えないとき"
+      ]
+    ]
   }
 ]
