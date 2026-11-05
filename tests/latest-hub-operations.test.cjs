@@ -319,3 +319,23 @@ test('同じ状態の定期確認はDOMを書き換えず、開始・終了時�
     assert.equal(tabs[expected].attributes['aria-selected'], 'true', legacy + ' のリンクを引き継ぐ');
   }
 });
+
+// 2026年11月の実カードは、状態ラベルだけでなく本文・操作先も期限に合わせる。
+test('11月の掲載カードは終了済み応募と取得済みコードを分け、楽天を開始前と案内しない', () => {
+  const card = id => latestHtml.match(new RegExp(`<article[^>]+data-benefit-id="${id}"[\\s\\S]*?<\\/article>`))?.[0] || '';
+  const family = card('family-posa-2026');
+  const rakuten = card('rakuten-gift-coupon-202611');
+  const lawson = card('lawson-gift-code-2026-autumn');
+  assert.ok(family && rakuten && lawson, '確認対象の3カードが必要');
+  assert.match(family, /購入・応募は終了/);
+  assert.match(family, /11月26日/);
+  assert.match(family, /class="benefit-action" href="https:\/\/vdpro\.jp\/fm\.posacards13\/"/);
+  assert.doesNotMatch(family, /購入済みの方の応募方法を見る|応募は11\/3まで/);
+  assert.doesNotMatch(rakuten, /開始前|次回Google Play|事前取得のみ/);
+  assert.match(rakuten, /先着15,000回/);
+  assert.match(rakuten, /残数は未確認/);
+  assert.match(lawson, /特典取得も11月2日23:59で終了/);
+  assert.match(lawson, /取得済み.*12月1日23:59/);
+  assert.match(lawson, /class="benefit-action" href="https:\/\/www\.lawson\.co\.jp\/lab\/campaign\/googlemileage2609\/"/);
+  assert.doesNotMatch(lawson, /11月2日23:59までに特典を取得できます/);
+});
