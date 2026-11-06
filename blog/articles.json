@@ -2236,14 +2236,14 @@
       "割引",
       "ポイント還元"
     ],
-    "description": "楽天の次回500円引き、ファミマ・セブンの特典を比較。ローソン秋企画の受取期限も案内し、予定購入額と使える還元から選び方を考えます。",
+    "description": "楽天の500円引きとセブンの抽選を比較。ファミマの当選メールとローソン秋企画の受付終了も、購入先ごとに確認できます。",
     "file": "../articles/2026-06-20-discount-gift-cards.html",
     "thumbnail": "../articles/thumbnails/discount-gift-cards-square-v1.webp",
-    "modified": "2026-11-01",
+    "modified": "2026-11-06",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/discount-gift-cards.png",
     "thumbnailKind": "generic",
-    "listDescription": "ギフトコードを買う前に、還元上限・エントリー・使い切り期限を確認。正規販売と実質負担の見方が分かります。",
+    "listDescription": "楽天の500円引きとセブンの抽選を比較。ファミマの当選メールとローソン秋企画の受付終了も、購入先ごとに確認できます。",
     "listTitle": "Google Playギフトコードをお得に買う｜楽天・ローソンの還元条件と選び方"
   },
   {
@@ -2687,7 +2687,7 @@
     "related": [
       [
         "/articles/2026-10-23-familymart-gift-card-lottery.html",
-        "【11/2まで】ファミマのGoogle Playギフトカード抽選｜ファミペイ2％相当の条件"
+        "【応募終了】ファミマのGoogle Playギフトカード抽選｜当選メールは11月26日配信予定"
       ],
       [
         "/articles/2026-10-23-google-play-gift-card-comparison.html",
@@ -2704,9 +2704,9 @@
   },
   {
     "id": "2026-10-23-familymart-gift-card-lottery",
-    "title": "【11/2まで】ファミマのGoogle Playギフトカード抽選｜ファミペイ2％相当の条件",
+    "title": "【応募終了】ファミマのGoogle Playギフトカード抽選｜当選メールは11月26日配信予定",
     "date": "2026-10-28",
-    "modified": "2026-11-03",
+    "modified": "2026-11-06",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2714,9 +2714,9 @@
       "POSA",
       "ファミリーマート"
     ],
-    "description": "ファミマのGoogle Playギフトカード抽選は購入11月2日、応募11月3日まで。3,000円で1口、3万円分の10口まとめ抽選で100円分保証。ファミペイ2％相当の対象日・上限も整理します。",
-    "listTitle": "【11/2まで】ファミマのGoogle Playギフトカード抽選｜ファミペイ2％相当の条件",
-    "listDescription": "ファミマのGoogle Playギフトカード抽選は購入11月2日、応募11月3日まで。3,000円で1口、3万円分の10口まとめ抽選で100円分保証。ファミペイ2％相当の対象日・上限も整理します。",
+    "description": "ファミマの抽選は購入11月2日、応募11月3日で終了。当選メールは11月26日配信予定です。レシートの保管とギフトの交換期限、ファミペイ還元の条件をまとめました。",
+    "listTitle": "【応募終了】ファミマのGoogle Playギフトカード抽選｜当選メールは11月26日配信予定",
+    "listDescription": "ファミマの抽選は購入11月2日、応募11月3日で終了。当選メールは11月26日配信予定です。レシートの保管とギフトの交換期限、ファミペイ還元の条件をまとめました。",
     "file": "../articles/2026-10-23-familymart-gift-card-lottery.html",
     "ogp": "../articles/ogp/2026-10-23-familymart-gift-card-lottery.jpg",
     "thumbnail": "../articles/thumbnails/2026-10-23-familymart-gift-card-lottery-square-v1.webp",
@@ -2743,7 +2743,7 @@
     "id": "2026-10-23-google-play-gift-card-comparison",
     "title": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】",
     "date": "2026-10-28",
-    "modified": "2026-11-03",
+    "modified": "2026-11-06",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2751,9 +2751,9 @@
       "POSA",
       "購入先比較"
     ],
-    "description": "11月3日時点のギフトカード購入先を比較。セブンの抽選、購入終了したファミマの応募期限、11月4日開始の楽天500円OFFを整理します。",
+    "description": "11月6日時点のGoogle Playギフトカード購入先を比較。楽天の500円引きの利用期間と先着条件、セブンの10口抽選、終了したファミマの当選メールを案内します。",
     "listTitle": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】",
-    "listDescription": "11月3日時点のギフトカード購入先を比較。セブンの抽選、購入終了したファミマの応募期限、11月4日開始の楽天500円OFFを整理します。",
+    "listDescription": "11月6日時点のGoogle Playギフトカード購入先を比較。楽天の500円引きの利用期間と先着条件、セブンの10口抽選、終了したファミマの当選メールを案内します。",
     "file": "../articles/2026-10-23-google-play-gift-card-comparison.html",
     "ogp": "../articles/ogp/2026-10-23-google-play-gift-card-comparison.jpg",
     "thumbnail": "../articles/thumbnails/2026-10-23-google-play-gift-card-comparison-square-v1.webp",
@@ -2765,7 +2765,7 @@
       ],
       [
         "/articles/2026-10-23-familymart-gift-card-lottery.html",
-        "【11/2まで】ファミマのGoogle Playギフトカード抽選｜ファミペイ2％相当の条件"
+        "【応募終了】ファミマのGoogle Playギフトカード抽選｜当選メールは11月26日配信予定"
       ],
       [
         "/articles/2026-06-20-discount-gift-cards.html",
