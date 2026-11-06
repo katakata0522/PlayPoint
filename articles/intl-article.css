@@ -133,11 +133,6 @@ border-left: 2px solid var(--reading-brand-text, #164e63) !important;
 padding: 0 0 0 16px !important;
 margin: 0 0 24px !important;
 }
-body .intl-layout-container .content > .intro > strong:first-child,
-body .intl-layout-container .content > :is(.answer-box, .editorial-answer) > p:first-of-type strong {
-background: none;
-padding: 0;
-}
 body .intl-layout-container .intl-article-toc {
 background: transparent;
 border: 0;
