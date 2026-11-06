@@ -128,3 +128,17 @@ test('locale indexes and the dedicated sitemap expose all six new international 
     }
   }
 });
+
+test('English quest guide scopes the 72-hour claim window to in-game items after completion', () => {
+  const body = read(clusters.quests.en);
+  const claimSection = body.match(/<section[^>]*id="quest-item-claim"[^>]*aria-label="Claiming an in-game reward"[^>]*>([\s\S]*?)<\/section>/i)?.[1] || '';
+  const paragraph = claimSection.match(/<p\b[^>]*>([\s\S]*?)<\/p>/i)?.[1] || '';
+  const text = visibleText(paragraph);
+  assert.match(text, /quest reward is an in-game item/i);
+  assert.match(text, /within 72 hours after completing the quest/i);
+  assert.match(text, /unclaimed items expire/i);
+  const modified = body.match(/<meta name="last-modified" content="([^"]+)"/)?.[1];
+  const entry = read('sitemap-intl-guides.xml').match(/<url>\s*<loc>https:\/\/playpoint-sim\.com\/en\/articles\/google-play-quests\.html<\/loc>([\s\S]*?)<\/url>/)?.[1] || '';
+  assert.ok(entry.includes('<lastmod>' + modified + '</lastmod>'), 'quest sitemap date must match the article');
+  assert.match(paragraph, /https:\/\/support\.google\.com\/googleplay\/answer\/11534416\?hl=en/);
+});

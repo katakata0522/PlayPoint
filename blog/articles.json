@@ -1305,7 +1305,7 @@
     "id": "play-points-calendar-schedule-guide-2026",
     "title": "Play Pointsのお得カレンダー｜毎週・毎月の確認日",
     "date": "2026-09-19",
-    "modified": "2026-10-30",
+    "modified": "2026-11-06",
     "category": "キャンペーン",
     "tags": [
       "Play Points",
@@ -2104,7 +2104,7 @@
     "id": "play-credit-not-working",
     "title": "Play PointsをPlayクレジットへ交換できない・使えない原因",
     "date": "2026-07-25",
-    "modified": "2026-10-30",
+    "modified": "2026-11-06",
     "category": "トラブル",
     "tags": [
       "Play Points",
@@ -2706,7 +2706,7 @@
     "id": "2026-10-23-familymart-gift-card-lottery",
     "title": "【11/2まで】ファミマのGoogle Playギフトカード抽選｜ファミペイ2％相当の条件",
     "date": "2026-10-28",
-    "modified": "2026-11-01",
+    "modified": "2026-11-03",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2743,7 +2743,7 @@
     "id": "2026-10-23-google-play-gift-card-comparison",
     "title": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】",
     "date": "2026-10-28",
-    "modified": "2026-11-01",
+    "modified": "2026-11-03",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2751,9 +2751,9 @@
       "POSA",
       "購入先比較"
     ],
-    "description": "10月28日の公式条件で購入先を比較。セブンの100pt保証、ファミマの抽選とファミペイ2％相当、終了した楽天200円引き、11月4日開始の500円引きを分けて紹介します。",
+    "description": "11月3日時点のギフトカード購入先を比較。セブンの抽選、購入終了したファミマの応募期限、11月4日開始の楽天500円OFFを整理します。",
     "listTitle": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】",
-    "listDescription": "10月28日の公式条件で購入先を比較。セブンの100pt保証、ファミマの抽選とファミペイ2％相当、終了した楽天200円引き、11月4日開始の500円引きを分けて紹介します。",
+    "listDescription": "11月3日時点のギフトカード購入先を比較。セブンの抽選、購入終了したファミマの応募期限、11月4日開始の楽天500円OFFを整理します。",
     "file": "../articles/2026-10-23-google-play-gift-card-comparison.html",
     "ogp": "../articles/ogp/2026-10-23-google-play-gift-card-comparison.jpg",
     "thumbnail": "../articles/thumbnails/2026-10-23-google-play-gift-card-comparison-square-v1.webp",
@@ -2775,5 +2775,42 @@
     "source": "editorial",
     "listed": true,
     "browseCategory": "貯める・キャンペーン"
+  },
+  {
+    "id": "play-points-pc-redeem-2026",
+    "title": "PCでGoogle Play Pointsを交換する方法｜ブラウザとPlay Gamesの違い",
+    "date": "2026-11-06",
+    "modified": "2026-11-06",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "source": "editorial",
+    "listed": true,
+    "listTitle": "PCでPlay Pointsを交換する手順｜ブラウザとPlay Games",
+    "listDescription": "PCブラウザからPlay Pointsを交換する手順を解説。PC版Google Play Gamesに出ない交換品、保存済みクーポン、交換後の受取先と期限を整理します。",
+    "description": "PCブラウザからPlay Pointsを交換する手順を解説。PC版Google Play Gamesに出ない交換品、保存済みクーポン、交換後の受取先と期限を整理します。",
+    "tags": [
+      "Play Points",
+      "パソコン",
+      "Google Play Games",
+      "クーポン"
+    ],
+    "file": "../articles/2026-10-14-play-points-pc-redeem.html",
+    "ogp": "../articles/ogp/play-points-pc-redeem-2026.jpg",
+    "thumbnail": "../articles/thumbnails/play-points-pc-redeem-2026-square-v1.webp",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2025-12-25-best-use.html",
+        "Play Pointsの交換先を比較する"
+      ],
+      [
+        "/articles/2026-08-16-pc-play-games-points.html",
+        "PC版Play Gamesでポイントを貯める条件"
+      ],
+      [
+        "/articles/2026-07-25-play-credit-not-working.html",
+        "交換したクレジットを使えないとき"
+      ]
+    ]
   }
 ]
