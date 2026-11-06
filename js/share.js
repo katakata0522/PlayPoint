@@ -4,9 +4,17 @@ import { STATE, CONSTANTS } from './config.js';
 import { CALC } from './calculator.js';
 import { UI } from './ui.js';
 
+// 復元値にも、通常入力と同じ範囲・刻み幅の検証を通す。
+export function restoreRateInput(input, raw, min, max) {
+    if (!input || raw == null || String(raw).trim() === '') return;
+    const previous = input.value;
+    input.value = String(raw);
+    if (CALC.getValidNumberInput(input, min, max) === null) input.value = previous;
+}
+
 export const SHARE = {
     getNumber(params, name, min, max) {
-        if (!params.has(name)) return null;
+        if (!params.get(name)?.trim()) return null;
         const value = Number(params.get(name));
         return Number.isFinite(value) && value >= min && value <= max ? value : null;
     },
@@ -23,21 +31,31 @@ export const SHARE = {
         return url;
     },
 
+    buildCalculatorUrl(mode, status, baseRateInput, multiplier) {
+        const url = this.buildBaseUrl();
+        url.searchParams.set('mode', mode);
+        url.searchParams.set('status', status.value);
+        url.searchParams.set('multiplier', String(multiplier));
+        const baseRate = CALC.getValidNumberInput(baseRateInput, 0.1, 100);
+        // 選択肢の値はランクの通常獲得率。手入力で上書きした場合だけURLに含める。
+        if (baseRate !== null && baseRate !== Number(status.value)) {
+            url.searchParams.set('baseRate', String(baseRate));
+        }
+        return url;
+    },
+
     buildMainShareUrl() {
         const dom = STATE.dom;
-        const neededPoints = CALC.getValidNumberInput(dom.neededPoints, 0.01);
+        const neededPoints = String(dom.neededPoints?.value ?? '').trim() ? CALC.getValidNumberInput(dom.neededPoints, 0) : null;
         const multiplier = CALC.getValidNumberInput(dom.multiplier, 1);
         if (neededPoints === null || multiplier === null || !dom.currentStatus) return '';
 
-        const url = this.buildBaseUrl();
-        url.searchParams.set('mode', 'main');
-        url.searchParams.set('status', dom.currentStatus.value);
+        const url = this.buildCalculatorUrl('main', dom.currentStatus, dom.baseRate, multiplier);
         const selectedTarget = dom.targetStatus && dom.targetStatus.options[dom.targetStatus.selectedIndex];
         if (selectedTarget && selectedTarget.dataset.statusLabel) {
             url.searchParams.set('target', this.normalizeTarget(selectedTarget.dataset.statusLabel));
         }
         url.searchParams.set('points', String(neededPoints));
-        url.searchParams.set('multiplier', String(multiplier));
         return url.toString();
     },
 
@@ -65,11 +83,8 @@ export const SHARE = {
         const multiplier = CALC.getValidNumberInput(dom.reverseMultiplier, 1);
         if (amount === null || multiplier === null || !dom.reverseStatus) return '';
 
-        const url = this.buildBaseUrl();
-        url.searchParams.set('mode', 'reverse');
-        url.searchParams.set('status', dom.reverseStatus.value);
+        const url = this.buildCalculatorUrl('reverse', dom.reverseStatus, dom.reverseBaseRate, multiplier);
         url.searchParams.set('amount', String(amount));
-        url.searchParams.set('multiplier', String(multiplier));
         const eligibleInput = dom.reverseEligibleAmount;
         if (eligibleInput && String(eligibleInput.value ?? '').trim()) {
             const eligible = CALC.getValidNumberInput(eligibleInput, 0);
@@ -91,6 +106,7 @@ export const SHARE = {
             const amount = this.getNumber(params, 'amount', 0, 100000000);
             if (this.isAllowedStatusValue(dom.reverseStatus, status)) dom.reverseStatus.value = String(status);
             CALC.updateReverseBaseRate();
+            restoreRateInput(dom.reverseBaseRate, params.get('baseRate'), 0.1, 100);
             if (amount !== null && dom.amountYen) dom.amountYen.value = String(amount);
             if (dom.reverseEligibleAmount) {
                 const eligible = this.getNumber(params, 'eligible', 0, amount ?? 0);
@@ -98,7 +114,7 @@ export const SHARE = {
                 const settings = dom.reverseEligibleAmount.closest?.('details');
                 if (settings) settings.open = dom.reverseEligibleAmount.value !== '';
             }
-            if (multiplier !== null && dom.reverseMultiplier) dom.reverseMultiplier.value = String(multiplier);
+            restoreRateInput(dom.reverseMultiplier, multiplier, 1, 10);
             UI.switchMode(CONSTANTS.MODE_REVERSE);
 
             // 共有URLからの復元時に自動計算を実行
@@ -109,14 +125,15 @@ export const SHARE = {
         if (mode !== 'main') return;
         if (this.isAllowedStatusValue(dom.currentStatus, status)) dom.currentStatus.value = String(status);
         CALC.updateBaseRateAndTarget();
+        restoreRateInput(dom.baseRate, params.get('baseRate'), 0.1, 100);
         this.setTargetFromParam(dom.targetStatus, target);
         CALC.updateNeededPointsConstraint();
-        const points = this.getNumber(params, 'points', 0.01, 1000000);
+        const points = this.getNumber(params, 'points', 0, 1000000);
         const maxPoints = Number(dom.neededPoints && dom.neededPoints.max);
-        if (points !== null && dom.neededPoints && (!Number.isFinite(maxPoints) || points <= maxPoints)) {
+        if (Number.isSafeInteger(points) && dom.neededPoints && (!Number.isFinite(maxPoints) || points <= maxPoints)) {
             dom.neededPoints.value = String(points);
         }
-        if (multiplier !== null && dom.multiplier) dom.multiplier.value = String(multiplier);
+        restoreRateInput(dom.multiplier, multiplier, 1, 10);
         UI.switchMode(CONSTANTS.MODE_MAIN);
 
         // 共有URLからの復元時に自動計算を実行

@@ -520,11 +520,13 @@
                     currentPage = 1;
                     updateURLState(editingSearchHistory ? 'replace' : 'push', true);
                     editingSearchHistory = true;
-                    render();
-                    if (value) await loadBodySearch();
-                    if (currentSearch !== value) return;
-                    render();
-                    if (value) Analytics.trackSearch(value, filterArticles().length);
+                    let visibleCount = render();
+                    if (value && !bodySearchReady) {
+                        const loaded = await loadBodySearch();
+                        if (currentSearch !== value) return;
+                        if (loaded) visibleCount = render();
+                    }
+                    if (value) Analytics.trackSearch(value, visibleCount);
                 }, CONFIG.searchDebounceMs);
                 dom.searchInput.addEventListener('focus', () => { loadBodySearch(); });
                 dom.searchInput.addEventListener('input', event => debouncedSearch(event.target.value.trim()));
@@ -754,6 +756,7 @@
     }
 
     function resetFilters() {
+        clearTimeout(searchDebounceTimer);
         currentCategory = 'all';
         currentBrowseCategory = '';
         currentSearch = '';
@@ -783,7 +786,7 @@
     }
 
     function render() {
-        if (!dom.grid) return;
+        if (!dom.grid) return 0;
 
         let filtered = filterArticles();
         // 絞り込み中は検索結果を優先し、解除すると入門案内を戻す。
@@ -840,7 +843,7 @@
             listingAd.dataset.requestScheduled = 'true';
             void window.PlayPointBlogAds?.request(dom.grid);
             renderPagination(totalPages);
-            return;
+            return filtered.length;
         }
 
         // Render Grid
@@ -875,7 +878,7 @@
           const latestChoice = document.createElement('p'); latestChoice.append(latestLink); recovery.append(latestChoice);
           dom.grid.append(recovery);
           renderGameCalculatorLinks();
-          renderPagination(0); return;
+          renderPagination(0); return 0;
         }
 
         // 結果件数・ページ番号だけを通知し、一覧全文の重複読上げを避ける。
@@ -924,6 +927,7 @@
         renderPagination(totalPages);
         renderGameCalculatorLinks();
 
+        return filtered.length;
     }
 
     function renderPagination(totalPages) {

@@ -269,6 +269,12 @@ test('前回の通常計算は地域別に端末内へ1件だけ保持し、別�
   assert.equal(fixture.api.saveLastMainCalculationForRegion('US', us, fixture.localStorage), true);
   assert.equal(fixture.api.getLastMainCalculationForRegion('JP', fixture.localStorage).neededPoints, '1728');
   assert.equal(fixture.api.getLastMainCalculationForRegion('US', fixture.localStorage).neededPoints, '900');
+  assert.equal(fixture.api.getLastMainCalculationForRegion('JP', fixture.localStorage).baseRate, undefined);
+  const custom = { ...jp, baseRate: '2.5', multiplier: '3' };
+  fixture.api.saveLastMainCalculationForRegion('JP', custom, fixture.localStorage);
+  const restored = fixture.api.getLastMainCalculationForRegion('JP', fixture.localStorage);
+  assert.equal(restored.baseRate, '2.5');
+  assert.equal(restored.multiplier, '3');
 });
 
 test('同じランク条件の再計算だけ前回との差を表示する', () => {

@@ -106,6 +106,8 @@ async function verifyDiaryBoundaries(browser, baseUrl, locales, blockExternalReq
       await page.waitForFunction(({ year, otherMonth }) =>
         JSON.parse(localStorage.getItem('hokuhokuDiaryData'))?.[year]?.[otherMonth]?.[1]?.points === '10',
       { year, otherMonth });
+      assert.match(await other.locator('.weekly-compact-main').innerText(), /10\s*pt/i);
+      assert.match(await page.locator('.weekly-recorded-count').innerText(), /^1\//);
       const saved = await page.evaluate(() => localStorage.getItem('hokuhokuDiaryData'));
       // 負の入力を拒否しても保存済みデータを失わない。
       await other.locator('input[type="number"]').fill('-1');

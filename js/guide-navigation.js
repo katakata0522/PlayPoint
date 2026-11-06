@@ -263,10 +263,12 @@
       if (!articles) return;
       if (!query) { status.textContent = copy[6]; return; }
       const engine = window.PlayPointSearch;
-      const matches = articles.filter(a => engine.matches(a, query, locale)).sort((a,b) => engine.score(b, query, locale) - engine.score(a, query, locale));
+      const matches = articles.filter(article => engine.matches(article, query, locale))
+        .map(article => ({ article, score: engine.score(article, query, locale) }))
+        .sort((a, b) => b.score - a.score);
       const count = matches.length, limit = count > 20;
       status.textContent = count ? ({ja:`${count}件の記事が見つかりました${limit ? '（上位20件を表示）' : ''}`,en:`${count} guides found${limit ? ' (top 20 shown)' : ''}`,ko:`가이드 ${count}개${limit ? ' (상위 20개 표시)' : ''}`,tw:`找到 ${count} 篇指南${limit ? '（顯示前20篇）' : ''}`})[locale] : copy[9];
-      for (const article of matches.slice(0,20)) {
+      for (const { article } of matches.slice(0,20)) {
         const link = el('a', 'guide-search-result'); link.href = article.path.replace(/index\.html$/, '');
         link.append(el('strong', '', article.title), el('span', '', engine.excerpt(article, query, locale).text)); results.append(link);
       }
