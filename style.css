@@ -1125,6 +1125,7 @@ margin-left: 0;
 display: none !important;
 }
 .lp-wrapper {
+box-sizing: border-box;
 max-width: 880px;
 margin: 0 auto;
 padding: 0 1rem 3rem;
