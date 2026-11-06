@@ -22,6 +22,111 @@ const GAME_CUES = {
   efootball: ['Google Play Points cannot be converted directly into eFootball Points', 'Google Play 포인트를 직접 전환할 수 없으며', 'Google Play 點數不能直接轉成 eFootball™點數']
 };
 const CUES = {
+  '2026-06-20-discount-gift-cards': {
+    en: {mark: 'authorized sellers'},
+    ko: {mark: '혜택 한도, 유효기간을 포함한 실질 결제액'},
+    tw: {mark: 'Google 的 Play 禮物卡提供國家清單未列出台灣'}
+  },
+  '2026-10-12-google-play-fest-2026': {
+    en: {mark: 'US sweepstakes closed on November 2'},
+    ko: {mark: '10월 13~19일은 종료됐습니다'},
+    tw: {mark: '主要活動已於 10 月 19 日結束'}
+  },
+  '2026-10-12-play-pass-double-points-6x': {
+    en: {mark: 'ended on October 19, 2026'},
+    ko: {mark: '10월 13~19일은 종료됐습니다'},
+    tw: {mark: '不要把當時的活動當成目前仍可領取的福利'}
+  },
+  'google-play-credit-subscriptions': {
+    en: {mark: 'the same payment method at renewal'},
+    ko: {mark: '첫 결제와 다음 갱신'},
+    tw: {mark: '首次付款和下一次續訂'}
+  },
+  'google-play-pass-guide': {
+    en: {mark: 'a catalog of games and apps'}
+  },
+  'google-play-points-account-locked': {
+    en: {mark: 'Save the exact message first'}
+  },
+  'google-play-points-basics': {
+    en: {mark: 'eligible Google Play purchases'},
+    ko: {mark: '대상 결제로 포인트를 모아'},
+    tw: {mark: '透過符合資格的消費累積點數'}
+  },
+  'google-play-points-cash-conversion': {
+    en: {mark: 'Google Play Points cannot be cashed out'},
+    ko: {mark: '은행 계좌나 전자지갑으로 출금할 수 없습니다'},
+    tw: {mark: '不能提領到銀行帳戶或電子錢包'}
+  },
+  'google-play-points-country-differences': {
+    en: {mark: 'the Google Play country attached to the purchasing account'},
+    ko: {mark: '구매 계정의 Google Play 국가가 기준입니다'},
+    tw: {mark: '實際付款帳號的 Google Play 國家／地區'}
+  },
+  'google-play-points-earn-free': {
+    en: {mark: 'your weekly reward if you are already Silver or higher'},
+    ko: {mark: '이미 실버 이상이라면 주간 리워드'},
+    tw: {mark: '沒有購買步驟的部分任務'}
+  },
+  'google-play-points-fastest-silver': {
+    en: {mark: '150 annual points'},
+    ko: {mark: '한국 실버는 연간 150포인트부터'},
+    tw: {mark: '台灣銀級從年度 250 點開始'}
+  },
+  'google-play-points-gift-cards': {
+    en: {mark: 'cannot use Google Play Points or Google Play balance to buy Google Play gift cards'},
+    ko: {mark: '카드 구매, 코드 등록, 콘텐츠 구매를 서로 다른 단계로'},
+    tw: {mark: '購買禮物卡或把序號兌換成 Play 餘額，本身通常不會累積 Play Points'}
+  },
+  'google-play-points-install-offer-not-received': {
+    en: {mark: 'at least two minutes of app use within the first 24 hours'}
+  },
+  'google-play-points-join-eligibility': {
+    en: {mark: 'check the account against Google\'s signup requirements'},
+    ko: {mark: '결제수단·청구지 주소'},
+    tw: {mark: '付款方式與帳單地址'}
+  },
+  'google-play-points-levels': {
+    en: {mark: 'US Silver starts at 150 annual points'},
+    ko: {mark: '한국 실버는 연간 150포인트부터'},
+    tw: {mark: '台灣銀級從年度 250 點開始'}
+  },
+  'google-play-points-promotion-not-applied': {
+    en: {mark: 'Separate missing bonus points from missing normal points'},
+    ko: {mark: '일반 적립과 보너스를 먼저 나누어'},
+    tw: {mark: '先分清一般點數與活動加碼'}
+  },
+  'google-play-points-subscriptions': {
+    en: {mark: 'completed eligible charges'}
+  },
+  'google-play-points-super-weekly-reward': {
+    en: {mark: 'the card in your Perks tab'},
+    ko: {mark: '제공 후 48시간 안에 저장'},
+    tw: {mark: '「獎勵」分頁是否顯示超級每週獎勵'}
+  },
+  'google-play-points-use-coupons': {
+    en: {mark: 'matches a purchase you already planned'},
+    ko: {mark: '쿠폰은 대상 구매의 가격을 할인'},
+    tw: {mark: '帳號有提供時可比較 Play 抵用金'}
+  },
+  'pokemon-sleep-premium-pass-plans': {
+    en: {mark: 'One month gives you a way to try it'},
+    ko: {mark: '매일 실제로 누릴 혜택'},
+    tw: {mark: '先看看自己每天會享受哪些福利'}
+  },
+  'bluearchive-recruitment-stack-update-2026': {
+    ko: {mark: '11월 10일 모집 시스템 개편'}
+  },
+  'google-play-credit-uses': {
+    ko: {mark: 'Google Play 잔액을 결제 수단으로 선택'},
+    tw: {mark: '結帳畫面能不能使用 Google Play 餘額'}
+  },
+  'gakuen-idolmaster-japan-google-play-vs-web-shop': {
+    tw: {mark: '付費限定抽卡要用的寶石'}
+  },
+  'google-play-points-reward-codes': {
+    tw: {mark: '不同獎勵的保存位置和使用方式不一樣'}
+  },
   'google-play-balance-combine-payment': {
     en: {mark:'Play balance and Play Points are different', link:['Google Play credit','google-play-points-use-coupons']},
     ko: {mark:'Play 잔액과 Play Points는 별도', link:['Google Play 크레딧','google-play-points-use-coupons']},
@@ -43,6 +148,7 @@ const CUES = {
     tw: {mark:'並由 Google Play 處理', link:['訂閱','google-play-points-subscriptions']}
   },
   'google-play-points-balance-history-progress': {
+    ko: {mark: '포인트를 사용해도 줄어들지 않습니다'},
     en: {mark:'is not reduced when you spend points', link:['Level progress','google-play-points-levels']},
     tw: {mark:'使用點數後不會因此下降', link:['等級進度','google-play-points-levels']}
   },
@@ -61,8 +167,16 @@ const CUES = {
     ko: {mark:'가장 가까운 정수 포인트', link:['대상 상품 가격','google-play-points-discounts-promo-codes']},
     tw: {mark:'最接近的整數點', link:['符合資格的商品價格','google-play-points-discounts-promo-codes']}
   },
-  'google-play-points-coupon-not-applied': {tw:{link:['同一帳號','google-play-points-multiple-accounts']}},
-  'google-play-points-platinum-diamond-cost': {tw:{link:['每筆四捨五入','google-play-points-rounding-tax']}},
+  'google-play-points-coupon-not-applied': {
+    en: {mark: 'Compare the saved offer and checkout before buying again'},
+    ko: {mark: '저장된 혜택과 결제 화면을 같은 계정에서 비교'},
+    tw: {mark: '比對已儲存的優惠與結帳畫面', link:['同一帳號','google-play-points-multiple-accounts']}
+  },
+  'google-play-points-platinum-diamond-cost': {
+    en: {mark: 'Diamond starts at 10,000'},
+    ko: {mark: '다이아몬드는 15,000점 이상'},
+    tw: {mark: '鑽石從 15,000 點開始', link:['每筆四捨五入','google-play-points-rounding-tax']}
+  },
   'google-play-points-play-credit-not-working': {
     en:{mark:'you may not have enough points for that reward'},
     ko:{mark:'해당 보상에 필요한 포인트가 부족할 수 있습니다'},
@@ -101,7 +215,11 @@ const CUES = {
 function applyEditorialCues(html, file) {
   const match=file.match(/^(en|ko|tw)\/articles\/([^/]+)\.html$/);if(!match)return html;
   const [,locale,slug]=match, game=metadata('/'+file);
-  const selection={...(CUES[slug]?.[locale]||{}),...(game?{mark:GAME_CUES[game.id]?.[['en','ko','tw'].indexOf(locale)]}:{})};
+  const articleCue = CUES[slug]?.[locale];
+  const selection = {
+    mark: articleCue?.mark ?? GAME_CUES[game?.id]?.[['en', 'ko', 'tw'].indexOf(locale)],
+    link: articleCue?.link
+  };
   if(!selection.mark&&!selection.link)return html;
   // 自分が付けた装飾だけを戻して適用し、再生成でも二重にしない。
   html=html.replace(/<span class="marker-yellow" data-editorial-cue>([\s\S]*?)<\/span>/g,'$1')
