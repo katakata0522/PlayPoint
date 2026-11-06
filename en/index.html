@@ -41,13 +41,13 @@
     <meta name="twitter:description" content="Estimate Play Points level-up spending and reverse calculations using the higher of your base earn rate or the special earn rate shown in Google Play.">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=65d0feb551">
+    <link rel="modulepreload" href="../js/main.js?v=b3195ef419">
     <link rel="modulepreload" href="../js/config.js">
     <link rel="modulepreload" href="../js/analytics-core.js?v=bffa637412">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=e4f337c925">
+    <link rel="stylesheet" href="../style.css?v=5e4c4bb23a">
     <script type="speculationrules">
     {
   "prefetch": [
@@ -203,7 +203,7 @@
 html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(.is-open) .calculator-advanced-settings__body{position:static!important;width:auto!important;height:auto!important;margin-top:.7em!important;padding:initial!important;overflow:visible!important;clip:auto!important;clip-path:none!important;white-space:normal!important}}
 @media(prefers-reduced-motion:reduce){.calculator-advanced-settings__chevron{transition:none}}
 </style>
-        <script id="playpoint-first-view-state">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&Number(p.get('multiplier'))>1){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>
+        <script id="playpoint-first-view-state">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&(Number(p.get('multiplier'))>1||Number(p.get('baseRate'))>0)){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>
 <link rel="stylesheet" href="/region-selector.css?v=2a70477346" data-region-selector-style="true">
 <meta name="playpoint:anchor-ads" content="collapsed-bottom">
 </head>
@@ -472,8 +472,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 </main>
 
 <script type="module" src="../js/intl-copy-overrides.js?v=ca73e89485"></script>
-<script type="module" src="../js/main.js?v=65d0feb551"></script>
-<script src="../js/third-party.js?v=a21208612e" defer></script>
+<script type="module" src="../js/main.js?v=b3195ef419"></script>
+<script src="../js/third-party.js?v=499f396641" defer></script>
 
 </body>
 </html>

@@ -148,7 +148,6 @@ export const DIARY = {
         const style = document.createElement('style');
         style.id = WEEKLY_EXPLICIT_STYLE_ID;
         style.textContent = `
-#diaryMode .weekly-autosave-hint{display:none!important}
 #diaryMode .diary-input-area>#selectedMonth,#diaryMode .weekly-month-section-title{display:none!important}
 #diaryMode .diary-input-area{padding-top:0!important}
 #diaryMode .is-weekly-current{grid-template-areas:"current current" "label label" "points prize" "large large" "share share" "state state" "hint hint" "achievement achievement"!important}
@@ -309,26 +308,16 @@ export const DIARY = {
         state.classList.toggle('is-dirty', dirty);
     },
 
-    configureCurrentWeekRecordState(row, weekData, defaultPrize) {
+    configureCurrentWeekRecordState(row) {
         if (!row) return;
-        const copy = this.getWeeklyExperienceCopy();
         const input = row.querySelector('input[type="number"]');
         const select = row.querySelector('select');
         const save = row.querySelector('.diary-save-btn');
         const edit = row.querySelector('.weekly-record-edit');
         if (!input || !select || !save || !edit) return;
 
-        const normalized = DIARY_PURE.normalizePointsValue(weekData?.points);
-        const savedEntry = DIARY_PURE.hasMeaningfulEntry(weekData || {}, defaultPrize);
-        if (savedEntry) {
-            row.dataset.savedPoints = normalized === null ? '' : normalized;
-            row.dataset.savedPrize = String(weekData?.prize ?? '');
-            this.setCurrentWeekRecordMode(row, 'saved');
-        } else {
-            delete row.dataset.savedPoints;
-            delete row.dataset.savedPrize;
-            this.setCurrentWeekRecordMode(row, 'new');
-        }
+        const saved = row.dataset.savedPoints !== undefined;
+        this.setCurrentWeekRecordMode(row, saved ? 'saved' : 'new');
 
         edit.addEventListener('click', () => {
             this.setCurrentWeekRecordMode(row, 'editing');
@@ -343,22 +332,25 @@ export const DIARY = {
         });
     },
 
-    commitCurrentWeekRecordState(weekNum, pointsValue, prizeValue) {
-        if (!this.isCurrentDiaryWeek(weekNum)) return;
-        const row = STATE.dom.weekInputs?.querySelector('#week' + weekNum + '_points')?.closest('.week-row');
+    setSavedWeek(row, entry) {
         if (!row) return;
-        row.dataset.savedPoints = String(pointsValue ?? '');
-        row.dataset.savedPrize = String(prizeValue ?? '');
-        this.setCurrentWeekRecordMode(row, 'saved');
+        const defaultPrize = CONFIGS[STATE.currentRegion].uiText.prizeOptions?.[0] || '';
+        if (DIARY_PURE.hasMeaningfulEntry(entry, defaultPrize)) {
+            row.dataset.savedPoints = DIARY_PURE.normalizePointsValue(entry.points) ?? '';
+            row.dataset.savedPrize = String(entry.prize ?? defaultPrize);
+        } else {
+            delete row.dataset.savedPoints;
+            delete row.dataset.savedPrize;
+        }
     },
 
-    resetCurrentWeekRecordState(weekNum) {
-        if (!this.isCurrentDiaryWeek(weekNum)) return;
-        const row = STATE.dom.weekInputs?.querySelector('#week' + weekNum + '_points')?.closest('.week-row');
+    reflectSavedWeek(weekNum, entry) {
+        const row = STATE.dom.weekInputs?.querySelector('#week' + weekNum + '_points')?.closest?.('.week-row');
         if (!row) return;
-        delete row.dataset.savedPoints;
-        delete row.dataset.savedPrize;
-        this.setCurrentWeekRecordMode(row, 'new');
+        this.setSavedWeek(row, entry);
+        if (this.isCurrentDiaryWeek(weekNum)) {
+            this.setCurrentWeekRecordMode(row, row.dataset.savedPoints !== undefined ? 'saved' : 'new');
+        }
     },
 
     renderWeeklyAchievement(row, pointsValue, yearlySummary, animate = false, milestoneText = '') {
@@ -530,12 +522,12 @@ export const DIARY = {
         }
     },
 
-    decorateExplicitCurrentWeek(row, weekNum, pointsValue, yearData, weekData, defaultPrize) {
+    decorateExplicitCurrentWeek(row, weekNum, pointsValue, yearData) {
         if (!this.isCurrentDiaryWeek(weekNum)) return;
         this.ensureWeeklyExperienceStyle();
         row.classList.add('is-weekly-current', 'is-weekly-expanded');
         this.ensureWeeklyConfirmHint(row);
-        this.configureCurrentWeekRecordState(row, weekData, defaultPrize);
+        this.configureCurrentWeekRecordState(row);
         this.renderWeeklyAchievement(row, pointsValue, DIARY_PURE.summarizeYear(yearData), false);
     },
 
@@ -565,8 +557,9 @@ export const DIARY = {
         const texts = config.uiText;
         STATE.dom.currentYear.textContent = `${STATE.diaryState.currentYear}${texts.yearSuffix || ''}`;
         this.renderMonthSelector();
-        this.renderWeekInputs();
-        this.updateSummary();
+        const data = this.loadDiaryData();
+        this.renderWeekInputs(data);
+        this.updateSummary(data);
     },
 
     // 月選択ボタンのレンダリング
@@ -589,13 +582,12 @@ export const DIARY = {
     },
 
     // 選択された月の各週の入力行のレンダリング
-    renderWeekInputs() {
+    renderWeekInputs(data = this.loadDiaryData()) {
         if (!STATE.dom.weekInputs || !STATE.dom.selectedMonth) return;
         const texts = CONFIGS[STATE.currentRegion].uiText;
         STATE.dom.weekInputs.innerHTML = '';
         STATE.dom.selectedMonth.textContent = texts.monthNames[STATE.diaryState.currentMonth - 1];
         const fridays = this.getFridays(STATE.diaryState.currentYear, STATE.diaryState.currentMonth);
-        const data = this.loadDiaryData();
         const yearData = data[STATE.diaryState.currentYear] || {};
         const monthData = yearData[STATE.diaryState.currentMonth] || {};
         if (fridays.length === 0) {
@@ -610,6 +602,7 @@ export const DIARY = {
             const displayPoints = normalizedPoints === null ? '' : normalizedPoints;
             const row = document.createElement('div');
             row.className = 'week-row';
+            this.setSavedWeek(row, weekData);
             const prizeOptionsHTML = texts.prizeOptions.map(opt => `<option value="${opt}" ${weekData.prize === opt ? 'selected' : ''}>${opt}</option>`).join('');
             row.innerHTML = `
                 <label for="week${weekNum}_points">${texts.weekLabel}${weekNum}${texts.weekSuffix} (${dateString})</label>
@@ -643,19 +636,16 @@ export const DIARY = {
                 row,
                 weekNum,
                 displayPoints,
-                yearData,
-                weekData,
-                texts.prizeOptions?.[0] || ''
+                yearData
             );
             STATE.dom.weekInputs.appendChild(row);
         });
     },
 
     // 月間・年間の合計・平均ポイントの集計表示
-    updateSummary() {
+    updateSummary(data = this.loadDiaryData()) {
         if (!STATE.dom.monthlyTotal || !STATE.dom.yearlyTotal) return;
         const config = CONFIGS[STATE.currentRegion];
-        const data = this.loadDiaryData();
         const yearData = data[STATE.diaryState.currentYear] || {};
         const monthData = yearData[STATE.diaryState.currentMonth] || {};
         let monthlyTotal = 0, monthlyWeeksWithPoints = 0;
@@ -788,8 +778,8 @@ export const DIARY = {
             delete data[yearKey][monthKey][weekNum];
             this.cleanEmptyDiaryContainers(data, yearKey, monthKey);
             if (!this.saveDiaryData(data)) return;
-            this.updateSummary();
-            this.resetCurrentWeekRecordState(weekNum);
+            this.reflectSavedWeek(weekNum, null);
+            this.updateSummary(data);
             this.refreshWeeklyAchievement(weekNum, '', data[yearKey] || {}, false);
             if (!isSilent) {
                 UI.showToast(texts.toastDiarySaveSuccess);
@@ -810,7 +800,7 @@ export const DIARY = {
 
         if (isUnchanged) {
             if (!isSilent) {
-                this.commitCurrentWeekRecordState(weekNum, normalizedPoints, nextEntry.prize);
+                this.reflectSavedWeek(weekNum, nextEntry);
                 this.refreshWeeklyAchievement(weekNum, normalizedPoints, data[yearKey] || {}, true);
                 UI.showToast(texts.toastDiarySaveSuccess);
                 if (!this.isCurrentDiaryWeek(weekNum)) this.showSaveConfirmation(e.target, texts);
@@ -830,9 +820,9 @@ export const DIARY = {
         });
         ANALYTICS.markEngaged();
 
-        this.updateSummary();
+        this.reflectSavedWeek(weekNum, nextEntry);
+        this.updateSummary(data);
         if (!isSilent) {
-            this.commitCurrentWeekRecordState(weekNum, normalizedPoints, nextEntry.prize);
             this.refreshWeeklyAchievement(
                 weekNum,
                 normalizedPoints,
