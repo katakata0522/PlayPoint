@@ -47,7 +47,7 @@
     <link rel="modulepreload" href="js/ui.js">
     <link rel="modulepreload" href="js/share.js">
     <link rel="modulepreload" href="js/calculator.js">
-    <link rel="stylesheet" href="style.css?v=db21d07581">
+    <link rel="stylesheet" href="style.css?v=e4f337c925">
     <script type="speculationrules">
     {
   "prefetch": [
@@ -229,22 +229,22 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         <div id="main-calculator-inputs" class="section">
             <h2 data-lang-key="sectionTitleStatus">ステータス入力</h2>
             <label for="currentStatus" class="label-with-tooltip">
-                <span data-lang-key="labelCurrentStatus">現在のステータス</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
+                <span id="currentStatus-caption" data-lang-key="labelCurrentStatus">現在のステータス</span>
+                <span class="info-btn" id="currentStatus-help" aria-labelledby="currentStatus-caption currentStatus-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
                 <div class="tooltip-box" id="tooltip-current-status" hidden></div>
             </label>
             <select id="currentStatus"></select>
 
             <label for="targetStatus" class="label-with-tooltip">
-                <span data-lang-key="labelTargetStatus">目標ステータス</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
+                <span id="targetStatus-caption" data-lang-key="labelTargetStatus">目標ステータス</span>
+                <span class="info-btn" id="targetStatus-help" aria-labelledby="targetStatus-caption targetStatus-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status" hidden></div>
             </label>
             <select id="targetStatus"></select>
 
             <label for="neededPoints" class="label-with-tooltip">
-                <span data-lang-key="labelNeededPoints">目標までの必要ポイント</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
+                <span id="neededPoints-caption" data-lang-key="labelNeededPoints">目標までの必要ポイント</span>
+                <span class="info-btn" id="neededPoints-help" aria-labelledby="neededPoints-caption neededPoints-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points" hidden></div>
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="例：250" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder" aria-describedby="needed-points-hint">
@@ -260,7 +260,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
 <label for="baseRate" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="baseRateLabel">100円あたりの獲得率（自動入力・編集可）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
+                <span class="info-btn" id="baseRate-help" aria-labelledby="baseRate-caption baseRate-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate" hidden></div>
             </label>
 
@@ -268,7 +268,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 
             <label for="multiplier" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="multiplierLabel">キャンペーン特別獲得率（例：3pt/100円）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
+                <span class="info-btn" id="multiplier-help" aria-labelledby="multiplier-caption multiplier-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier" hidden></div>
             </label>
 
@@ -295,8 +295,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         <div class="section">
             <h2 data-lang-key="sectionTitleReverse">金額からポイント</h2>
             <label for="amountYen" class="label-with-tooltip">
-                <span data-lang-key="labelAmountYen">課金額（円）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
+                <span id="amountYen-caption" data-lang-key="labelAmountYen">課金額（円）</span>
+                <span class="info-btn" id="amountYen-help" aria-labelledby="amountYen-caption amountYen-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
                 <div class="tooltip-box" id="tooltip-amount-yen" hidden></div>
             </label>
             <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="例：5000" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder">
@@ -308,8 +308,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             </details>
 
             <label for="reverseStatus" class="label-with-tooltip">
-                <span data-lang-key="labelCurrentStatus">現在のステータス</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
+                <span id="reverseStatus-caption" data-lang-key="labelCurrentStatus">現在のステータス</span>
+                <span class="info-btn" id="reverseStatus-help" aria-labelledby="reverseStatus-caption reverseStatus-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-status" hidden></div>
             </label>
             <select id="reverseStatus"></select>
@@ -318,15 +318,15 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <details id="reverse-rate-settings" class="calculator-basis-settings">
                 <summary><span data-simplified-calculator-copy="advancedSettingsLabel">獲得率・キャンペーンを調整（任意）</span></summary>
             <label for="reverseBaseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">通常獲得率（ステータスから自動入力）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
+                <span id="reverseBaseRate-caption" data-lang-key="labelBaseRate">通常獲得率（ステータスから自動入力）</span>
+                <span class="info-btn" id="reverseBaseRate-help" aria-labelledby="reverseBaseRate-caption reverseBaseRate-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-base-rate" hidden></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="reverseMultiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplierReverse">キャンペーン特別獲得率（例：3pt/100円）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
+                <span id="reverseMultiplier-caption" data-lang-key="labelMultiplierReverse">キャンペーン特別獲得率（例：3pt/100円）</span>
+                <span class="info-btn" id="reverseMultiplier-help" aria-labelledby="reverseMultiplier-caption reverseMultiplier-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-multiplier" hidden></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">

@@ -103,7 +103,7 @@ function syncDynamicArticleStylesheetVersion(rootDir) {
   const original = fs.readFileSync(scriptPath, 'utf8');
   const version = createRevision(stylesheetPath);
   const updated = original.replace(
-    /(\.\.\/articles\/source-notice\.css)(?:\?v=[a-zA-Z0-9_-]+)?/g,
+    /(\/articles\/source-notice\.css)(?:\?v=[a-zA-Z0-9_-]+)?/g,
     `$1?v=${version}`
   );
   if (updated === original) return false;

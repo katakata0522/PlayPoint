@@ -34,3 +34,12 @@ margin-top: 0.35rem;
 min-height: auto;
 text-underline-offset: 0.18em;
 }
+html[data-reading-theme="dark"] .official-source-note {
+  background: var(--reading-note-bg);
+  color: var(--reading-text);
+  border-color: var(--reading-border);
+  border-left-color: var(--reading-link);
+}
+html[data-reading-theme="dark"] .official-source-note strong {
+  color: var(--reading-text);
+}

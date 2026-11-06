@@ -30,7 +30,8 @@ test('POSA3記事は保証額・締切・終了した楽天クーポンを区別
   assert.doesNotMatch(family, /対象期間はまだ始まっていません/);
   for (const html of [comparison, readArticle('2026-06-20-discount-gift-cards.html')]) {
     assert.match(html, /200円OFFクーポンは10月27日9:59に終了/);
-    assert.match(html, /利用開始前/);
+    assert.match(html, /利用期間内（先着上限あり）/);
+    assert.doesNotMatch(html, /事前取得可・利用開始前|次回・利用開始前|11月4日夜まで待て/);
     assert.match(html, /11\/4 20:00[〜～]11\/11 1:59/);
     assert.doesNotMatch(html, /楽天が向く人｜200円OFF|クーポン利用10\/24|まだ使えません。利用開始は10月24日/);
   }

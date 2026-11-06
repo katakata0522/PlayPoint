@@ -90,7 +90,7 @@
         if (!document.querySelector('link[data-article-source-style]')) {
             const stylesheet = document.createElement('link');
             stylesheet.rel = 'stylesheet';
-            stylesheet.href = '/articles/source-notice.css?v=3c2ec22615';
+            stylesheet.href = '/articles/source-notice.css?v=9686da4326';
             stylesheet.dataset.articleSourceStyle = 'true';
             document.head.appendChild(stylesheet);
         }

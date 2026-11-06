@@ -2757,3 +2757,21 @@ body:has(>main.lp-wrapper) { background:#f4f7f6; }
 .lp-wrapper .lp-primary-link { background:#176773; border-color:#176773; color:#fff; box-shadow:none; }
 .lp-wrapper .lp-primary-link:hover { background:#12525c; }
 .lp-wrapper .lp-secondary-link { color:#176773; border-color:#d7e3df; box-shadow:none; }
+@media (max-width: 760px) {
+  .calculator-wrapper .label-with-tooltip { position: relative; }
+  .calculator-wrapper .label-with-tooltip .tooltip-box {
+    top: calc(100% + 4px);
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .calculator-wrapper .label-with-tooltip .info-btn {
+    width: 44px;
+    height: 44px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+  .calculator-wrapper #needed-points-hint {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+}
