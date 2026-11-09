@@ -26,7 +26,19 @@ fi
 # 検査時間・フォント・固定Chromiumは維持し、準備不能は非ゼロで止める。
 apt_options=(-o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30)
 timeout --kill-after=10s 120s sudo apt-get "${apt_options[@]}" update -qq
-timeout --kill-after=10s 180s sudo apt-get "${apt_options[@]}" install -y --no-install-recommends fonts-noto-cjk
+if ! timeout --kill-after=10s 180s sudo apt-get "${apt_options[@]}" install -y --no-install-recommends fonts-noto-cjk; then
+  # Runnerの通常mirrorでNoto CJK(約61MB)の取得が停滞した際、署名付きUbuntu公式archiveを一度だけ試す。
+  # グローバルapt sourcesは変更せず、この呼出しだけ代替する。取得不能なら検査を失敗させる。
+  echo 'Runner apt mirror could not provide fonts-noto-cjk; trying the signed Ubuntu archive once.' >&2
+  fallback_sources="$(mktemp)"
+  trap 'rm -f "$fallback_sources"' EXIT
+  printf 'deb [signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] https://archive.ubuntu.com/ubuntu noble main\n' > "$fallback_sources"
+  fallback_options=("${apt_options[@]}" -o "Dir::Etc::sourcelist=$fallback_sources" -o Dir::Etc::sourceparts=-)
+  timeout --kill-after=10s 90s sudo apt-get "${fallback_options[@]}" update -qq
+  timeout --kill-after=10s 180s sudo apt-get "${fallback_options[@]}" install -y --no-install-recommends fonts-noto-cjk
+fi
+# 計測フォントは必須。導入未完をCI成功としない。
+test "$(dpkg-query -W -f='${Status}' fonts-noto-cjk)" = 'install ok installed'
 fc-match sans-serif:lang=ja
 
 npm ci --prefix "$runtime_dir" --ignore-scripts --no-audit --no-fund
