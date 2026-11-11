@@ -197,7 +197,7 @@ test('suiteは同一6ページを測り、homeと記事ハブを3sampleで比較
   const saved = JSON.parse(fs.readFileSync(path.join(outputDir, 'budget-summary.json')));
   assert.equal(saved.evaluations.find(group => group.profile === 'articleHub').sampleCount, 3);
 });
-test('suiteはfirst-party違反を追加測定で消さず、本番の外部通信は遮断しない', t => {
+test('suiteはfirst-party違反を追加測定で消さず、本番でも広告・計測の第三者を遮断する', t => {
   const outputDir = temporary(t), calls = [];
   assert.equal(suite.main({ outputDir, env: { AUDIT_TARGET: 'production' }, execute: executeFixture(calls, (value, file) => {
     if (path.basename(file) === 'article-hub-1.json') {
@@ -207,7 +207,11 @@ test('suiteはfirst-party違反を追加測定で消さず、本番の外部通�
     }
   }) }), 0);
   assert.equal(calls.length, suite.PAGES.length + 4); // home and hub each retain all 3 samples
-  assert.ok(calls.every(call => !call.args.some(arg => arg.startsWith('--blocked-url-patterns='))));
+  assert.ok(calls.every(call =>
+    call.args.filter(arg => arg.startsWith('--blocked-url-patterns=')).length === suite.BLOCKED.length
+  ));
+  const manifest = JSON.parse(fs.readFileSync(path.join(outputDir, 'audit-manifest.json')));
+  assert.equal(manifest.thirdPartyBlocked, true);
   assert.ok(calls.every(call => !call.args.some(arg => arg.includes('--ignore-certificate-errors'))),
     'production Lighthouse must use normal certificate validation');
   assert.equal(budget.main(['--manifest', path.join(outputDir, 'audit-manifest.json')]), 1);
