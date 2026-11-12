@@ -17,6 +17,7 @@ const latestPath = path.join(root, 'latest', 'index.html');
 // 境界値テストは最小の合成HTMLを使い、公開ページの本文や更新日へ結合させない。
 const latestHtml = fs.readFileSync(latestPath, 'utf8');
 const verificationDate = extractVerificationDate(latestHtml);
+const contentUpdatedDate = CONTENT_DATE_OVERRIDES['latest/index.html'];
 
 function buildLatestHubFixture({ verified = '2026-08-24', nextCheck = '2026-08-28' } = {}) {
   return `
@@ -40,9 +41,9 @@ test('最新情報ハブは確認範囲・公式参照・確認日・次回確�
   assert.equal(result.verificationDate, verificationDate);
   assert.ok(result.nextCheckDates.length > 0, '次回確認目安が抽出できません');
   assert.ok(result.nextCheckDates.every(date => /^\d{4}-\d{2}-\d{2}$/.test(date)));
-  assert.ok(latestHtml.includes(`<meta name="last-modified" content="${verificationDate}">`));
-  assert.match(latestHtml, new RegExp(`"dateModified"\\s*:\\s*"${verificationDate}"`));
-  assert.ok(latestHtml.includes(`最終更新: <time datetime="${verificationDate}">${verificationDate}</time>`));
+  assert.ok(latestHtml.includes(`<meta name="last-modified" content="${contentUpdatedDate}">`));
+  assert.match(latestHtml, new RegExp(`"dateModified"\\s*:\\s*"${contentUpdatedDate}"`));
+  assert.ok(latestHtml.includes(`最終更新: <time datetime="${contentUpdatedDate}">${contentUpdatedDate}</time>`));
   assert.match(latestHtml, /<header class="site-header guide-header"/);
   assert.match(latestHtml, /<nav class="global-nav ja-global-nav" aria-label="目的から探す"/);
 });
@@ -56,8 +57,10 @@ test('最新情報ハブは週次3制度とクエストを別項目として扱�
   assert.ok(latestHtml.includes('../articles/2026-07-31-google-play-quests.html'));
 });
 
-test('生成処理は公開ページの公式確認日を内容日SSOTとして使う', () => {
-  assert.equal(CONTENT_DATE_OVERRIDES['latest/index.html'], verificationDate);
+test('生成処理は内容更新日と制度の公式確認日を区別し、確認日より古い更新日にしない', () => {
+  assert.match(contentUpdatedDate, /^\d{4}-\d{2}-\d{2}$/);
+  assert.ok(contentUpdatedDate >= verificationDate);
+  assert.ok(latestHtml.includes(`data-latest-verified datetime="${verificationDate}">${verificationDate}</time>`));
 });
 
 test('鮮度検査は確認日から14日を超えた状態を検出する', () => {
@@ -321,19 +324,33 @@ test('同じ状態の定期確認はDOMを書き換えず、開始・終了時�
 });
 
 // 2026年11月の実カードは、状態ラベルだけでなく本文・操作先も期限に合わせる。
-test('11月の掲載カードは終了済み応募と取得済みコードを分け、楽天を開始前と案内しない', () => {
+test('11月の掲載カードは終了済み応募・取得済みコード・楽天の終了回と次回を分ける', () => {
   const card = id => latestHtml.match(new RegExp(`<article[^>]+data-benefit-id="${id}"[\\s\\S]*?<\\/article>`))?.[0] || '';
   const family = card('family-posa-2026');
   const rakuten = card('rakuten-gift-coupon-202611');
+  const nextRakuten = card('rakuten-gift-coupon-20261119');
   const lawson = card('lawson-gift-code-2026-autumn');
-  assert.ok(family && rakuten && lawson, '確認対象の3カードが必要');
+  assert.ok(family && rakuten && nextRakuten && lawson, '終了済み企画と楽天の次回を含む4カードが必要');
   assert.match(family, /購入・応募は終了/);
   assert.match(family, /11月26日/);
   assert.match(family, /class="benefit-action" href="https:\/\/vdpro\.jp\/fm\.posacards13\/"/);
   assert.doesNotMatch(family, /購入済みの方の応募方法を見る|応募は11\/3まで/);
-  assert.doesNotMatch(rakuten, /開始前|次回Google Play|事前取得のみ/);
+  assert.match(rakuten, /<h3>【終了】/);
+  assert.match(rakuten, /11月11日1:59に取得・利用とも終了/);
   assert.match(rakuten, /先着15,000回/);
-  assert.match(rakuten, /残数は未確認/);
+  assert.match(rakuten, /現在の購入には利用できません/);
+  assert.match(nextRakuten, /利用開始は11月19日20:00/);
+  assert.match(nextRakuten, /取得11\/9 10:00[〜～]11\/25 1:59・利用11\/19 20:00[〜～]11\/25 1:59/);
+  assert.match(nextRakuten, /先着10,000回/);
+  const stateAt = (html, now) => classifyBenefit({
+    category: 'gift', kind: 'dated',
+    start: html.match(/data-start="([^"]+)"/)?.[1],
+    end: html.match(/data-end="([^"]+)"/)?.[1]
+  }, Date.parse(now));
+  assert.equal(stateAt(rakuten, '2026-11-13T12:00:00+09:00'), 'ended');
+  assert.equal(stateAt(nextRakuten, '2026-11-13T12:00:00+09:00'), 'upcoming');
+  assert.equal(stateAt(nextRakuten, '2026-11-19T20:00:00+09:00'), 'soon');
+  assert.equal(stateAt(nextRakuten, '2026-11-25T02:00:00+09:00'), 'ended');
   assert.match(lawson, /特典取得も11月2日23:59で終了/);
   assert.match(lawson, /取得済み.*12月1日23:59/);
   assert.match(lawson, /class="benefit-action" href="https:\/\/www\.lawson\.co\.jp\/lab\/campaign\/googlemileage2609\/"/);
