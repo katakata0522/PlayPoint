@@ -1,24 +1,24 @@
 {
-  "snapshot": "2026-11-07",
-  "start": "2026-10-03",
-  "end": "2026-11-01",
+  "snapshot": "2026-11-14",
+  "start": "2026-10-10",
+  "end": "2026-11-08",
   "guides": {
     "en": [
-      [
-        "/en/articles/google-play-quests.html",
-        "Google Play quest not working? Check progress and purchase rules"
-      ],
       [
         "/en/articles/2026-10-12-google-play-fest-2026.html",
         "Google Play Fest 2026 recap: US sweepstakes and past offers"
       ],
       [
-        "/en/articles/google-play-points-cash-conversion.html",
-        "Can You Redeem Google Play Points for Cash?"
+        "/en/articles/google-play-quests.html",
+        "Google Play quest not working? Check progress and purchase rules"
       ],
       [
         "/en/articles/google-play-points-country-differences.html",
         "Google Play Points rules differ by Play country"
+      ],
+      [
+        "/en/articles/google-play-points-cash-conversion.html",
+        "Can You Redeem Google Play Points for Cash?"
       ],
       [
         "/en/articles/google-play-points-levels.html",
