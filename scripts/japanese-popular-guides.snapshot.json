@@ -1,11 +1,15 @@
 {
-  "snapshot": "2026-11-07",
-  "start": "2026-10-03",
-  "end": "2026-11-01",
+  "snapshot": "2026-11-14",
+  "start": "2026-10-10",
+  "end": "2026-11-08",
   "guides": [
     [
       "/articles/2026-10-10-google-play-fest-2026.html",
       "Playフェス2026の記録｜限定交換品と書籍15倍【終了】"
+    ],
+    [
+      "/articles/2026-07-25-play-points-coupon-not-applied.html",
+      "Google Playの保存済みクーポンは削除できる？使えない・適用解除の確認"
     ],
     [
       "/articles/2026-07-31-google-play-quests.html",
@@ -14,10 +18,6 @@
     [
       "/articles/2025-12-25-best-use.html",
       "Google Play Pointsの交換先おすすめ｜使い道・クーポン・Playクレジットを比較"
-    ],
-    [
-      "/articles/2026-07-25-play-points-coupon-not-applied.html",
-      "Google Playの保存済みクーポンは削除できる？使えない・適用解除の確認"
     ],
     [
       "/articles/2025-12-25-weekly-reward.html",
