@@ -64,6 +64,7 @@ function createRuntime({ failCoreOnce = false, failGaOnce = false } = {}) {
             context.PlayPointAnalytics = {
               installGtagBridge() {
                 context.gtag = function gtag() { context.dataLayer.push(arguments); };
+                return true;
               },
               markAnalyticsReady() { readyCount += 1; }
             };
@@ -98,6 +99,7 @@ function createRuntime({ failCoreOnce = false, failGaOnce = false } = {}) {
     }
   };
   context.window = context;
+  context.PlayPointAdPrivacy = { protect() { return true; } };
   vm.createContext(context);
   vm.runInContext(source, context, { filename: 'third-party.js' });
 
@@ -224,6 +226,7 @@ function createRuntime({
     }
   };
   context.window = context;
+  context.PlayPointAdPrivacy = { protect() { return true; } };
   if (coreReady) context.PlayPointAnalytics = core;
   if (consentReady) context.PlayPointConsent = consent;
   function addExistingAd() {
@@ -267,6 +270,17 @@ async function settle() {
 
 test('blog広告: 検索URLを保護できない場合も広告を妨げず解析だけ開始しない', async () => {
   const r = createRuntime({ analyticsAllowed: true, urlProtected: false });
+  r.idle.shift()();
+  await settle();
+  assert.equal(r.appended.some(script => script.src.includes('googletagmanager.com/gtag/js')), false);
+  assert.equal(r.gtagCalls.some(call => call[0] === 'config' || call[0] === 'ready'), false);
+  assert.equal(r.context.__playpointGaConfigured, undefined);
+  assert.equal(r.adScripts().length, 1);
+});
+
+test('blog広告: 旧coreのundefinedを成功と扱わず解析だけ開始しない', async () => {
+  const r = createRuntime({ analyticsAllowed: true, urlProtected: null });
+  r.context.PlayPointAnalytics.installGtagBridge = () => undefined;
   r.idle.shift()();
   await settle();
   assert.equal(r.appended.some(script => script.src.includes('googletagmanager.com/gtag/js')), false);

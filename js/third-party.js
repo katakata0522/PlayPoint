@@ -54,9 +54,9 @@
         }
         try {
             await ensureAnalyticsCore();
-            if (window.PlayPointAnalytics.installGtagBridge() === false) return;
+            if (window.PlayPointAnalytics.installGtagBridge() !== true) return;
             await loadScript(ANALYTICS_SCRIPT_SRC, { fetchpriority: 'low' });
-            if (window.PlayPointAnalytics.installGtagBridge() === false) return;
+            if (window.PlayPointAnalytics.installGtagBridge() !== true) return;
             window.gtag('js', new Date());
             window.gtag('set', { app_display_mode: getDisplayMode() });
             window.__playpointManualPageView = true;
@@ -74,6 +74,7 @@
     }
 
     function initializeManagedAds() {
+        if (window.PlayPointAdPrivacy?.protect?.() !== true) return;
         document.querySelectorAll('.lp-ad-container ins.adsbygoogle, .game-ad-container ins.adsbygoogle, body[data-game-guide-article] .article-ad-container ins.adsbygoogle').forEach((ad) => {
             if (!ad.dataset.adSlot) ad.dataset.adSlot = MANAGED_ADSENSE_SLOT;
             if (ad.dataset.playpointAdRequested === 'true' || ad.dataset.adsbygoogleStatus) return;
@@ -88,6 +89,7 @@
     }
 
     async function loadAdsense() {
+        if (window.PlayPointAdPrivacy?.protect?.() !== true) return;
         if (adsLoaded) return;
         try {
             const attrs = { crossorigin: 'anonymous' };

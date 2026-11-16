@@ -50,6 +50,8 @@ const assetSyncMutableJsTargets = [
   'sw.js',
   'js/third-party.js',
   'js/config.js',
+  'js/main.js',
+  'js/intl-copy-overrides.js',
   'js/points-cost.js',
   'blog/article.js',
   'blog/components.js'

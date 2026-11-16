@@ -6,6 +6,7 @@ const path = require('path');
 const { replaceAssetVersion } = require('./html-replacements.cjs');
 
 const ROOT_SERVICE_WORKER_ASSETS = [
+  { versionKey: 'adPrivacyVersion', assetPath: './js/ad-url-privacy.js' },
   { versionKey: 'cssVersion', assetPath: './style.css' },
   { versionKey: 'analyticsCoreVersion', assetPath: './js/analytics-core.js' },
   { versionKey: 'mainCalculatorUiVersion', assetPath: './js/main-calculator-ui.js' },
@@ -14,6 +15,7 @@ const ROOT_SERVICE_WORKER_ASSETS = [
 ];
 
 const APP_MODULE_FILES = [
+  'js/ad-url-privacy.js',
   'js/analytics-core.js',
   'js/config.js',
   'js/region-navigation.js',
@@ -122,6 +124,7 @@ function syncServiceWorkerRegistration(rootDir) {
 }
 
 function collectAssetVersions(rootDir) {
+  const adPrivacyVersion = createFileRevision(rootDir, 'js/ad-url-privacy.js');
   const cssVersion = createFileRevision(rootDir, 'style.css');
   const analyticsCoreVersion = createFileRevision(rootDir, 'js/analytics-core.js');
   const consentVersion = createFileRevision(rootDir, 'js/consent.js');
@@ -139,6 +142,7 @@ function collectAssetVersions(rootDir) {
   const articleScriptVersion = createFileRevision(rootDir, 'blog/article.js');
 
   return {
+    adPrivacyVersion,
     analyticsCoreVersion,
     articleScriptVersion,
     articleSharedCssVersion,
@@ -209,6 +213,12 @@ function syncSharedRuntimeAssetVersions(rootDir, versions) {
       ['weekly-reward-ui.css', versions.weeklyRewardUiCssVersion]
     ] },
     { file: 'js/config.js', replacements: [
+      ['analytics-core.js', versions.analyticsCoreVersion]
+    ] },
+    { file: 'js/main.js', replacements: [
+      ['analytics-core.js', versions.analyticsCoreVersion]
+    ] },
+    { file: 'js/intl-copy-overrides.js', replacements: [
       ['analytics-core.js', versions.analyticsCoreVersion]
     ] },
     { file: 'js/points-cost.js', replacements: [

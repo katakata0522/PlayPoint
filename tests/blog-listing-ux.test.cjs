@@ -26,7 +26,7 @@ test('stgの静的アセットでも共通検索と保存コード・実行順�
     const php=fs.readFileSync(path.join(folder,'playpoint-catalog-blog.php'),'utf8');
     const marker="base64_decode('",start=php.indexOf(marker)+marker.length,end=php.indexOf("'",start);
     const {html,assets}=JSON.parse(require('node:zlib').gunzipSync(Buffer.from(php.slice(start,end),'base64')));
-    assert.equal(assets.length,4);
+    assert.equal(assets.length,5);
     const bodies=new Map(assets.map(asset=>{
       const body=fs.readFileSync(path.join(folder,'assets/wp-catalog',asset.name),'utf8');
       const sha=require('node:crypto').createHash('sha256').update(body).digest('hex');
@@ -35,6 +35,10 @@ test('stgの静的アセットでも共通検索と保存コード・実行順�
       return [asset.name,body];
     }));
     const runtime=assets.find(asset=>asset.sources.includes('blog/script.js'));
+    const privacy=assets.find(asset=>asset.sources.includes('js/ad-url-privacy.js'));
+    assert.ok(privacy, '共通HTMLに加えた広告URL保護も退避用パッケージへ保持する');
+    assert.ok(bodies.get(privacy.name).endsWith(read('js/ad-url-privacy.js').replaceAll('\r\n','\n')), '広告URL保護の本文を保持する');
+    assert.ok(html.indexOf(privacy.url)<html.indexOf(runtime.url), '広告URL保護がruntimeより後にある');
     assert.deepEqual(runtime.sources,['js/article-search.js','js/reading-library.js','blog/utils.js','blog/components.js','blog/script.js']);
     for(const name of ['js/article-search.js','js/reading-library.js'])assert.ok(bodies.get(runtime.name).includes(read(name).replaceAll('\r\n','\n')),name);
     const guide=assets.find(asset=>asset.sources.includes('js/guide-navigation.js')),theme=assets.find(asset=>asset.sources.includes('js/reading-theme.js'));

@@ -9,6 +9,7 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 const analyticsCoreSource = fs.readFileSync(path.join(root, 'js/analytics-core.js'), 'utf8');
 const thirdPartySource = fs.readFileSync(path.join(root, 'js/third-party.js'), 'utf8');
+const adPrivacySource = fs.readFileSync(path.join(root, 'js/ad-url-privacy.js'), 'utf8');
 
 function createAd(dataset = {}) {
   return { dataset: { ...dataset } };
@@ -23,7 +24,8 @@ function createRuntime({
   managedAds = [],
   adsenseFailures = 0,
   animationFrames = false,
-  visibilityState = 'visible'
+  visibilityState = 'visible',
+  adPrivacyReady = true
 } = {}) {
   const storage = new Map();
   const appendedScripts = [];
@@ -54,8 +56,10 @@ function createRuntime({
     requestIdleCallback(callback, options) { idleTasks.push({ callback, options }); return idleTasks.length; },
     adsbygoogle: []
   };
+  context.history = { pushState() {}, replaceState() {} };
 
   context.document = {
+    referrer: '',
     readyState,
     visibilityState,
     currentScript: {
@@ -118,6 +122,7 @@ function createRuntime({
 
   context.window = context;
   vm.createContext(context);
+  if (adPrivacyReady) vm.runInContext(adPrivacySource, context, { filename: 'ad-url-privacy.js' });
   vm.runInContext(analyticsCoreSource, context, { filename: 'analytics-core.js' });
   vm.runInContext(thirdPartySource, context, { filename: 'third-party.js' });
 
@@ -161,6 +166,14 @@ function gtagCalls(context) {
 function scriptsMatching(runtime, needle) {
   return runtime.appendedScripts.filter(item => item.src.includes(needle));
 }
+
+test('広告URL保護がない場合はライブラリとqueueを止め解析の許可経路は維持する', async () => {
+  const runtime = createRuntime({ adPrivacyReady: false, managedAds: [createAd()] });
+  await advanceAnalytics(runtime);
+  assert.equal(scriptsMatching(runtime, 'adsbygoogle.js').length, 0);
+  assert.equal(runtime.context.adsbygoogle.length, 0);
+  assert.equal(scriptsMatching(runtime, 'googletagmanager.com/gtag/js').length, 1);
+});
 
 test('表示中のページは最初の描画機会を渡してからAdSenseを一度だけ取得する', async () => {
   const runtime = createRuntime({ animationFrames: true });
@@ -236,6 +249,18 @@ test('検索URLを保護できなければ許可済みでもGoogleタグを取�
   assert.equal(scriptsMatching(runtime, 'googletagmanager.com/gtag/js').length, 0);
   assert.equal(gtagCalls(runtime.context).some(call => call[0] === 'config'), false);
   assert.equal(runtime.context.__playpointGaConfigured, undefined);
+});
+
+test('旧coreが保護成功を返さない場合もGoogleタグを取得せず広告とは分離する', async () => {
+  const ad = createAd();
+  const runtime = createRuntime({ managedAds: [ad] });
+  runtime.context.PlayPointAnalytics = { ...runtime.context.PlayPointAnalytics, installGtagBridge() {} };
+  await advanceAnalytics(runtime);
+  assert.equal(scriptsMatching(runtime, 'googletagmanager.com/gtag/js').length, 0);
+  assert.equal(gtagCalls(runtime.context).some(call => call[0] === 'config'), false);
+  assert.equal(runtime.context.__playpointGaConfigured, undefined);
+  assert.equal(scriptsMatching(runtime, 'adsbygoogle.js').length, 1);
+  assert.equal(runtime.context.adsbygoogle.length, 1);
 });
 
 test('Analyticsと広告枠のConsent境界を独立して守る', async () => {

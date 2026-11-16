@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { renderHeader, renderNavigation } = require('./japanese-navigation-sidebar.cjs');
 const { createRevision } = require('./article-asset-versioning.cjs');
+const { ensureAdPrivacyScript } = require('./analytics-runtime-sync.cjs');
 const ORIGIN = 'https://playpoint-sim.com';
 const MODIFIED = '2026-10-04';
 const TOPIC_GUIDES = [
@@ -53,7 +54,7 @@ function renderTopicGuide(root, guide) {
 function syncTopicGuides(root) {
   for (const guide of TOPIC_GUIDES) {
     const file = path.join(root, `guides/${guide.slug}/index.html`); fs.mkdirSync(path.dirname(file), { recursive: true });
-    const output = renderTopicGuide(root, guide);
+    const output = ensureAdPrivacyScript(renderTopicGuide(root, guide), createRevision(path.join(root, 'js/ad-url-privacy.js')));
     if (!fs.existsSync(file) || fs.readFileSync(file, 'utf8') !== output) fs.writeFileSync(file, output);
   }
   const file = path.join(root, 'blog/index.html'); let html = fs.readFileSync(file, 'utf8');

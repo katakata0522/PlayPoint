@@ -20,7 +20,7 @@
       clear.hidden = !query;
       const url = new URL(location.href); url.searchParams.delete('q');
       if (query) url.searchParams.set('pp_q', input.value.trim()); else url.searchParams.delete('pp_q');
-      history.replaceState(null, '', url);
+      history.replaceState(null, '', url.href);
     }
     const params = new URLSearchParams(location.search);
     input.value = params.get('pp_q') ?? params.get('q') ?? '';

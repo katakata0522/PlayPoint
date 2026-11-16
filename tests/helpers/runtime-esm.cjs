@@ -25,7 +25,8 @@ function createLoader(context, overrides = {}) {
     if (resolved.origin !== ORIGIN) throw new Error(`外部モジュールは取得しません: ${resolved.href}`);
     const file = resolved.pathname.slice(1);
     if (!modules.has(resolved.href)) {
-      const source = Object.hasOwn(overrides, file) ? overrides[file] : fs.readFileSync(path.join(ROOT, file), 'utf8');
+      const source = Object.hasOwn(overrides, resolved.href) ? overrides[resolved.href]
+        : Object.hasOwn(overrides, file) ? overrides[file] : fs.readFileSync(path.join(ROOT, file), 'utf8');
       modules.set(resolved.href, new vm.SourceTextModule(source, { context, identifier: resolved.href }));
     }
     return modules.get(resolved.href);
@@ -108,11 +109,82 @@ async function observeRegistration(options, overrides) {
   return { beforeLoad, afterLoad, loadListeners: loadListeners.length, scheduled, calls, updates, errors, warnings };
 }
 
+async function observeCachedAnalytics(options = {}) {
+  const location = new URL(options.query || '?mode=main&points=137', `${ORIGIN}/${options.locale ? options.locale + '/' : ''}`);
+  const originalUrl = location.href;
+  const context = vm.createContext({
+    URL, URLSearchParams, location, navigator: {},
+    console: { log() {}, warn() {}, error() {} },
+    document: { referrer: `${ORIGIN}/?amount=23456`, dispatchEvent() {} },
+    sessionStorage: { getItem() { return null; }, setItem() {}, removeItem() {} },
+    PlayPointConsent: { getStatus() { return options.consent || 'granted'; } },
+    addEventListener() {}, dispatchEvent() {},
+    CustomEvent: class CustomEvent { constructor(type) { this.type = type; } }
+  });
+  context.window = context;
+  const pagePath = options.locale ? `${options.locale}/index.html` : 'index.html';
+  const html = fs.readFileSync(path.join(ROOT, pagePath), 'utf8');
+  const pageUrl = new URL(pagePath, `${ORIGIN}/`);
+  const { parseAttributes } = require('./markup-contract.cjs');
+  const entries = [];
+  const scriptTokens = /<!--[\s\S]*?(?:-->|$)|<script\b((?:"[^"]*"|'[^']*'|[^'">])*)>[\s\S]*?(?:<\/script\s*>|$)/gi;
+  for (const token of html.matchAll(scriptTokens)) {
+    if (!token[1]) continue;
+    const attrs = parseAttributes(`<script ${token[1]}>`);
+    if (attrs.type === 'module' && attrs.src) entries.push(new URL(attrs.src, pageUrl).href);
+  }
+  // HTMLの先行moduleも含む実import順を評価する。UI本体はブラウザ検査が担当する。
+  const overrides = {};
+  const importsByEntry = new Map();
+  for (const entry of entries) {
+    const parsed = new vm.SourceTextModule(fs.readFileSync(path.join(ROOT, new URL(entry).pathname.slice(1)), 'utf8'), { context });
+    importsByEntry.set(entry, parsed.dependencySpecifiers);
+    for (const specifier of parsed.dependencySpecifiers) {
+      const url = new URL(specifier, entry);
+      if (url.pathname !== '/js/analytics-core.js') overrides[url.pathname.slice(1)] = '';
+    }
+  }
+  for (const [entry, specifiers] of importsByEntry) {
+    overrides[entry] = specifiers.map(specifier => `import ${JSON.stringify(specifier)};`).join('\n');
+  }
+  overrides['js/config.js'] = `import './analytics-core.js?v=legacy'; window.cachedConfigApi = window.PlayPointAnalytics;`;
+  // 旧版の「存在だけで再利用し、bridge成功値を返さない」契約を再現する。
+  overrides[`${ORIGIN}/js/analytics-core.js?v=legacy`] = `
+    if (!window.PlayPointAnalytics) {
+      window.dataLayer = [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.PlayPointAnalytics = {
+        installGtagBridge() {}, markAnalyticsReady() {},
+        track(name, params) { window.gtag('event', name, params); }
+      };
+    }
+  `;
+  const loader = createLoader(context, overrides);
+  const bootstrap = new vm.SourceTextModule(
+    entries.map(entry => {
+      const url = new URL(entry);
+      return `import ${JSON.stringify(url.pathname + url.search)};`;
+    }).join('\n'),
+    { context, identifier: `${ORIGIN}/bootstrap.js` }
+  );
+  await bootstrap.link((specifier, parent) => loader.load(loader.resolve(specifier, parent.identifier)));
+  await bootstrap.evaluate();
+  const analytics = context.PlayPointAnalytics;
+  analytics.markAnalyticsReady();
+  analytics.track(options.event || 'calculation_completed', { calculation_mode: options.event ? 'spend_to_points' : 'rank_up', region: 'JP' });
+  return {
+    originalUrl, finalUrl: location.href, entries,
+    sharedApi: context.cachedConfigApi === analytics,
+    bridgeProtected: analytics.installGtagBridge() === true,
+    events: (context.dataLayer || []).map(item => Array.from(item)).filter(item => item[0] === 'event')
+  };
+}
+
 if (require.main === module) {
   (async () => {
     const input = JSON.parse(fs.readFileSync(0, 'utf8'));
-    const result = input.kind === 'graph'
-      ? inspectGraph(input.overrides)
+    const result = input.kind === 'graph' ? inspectGraph(input.overrides)
+      : input.kind === 'cached-analytics' ? await observeCachedAnalytics(input.options)
       : await Promise.all(input.scenarios.map(options => observeRegistration(options, input.overrides)));
     process.stdout.write(JSON.stringify(result));
   })().catch(error => { console.error(error); process.exitCode = 1; });

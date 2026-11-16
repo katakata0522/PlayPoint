@@ -359,6 +359,7 @@
 
         const request = () => {
             scheduledArticleAds.delete(ad);
+            if (window.PlayPointAdPrivacy?.protect?.() !== true) return;
             if (!ad.isConnected || ad.dataset.playpointAdRequested === 'true' || ad.dataset.adsbygoogleStatus) return;
             // 待機中に同意が取り消され、再許可時には遠くへ移動している場合も再判定する。
             if (monitorDistance && !isArticleAdNearViewport(ad)) {
@@ -389,6 +390,7 @@
 
     // AdSense本体はページ解析をブロックしないasyncで早期取得し、固定スクロール量による機会損失を避ける。
     function loadArticleAdsense() {
+        if (window.PlayPointAdPrivacy?.protect?.() !== true) return;
         if (articleAdsenseLoaded) {
             initializeManagedArticleAds();
             return;

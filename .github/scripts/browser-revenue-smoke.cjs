@@ -121,6 +121,16 @@ function assertExternalRequests(requests, label) {
   );
 }
 
+async function assertAdPrivacy(page, paused, label) {
+  const state = await page.evaluate(() => ({
+    paused: window.PlayPointAdPrivacy?.getState().paused,
+    // このsuiteのSDKはstub。実SDKのsetter-only APIと通信は別途確認する。
+    flag: window.adsbygoogle?.pauseAdRequests
+  }));
+  strictAssert.equal(state.paused, paused, label + ': 広告URL境界');
+  if (paused) strictAssert.equal(state.flag, 1, label + ': Google公式の要求保留');
+}
+
 async function main() {
   assert(CHROME_PATH, 'CHROME_PATH is required');
   let localServer;
@@ -375,6 +385,7 @@ async function main() {
           const eventName = mode === 'main' ? 'calculation_completed' : 'reverse_calculation_completed';
           await page.waitForFunction(name => (window.dataLayer || []).some(item => item[0] === 'event' && item[1] === name), eventName);
           strictAssert.equal(page.url(), shared, '共有URLを消さずに復元を維持する');
+          await assertAdPrivacy(page, true, '共有URL');
           strictAssert.equal(await page.locator(mode === 'main' ? '#neededPoints' : '#amountYen').inputValue(), mode === 'main' ? '137' : '23456');
           strictAssert.equal(await page.locator(mode === 'main' ? '#baseRate' : '#reverseBaseRate').inputValue(), '2.5');
           strictAssert.equal(await page.locator(mode === 'main' ? '#multiplier' : '#reverseMultiplier').inputValue(), '2');
@@ -399,6 +410,7 @@ async function main() {
           const page = await context.newPage();
           await page.goto(new URL('?mode=main&status=1&target=silver&points=137&multiplier=1', baseUrl).href, { waitUntil: 'load' });
           await page.waitForFunction(expected => window.PlayPointConsent?.getStatus() === expected && document.querySelector('#result')?.dataset.requiredYen, initial);
+          await assertAdPrivacy(page, true, initial);
           const events = () => page.evaluate(() => (window.dataLayer || []).filter(item => item[0] === 'event').length);
           strictAssert.equal(await events(), 0, `${initial}: 同意前のイベント送信`);
           strictAssert.equal(await page.locator('script[src*="googletagmanager.com/gtag/js"]').count(), 0, `${initial}: 同意前のGA取得`);
@@ -408,6 +420,7 @@ async function main() {
           await page.waitForFunction(() => (window.dataLayer || []).some(item => item[0] === 'event' && item[1] === 'calculation_completed'));
           await page.evaluate(() => window.__testSetConsent('denied'));
           await page.waitForFunction(() => window.PlayPointConsent?.getStatus() === 'denied');
+          await assertAdPrivacy(page, true, '許可取消し後');
           const before = await events();
           await page.locator('#neededPoints').fill('138');
           await page.locator('#calculateButton').click();
@@ -428,12 +441,14 @@ async function main() {
           await page.waitForFunction(() => window.__playpointGaConfigured && document.querySelector('#points-cost-result')?.dataset.shareUrl);
           strictAssert.equal(await page.locator('#points-target').inputValue(), '137');
           strictAssert.equal(await page.locator('#points-multiplier').inputValue(), '2');
+          await assertAdPrivacy(page, true, target);
           const expectedAction = new URL(target, baseUrl).href;
           strictAssert.equal(await page.locator('#points-cost-form').evaluate(form => form.action), expectedAction);
           await page.locator('#points-target').fill('138');
           await page.locator('#points-cost-form button[type="submit"]').click();
           await page.waitForFunction(() => new URL(document.querySelector('#points-cost-result').dataset.shareUrl).searchParams.get('points') === '138');
           strictAssert.equal(new URL(page.url()).searchParams.get('points'), '138', '計算条件をURLへ保持する');
+          await assertAdPrivacy(page, true, '履歴更新後');
           strictAssert.equal(await page.locator('#points-cost-form').evaluate(form => form.action), expectedAction, '履歴更新後も自動フォームの送信先は入力値なし');
           console.log(`ok - points-cost shared restore and private form destination: ${target}/${width}px`);
         } finally { await context.close(); }
@@ -448,6 +463,7 @@ async function main() {
         const page = await context.newPage();
         await page.goto(baseUrl, { waitUntil: 'load' });
         await page.waitForFunction(() => document.querySelector('#currentStatus')?.options.length > 1 && window.PlayPointConsent?.getStatus() === 'granted');
+        await assertAdPrivacy(page, false, 'クエリなし通常ページ');
         const count = name => page.evaluate(name => (window.dataLayer || []).filter(item => item[0] === 'event' && item[1] === name).length, name);
         await page.locator('#neededPoints').fill('100');
         await page.locator('#calculateButton').click();

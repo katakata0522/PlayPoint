@@ -1,5 +1,21 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-11-16 AdSenseへの共有URL入力値混入
+
+| テスト | 主担当の保証 |
+| --- | --- |
+| `ad-url-privacy.test.cjs` | URL・参照元・履歴・同意再通知に対する広告保留と、通常閲覧・共有条件の保持 |
+
+`ad-url-privacy.test.cjs` はGoogle公式のページ単位保留APIと既存の履歴境界を担当する。クエリ・断片・参照元・未知キー・符号化/重複、履歴更新前の保留、引数と戻り値、戻る/BFCache相当のイベント、同意再通知、setter-only SDK、監視/代入失敗、実ゲーム一覧の検索前とクリア後を挙動で確認する。既存third-partyの所有テストには保護API欠損時の広告停止と、解析が独立して動く対照を加える。
+
+既存growth-foundationは実公開HTMLの相対srcをページURLで解決し、inline queueより前のhead保護と、遅い再生成ページを含む一度だけの挿入を確認する。生成関数はscript/style/コメント/RCDATAを保全し、LF/CRLFと旧タグ移動の冪等性を確認する。既存browser-revenueでは共有復元、4地域の必要額フォーム、同意前/拒否後と、クエリなし通常ページの保留状態を実ブラウザで確認する。SDK stubのqueueを実広告通信の成功とは扱わない。
+
+実AdSenseのSDK/実装を使う別の隔離受け入れでは、広告・GA通信を転送前に遮断し、URL・body・参照元を検査する。入力値付きURLで広告要求が0件、通常URLで実要求が発生する対照、既存の共有復元、再読込み、遅延同意・再試行・履歴更新を確認する。実地域CMP、公開DebugView、実スマホはそれぞれ別に成功/不合格/未実施を記録する。新しい必須ゲートや広告管理設定は追加しない。
+
+## 2026-11-16 旧計測coreと新しい起動資材の混在
+
+既存runtime-module-guardsのESM実行helperで、6地域の実HTMLにある先行moduleを含むimport順と旧config/coreの組合せを評価し、通常・逆算の共有クエリ保持、清掃済み計測URL、同意前の非送信を確認する。既存third-party-analytics-integrationとthird-party-resilienceは、旧bridgeのundefinedを成功扱いせずGAだけを起動しないことと広告の同意境界を担当する。既存preflight-execution-contractは、同期で変更するmainとintl-copy-overridesを成功・失敗とも復元し、配信用実行だけ保持することを担当する。現行APIを表すlatest-hubのfixtureは明示的な成功値へ合わせる。新しい必須ゲートは追加しない。隔離した実Googleタグ・旧SWのブラウザ比較と、実AdSense・実地域CMPの本番受け入れは区別して記録する。
+
 ## 2026-11-09 本番性能測定でも広告・計測を遮断
 
 既存ci-performance-samplingの本番suite検査を「本番の外部通信は遮断しない」から「本番でも広告・計測の第三者を遮断する」へ変更する。定期実行の本番測定が広告配信量の当たり外れで成否の揺れる問題への方針変更で、予算値と遮断リスト（BLOCKED）は変更しない。PRのローカル測定の挙動、本番は証明書の通常検証を維持する保証、first-party違反を追加測定で消さない保証は維持する。新しいテストファイル・必須ゲートは追加しない。

@@ -30,6 +30,25 @@ const runtimeModules = [
 const graph = runEsmProbe({ kind: 'graph' });
 const revision = file => createHash('sha256').update(read(file).replace(/\r\n/g, '\n')).digest('hex').slice(0, 10);
 
+test('旧configが混在する初回起動でも現coreが共有URLを保護し同意境界を守る', () => {
+  for (const locale of ['', 'en', 'ko', 'tw', 'hk', 'in']) for (const mode of [
+    { query: '?mode=main&points=137&baseRate=2.5&multiplier=2' },
+    { query: '?mode=reverse&amount=23456&eligible=22000', event: 'reverse_calculation_completed' }
+  ]) {
+    const options = { ...mode, locale };
+    const result = runEsmProbe({ kind: 'cached-analytics', options });
+    assert.equal(result.finalUrl, result.originalUrl, '共有条件をアドレスから失っている');
+    assert.equal(result.sharedApi, true, 'configと起動処理が異なる計測APIを捕捉している');
+    assert.equal(result.bridgeProtected, true, '旧coreが先に成立している');
+    const event = result.events.find(item => item[1] === (options.event || 'calculation_completed'));
+    assert.ok(event, '保護された計算イベントがない');
+    assert.equal(event[2].page_location, `${ORIGIN}/${locale ? locale + '/' : ''}`);
+    assert.equal(event[2].page_referrer, `${ORIGIN}/`);
+    const pending = runEsmProbe({ kind: 'cached-analytics', options: { ...options, consent: 'pending' } });
+    assert.equal(pending.events.length, 0, '同意前にイベントを出している');
+  }
+});
+
 // raw textのscript/styleとコメントは1トークンで読み、本文の偽タグを参照にしない。
 function publicAssetReferences(html) {
   const references=[];
