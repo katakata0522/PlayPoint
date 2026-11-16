@@ -25,7 +25,7 @@ function main({ outputDir = 'performance-artifacts', env = process.env, execute 
   fs.mkdirSync(outputDir, { recursive: true });
   const manifest = { schemaVersion: 1, target, base, environment: fingerprint(env),
     policy: 'home/hub=3; other pages=1, timing-only breach adds 2; all samples retained; bytes use maximum',
-    thirdPartyBlocked: target === 'local', reports: [], attempts: [], passed: false };
+    thirdPartyBlocked: true, reports: [], attempts: [], passed: false };
   const save = () => writeJson(path.join(outputDir, 'audit-manifest.json'), manifest);
   function audit(name, route, number, isHome) {
     const file = path.join(outputDir, `${name}${isHome || number > 1 ? '-' + number : ''}.json`);
@@ -33,12 +33,14 @@ function main({ outputDir = 'performance-artifacts', env = process.env, execute 
     // 途中失敗しても、予定したsampleが欠損した事実を残す。
     fs.rmSync(file, { force: true });
     save();
+    // 広告・計測の第三者は本番測定でも遮断し、第一者の性能だけを予算判定する（2026-11-09方針変更）。
+    // 証明書の検証緩和は隔離した自己署名のローカル測定だけに残す。
     const args = [path.join(root, '.github/ci-runtime/lighthouse/node_modules/lighthouse/cli/index.js'), base + route,
       '--only-categories=performance', '--form-factor=mobile', '--throttling.cpuSlowdownMultiplier=6',
       '--output=json', '--output-path=' + file,
       '--chrome-flags=--headless --no-sandbox --disable-gpu' + (target === 'local' ? ' --ignore-certificate-errors' : ''),
       '--max-wait-for-load=45000',
-      ...(target === 'local' ? BLOCKED.map(pattern => '--blocked-url-patterns=' + pattern) : []), '--quiet'];
+      ...BLOCKED.map(pattern => '--blocked-url-patterns=' + pattern), '--quiet'];
     const started = Date.now();
     const result = execute(process.execPath, args, { cwd: root, env, stdio: 'inherit', timeout: 120000 });
     const attempt = { name, number, file, durationMs: Date.now() - started, exitCode: result.status ?? null, signal: result.signal || null };

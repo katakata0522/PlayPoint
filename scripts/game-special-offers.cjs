@@ -1,7 +1,7 @@
 'use strict';
 
 const { SOURCES } = require('./game-seo-data.cjs');
-const REVIEWED_AT = '2026-10-07';
+const REVIEWED_AT = '2026-11-06';
 // 調査日と、Google Play価格の確認を分ける。別ストア・古い攻略価格は計算値にしない。
 const official = (url) => ({ url, label: '公式情報' });
 const guide = (url, label) => ({ url, label });
@@ -37,7 +37,8 @@ const SPECIAL_OFFERS = {
       item('monthly', 'マンスリーパッケージ', '30日間・毎日受取', '購入時と毎日の青輝石に、指名手配・学園交流会チケットなどが付くパッケージ。', guide('https://appmedia.jp/blue_archive/78140522', 'AppMediaの比較')),
       item('monthly-half', 'マンスリーパッケージ（ハーフ）', '30日間・毎日受取', '通常版より少額で、青輝石やチケットの数量も少ない別商品。毎日遊ぶ予定と予算に合わせて。', guide('https://appmedia.jp/blue_archive/78140522', 'AppMediaの比較')),
       item('stamina', '2weeksスタミナパッケージ', '14日間・AP補充', '毎日AP150を受け取る育成・周回向けの商品。青輝石中心のマンスリーとは目的が違います。', guide('https://appmedia.jp/blue_archive/78140522', 'AppMediaの比較'))
-    ]
+    ],
+    note: 'ここに載せたのはJP版の商品です。Nexon版（グローバル版）には、Lite系のマンスリーパッケージやバトルパスなど、JP版にはない継続課金商品もあります。JP版は2027年1月にNexonへ運営移管予定で、その後の商品構成は移管時の案内で確認してください。'
   },
   pokepoke: {
     lead: '毎日パックを開けるなら、ポケゴールドを買い足す前にプレミアムパスを確認。今すぐたくさん開けたい場合とは使い方が違います。',
@@ -99,8 +100,8 @@ const SPECIAL_OFFERS = {
     lead: '毎日の報酬なら月間ブースト、便利機能なら盟約特権、クエストを進めているなら達成パックから。名前や契約期間も分けて選びましょう。',
     items: [
       item('monthly-boost', '月間ブースト', '30日間・毎日報酬と特権', '購入時の報酬に加え、30日間専用の毎日報酬と特権が有効に。前日に受け取らなかった報酬はプレゼントボックスへ届きます。', official('https://mementomori.zendesk.com/hc/ja/articles/44102448913049-月間ブーストについて')),
-      item('covenant-week', '盟約特権（1週間）', '7日間・自動更新', '全ワールド共通の特権。1か月版と同時加入はできません。VIP経験値やゲーム内チャージイベントの達成には加算されない別契約です。', official('https://mementomori.zendesk.com/hc/ja/articles/44102609445785-盟約特権について-iOS-Android')),
-      item('covenant-month', '盟約特権（1か月）', '30日間・自動更新', '1週間版より長い契約期間。同じ期間で自動更新され、初回3日無料体験もあります。無料期間で終える場合は終了24時間以上前の解約が必要です。', official('https://mementomori.zendesk.com/hc/ja/articles/44102609445785-盟約特権について-iOS-Android')),
+      item('covenant-week', '盟約特権（1週間）', '7日間・自動更新', '全ワールド共通の特権。1か月版と同時加入はできません。VIP経験値やゲーム内チャージイベントの達成には加算されない別契約です。初回購入時は3日間の無料体験があり、無料期間で終える場合は終了24時間以上前の解約が必要です。', official('https://mementomori.zendesk.com/hc/ja/articles/44102609445785-盟約特権について-iOS-Android')),
+      item('covenant-month', '盟約特権（1か月）', '30日間・自動更新', '1週間版より長い契約期間で、同じ期間で自動更新。初回3日無料体験は1週間版でも対象です。無料期間で終える場合は終了24時間以上前の解約が必要です。', official('https://mementomori.zendesk.com/hc/ja/articles/44102609445785-盟約特権について-iOS-Android')),
       item('achievement', '達成パック', 'クエスト進行報酬', 'クエストの達成状況に応じて報酬を受け取るタイプ。自分の進行度で、どこまで回収できるかを見て選びましょう。', guide('https://altema.jp/mememori/osusumepack', 'アルテマの商品比較'))
     ]
   },
@@ -154,16 +155,19 @@ const SPECIAL_OFFERS = {
     note: '更新停止中の攻略サイトの旧円価格は採用していません。課金する場合はクリスタル購入の支払額で計算します。'
   },
   'prospi-a': {
-    lead: 'プロスピAは、まず開催中のエナジー増量セールから。月額パスがある前提で選ぶより、今買えるエナジーの内容を比較しましょう。',
-    items: [item('sale', 'エナジー増量セール', '開催時のみ・購入回数制限', '通常購入と数量が違うセール商品。対象パック・増量分・購入上限を確認して、今回のGoogle Play支払額で計算できます。', guide('https://game8.jp/prospi_a/540492', 'Game8の解説'))],
+    lead: 'プロスピAは、まず開催中のエナジー増量セールから。毎月開催のマンスリーパスは円の自動更新ではなくエナジーで開放する形式なので、今買えるエナジーの内容とあわせて比較しましょう。',
+    items: [
+      item('sale', 'エナジー増量セール', '開催時のみ・購入回数制限', '通常購入と数量が違うセール商品。対象パック・増量分・購入上限を確認して、今回のGoogle Play支払額で計算できます。', guide('https://game8.jp/prospi_a/540492', 'Game8の解説')),
+      item('monthly-pass', 'マンスリーパス', '月次・毎月開催', '毎月開催される月次コンテンツ。無料のレギュラーに加え、5エナジーで開放するプレミアム、60エナジーで開放するプレミアムplusがあり、毎月1日15:00に購入状態や報酬がリセットされます。自動更新ではないので、その月ごとにエナジーで買い直す形式です。', guide('https://gamebiz.jp/news/433445', 'gamebizの報道'))
+    ],
     officialSource: official(SOURCES.prospiAGooglePlayPurchase),
-    note: '今回の公開情報調査では、常設の月額パスは確認できませんでした。KONAMIのストア特典はGoogle Play外の別条件です。'
+    note: '円建ての自動更新サブスクリプションはありません。マンスリーパスはエナジーで開放する月次コンテンツとして扱います。KONAMIのストア特典はGoogle Play外の別条件です。'
   },
   'pokemon-go': {
     lead: '今月のタスクを進めるならGOパスデラックス、レイド中心なら開催中のチケットを先にチェック。GOポイントはPlayポイントとは別です。',
     items: [
-      item('deluxe', 'GOパスデラックス', '期間制・進行報酬', '無料GOパスの追加報酬を解放。2026年10月版は10月6日〜11月3日で、報酬受取は11月5日10時まで。', official('https://pokemongo.com/ja/news/go-pass-october-2026')),
-      item('deluxe-plus', 'GOパスデラックス ＋10ランク', '期間制・進行を補助', '有料枠の解放に加え、10ランク分のGOポイントが付く商品。通常のデラックス、レイド用のプレミアムバトルパスとは別です。', official('https://pokemongo.com/ja/news/go-pass-october-2026'))
+      item('deluxe', 'GOパスデラックス', '期間制・進行報酬', '無料GOパスの追加報酬を解放。2026年11月版は11月3日10:00〜12月1日10:00で、リワードの受取は12月3日10:00まで。', official('https://pokemongo.com/ja/news/go-pass-november-2026')),
+      item('deluxe-plus', 'GOパスデラックス ＋10ランク', '期間制・進行を補助', '有料枠の解放に加え、購入時にランク11到達分のGOポイントが自動で付与される商品。通常のデラックス、レイド用のプレミアムバトルパスとは別です。', official('https://pokemongo.com/ja/news/go-pass-november-2026'))
     ],
     note: '公式告知の米ドル表記を円へ換算して固定しません。日本のGoogle Play支払額で計算し、Web Store限定特典は別に比較してください。'
   },

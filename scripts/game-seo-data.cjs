@@ -125,7 +125,7 @@ const GAME_SEO = {
     appStoreReference: { price: 10000, orbs: 180 },
     webStore: { price: 10000, orbs: 190 },
     monthlyWebStore: { price: 10000, orbs: 200, limitPerMonth: 1 },
-    productsVerifiedAt: '2026-10-07',
+    productsVerifiedAt: '2026-11-06',
     // アプリ内の商品。Webショップの増量オーブや予算例は含めない。
     packsJa: [
       { id: 'starter-premium', name: '初心者応援パック プレミアム (1,000円)', price: 1000, detail: '獣神化★6確定ガチャ1回とオーブ8個、育成アイテム。' },

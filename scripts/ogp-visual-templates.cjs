@@ -2,6 +2,18 @@
 
 // Visual cards for the 28 custom OGP designs
 const VISUAL_CARDS = {
+  'pc-redeem': `
+    <div style="width:100%;display:flex;flex-direction:column;gap:20px;text-align:center;">
+      <div style="padding:22px 12px;border:2px solid #38bdf8;border-radius:16px;background:#11364a;">
+        <div style="font-size:24px;font-weight:900;color:#fff;">ブラウザ</div>
+        <div style="font-size:18px;line-height:1.7;color:#bae6fd;">Play Points → 使う</div>
+      </div>
+      <div style="padding:22px 12px;border:2px solid #5ee0c4;border-radius:16px;background:#153632;">
+        <div style="font-size:22px;font-weight:900;color:#fff;">PC版 Play Games</div>
+        <div style="font-size:17px;line-height:1.7;color:#b5efe1;">対応PCゲームのアイテム</div>
+      </div>
+    </div>
+  `,
   'bluearchive-monthly-compare': `
     <div style="display:flex; flex-direction:column; gap:14px; width:100%; text-align:center;">
       <div style="background:rgba(56,189,248,.18);border:1.5px solid rgba(56,189,248,.5);border-radius:14px;padding:15px;">

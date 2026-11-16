@@ -64,6 +64,8 @@ node tools/wordpress/article-batch-build.mjs <私用生成先> --preview-only /g
 
 rendererは `.sidebar-search-form` だけをstgのブログ検索へ接続する。計算用やカレンダー用のformのaction・method・属性を変更せず、検索用hidden値も挿入しない。script内の文字列をフォームとして書き換えない。日記を開く `/?mode=diary&week=current` は、PHPと後続JSの両方でモード・週指定・fragmentを保持して元の公開サイトへ渡す。実stgの日記を確認するまで通常計算画面へ置き換えない。旧広告起動方式・games階層・入力controllerの実stg受入は、このローカル候補とは区別する。
 
+HTMLの接続は実際の開始タグと属性だけを対象にし、引用値内の `src=` 等や `data-src` を通常の属性と取り違えない。script/style・HTMLコメント・textarea/titleの本文と、元から存在するプレースホルダー風文字列は保持する。v4の合成URL境界33ケースを含む実PHP回帰は、実WordPressで編集・保存した後の本文保持と操作確認を代替しない。
+
 生成した `playpoint-article-batch-staging.php` をstgのMUプラグインへ配置し、管理者で `/cms/wp-admin/tools.php?page=playpoint-article-batch` から1回だけ取り込む。権限とnonceが必須で、匿名GETではDBを変更しない。同じ試験URLの既存記事は内容・状態を上書きせず再利用する。同時送信の排他はないため、応答不明時は再押下せず投稿一覧を確認する。新規記事の本文が原文と一致しなければ、その新規記事だけをゴミ箱へ戻して中断する。
 
 既存投稿がある状態での再生成は、本文の更新を意味しない。生成PHPのhero・外枠とDBの本文を組み合わせるため、元HTMLが更新された場合は新しい外枠と旧本文が混在し得る。再配置前に、現在のWP本文・題名・説明・日付と、取り込み時の元HTML、今回の候補を比較する。WPで行った編集を保護し、差分を統合して本文と外枠を同時に確認できる更新・復旧手順を用意するまで再配置しない。取り込みボタンの再実行で既存本文を更新する処理はない。

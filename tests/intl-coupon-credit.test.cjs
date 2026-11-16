@@ -32,7 +32,7 @@ const topics = [
     jaFile: 'articles/2026-07-25-play-credit-not-working.html',
     officialIds: ['15776916', '6080850', '7431675', '16104278'],
     phrases: {
-      ja: ['交換後1年', '同じ通貨', '国を変更'],
+      ja: [/交換(?:後|から)1年/, /同じ通貨|通貨が同じ/, '国を変更'],
       en: ['expires after one year', 'same currency', 'changed your Play country'],
       ko: ['1년 후 만료', '같은 통화', 'Play 국가를 변경'],
       tw: ['一年後到期', '相同幣別', '變更 Play 國家/地區']
@@ -87,7 +87,8 @@ test('クーポン・Playクレジット問題解決記事は4言語でSEO公開
         assert.ok(html.includes(`support.google.com/googleplay/answer/${id}`), `${relativePath}: ${id}`);
       }
       for (const phrase of topic.phrases[locale.key]) {
-        assert.ok(html.includes(phrase), `${relativePath}: ${phrase}`);
+        if (phrase instanceof RegExp) assert.match(html, phrase, `${relativePath}: ${phrase}`);
+        else assert.ok(html.includes(phrase), `${relativePath}: ${phrase}`);
       }
     }
   }

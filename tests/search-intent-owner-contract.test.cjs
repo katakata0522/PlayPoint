@@ -94,11 +94,12 @@ test('Korean balance-check intent has one clear owner and descriptive internal a
   const useCoupons = read('ko/articles/google-play-points-use-coupons.html');
   assert.match(
     useCoupons,
-    /href="\/ko\/articles\/google-play-points-balance-history-progress\.html">Google Play Points 잔액·내역·등급 진행도 확인 방법<\/a>/
+    /href="\/ko\/articles\/google-play-points-balance-history-progress\.html">(?:Google Play Points|포인트) 잔액·내역·등급 진행도 확인 방법<\/a>/
   );
-  assert.match(
-    useCoupons,
-    /Google Play Points 잔액·내역·등급 진행도 확인 방법<\/a>을 보세요\./
+  assert.ok(
+    useCoupons.indexOf('href="/ko/articles/google-play-points-balance-history-progress.html"')
+      < useCoupons.indexOf('<details class="intl-article-toc"'),
+    '残高確認を探す読者は交換手順の目次より前で担当記事へ進める'
   );
 
   const sitemap = read('sitemap-intl-content-expansion.xml');

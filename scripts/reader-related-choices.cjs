@@ -1,6 +1,7 @@
 'use strict';
 // 各記事を読んだ後の確認順。テーマの一致だけで他ゲームや低頻度の手続きへ誘導しない。
 const RELATED_CHOICES = {
+  'play-points-pc-redeem-2026': ['best-use', 'pc-play-games-points', 'play-credit-not-working'],
   '2026-10-23-seven-eleven-gift-card-lottery': ["2026-10-23-familymart-gift-card-lottery", "2026-10-23-google-play-gift-card-comparison", "discount-gift-cards"],
   '2026-10-23-familymart-gift-card-lottery': ["2026-10-23-seven-eleven-gift-card-lottery", "2026-10-23-google-play-gift-card-comparison", "discount-gift-cards"],
   '2026-10-23-google-play-gift-card-comparison': ["2026-10-23-seven-eleven-gift-card-lottery", "2026-10-23-familymart-gift-card-lottery", "discount-gift-cards"],
@@ -64,7 +65,7 @@ const RELATED_CHOICES = {
 };
 const GUIDE_RETURNS = {
   'ranks': ['play-points-levels-guide', 'fastest-silver', 'fastest-gold', 'fastest-platinum', 'playpoints-rank-maintenance', 'january-rank-reset', 'gold-platinum-worth-it', 'diamond-worth-it'],
-  'using-points': ['best-use', 'play-points-cash-conversion', 'points-value-1', 'points-value-100', 'expiration', 'play-points-coupon-not-applied', 'play-credit-not-working', 'play-points-google-store'],
+  'using-points': ['play-points-pc-redeem-2026', 'best-use', 'play-points-cash-conversion', 'points-value-1', 'points-value-100', 'expiration', 'play-points-coupon-not-applied', 'play-credit-not-working', 'play-points-google-store'],
   'troubleshooting': ['points-disappeared', 'play-points-cannot-join', 'play-points-reflection-timing', 'weekly-reward-not-showing', 'redeemed-item-not-received', 'install-offer-points-not-received', 'play-points-locked', 'google-play-quests']
 };
 const GUIDE_LABELS = { ranks: 'ランクの必要額・維持条件から選ぶ', 'using-points': '使う予定・期限から交換先を選ぶ', troubleshooting: '困っている状況から確認手順を選ぶ' };

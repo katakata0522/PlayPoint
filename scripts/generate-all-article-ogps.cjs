@@ -11,6 +11,15 @@ const ogpDir = path.join(articlesDir, 'ogp');
 
 // Mapping for the 22 articles that had shared images or ogp.png
 const DISTINCT_MAPPING = {
+  '2026-10-14-play-points-pc-redeem.html': {
+    image: 'play-points-pc-redeem-2026.jpg',
+    title: 'PCでPlay Pointsを交換<br>ブラウザとPlay Games',
+    template: 'pc-redeem',
+    category: 'Play Pointsの使い方',
+    subtitle: '交換画面と、交換後の受取先を見つける',
+    points: ['ブラウザの交換手順', '表示されるアイテムの違い', 'クーポン・残高の行き先'],
+    accentColor: '#38bdf8'
+  },
   '2026-09-26-bluearchive-monthly-packs-guide.html': {
     image: '2026-09-26-bluearchive-monthly-packs-guide-20261030-v2.png',
     title: 'ブルアカのマンスリー<br>通常版とハーフを比較',

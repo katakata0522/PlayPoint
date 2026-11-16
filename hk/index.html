@@ -41,13 +41,13 @@
     <meta name="twitter:description" content="香港 Play Points 升級要花多少？以鉑金級 4,000 分、鑽石級 15,000 分及每 HK$7 的獲點率，估算尚欠積分與港元消費金額。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=65d0feb551">
+    <link rel="modulepreload" href="../js/main.js?v=b3195ef419">
     <link rel="modulepreload" href="../js/config.js">
     <link rel="modulepreload" href="../js/analytics-core.js?v=bffa637412">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=db21d07581">
+    <link rel="stylesheet" href="../style.css?v=5e4c4bb23a">
     <link rel="stylesheet" href="../visitor-thanks.css?v=d8a0258873">
     <script type="speculationrules">
     {
@@ -204,7 +204,7 @@
 html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(.is-open) .calculator-advanced-settings__body{position:static!important;width:auto!important;height:auto!important;margin-top:.7em!important;padding:initial!important;overflow:visible!important;clip:auto!important;clip-path:none!important;white-space:normal!important}}
 @media(prefers-reduced-motion:reduce){.calculator-advanced-settings__chevron{transition:none}}
 </style>
-        <script id="playpoint-first-view-state">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&Number(p.get('multiplier'))>1){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>
+        <script id="playpoint-first-view-state">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&(Number(p.get('multiplier'))>1||Number(p.get('baseRate'))>0)){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>
 <link rel="stylesheet" href="/region-selector.css?v=2a70477346" data-region-selector-style="true">
 <meta name="playpoint:anchor-ads" content="collapsed-bottom">
 </head>
@@ -238,22 +238,22 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         <div id="main-calculator-inputs" class="section">
             <h2 data-lang-key="sectionTitleStatus">輸入等級</h2>
             <label for="currentStatus" class="label-with-tooltip">
-                <span data-lang-key="labelCurrentStatus">目前等級</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
+                <span id="currentStatus-caption" data-lang-key="labelCurrentStatus">目前等級</span>
+                <span class="info-btn" id="currentStatus-help" aria-labelledby="currentStatus-caption currentStatus-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
                 <div class="tooltip-box" id="tooltip-current-status" hidden></div>
             </label>
             <select id="currentStatus"></select>
 
             <label for="targetStatus" class="label-with-tooltip">
-                <span data-lang-key="labelTargetStatus">目標等級</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
+                <span id="targetStatus-caption" data-lang-key="labelTargetStatus">目標等級</span>
+                <span class="info-btn" id="targetStatus-help" aria-labelledby="targetStatus-caption targetStatus-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status" hidden></div>
             </label>
             <select id="targetStatus"></select>
 
             <label for="neededPoints" class="label-with-tooltip">
-                <span data-lang-key="labelNeededPoints">距離目標所需點數</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
+                <span id="neededPoints-caption" data-lang-key="labelNeededPoints">距離目標所需點數</span>
+                <span class="info-btn" id="neededPoints-help" aria-labelledby="neededPoints-caption neededPoints-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points" hidden></div>
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="例如：125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder" aria-describedby="needed-points-hint">
@@ -269,7 +269,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
 <label for="baseRate" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="baseRateLabel">每 HK$7 獲得點數（自動帶入，可修改）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
+                <span class="info-btn" id="baseRate-help" aria-labelledby="baseRate-caption baseRate-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate" hidden></div>
             </label>
 
@@ -277,7 +277,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 
             <label for="multiplier" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="multiplierLabel">活動特別獲點率（例：每 HK$7 3 點）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
+                <span class="info-btn" id="multiplier-help" aria-labelledby="multiplier-caption multiplier-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier" hidden></div>
             </label>
 
@@ -302,8 +302,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         <div class="section">
             <h2 data-lang-key="sectionTitleReverse">依金額反推點數</h2>
             <label for="amountYen" class="label-with-tooltip">
-                <span data-lang-key="labelAmountYen">消費金額（HK$）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
+                <span id="amountYen-caption" data-lang-key="labelAmountYen">消費金額（HK$）</span>
+                <span class="info-btn" id="amountYen-help" aria-labelledby="amountYen-caption amountYen-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
                 <div class="tooltip-box" id="tooltip-amount-yen" hidden></div>
             </label>
             <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="例如：350" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder">
@@ -315,8 +315,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             </details>
 
             <label for="reverseStatus" class="label-with-tooltip">
-                <span data-lang-key="labelCurrentStatus">目前等級</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
+                <span id="reverseStatus-caption" data-lang-key="labelCurrentStatus">目前等級</span>
+                <span class="info-btn" id="reverseStatus-help" aria-labelledby="reverseStatus-caption reverseStatus-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-status" hidden></div>
             </label>
             <select id="reverseStatus"></select>
@@ -325,15 +325,15 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <details id="reverse-rate-settings" class="calculator-basis-settings">
                 <summary><span data-simplified-calculator-copy="advancedSettingsLabel">調整獲點率與活動（選填）</span></summary>
             <label for="reverseBaseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">每 HK$7 獲得點數（自動帶入，可修改）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
+                <span id="reverseBaseRate-caption" data-lang-key="labelBaseRate">每 HK$7 獲得點數（自動帶入，可修改）</span>
+                <span class="info-btn" id="reverseBaseRate-help" aria-labelledby="reverseBaseRate-caption reverseBaseRate-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-base-rate" hidden></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="reverseMultiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplierReverse">活動特別獲點率（例：每 HK$7 3 點）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
+                <span id="reverseMultiplier-caption" data-lang-key="labelMultiplierReverse">活動特別獲點率（例：每 HK$7 3 點）</span>
+                <span class="info-btn" id="reverseMultiplier-help" aria-labelledby="reverseMultiplier-caption reverseMultiplier-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-multiplier" hidden></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
@@ -473,8 +473,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=65d0feb551"></script>
-<script src="../js/third-party.js?v=a21208612e" defer></script>
+<script type="module" src="../js/main.js?v=b3195ef419"></script>
+<script src="../js/third-party.js?v=499f396641" defer></script>
 
 </body>
 </html>

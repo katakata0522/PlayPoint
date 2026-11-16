@@ -107,7 +107,7 @@ function syncWave3(rootDir) {
       descriptionBefore: 'ポケポケ（Pokémon TCG Pocket）のポケゴールド購入、プレミアムパス、パック開封で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。課金前のシミュレーションにぜひ役立ててみてくださいね。',
       descriptionAfter: 'ポケポケのGoogle Play課金予定額からPlay Pointsを計算。プレミアムパスは月額定期購入・初回14日無料体験を公式確認し、現行価格は購入画面で確認します。',
       replacements: [['はい。Android端末から購入するとPlay Pointsが貯まります。', 'Google Play上の対象購入として処理される場合にポイントが計算されます。購入前のGoogle Play画面に表示される獲得予定ポイントを確認してください。']],
-      guideBlock: `<section class="section" data-game-seo-guide="pokepoke"><h2>プレミアムパスの無料体験・更新・Play Pointsを分離</h2><p>公式サポートで1か月の定期購入、初回14日無料体験、Googleアカウントとの紐付けを確認しています。現行価格は推測せず購入画面で確認します。</p><p><a href="./premium-pass-guide/">プレミアムパスの課金ルールを詳しく見る ➔</a></p></section>`, guideMarker: 'data-game-seo-guide="pokepoke"'
+      guideBlock: `<section class="section" data-game-seo-guide="pokepoke"><h2>プレミアムパスの無料体験・更新・Play Pointsを分離</h2><p>公式サポートで1か月の定期購入とGoogleアカウントとの紐付けを確認しています。初回14日無料体験はメディアの解説でも案内されていますが、適用条件は時期・アカウントで変わるため、購入画面の表示で確認してください。現行価格は推測せず購入画面で確認します。</p><p><a href="./premium-pass-guide/">プレミアムパスの課金ルールを詳しく見る ➔</a></p></section>`, guideMarker: 'data-game-seo-guide="pokepoke"'
     },
     {
       file: 'games/arknights/index.html',

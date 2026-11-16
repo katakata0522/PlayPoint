@@ -198,6 +198,17 @@ test('海外本文の句だけを強調・リンクし、文字・段落・地�
   }
 });
 
+test('多言語で公開する個別記事には、本文から選んだ強調箇所がある', () => {
+  for (const locale of ['en', 'ko', 'tw']) {
+    const directory = path.join(root, locale, 'articles');
+    for (const file of fs.readdirSync(directory)) {
+      if (!file.endsWith('.html') || file === 'index.html') continue;
+      const article = read(locale + '/articles/' + file).match(/<article\b[^>]*>[\s\S]*?<\/article>/i)?.[0];
+      assert.match(article || '', /<(?:mark\b|(?:span|strong)\b[^>]*class="[^"]*\bmarker-(?:yellow|blue|red)\b)/i, locale + '/' + file);
+    }
+  }
+});
+
 test('手書きの日本語目次はリンクと見出しIDを残して一つの開閉にまとめる', () => {
   const { polishPage } = require('../scripts/site-reader-polish.cjs');
   const source = '<nav class="article-toc" aria-label="この記事の目次"><h2 id="toc">この記事の目次</h2><ol><li><a href="#orders">購入履歴</a></li></ol></nav><h2 id="orders">購入履歴</h2><p>本文と条件</p>';

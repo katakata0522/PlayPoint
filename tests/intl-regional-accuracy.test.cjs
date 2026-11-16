@@ -72,7 +72,7 @@ test('영문 구독 가이드는 Google Play를 통한 적격 구독의 적립 �
 test('Super Tickets explain current regional eligibility, deadlines and replacement risk', () => {
   const cases = [
     { locale: 'en', country: 'US', phrases: ['Platinum and Diamond', 'Tuesday', 'Play Pass', 'Gold', 'Thursday', '48 hours', 'eight weeks from when it became available', 'not from the day you saved it', 'gives up the first prize', 'lower or higher', 'current card', 'do not guarantee'] },
-    { locale: 'ko', country: 'KR', phrases: ['플래티넘·다이아몬드', '화요일', 'Play Pass', '골드', '목요일', '48시간', '저장일이 아니라 제공된 시점부터 8주', '기존 보상이 사라지고', '더 적거나 많을', '현재 카드', '보장하는 규칙은 아닙니다'] },
+    { locale: 'ko', country: 'KR', phrases: ['플래티넘·다이아몬드', '화요일', 'Play Pass', '골드', '목요일', '48시간', '저장일이 아니라', '제공일부터 8주가 지난 뒤 첫 목요일', '기존 보상이 사라지고', '더 적거나 많을', '현재 카드', '보장되지 않습니다'] },
     { locale: 'tw', country: 'TW', phrases: ['白金級與鑽石級', '星期二', 'Play Pass', '黃金級', '星期四', '48 小時', '提供日起算 8 週', '不是從儲存日開始', '放棄原獎勵', '較少或較多', '目前卡片', '不保證'] }
   ];
   for (const { locale, country, phrases } of cases) {

@@ -124,6 +124,7 @@ for (const [label, scenario, extra, expected] of [
   ['Node不一致はinstall前に停止する', 'node-mismatch', [], 2],
   ['APT更新timeoutはフォントとブラウザの準備前に失敗する', 'apt-update-timeout', [], 124],
   ['フォント取得timeoutはブラウザの準備前に失敗する', 'font-install-timeout', [], 124],
+  ['通常mirror timeout時に署名付き公式mirrorへ一度だけ切替える', 'font-fallback-success', [], 0],
   ['APTの取得失敗を合格扱いしない', 'apt-failure', [], 100],
   ['lockのinstall失敗を隠さない', 'npm-failure', [], 7],
   ['Chromium取得失敗をPATHのChromeで代替しない', 'browser-failure', [], 9]
@@ -135,15 +136,17 @@ for (const [label, scenario, extra, expected] of [
     fs.writeFileSync(path.join(runtime, 'package-lock.json'), '{}');
     fs.writeFileSync(path.join(runtime, 'node-version'), '22.23.2\n');
     const log = path.join(dir, 'commands.txt');
-    for (const name of ['sudo', 'npm', 'fc-match', 'fake-chrome']) {
+    for (const name of ['sudo', 'npm', 'fc-match', 'fake-chrome', 'dpkg-query']) {
       const body = name === 'npm' ? 'if [ "$SCENARIO" = npm-failure ]; then exit 7; fi\n'
-        : name === 'sudo' ? 'if [ "$SCENARIO" = apt-failure ]; then exit 100; fi\n' : '';
+        : name === 'sudo' ? 'if [ "$SCENARIO" = apt-failure ]; then exit 100; fi\n'
+        : name === 'dpkg-query' ? 'echo "install ok installed"\n' : '';
       fs.writeFileSync(path.join(bin, name), `#!/bin/bash\nprintf '%s\\n' "${name} $*" >> "$MOCK_LOG"\n${body}exit 0\n`, { mode: 0o755 });
     }
     fs.writeFileSync(path.join(bin, 'timeout'), `#!/bin/bash
 printf '%s\\n' "timeout $*" >> "$MOCK_LOG"
 if [ "$SCENARIO" = apt-update-timeout ] && [[ "$*" == *" update "* ]]; then exit 124; fi
 if [ "$SCENARIO" = font-install-timeout ] && [[ "$*" == *"fonts-noto-cjk"* ]]; then exit 124; fi
+if [ "$SCENARIO" = font-fallback-success ] && [[ "$*" == *"fonts-noto-cjk"* ]] && [[ "$*" != *"Dir::Etc::sourcelist="* ]]; then exit 124; fi
 shift
 shift
 exec "$@"
@@ -167,6 +170,10 @@ elif [[ "$1" == */cli.js ]] && [ "$SCENARIO" = browser-failure ]; then exit 9; f
       assert.match(commands, /timeout --kill-after=10s 180s sudo apt-get .* install -y --no-install-recommends fonts-noto-cjk/);
       assert.match(commands, /Acquire::Retries=2.*Acquire::http::Timeout=30.*Acquire::https::Timeout=30/);
       assert.match(commands, /install --with-deps --no-shell chromium/);
+      if (scenario === 'font-fallback-success') {
+        assert.match(commands, /sudo apt-get .*Dir::Etc::sourcelist=.* update -qq/);
+        assert.match(commands, /sudo apt-get .*Dir::Etc::sourcelist=.* install -y --no-install-recommends fonts-noto-cjk/);
+      }
       assert.match(fs.readFileSync(path.join(dir, 'env'), 'utf8'), /CHROME_PATH=.*fake-chrome/);
     } else {
       assert.equal(fs.existsSync(path.join(dir, 'env')), false);

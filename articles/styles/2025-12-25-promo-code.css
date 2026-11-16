@@ -188,3 +188,4 @@ font-size: 1.25rem;
 padding: 1.5rem;
 }
 }
+html[data-reading-theme="dark"] .intro strong { color: var(--reading-warning); }

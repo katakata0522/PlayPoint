@@ -27,7 +27,7 @@ export function shouldAutoOpenAdvancedSettings(search = '') {
     const params = new URLSearchParams(search || '');
     if (params.get('mode') !== 'main') return false;
     const multiplier = Number(params.get('multiplier'));
-    return Number.isFinite(multiplier) && multiplier > 1;
+    return (Number.isFinite(multiplier) && multiplier > 1) || Number(params.get('baseRate')) > 0;
 }
 
 function syncSettingsState(container, body, toggle, mediaQuery) {
@@ -143,7 +143,15 @@ function normalizeLastCalculation(value) {
         || typeof value.currentStatus !== 'string'
         || typeof value.targetStatus !== 'string'
         || !Number.isSafeInteger(points) || points < 0) return null;
-    return { region: value.region, currentStatus: value.currentStatus, targetStatus: value.targetStatus, neededPoints: String(points) };
+    const snapshot = { region: value.region, currentStatus: value.currentStatus, targetStatus: value.targetStatus, neededPoints: String(points) };
+    // 以前の保存データには獲得率がない。存在する有効な数値だけを引き継ぐ。
+    for (const [key, min, max] of [['baseRate', 0.1, 100], ['multiplier', 1, 10]]) {
+        const raw = value[key];
+        if (typeof raw !== 'number' && typeof raw !== 'string') continue;
+        const rate = Number(raw);
+        if (Number.isFinite(rate) && rate >= min && rate <= max) snapshot[key] = String(rate);
+    }
+    return snapshot;
 }
 
 function readLastMainCalculationStore(storage = localStorage) {

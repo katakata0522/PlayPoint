@@ -171,3 +171,7 @@ body.latest-hub .lp-ad-container { width:100%; }
  html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button { font-size:12px; padding-inline:0; border-width:1px; }
  body.latest-hub .benefit-card dl div { grid-template-columns:4.5em minmax(0,1fr); gap:8px; }
 }
+@media (max-width: 760px) {
+  .latest-hub .guide-nav-button[aria-controls="guide-menu"] { grid-column: 3; }
+  .latest-hub .guide-header-spacer { grid-column: 1; }
+}

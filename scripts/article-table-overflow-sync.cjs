@@ -91,7 +91,8 @@ function markResponsiveTables(html) {
     const rows = [...table.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)];
     if (rows.length < 2) return table;
     const headers = [...rows[0][1].matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/gi)];
-    if (headers.length < 2 || headers.length > 3 || /<td\b/i.test(rows[0][1])) return table;
+    const maxColumns = /^<table\b[^>]*\bdata-mobile-cards\b/i.test(table) ? 4 : 3;
+    if (headers.length < 2 || headers.length > maxColumns || /<td\b/i.test(rows[0][1])) return table;
     if (!rows.slice(1).every(row => [...row[1].matchAll(/<t[dh]\b/gi)].length === headers.length)) return table;
     const labels = headers.map(h => normalizeText(h[1].replace(/<[^>]*>/g, ' ')));
     let rowIndex = 0;

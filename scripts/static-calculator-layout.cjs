@@ -41,7 +41,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 </style>`;
 
 // multiplier付き共有URLはbodyを描画する前に初期状態を決め、JS到着後の展開によるCLSを防ぐ。
-const ADVANCED_SETTINGS_STATE_SCRIPT = `<script id="${ADVANCED_SETTINGS_STATE_SCRIPT_ID}">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&Number(p.get('multiplier'))>1){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>`;
+const ADVANCED_SETTINGS_STATE_SCRIPT = `<script id="${ADVANCED_SETTINGS_STATE_SCRIPT_ID}">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&(Number(p.get('multiplier'))>1||Number(p.get('baseRate'))>0)){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>`;
 
 function findBalancedElementRange(content, openingIndex, tagName) {
   if (openingIndex < 0) return null;

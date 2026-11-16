@@ -25,10 +25,10 @@ function loadShare({ search = '', href = 'https://playpoint-sim.com/?utm_source=
   const calls = [];
   const STATE = { dom, currentRegion: 'JP' };
   const CALC = {
-    getValidNumberInput(element, min) {
+    getValidNumberInput(element, min, max = Infinity) {
       if (!element) return null;
       const value = Number(element.value);
-      return Number.isFinite(value) && value >= min ? value : null;
+      return Number.isFinite(value) && value >= min && value <= max ? value : null;
     },
     updateReverseBaseRate() { calls.push('updateReverseBaseRate'); },
     reverseCalculate() { calls.push('reverseCalculate'); },
@@ -90,6 +90,38 @@ test('main share URL serializes the current calculator state and removes unrelat
       multiplier: '3'
     }
   );
+});
+
+test('手入力した通常獲得率と達成済みの0ptを共有先でも復元する', () => {
+  const dom = {
+    currentStatus: createSelect([1]), targetStatus: createSelect([250], 250, { 250: 'Silver' }),
+    neededPoints: { value: '0', max: '250' }, baseRate: { value: '2.5' }, multiplier: { value: '1' }
+  };
+  const { SHARE } = loadShare({ dom });
+  const url = new URL(SHARE.buildMainShareUrl());
+  dom.baseRate.value = '1';
+  dom.neededPoints.value = '';
+  loadShare({ search: url.search, dom }).SHARE.applyFromUrl();
+  assert.equal(dom.baseRate.value, '2.5');
+  assert.equal(dom.neededPoints.value, '0');
+  dom.baseRate.value = '1';
+  dom.neededPoints.value = '125';
+  loadShare({ search: '?mode=main&points=&baseRate=999', dom }).SHARE.applyFromUrl();
+  assert.equal(dom.baseRate.value, '1');
+  assert.equal(dom.neededPoints.value, '125');
+});
+
+test('逆算の共有でも変更した獲得率と税抜対象額を一緒に復元する', () => {
+  const dom = {
+    reverseStatus: createSelect([1]), amountYen: { value: '5000' }, reverseEligibleAmount: { value: '4000' },
+    reverseBaseRate: { value: '2.5' }, reverseMultiplier: { value: '1' }
+  };
+  const url = new URL(loadShare({ dom }).SHARE.buildReverseShareUrl());
+  dom.reverseBaseRate.value = '1';
+  dom.reverseEligibleAmount.value = '';
+  loadShare({ search: url.search, dom }).SHARE.applyFromUrl();
+  assert.equal(dom.reverseBaseRate.value, '2.5');
+  assert.equal(dom.reverseEligibleAmount.value, '4000');
 });
 
 test('main share URL hydration restores only validated values and runs the normal calculator flow', () => {

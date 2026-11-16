@@ -5,25 +5,21 @@
         ja: {
             monthsToggle: '月を選ぶ', currentWeek: '今週のリワード', thisMonth: '今月の記録',
             edit: '編集', close: '閉じる', input: '入力', noRecord: '未記録',
-            autoSave: '変更は自動保存されます', saved: '自動保存済み',
             yearDetails: '年間の記録を見る', toolsDetails: '通知・バックアップ', recordedWeeks: '週記録', points: 'pt'
         },
         en: {
             monthsToggle: 'Choose month', currentWeek: 'This week’s reward', thisMonth: 'This month',
             edit: 'Edit', close: 'Close', input: 'Enter', noRecord: 'Not recorded',
-            autoSave: 'Changes are saved automatically', saved: 'Auto-saved',
             yearDetails: 'View yearly records', toolsDetails: 'Reminders & backup', recordedWeeks: 'weeks recorded', points: 'pt'
         },
         ko: {
             monthsToggle: '월 선택', currentWeek: '이번 주 리워드', thisMonth: '이번 달 기록',
             edit: '수정', close: '닫기', input: '입력', noRecord: '미기록',
-            autoSave: '변경 내용은 자동으로 저장됩니다', saved: '자동 저장됨',
             yearDetails: '연간 기록 보기', toolsDetails: '알림·백업', recordedWeeks: '주 기록', points: 'pt'
         },
         zh: {
             monthsToggle: '選擇月份', currentWeek: '本週獎勵', thisMonth: '本月記錄',
             edit: '編輯', close: '關閉', input: '輸入', noRecord: '尚未記錄',
-            autoSave: '變更會自動儲存', saved: '已自動儲存',
             yearDetails: '查看年度記錄', toolsDetails: '提醒與備份', recordedWeeks: '週已記錄', points: 'pt'
         }
     };
@@ -46,7 +42,6 @@
 #diaryMode .is-weekly-current .weekly-current-label{grid-area:current;text-align:left;font-size:1.05em;font-weight:800;color:var(--text-color)}#diaryMode .is-weekly-current>label{grid-area:label;margin:0;color:var(--link-color);font-size:.82em;text-align:left}
 #diaryMode .is-weekly-current>input{grid-area:points}#diaryMode .is-weekly-current>select{grid-area:prize}#diaryMode .is-weekly-current>.diary-btn-group{grid-area:share}
 #diaryMode .is-weekly-current .diary-save-btn,#diaryMode .is-weekly-compact .diary-save-btn{display:none}#diaryMode .is-weekly-current .diary-btn-group{justify-content:flex-end;min-height:34px}#diaryMode .is-weekly-current .diary-x-share-btn{flex:0 0 auto;min-width:42px;min-height:38px;padding:.35em .75em}
-.weekly-autosave-hint{grid-area:hint;margin:0;color:#4b5563;font-size:.78em;text-align:left}
 #diaryMode .week-row.is-weekly-compact{display:block;padding:0;overflow:hidden}.weekly-compact-summary{display:flex;align-items:center;justify-content:space-between;gap:.7em;min-height:50px;padding:.55em .7em .55em .9em}.weekly-compact-main{display:flex;min-width:0;align-items:baseline;gap:.75em;text-align:left}.weekly-compact-main strong{flex:0 0 auto;color:var(--text-color)}.weekly-compact-main span{min-width:0;color:var(--link-color);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .weekly-edit-toggle{flex:0 0 auto;min-height:36px;margin:0;padding:.35em .75em;border:1px solid rgba(11,87,208,.22);border-radius:7px;background:rgba(11,87,208,.06);color:var(--link-hover-color);box-shadow:none;font-size:.82em}.weekly-edit-toggle:hover:not(:disabled){background:rgba(11,87,208,.11)}
 #diaryMode .is-weekly-compact>label,#diaryMode .is-weekly-compact>input,#diaryMode .is-weekly-compact>select,#diaryMode .is-weekly-compact>.diary-btn-group{display:none}#diaryMode .is-weekly-compact.is-weekly-expanded{padding:.8em}#diaryMode .is-weekly-compact.is-weekly-expanded .weekly-compact-summary{margin:-.8em -.8em .7em;border-bottom:1px solid var(--weekly-border,rgba(11,87,208,.16))}
@@ -153,80 +148,45 @@
         }
     }
 
-    function makeCompactSummary(row, rowDate, isFuture) {
-        let compact = row.querySelector('.weekly-compact-summary');
-        if (!compact) {
-            compact = document.createElement('div');
-            compact.className = 'weekly-compact-summary';
-            row.insertBefore(compact, row.firstChild);
-        }
-
-        const input = row.querySelector('input[type="number"]');
-        const select = row.querySelector('select');
-        const points = input?.value?.trim() || '';
-        const prize = select?.value?.trim() || '';
-        const defaultPrize = select?.options?.[0]?.value || '';
+    function updateCompactSummary(row) {
+        const compact = row.querySelector('.weekly-compact-summary');
+        if (!compact) return;
+        const points = row.dataset.savedPoints || '';
+        const prize = row.dataset.savedPrize || '';
+        const defaultPrize = row.querySelector('select')?.options?.[0]?.value || '';
         const hasPrize = prize && prize !== defaultPrize;
-        const dateText = rowDate
-            ? `${rowDate.getMonth() + 1}/${rowDate.getDate()}`
-            : (row.querySelector('label')?.textContent || '').replace(/^.*?(\d+\/\d+).*$/, '$1');
-        const valueText = points
+        const value = compact.querySelector('.weekly-compact-main > span');
+        value.textContent = points
             ? `${Number(points).toLocaleString()} ${copy.points}${hasPrize ? ` · ${prize}` : ''}`
             : (hasPrize ? prize : copy.noRecord);
+        const toggle = compact.querySelector('button');
+        const expanded = row.classList.contains('is-weekly-expanded');
+        toggle.textContent = expanded ? copy.close : (row.classList.contains('is-weekly-future') && !points && !hasPrize ? copy.input : copy.edit);
+        toggle.setAttribute('aria-expanded', String(expanded));
+    }
 
-        compact.innerHTML = '';
+    function makeCompactSummary(row, rowDate) {
+        if (row.querySelector('.weekly-compact-summary')) return;
+        const compact = document.createElement('div');
+        compact.className = 'weekly-compact-summary';
         const main = document.createElement('span');
         main.className = 'weekly-compact-main';
         const date = document.createElement('strong');
-        date.textContent = dateText;
-        const value = document.createElement('span');
-        value.textContent = valueText;
-        main.append(date, value);
-
+        date.textContent = rowDate
+            ? `${rowDate.getMonth() + 1}/${rowDate.getDate()}`
+            : (row.querySelector('label')?.textContent || '').replace(/^.*?(\d+\/\d+).*$/, '$1');
+        main.append(date, document.createElement('span'));
         const toggle = document.createElement('button');
         toggle.type = 'button';
         toggle.className = 'weekly-edit-toggle';
-        toggle.textContent = row.classList.contains('is-weekly-expanded')
-            ? copy.close
-            : (isFuture && !points && !hasPrize ? copy.input : copy.edit);
-        toggle.setAttribute('aria-expanded', row.classList.contains('is-weekly-expanded') ? 'true' : 'false');
         toggle.addEventListener('click', () => {
             const expanded = row.classList.toggle('is-weekly-expanded');
-            toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-            toggle.textContent = expanded ? copy.close : (isFuture && !points && !hasPrize ? copy.input : copy.edit);
-            if (expanded) input?.focus({ preventScroll: true });
+            updateCompactSummary(row);
+            if (expanded) row.querySelector('input[type="number"]')?.focus({ preventScroll: true });
         });
         compact.append(main, toggle);
-    }
-
-    function ensureAutoSaveHint(row, isCurrent) {
-        if (!isCurrent) return;
-        let hint = row.querySelector('.weekly-autosave-hint');
-        if (!hint) {
-            hint = document.createElement('p');
-            hint.className = 'weekly-autosave-hint';
-            hint.setAttribute('aria-live', 'polite');
-            const group = row.querySelector('.diary-btn-group');
-            (group || row).insertAdjacentElement('afterend', hint);
-        }
-        hint.textContent = copy.autoSave;
-
-        const input = row.querySelector('input[type="number"]');
-        const select = row.querySelector('select');
-        const markSaved = () => {
-            window.setTimeout(() => {
-                hint.textContent = copy.saved;
-                window.setTimeout(() => { hint.textContent = copy.autoSave; }, 1600);
-            }, 0);
-        };
-        if (input && !input.dataset.weeklyUiBound) {
-            input.dataset.weeklyUiBound = 'true';
-            input.addEventListener('blur', markSaved);
-        }
-        if (select && !select.dataset.weeklyUiBound) {
-            select.dataset.weeklyUiBound = 'true';
-            select.addEventListener('change', markSaved);
-        }
+        row.prepend(compact);
+        updateCompactSummary(row);
     }
 
     function decorateRows() {
@@ -259,10 +219,8 @@
                     title.textContent = `🎁 ${copy.currentWeek}`;
                     row.insertBefore(title, row.firstChild);
                 }
-                ensureAutoSaveHint(row, true);
             } else {
-                row.classList.remove('is-weekly-expanded');
-                makeCompactSummary(row, rowDate, isFuture);
+                makeCompactSummary(row, rowDate);
             }
         });
 
@@ -283,8 +241,7 @@
             monthlyBox.appendChild(count);
         }
         const totalWeeks = document.querySelectorAll('#weekInputs .week-row').length;
-        const recorded = [...document.querySelectorAll('#weekInputs input[type="number"]')]
-            .filter((input) => input.value.trim() !== '').length;
+        const recorded = document.querySelectorAll('#weekInputs .week-row[data-saved-points]').length;
         count.textContent = `${recorded}/${totalWeeks} ${copy.recordedWeeks}`;
     }
 
@@ -334,6 +291,12 @@
         if (!weekInputs) return;
         const observer = new MutationObserver(queueDecorate);
         observer.observe(weekInputs, { childList: true });
+        // 入力中の値やDOMの再描画には反応せず、保存済みの行だけを更新する。
+        const savedWeeks = new MutationObserver(records => {
+            new Set(records.map(record => record.target)).forEach(updateCompactSummary);
+            decorateSummary();
+        });
+        savedWeeks.observe(weekInputs, { subtree: true, attributes: true, attributeFilter: ['data-saved-points', 'data-saved-prize'] });
     }
 
     function init() {

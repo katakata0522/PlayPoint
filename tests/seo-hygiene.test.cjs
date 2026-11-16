@@ -4,8 +4,7 @@ const assert = require('node:assert');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
-const { TOP_PAGE_CONTENT_DATES } = require('../scripts/content-dates.cjs');
-const { getLatestHubVerificationDate } = require('../scripts/latest-hub-audit.cjs');
+const { TOP_PAGE_CONTENT_DATES, CONTENT_DATE_OVERRIDES } = require('../scripts/content-dates.cjs');
 
 const root = path.resolve(__dirname, '..');
 const origin = 'https://playpoint-sim.com';
@@ -40,7 +39,7 @@ test('送信するXMLサイトマップ間でURLを重複させない', () => {
 
 test('ルートサイトマップはPlay Pointsの公開導線だけを扱う', () => {
   const sitemap = read('sitemap.xml');
-  const latestVerificationDate = getLatestHubVerificationDate(root);
+  const latestUpdatedDate = CONTENT_DATE_OVERRIDES['latest/index.html'];
   const excluded = [
     '/tools/gravity-todo/',
     '/kids-smile-land/',
@@ -55,7 +54,7 @@ test('ルートサイトマップはPlay Pointsの公開導線だけを扱う', 
   assert.ok(!sitemap.includes('<priority>'));
   assert.ok(!read('blog/sitemap.xml').includes('<changefreq>'));
   assert.ok(!read('blog/sitemap.xml').includes('<priority>'));
-  assert.match(sitemap, new RegExp(`<loc>${origin}/latest/</loc>\\r?\\n\\s*<lastmod>${latestVerificationDate}</lastmod>`));
+  assert.match(sitemap, new RegExp(`<loc>${origin}/latest/</loc>\\r?\\n\\s*<lastmod>${latestUpdatedDate}</lastmod>`));
   assert.match(sitemap, new RegExp(`<loc>${origin}/ko/</loc>\\r?\\n\\s*<lastmod>${TOP_PAGE_CONTENT_DATES.ko}</lastmod>`));
 });
 

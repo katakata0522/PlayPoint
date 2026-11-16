@@ -2,7 +2,7 @@
 
 import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
-import { SHARE } from './share.js';
+import { SHARE, restoreRateInput } from './share.js';
 import { CALC } from './calculator.js';
 import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js?v=2a5e293ded';
 import { initWebVitalsMonitoring } from './web-vitals.js';
@@ -106,7 +106,9 @@ function getMainCalculationSnapshot() {
         region: STATE.currentRegion,
         currentStatus: String(STATE.dom.currentStatus?.value || ''),
         targetStatus: String(STATE.dom.targetStatus?.value || ''),
-        neededPoints: String(points)
+        neededPoints: String(points),
+        baseRate: STATE.dom.baseRate.value,
+        multiplier: STATE.dom.multiplier.value
     };
 }
 
@@ -132,6 +134,8 @@ function restoreLastMainCalculation() {
     };
     setSelect(STATE.dom.currentStatus, saved.currentStatus);
     setSelect(STATE.dom.targetStatus, saved.targetStatus);
+    restoreRateInput(STATE.dom.baseRate, saved.baseRate, 0.1, 100);
+    restoreRateInput(STATE.dom.multiplier, saved.multiplier ?? 1, 1, 10);
     if (STATE.dom.neededPoints) {
         STATE.dom.neededPoints.value = saved.neededPoints;
         STATE.dom.neededPoints.dispatchEvent(new Event('input', { bubbles: true }));
@@ -301,6 +305,17 @@ export function init() {
     bindCalculatorFunnelStart(STATE.dom.reverseMultiplier, CONSTANTS.MODE_REVERSE, 'promotion_rate');
     document.addEventListener('playpoint:consent-ready', calculatorFunnel.resetIfDenied);
     document.addEventListener('playpoint:consent-updated', calculatorFunnel.resetIfDenied);
+
+    // 入力を変えた時点で、変更前の金額・詳細・共有ボタンを一緒に片付ける。
+    for (const [panel, result] of [[STATE.dom.mainMode, STATE.dom.result], [STATE.dom.reverseMode, STATE.dom.reverseResult]]) {
+        const invalidate = event => {
+            if (event.target.matches('input, select') && result?.classList.contains(CONSTANTS.CLASS_HAS_RESULT)) {
+                UI.clearResult(result);
+            }
+        };
+        bindEvent(panel, 'input', invalidate);
+        bindEvent(panel, 'change', invalidate);
+    }
 
     // Enterキー押下での計算実行
     bindEnterAction([STATE.dom.neededPoints, STATE.dom.baseRate, STATE.dom.multiplier], () => runTrackedCalculation(CONSTANTS.MODE_MAIN));

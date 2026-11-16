@@ -25,5 +25,5 @@ test('言語切替を残し、aside形式にも対応する', () => {
     assert.equal((next.match(/あわせて読みたい/g) || []).length, 1);
     assert.equal(improveReaderLinks(next, article, byId), next);
   }
-  assert.equal(Object.values(GUIDE_RETURNS).flat().length, 24);
+  assert.equal(Object.values(GUIDE_RETURNS).flat().length, 25);
 });
