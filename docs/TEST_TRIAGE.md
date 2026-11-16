@@ -2,6 +2,10 @@
 
 ## 2026-11-16 AdSenseへの共有URL入力値混入
 
+| テスト | 主担当の保証 |
+| --- | --- |
+| `ad-url-privacy.test.cjs` | URL・参照元・履歴・同意再通知に対する広告保留と、通常閲覧・共有条件の保持 |
+
 `ad-url-privacy.test.cjs` はGoogle公式のページ単位保留APIと既存の履歴境界を担当する。クエリ・断片・参照元・未知キー・符号化/重複、履歴更新前の保留、引数と戻り値、戻る/BFCache相当のイベント、同意再通知、setter-only SDK、監視/代入失敗、実ゲーム一覧の検索前とクリア後を挙動で確認する。既存third-partyの所有テストには保護API欠損時の広告停止と、解析が独立して動く対照を加える。
 
 既存growth-foundationは実公開HTMLの相対srcをページURLで解決し、inline queueより前のhead保護と、遅い再生成ページを含む一度だけの挿入を確認する。生成関数はscript/style/コメント/RCDATAを保全し、LF/CRLFと旧タグ移動の冪等性を確認する。既存browser-revenueでは共有復元、4地域の必要額フォーム、同意前/拒否後と、クエリなし通常ページの保留状態を実ブラウザで確認する。SDK stubのqueueを実広告通信の成功とは扱わない。
