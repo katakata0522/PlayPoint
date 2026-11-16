@@ -115,7 +115,9 @@ function polishPage(html, file) {
       if (locale !== 'ja' && href.startsWith('/games/')) card = card.replace(/(<div class="game-card-action">)[\s\S]*?(<\/div>)/, '$1' + ({en:'Japan calculator ➔',ko:'일본판 계산기 ➔',tw:'日版計算器 ➔'})[locale] + '$2');
       return card.replace(/(<p class="game-card-desc">)([\s\S]*?)(<\/p>)/, (_match, before, description, after) => {
         let brief = description;
-        if (locale === 'ja') brief = description.split('。')[0] + '。';
+        if (locale === 'ja') brief = id === 'umamusume'
+          ? 'ウマ娘の購入プランで貯まるPlayポイントを計算できます。'
+          : description.split('。')[0] + '。';
         else {
           const names = (GAME_EVIDENCE[id]?.offers?.[locale] || []).map(offer => offer.names[locale]).filter(Boolean).join(' / ');
           const reference = href.startsWith('/games/');
