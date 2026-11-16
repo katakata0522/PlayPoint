@@ -1155,7 +1155,7 @@
     "id": "gakumas-webshop-google-play-2026",
     "title": "学マスはWEB SHOPとGoogle Playどっち？ジュエル数・DMMとの違いを比較",
     "date": "2026-09-26",
-    "modified": "2026-10-29",
+    "modified": "2026-11-17",
     "category": "使い方",
     "gameTitle": "学マス",
     "listTitle": "学マスWEB SHOPのジュエル増量｜DMMとの違いにも注意",
@@ -1166,7 +1166,7 @@
       "ジュエル",
       "DMM"
     ],
-    "description": "学マス公式WEB SHOPのジュエル価格と増量、スマホ版とDMM版の扱いを確認。Play Pointsを含めて購入先を選ぶ方法を解説します。",
+    "description": "学マスのWEB SHOPとGoogle Playを比較。ジュエルの表示例やスマホ版・DMM版での扱い、購入前の連携先を整理します。Google Playで買う場合のポイントは、本文の税込9,800円の仮例から自分の条件に直して試算できます。",
     "file": "../articles/2026-09-26-gakumas-webshop-google-play.html",
     "related": [
       [
@@ -1924,14 +1924,14 @@
       "必要ポイント",
       "必要金額"
     ],
-    "description": "日本のGoogle Play Pointsをブロンズからダイヤモンドまで一覧比較。必要ポイント、通常獲得率、ウィークリーリワード、ランクアップ時の購入額目安、残高との違いを解説します。",
+    "description": "Google Play Pointsの5ランクを、必要ポイント・通常獲得率・特典で一覧比較。0ポイントからの累計購入額と、今の不足分からの必要額を分けて解説します。ゴールドからプラチナの例を自分の条件に変えて試算できます。",
     "file": "../articles/2026-08-05-play-points-levels-guide.html",
     "thumbnail": "../articles/thumbnails/play-points-levels-guide-square-v1.webp",
     "listTitle": "Google Play Pointsのランク一覧｜必要ポイント・購入額の目安・特典",
     "listDescription": "ブロンズからダイヤモンドまでの必要ポイント・獲得率・特典を一覧比較。自分の目標ランクと購入額の目安を確認できます。",
     "browseCategory": "ランク・ステータス",
     "thumbnailKind": "generic",
-    "modified": "2026-10-30",
+    "modified": "2026-11-17",
     "ogp": "../articles/ogp/2026-08-05-play-points-levels-guide.png"
   },
   {
@@ -2641,11 +2641,11 @@
       "ゼンゼロ",
       "予算"
     ],
-    "description": "ゲームの課金額をGoogle Playの購入履歴で確認する方法。今月の支出、ゲーム別の集計、公式Webストアとの違い、購入を止めない予算通知を整理します。",
+    "description": "Google Playの購入履歴はどこ？Android・PCでの確認手順、ゲーム別課金額の集計、予算通知と購入上限の違いを解説。支出を整理した後は、次の購入額からPlay Pointsも試算できます。",
     "listDescription": "今月の課金額と個別の注文を確認。Google Play以外の購入も分けて整理し、予算通知を設定できます。",
     "file": "../articles/2026-10-15-google-play-purchase-history-budget.html",
     "date": "2026-10-15",
-    "modified": "2026-10-30",
+    "modified": "2026-11-17",
     "ogp": "../articles/ogp/2026-10-15-google-play-purchase-history-budget.png",
     "related": [
       [
