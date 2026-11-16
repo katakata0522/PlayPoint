@@ -321,7 +321,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     const facet=page.locator('.guide-hub-sidebar .sidebar-browse-category[data-topic="ゲーム別課金"]');
     await facet.click();
     assert.equal(new URL(page.url()).searchParams.get('game'),'NIKKE');
-    assert.equal(new URL(page.url()).searchParams.get('q'),'ニケ 月パス');
+    assert.equal(new URL(page.url()).searchParams.get('pp_q'),'ニケ 月パス');
     assert.equal(await facet.locator('.sidebar-browse-count').textContent(),'1');
     await goto(page,'blog/?sort=newest'); await cards(page);
     await page.evaluate(()=>{scrollTo(0,0);document.activeElement.blur();});
@@ -369,7 +369,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await goto(page,'blog/'); await cards(page);
     for (const query of ['ポイント','ポイント 期限','ポイント 有効期限']) {
       await page.locator('#search-input').fill(query);
-      await page.waitForFunction(q=>new URL(location.href).searchParams.get('q')===q,query);
+      await page.waitForFunction(q=>new URL(location.href).searchParams.get('pp_q')===q,query);
     }
     await page.goBack();
     await page.waitForFunction(()=>document.querySelector('#search-input').value==='');
@@ -727,7 +727,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await ip.waitForFunction(()=>document.querySelector('[data-guide-grid] .intl-guide-card__excerpt'));
       assert.equal(await visibleGuides.count(),1,locale+': full-text search with game filter');
       assert.match(await visibleGuides.first().getAttribute('href'),/umamusume-umasuku/);
-      assert.equal(new URL(ip.url()).searchParams.get('q'),query);
+      assert.equal(new URL(ip.url()).searchParams.get('pp_q'),query);
       await ip.reload({waitUntil:'domcontentloaded'});
       await ip.waitForFunction(()=>document.querySelector('[data-guide-grid] .intl-guide-card__excerpt'));
       assert.equal(await ip.locator('[data-guide-search]').inputValue(),query);

@@ -21,12 +21,17 @@ function clone(value) {
 function createAnalyticsRuntime({
   consentStatus,
   location = DEFAULT_LOCATION,
+  referrer = '',
+  historyState = null,
+  historyFailure = false,
   ready = false,
   storedEntries = []
 } = {}) {
   const storage = new Map(storedEntries);
   const listeners = new Map();
   const warnings = [];
+  const historyUpdates = [];
+  const windowListeners = new Map();
   const context = {
     console: { warn(...args) { warnings.push(args); } },
     URL,
@@ -37,11 +42,23 @@ function createAnalyticsRuntime({
       removeItem(key) { storage.delete(key); },
       setItem(key, value) { storage.set(key, String(value)); }
     },
-    dispatchEvent() {},
+    addEventListener(type, listener) { windowListeners.set(type, listener); },
+    dispatchEvent(event) { windowListeners.get(event.type)?.(event); },
+    history: {
+      state: historyState,
+      replaceState(state, title, href) {
+        if (historyFailure) throw new Error('history unavailable');
+        this.state = state;
+        const url = new URL(href);
+        Object.assign(context.location, { href: url.href, origin: url.origin, pathname: url.pathname, search: url.search, hash: url.hash });
+        historyUpdates.push(href);
+      }
+    },
     CustomEvent: class CustomEvent {
       constructor(type) { this.type = type; }
     },
     document: {
+      referrer,
       addEventListener(type, listener) { listeners.set(type, listener); },
       dispatchEvent(event) {
         const listener = listeners.get(event.type);
@@ -58,7 +75,7 @@ function createAnalyticsRuntime({
   vm.createContext(context);
   vm.runInContext(ANALYTICS_SOURCE, context, { filename: 'analytics-core.js' });
   if (ready) context.PlayPointAnalytics.markAnalyticsReady();
-  return { context, listeners, storage, warnings };
+  return { context, listeners, storage, warnings, historyUpdates };
 }
 
 function eventItems(context, eventName) {
@@ -67,7 +84,11 @@ function eventItems(context, eventName) {
 }
 
 function eventCalls(context, eventName) {
-  return eventItems(context, eventName).map(item => clone(item[2]));
+  // 独自イベントの契約だけを返す。URL文脈はeventItemsの生payloadで別途検証する。
+  return eventItems(context, eventName).map(item => {
+    const { page_location, page_referrer, ...customParams } = clone(item[2]);
+    return customParams;
+  });
 }
 
 function latestEventParams(context, eventName) {

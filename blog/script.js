@@ -108,7 +108,7 @@
             return {
                 category: params.get('category') || 'all',
                 topic: params.get('topic') || '',
-                search: params.get('q') || '',
+                search: params.get('pp_q') ?? params.get('q') ?? '',
                 game: params.get('game') || '',
                 page: params.get('page') || window.location.pathname.match(/^\/blog\/page\/(\d+)\/$/)?.[1] || '1',
                 sort: ['newest', 'oldest', 'updated', 'relevance'].includes(params.get('sort')) ? params.get('sort') : null
@@ -129,10 +129,11 @@
                 url.searchParams.delete('topic');
             }
             // Search
+            url.searchParams.delete('q');
             if (state.search) {
-                url.searchParams.set('q', state.search);
+                url.searchParams.set('pp_q', state.search);
             } else {
-                url.searchParams.delete('q');
+                url.searchParams.delete('pp_q');
             }
             if (state.game) {
                 url.searchParams.set('game', state.game);
@@ -1070,7 +1071,7 @@
             if (badge) { badge.textContent = count; badge.setAttribute('aria-label', count + '件'); }
             const url = new URL('/blog/', location.href);
             if (topic !== currentBrowseCategory) url.searchParams.set('topic', topic);
-            if (currentSearch) url.searchParams.set('q', currentSearch);
+            if (currentSearch) url.searchParams.set('pp_q', currentSearch);
             if (currentGameTitle) url.searchParams.set('game', currentGameTitle);
             if (sortIsExplicit) url.searchParams.set('sort', sortMode);
             link.href = url.pathname + url.search;

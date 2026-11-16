@@ -223,10 +223,19 @@ test('Analytics許可後はconfigしてから初回page_viewを一度だけ送�
   const configIndex = calls.findIndex(call => call[0] === 'config');
   const pageViewIndexes = calls.map((call, index) => call[0] === 'event' && call[1] === 'page_view' ? index : -1).filter(index => index >= 0);
   assert.ok(configIndex >= 0, 'GA4 configが実行されていません');
-  assert.deepEqual(JSON.parse(JSON.stringify(calls[configIndex][2])), { send_page_view: false });
+  assert.deepEqual(JSON.parse(JSON.stringify(calls[configIndex][2])), { send_page_view: false, page_location: 'https://playpoint-sim.com/', page_referrer: '' });
   assert.equal(pageViewIndexes.length, 1, '初回page_viewが一度だけ送られていません');
   assert.ok(configIndex < pageViewIndexes[0], 'GA4 configより前にpage_viewが送られています');
   assert.equal(runtime.context.__playpointGaConfigured, true);
+});
+
+test('検索URLを保護できなければ許可済みでもGoogleタグを取得・設定しない', async () => {
+  const runtime = createRuntime();
+  runtime.context.PlayPointAnalytics = { ...runtime.context.PlayPointAnalytics, installGtagBridge() { return false; } };
+  await advanceAnalytics(runtime);
+  assert.equal(scriptsMatching(runtime, 'googletagmanager.com/gtag/js').length, 0);
+  assert.equal(gtagCalls(runtime.context).some(call => call[0] === 'config'), false);
+  assert.equal(runtime.context.__playpointGaConfigured, undefined);
 });
 
 test('Analyticsと広告枠のConsent境界を独立して守る', async () => {
@@ -292,6 +301,6 @@ test('別経路でGA4初期化済みなら二重configしない', async () => {
 test('standalone表示ではGA4へdisplay modeをstandaloneとして送る', async () => {
   const runtime = createRuntime({ standalone: true });
   await advanceAnalytics(runtime);
-  const setCall = gtagCalls(runtime.context).find(call => call[0] === 'set');
-  assert.deepEqual(JSON.parse(JSON.stringify(setCall?.[1])), { app_display_mode: 'standalone' });
+  const setCall = gtagCalls(runtime.context).find(call => call[0] === 'set' && call[1]?.app_display_mode);
+  assert.deepEqual(JSON.parse(JSON.stringify(setCall?.[1])), { app_display_mode: 'standalone', page_location: 'https://playpoint-sim.com/', page_referrer: '' });
 });

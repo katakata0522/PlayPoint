@@ -40,14 +40,14 @@
         if (analyticsCorePromise) return analyticsCorePromise;
 
         analyticsCorePromise = new Promise((resolve, reject) => {
-            const existing = document.querySelector('script[src*="/js/analytics-core.js?v=bffa637412"]');
+            const existing = document.querySelector('script[src*="/js/analytics-core.js?v=204e2d5426"]');
             if (existing) {
                 existing.addEventListener('load', () => resolve(window.PlayPointAnalytics), { once: true });
                 existing.addEventListener('error', reject, { once: true });
                 return;
             }
             const script = document.createElement('script');
-            script.src = rootPath + 'js/analytics-core.js?v=bffa637412';
+            script.src = rootPath + 'js/analytics-core.js?v=204e2d5426';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointAnalytics), { once: true });
             script.addEventListener('error', reject, { once: true });
@@ -102,8 +102,8 @@
     // ブログと記事のイベントキューをGA4へ送れるよう、初期描画後に一度だけ読み込む
     function loadCommonAnalytics() {
         if (window.__playpointGaConfigured) return;
+        if (window.PlayPointAnalytics.installGtagBridge() === false) return;
         window.__playpointGaConfigured = true;
-        window.PlayPointAnalytics.installGtagBridge();
         window.gtag('js', new Date());
         window.gtag('set', { app_display_mode: getDisplayMode() });
         window.gtag('config', GA_MEASUREMENT_ID);

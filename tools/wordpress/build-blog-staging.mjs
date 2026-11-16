@@ -61,7 +61,7 @@ async function script(name) {
     s=once(s,'{ childList: true, subtree: true }','{ childList: true, subtree: true, attributes:true, attributeFilter:[\'href\'] }','link-only observer');
     s=once(s,"new URL(link.getAttribute('href'), doc.baseURI).origin === location.origin","[location.origin,'https://playpoint-sim.com'].includes(new URL(link.getAttribute('href'), doc.baseURI).origin)",'public navigation consent');
     s=once(s,"const hub = locale === 'ja' ? '/blog/' : `/${locale}/articles/`;","const hub = locale === 'ja' ? '/blog/?pp_flow=normal&pp_catalog=live' : `/${locale}/articles/`;",'search hub');
-    s=once(s,"all.href = hub + (query ? '?q=' + encodeURIComponent(query) : '');","all.href = hub + (query ? '&q=' + encodeURIComponent(query) : '');",'search query');
+    s=once(s,"all.href = hub + (query ? '?pp_q=' + encodeURIComponent(query) : '');","all.href = hub + (query ? '&q=' + encodeURIComponent(query) : '');",'search query');
     s=once(s,"fetch(hub + 'article-search-index.json').then(response => { if (!response.ok) throw Error('Unavailable'); return response.json(); })","Promise.resolve().then(() => JSON.parse(document.getElementById('pp-blog-search').textContent))",'dialog search input');
   }
   if(name==='blog/utils.js') {

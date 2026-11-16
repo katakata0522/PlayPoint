@@ -74,7 +74,7 @@ export async function buildArticleBatch(output){
   if(row.path==='/js/guide-navigation.js'){
    row.text=literal(row.text,"fetch(hub + 'article-search-index.json').then(response => { if (!response.ok) throw Error('Unavailable'); return response.json(); })","Promise.resolve(JSON.parse(doc.getElementById('ppab-search-snapshot').textContent))");
    row.text=literal(row.text,"const hub = locale === 'ja' ? '/blog/' : `/${locale}/articles/`;","const hub = locale === 'ja' ? '/blog/?pp_flow=normal&pp_catalog=live' : `/${locale}/articles/`;");
-   row.text=literal(row.text,"all.href = hub + (query ? '?q=' + encodeURIComponent(query) : '');","all.href = hub + (query ? '&q=' + encodeURIComponent(query) : '');");
+   row.text=literal(row.text,"all.href = hub + (query ? '?pp_q=' + encodeURIComponent(query) : '');","all.href = hub + (query ? '&q=' + encodeURIComponent(query) : '');");
    row.text=literal(row.text,"link.href = article.path.replace(/index\\.html$/, '');","link.href = window.PlayPointArticleBatch.link(article.path.replace(/index\\.html$/, ''));");
   }
   if(row.path==='/blog/components.js'){

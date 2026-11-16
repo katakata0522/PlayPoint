@@ -80,6 +80,8 @@ test('international article navigation emits only finite classification values',
   click({ target: popularLink });
   assert.deepEqual(JSON.parse(JSON.stringify(eventCalls(context, 'article_navigation_click'))), [{
     source_path: '/en/articles/google-play-points-join-eligibility.html',
+    page_location: 'https://playpoint-sim.com/en/articles/google-play-points-join-eligibility.html',
+    page_referrer: '',
     target_path: '/en/articles/google-play-points-cash-conversion.html',
     component: 'popular',
     locale: 'en',
