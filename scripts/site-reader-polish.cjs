@@ -9,6 +9,61 @@ const COPY = {
   ko: { search: '게임 이름으로 찾기', placeholder: '예: Pocket, 원신, FGO', result: '개 게임 표시', clear: '검색 지우기', edition: '일본판 참고 페이지', sources: '출처와 확인 정보', browse: '가이드 찾기·인기 글', rank: '0포인트 기준 참고 등급 보기' },
   tw: { search: '依遊戲名稱尋找', placeholder: '例如 Pocket、原神、FGO', result: '款遊戲', clear: '清除搜尋', edition: '日版參考頁面', sources: '出處與確認資訊', browse: '尋找指南與熱門文章', rank: '查看從零點數開始的參考等級' }
 };
+const DIRECTORY_COPY = Object.freeze({
+  "ja": {
+    "intro": "遊んでいるゲームを選び、購入予定額から貯まるPlayポイントを試算できます。",
+    "guides": "購入前に役立つ記事"
+  },
+  "en": {
+    "intro": "Choose a game to estimate the Play Points from your planned purchase.",
+    "guides": "Guides before purchasing"
+  },
+  "ko": {
+    "intro": "게임을 선택하고 결제 예정 금액으로 적립될 Play Points를 계산해 보세요.",
+    "guides": "구매 전 참고할 글"
+  },
+  "tw": {
+    "intro": "選擇遊戲，依預計購買金額試算可獲得的 Play Points。",
+    "guides": "購買前參考指南"
+  }
+});
+function polishGameDirectory(html, locale) {
+  const copy = DIRECTORY_COPY[locale] || DIRECTORY_COPY.ja;
+  // 計算機個別ページには適用しない、一覧専用の表示契約。
+  html = html.replace('class="game-page-container"', 'class="game-page-container game-directory-layout"');
+  html = html.replace(/<span class="site-logo-icon">[^<]*<\/span>\s*/, '');
+  html = html.replace(/<span class="game-badge">[^<]*<\/span>\s*/, '');
+  html = html.replace(/<div class="game-card-icon">[^<]*<\/div>\s*/g, '');
+  if (!html.includes('class="game-directory-intro"')) {
+    html = html.replace(/(<h1 class="game-title">[\s\S]*?<\/h1>)/,
+      `$1\n              <p class="game-directory-intro">${copy.intro}</p>`);
+  }
+  if (!html.includes('games/directory.css')) {
+    html = html.replace(/(<link rel="stylesheet" href="[^"]*games\/games\.css(?:\?v=[^"]*)?"\s*\/>)/,
+      '$1\n  <link rel="stylesheet" href="/games/directory.css" />');
+  }
+  if (locale === 'ja') {
+    html = html.replace(
+      '<div class="game-giftcard-cta-title">💳 課金前にチェック！さらにお得にする裏技</div>',
+      '<p class="game-directory-ad-label">広告・アフィリエイト</p>\n                  <div class="game-giftcard-cta-title">ギフトコードの購入条件も確認</div>'
+    );
+    html = html.replace(/(<a class="game-giftcard-cta-btn rakuten-primary-btn"[^>]*>)[\s\S]*?(<\/a>)/,
+      '$1楽天市場の認定店を確認する →$2');
+    html = html.replace(/(<a class="game-giftcard-cta-sublink"[^>]*>)[\s\S]*?(<\/a>)/,
+      '$1ギフトコードの購入ガイド →$2');
+  }
+  // 短いサイドバーを廃止し、参考記事は一覧の末尾に折りたたんで残す。
+  const sidebar = html.match(/\s*<!-- サイドバー -->\s*<aside class="sidebar-column">([\s\S]*?)<\/aside>/);
+  if (sidebar) {
+    const links = sidebar[1].match(/<ul class="sidebar-article-list">([\s\S]*?)<\/ul>/);
+    if (links && !html.includes('class="game-directory-guides"')) {
+      html = html.replace('</main>',
+        `<details class="game-directory-guides"><summary>${copy.guides}</summary><ul>${links[1]}</ul></details>\n      </main>`);
+    }
+    html = html.replace(sidebar[0], '');
+  }
+  return html;
+}
 function contentEnd(html, index) {
   const tokens = /<\/?article\b[^>]*>/gi;
   tokens.lastIndex = index;
@@ -60,7 +115,9 @@ function polishPage(html, file) {
       if (locale !== 'ja' && href.startsWith('/games/')) card = card.replace(/(<div class="game-card-action">)[\s\S]*?(<\/div>)/, '$1' + ({en:'Japan calculator ➔',ko:'일본판 계산기 ➔',tw:'日版計算器 ➔'})[locale] + '$2');
       return card.replace(/(<p class="game-card-desc">)([\s\S]*?)(<\/p>)/, (_match, before, description, after) => {
         let brief = description;
-        if (locale === 'ja') brief = description.split('。')[0] + '。';
+        if (locale === 'ja') brief = id === 'umamusume'
+          ? 'ウマ娘の購入プランで貯まるPlayポイントを計算できます。'
+          : description.split('。')[0] + '。';
         else {
           const names = (GAME_EVIDENCE[id]?.offers?.[locale] || []).map(offer => offer.names[locale]).filter(Boolean).join(' / ');
           const reference = href.startsWith('/games/');
@@ -74,6 +131,7 @@ function polishPage(html, file) {
         return brief ? before + brief + after : '';
       });
     });
+    html = polishGameDirectory(html, locale);
     tools = true;
   }
   if (/^(?:en\/|ko\/|tw\/)?games\//.test(file)) html = html.replace(/<span class="site-logo-text">[\s\S]*?<\/span>/, '<span class="site-logo-text">PlayPoint</span>');
