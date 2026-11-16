@@ -62,19 +62,39 @@ function ppab_public_url($value,$sourcePath) {
     return (in_array($pathname,$known,true)?'https://stg.playpoint-sim.com':'https://playpoint-sim.com').$pathname.$suffix;
 }
 function ppab_attr($value){return htmlspecialchars($value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8');}
+function ppab_tag_attribute($tag,$wanted) {
+    // Values are consumed as whole quoted tokens before considering another name.
+    preg_match_all('~\s+([^\s"\'<>/=]+)(?:\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+))?~is',$tag,$tokens,PREG_SET_ORDER);
+    foreach($tokens as $token) {
+        if(strtolower($token[1])!==$wanted)continue;
+        if(!preg_match('~^\s+[^=\s]+\s*=\s*(["\'])(.*?)\1$~is',$token[0],$value))return null;
+        return html_entity_decode($value[2],ENT_QUOTES|ENT_HTML5,'UTF-8');
+    }
+    return null;
+}
 function ppab_search_form($tag) {
-    if(!preg_match('~\sclass=(["\'])(.*?)\1~is',$tag,$match))return false;
-    return in_array('sidebar-search-form',preg_split('/\s+/',trim($match[2])),true);
+    $classes=ppab_tag_attribute($tag,'class');
+    return $classes!==null&&in_array('sidebar-search-form',preg_split('/\s+/',trim($classes)),true);
 }
 function ppab_rewrite_html($html,$sourcePath) {
     $protected=[];
-    $html=preg_replace_callback('~<(script|style)\b[^>]*>[\s\S]*?</\1\s*>~i',function($match)use(&$protected){$key='PPAB_PROTECTED_'.count($protected).'_END';$protected[$key]=$match[0];return $key;},$html);
-    $html=preg_replace_callback('~<(a|link|script|img|source|form)\b[^>]*>~i',function($match)use($sourcePath){
+    $prefix='PPAB_PROTECTED_';
+    while(str_contains($html,$prefix))$prefix.='_';
+    // First mask HTML comments and RCDATA elements: their literal examples
+    // must not be treated as active tags by the subsequent URL rewrites.
+    foreach(['~<!--[\s\S]*?-->~', '~<(textarea|title)\b(?:"[^"]*"|\'[^\']*\'|[^\'">])*>[\s\S]*?</\1\s*>~is'] as $mask) {
+        $html=preg_replace_callback($mask,function($match)use(&$protected,$prefix){$key=$prefix.count($protected).'_END';$protected[$key]=$match[0];return $key;},$html);
+    }
+    $html=preg_replace_callback('~<(script|style)\b(?:"[^"]*"|\'[^\']*\'|[^\'">])*>[\s\S]*?</\1\s*>~is',function($match)use(&$protected,$prefix){$key=$prefix.count($protected).'_END';$protected[$key]=$match[0];return $key;},$html);
+    $html=preg_replace_callback('~<(a|link|script|img|source|form)\b(?:"[^"]*"|\'[^\']*\'|[^\'">])*>~is',function($match)use($sourcePath){
         $tag=strtolower($match[1]);
         if($tag==='form'&&!ppab_search_form($match[0]))return $match[0];
-        if($tag==='link'&&preg_match('~\brel=["\'](?:canonical|alternate)["\']~i',$match[0]))return $match[0];
-        $rewritten=preg_replace_callback('~\b(href|src|srcset|data-search-module|action)=(["\'])(.*?)\2~is',function($attr)use($tag,$sourcePath){
-            $name=strtolower($attr[1]);$value=html_entity_decode($attr[3],ENT_QUOTES|ENT_HTML5,'UTF-8');
+        if($tag==='link'&&in_array(strtolower(ppab_tag_attribute($match[0],'rel')??''),['canonical','alternate'],true))return $match[0];
+        $rewritten=preg_replace_callback('~\s+([^\s"\'<>/=]+)(?:\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+))?~is',function($token)use($tag,$sourcePath){
+            $name=strtolower($token[1]);
+            if(!in_array($name,['href','src','srcset','data-search-module','action'],true))return $token[0];
+            if(!preg_match('~^(\s+[^=\s]+\s*=\s*)(["\'])(.*?)\2$~is',$token[0],$attr))return $token[0];
+            $value=html_entity_decode($attr[3],ENT_QUOTES|ENT_HTML5,'UTF-8');
             if($name==='srcset') {
                 $items=[];foreach(explode(',',$value) as $item){$pair=preg_split('/\s+/',trim($item),2);$url=ppab_public_url($pair[0],$sourcePath);$path=parse_url($url,PHP_URL_PATH);$items[]=(ppab_asset_url($path)??$url).(isset($pair[1])?' '.$pair[1]:'');}$value=implode(', ',$items);
             } elseif($tag==='a') {
@@ -84,17 +104,24 @@ function ppab_rewrite_html($html,$sourcePath) {
             } else {
                 $url=ppab_public_url($value,$sourcePath);$path=parse_url($url,PHP_URL_PATH);$value=ppab_asset_url($path)??$url;
             }
-            return $attr[1].'='.$attr[2].ppab_attr($value).$attr[2];
+            return $attr[1].$attr[2].ppab_attr($value).$attr[2];
         },$match[0]);
         return $rewritten.($tag==='form'?'<input type="hidden" name="pp_flow" value="normal"><input type="hidden" name="pp_catalog" value="live">':'');
     },$html);
-    // 外部scriptの開始タグも属性だけ接続し、スクリプト本文を再シリアライズしない。
+    // 開始タグの実属性だけを接続。script/style本文はバイト単位で保持する。
     foreach($protected as $key=>$block) {
-        $block=preg_replace_callback('~^(<script\b[^>]*\bsrc=)(["\'])(.*?)\2~is',function($m)use($sourcePath){$url=ppab_public_url($m[3],$sourcePath);return $m[1].$m[2].ppab_attr(ppab_asset_url(parse_url($url,PHP_URL_PATH))??$url).$m[2];},$block);
-        $block=preg_replace_callback('~\bdata-search-module=(["\'])(.*?)\1~is',function($m)use($sourcePath){$url=ppab_public_url($m[2],$sourcePath);return 'data-search-module='.$m[1].ppab_attr(ppab_asset_url(parse_url($url,PHP_URL_PATH))??$url).$m[1];},$block);
-        $html=str_replace($key,$block,$html);
+        $protected[$key]=preg_replace_callback('~^<script\b(?:"[^"]*"|\'[^\']*\'|[^\'">])*>~is',function($opening)use($sourcePath){
+            // Tokenize complete attributes so text inside another quoted value
+            // cannot be mistaken for a src or data-search-module attribute.
+            return preg_replace_callback('~\s+([^\s"\'<>/=]+)(?:\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+))?~is',function($token)use($sourcePath){
+                if(!in_array(strtolower($token[1]),['src','data-search-module'],true))return $token[0];
+                if(!preg_match('~^(\s+[^=\s]+\s*=\s*)(["\'])(.*?)\2$~is',$token[0],$attr))return $token[0];
+                $url=ppab_public_url($attr[3],$sourcePath);
+                return $attr[1].$attr[2].ppab_attr(ppab_asset_url(parse_url($url,PHP_URL_PATH))??$url).$attr[2];
+            },$opening[0]);
+        },$block,1);
     }
-    return $html;
+    return strtr($html,$protected);
 }
 function ppab_replace_meta($html,$name,$value) {
     return preg_replace_callback('~(<meta\b[^>]*\b(?:name|property)=["\']'.preg_quote($name,'~').'["\'][^>]*\bcontent=)(["\'])(.*?)\2~is',fn($m)=>$m[1].$m[2].ppab_attr($value).$m[2],$html);
