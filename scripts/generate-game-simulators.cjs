@@ -977,7 +977,7 @@ const GAMES_DATA = [
     },
     presets: {
       ja: [
-        { label: '初心者応援パック プレミアム (1,000円)', amount: 1000, mult: 1 },
+        { label: "スタートダッシュパックプレミアム (1,000円)", amount: 1000, mult: 1 },
         { label: 'モンパス月額 (480円)', amount: 480, mult: 1 },
         { label: '10連分 50個 (約3,500円)', amount: 3500, mult: 1 },
         { label: '新春・周年ガチャ (100,000円)', amount: 100000, mult: 1 }

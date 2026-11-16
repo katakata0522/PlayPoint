@@ -125,10 +125,10 @@ const GAME_SEO = {
     appStoreReference: { price: 10000, orbs: 180 },
     webStore: { price: 10000, orbs: 190 },
     monthlyWebStore: { price: 10000, orbs: 200, limitPerMonth: 1 },
-    productsVerifiedAt: '2026-11-06',
+    productsVerifiedAt: '2026-11-16',
     // アプリ内の商品。Webショップの増量オーブや予算例は含めない。
     packsJa: [
-      { id: 'starter-premium', name: '初心者応援パック プレミアム (1,000円)', price: 1000, detail: '獣神化★6確定ガチャ1回とオーブ8個、育成アイテム。' },
+      { id: 'starter-premium', name: "スタートダッシュパックプレミアム (1,000円)", price: 1000, detail: "★6確定ガチャ1回、オーブ8個、フエ～ルビスケット5個、英雄の書と大英雄の書各1枚。" },
       { id: 'collab-starter', name: 'コラボスターターパック (1,000円)', price: 1000, detail: 'コラボ開催時の商品。対象キャラ・内容・販売期間は開催ごとに異なります。' },
       { id: 'first-acquisition', name: '初獲得パック (1,800円)', price: 1800, detail: '初獲得★6確定ガチャ1回とオーブ10個など。排出対象を全て獲得済みなら重複があります。' },
       { id: 'ability', name: '選べる！アビリティパック (3,800円)', price: 3800, detail: '選べるのはアビリティ。キャラを指名する商品ではありません。' },

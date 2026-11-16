@@ -185,7 +185,7 @@ function syncMonst(rootDir) {
   const file = 'games/monst/index.html';
   let html = read(rootDir, file);
   html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `モンスト価格・Webショップ・Play Points確認：${VERIFIED_AT}`);
-  const block = `<section class="section" data-game-seo-guide="monst"><h2>Google Play課金とWebショップ・各種パックの比較</h2><p>公式情報では、アプリ内1万円がオーブ180個、Webショップ通常が190個、月1回の「月イチお得オーブ」が200個です。Webの方がオーブは増えますが、Google Play Pointsを貯めるならGoogle Play経由の購入も比較対象になります。</p><p>また、初心者応援パックプレミアムやコラボパック、モンパスなどの特典内容と購入優先度も整理しています。</p><ul><li><a href="../../articles/2026-09-19-monst-in-app-packs-guide.html">モンスト課金パックのコスパ・おすすめ一覧｜Playポイント還元と購入優先度 ➔</a></li><li><a href="../../articles/2026-09-19-monst-web-shop-vs-google-play.html">1万円課金のポイント価値・損得分岐点を計算する ➔</a></li><li><a href="./google-play-vs-webshop/">購入経路・180個／190個／200個の基本比較を見る ➔</a></li></ul></section>`;
+  const block = `<section class="section" data-game-seo-guide="monst"><h2>Google Play課金とWebショップ・各種パックの比較</h2><p>公式情報では、アプリ内1万円がオーブ180個、Webショップ通常が190個、月1回の「月イチお得オーブ」が200個です。Webの方がオーブは増えますが、Google Play Pointsを貯めるならGoogle Play経由の購入も比較対象になります。</p><p>また、スタートダッシュパックプレミアムやコラボパック、モンパスなどの特典内容と購入優先度も整理しています。</p><ul><li><a href="../../articles/2026-09-19-monst-in-app-packs-guide.html">モンスト課金パックのコスパ・おすすめ一覧｜Playポイント還元と購入優先度 ➔</a></li><li><a href="../../articles/2026-09-19-monst-web-shop-vs-google-play.html">1万円課金のポイント価値・損得分岐点を計算する ➔</a></li><li><a href="./google-play-vs-webshop/">購入経路・180個／190個／200個の基本比較を見る ➔</a></li></ul></section>`;
   html = insertBeforeRequired(html, '<section class="section game-source-section">', block, 'data-game-seo-guide="monst"', 'Monst guide block');
   return writeIfChanged(rootDir, file, html);
 }

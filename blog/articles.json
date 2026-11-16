@@ -1223,19 +1223,20 @@
   },
   {
     "id": "monst-in-app-packs-guide-2026",
-    "title": "モンストの課金パックを目的で選ぶ｜モンパス・初心者応援・初獲得を比較",
+    "title": "モンストの課金パックを目的で選ぶ｜スタートダッシュ・モンパスを比較",
     "date": "2026-09-19",
-    "modified": "2026-10-30",
+    "modified": "2026-11-16",
     "category": "使い方",
     "gameTitle": "モンスト",
     "tags": [
       "モンスト",
+      "スタートダッシュパック",
       "初心者応援パック",
       "コラボパック",
       "モンパス",
       "Play Points"
     ],
-    "description": "モンストの常設パックとモンパスを、公式の価格・中身・購入条件から比較。確定ガチャの違い、税抜価格からのPlay Points計算、遊び方に合う選び方をまとめます。",
+    "description": "モンストの課金パックを目的別に比較。スタートダッシュ2種類・初獲得の価格と中身、モンパス2プランの違いを整理します。Google Play購入のポイントを、税抜対象額と獲得率から試算できます。",
     "file": "../articles/2026-09-19-monst-in-app-packs-guide.html",
     "related": [
       [
@@ -1255,7 +1256,7 @@
     "thumbnailKind": "app-icon",
     "source": "article",
     "listed": true,
-    "listTitle": "モンストの課金パック選び｜モンパス・初心者応援・初獲得",
+    "listTitle": "モンストの課金パック選び｜スタートダッシュ・モンパス・初獲得",
     "listDescription": "常設パックとモンパスを、価格・内容・購入条件で比較。確定ガチャや遊び方に合わせて選べます。",
     "browseCategory": "ゲーム別課金",
     "ogp": "../articles/ogp/2026-09-19-monst-in-app-packs-guide.png",
@@ -1984,10 +1985,10 @@
       "キャンペーン",
       "計算方法"
     ],
-    "description": "Play Pointsでは複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。直接レート、倍率表記、税抜価格、商品ごとの四捨五入を例付きで解説します。",
+    "description": "Google Play Pointsのランクとキャンペーンは重複する？通常率と特別獲得率は足したり掛けたりせず、対象購入で高い方を使います。シルバー・税抜500円の例から、表示の読み方とポイントの計算を確認できます。",
     "file": "../articles/2026-08-05-play-points-multiplier-stacking.html",
     "thumbnail": "../articles/thumbnails/play-points-multiplier-stacking-square-v1.webp",
-    "modified": "2026-10-31",
+    "modified": "2026-11-16",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/2026-08-05-play-points-multiplier-stacking-20261030.png",
     "thumbnailKind": "generic",
@@ -2208,7 +2209,7 @@
     "id": "points-value-100",
     "title": "Google Play Pointsを100ポイント貯めるには｜購入額と倍率の目安",
     "date": "2026-07-24",
-    "modified": "2026-10-28",
+    "modified": "2026-11-16",
     "category": "使い方",
     "tags": [
       "Play Points",
@@ -2216,7 +2217,7 @@
       "価値",
       "必要金額"
     ],
-    "description": "Google Play Pointsの100ポイントは何円分か、何円使えば貯まるかを分けて解説。日本のステータス別獲得率、キャンペーン時の目安、交換前の確認方法をまとめます。",
+    "description": "Google Play Pointsの100ポイントを貯めるには何円必要？ブロンズ通常時は税抜対象額約1万円が目安です。ランク・特別獲得率別の購入額、交換時の価値との違いを整理し、不足ポイントから試算できます。",
     "file": "../articles/2026-07-24-play-points-100-value.html",
     "thumbnail": "../articles/thumbnails/points-value-100-square-v1.webp",
     "browseCategory": "貯める・キャンペーン",
