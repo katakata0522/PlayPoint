@@ -21,6 +21,7 @@ function clone(value) {
 function createAnalyticsRuntime({
   consentStatus,
   location = DEFAULT_LOCATION,
+  referrer = '',
   ready = false,
   storedEntries = []
 } = {}) {
@@ -42,6 +43,7 @@ function createAnalyticsRuntime({
       constructor(type) { this.type = type; }
     },
     document: {
+      referrer,
       addEventListener(type, listener) { listeners.set(type, listener); },
       dispatchEvent(event) {
         const listener = listeners.get(event.type);
@@ -67,7 +69,11 @@ function eventItems(context, eventName) {
 }
 
 function eventCalls(context, eventName) {
-  return eventItems(context, eventName).map(item => clone(item[2]));
+  // 独自イベントの契約だけを返す。URL文脈はeventItemsの生payloadで別途検証する。
+  return eventItems(context, eventName).map(item => {
+    const { page_location, page_referrer, ...customParams } = clone(item[2]);
+    return customParams;
+  });
 }
 
 function latestEventParams(context, eventName) {

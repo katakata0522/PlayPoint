@@ -55,7 +55,11 @@ function eventItems(context, eventName) {
 
 function eventCalls(context, eventName) {
   return eventItems(context, eventName)
-    .map(item => JSON.parse(JSON.stringify(item[2])));
+    .map(item => {
+      // URL文脈はanalytics-runtime-attributionの生payload検査が担当する。
+      const { page_location, page_referrer, ...customParams } = JSON.parse(JSON.stringify(item[2]));
+      return customParams;
+    });
 }
 
 test('購入先比較は共有の同意を守り、入力した特典価値を送信しない', () => {

@@ -7,6 +7,12 @@
     const ENTRY_MAX_AGE_MS = 30 * 60 * 1000;
     const MAX_PENDING_EVENTS = 20;
     const MAX_TEXT_LENGTH = 120;
+    // 共有条件・検索語・日記等の入力をURL文脈へ渡さず、既存の流入判定だけを残す。
+    const ATTRIBUTION_QUERY_KEYS = new Set([
+        'utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_term', 'utm_content',
+        'utm_source_platform', 'utm_creative_format', 'utm_marketing_tactic',
+        'gclid', 'dclid', 'gbraid', 'wbraid', 'gclsrc', 'gad_source', 'gad_campaignid', '_gl'
+    ]);
     const CALCULATION_EVENTS = new Set([
         'calculation_completed',
         'reverse_calculation_completed'
@@ -286,6 +292,31 @@
         return enrichSanitizedCalculationParams(eventName, cleanParams);
     }
 
+    function sanitizePageUrl(value, preserveAttribution = false) {
+        if (!value) return '';
+        try {
+            const url = new URL(value);
+            if (!['https:', 'http:'].includes(url.protocol)) return '';
+            url.username = '';
+            url.password = '';
+            url.hash = '';
+            for (const key of [...url.searchParams.keys()]) {
+                if (!preserveAttribution || !ATTRIBUTION_QUERY_KEYS.has(key)) url.searchParams.delete(key);
+            }
+            return url.href;
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function getPageContext() {
+        return {
+            page_location: sanitizePageUrl(window.location && window.location.href, true),
+            // 省略するとGoogleタグが生のdocument.referrerを再利用するため空文字も明示する。
+            page_referrer: sanitizePageUrl(window.document && window.document.referrer)
+        };
+    }
+
     function installGtagBridge() {
         if (window.__playpointGtagBridgeInstalled) return;
         window.__playpointGtagBridgeInstalled = true;
@@ -295,11 +326,23 @@
             if (command === 'event' && typeof eventName === 'string') {
                 const enrichedParams = sanitizeAndEnrichCalculationParams(eventName, params || {});
                 if (enrichedParams === null) return;
-                arguments[2] = enrichedParams;
+                arguments[2] = { ...enrichedParams, ...getPageContext() };
+                arguments.length = Math.max(arguments.length, 3);
+            } else if (command === 'config') {
+                // ブログの自動page_viewと計算機の手動page_viewの両方へ適用する。
+                arguments[2] = { ...params, ...getPageContext() };
+                arguments.length = Math.max(arguments.length, 3);
+            } else if (command === 'set' && eventName && typeof eventName === 'object') {
+                arguments[1] = { ...eventName, ...getPageContext() };
+            } else if (command === 'set' && ['page_location', 'page_referrer'].includes(eventName)) {
+                arguments[2] = getPageContext()[eventName];
+                arguments.length = Math.max(arguments.length, 3);
             }
             window.dataLayer.push(arguments);
         };
         window.gtag = gtagBridge;
+        // タグ読込み前から、自動イベントが使う既定URLも保護する。
+        window.gtag('set', getPageContext());
     }
 
     function queue(eventName, params) {
@@ -321,7 +364,7 @@
 
         const enrichedParams = enrichSanitizedCalculationParams(eventName, cleanParams);
         if (enrichedParams === null) return false;
-        window.gtag('event', eventName, enrichedParams);
+        window.gtag('event', eventName, { ...enrichedParams, ...getPageContext() });
         return true;
     }
 

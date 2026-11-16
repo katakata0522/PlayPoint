@@ -337,6 +337,87 @@ async function main() {
         console.log('ok - article ad falls back to consent-gated eager requests without IntersectionObserver');
       } finally { await context.close(); }
     }
+    // 共有URL自体は復元用に保持し、GAへ渡すURL文脈だけから入力値を除く。
+    // Google/CMPは隔離stubであり、実DebugViewや地域別CMPの受け入れとは区別する。
+    for (const width of [390, 1280]) {
+      for (const mode of ['main', 'reverse']) {
+        const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
+        try {
+          await configureContext(context, origin);
+          const page = await context.newPage();
+          const query = mode === 'main'
+            ? '?mode=main&status=1&target=silver&points=137&multiplier=2&baseRate=2.5'
+            : '?mode=reverse&status=1&amount=23456&eligible=22000&multiplier=2&baseRate=2.5';
+          const shared = new URL(query + '&utm_source=qa&utm_medium=test#amount=23456', baseUrl).href;
+          await page.goto(shared, { waitUntil: 'load', referer: new URL('?points=137&amount=23456', baseUrl).href });
+          const eventName = mode === 'main' ? 'calculation_completed' : 'reverse_calculation_completed';
+          await page.waitForFunction(name => (window.dataLayer || []).some(item => item[0] === 'event' && item[1] === name), eventName);
+          strictAssert.equal(page.url(), shared, '共有URLを消さずに復元を維持する');
+          strictAssert.equal(await page.locator(mode === 'main' ? '#neededPoints' : '#amountYen').inputValue(), mode === 'main' ? '137' : '23456');
+          strictAssert.equal(await page.locator(mode === 'main' ? '#baseRate' : '#reverseBaseRate').inputValue(), '2.5');
+          strictAssert.equal(await page.locator(mode === 'main' ? '#multiplier' : '#reverseMultiplier').inputValue(), '2');
+          if (mode === 'reverse') strictAssert.equal(await page.locator('#reverseEligibleAmount').inputValue(), '22000');
+          const result = await page.locator(mode === 'main' ? '#result' : '#reverseResult').getAttribute(mode === 'main' ? 'data-required-yen' : 'data-earned-points');
+          // 既存仕様は直接入力2.5ptと倍率由来2ptの高い方を使い、両者を乗算しない。
+          strictAssert.equal(Number(result), mode === 'main' ? 5480 : 550);
+          const payloads = await page.evaluate(() => (window.dataLayer || []).filter(item => item[0] === 'event').map(item => item[2]));
+          assert(payloads.length > 0, '共有復元後のイベントがない');
+          for (const payload of payloads) {
+            strictAssert.equal(payload.page_location, new URL('?utm_source=qa&utm_medium=test', baseUrl).href);
+            strictAssert.equal(payload.page_referrer, baseUrl);
+            assert(!/23456|22000|137/.test(JSON.stringify(payload)), '共有URLの生入力値がpayloadに残っている');
+          }
+          console.log(`ok - shared ${mode} restore and private GA URL context: ${width}px`);
+        } finally { await context.close(); }
+      }
+      for (const initial of ['pending', 'denied']) {
+        const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
+        try {
+          await configureContext(context, origin, initial);
+          const page = await context.newPage();
+          await page.goto(new URL('?mode=main&status=1&target=silver&points=137&multiplier=1', baseUrl).href, { waitUntil: 'load' });
+          await page.waitForFunction(expected => window.PlayPointConsent?.getStatus() === expected && document.querySelector('#result')?.dataset.requiredYen, initial);
+          const events = () => page.evaluate(() => (window.dataLayer || []).filter(item => item[0] === 'event').length);
+          strictAssert.equal(await events(), 0, `${initial}: 同意前のイベント送信`);
+          strictAssert.equal(await page.locator('script[src*="googletagmanager.com/gtag/js"]').count(), 0, `${initial}: 同意前のGA取得`);
+          await page.evaluate(() => window.__testSetConsent('granted'));
+          await page.waitForFunction(() => window.PlayPointConsent?.getStatus() === 'granted');
+          await page.locator('#calculateButton').click();
+          await page.waitForFunction(() => (window.dataLayer || []).some(item => item[0] === 'event' && item[1] === 'calculation_completed'));
+          await page.evaluate(() => window.__testSetConsent('denied'));
+          await page.waitForFunction(() => window.PlayPointConsent?.getStatus() === 'denied');
+          const before = await events();
+          await page.locator('#neededPoints').fill('138');
+          await page.locator('#calculateButton').click();
+          strictAssert.equal(await events(), before, '明示拒否後の追加イベント送信');
+          console.log(`ok - isolated analytics ${initial}/grant/revoke boundary: ${width}px`);
+        } finally { await context.close(); }
+      }
+    }
+
+    // action省略時のGoogle自動form_destinationが、現在URLの入力値を拾わないようにする。
+    for (const width of [390, 1280]) {
+      for (const target of ['points-cost/', 'en/points-cost/', 'ko/points-cost/', 'tw/points-cost/']) {
+        const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
+        try {
+          await configureContext(context, origin);
+          const page = await context.newPage();
+          await page.goto(new URL(target + '?points=137&status=1&multiplier=2', baseUrl).href, { waitUntil: 'load' });
+          await page.waitForFunction(() => window.__playpointGaConfigured && document.querySelector('#points-cost-result')?.dataset.shareUrl);
+          strictAssert.equal(await page.locator('#points-target').inputValue(), '137');
+          strictAssert.equal(await page.locator('#points-multiplier').inputValue(), '2');
+          const expectedAction = new URL(target, baseUrl).href;
+          strictAssert.equal(await page.locator('#points-cost-form').evaluate(form => form.action), expectedAction);
+          await page.locator('#points-target').fill('138');
+          await page.locator('#points-cost-form button[type="submit"]').click();
+          await page.waitForFunction(() => new URL(document.querySelector('#points-cost-result').dataset.shareUrl).searchParams.get('points') === '138');
+          strictAssert.equal(new URL(page.url()).searchParams.get('points'), '138', '計算条件をURLへ保持する');
+          strictAssert.equal(await page.locator('#points-cost-form').evaluate(form => form.action), expectedAction, '履歴更新後も自動フォームの送信先は入力値なし');
+          console.log(`ok - points-cost shared restore and private form destination: ${target}/${width}px`);
+        } finally { await context.close(); }
+      }
+    }
+
     // main.jsの実DOM登録から送信手前のdataLayerへ接続。外部GAスクリプトはstub済み。
     {
       const context = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });

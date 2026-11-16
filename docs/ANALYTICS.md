@@ -85,6 +85,8 @@ GA4管理画面ではセッション/ユーザー単位も併記し、繰り返�
 
 2026-11-16のDebugView実受信で、共有URLの入力金額が標準パラメータ `page_location` に残ることを確認した。現在はこの入力値除外と同意境界の受け入れが未完了であり、以下の実測結果に従ってIssue #180をopenのまま維持する。
 
+同日のDraft PR #809では、共有復元を保持した入力URL除外の修正候補を作成し、隔離環境の実Googleタグ要求でも改善を確認した。公開サイトへの反映・反映後のDebugView・実際の地域別CMPの受け入れは未実施であり、公開環境の完了状態とは区別する。
+
 ### 2026-08-11 本番点検（当時の状態）
 
 - 本番トップで測定ID `G-HED6D0FR4L` の `gtag.js` と同意管理スクリプトの読み込みを確認した。
@@ -160,6 +162,43 @@ https://playpoint-sim.com/?mode=reverse&status=1&multiplier=1&amount=23456
 今回の変更はこの文書だけで、公開HTML/JS、DB、GA4・広告・CMPの設定には変更していない。本番測定IDへは架空の試験データだけを送信し、実投稿・購入・日記保存・広告クリックは行っていない。ブラウザ内の直近計算の保存動作により137ptの試験値は保存されたが、既存の日記データを削除・上書きしていない。Tag Assistantの一時デバッグ接続は停止を確認し、作業用タブを閉じた。スクリーンショットと受信文字列は非公開ローカル成果物に保存し、認証情報、Cookie、セッションIDの値や実利用者のデータは本書へ掲載しない。
 
 参考: [Google公式DebugView](https://support.google.com/analytics/answer/7201382?hl=en)、[Tag Assistantの同意確認](https://support.google.com/tagmanager/answer/14218557?hl=en)、[公開済みCMPメッセージのプレビュー](https://support.google.com/adsense/answer/10924669)。
+
+### 2026-11-16 入力URL除外の修正候補（Draft・未公開）
+
+`js/analytics-core.js` の共通境界で、Googleタグの初期 `set`、`config`、明示イベントへ渡す `page_location` / `page_referrer` を整形する。現在URLはUTM・Google広告流入の既知キーだけを残し、計算条件・未知のクエリ・断片・URL内の認証情報を除く。参照元はクエリ・断片・認証情報を除き、不正・非HTTP(S)の参照元も省略せず空文字にする。イベント呼出元がURL値を指定しても採用せず、外部タグが `gtag` を置換した後の `PlayPointAnalytics.track()` にも同じ処理を適用する。
+
+ブログの自動初回page_viewと、計算機の手動初回page_viewの両方が対象で、既存の `send_page_view: false`、一度だけの初回表示、独自イベントの許可リスト、記事起点の分類を保持する。Googleタグの[URL設定と既定値](https://developers.google.com/analytics/devguides/collection/ga4/reference/config)に対応する明示値であり、ブラウザURL自体の消去ではない。
+
+共有URLの生成・復元と計算式は変更していない。金額・必要ポイント・対象額・獲得率・倍率・ランクの条件は従来どおりURLから復元する。`points-cost/` の計算後の履歴更新と条件コピーも維持する。実Googleタグの隔離試験で、同ページの自動 `form_start` が現在URLを `form_destination` に含める経路も確認したため、日本語・英語・韓国語・台湾向けの4フォームには各言語のクエリなしURLを `action` として明示した。submitは従来どおりJavaScriptが `preventDefault()` して計算し、サーバーへのフォーム書込みは追加しない。
+
+共通coreと読込み元の内容ハッシュ、Service Workerの参照を既存生成処理で同期した。公開HTML449ファイルのうち、4フォームの `action` 以外は版参照だけの差分であり、記事本文・日付・順位・索引・レイアウトは変更していない。
+
+#### 修正候補の検証
+
+| 検証 | 結果・意味 |
+| --- | --- |
+| 元コードでの回帰再現 | 新しいURL文脈の2検査が失敗。実Googleタグ要求でも共有金額・参照元ポイント・フォーム送信先ポイントを確認 |
+| 関連Node回帰 | analytics-core / runtime-attribution / state-boundaries / third-party integration・resilience / share-behavior / calculator-funnel / article-navigationの84件成功、失敗・skipなし |
+| URLの境界 | エンコード・重複・未知キー、断片、参照元の認証情報・不正URL、config第3引数省略、直接set/event、外部gtag置換、保留後のURL変更と明示拒否後の破棄を検証 |
+| ローカル実DOM・390px / 1280px | 通常・逆算の共有復元、既存計算結果、4言語の必要額フォームの復元・履歴更新・安全なaction、同意境界、既存広告分離が成功 |
+| 実Googleタグの送信直前データ | 静的gtag.jsだけを取得した隔離Chromeで、共有ページと必要額フォームの `page_location` / `page_referrer` / `form_destination` から入力クエリが消えた。全collect要求をローカルで遮断し外部転送0 |
+| JavaScript構文 | 234ファイル成功 |
+| Windowsの全事前検証 | 全体試行のBash実行6ケースは固定されたBash実体がなく失敗し、main基準でも再現。記事計測の新URL文脈に合わせた期待値更新後は関連検査が成功。Linuxの全体結果はPR #809のチェックを正本とする |
+
+関連テストは既存の所有ファイルに追加した。独自イベントの検査とURL文脈の生payload検査を分け、URL文脈を単に除外して安全と判定しない。ローカルブラウザ検証は次の既存コマンドで、外部Google/CMPをstubし、公開サイトや実データには接続しない。
+
+```text
+node .github/scripts/browser-revenue-smoke.cjs
+node .github/scripts/preflight.cjs
+```
+
+実Googleタグの比較では、元コードと候補の各捕捉JSONを認証情報・Cookie・client/session IDの値なしで非公開証跡へ保存した。元コードでの捕捉JSONのSHA256は `364abd396a8915a5bd3d0e35354795befbfad0125333c8f0b3e980ea23e4a1d5`、修正後JSONは `811766af8261db4d1e783d5fbfe376b158482076f30defdfde6e37dcaaf67dab`。これは通信前の捕捉であり、修正後の本番DebugView受信確認ではない。
+
+#### 同意境界と残る受け入れ
+
+隔離したCMP fixtureではpending / deniedの間にアプリイベントとGA取得がなく、許可後に計測を開始し、取消し後の計算でイベントが増えないことを両画面幅で確認した。fixtureの結果は、EEA等の実地域・実CMPでの同意前 / 拒否後のGoogle自動イベント非送信を証明しない。前節の日本向け環境では必要な実効状態を再現できておらず、**実CMPの受け入れは未実施のまま**残す。
+
+本候補のマージ・デプロイ、公開HTML/JS・DB・GA4・CMP・広告の管理設定変更は行っていない。公開環境で修正後のDebugView、実効的な同意境界、他の共有URL・日記・全端末の最終受け入れが完了するまでIssue #180は閉じない。
 
 担当: PlayPoint運営者。イベント追加時は本書と回帰テストを同時に更新する。
 
