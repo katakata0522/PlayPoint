@@ -54,6 +54,20 @@ test('配信用モードだけ変換済みアセットを保持する', t => {
   assert.equal(result.css, '/* prepared */');
 });
 
+test('通常検証は同期対象のmodule入口を成功・失敗とも元へ戻し配信時だけ保持する', t => {
+  const mutatedJs = ['js/main.js', 'js/intl-copy-overrides.js'];
+  for (const fail of [false, true]) {
+    const result = runPreflight(t, { mutatedJs, commandResult(call) {
+      return { status: fail && call.args[0] === '.github/scripts/minify.cjs' ? 1 : 0 };
+    } });
+    assert.equal(result.exitCode, fail ? 1 : 0);
+    for (const file of mutatedJs) assert.equal(result.js[file], '/* original js */', file);
+  }
+  const deploy = runPreflight(t, { mutatedJs, prepareDeploy: true });
+  assert.equal(deploy.exitCode, 0);
+  for (const file of mutatedJs) assert.equal(deploy.js[file], '/* prepared js */', file);
+});
+
 // 小さな隔離fixtureだけを実Nodeで実行する。本リポジトリの全回帰を再帰起動しない。
 function executeFixtureTests(call, options) {
   return spawnSync(call.command, call.args, {

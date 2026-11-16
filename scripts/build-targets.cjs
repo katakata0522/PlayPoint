@@ -68,6 +68,8 @@ const generatedFiles = [
   'atom.xml',
   'sw.js',
   'js/third-party.js',
+  'js/main.js',
+  'js/intl-copy-overrides.js',
   'blog/articles.json',
   'blog/article-search-index.json',
   'blog/game-calculators.json',

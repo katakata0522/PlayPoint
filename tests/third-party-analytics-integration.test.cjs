@@ -238,6 +238,18 @@ test('検索URLを保護できなければ許可済みでもGoogleタグを取�
   assert.equal(runtime.context.__playpointGaConfigured, undefined);
 });
 
+test('旧coreが保護成功を返さない場合もGoogleタグを取得せず広告とは分離する', async () => {
+  const ad = createAd();
+  const runtime = createRuntime({ managedAds: [ad] });
+  runtime.context.PlayPointAnalytics = { ...runtime.context.PlayPointAnalytics, installGtagBridge() {} };
+  await advanceAnalytics(runtime);
+  assert.equal(scriptsMatching(runtime, 'googletagmanager.com/gtag/js').length, 0);
+  assert.equal(gtagCalls(runtime.context).some(call => call[0] === 'config'), false);
+  assert.equal(runtime.context.__playpointGaConfigured, undefined);
+  assert.equal(scriptsMatching(runtime, 'adsbygoogle.js').length, 1);
+  assert.equal(runtime.context.adsbygoogle.length, 1);
+});
+
 test('Analyticsと広告枠のConsent境界を独立して守る', async () => {
   const analyticsOnlyAd = createAd();
   const analyticsOnly = createRuntime({ analyticsConsent: 'granted', adsConsent: 'denied', managedAds: [analyticsOnlyAd] });

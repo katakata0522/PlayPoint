@@ -1,5 +1,9 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-11-16 旧計測coreと新しい起動資材の混在
+
+既存runtime-module-guardsのESM実行helperで、6地域の実HTMLにある先行moduleを含むimport順と旧config/coreの組合せを評価し、通常・逆算の共有クエリ保持、清掃済み計測URL、同意前の非送信を確認する。既存third-party-analytics-integrationとthird-party-resilienceは、旧bridgeのundefinedを成功扱いせずGAだけを起動しないことと広告の同意境界を担当する。既存preflight-execution-contractは、同期で変更するmainとintl-copy-overridesを成功・失敗とも復元し、配信用実行だけ保持することを担当する。現行APIを表すlatest-hubのfixtureは明示的な成功値へ合わせる。新しい必須ゲートは追加しない。隔離した実Googleタグ・旧SWのブラウザ比較と、実AdSense・実地域CMPの本番受け入れは区別して記録する。
+
 ## 2026-11-09 本番性能測定でも広告・計測を遮断
 
 既存ci-performance-samplingの本番suite検査を「本番の外部通信は遮断しない」から「本番でも広告・計測の第三者を遮断する」へ変更する。定期実行の本番測定が広告配信量の当たり外れで成否の揺れる問題への方針変更で、予算値と遮断リスト（BLOCKED）は変更しない。PRのローカル測定の挙動、本番は証明書の通常検証を維持する保証、first-party違反を追加測定で消さない保証は維持する。新しいテストファイル・必須ゲートは追加しない。

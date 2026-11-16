@@ -102,7 +102,7 @@
     // ブログと記事のイベントキューをGA4へ送れるよう、初期描画後に一度だけ読み込む
     function loadCommonAnalytics() {
         if (window.__playpointGaConfigured) return;
-        if (window.PlayPointAnalytics.installGtagBridge() === false) return;
+        if (window.PlayPointAnalytics.installGtagBridge() !== true) return;
         window.__playpointGaConfigured = true;
         window.gtag('js', new Date());
         window.gtag('set', { app_display_mode: getDisplayMode() });

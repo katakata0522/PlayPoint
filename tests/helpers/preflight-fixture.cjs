@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '../..');
 
 // 本物のentrypointと工程runnerを動かし、外部コマンドだけを観測する。
 // 個別auditorの正しさはそれぞれのテストが担当。再帰的な全回帰や本番通信は行わない。
-function runPreflight(t, { missing = [], empty = false, prepareDeploy = false, commandResult, transform = s => s } = {}) {
+function runPreflight(t, { missing = [], empty = false, prepareDeploy = false, commandResult, transform = s => s, mutatedJs = [] } = {}) {
   const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'pp-preflight-'));
   t.after(() => fs.rmSync(fixture, { recursive: true, force: true }));
   const write = (file, text) => {
@@ -19,6 +19,7 @@ function runPreflight(t, { missing = [], empty = false, prepareDeploy = false, c
   for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html', 'pwa-launch.html']) write(file, '<!doctype html>');
   write('sw.js', "const ASSETS = ['./index.html'];");
   write('style.css', '/* original */');
+  for (const file of mutatedJs) write(file, '/* original js */');
   if (!empty) for (const file of ['static-calculator-delivery.test.cjs', 'runtime-module-guards.test.cjs', 'example.test.cjs']) {
     if (!missing.includes(file)) write('tests/' + file, "require('node:test')('example', () => {});");
   }
@@ -28,13 +29,17 @@ function runPreflight(t, { missing = [], empty = false, prepareDeploy = false, c
   const loaded = {
     'node:child_process': { spawnSync(command, args, options) {
       const call = { command, args: Array.from(args) }; calls.push(call);
-      if (args[0] === '.github/scripts/minify.cjs') write('style.css', '/* prepared */');
+      if (args[0] === '.github/scripts/minify.cjs') {
+        write('style.css', '/* prepared */');
+        for (const file of mutatedJs) write(file, '/* prepared js */');
+      }
       return commandResult?.(call, calls, options) || { status: 0 };
     } },
     './ci-phase-runner.cjs': { createPhaseRunner },
     './ci-evidence.cjs': { evidenceDir: () => path.join(fixture, 'evidence') },
     '../../scripts/build-targets.cjs': { generatedFiles: [] },
-    './minify.cjs': { assetSyncMutableJsTargets: [], cssTargets: ['style.css'] }
+    './minify.cjs': { assetSyncMutableJsTargets: mutatedJs.length
+      ? require('../../.github/scripts/minify.cjs').assetSyncMutableJsTargets : [], cssTargets: ['style.css'] }
   };
   const sandbox = { __dirname: path.join(fixture, '.github/scripts'), process: fakeProcess,
     require: name => Object.hasOwn(loaded, name) ? loaded[name] : require(name),
@@ -44,6 +49,7 @@ function runPreflight(t, { missing = [], empty = false, prepareDeploy = false, c
   vm.runInNewContext(source, sandbox, { filename: 'preflight.cjs', timeout: 5000 });
   return { calls, exitCode: fakeProcess.exitCode, messages,
     report: JSON.parse(fs.readFileSync(path.join(fixture, 'evidence/preflight.json'), 'utf8')),
-    css: fs.readFileSync(path.join(fixture, 'style.css'), 'utf8') };
+    css: fs.readFileSync(path.join(fixture, 'style.css'), 'utf8'),
+    js: Object.fromEntries(mutatedJs.map(file => [file, fs.readFileSync(path.join(fixture, file), 'utf8')])) };
 }
 module.exports = { runPreflight };

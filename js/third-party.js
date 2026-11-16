@@ -54,9 +54,9 @@
         }
         try {
             await ensureAnalyticsCore();
-            if (window.PlayPointAnalytics.installGtagBridge() === false) return;
+            if (window.PlayPointAnalytics.installGtagBridge() !== true) return;
             await loadScript(ANALYTICS_SCRIPT_SRC, { fetchpriority: 'low' });
-            if (window.PlayPointAnalytics.installGtagBridge() === false) return;
+            if (window.PlayPointAnalytics.installGtagBridge() !== true) return;
             window.gtag('js', new Date());
             window.gtag('set', { app_display_mode: getDisplayMode() });
             window.__playpointManualPageView = true;

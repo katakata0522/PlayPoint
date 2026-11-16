@@ -211,6 +211,12 @@ function syncSharedRuntimeAssetVersions(rootDir, versions) {
     { file: 'js/config.js', replacements: [
       ['analytics-core.js', versions.analyticsCoreVersion]
     ] },
+    { file: 'js/main.js', replacements: [
+      ['analytics-core.js', versions.analyticsCoreVersion]
+    ] },
+    { file: 'js/intl-copy-overrides.js', replacements: [
+      ['analytics-core.js', versions.analyticsCoreVersion]
+    ] },
     { file: 'js/points-cost.js', replacements: [
       ['analytics-core.js', versions.analyticsCoreVersion]
     ] },

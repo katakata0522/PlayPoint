@@ -200,7 +200,7 @@ test('最新情報ハブの共通componentはlatest階層からサイトルー�
     location: { pathname: '/latest/' },
     navigator: {},
     PlayPointAnalytics: {
-      installGtagBridge() {},
+      installGtagBridge() { return true; },
       markAnalyticsReady() {}
     },
     requestIdleCallback(callback) { callback(); },
