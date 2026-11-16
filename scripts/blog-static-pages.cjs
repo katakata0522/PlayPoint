@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const BlogUtils = require('../blog/utils.js');
 const { escapeHtml } = require('./blog-feeds.cjs');
-const { ensureAnalyticsCoreScript } = require('./analytics-runtime-sync.cjs');
+const { ensureAnalyticsCoreScript, ensureAdPrivacyScript } = require('./analytics-runtime-sync.cjs');
 const { createRevision } = require('./article-asset-versioning.cjs');
 const PAGE_SIZE = 12;
 const ORIGIN = 'https://playpoint-sim.com';
@@ -25,7 +25,7 @@ function pagination(page, count) {
   const link = (number, label, direction) => `<a class="pagination-nav pagination-box pagination-${direction}" href="${pagePath(number)}">${label}</a>`;
   return `<!-- static-pagination:start --><div class="pagination-compact-wrapper">${page > 1 ? link(page - 1, '← 前へ', 'prev') : '<span class="pagination-nav pagination-box" aria-disabled="true">← 前へ</span>'}<span aria-current="page">${page} / ${count}ページ</span>${page < count ? link(page + 1, '次へ →', 'next') : '<span class="pagination-nav pagination-box" aria-disabled="true">次へ →</span>'}</div><!-- static-pagination:end -->`;
 }
-function renderStaticPage(template, articles, page, coreVersion = '') {
+function renderStaticPage(template, articles, page, coreVersion = '', privacyVersion = '') {
   const count = Math.ceil(articles.length / PAGE_SIZE), items = articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const description = `Google Play Pointsの記事一覧（${page}ページ目）。${(page - 1) * PAGE_SIZE + 1}〜${Math.min(page * PAGE_SIZE, articles.length)}件目、全${articles.length}件。${items.slice(0, 2).map(article => article.listTitle || article.title).join('、')}などの記事を掲載しています。`;
   let html = template.replace(/\s*<!-- static-pagination:start -->[\s\S]*?<!-- static-pagination:end -->/g, '');
@@ -49,17 +49,18 @@ function renderStaticPage(template, articles, page, coreVersion = '') {
     .replace(/(<meta\b[^>]*(?:property|name)="(?:og:title|twitter:title)"[^>]*content=")[^"]*(")/g, '$1' + title + '$2');
   if (page === 1) return html;
   html = html.replace(/(<meta\b[^>]*(?:property|name)="(?:description|og:description|twitter:description)"[^>]*content=")[^"]*(")/g, '$1' + escapeHtml(description) + '$2');
-  const normalized = ensureAnalyticsCoreScript(absoluteBlogLinks(html));
+  const normalized = ensureAdPrivacyScript(ensureAnalyticsCoreScript(absoluteBlogLinks(html)), privacyVersion);
   return coreVersion ? normalized.replace('src="/js/analytics-core.js"', `src="/js/analytics-core.js?v=${coreVersion}"`) : normalized;
 }
 function syncBlogStaticPages(root) {
   const file = path.join(root, 'blog/index.html'), articles = listed(root), template = fs.readFileSync(file, 'utf8');
   const coreVersion = createRevision(path.join(root, 'js/analytics-core.js'));
+  const privacyVersion = createRevision(path.join(root, 'js/ad-url-privacy.js'));
   fs.writeFileSync(file, renderStaticPage(template, articles, 1));
   const files = staticPageFiles(root);
   for (const [i, relative] of files.entries()) {
     const target = path.join(root, relative); fs.mkdirSync(path.dirname(target), { recursive: true });
-    const html = renderStaticPage(template, articles, i + 2, coreVersion);
+    const html = renderStaticPage(template, articles, i + 2, coreVersion, privacyVersion);
     if (!fs.existsSync(target) || fs.readFileSync(target, 'utf8') !== html) fs.writeFileSync(target, html);
   }
   return { pages: files.length + 1, articles: articles.length };

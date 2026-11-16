@@ -99,6 +99,7 @@ function createRuntime({ failCoreOnce = false, failGaOnce = false } = {}) {
     }
   };
   context.window = context;
+  context.PlayPointAdPrivacy = { protect() { return true; } };
   vm.createContext(context);
   vm.runInContext(source, context, { filename: 'third-party.js' });
 
@@ -225,6 +226,7 @@ function createRuntime({
     }
   };
   context.window = context;
+  context.PlayPointAdPrivacy = { protect() { return true; } };
   if (coreReady) context.PlayPointAnalytics = core;
   if (consentReady) context.PlayPointConsent = consent;
   function addExistingAd() {

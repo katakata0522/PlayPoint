@@ -126,6 +126,7 @@
     }
 
     function loadBlogAdsense() {
+        if (window.PlayPointAdPrivacy?.protect?.() !== true) return;
         if (blogAdsenseLoaded) return;
         blogAdsenseLoaded = true;
         if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) return;
@@ -155,6 +156,7 @@
     function requestBlogAds(container = document) {
         if (!isBlogPage) return;
         return runAfterConsent(() => {
+            if (window.PlayPointAdPrivacy?.protect?.() !== true) return;
             container.querySelectorAll('.article-ad ins.adsbygoogle, .blog-bottom-ad ins.adsbygoogle').forEach(ad => {
                 if (!ad.isConnected || ad.dataset.playpointAdRequested === 'true' || ad.dataset.adsbygoogleStatus) return;
                 ad.dataset.playpointAdRequested = 'true';

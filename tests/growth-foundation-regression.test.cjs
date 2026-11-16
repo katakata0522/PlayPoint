@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
-const { ensureAnalyticsCoreScript } = require('../scripts/analytics-runtime-sync.cjs');
+const { ensureAnalyticsCoreScript, ensureAdPrivacyScript } = require('../scripts/analytics-runtime-sync.cjs');
 const { listPublicHtmlFiles } = require('../scripts/article-asset-versioning.cjs');
 const { parseAttributes } = require('./helpers/markup-contract.cjs');
 
@@ -13,6 +13,37 @@ const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf
 const scripts = html => [...html.matchAll(/<!--[\s\S]*?(?:-->|$)|<(script|style)\b((?:"[^"]*"|'[^']*'|[^'">])*)>([\s\S]*?)(?:<\/\1(?=[\s/>])[^>]*>|$)/gi)]
   .filter(match => match[1]?.toLowerCase() === 'script')
   .map(match => ({ attrs: parseAttributes('script ' + match[2]), index: match.index }));
+
+test('広告URL保護は本文の偽タグを変更せずhead先頭へ一度だけ同期する', () => {
+  for (const nl of ['\n', '\r\n']) {
+    const literal = `<textarea><script src="/js/ad-url-privacy.js"></script></textarea><!-- <script src="/js/ad-url-privacy.js"></script> --><script>const sample = '<script src="/js/ad-url-privacy.js"><\\/script>';</script>`;
+    const input = ['<html><head><meta charset="utf-8">', '</head><body>', literal, '<script src="/blog/components.js"></script></body></html>'].join(nl);
+    const once = ensureAdPrivacyScript(input);
+    assert.ok(once.includes(literal), 'RCDATA/コメント/script本文を変えている');
+    assert.equal(ensureAdPrivacyScript(once), once);
+    const late = input.replace('</head>', `    <script src="/js/ad-url-privacy.js?v=old" defer></script>  ${nl}</head>`);
+    assert.equal(ensureAdPrivacyScript(late), once, '遅い・インデント付き旧タグの移動で本文や空白を変えている');
+    const actual = scripts(once);
+    assert.match(actual[0].attrs.src, /ad-url-privacy\.js/);
+    assert.equal(actual[0].attrs.defer, undefined);
+    assert.equal(actual[0].attrs.async, undefined);
+  }
+  const noAds = '<html><head><meta charset="utf-8"></head><body><!-- /blog/components.js --></body></html>';
+  assert.equal(ensureAdPrivacyScript(noAds), noAds);
+  const relativeBlog = '<html><head><meta charset="utf-8"></head><body><script src="components.js?v=current"></script></body></html>';
+  assert.match(ensureAdPrivacyScript(relativeBlog), /ad-url-privacy\.js/);
+});
+
+test('広告対象の公開HTMLはinline queueより前に広告URL保護を読み込む', () => {
+  for (const htmlFile of listPublicHtmlFiles(root)) {
+    const actual = scripts(fs.readFileSync(htmlFile, 'utf8'));
+    const pageUrl = 'https://playpoint-sim.com/' + path.relative(root, htmlFile).split(path.sep).join('/');
+    if (!actual.some(node => node.attrs.src && ['/js/third-party.js', '/blog/components.js', '/blog/article.js'].includes(new URL(node.attrs.src, pageUrl).pathname))) continue;
+    const guards = actual.filter(node => /js\/ad-url-privacy\.js(?:[?#]|$)/.test(node.attrs.src || ''));
+    assert.equal(guards.length, 1, path.relative(root, htmlFile));
+    assert.equal(guards[0].index, actual[0].index, path.relative(root, htmlFile));
+  }
+});
 
 // T0451: tests/http-cache-contract.test.cjs + tests/helpers/apache-cache-contract.cjs へ統合。監査IDと理由は履歴台帳へ保持。
 

@@ -198,6 +198,7 @@ test('最新情報ハブの共通componentはlatest階層からサイトルー�
   };
   const window = {
     location: { pathname: '/latest/' },
+    PlayPointAdPrivacy: { protect() { return true; } },
     navigator: {},
     PlayPointAnalytics: {
       installGtagBridge() { return true; },
