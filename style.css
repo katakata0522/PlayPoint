@@ -526,6 +526,15 @@ background-color: var(--button-disabled-bg-color);
 #mainMode>.section:has(>#result):not(:has(.has-result)) {
 display: none;
 }
+/* 逆算モードも計算前・モード切替後は空の結果カードを見せない。 */
+#reverseMode>.section:has(>#reverseResult):not(:has(.has-result)) {
+display: none;
+}
+/* 両計算モードで実行ボタンの幅を揃える。 */
+#reverseMode #reverseCalculateButton {
+display: block;
+width: 100%;
+}
 .result:not(.has-result) {
 display: none;
 margin: 0;

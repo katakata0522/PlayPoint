@@ -123,7 +123,7 @@ export const CONFIGS = {
             monthlySummaryTitle: "月間集計", yearlySummaryTitle: "年間集計",
             yearlyChartTitle: "年間の記録グラフ", yearlyChartDescription: "月ごとの記録ポイントを、この端末内だけで比較します。",
             totalLabel: "合計:", averageLabel: "平均:", pointsUnit: "pt", perWeekUnit: "pt/週",
-            guestNotice: "【！】日記はこのブラウザのローカルストレージにだけ保存されます。サイトデータの削除、プライベートブラウズ、別の端末・ブラウザへの移動では引き継がれません。必要に応じて書き出しデータを保管してください。",
+            guestNotice: "【！】ウィークリーリワードの記録はこのブラウザのローカルストレージにだけ保存されます。サイトデータの削除、プライベートブラウズ、別の端末・ブラウザへの移動では引き継がれません。必要に応じて書き出しデータを保管してください。",
             prizeOptions: ["（景品なし）", "マウス", "イヤホン", "その他"],
             noWeeksMessage: "この月には対象となる週がありません。",
             backupTitle: "データのバックアップ・復元",
