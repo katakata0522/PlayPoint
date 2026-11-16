@@ -78,7 +78,6 @@ export function renderMainResult({ config, neededPoints, totalAmountNeeded, rema
             const premiseContent = `
                 <p class="rounding-assumption-note">
                     <strong>${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}</strong>${rateSourceLabel ? ` · ${rateSourceLabel}` : ''}<br>
-                    ${texts.pointsBasisNote}<br>
                     ${texts.roundingNoteWithoutPack}
                 </p>
             `;
