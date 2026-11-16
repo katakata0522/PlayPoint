@@ -40,7 +40,25 @@ const ARTICLE_PROMPT_COPY = Object.freeze({
   'articles/2026-07-24-play-points-500-1000-value.html': { ...DEFAULT_PROMPT_COPY, label: '自分の条件で試す', heading: 'あと何ポイント？ いくらくらい？', body: '目標から残高を引いた「あと何ポイント」を入力して、購入額の目安を計算できます。', cta: 'ポイントから必要額を計算する', href: '/points-cost/?points=500' },
   'articles/2026-08-05-fastest-silver.html': { ...DEFAULT_PROMPT_COPY, body: '残りのポイントと、使える獲得率から購入額の目安を見てみましょう。' },
   'articles/2026-08-16-fastest-gold.html': { ...DEFAULT_PROMPT_COPY, body: '残りポイントと適用される獲得率が分かったら、計算機でも目安を確認できます。' },
-  'articles/2026-08-16-fastest-platinum.html': { ...DEFAULT_PROMPT_COPY, body: '今のランクと不足ポイントが分かったら、計算機で目安を見てみましょう。' }
+  'articles/2026-08-16-fastest-platinum.html': { ...DEFAULT_PROMPT_COPY, body: '今のランクと不足ポイントが分かったら、計算機で目安を見てみましょう。' },
+  'articles/2025-12-25-diamond-worth-it.html': {
+    ...DEFAULT_PROMPT_COPY,
+    aria: "ダイヤモンドまでの不足額",
+    label: "予定外の購入を決める前に",
+    heading: "ダイヤモンドまでの不足額",
+    body: "プラチナでダイヤモンドまで残り3,000ptの例を開けます。不足ポイントと獲得率は、Google Playに表示された自分の条件に直して試算してください。税や購入ごとの丸めなどで実際の必要額は変わります。",
+    cta: "残り3,000ptの例を計算する",
+    href: "/?mode=main&amp;status=1.75&amp;target=diamond&amp;points=3000&amp;multiplier=1"
+  },
+  'articles/2025-12-25-playpoints-rank-maintenance.html': {
+    ...DEFAULT_PROMPT_COPY,
+    aria: "プラチナ維持の計算例",
+    label: "今年の進捗から試算",
+    heading: "プラチナ維持の計算例",
+    body: "前年にプラチナへ到達し、今年の進捗が500ptの例では、維持に必要な残りは3,500ptです。この例を開き、自分の不足ポイントと現在の獲得率に直して試算できます。",
+    cta: "残り3,500ptの例を計算する",
+    href: "/?mode=main&amp;status=1.75&amp;target=platinum&amp;points=3500&amp;multiplier=1"
+  }
 });
 
 function renderPromptHtml(copy, headingId = '', specific = false) {
