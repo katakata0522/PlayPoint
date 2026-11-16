@@ -3,6 +3,8 @@
 ## 正本と範囲
 - 本番正本：katakata0522/PlayPoint、ローカル C:/Users/tomok/PlayPoint、公開 https://playpoint-sim.com/
 - 本リポジトリのGitHub ActionsからXserverへ反映する。cli-auto/PlayPointは参照・退避用。
+- PlayPointは当面WordPressを使わず、現在のHTML/CSS/Vanilla JavaScript構成でデザイン・機能・記事運用を改善する。ユーザーが明示的に方針を変更しない限り、WordPress移行・staging受け入れ・記事取り込みを再開しない。
+- 既存のWordPress用ツール・文書・PRは過去の検証記録として扱う。残存するCMS・DB・配信ルートの削除や切替を、この方針だけを理由に実行しない。
 - 依頼を満たす最小の完了単位を変更する。共有契約、生成元、生成物に波及する場合だけ対象を広げ、理由をPRに記す。
 - 文章・ラベル・デザインの変更は依頼の目的に必要な範囲で行う。無関係な文言変更や記事の要約・削除を混ぜない。
 
