@@ -83,6 +83,8 @@ GA4管理画面ではセッション/ユーザー単位も併記し、繰り返�
 
 実装と自動テスト上は計測可能。`calculation_completed` のKey event登録、`entry_source_path` / `entry_link_context` / `calculator_preset` に加え、2026-09-19に `app_display_mode` もGA4のEVENT scope Custom Dimensionとして登録済み。登録には一度限りの `analytics.edit` を使い、成功確認後に権限とmaster pushトリガーを撤去して通常のread-only監査へ戻した。残る「運用前確認中」はDebugView実測だけとする。サイト内導線は外部集客用UTMから分離済みで、GA4のセッション参照元を上書きしない。
 
+2026-11-16のDebugView実受信で、共有URLの入力金額が標準パラメータ `page_location` に残ることを確認した。現在はこの入力値除外と同意境界の受け入れが未完了であり、以下の実測結果に従ってIssue #180をopenのまま維持する。
+
 ### 2026-08-11 本番点検（当時の状態）
 
 - 本番トップで測定ID `G-HED6D0FR4L` の `gtag.js` と同意管理スクリプトの読み込みを確認した。
@@ -107,6 +109,57 @@ GA4管理画面ではセッション/ユーザー単位も併記し、繰り返�
 - `📊ページ価値ファネル` は対象期間 **2026-08-18〜2026-09-16**、状態 **OK**。GSC click-weighted joinは **89.1%**（GSC clicks 1499 / joined clicks 1336）、absolute URL keyは `0`。
 - DebugViewでの実ブラウザ受信、raw値非送信、同意前/拒否後の挙動は引き続き未完了。API、Sheet、回帰テストをDebugView実測の代替にはしない。
 - Issue #180 は **DebugView固有の最終確認だけを残してopen継続**する。
+
+### 2026-11-16 DebugView本番実受信（受け入れ未完了）
+
+Windows上の既存Chromeログインを使い、GA4プロパティ `489079798` / 測定ID `G-HED6D0FR4L` のDebugViewとGoogle Tag Assistantを照合した。Gitの比較基点はmain `fc6d91a0715f2230f5369e67327a89c82882a878`。操作対象は公開済みの静的サイトで、入力は必要ポイント137、金額23,456円という架空の試験値だけを使用した。
+
+| 確認項目 | 結果 | 根拠・残る条件 |
+| --- | --- | --- |
+| 実ブラウザからのイベント受信 | 確認済み | 通常計算、逆算、共有コピー、X共有ボタン、関連記事、判断導線のイベント名をDebugViewで確認 |
+| 入力値が送信パラメータに含まれない | 不合格 | 共有URLからの訪問で、`page_location` に架空の入力金額 `amount=23456` が残った |
+| 同意前・拒否後に送信されない | 未実施 | この日本向け環境では実効的な `analytics_storage=denied` の前提を再現できなかった |
+| 確認日・結果の文書化 | 本節に記録 | 入力値除外と同意境界の最終受け入れが通るまでIssue #180は閉じない |
+
+#### 確認した受信と共有URLの問題
+
+次の6イベントを実受信した。
+
+- `calculation_completed`
+- `reverse_calculation_completed`
+- `share_url_copied`
+- `share_x_clicked`
+- `result_related_article_clicked`
+- `result_decision_link_clicked`
+
+共有コピーは画面の成功通知とDebugView受信を照合した。X共有は入力画面を開くところまでで、投稿は行っていない。関連記事・判断導線は既存の内部記事へ移動した。試験には再入力と画面遷移があるため、この受信一覧だけで全経路・全端末の重複送信がないことまでは保証しない。
+
+通常URL上の対象イベントでは、独自パラメータに入力金額・必要ポイント・獲得ポイント・日記本文の項目は見つからなかった。ただし、標準パラメータを含む実送信全体は不合格となった。次のURLはすべて架空の試験値である。
+
+```text
+https://playpoint-sim.com/?mode=reverse&status=1&multiplier=1&amount=23456
+```
+
+この共有URLを開いた後、DebugViewで以下を確認した（日本時間）。
+
+- **14:25:57** の `reverse_calculation_completed`: `page_location` が上記URLと一致し、`amount=23456` を含んだ。
+- **14:29:31** の `share_url_copied`: 画面を通常計算へ切り替えた後も、`page_location` に同じURLが残った。
+
+独自イベントの許可リストだけでは、Googleタグが付加するページURL内の入力値を除外できていない。共有URLで計算条件を復元する機能を保持しつつ、計算用クエリが `page_location` や参照元などの送信コンテキストへ入らないよう対処し、同じ実受信経路で再検証する必要がある。`page_referrer`、必要ポイントを含む別の共有URL、日記保存イベント本体の実操作検証は今回未実施である。
+
+#### 同意境界の未実施範囲
+
+通常の日本向け表示では `analytics_storage=granted` を確認した。既存のプライバシー設定ボタンを操作し、さらにGoogle公式の公開済みメッセージ用プレビュー `?fc=alwaysshow&fctype=gdpr` を表示して「同意しない」を1回選択したが、Tag Assistantの最新ページ全体では `analytics_storage=granted` のままだった。この状態での送信を、実効的な拒否後の試験やEEAでの実測とは扱わない。
+
+同意前・拒否後のイベント非送信は、実効状態がpending / deniedになる正規の対象環境で、実ブラウザの通信とDebugViewを照合するまで未実施として残す。メッセージの強制表示は外観確認用であり、地域判定や同意状態の再現を保証しない。測定ID、GA4フィルタ、CMP公開設定、ネットワークや地域の設定、認証権限は変更していない。
+
+#### 検証の境界
+
+同じmainに対する直前のローカル監査では、analytics-core / state-boundaries / runtime-attribution / calculator-funnel / third-party integrationの既存32検査が成功し、失敗・skipは0だった。これはVMスタブの結果であり、今回見つかった実受信URLの問題や未実施の同意境界を合格に変更しない。スマートフォン実機・別ブラウザでの受け入れは未実施。
+
+今回の変更はこの文書だけで、公開HTML/JS、DB、GA4・広告・CMPの設定には変更していない。本番測定IDへは架空の試験データだけを送信し、実投稿・購入・日記保存・広告クリックは行っていない。ブラウザ内の直近計算の保存動作により137ptの試験値は保存されたが、既存の日記データを削除・上書きしていない。Tag Assistantの一時デバッグ接続は停止を確認し、作業用タブを閉じた。スクリーンショットと受信文字列は非公開ローカル成果物に保存し、認証情報、Cookie、セッションIDの値や実利用者のデータは本書へ掲載しない。
+
+参考: [Google公式DebugView](https://support.google.com/analytics/answer/7201382?hl=en)、[Tag Assistantの同意確認](https://support.google.com/tagmanager/answer/14218557?hl=en)、[公開済みCMPメッセージのプレビュー](https://support.google.com/adsense/answer/10924669)。
 
 担当: PlayPoint運営者。イベント追加時は本書と回帰テストを同時に更新する。
 
