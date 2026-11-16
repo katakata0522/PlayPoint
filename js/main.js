@@ -55,6 +55,23 @@ function queueDiaryAction(action) {
         .catch(reportDiaryLoadError);
 }
 
+let diaryTabRequest = 0;
+function switchCalculatorMode(mode, { openCurrentWeek = false } = {}) {
+    // 遅延ロード中に別のタブへ移った場合、古い要求で戻さない。
+    const request = ++diaryTabRequest;
+    if (mode !== CONSTANTS.MODE_DIARY) {
+        UI.switchMode(mode);
+        return;
+    }
+    // 記録DOMを確定させてから表示し、仮の年・集計値が見えるのを防ぐ。
+    queueDiaryAction((DIARY) => {
+        if (request !== diaryTabRequest) return;
+        DIARY.renderDiary();
+        UI.switchMode(CONSTANTS.MODE_DIARY);
+        if (openCurrentWeek) DIARY.openCurrentWeek();
+    });
+}
+
 // 早い段階から観測し、送信は既存の同意管理と匿名区分に限定する。
 initWebVitalsMonitoring();
 initPwaInstallPrompt();
@@ -328,10 +345,7 @@ export function init() {
         button.addEventListener('click', () => {
             const mode = button.dataset.mode;
             calculatorFunnel.trackModeChange(mode);
-            UI.switchMode(mode);
-            if (mode === CONSTANTS.MODE_DIARY) {
-                queueDiaryAction((DIARY) => DIARY.renderDiary());
-            }
+            switchCalculatorMode(mode);
         });
     });
 
@@ -378,9 +392,8 @@ export function init() {
     renderSavedLastMainCalculation();
     const entryParams = new URLSearchParams(window.location.search);
     if (entryParams.get('mode') === CONSTANTS.MODE_DIARY) {
-        UI.switchMode(CONSTANTS.MODE_DIARY);
         calculatorFunnel.trackModeChange(CONSTANTS.MODE_DIARY);
-        queueDiaryAction(DIARY => entryParams.get('week') === 'current' ? DIARY.openCurrentWeek() : DIARY.renderDiary());
+        switchCalculatorMode(CONSTANTS.MODE_DIARY, { openCurrentWeek: entryParams.get('week') === 'current' });
     }
     checkLanguageSuggestion();
     trackWidgetReferral();
