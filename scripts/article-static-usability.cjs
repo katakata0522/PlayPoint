@@ -36,7 +36,7 @@ const DEFAULT_PROMPT_COPY = Object.freeze({
 
 // 改稿済みの具体的な導線は、共通CTAの再生成で上書きしない。
 const ARTICLE_PROMPT_COPY = Object.freeze({
-  'articles/2026-07-24-play-points-100-value.html': { ...DEFAULT_PROMPT_COPY, label: '自分の条件で試す', heading: 'あと何円くらいで届く？', body: 'いまのステータスや倍率に合わせて、購入額の目安を計算できます。' },
+  'articles/2026-07-24-play-points-100-value.html': { ...DEFAULT_PROMPT_COPY, aria: "100ポイントまでの購入額", label: "100ポイントを貯める場合の試算", heading: "100ポイントまでの購入額", body: "100ポイントをすべて購入で貯める例から始められます。すでに持っている分があれば不足ポイントに直し、現在のランクと対象購入に適用される獲得率を選んでください。", cta: "必要な購入額を試算する", href: "/points-cost/?points=100" },
   'articles/2026-07-24-play-points-500-1000-value.html': { ...DEFAULT_PROMPT_COPY, label: '自分の条件で試す', heading: 'あと何ポイント？ いくらくらい？', body: '目標から残高を引いた「あと何ポイント」を入力して、購入額の目安を計算できます。', cta: 'ポイントから必要額を計算する', href: '/points-cost/?points=500' },
   'articles/2026-08-05-fastest-silver.html': { ...DEFAULT_PROMPT_COPY, body: '残りのポイントと、使える獲得率から購入額の目安を見てみましょう。' },
   'articles/2026-08-16-fastest-gold.html': { ...DEFAULT_PROMPT_COPY, body: '残りポイントと適用される獲得率が分かったら、計算機でも目安を確認できます。' },
