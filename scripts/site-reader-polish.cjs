@@ -84,7 +84,6 @@ function polishPage(html, file) {
     if (region !== 'index.html') html = html.replace(/<img\b[^>]*src="[^"<>]*images\/calculation-flow(?:-[a-z]+)?\.svg"[^>]*>/, image => image
       .replace(/images\/calculation-flow(?:-[a-z]+)?\.svg/, `images/calculation-flow-${region}.svg`)
       .replace(/alt="[^"]*"/, `alt="${regionFlowExample(region).description}"`));
-    if (!html.includes('calculator-brand')) html = html.replace(/(<h1 id="main-title")/, '<span class="calculator-brand">PlayPoint</span>\n$1');
     // Google公式が案内する通常アンカーの下部限定設定を、操作のある主計算機へ適用する。
     if (!html.includes('name="playpoint:anchor-ads"')) html = html.replace('</head>', '<meta name="playpoint:anchor-ads" content="collapsed-bottom">\n</head>');
   }
