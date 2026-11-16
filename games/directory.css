@@ -1,0 +1,252 @@
+/* ゲーム一覧だけの情報設計。ゲーム個別ページのカードには適用しない。 */
+.game-directory-layout {
+  display: block;
+  width: min(1280px, calc(100% - 32px));
+  max-width: none;
+  margin: 20px auto 56px;
+  padding: 0;
+}
+.game-directory-layout > .game-main-content {
+  width: 100%;
+  box-sizing: border-box;
+  padding: clamp(22px, 3vw, 36px);
+  border: 1px solid #dce6e1;
+  border-radius: 14px;
+  box-shadow: none;
+}
+.game-directory-layout .game-header {
+  margin: 0 0 18px;
+  padding: 0;
+  border: 0;
+}
+.game-directory-layout .game-title {
+  margin: 0;
+  color: #1d2c27;
+  letter-spacing: -.015em;
+}
+.game-directory-intro {
+  margin: 12px 0 0;
+  max-width: 62ch;
+  color: #4f625b;
+  font-size: .95rem;
+  line-height: 1.7;
+}
+.game-directory-layout .game-search {
+  max-width: 520px;
+  margin: 20px 0 24px;
+}
+.game-directory-layout .game-search input {
+  background: #fff;
+  border: 1px solid #b9ccc3;
+  border-radius: 9px;
+  min-height: 46px;
+}
+.game-directory-layout .game-search input:focus-visible {
+  outline: 3px solid #176773;
+  outline-offset: 2px;
+}
+.game-directory-layout .game-search [data-game-search-clear] {
+  padding: 4px 0;
+  margin: 0 0 6px;
+  min-height: 40px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #176773;
+  font: inherit;
+  font-size: .85rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.game-directory-layout .games-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 12px 0 32px;
+}
+.game-directory-layout .game-portal-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  min-height: 162px;
+  gap: 16px;
+  padding: 22px 20px 18px;
+  border: 1px solid #d7e3dd;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: none;
+  overflow: hidden;
+  text-decoration: none;
+  color: #1e2d28;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.game-directory-layout .game-portal-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #176773;
+}
+.game-directory-layout .game-portal-card:hover {
+  transform: none;
+  border-color: #6a9f90;
+  box-shadow: 0 3px 12px rgba(21, 63, 51, .07);
+}
+.game-directory-layout .game-portal-card:focus-visible {
+  outline: 3px solid #176773;
+  outline-offset: 3px;
+}
+.game-directory-layout .game-portal-card > div:first-child {
+  display: block;
+  min-width: 0;
+}
+.game-directory-layout .game-card-title {
+  margin: 0 0 8px;
+  color: #20332a;
+  font-size: 1.04rem;
+  font-weight: 750;
+  line-height: 1.48;
+}
+.game-directory-layout .game-card-desc {
+  display: block;
+  margin: 0;
+  color: #52635d;
+  font-size: .88rem;
+  font-weight: 400;
+  line-height: 1.65;
+}
+.game-directory-layout .game-card-action {
+  display: block;
+  margin: auto 0 0;
+  color: #176773;
+  font-size: .86rem;
+  font-weight: 750;
+  line-height: 1.45;
+}
+.game-directory-layout .game-edition-badge,
+.game-directory-layout .game-reference-label {
+  margin-bottom: 8px;
+  font-size: .75rem;
+}
+.game-directory-layout .game-portal-purchase-check {
+  margin: 18px 0 22px;
+  padding: 20px 22px;
+  border: 1px solid #dbe5df;
+  border-radius: 12px;
+  background: #f6f9f7;
+  box-shadow: none;
+}
+.game-directory-layout .game-directory-ad-label {
+  margin: 0 0 6px;
+  color: #62746d;
+  font-size: .75rem;
+  font-weight: 650;
+}
+.game-directory-layout .game-giftcard-cta-title {
+  color: #21352c;
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.5;
+}
+.game-directory-layout .game-giftcard-cta-text {
+  color: #52635d;
+  line-height: 1.65;
+  font-size: .85rem;
+}
+.game-directory-layout .game-giftcard-cta-actions {
+  align-items: flex-start;
+  gap: 8px;
+}
+.game-directory-layout .game-giftcard-cta-btn.rakuten-primary-btn {
+  min-height: 44px;
+  box-sizing: border-box;
+  border: 1px solid #176773;
+  border-radius: 8px;
+  background: #176773;
+  color: #fff;
+  box-shadow: none;
+  font-size: .87rem;
+  font-weight: 700;
+  white-space: normal;
+}
+.game-directory-layout .game-giftcard-cta-btn.rakuten-primary-btn:hover {
+  transform: none;
+  border-color: #125762;
+  background: #125762;
+  color: #fff;
+  box-shadow: none;
+}
+.game-directory-layout .game-giftcard-cta-sublink {
+  color: #176773;
+  line-height: 1.5;
+}
+.game-directory-layout .game-directory-notes {
+  margin: 16px 0;
+}
+.game-directory-layout .game-directory-guides {
+  margin: 24px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid #dce6e1;
+}
+.game-directory-layout .game-directory-guides > summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  color: #176773;
+  font-weight: 700;
+}
+.game-directory-layout .game-directory-guides ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 20px;
+  list-style: none;
+  padding: 0 0 8px;
+  margin: 8px 0 0;
+}
+.game-directory-layout .game-directory-guides a {
+  color: #176773;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1050px) {
+  .game-directory-layout .games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 650px) {
+  .game-directory-layout {
+    width: min(100% - 20px, 1280px);
+    margin: 10px auto 36px;
+  }
+  .game-directory-layout > .game-main-content {
+    padding: 20px 14px;
+    border-radius: 10px;
+  }
+  .game-directory-layout .games-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .game-directory-layout .game-portal-card {
+    display: flex;
+    min-height: 0;
+    padding: 18px 16px 16px;
+    gap: 12px;
+  }
+  .game-directory-layout .game-card-title {
+    margin-bottom: 5px;
+    font-size: 1rem;
+  }
+  .game-directory-layout .game-portal-purchase-check {
+    padding: 16px 14px;
+  }
+  .game-directory-layout .game-directory-guides ul {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-directory-layout .game-portal-card { transition: none; }
+}
