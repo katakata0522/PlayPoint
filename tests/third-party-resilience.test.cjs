@@ -160,7 +160,7 @@ function createAd(dataset = {}, isConnected = true) {
 function createRuntime({
   pathname = '/blog/', coreReady = true, consentReady = true,
   adsAllowed = true, analyticsAllowed = false, ads = [createAd()], existingAd = false,
-  legacyConsent = false
+  legacyConsent = false, urlProtected = true
 } = {}) {
   const scripts = [];
   const appended = [];
@@ -170,7 +170,7 @@ function createRuntime({
   const pendingConsent = [];
   const logs = [];
   const gtagCalls = [];
-  const core = { installGtagBridge() {}, markAnalyticsReady() {
+  const core = { installGtagBridge() { return urlProtected; }, markAnalyticsReady() {
     gtagCalls.push(['ready']);
   } };
   const consent = {
@@ -264,6 +264,16 @@ async function settle() {
   // Promiseの入れ子とcatchを処理し、実時間の待機はしない。
   for (let i = 0; i < 3; i += 1) await new Promise(resolve => setImmediate(resolve));
 }
+
+test('blog広告: 検索URLを保護できない場合も広告を妨げず解析だけ開始しない', async () => {
+  const r = createRuntime({ analyticsAllowed: true, urlProtected: false });
+  r.idle.shift()();
+  await settle();
+  assert.equal(r.appended.some(script => script.src.includes('googletagmanager.com/gtag/js')), false);
+  assert.equal(r.gtagCalls.some(call => call[0] === 'config' || call[0] === 'ready'), false);
+  assert.equal(r.context.__playpointGaConfigured, undefined);
+  assert.equal(r.adScripts().length, 1);
+});
 
 test('blog広告: 解析モジュールが取得待ちでも広告許可後は既存枠を準備する', async () => {
   const r = createRuntime({ coreReady: false });

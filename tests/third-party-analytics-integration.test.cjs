@@ -229,6 +229,15 @@ test('Analytics許可後はconfigしてから初回page_viewを一度だけ送�
   assert.equal(runtime.context.__playpointGaConfigured, true);
 });
 
+test('検索URLを保護できなければ許可済みでもGoogleタグを取得・設定しない', async () => {
+  const runtime = createRuntime();
+  runtime.context.PlayPointAnalytics = { ...runtime.context.PlayPointAnalytics, installGtagBridge() { return false; } };
+  await advanceAnalytics(runtime);
+  assert.equal(scriptsMatching(runtime, 'googletagmanager.com/gtag/js').length, 0);
+  assert.equal(gtagCalls(runtime.context).some(call => call[0] === 'config'), false);
+  assert.equal(runtime.context.__playpointGaConfigured, undefined);
+});
+
 test('Analyticsと広告枠のConsent境界を独立して守る', async () => {
   const analyticsOnlyAd = createAd();
   const analyticsOnly = createRuntime({ analyticsConsent: 'granted', adsConsent: 'denied', managedAds: [analyticsOnlyAd] });

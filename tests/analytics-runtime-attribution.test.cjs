@@ -137,6 +137,53 @@ test('保留中にURLが変わっても送信時の安全な文脈を使い、�
   }
 });
 
+test('自動検索の全既定キーを計測開始前に移し、旧qの値・重複・計算条件・履歴stateを保つ', () => {
+  const href = 'https://playpoint-sim.com/blog/?%71=Play+Pass&q=second&s=typed&search=typed2&query=typed3&keyword=typed4&amount=23456&points=137&utm_source=qa#reading-library';
+  const state = { reader: 'keep', page: 2 };
+  const { context, historyUpdates } = createAnalyticsRuntime({ consentStatus: 'granted', ready: true, historyState: state,
+    location: { href, origin: 'https://playpoint-sim.com', pathname: '/blog/', search: new URL(href).search } });
+  const url = new URL(context.location.href);
+  for (const key of ['q', 's', 'search', 'query', 'keyword']) assert.equal(url.searchParams.has(key), false, key);
+  assert.deepEqual(url.searchParams.getAll('pp_q'), ['Play Pass', 'second']);
+  assert.equal(url.searchParams.get('pp_s'), 'typed');
+  assert.equal(url.searchParams.get('pp_keyword'), 'typed4');
+  assert.equal(url.searchParams.get('amount'), '23456');
+  assert.equal(url.searchParams.get('points'), '137');
+  assert.equal(url.searchParams.get('utm_source'), 'qa');
+  assert.equal(url.hash, '#reading-library');
+  assert.equal(context.history.state, state);
+  assert.equal(historyUpdates.length, 1);
+  context.PlayPointAnalytics.track('search', { intent_id: 'other', results_count: 0 });
+  const payload = eventItems(context, 'search')[0][2];
+  assert.equal(payload.page_location, 'https://playpoint-sim.com/blog/?utm_source=qa');
+  assert.doesNotMatch(JSON.stringify(payload), /Play|typed|23456|137/);
+});
+
+test('明示的な空の新検索値を旧qで復活させず、戻る・再表示された旧URLも移す', () => {
+  const href = 'https://playpoint-sim.com/blog/?pp_q=&q=obsolete';
+  const { context } = createAnalyticsRuntime({ consentStatus: 'granted', ready: true,
+    location: { href, origin: 'https://playpoint-sim.com', pathname: '/blog/', search: new URL(href).search } });
+  assert.equal(new URL(context.location.href).searchParams.get('pp_q'), '');
+  for (const type of ['popstate', 'pageshow']) {
+    context.location.href = 'https://playpoint-sim.com/blog/?q=restored';
+    context.dispatchEvent({ type });
+    const url = new URL(context.location.href);
+    assert.equal(url.searchParams.has('q'), false);
+    assert.equal(url.searchParams.get('pp_q'), 'restored');
+  }
+});
+
+test('検索URLの保護ができなければbridgeも送信も開始しない', () => {
+  const href = 'https://playpoint-sim.com/blog/?q=private-test';
+  const { context, warnings } = createAnalyticsRuntime({ consentStatus: 'granted', ready: true, historyFailure: true,
+    location: { href, origin: 'https://playpoint-sim.com', pathname: '/blog/', search: '?q=private-test' } });
+  assert.equal(context.PlayPointAnalytics.installGtagBridge(), false);
+  assert.equal(context.PlayPointAnalytics.track('search', { results_count: 1 }), false);
+  assert.equal(context.__playpointGtagBridgeInstalled, undefined);
+  assert.equal(context.dataLayer, undefined);
+  assert.ok(warnings.length > 0);
+});
+
 test('gtag置換後も初回計算完了だけに記事起点を付与する', () => {
   const { context } = createRuntimeWithStoredEntry();
   replaceGtagWithExternal(context);

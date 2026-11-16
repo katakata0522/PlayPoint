@@ -29,7 +29,7 @@
   const categories = new Set(buttons.map(button => button.dataset.guideFilter));
   function readUrl() {
     const params = new URLSearchParams(location.search);
-    search.value = params.get('q') || '';
+    search.value = params.get('pp_q') ?? params.get('q') ?? '';
     for (const [select, key] of [[gameFilter, 'game'], [topicFilter, 'topic']]) {
       if (select) select.value = [...select.options].some(option => option.value === params.get(key)) ? params.get(key) : 'all';
     }
@@ -37,7 +37,8 @@
   }
   function writeUrl(push = false) {
     const url = new URL(location.href);
-    for (const [key, value] of [['q', search.value.trim()], ['game', gameFilter?.value], ['topic', topicFilter?.value], ['category', activeCategory]]) {
+    url.searchParams.delete('q');
+    for (const [key, value] of [['pp_q', search.value.trim()], ['game', gameFilter?.value], ['topic', topicFilter?.value], ['category', activeCategory]]) {
       if (value && value !== 'all') url.searchParams.set(key, value); else url.searchParams.delete(key);
     }
     url.hash = '';

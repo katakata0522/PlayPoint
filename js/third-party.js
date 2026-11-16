@@ -54,8 +54,9 @@
         }
         try {
             await ensureAnalyticsCore();
+            if (window.PlayPointAnalytics.installGtagBridge() === false) return;
             await loadScript(ANALYTICS_SCRIPT_SRC, { fetchpriority: 'low' });
-            window.PlayPointAnalytics.installGtagBridge();
+            if (window.PlayPointAnalytics.installGtagBridge() === false) return;
             window.gtag('js', new Date());
             window.gtag('set', { app_display_mode: getDisplayMode() });
             window.__playpointManualPageView = true;
@@ -135,7 +136,7 @@
         if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
         if (!analyticsCorePromise) {
             const prefix = getCurrentAssetPrefix();
-            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=091a991909`)
+            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=204e2d5426`)
                 .then(() => {
                     if (!window.PlayPointAnalytics) {
                         throw new Error('Analytics core loaded without PlayPointAnalytics.');

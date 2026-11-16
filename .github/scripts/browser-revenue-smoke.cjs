@@ -135,6 +135,28 @@ async function main() {
   });
 
   try {
+    // 旧検索リンクも復元し、自動検索が読むURLには自由入力を残さない。
+    for (const width of [390, 1280]) {
+      for (const [target, selector] of [
+        ['blog/', '#search-input'], ['en/articles/', '[data-guide-search]'],
+        ['ko/articles/', '[data-guide-search]'], ['tw/articles/', '[data-guide-search]'],
+        ['games/', '[data-game-directory-search] input']
+      ]) {
+        const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
+        try {
+          await configureContext(context, origin);
+          const page = await context.newPage();
+          await page.goto(new URL(target + '?q=FGO', baseUrl).href, { waitUntil: 'load' });
+          await page.waitForFunction(() => window.__playpointGaConfigured === true && new URL(location.href).searchParams.get('pp_q') === 'FGO');
+          strictAssert.equal(await page.locator(selector).inputValue(), 'FGO');
+          strictAssert.equal(new URL(page.url()).searchParams.has('q'), false);
+          const configured = await page.evaluate(() => (window.dataLayer || []).find(item => item[0] === 'config')?.[2]);
+          assert(configured && !configured.page_location.includes('FGO'), '自由入力をURL文脈へ送らない');
+          console.log(`ok - legacy search restore and automatic search isolation: ${target}/${width}px`);
+        } finally { await context.close(); }
+      }
+    }
+
     // 記事・LP・ゲームの実入口で、広告許可前の0要求と許可後の接続を確認する。
     for (const [target, selector] of [
       ['articles/2026-08-05-play-points-multiplier-stacking.html', '.article-ad-container ins.adsbygoogle'],

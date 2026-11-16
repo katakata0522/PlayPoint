@@ -321,7 +321,7 @@ async function inspectIntlReading(browser, baseUrl) {
       await articleSearch.fill(broadQuery);
       assert(await dialog.locator('.guide-search-result').count() === 20, item.locale + ': 多数の検索結果は20件のプレビューを表示する');
       const allResults = dialog.locator('.guide-search-all');
-      assert(await allResults.getAttribute('href') === '/' + item.locale + '/articles/?q=' + encodeURIComponent(broadQuery), item.locale + ': 全件リンクに検索語を引き継ぐ');
+      assert(await allResults.getAttribute('href') === '/' + item.locale + '/articles/?pp_q=' + encodeURIComponent(broadQuery), item.locale + ': 全件リンクに検索語を引き継ぐ');
       const allBounds = await allResults.boundingBox();
       const firstResultBounds = await dialog.locator('.guide-search-result').first().boundingBox();
       assert(allBounds && firstResultBounds && allBounds.y + allBounds.height <= firstResultBounds.y + 1 && allBounds.y + allBounds.height < 900, item.locale + ': 全件リンクをプレビューの上で操作できる');

@@ -7,6 +7,7 @@
     const ENTRY_MAX_AGE_MS = 30 * 60 * 1000;
     const MAX_PENDING_EVENTS = 20;
     const MAX_TEXT_LENGTH = 120;
+    const AUTOMATIC_SEARCH_KEYS = ['q', 's', 'search', 'query', 'keyword'];
     // 共有条件・検索語・日記等の入力をURL文脈へ渡さず、既存の流入判定だけを残す。
     const ATTRIBUTION_QUERY_KEYS = new Set([
         'utm_source', 'utm_medium', 'utm_campaign', 'utm_id', 'utm_term', 'utm_content',
@@ -292,6 +293,28 @@
         return enrichSanitizedCalculationParams(eventName, cleanParams);
     }
 
+    function normalizeSearchUrl() {
+        try {
+            const url = new URL(window.location.href);
+            if (!AUTOMATIC_SEARCH_KEYS.some(key => url.searchParams.has(key))) return true;
+            // 自動検索計測はpage_locationの上書きを迂回して実URLを読む。
+            // 旧検索リンクの値・履歴stateを保持し、計測対象外のサイト専用キーへ移す。
+            for (const key of AUTOMATIC_SEARCH_KEYS) {
+                if (!url.searchParams.has(key)) continue;
+                const privateKey = `pp_${key}`;
+                if (!url.searchParams.has(privateKey)) {
+                    for (const value of url.searchParams.getAll(key)) url.searchParams.append(privateKey, value);
+                }
+                url.searchParams.delete(key);
+            }
+            window.history.replaceState(window.history.state, '', url.href);
+            return true;
+        } catch (error) {
+            console.warn('検索URLを保護できないため計測を開始しません。');
+            return false;
+        }
+    }
+
     function sanitizePageUrl(value, preserveAttribution = false) {
         if (!value) return '';
         try {
@@ -318,7 +341,8 @@
     }
 
     function installGtagBridge() {
-        if (window.__playpointGtagBridgeInstalled) return;
+        if (!normalizeSearchUrl()) return false;
+        if (window.__playpointGtagBridgeInstalled) return true;
         window.__playpointGtagBridgeInstalled = true;
         window.dataLayer = window.dataLayer || [];
 
@@ -343,6 +367,7 @@
         window.gtag = gtagBridge;
         // タグ読込み前から、自動イベントが使う既定URLも保護する。
         window.gtag('set', getPageContext());
+        return true;
     }
 
     function queue(eventName, params) {
@@ -356,7 +381,7 @@
     }
 
     function send(eventName, cleanParams) {
-        installGtagBridge();
+        if (!installGtagBridge()) return false;
         if (window.gtag === gtagBridge) {
             window.gtag('event', eventName, cleanParams);
             return true;
@@ -393,7 +418,10 @@
     function sendInitialPageView() {
         if (initialPageViewSent || !analyticsReady || !hasConsent()) return false;
         initialPageViewSent = true;
-        send('page_view', {});
+        if (!send('page_view', {})) {
+            initialPageViewSent = false;
+            return false;
+        }
         return true;
     }
 
@@ -518,7 +546,7 @@
         if (component === 'author') return 'operator_profile';
         if (url.pathname === window.location.pathname && url.hash) return 'section';
         if (/\/(?:(?:en|ko|tw)\/)?articles\/[^/]+\.html$/.test(url.pathname)) return 'article';
-        if (/\/(?:(?:en|ko|tw)\/articles|blog)\/$/.test(url.pathname)) return url.hash || ['category', 'topic', 'game', 'q'].some(key => url.searchParams.has(key)) ? 'category' : 'guide_hub';
+        if (/\/(?:(?:en|ko|tw)\/articles|blog)\/$/.test(url.pathname)) return url.hash || ['category', 'topic', 'game', 'pp_q', 'q'].some(key => url.searchParams.has(key)) ? 'category' : 'guide_hub';
         return 'internal';
     }
 
@@ -594,6 +622,10 @@
     });
 
     installGtagBridge();
+    if (typeof window.addEventListener === 'function') {
+        window.addEventListener('popstate', normalizeSearchUrl);
+        window.addEventListener('pageshow', normalizeSearchUrl);
+    }
     installArticleJourneyTracking();
     installReaderQuestionTracking();
     if (window.document && typeof window.document.addEventListener === 'function') {

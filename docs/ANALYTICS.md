@@ -198,7 +198,36 @@ node .github/scripts/preflight.cjs
 
 隔離したCMP fixtureではpending / deniedの間にアプリイベントとGA取得がなく、許可後に計測を開始し、取消し後の計算でイベントが増えないことを両画面幅で確認した。fixtureの結果は、EEA等の実地域・実CMPでの同意前 / 拒否後のGoogle自動イベント非送信を証明しない。前節の日本向け環境では必要な実効状態を再現できておらず、**実CMPの受け入れは未実施のまま**残す。
 
-本候補のマージ・デプロイ、公開HTML/JS・DB・GA4・CMP・広告の管理設定変更は行っていない。公開環境で修正後のDebugView、実効的な同意境界、他の共有URL・日記・全端末の最終受け入れが完了するまでIssue #180は閉じない。
+この候補の検証時点では、マージ・デプロイ、公開HTML/JS・DB・GA4・CMP・広告の管理設定変更は行っていない。公開環境で修正後のDebugView、実効的な同意境界、他の共有URL・日記・全端末の最終受け入れが完了するまでIssue #180は閉じない。
+
+### 2026-11-16 最終レビューで見つかった自動検索計測
+
+マージ前の実Googleタグ試験で、`/blog/?q=fictional-23456-137` から自動 `view_search_results` の `search_term` に架空の入力文字列が入ることを確認した。`page_location` は整形済みでも、この経路は残っていた。`search_term` の明示的な固定値も自動イベントには上書きされ、対策にはならなかった。
+
+Google公式の[拡張計測](https://support.google.com/analytics/answer/9216061)は、既定で `q` / `s` / `search` / `query` / `keyword` を実URLから読み取る。管理設定を変更せず、タグ読込み前にそれぞれ `pp_q` / `pp_s` / `pp_search` / `pp_query` / `pp_keyword` へ正規化する。値・重複・他の計算条件・断片・履歴stateを保持し、旧キーは全て取り除く。既に新キーがある場合は空文字も含めてそちらを優先する。
+
+ブログ、海外記事ハブ、ゲーム一覧、記事内検索は新しい `pp_q` と旧 `q` の両方を読み、生成する検索リンクは `pp_q` を使う。旧ブックマーク・静的サイドバー・SearchActionからの `q` も復元できる。`popstate` / `pageshow` でも正規化し、URLを保護できない場合は両ローダーでGoogleタグの取得・設定を開始しない。計算共有の `mode` / `status` / `target` / `points` / `amount` / `eligible` / `baseRate` / `multiplier` はこの正規化の対象外である。
+
+既存の変換fixtureが参照する記事内検索の文字列も同期した。これは過去のビルド検査の互換調整であり、WordPress移行・staging受け入れ・DB操作を再開するものではない。
+
+関連Node89件は成功し、旧URLと候補を比較した実Googleタグの隔離試験では、自由入力が `search_term` へ入らず検索ページのpage_viewが継続することを確認した。旧版の捕捉JSONはSHA256 `7d193778d5433b306e23b2834db2a114dd9eb4a18b17737b89d0cc932b3ea165`、修正後は `3c65d5d2440370522c3b884d1fe41ab2253f89506234c9c2fbfc3cf472fc78a5`。全collect要求は遮断し、外部転送は0である。既存の入力・クリア・再読込み・記事から戻る・戻る/進むの画面検査もこのURL契約で実行する。最終headのCI結果はPR #809を正本とする。
+
+追加の検索・配信回帰87件と既存の検索/記事閲覧・収益ブラウザ検査も成功した。最新差分の公開HTML452ファイルは、4フォームのaction以外が版参照だけである。実Googleタグが生成した外部要求14件について、URL・body・参照元に同じ架空入力値が含まれないことを照合した。これらも送信前の捕捉で、外部collect転送は0である。
+
+### 公開後のDebugView・実CMP受け入れ手順
+
+以下は作業手順であり、記載だけでは合格にならない。各項目を成功・不合格・未実施に分けてIssue #180へ記録する。公開DB・既存投稿・日記データ、GA4/CMP/広告の管理設定、認証権限は変更しない。
+
+1. **版と環境を固定する。** `Deploy to Xserver` の成功と `/status/deploy-status.json` の `verified`・対象merge SHA・各passed、`deploy-revision.txt` の一致を確認する。新規テストプロファイルまたはテスト専用タブを使い、通常/拡張/PWAの別、画面幅、日時・地域、対象SHAを記録する。既存サイトデータの全消去は行わない。
+2. **架空の条件を復元する。** 通常 `?mode=main&status=1&target=silver&points=137&baseRate=2.5&multiplier=2` と、逆算 `?mode=reverse&status=1&amount=23456&eligible=22000&baseRate=2.5&multiplier=2` を開く。入力値と通常5,480円・逆算550pt、共有コピー後の再読込みを照合する。4言語の必要額ページもポイント・ランク・倍率、再計算後の履歴URL・コピーを確認する。390px・1280pxの確認とスマホ実機の確認は区別する。
+3. **検索の互換性を確認する。** `/blog/?q=Play+Pass&sort=updated&page=2` と各地域ハブの旧 `q` リンクから入力を復元する。`pp_q` への正規化後も検索・並べ替え・ページ・再読込み・記事から戻る・クリア・戻る/進むが同じ条件を表示することを確認する。GA4の検索キーや追加収集キーへ `pp_*` を登録しない。
+4. **許可時の実受信を確認する。** 既存ログインのGA4プロパティ `489079798` / `G-HED6D0FR4L` と対象デバイスを照合し、Google公式Tag Assistant等の一時的な端末デバッグだけを使う。通常・逆算・コピー・X共有ボタン・関連記事・判断導線を1回ずつ操作し、実操作回数と受信を記録する。Xは入力画面までとし投稿しない。広告はクリックせず、既存の内部記事だけを使う。再試行は別記する。
+5. **全送信項目を調べる。** 独自イベント項目に加え、`page_location` / `page_referrer` / `form_destination` / `link_url` / `search_term` と通信のURL・bodyを確認する。金額・ポイント・日記本文・自由検索語、その値を含むURLが送られないことを照合する。DebugViewの件数やVM/stub合格だけで非送信とは判定しない。認証情報・Cookie・client/session IDの値や実利用者の値を公開記録へ載せない。
+6. **実効的な同意状態を確認する。** 既存の正規な対象地域環境で、Tag Assistantの当該ページの実効 `analytics_storage` とアプリ状態を照合する。同意前pending/denied、拒否後denied、許可後granted、許可取消し後deniedをそれぞれ確認してから同じ架空計算を実行する。拒否状態では新しいGAイベント・collectがないことを通信とDebugViewで照合する。送信前からのin-flight要求やcookieless pingも区別し、受信画面が空という理由だけで合格にしない。広告/CMP初期化と広告枠要求も分けて記録する。
+7. **前提がなければ未実施で止める。** 日本向け表示で拒否ボタンを押してもanalyticsがgrantedなら、実地域CMPの拒否試験ではない。`?fc=alwaysshow&fctype=gdpr` は外観プレビューであり、その地域・同意状態の証拠にはしない。VPN・地域/OS設定・権限・CMP公開設定を変えて前提を作らず、実効状態を再現できない項目は未実施に残す。
+8. **終了と判定を記録する。** デバッグ接続を停止し作業タブを閉じる。失敗時は対象SHA・実効状態・操作・送信項目を残し、追加公開作業を止めて通常の修正手順へ進む。計算・表示の重大回帰は既存の[復旧手順](deployment-verification.md)で扱う。実CMPや公開DebugView等が残る間はIssue #180を閉じない。
+
+一次手順: [DebugView](https://support.google.com/analytics/answer/7201382?hl=en)、[Tag Assistantの同意確認](https://support.google.com/tagmanager/answer/14218557?hl=en)、[CMP外観プレビュー](https://support.google.com/adsense/answer/10924669)。
 
 担当: PlayPoint運営者。イベント追加時は本書と回帰テストを同時に更新する。
 
