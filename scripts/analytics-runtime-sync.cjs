@@ -12,7 +12,8 @@ const CORE_RUNTIME_PAIR_PATTERN = /(^[ \t]*)(<script\b[^>]*\bsrc=["'][^"']*js\/a
 const MODULE_OWNED_CORE_PATTERN = /<script\b[^>]*\bsrc=["'][^"']*js\/analytics-core\.js(?:\?[^"']*)?["'][^>]*><\/script>\s*(?=<script\b[^>]*\bsrc=["'][^"']*(?:js\/main|js\/points-cost)\.js)/gi;
 
 function ensureAnalyticsCoreScript(html) {
-  const withoutRedundantModuleCore = html.replace(MODULE_OWNED_CORE_PATTERN, '');
+  // タグ除去で前後のHTMLトークンを連結しない。
+  const withoutRedundantModuleCore = html.replace(MODULE_OWNED_CORE_PATTERN, '\n');
   const normalized = withoutRedundantModuleCore.replace(
     CORE_RUNTIME_PAIR_PATTERN,
     (match, indentation, coreScript, runtimeScript) => (

@@ -71,6 +71,10 @@ test('計測対象の公開HTMLは共通コアを実行スクリプトより先�
 });
 
 test('計算機系モジュールは同期scriptを増やさず計測コアを依存読込する', () => {
+  const owned = '<body>before<script src="/js/analytics-core.js"></script>\n<script src="/js/main.js"></script></body>';
+  const removed = ensureAnalyticsCoreScript(owned);
+  assert.equal(removed, '<body>before\n<script src="/js/main.js"></script></body>');
+  assert.equal(ensureAnalyticsCoreScript(removed), removed);
   const config = read('js/config.js');
   const pointsCost = read('js/points-cost.js');
   assert.match(config, /^import '\.\/analytics-core\.js\?v=[a-f0-9]{10}';/m);
