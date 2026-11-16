@@ -76,7 +76,7 @@ test('通常獲得率と特別獲得率は高い方を使い、ランク率へ�
 });
 
 test('通常計算は購入ごとの丸めを仮定しない概算として表示する', () => {
-  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults, renderedResultDetails } = loadCalculatorContext();
+  const { PP_STATE, PP_REGION_CONFIGS, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults, renderedResultDetails } = loadCalculatorContext();
   PP_STATE.currentRegion = 'US';
   PP_STATE.dom.currentStatus = createSelect();
   PP_STATE.dom.reverseStatus = createSelect();
@@ -95,6 +95,7 @@ test('通常計算は購入ごとの丸めを仮定しない概算として表�
   assert.strictEqual(renderedResults[0].isError, false);
   assert.ok(content.includes('data-value="6"'));
   assert.ok(content.includes('does not apply purchase-by-purchase point rounding'));
+  assert.ok(!content.includes(PP_REGION_CONFIGS.US.uiText.pointsBasisNote), '入力欄の税抜前提説明を結果内で繰り返さない');
   assert.ok(!content.includes('Enter an average amount per purchase'));
 });
 
