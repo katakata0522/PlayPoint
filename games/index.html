@@ -34,6 +34,7 @@
 
   <link rel="stylesheet" href="../articles/article-shared.css?v=094f24b348" />
   <link rel="stylesheet" href="../games/games.css?v=48661e55f8" />
+  <link rel="stylesheet" href="/games/directory.css" />
 
   <script type="application/ld+json">
   {
@@ -71,7 +72,6 @@
   <header class="site-header">
       <div class="site-header-inner">
           <a class="site-logo" href="../">
-              <span class="site-logo-icon">🎮</span>
               <span class="site-logo-text">PlayPoint</span>
           </a>
       </div>
@@ -103,18 +103,17 @@
       </nav>
   </div>
 
-  <div class="game-page-container">
+  <div class="game-page-container game-directory-layout">
       <main class="game-main-content">
           <header class="game-header">
-              <span class="game-badge">🎮 ソシャゲ特化</span>
               <h1 class="game-title">ゲーム別 Playポイント計算機</h1>
+              <p class="game-directory-intro">遊んでいるゲームを選び、購入予定額から貯まるPlayポイントを試算できます。</p>
           </header>
 
           <div class="game-search" data-game-directory-search><label for="game-search">ゲーム名で探す</label><input id="game-search" type="search" placeholder="例：ポケポケ、原神、FGO" autocomplete="off"><p class="game-search-count" aria-live="polite"></p><button type="button" data-game-search-clear hidden>検索をクリア</button></div><div class="games-grid">
 
     <a class="game-portal-card" href="./genshin/">
         <div>
-            <div class="game-card-icon">✨</div>
             <h2 class="game-card-title">原神 (Genshin Impact)</h2>
             <p class="game-card-desc">空月の祝福にするか、創世結晶をまとめて買うか。</p>
         </div>
@@ -124,7 +123,6 @@
 
     <a class="game-portal-card" href="./starrail/">
         <div>
-            <div class="game-card-icon">🚂</div>
             <h2 class="game-card-title">崩壊：スターレイル (Honkai: Star Rail)</h2>
             <p class="game-card-desc">列車補給標章を買うときも、往日の夢華をチャージするときも。</p>
         </div>
@@ -134,7 +132,6 @@
 
     <a class="game-portal-card" href="./zzz/">
         <div>
-            <div class="game-card-icon">⚡</div>
             <h2 class="game-card-title">ゼンレスゾーンゼロ (Zenless Zone Zero)</h2>
             <p class="game-card-desc">インターノット会員にするか、モノクロームをチャージするか。</p>
         </div>
@@ -144,7 +141,6 @@
 
     <a class="game-portal-card" href="./bluearchive/">
         <div>
-            <div class="game-card-icon">🎯</div>
             <h2 class="game-card-title">ブルーアーカイブ (Blue Archive)</h2>
             <p class="game-card-desc">次の募集に向けて、青輝石をどれだけ買うか。</p>
         </div>
@@ -154,7 +150,6 @@
 
     <a class="game-portal-card" href="./pokepoke/">
         <div>
-            <div class="game-card-icon">🎴</div>
             <h2 class="game-card-title">Pokémon TCG Pocket (ポケポケ)</h2>
             <p class="game-card-desc">もう少しパックを開けたいとき、ポケゴールドを買うと何ポイント貯まる？購入予定額を入れて計算できます。</p>
         </div>
@@ -164,7 +159,6 @@
 
     <a class="game-portal-card" href="./fgo/">
         <div>
-            <div class="game-card-icon">⚔️</div>
             <h2 class="game-card-title">Fate/Grand Order (FGO)</h2>
             <p class="game-card-desc">聖晶石を何パック買うか、福袋の予算をどうするか。</p>
         </div>
@@ -174,9 +168,8 @@
 
     <a class="game-portal-card" href="./umamusume/">
         <div>
-            <div class="game-card-icon">🐴</div>
             <h2 class="game-card-title">ウマ娘 プリティーダービー</h2>
-            <p class="game-card-desc">ウマスク・ウマプランの購入額を選んで、貯まるPlayポイントを計算できます。</p>
+            <p class="game-card-desc">ウマ娘の購入プランで貯まるPlayポイントを計算できます。</p>
         </div>
         <div class="game-card-action">計算機を開く ➔</div>
     </a>
@@ -184,7 +177,6 @@
 
     <a class="game-portal-card" href="./monst/">
         <div>
-            <div class="game-card-icon">🐉</div>
             <h2 class="game-card-title">モンスターストライク (モンスト)</h2>
             <p class="game-card-desc">オーブを買う前に、今回の課金で何ポイント貯まるかチェック。</p>
         </div>
@@ -194,7 +186,6 @@
 
     <a class="game-portal-card" href="./gakumas/">
         <div>
-            <div class="game-card-icon">🌟</div>
             <h2 class="game-card-title">学園アイドルマスター (学マス)</h2>
             <p class="game-card-desc">欲しいアイドルのために、今回はいくら使う？学マスのジュエル購入予定額からPlayポイントを計算できます。</p>
         </div>
@@ -204,7 +195,6 @@
 
     <a class="game-portal-card" href="./proseka/">
         <div>
-            <div class="game-card-icon">🎵</div>
             <h2 class="game-card-title">プロジェクトセカイ (プロセカ)</h2>
             <p class="game-card-desc">プロセカでクリスタルやパスを買う前に、貯まるPlayポイントをチェック。</p>
         </div>
@@ -214,7 +204,6 @@
 
     <a class="game-portal-card" href="./nikke/">
         <div>
-            <div class="game-card-icon">🔫</div>
             <h2 class="game-card-title">勝利の女神：NIKKE</h2>
             <p class="game-card-desc">ジュエルをまとめて買うか、パスに予算を回すか。</p>
         </div>
@@ -224,7 +213,6 @@
 
     <a class="game-portal-card" href="./wutheringwaves/">
         <div>
-            <div class="game-card-icon">🌊</div>
             <h2 class="game-card-title">鳴潮 (Wuthering Waves)</h2>
             <p class="game-card-desc">鳴潮で月相を買うとき、月額商品を選ぶときに。</p>
         </div>
@@ -234,7 +222,6 @@
 
     <a class="game-portal-card" href="./dokkan/">
         <div>
-            <div class="game-card-icon">💥</div>
             <h2 class="game-card-title">ドラゴンボールZ ドッカンバトル</h2>
             <p class="game-card-desc">龍石を買い足すなら、Playポイントも予算と一緒に。</p>
         </div>
@@ -244,7 +231,6 @@
 
     <a class="game-portal-card" href="./pad/">
         <div>
-            <div class="game-card-icon">🐉</div>
             <h2 class="game-card-title">パズル＆ドラゴンズ (Puzzle & Dragons)</h2>
             <p class="game-card-desc">魔法石を買い足すときも、パズドラパスを続けるときも。</p>
         </div>
@@ -254,7 +240,6 @@
 
     <a class="game-portal-card" href="./arknights/">
         <div>
-            <div class="game-card-icon">🛡️</div>
             <h2 class="game-card-title">アークナイツ (Arknights)</h2>
             <p class="game-card-desc">純正源石をすぐ使いたいか、月パスで毎日受け取りたいか。</p>
         </div>
@@ -264,7 +249,6 @@
 
     <a class="game-portal-card" href="./hbr/">
         <div>
-            <div class="game-card-icon">⚔️</div>
             <h2 class="game-card-title">ヘブンバーンズレッド (ヘブバン)</h2>
             <p class="game-card-desc">欲しいスタイルに向けて、クォーツ購入の予算を決めるときに。</p>
         </div>
@@ -274,7 +258,6 @@
 
     <a class="game-portal-card" href="./mementomori/">
         <div>
-            <div class="game-card-icon">🎵</div>
             <h2 class="game-card-title">メメントモリ (MementoMori)</h2>
             <p class="game-card-desc">ダイヤを買い足す前に、今回の予算で貯まるPlayポイントを見ておきましょう。</p>
         </div>
@@ -284,7 +267,6 @@
 
     <a class="game-portal-card" href="./phantomparade/">
         <div>
-            <div class="game-card-icon">🌀</div>
             <h2 class="game-card-title">呪術廻戦 ファントムパレード (ファンパレ)</h2>
             <p class="game-card-desc">次のガチャに向けた廻珠購入で、Playポイントはどれくらい貯まる？ファンパレの購入予定額を入力すると計算できます。</p>
         </div>
@@ -294,7 +276,6 @@
 
     <a class="game-portal-card" href="./reverse1999/">
         <div>
-            <div class="game-card-icon">⏳</div>
             <h2 class="game-card-title">リバース：1999 (Reverse: 1999)</h2>
             <p class="game-card-desc">雨の雫をまとめて買うときも、月額商品を使うときも。</p>
         </div>
@@ -304,7 +285,6 @@
 
     <a class="game-portal-card" href="./honkai3rd/">
         <div>
-            <div class="game-card-icon">🚀</div>
             <h2 class="game-card-title">崩壊3rd (Honkai Impact 3rd)</h2>
             <p class="game-card-desc">崩壊3rdでチャージや月パスを買う前に、貯まるPlayポイントをチェック。</p>
         </div>
@@ -314,7 +294,6 @@
 
     <a class="game-portal-card" href="./shadowversewb/">
         <div>
-            <div class="game-card-icon">🃏</div>
             <h2 class="game-card-title">シャドウバース ワールズビヨンド</h2>
             <p class="game-card-desc">新しいデッキに向けて、カードやパスにいくら使う？シャドバWBの購入予定額からPlayポイントを計算できます。</p>
         </div>
@@ -322,20 +301,21 @@
     </a>
 
 <div data-game-seo-wave5="true" hidden></div>
-<a class="game-portal-card" href="./prospi-a/"><div><div class="game-card-icon">⚾</div><h2 class="game-card-title">プロ野球スピリッツA (プロスピA)</h2><p class="game-card-desc">エナジーを買い足すなら、Google Playで貯まるポイントも予算に合わせて計算できます。</p></div><div class="game-card-action">計算機を開く ➔</div></a>
-<a class="game-portal-card" href="./pokemon-go/"><div><div class="game-card-icon">📍</div><h2 class="game-card-title">Pokémon GO</h2><p class="game-card-desc">レイドやイベント前のポケコイン購入で、何ポイント貯まる？Google Playの購入予定額を入れて計算できます。</p></div><div class="game-card-action">計算機を開く ➔</div></a>
-<a class="game-portal-card" href="./efootball/"><div><div class="game-card-icon">⚽</div><h2 class="game-card-title">eFootball™</h2><p class="game-card-desc">欲しい選手に向けたコイン購入で、Playポイントも計算できます。</p></div><div class="game-card-action">計算機を開く ➔</div></a>
+<a class="game-portal-card" href="./prospi-a/"><div><h2 class="game-card-title">プロ野球スピリッツA (プロスピA)</h2><p class="game-card-desc">エナジーを買い足すなら、Google Playで貯まるポイントも予算に合わせて計算できます。</p></div><div class="game-card-action">計算機を開く ➔</div></a>
+<a class="game-portal-card" href="./pokemon-go/"><div><h2 class="game-card-title">Pokémon GO</h2><p class="game-card-desc">レイドやイベント前のポケコイン購入で、何ポイント貯まる？Google Playの購入予定額を入れて計算できます。</p></div><div class="game-card-action">計算機を開く ➔</div></a>
+<a class="game-portal-card" href="./efootball/"><div><h2 class="game-card-title">eFootball™</h2><p class="game-card-desc">欲しい選手に向けたコイン購入で、Playポイントも計算できます。</p></div><div class="game-card-action">計算機を開く ➔</div></a>
           </div>
 
           <div class="game-giftcard-cta game-portal-purchase-check">
               <div class="game-giftcard-cta-content">
-                  <div class="game-giftcard-cta-title">💳 課金前にチェック！さらにお得にする裏技</div>
+                  <p class="game-directory-ad-label">広告・アフィリエイト</p>
+                  <div class="game-giftcard-cta-title">ギフトコードの購入条件も確認</div>
                   <p class="game-giftcard-cta-text">楽天市場のGoogle Play ギフトコード認定店では、楽天側のキャンペーンや会員条件に応じてポイント還元が付く場合があります。購入前に当日の還元条件・上限を確認してください。（リンク先の認定店ページは2026/11/04に確認しました。）</p>
               </div>
 
               <div class="game-giftcard-cta-actions">
-                  <a class="game-giftcard-cta-btn rakuten-primary-btn" href="https://hb.afl.rakuten.co.jp/hgc/56983677.8efa0dbe.56983678.1b999667/?pc=https%3A%2F%2Fwww.rakuten.co.jp%2Fgpgiftcard%2F&link_type=hybrid_url&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJoeWJyaWRfdXJsIiwiY29sIjoxLCJjYXQiOjEsImJhbiI6MTcxMDEwMCwiY1W1wIjp1YWxYODQ%3D" target="_blank" rel="sponsored noopener noreferrer">🛒 楽天市場 認定店でギフトコードを見る ➔</a>
-                  <a class="game-giftcard-cta-sublink" href="../articles/2026-06-20-discount-gift-cards.html">📖 お得な買い方・注意点ガイド ➔</a>
+                  <a class="game-giftcard-cta-btn rakuten-primary-btn" href="https://hb.afl.rakuten.co.jp/hgc/56983677.8efa0dbe.56983678.1b999667/?pc=https%3A%2F%2Fwww.rakuten.co.jp%2Fgpgiftcard%2F&link_type=hybrid_url&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJoeWJyaWRfdXJsIiwiY29sIjoxLCJjYXQiOjEsImJhbiI6MTcxMDEwMCwiY1W1wIjp1YWxYODQ%3D" target="_blank" rel="sponsored noopener noreferrer">楽天市場の認定店を確認する →</a>
+                  <a class="game-giftcard-cta-sublink" href="../articles/2026-06-20-discount-gift-cards.html">ギフトコードの購入ガイド →</a>
               </div>
 
           </div>
@@ -347,30 +327,10 @@
               <p>「ゴールドランクまであと◯◯pt必要」など、不足ポイントから必要課金額を逆算したい場合は総合計算機をご利用ください。</p>
               <a class="cta-btn" href="../">Playポイント総合計算機へ ➔</a>
           </aside>
-      </main>
-
-      <!-- サイドバー -->
-      <aside class="sidebar-column">
-          <div class="sidebar-widget">
-              <div class="sidebar-widget-title">🧮 総合計算機</div>
-              <div class="sidebar-widget-body">
-                  <div class="sidebar-calc-banner">
-                      <h4>あと何ポイント必要？</h4>
-                      <p>目標ランクまでの必要金額を即時シミュレーション！</p>
-                      <a class="sidebar-calc-btn" href="../">計算機を使う ➔</a>
-                  </div>
-              </div>
-          </div>
-
-          <div class="sidebar-widget">
-              <div class="sidebar-widget-title">📚 おすすめ攻略記事</div>
-              <div class="sidebar-widget-body">
-                  <ul class="sidebar-article-list">
+      <details class="game-directory-guides"><summary>購入前に役立つ記事</summary><ul>
                       <li><a href="../articles/2026-08-05-play-points-multiplier-stacking.html">倍率・キャンペーンの正しい計算方法</a></li><li><a href="../articles/2026-08-05-play-points-levels-guide.html">Play Pointsランク完全ガイド</a></li><li><a href="../articles/2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li><li><a href="../articles/2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
-                  </ul>
-              </div>
-          </div>
-      </aside>
+                  </ul></details>
+      </main>
   </div>
 
   <!-- サイトフッター -->
