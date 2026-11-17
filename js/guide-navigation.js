@@ -27,7 +27,7 @@
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', init, { once: true }); else init();
 })();
 
-/* 注目記事は期限付きの1件。本文の追従案内はPCの長い記事だけで使う。 */
+/* 注目枠は常設の確認先、または期限付きの1件。本文の追従案内はPCの長い記事だけで使う。 */
 (function () {
   'use strict';
   function init() {
@@ -39,11 +39,12 @@
       const params = new URLSearchParams(location.search);
       const initialFilter = Boolean(params.get('pp_q') ?? params.get('q')) || ['game','topic','category'].some(key => params.get(key) && params.get(key) !== 'all');
       if (initialFilter) doc.body.classList.add('reader-initial-filter');
-      const update = () => { pick.hidden = !(Date.now() < Date.parse(pick.dataset.expires)); };
+      const deadline = pick.dataset.expires ? Date.parse(pick.dataset.expires) : null;
+      const update = () => { pick.hidden = deadline !== null && !(Date.now() < deadline); };
       update();
       doc.addEventListener('visibilitychange', update);
       // 開いたまま期限を越えた場合も、古いおすすめを固定し続けない。
-      const remaining = Date.parse(pick.dataset.expires) - Date.now();
+      const remaining = deadline === null ? 0 : deadline - Date.now();
       if (remaining > 0 && remaining < 2147483647) setTimeout(update, remaining + 1);
     }
     doc.addEventListener('click', event => {

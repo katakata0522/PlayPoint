@@ -19,6 +19,13 @@ const QUESTIONS = [
   ['ゴールドになると何が変わる？', '必要ポイントとランク別の特典', '/articles/2026-08-05-play-points-levels-guide.html'],
   ['ポイントとPlay残高はどう違う？', '交換に使うポイント・支払いに使う残高', '/articles/2025-12-25-check-balance.html']
 ];
+const PURPOSE_ENTRIES = [
+  ['/guides/ranks/', 'ランクを上げる・維持する'],
+  ['/guides/using-points/', '貯まったポイントの使い道を選ぶ'],
+  ['/guides/troubleshooting/', '困っている状況から確認する'],
+  ['/games/', 'ゲームの購入候補・計算機を探す'],
+  ['/latest/', '今の特典・キャンペーンを確認する']
+];
 function replaceBlock(html, key, body, insert) {
   const block = `<!-- ${key}:start -->${body}<!-- ${key}:end -->`;
   const expression = new RegExp(`<!-- ${key}:start -->[\\s\\S]*?<!-- ${key}:end -->`);
@@ -117,7 +124,7 @@ function syncReaderFoundations(root, { hubOnly = false } = {}) {
     if (data['@type'] === 'Blog') { data.name = HUB_TITLE; data.description = HUB_DESCRIPTION; }
     return start + JSON.stringify(data) + end;
   });
-  const entry = `<details class="reader-hub-entry"><summary>初めての方</summary><p class="reader-hub-intro">Play Pointsの仕組み、ランクの特典、ポイントの使い道を知りたいことから探せます。</p><nav class="reader-entry-questions" aria-label="まず知っておきたいこと">${QUESTIONS.map(([question, , href]) => `<a href="${href}"><strong>${question}</strong></a>`).join('')}</nav></details>`;
+  const entry = `<details class="reader-hub-entry"><summary>目的から探す・初めての方</summary><nav class="reader-entry-questions" aria-label="目的別の案内">${PURPOSE_ENTRIES.map(([href, label]) => `<a href="${href}"><strong>${label}</strong></a>`).join('')}</nav><p class="reader-hub-intro">Play Pointsの仕組み、ランクの特典、ポイントの使い道を知りたいことから探せます。</p><nav class="reader-entry-questions" aria-label="まず知っておきたいこと">${QUESTIONS.map(([question, , href]) => `<a href="${href}"><strong>${question}</strong></a>`).join('')}</nav></details>`;
   html = html.replace(/\s*<!-- reader-hub-entry:start -->[\s\S]*?<!-- reader-hub-entry:end -->\s*/g, '\n');
   const discovery = html.indexOf('id="blog-discovery-title"');
   const discoveryEnd = html.indexOf('</section>', discovery);
