@@ -28,6 +28,12 @@
         'entry_link_context',
         'calculator_preset'
     ];
+    // 役割別の次の行動を標準eventNameだけでも集計する。解決完了・再訪とは区別する。
+    const ROLE_ACTION_EVENTS = Object.freeze({
+        decision_support: 'article_decision_action',
+        troubleshooting: 'article_resolution_action',
+        reference: 'article_reference_action'
+    });
     const CALCULATOR_PATHS = new Set(['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']);
     // 同名パラメータでもイベントごとに意味が異なる。海外ナビの分類で
     // 日本語ブログのarticle_categoryや計算結果の外部遷移を消さない。
@@ -78,7 +84,10 @@
         game_form_started: Object.freeze(['game_id', 'region']),
         game_calculation_completed: Object.freeze(['game_id', 'region', 'amount_bucket', 'calculation_basis']),
         guide_filter_changed: Object.freeze(['locale', 'game_id', 'purchase_topic', 'category_name']),
-        article_navigation_click: Object.freeze(['source_path', 'component', 'locale', 'article_role', 'article_category', 'destination_type'])
+        article_navigation_click: Object.freeze(['source_path', 'component', 'locale', 'article_role', 'article_category', 'destination_type']),
+        article_decision_action: Object.freeze(['source_path']),
+        article_resolution_action: Object.freeze(['source_path']),
+        article_reference_action: Object.freeze(['source_path'])
     });
     const ALLOWED_PARAMS = Object.freeze({
         purchase_comparison_opened: ['game_id', 'region'],
@@ -94,6 +103,9 @@
         diary_entry_saved: ['region', 'entry_type'],
         article_to_calculator_clicked: ['source_path', 'link_context', 'destination_path'],
         article_navigation_click: ['source_path', 'target_path', 'component', 'locale', 'article_role', 'article_category', 'destination_type', 'link_position'],
+        article_decision_action: ['source_path', 'target_path'],
+        article_resolution_action: ['source_path', 'target_path'],
+        article_reference_action: ['source_path', 'target_path'],
         lp_to_calculator_clicked: ['source_path', 'source_surface', 'entry_campaign', 'link_context'],
         lp_related_link_clicked: ['source_path', 'target_path', 'link_context'],
         result_related_article_clicked: ['source_path', 'target_path', 'destination_type', 'target_status', 'calculation_mode', 'link_position'],
@@ -514,6 +526,7 @@
         if (closest('.article-diary-link')) return { component: 'diary', link_position: 1 };
         if (closest('.article-source-inline')) return { component: 'citation', link_position: null };
         if (closest('article .cta-box, article .article-next-step')) return { component: 'contextual_action', link_position: null };
+        if (closest('article .reader-followthrough, article .article-next-step-cta, article .contextual-guide-links, article .article-related-guides, article .game-guide-next-action')) return { component: 'contextual_action', link_position: null };
         if (hasClass('site-logo')) return { component: 'site_identity', link_position: 1 };
         if (hasClass('nav-item') && (closest('.intl-global-nav') || closest('.ja-global-nav'))) return { component: 'global_nav', link_position: getSelectorPosition(link, '.intl-global-nav .nav-item, .ja-global-nav .nav-item') };
         if (closest('.intl-article-breadcrumbs')) return { component: 'breadcrumb', link_position: getSelectorPosition(link, '.intl-article-breadcrumbs a') };
@@ -583,6 +596,13 @@
             if (journey.link_position !== null) params.link_position = journey.link_position;
             if (url.origin === window.location.origin) params.target_path = url.pathname;
             track('article_navigation_click', params);
+            const outcomeEvent = ROLE_ACTION_EVENTS[context.article_role];
+            if (outcomeEvent && ['contextual_action', 'next_step'].includes(journey.component) &&
+                !['section', 'operator_profile', 'external_profile', 'region_home'].includes(params.destination_type)) {
+                const outcome = { source_path: pathname };
+                if (url.origin === window.location.origin) outcome.target_path = url.pathname;
+                track(outcomeEvent, outcome);
+            }
         });
     }
 

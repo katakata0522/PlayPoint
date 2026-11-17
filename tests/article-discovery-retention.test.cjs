@@ -131,6 +131,35 @@ test('role reporting uses each article purpose and refuses misleading totals', (
  assert.throws(()=>outcomes.evaluate({period:{start:'2026-02-30',end:'2026-03-02'},rows:[]},root),/valid/);
 });
 
+test('標準GA4出力から役割別の次の行動を集計し、解決完了や再訪は推定しない',()=>{
+ const period={start:'2026-11-18',end:'2026-12-15'};
+ const input=outcomes.ga4Template(period,'2026-11-18');
+ const rows=[
+  ['/articles/2025-12-25-best-use.html','page_view',100],
+  ['/articles/2025-12-25-best-use.html','article_decision_action',12],
+  ['/en/articles/google-play-points-coupon-not-applied.html','page_view',20],
+  ['/en/articles/google-play-points-coupon-not-applied.html','article_resolution_action',5],
+  ['/articles/2025-12-25-check-balance.html','page_view',40],
+  ['/en/articles/google-play-points-weekly-reward.html','page_view',60]
+ ];
+ input.response={dimensionHeaders:[{name:'pagePath'},{name:'eventName'}],metricHeaders:[{name:'totalUsers'}],rowCount:rows.length,
+  rows:rows.map(([page,event,n])=>({dimensionValues:[{value:page},{value:event}],metricValues:[{value:String(n)}]}))};
+ const normalized=outcomes.fromGa4Report(input,root),report=outcomes.evaluate(normalized,root);
+ assert.equal(report.find(row=>row.path===rows[0][0]).rate,0.12);
+ assert.equal(report.find(row=>row.path===rows[2][0]).status,'small_sample');
+ assert.equal(report.find(row=>row.path===rows[4][0]).rate,0);
+ assert.equal(report.find(row=>row.path===rows[5][0]).rate,null);
+ const unknown=outcomes.fromGa4Report({...input,collectedFrom:null},root);
+ assert.equal(outcomes.evaluate(unknown,root).find(row=>row.path===rows[0][0]).rate,null);
+ const partial=outcomes.fromGa4Report({...input,collectedFrom:'2026-11-19'},root);
+ assert.equal(outcomes.evaluate(partial,root).find(row=>row.path===rows[0][0]).rate,null);
+ for(const metadata of [{subjectToThresholding:true},{dataLossFromOtherRow:true},{samplingMetadatas:[{}]}])
+  assert.throws(()=>outcomes.fromGa4Report({...input,response:{...input.response,metadata}},root),/Restricted/);
+ assert.throws(()=>outcomes.fromGa4Report({...input,response:{...input.response,rowCount:rows.length+1}},root),/Incomplete/);
+ assert.throws(()=>outcomes.fromGa4Report({...input,response:{...input.response,rowCount:rows.length+1,rows:[...input.response.rows,input.response.rows[0]]}},root),/Duplicate/);
+ assert.throws(()=>outcomes.fromGa4Report({...input,request:{...input.request,dimensionFilter:undefined}},root),/unchanged/);
+});
+
 test('brand spacing variants match without requiring leftover Google tokens', () => {
  const article={title:'Google Play Points'};
  for(const [locale,variants] of [

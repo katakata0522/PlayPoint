@@ -206,10 +206,10 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 const core = fs.readFileSync(path.join(root, 'js/analytics-core.js'), 'utf8');
 
-function harness(initialConsent = 'granted', pathname = '/articles/example.html') {
+function harness(initialConsent = 'granted', pathname = '/articles/example.html', articleRole = 'reference') {
   let consent = initialConsent;
   const listeners = new Map(), storage = new Map(), elements = new Map();
-  const sidebar = { getAttribute: name => ({ 'data-article-role': 'reference', 'data-article-category': 'account' })[name] };
+  const sidebar = { getAttribute: name => ({ 'data-article-role': articleRole, 'data-article-category': 'account' })[name] };
   const window = {
     location: { origin: 'https://playpoint-sim.com', href: 'https://playpoint-sim.com' + pathname, pathname, search: '' },
     dataLayer: [], PlayPointConsent: { getStatus: () => consent },
@@ -234,11 +234,47 @@ function harness(initialConsent = 'granted', pathname = '/articles/example.html'
 }
 
 function link(href, selector, className = '') {
-  const value = { href, classList: { contains: name => name === className }, closest: name => name === selector ? {} : null };
+  const value = { href, classList: { contains: name => name === className }, closest: name => name.split(',').some(item=>item.trim()===selector) ? {} : null };
   return value;
 }
 
 function click(h, value) { h.dispatch('click', { target: { closest: selector => selector === 'a[href]' ? value : null } }); }
+
+for (const [role, eventName] of [['decision_support','article_decision_action'],['troubleshooting','article_resolution_action'],['reference','article_reference_action']]) {
+  test(role + 'の文脈に合う次の行動を標準eventNameで一度だけ記録し、入力値を含めない',()=>{
+    const h=harness('granted','/articles/example.html',role);
+    h.window.location.href+='?amount=PRIVATE_INPUT#PRIVATE_FRAGMENT';
+    click(h,link(h.window.location.origin+'/blog/?pp_q=PRIVATE_SEARCH#PRIVATE_FRAGMENT','article .reader-followthrough'));
+    const events=h.events();
+    assert.equal(events.filter(event=>event[1]==='article_navigation_click').length,1);
+    const outcomes=events.filter(event=>event[1]===eventName);
+    assert.equal(outcomes.length,1);
+    assert.equal(outcomes[0][2].source_path,'/articles/example.html');
+    assert.equal(outcomes[0][2].target_path,'/blog/');
+    assert.equal(JSON.stringify(events).includes('PRIVATE_'),false);
+    assert.equal(events.filter(event=>/^article_(?:decision|resolution|reference)_action$/.test(event[1])).length,1);
+  });
+}
+
+test('役割別行動も同意前・拒否後に送らず、拒否した保留を後の同意で復活させない',()=>{
+  const h=harness('pending','/articles/example.html','troubleshooting');
+  const action=link('https://support.google.com/googleplay/answer/9077247?private=value','article .article-next-step-cta');
+  click(h,action);assert.equal(h.events().length,0);
+  h.consent('denied');h.consent('granted');assert.equal(h.events().length,0);
+  click(h,action);
+  const outcomes=h.events().filter(event=>event[1]==='article_resolution_action');
+  assert.equal(outcomes.length,1);assert.equal(outcomes[0][2].target_path,undefined);
+  h.consent('denied');click(h,action);assert.equal(h.events().filter(event=>event[1]==='article_resolution_action').length,1);
+});
+
+test('目次・人気記事・再訪役割のクリックを問題解決や再訪完了として扱わない',()=>{
+  for(const role of ['reference','retention','game_decision']){
+    const h=harness('granted','/articles/example.html',role);
+    click(h,link(h.window.location.origin+'/articles/other.html','article .related-links-section'));
+    if(role!=='reference')click(h,link(h.window.location.origin+'/latest/','article .reader-followthrough'));
+    assert.equal(h.events().some(event=>/^article_(?:decision|resolution|reference)_action$/.test(event[1])),false);
+  }
+});
 
 const decision = { source_path: '/?private=value', target_path: '/latest/?q=private#section', destination_type: 'internal', link_position: 'purchase-check' };
 

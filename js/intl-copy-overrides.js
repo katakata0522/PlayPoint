@@ -1,7 +1,7 @@
 'use strict';
 
 // mainより先に評価される地域別入口でも旧configに計測保護を任せない。
-import './analytics-core.js?v=204e2d5426';
+import './analytics-core.js?v=54113d03bd';
 import { CONFIGS } from './config.js';
 
 // 静的生成の正本と、実行時に data-lang-key へ再適用される文言を同じ表現にそろえる。

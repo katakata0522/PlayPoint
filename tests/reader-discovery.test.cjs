@@ -36,16 +36,25 @@ test('各国のフェス記事は本文で選んだPlay Pass記事へ続き、�
   }
 });
 
-test('注目記事は国別の実在記事1件と期限だけを持ち、人気順位を装わない',()=>{
+test('注目枠は各地域の実在する確認先1件を表示し、終了企画や人気順位を装わない',()=>{
   for(const locale of ['ja','en','ko','tw']) {
     const [,href,,,expires]=PICKS[locale];
-    assert.ok(fs.existsSync(path.join(root,href.slice(1))));
-    assert.ok(Number.isFinite(Date.parse(expires)));
+    assert.ok(fs.existsSync(path.join(root,href.slice(1),href.endsWith('/')?'index.html':'')));
+    assert.equal(expires,null);
     const html=renderSpotlight(locale);
     assert.equal((html.match(/<a /g)||[]).length,1);
-    assert.match(html,/ hidden>/);
+    assert.doesNotMatch(html,/ hidden>|data-expires=|play-fest/i);
     assert.doesNotMatch(html,/人気1位|most popular|1위|第一名/);
   }
+});
+
+test('常設の注目枠はJavaScript実行後も表示し、期限タイマーを作らない',()=>{
+  const timers=[];
+  const pick={hidden:false,dataset:{}};
+  const document={readyState:'complete',documentElement:{lang:'ja'},body:{classList:{add(){}}},querySelector:selector=>selector==='[data-reader-spotlight]'?pick:null,addEventListener(){}};
+  vm.runInNewContext(fs.readFileSync(path.join(root,'js/guide-navigation.js'),'utf8'),{document,window:{},location:{search:''},URLSearchParams,Date,queueMicrotask:fn=>fn(),setTimeout:fn=>timers.push(fn)});
+  assert.equal(pick.hidden,false);
+  assert.equal(timers.length,0);
 });
 
 test('注目記事は並び順に依存せず、期限を過ぎると開いたままでも消える',()=>{
