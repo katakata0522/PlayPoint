@@ -120,7 +120,8 @@ function syncReaderFoundations(root, { hubOnly = false } = {}) {
   html = html.replace(/([\t ]*<script\b[^>]*type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/g, (_all, start, json, end) => {
     const data = JSON.parse(json);
     // 一覧の入口にはパンくずを表示しない。1項目だけの無効なBreadcrumbListを残さない。
-    if (data['@type'] === 'BreadcrumbList') return '';
+    // 除去位置の前後を連結せず、HTMLのトークン境界を残す。
+    if (data['@type'] === 'BreadcrumbList') return '\n';
     if (data['@type'] === 'Blog') { data.name = HUB_TITLE; data.description = HUB_DESCRIPTION; }
     return start + JSON.stringify(data) + end;
   });

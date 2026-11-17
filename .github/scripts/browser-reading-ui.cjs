@@ -251,7 +251,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
         assert(entry&&entry.y>=0&&entry.y+entry.height<=844&&entry.x>=0&&entry.x+entry.width<=width&&entry.height>=44,`記事トップの入門入口を最初の画面で開ける: ${width}`);
         assert(state.menuRight===true,`Mobile menu button must sit to the right of the centered brand at ${width}`);
       } else {
-        assert(await page.locator('.reader-entry-questions a').count()===3,'PCでも疑問から読む入口を使える');
+        assert(await page.locator('.reader-entry-questions[aria-label="まず知っておきたいこと"] a').count()===3,'PCでも疑問から読む入口を使える');
       }
       responsive.push({width,...state});
     }
@@ -307,7 +307,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     assert(await readerEntry.locator('summary').isVisible(),'解除すると入門案内の入口を戻す');
     assert.equal(await readerEntry.getAttribute('open'),null,'入門案内は必要なときに開く');
     await readerEntry.locator('summary').click();
-    assert(await page.locator('.reader-entry-questions').isVisible(),'開くと入門記事へのリンクを使える');
+    assert(await page.locator('.reader-entry-questions[aria-label="まず知っておきたいこと"]').isVisible(),'開くと入門記事へのリンクを使える');
     await readerEntry.locator('summary').click();
     assert(await page.locator('#reading-library summary').isHidden(),'保存記事は検索結果の前に出さない');
     await openMenu(page);
@@ -442,7 +442,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     report.interactions.followthrough={searchHistory:true,campaignArrival:true,guideThemes:true,guideAnchors:true,benefitFilter:true,calendarDownload:true};
     await goto(page,'blog/'); await cards(page);
     await page.locator('.reader-hub-entry > summary').click();
-    await page.locator('.reader-entry-questions a').first().click();
+    await page.locator('.reader-entry-questions[aria-label="まず知っておきたいこと"] a').first().click();
     await page.locator('#play-pass-basics').waitFor({state:'visible'});
     assert.equal(new URL(page.url()).hash,'#play-pass-basics');
     assert.equal(await page.locator('.breadcrumbs-wrapper a').first().getAttribute('href'),'/blog/');

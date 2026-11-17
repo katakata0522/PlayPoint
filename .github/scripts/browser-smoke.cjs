@@ -723,7 +723,9 @@ async function verifyBlogPage(browser, baseUrl) {
     // 記事トップで疑問を選べる。記事一覧へ進んだ後は見出し・説明と画像を読む。
     await page.setViewportSize({ width:390, height:844 });
     await page.evaluate(() => scrollTo(0, 0));
-    assert(await page.locator('.reader-entry-questions a').count() === 3, 'Three introductory questions available');
+    assert(await page.locator('.reader-entry-questions[aria-label="まず知っておきたいこと"] a').count() === 3, 'Three introductory questions available');
+    const purposeHrefs = await page.locator('.reader-hub-entry nav[aria-label="目的別の案内"] a').evaluateAll(links => links.map(link => link.getAttribute('href')));
+    assert(JSON.stringify(purposeHrefs) === JSON.stringify(['/guides/ranks/', '/guides/using-points/', '/guides/troubleshooting/', '/games/', '/latest/']), 'Five purpose-specific destinations available separately from introductory questions');
     await page.locator('.hub-skip-link').focus();
     await page.keyboard.press('Enter');
     await page.waitForFunction(() => {
