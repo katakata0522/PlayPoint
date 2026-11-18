@@ -340,7 +340,8 @@ function renderBrowseWidget(localeKey, section, catalog = [], newline = '\n', ro
     ...items.map(key => {
       const count = counts.get(key) || 0;
       const isCurrent = section === key;
-      return '      <li class="sidebar-browse-item' + (isCurrent ? ' is-current-topic' : '') + '"><a class="sidebar-browse-category" href="' + categoryHref(localeKey, key) + '"><span>' + escapeHtml(copy.nav[key]) + '</span><span class="sidebar-browse-count" aria-label="' + count + escapeHtml(copy.countUnit) + '">' + count + '</span></a></li>';
+      const countLabel = count + (/^[a-z]/i.test(copy.countUnit) ? ' ' : '') + copy.countUnit;
+      return '      <li class="sidebar-browse-item' + (isCurrent ? ' is-current-topic' : '') + '"><a class="sidebar-browse-category" href="' + categoryHref(localeKey, key) + '"><span>' + escapeHtml(copy.nav[key]) + '</span><span class="sidebar-browse-count" aria-label="' + escapeHtml(countLabel) + '">' + count + '</span></a></li>';
     }),
     '    </ul></div>',
     '  </section>'

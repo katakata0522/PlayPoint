@@ -86,7 +86,7 @@ ${JSON.stringify({
       <header class="game-header"><span class="game-badge">🔎 公式情報を基準に検証</span><h1 class="game-title">${title}</h1><p class="game-meta">最終確認：${VERIFIED_AT}</p></header>
       <p>${lead}</p>
       ${body}
-      <section class="section"><h2>購入前に確認すること</h2><p>金額・商品構成・ガチャ仕様は変更されることがあります。掲載値は確認日と出典を明示し、確認できない値を推測で補いません。実際の購入前にはゲーム内または公式ストアの最終表示、Google Playの獲得予定ポイント表示を優先してください。</p></section>
+      <section class="section"><h2>購入前に確認すること</h2><p>商品の価格や販売内容、ガチャ・キャンペーンの条件は時期によって変わります。購入前に、ゲーム内やGoogle Playの購入画面で最新の価格と獲得予定ポイントを確認し、開催中の倍率アップや使いたい特典があるかもチェックしておくと安心です。</p></section>
     </main>
   </div>
   <footer class="site-footer"><p>© Playポイント計算機 / 非公式の独立した計算・解説サイトです。</p></footer>
@@ -119,7 +119,7 @@ function renderGenshinGuide() {
   const data = GAME_SEO.genshin;
   const faq = [
     { q: '空月の祝福は合計何原石相当ですか？', a: '購入時の創世結晶300個と、30日間毎日ログインした場合の原石90個×30日=2,700個を合わせ、最大3,000原石相当です。ログインしなかった日の原石は受け取れません。' },
-    { q: '原神の180連は何円ですか？', a: '最大28,800原石が必要ですが、所持原石、初回2倍、空月の祝福、イベント配布などで必要な課金額が変わるため、PlayPointでは1つの固定金額を断定しません。' }
+    { q: '原神の180連は何円ですか？', a: '最大28,800原石が必要ですが、所持原石や初回2倍、空月の祝福、イベント配布などによって必要な課金額は人それぞれ変わります。今回購入する予定の金額を計算機へ入力して、獲得ポイントの目安を確認してみてください。' }
   ];
   const body = `
       <section class="section answer-box" data-editorial-flow="2026-10"><h2>空月の祝福は最大3,000原石相当</h2><p>空月の祝福は購入時に創世結晶300個、その後30日間、ログインした日に原石90個ずつ受け取れます。30日すべて受け取れば2,700原石なので、創世結晶を1:1で原石に変換する前提では<strong>合計最大3,000原石相当</strong>です。</p><p>ログインしなかった日の原石は後から受け取れず、有効期間も延長されません。即時チャージとは受け取れる時期が異なるため、実際にログインできる日数と必要な時期を基準に比較してください。</p><p class="reader-source">出典：<a href="${SOURCES.genshinWelkinReference}" target="_blank" rel="noopener noreferrer">原神公式：空月の受取内容・未ログイン日の扱い</a></p></section>
@@ -173,7 +173,7 @@ function syncGenshin(rootDir) {
   const file = 'games/genshin/index.html';
   let html = read(rootDir, file);
   html = html.replaceAll('原神で確定天井（180連）まで課金すると何ポイント貯まりますか？', '原神の90連・180連は何円ですか？');
-  html = html.replaceAll('180連（約54,000円）課金した場合、通常時（1pt/100円）で約540pt、Google Playに100円あたり4〜7ptの特別獲得率が表示され、その購入が対象なら約2,160pt〜3,780pt貯まります。', '90連は最大14,400原石、180連は最大28,800原石が目安ですが、所持原石・空月・初回2倍・配布分で実際の課金額が変わるため固定の円額は断定しません。購入予定額を計算機へ入力し、Google Playの獲得予定ポイント表示を最終確認してください。');
+  html = html.replaceAll('180連（約54,000円）課金した場合、通常時（1pt/100円）で約540pt、Google Playに100円あたり4〜7ptの特別獲得率が表示され、その購入が対象なら約2,160pt〜3,780pt貯まります。', '90連は最大14,400原石、180連は最大28,800原石が目安ですが、所持原石や空月・初回2倍・配布分などによって実際の課金額は変わります。今回購入する予定の金額を計算機へ入力し、Google Playの獲得予定ポイント表示とあわせて確認してみてください。');
   html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `原神価格・空月・Play Points確認：${VERIFIED_AT}`);
   const block = `<section class="section" data-game-seo-guide="genshin"><h2>空月の祝福と通常チャージを比較する</h2><p>空月の祝福は30日すべて受け取れば創世結晶300個と原石2,700個、最大3,000原石相当です。即時チャージとは受取速度が違います。価格はGoogle Playの購入画面で確認してください。</p><p><a href="./welkin-value/">空月の祝福の受取条件とPlay Pointsを詳しく見る ➔</a></p></section>`;
   html = html.replace(/<section class="section" data-game-seo-guide="genshin">[\s\S]*?<\/section>/, block);
@@ -195,7 +195,7 @@ function syncBlueArchive(rootDir) {
   let html = read(rootDir, file);
   html = html.replaceAll('200連天井・固有武器完凸', '呼び出しチャージ100/200・固有武器完凸');
   html = html.replaceAll('ブルアカの天井（200連=約4.8万円）で何ポイント貯まりますか？', 'ブルアカの現在の募集上限は何回ですか？');
-  html = html.replaceAll('通常時で約480pt、Google Playの5倍キャンペーン時なら約2,400pt（ゴールドランク即時達成）貯まります。', '2026年7月29日以降は旧「呼び出しポイント」方式ではなく、100チャージで★3確定（50%でPU）、200チャージでPU確定の「呼び出しチャージ」方式です。現行Google Play価格を一次情報で再確認できるまでは、固定の天井課金額を断定しません。');
+  html = html.replaceAll('通常時で約480pt、Google Playの5倍キャンペーン時なら約2,400pt（ゴールドランク即時達成）貯まります。', '2026年7月29日以降は旧「呼び出しポイント」方式ではなく、100チャージで★3確定（50%でPU）、200チャージでPU確定の「呼び出しチャージ」方式になりました。所持青輝石やチケットによって必要な課金額は変わるため、Google Playの購入画面に表示される金額を計算機へ入力して確認してみてください。');
   html = html.replace(/\s*<button type="button" class="preset-btn [^"]*" data-amount="48000"[^>]*>天井 200連 \(約48,000円\)<\/button>/, '');
   html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `ブルアカ募集仕様確認：${VERIFIED_AT}（Google Play価格は再確認待ち）`);
   const block = `<section class="section" data-game-seo-guide="bluearchive"><h2>募集仕様は2026年7月29日から変更</h2><p>旧「呼び出しポイント」前提の固定天井額は掲載を止め、現在は100チャージで★3確定（50%でPU）、200チャージでPU確定の新仕様として案内します。商品価格はGoogle Playの一次表示を再確認できるまで、既存の参考表を購入判断の正値として扱わないでください。</p><p><a href="https://x.com/Blue_ArchiveJP" target="_blank" rel="noopener noreferrer">ブルーアーカイブ公式Xで最新募集情報を確認する ➔</a></p></section>`;

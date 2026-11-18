@@ -73,7 +73,7 @@ const LOCALES = {
     copiedAlert: '結果リンクをクリップボードにコピーしました！',
     disclaimerText: '※獲得ポイントはGoogle Play公式の国別通常獲得率と四捨五入ルールを基準にした目安です。ランク表示は年間累計0ptから見た参考で、現在の年間進捗は反映しません。購入前にGoogle Play画面の獲得予定ポイントとステータス進捗をご確認ください。',
     giftCardCtaTitle: '💳 課金前にチェック！さらにお得にする裏技',
-    giftCardCtaText: '楽天市場のGoogle Play ギフトコード認定店では、楽天側のキャンペーンや会員条件に応じてポイント還元が付く場合があります。購入前に当日の還元条件・上限を確認してください。（リンク先の認定店ページは2026/11/04に確認しました。）',
+    giftCardCtaText: '楽天市場のGoogle Play ギフトコード認定店では、楽天側のキャンペーンや会員条件に応じてポイント還元が付く場合があります。購入前に当日の還元条件・上限を確認してください。キャンペーンやポイント還元とあわせて比較したいときに便利です。',
     giftCardCtaBtn: '🛒 楽天市場 認定店でギフトコードを見る ➔',
     giftCardCtaAffiliateUrl: 'https://hb.afl.rakuten.co.jp/hgc/56983677.8efa0dbe.56983678.1b999667/?pc=https%3A%2F%2Fwww.rakuten.co.jp%2Fgpgiftcard%2F&link_type=hybrid_url&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJoeWJyaWRfdXJsIiwiY29sIjoxLCJjYXQiOjEsImJhbiI6MTcxMDEwMCwiY1W1wIjp1YWxYODQ%3D',
     giftCardGuideBtn: '📖 お得な買い方・注意点ガイド ➔',
@@ -87,15 +87,15 @@ const LOCALES = {
     rewardTagCoupon: '割引クーポン',
     rewardCouponName: 'ゲーム専用 割引クーポン',
     rewardCouponRate: '必要ポイント・割引額は表示条件で確認',
-    rewardCouponDesc: '対象ゲームの割引クーポンが表示される場合があります。必要ポイント、割引額、最低購入額、有効期限はPlay Pointsの「使う」に表示された条件を基準にしてください。',
+    rewardCouponDesc: 'このゲームで継続して課金するなら、まずは専用割引クーポンが出ていないかチェックするのがおすすめです（対象タイトルや交換レートはアカウントごとの「使う」タブで変わります）。',
     rewardTagDirect: '直接交換',
     rewardDirectName: 'ゲーム内課金通貨・アイテム',
     rewardDirectRate: '交換内容・必要ポイントは表示中のオファーで確認',
-    rewardDirectDesc: '対象ゲームのゲーム内アイテムとポイントを交換できる場合があります。内容や必要ポイントは国・時期・アカウントで異なるため、Play Pointsの「使う」を確認してください。',
+    rewardDirectDesc: 'ゲーム内アイテムと直接交換できる枠がある場合は、Playクレジットへ換えるより手間なく使えることがあります（対象有無は「使う」タブの表示に準じます）。',
     rewardTagCredit: 'Play残高',
     rewardCreditName: 'Google Play クレジット',
     rewardCreditRate: '必要ポイント・受取額はPlay Points画面で確認',
-    rewardCreditDesc: 'Google Playクレジットと交換できる場合があります。交換条件と有効期限は、Play Pointsの「使う」に表示された内容を確認してください。（参考）Play Points残高の有効期限は、最後にポイントを獲得または使用した時点から1年間です（Google公式ヘルプ）。',
+    rewardCreditDesc: '専用クーポンがないときや、複数のゲーム・アプリで柔軟に使い回したいときは、汎用性の高いPlayクレジット交換が定番です（交換後のPlay残高の有効期限は1年間です）。',
     faqHeading: 'よくある質問（FAQ）',
     otherGamesHeading: '他の人気ゲームの課金シミュレーター',
     ctaTitle: '目標ポイントからの逆算シミュレーター',
@@ -172,12 +172,12 @@ const LOCALES = {
     resTotalLabel: 'Total Spending',
     resEarnedLabel: 'Estimated Play Points',
     resValueLabel: 'Redemption value (check Play)',
-    resRankLabel: 'Reference level from 0 pts',
-    resProgressTitle: 'Reference progress from 0 pts',
+    resRankLabel: 'Level reached from 0 pts',
+    resProgressTitle: 'Level progress from 0 pts',
     shareBtnText: '𝕏 Share Result',
     copyLinkText: '🔗 Copy Link',
     copiedAlert: 'Result link copied to clipboard!',
-    disclaimerText: '※Point estimates use the current US base rates and Google Play rounding rules. The level display is only a reference starting from 0 annual points and does not include your current yearly progress. Check the Play purchase screen and level progress before checkout.',
+    disclaimerText: 'Note: Point estimates use current US base rates and Google Play rounding rules. The level display starts from 0 annual points and does not include your current yearly progress. Check your Google Play checkout screen and level progress before purchasing.',
     giftCardCtaTitle: '💳 Maximizing Play Points with Gift Cards',
     giftCardCtaText: 'Check the gift card guide for how Google Play Gift Cards interact with points, promotions, and account conditions before purchase.',
     giftCardCtaBtn: 'Read Gift Card Guide ➔',
@@ -191,15 +191,15 @@ const LOCALES = {
     rewardTagCoupon: 'Discount Coupon',
     rewardCouponName: 'Game-Specific Coupon',
     rewardCouponRate: 'Points and discount vary by shown offer',
-    rewardCouponDesc: 'Game-specific coupons may appear in Play Points. Use the points cost, discount, minimum purchase, and expiry shown in your Play Points account as the source of truth.',
+    rewardCouponDesc: 'If you plan to keep spending in this game, check the Play Points Use tab for a game-specific discount coupon first — available titles, point costs, and minimum spend vary by account.',
     rewardTagDirect: 'Direct Item',
     rewardDirectName: 'In-Game Items & Gems',
     rewardDirectRate: 'Contents and points vary by shown offer',
-    rewardDirectDesc: 'Eligible in-game items may be available for points. Availability and points cost can vary by country, time, and account, so check the Play Points redemption screen.',
+    rewardDirectDesc: 'When eligible in-game items appear directly in your Use tab, redeeming for them can be quicker than converting to Play Credit (offers vary by region, timing, and account).',
     rewardTagCredit: 'Play Balance',
     rewardCreditName: 'Google Play Credit',
     rewardCreditRate: 'Points and credit amount: check Play Points',
-    rewardCreditDesc: 'Google Play Credit may be available as a redemption option. Check the points cost and credit amount shown in Play Points. Play Credit received from points expires after one year.',
+    rewardCreditDesc: 'Google Play Credit is the most flexible option when no game coupon is available or when you want to spend across any app or game (Play Credit earned from points expires after 1 year).',
     faqHeading: 'Frequently Asked Questions (FAQ)',
     otherGamesHeading: 'Other Popular Game Points Calculators',
     ctaTitle: 'Reverse Mode & Target Status Calculator',
@@ -2334,7 +2334,7 @@ ${presentation?.budgets.length ? `              <h2>予算別のポイント目�
 ${readingGuidesHtml}          <section class="section game-source-section">
               <h2>${loc.lang === 'ja' ? '出典・確認範囲' : loc.lang === 'ko' ? '출처 및 확인 범위' : loc.lang === 'zh-TW' ? '來源與確認範圍' : 'Sources & verification scope'}</h2>
               <p>${loc.lang === 'ja' ? 'Play Pointsの国別通常獲得率・ランク条件・四捨五入ルールはGoogle Play公式ヘルプを基準に確認しています。ゲーム内パック価格、ガチャ天井、商品構成は変更されるため参考値であり、購入前に各ゲーム内ストアと公式告知で再確認してください。' : loc.lang === 'ko' ? 'Play Points의 국가별 기본 적립률, 등급 조건, 반올림 규칙은 Google Play 공식 도움말을 기준으로 확인합니다. 게임 내 패키지 가격과 천장 조건은 변경될 수 있는 참고값이므로 결제 전 게임 내 상점과 공식 공지를 다시 확인하세요.' : loc.lang === 'zh-TW' ? 'Play Points 的地區基本獲點率、等級條件與四捨五入規則以 Google Play 官方說明為基準。遊戲內商品價格與保底條件可能變更，僅作參考；購買前請在遊戲內商店與官方公告再次確認。' : 'Google Play Points base earn rates, level thresholds, and rounding rules are checked against Google Play Help. In-game pack prices and pity/guarantee values can change and are reference inputs only; verify them in the game store and publisher notices before purchase.'}</p>
-              <p><a href="${loc.lang === 'ja' ? 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja' : 'https://support.google.com/googleplay/answer/9077192'}" target="_blank" rel="noopener noreferrer">Google Play Points official help</a></p>
+              <p><a href="${loc.lang === 'ja' ? 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja' : 'https://support.google.com/googleplay/answer/9077192'}" target="_blank" rel="noopener noreferrer">${loc.lang === 'ja' ? 'Google Play Points 公式ヘルプ' : loc.lang === 'ko' ? 'Google Play Points 공식 도움말' : loc.lang === 'zh-TW' ? 'Google Play Points 官方說明' : 'Google Play Points official help'}</a></p>
           </section>
 
           <!-- 他のゲーム計算機 -->
@@ -2388,11 +2388,11 @@ ${readingGuidesHtml}          <section class="section game-source-section">
   <!-- サイトフッター -->
   <footer class="site-footer">
       <div class="site-footer-links">
-          <a href="${rootRelative}">${loc.homeTitle}</a> ｜
-          <a href="${portalRelative}">${loc.portalTitle}</a> ｜
-          <a href="${articlesRelative}">${loc.blogTitle}</a> ｜
-          <a href="${assetsRelative}privacy.html">${loc.privacyLabel}</a> ｜
-          <a href="${assetsRelative}terms.html">${loc.termsLabel}</a> ｜
+          <a href="${rootRelative}">${loc.homeTitle}</a>${loc.lang === 'en' || loc.lang === 'ko' ? ' | ' : ' ｜ '}
+          <a href="${portalRelative}">${loc.portalTitle}</a>${loc.lang === 'en' || loc.lang === 'ko' ? ' | ' : ' ｜ '}
+          <a href="${articlesRelative}">${loc.blogTitle}</a>${loc.lang === 'en' || loc.lang === 'ko' ? ' | ' : ' ｜ '}
+          <a href="${assetsRelative}privacy.html">${loc.privacyLabel}</a>${loc.lang === 'en' || loc.lang === 'ko' ? ' | ' : ' ｜ '}
+          <a href="${assetsRelative}terms.html">${loc.termsLabel}</a>${loc.lang === 'en' || loc.lang === 'ko' ? ' | ' : ' ｜ '}
           <a href="${authorRelative}">${loc.authorTitle}</a>
       </div>
       <p class="site-footer-trademark">${loc.trademarkNotice}</p>
@@ -2593,11 +2593,11 @@ function generatePortalPageHtml(localeKey) {
   <!-- サイトフッター -->
   <footer class="site-footer">
       <div class="site-footer-links">
-          <a href="${rootRelative}">${loc.homeTitle}</a> ｜
-          <a href="./">${loc.portalTitle}</a> ｜
-          <a href="${articlesRelative}">${loc.blogTitle}</a> ｜
-          <a href="${assetsRelative}privacy.html">${loc.privacyLabel}</a> ｜
-          <a href="${assetsRelative}terms.html">${loc.termsLabel}</a> ｜
+          <a href="${rootRelative}">${loc.homeTitle}</a>${loc.lang === 'en' || loc.lang === 'ko' ? ' | ' : ' ｜ '}
+          <a href="./">${loc.portalTitle}</a>${loc.lang === 'en' || loc.lang === 'ko' ? ' | ' : ' ｜ '}
+          <a href="${articlesRelative}">${loc.blogTitle}</a>${loc.lang === 'en' || loc.lang === 'ko' ? ' | ' : ' ｜ '}
+          <a href="${assetsRelative}privacy.html">${loc.privacyLabel}</a>${loc.lang === 'en' || loc.lang === 'ko' ? ' | ' : ' ｜ '}
+          <a href="${assetsRelative}terms.html">${loc.termsLabel}</a>${loc.lang === 'en' || loc.lang === 'ko' ? ' | ' : ' ｜ '}
           <a href="${authorRelative}">${loc.authorTitle}</a>
       </div>
       <p class="site-footer-trademark">${loc.trademarkNotice}</p>

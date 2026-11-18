@@ -107,7 +107,7 @@ function createLocales() {
         },
         {
           "@type": "Question",
-          "name": "What is the reverse calculation mode?",
+          "name": "How does 'Points from spending' work?",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "By inputting the spending amount, the tool simulates expected points using the higher of your base earn rate and any special earn rate shown in Google Play."
@@ -141,7 +141,7 @@ function createLocales() {
             <p>A. By inputting your current points and target status, the calculator compares your base earn rate with any special earn rate shown in Google Play and uses the higher rate. It does not multiply the two rates.</p>
         </details>
         <details class="faq-item">
-            <summary>Q. What is the reverse calculation mode?</summary>
+            <summary>Q. How does 'Points from spending' work?</summary>
             <p>A. By inputting the spending amount, the tool simulates expected points using the higher of your base earn rate and any special earn rate shown in Google Play.</p>
         </details>
         <details class="faq-item">
@@ -160,7 +160,7 @@ function createLocales() {
         <p class="home-description-lead">Use this page to check <strong>the spending needed to level up</strong>, <strong>the Play Points you can earn from a spending amount</strong>, and <strong>estimates using a special earn rate shown in Google Play</strong>.</p>
         <figure class="calculation-flow-figure">
             <img src="../images/calculation-flow-en.svg" width="960" height="360" loading="lazy" decoding="async" alt="Three-step flow from points needed through the selected reward condition to estimated spending">
-            <figcaption>Points gap → reward condition → estimated spending. The 1,728-point figure is an input example.</figcaption>
+            <figcaption>Points needed → earn rate → estimated spending. The 1,728-point figure is an input example.</figcaption>
         </figure>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
@@ -270,7 +270,7 @@ function createLocales() {
         },
         {
           "@type": "Question",
-          "name": "역산 모드는 무엇인가요?",
+          "name": "‘금액으로 포인트’ 탭은 어떻게 계산하나요?",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "결제할 금액을 입력하면, 현재 등급의 기본 적립률과 Google Play에 표시된 특별 적립률 중 높은 값을 사용해 획득 예상 포인트를 시뮬레이션합니다."
@@ -304,7 +304,7 @@ function createLocales() {
             <p>A. 현재 상태와 목표 등급까지 부족한 포인트를 입력하면, 기본 적립률과 Google Play에 표시된 특별 적립률을 비교해 높은 값을 사용하여 필요한 결제 금액을 계산합니다. 두 적립률을 서로 곱하지 않습니다.</p>
         </details>
         <details class="faq-item">
-            <summary>Q. 역산 모드는 무엇인가요?</summary>
+            <summary>Q. ‘금액으로 포인트’ 탭은 어떻게 계산하나요?</summary>
             <p>A. 결제할 금액을 입력하면, 현재 등급의 기본 적립률과 Google Play에 표시된 특별 적립률 중 높은 값을 사용해 획득 예상 포인트를 시뮬레이션합니다.</p>
         </details>
         <details class="faq-item">
@@ -433,7 +433,7 @@ function createLocales() {
         },
         {
           "@type": "Question",
-          "name": "什麼是反推模式？",
+          "name": "「依金額反推點數」是如何計算的？",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "輸入預計消費金額後，系統會使用目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率中較高者，估算可獲得點數。"
@@ -467,7 +467,7 @@ function createLocales() {
             <p>A. 輸入目前等級、目標等級，以及 Google Play 顯示的距離目標尚欠點數後，系統會比較基本獲點率與 Google Play 顯示的活動特別獲點率，採用較高者計算所需消費金額，不會把兩個獲點率相乘。</p>
         </details>
         <details class="faq-item">
-            <summary>Q. 什麼是反推模式？</summary>
+            <summary>Q. 「依金額反推點數」是如何計算的？</summary>
             <p>A. 輸入預計消費金額後，系統會使用目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率中較高者，估算可獲得點數。</p>
         </details>
         <details class="faq-item">

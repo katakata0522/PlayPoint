@@ -42,7 +42,7 @@ const COPY = {
   tw: {
     region: '台灣 · TWD', code: 'TW', lang: 'zh-TW', hreflang: 'zh-TW',
     heading: '儲值前，先看看', offers: '通行證與特別商品', skip: '前往計算器 ↓', action: '輸入結帳金額計算',
-    type: '商品內容', subscription: '訂閱・自動續訂', price: '採用Google Play結帳畫面的價格',
+    type: '商品內容', subscription: '訂閱 · 自動續訂', price: '採用 Google Play 結帳畫面的價格',
     lead: '先挑需要的獎勵，再看看這次購買能累積多少點數。',
     noOffer: '下方地區來源可確認版本或購買管道。本頁未核實的當地通行證特典，不會直接套用日本版；日文指南可另外參考。',
     input: '輸入一筆Google Play交易的新台幣金額。選填欄位可排除稅額，以及使用促銷Play抵用金支付的部分。',
@@ -52,7 +52,7 @@ const COPY = {
     faqQ: '購買前，應先確認哪些內容？', faqPayQ: '哪一部分付款可以計算Google Play Points？',
     faqPay: '採用台灣Play帳號符合資格的Google Play交易。若可確認，排除稅額及促銷Play抵用金支付的部分。使用已持有的遊戲貨幣不是一筆新付款。訂閱續費通常採一般積點率；首次訂閱或指定訂閱的額外點數，請看Google Play各別條件。',
     bodyTitle: '選好商品，再計算付款金額', guide: '遊戲計算器', more: '其他遊戲計算器',
-    labels: { 'publisher-help': '官方說明', 'publisher-notice': '官方公告', 'publisher-store-content': '官方商店商品頁・僅核對內容', 'publisher-ios-listing': '發行商iOS商品列表・僅核對名稱', 'publisher-site': '地區營運方與版本資訊' },
+    labels: { 'publisher-help': '官方說明', 'publisher-notice': '官方公告', 'publisher-store-content': '官方商店商品頁 · 僅核對內容', 'publisher-ios-listing': '發行商 iOS 商品列表 · 僅核對名稱', 'publisher-site': '地區營運方與版本資訊' },
     regionNames: { US: '美國版', KR: '韓國版', TW: '台灣版', global: '國際版', Japan: '日本版' }
   }
 };
@@ -66,7 +66,7 @@ function description(name, entry, locale, id) {
   if (entry.descriptions?.[locale]) return entry.descriptions[locale];
   const sep = locale === 'en' ? ', ' : locale === 'tw' ? '、' : '·';
   const names = entry.offers[locale].map(item => item.names[locale]).join(sep);
-  if (isReference(locale, id)) return locale === 'en' ? `${name}: Japanese edition reference and Japan calculator link. Regional products are unconfirmed; no converted yen prices are published.` : locale === 'ko' ? `${name} 일본판 안내와 일본 계산기 링크. 현지 상품은 미확인으로, 일본 가격을 원화로 환산하지 않습니다.` : `${name}日本版參考與日本計算器連結。當地商品未確認，不會把日圓價格換算為新台幣商品表。`;
+  if (isReference(locale, id)) return locale === 'en' ? `${name}: Japanese edition reference and Japan calculator link. Regional products are unconfirmed; no converted yen prices are published.` : locale === 'ko' ? `${name} 일본판 안내와 일본 계산기 링크. 현지 상품은 미확인으로, 일본 가격을 원화로 환산하지 않습니다.` : `${name.includes('日本版參考') ? name : `${name}（日本版參考）`}與日本計算器連結。當地商品未確認，不會把日圓價格換算為新台幣商品表。`;
   if (locale === 'en') {
     const firstOffer = entry.offers.en[0]?.names.en || '';
     const candidates = [

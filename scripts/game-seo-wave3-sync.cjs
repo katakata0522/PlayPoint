@@ -20,7 +20,7 @@ function pointTableHtml(amount) {
 const guideShell = createGuideShell({
   verifiedAt: VERIFIED_AT,
   badge: '🔎 公式情報を基準に検証',
-  verificationPolicy: '価格・定額商品・ガチャ仕様は変更されることがあります。公式情報で確認できないGoogle Play価格は推測で補っていません。購入前に、ゲーム内の最新価格・内容とGoogle Playの獲得予定ポイントを確認してください。'
+  verificationPolicy: 'ゲーム内の価格や定期購入・ガチャの条件は時期によって変わります。購入前に、Google Playの購入画面で最新の価格や無料体験・更新日の表示、獲得予定ポイントを確認してください。'
 });
 
 function syncParentGuide(rootDir, config) {
@@ -71,7 +71,7 @@ function renderArknightsGuide() {
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">アークナイツ Play Points計算機へ戻る ➔</a></p>`;
   return guideShell({ gameId: 'arknights', slug: 'monthly-pass-limited-scout', pageDescription: 'アークナイツの月パス内容と限定スカウト300回の仕様を公式情報で整理。Google Play価格を推測せず、Play Pointsとの関係も分けて解説します。', lead: '月パスの「中身」とリミテッド300回の「仕組み」は公式確認できますが、現行Google Play価格は別問題です。確定情報と未確定情報を分けて整理します。', body, faq: [
     { q: 'アークナイツの月パスでは何を受け取れますか？', a: '公式サポートでは、購入時に有償純正源石6個、その後30日間毎日、合成玉200個と理性回復剤1個を受け取る仕様です。' },
-    { q: '限定300連はいくらですか？', a: '所持合成玉、スカウト券、無料分などで現金負担が変わるため、PlayPointでは固定の円額を断定しません。' }
+    { q: '限定300連はいくらですか？', a: '所持している合成玉やスカウト券、イベント配布分などによって必要な課金額は変わるため、お持ちの資源を差し引いた購入予定額から計算してみてください。' }
   ] });
 }
 
@@ -117,7 +117,7 @@ function syncWave3(rootDir) {
         ['アークナイツの限定フェス天井（300連）で何ポイント貯まりますか？', 'アークナイツの限定300回分に必要な現金額は固定ですか？'],
         ['300連（約9万円）課金した場合、通常時（1pt/100円）で約900pt、特別獲得率5pt/100円時なら約4,500pt（プラチナランク到達）還元されます。', 'いいえ。所持合成玉・スカウト券・無料分などで現金負担が変わるため、固定9万円とは扱いません。Google Playで実際に支払う金額からPlay Pointsを確認してください。']
       ],
-      guideBlock: `<section class="section" data-game-seo-guide="arknights"><h2>月パス内容と限定300回を、価格と分けて確認</h2><p>月パスの有償純正源石6個・30日間の合成玉200個/日など、仕様は公式確認できます。現行Google Play価格は固定せず、限定300回も現金9万円と断定しません。</p><p><a href="./monthly-pass-limited-scout/">月パスと限定300回の確認結果を見る ➔</a></p></section>`, guideMarker: 'data-game-seo-guide="arknights"'
+      guideBlock: `<section class="section" data-game-seo-guide="arknights"><h2>月パス内容と限定300回を、価格と分けて確認</h2><p>月パスの有償純正源石6個・30日間の合成玉200個/日など、公式で案内されている仕様をもとに整理しています。限定300回は所持資源やスカウト券でも必要額が変わるため、購入画面の金額にあわせて計算できます。</p><p><a href="./monthly-pass-limited-scout/">月パスと限定300回の確認結果を見る ➔</a></p></section>`, guideMarker: 'data-game-seo-guide="arknights"'
     },
     {
       file: 'games/dokkan/index.html',

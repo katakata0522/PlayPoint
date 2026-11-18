@@ -10,7 +10,7 @@ const AUTHOR_CONTENT = Object.freeze({
   en: {
     title: 'About Katakata & editorial standards',
     eyebrow: 'Operator profile',
-    lead: 'Katakata operates the Google Play Points Calculator and edits guides about Play Points calculations, usage, regional differences, and troubleshooting.',
+    lead: 'Katakata builds and runs the Google Play Points Calculator and edits guides on Play Points math, redemptions, regional differences, and troubleshooting. Reaching Diamond tier in September 2026 myself (nobody was more surprised than me!), I maintain these tools and weekly reward logs while actually using Play Points across mobile games and everyday apps.',
     purposeTitle: 'Make the purchase decision easier', purposeBody: 'PlayPoint brings the product, its timing, and the points calculation into one flow. A monthly pack can work well for rewards you will collect over time; a top-up may fit a deadline today. The guides help you compare those choices before you enter a spending amount.', verificationTitle: 'How guides are verified',
     verification: [
       'Google Play Help and other first-party sources are checked first.',
@@ -24,7 +24,7 @@ const AUTHOR_CONTENT = Object.freeze({
     workflow: [
       'Match the claim, source, and verification date against first-party information.',
       'Reproduce calculation examples in the calculator and confirm the result.',
-      'Run automated checks for calculations, internal links, structured data, and generated pages.',
+      'Check calculation consistency, internal links, and page readability across each language version before publishing.',
       'After deployment, verify that key production pages and assets are serving the intended revision.'
     ],
     correctionsTitle: 'Corrections and updates',
@@ -40,7 +40,7 @@ const AUTHOR_CONTENT = Object.freeze({
   ko: {
     title: '운영자 Katakata와 기사 검증 기준',
     eyebrow: '운영자 프로필',
-    lead: 'Katakata는 Google Play Points 계산기를 운영하며 Play Points 계산, 사용법, 국가별 차이, 문제 해결 가이드를 편집합니다.',
+    lead: 'Katakata는 Google Play Points 계산기를 직접 개발·운영하며 적립 계산, 포인트 사용법, 국가별 차이, 문제 해결 가이드를 편집합니다. 2026년 9월 직접 다이아몬드 등급에 도달한 경험을 바탕으로(제 자신이 가장 놀랐습니다!), 실제 모바일 게임 결제와 주간 리워드 기록에 활용하면서 누구나 쉽게 다음 등급까지 필요한 금액을 가늠할 수 있도록 도구를 가꾸고 있습니다.',
     purposeTitle: '구매 결정을 더 쉽게', purposeBody: 'PlayPoint는 상품 내용, 보상 시점, 포인트 계산을 한 흐름으로 연결합니다. 앞으로 받을 보상에는 월간 상품이 맞을 수 있고 오늘 마감하는 목표에는 즉시 충전이 맞을 수 있습니다. 결제 금액을 입력하기 전에 이 차이를 비교할 수 있도록 안내합니다.', verificationTitle: '기사 검증 원칙',
     verification: [
       'Google Play 공식 도움말 등 1차 정보를 우선 확인합니다.',
@@ -54,7 +54,7 @@ const AUTHOR_CONTENT = Object.freeze({
     workflow: [
       '기사의 주장, 근거, 확인 날짜를 공식 정보와 대조합니다.',
       '계산 예시를 실제 계산기에 입력해 결과를 확인합니다.',
-      '계산, 내부 링크, 구조화 데이터, 생성 페이지의 자동 회귀 검사를 실행합니다.',
+      '공개 전 계산 결과와 내부 링크, 각 언어 페이지 표시가 어색하지 않은지 함께 점검합니다.',
       '배포 후 주요 운영 페이지와 정적 파일이 의도한 리비전을 제공하는지 확인합니다.'
     ],
     correctionsTitle: '수정 및 업데이트',
@@ -70,7 +70,7 @@ const AUTHOR_CONTENT = Object.freeze({
   tw: {
     title: '營運者 Katakata 與文章驗證標準',
     eyebrow: '營運者簡介',
-    lead: 'Katakata 維護 Google Play Points 計算器，並編輯 Play Points 計算、使用方式、地區差異與問題排解指南。',
+    lead: 'Katakata 開發並維護 Google Play Points 計算器，同時撰寫點數計算、兌換方式、各地區規則差異與問題排解指南。自己在 2026 年 9 月實際升上鑽石級（最驚訝的其實是自己！），平時就在手遊課金與每週獎勵紀錄中實際使用這些點數，並把這個個人試算工具持續維護至今。',
     purposeTitle: '讓消費選擇更容易', purposeBody: 'PlayPoint 把商品內容、獎勵時間與點數計算放在同一條閱讀路線。能慢慢領取的獎勵可以比較月卡；今天就要達成的目標，可能需要立即儲值。指南先幫你比較這些差別，再帶入消費金額。', verificationTitle: '文章驗證原則',
     verification: [
       '優先確認 Google Play 官方說明等第一手資訊。',
@@ -84,7 +84,7 @@ const AUTHOR_CONTENT = Object.freeze({
     workflow: [
       '把文章主張、來源與確認日期和官方資訊逐一核對。',
       '將計算範例實際輸入計算器，確認結果一致。',
-      '執行計算、站內連結、結構化資料與產生頁面的自動回歸檢查。',
+      '發布前逐一確認各語言版本的計算結果、站內連結與閱讀版面。',
       '部署後確認主要正式環境頁面與靜態檔案已提供預期版本。'
     ],
     correctionsTitle: '更正與更新',

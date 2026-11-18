@@ -82,7 +82,7 @@ const EDITORIAL_TARGETS = Object.freeze({
     ],
     unknown: [
       '表示される交換先や必要ポイント数は国・時期・アカウントで異なります。',
-      '非公式な換金方法の安全性や成立をこのサイトは保証できません。'
+      '非公式な換金方法は規約違反やアカウント制限などのリスクが伴うため、利用はおすすめできません。'
     ]
   },
   'articles/2026-07-25-play-credit-not-working.html': {
