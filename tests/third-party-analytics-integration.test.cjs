@@ -22,6 +22,9 @@ function createRuntime({
   readyState = 'complete',
   standalone = false,
   managedAds = [],
+  intlAds = [],
+  hasBlogArticleScript = false,
+  href = 'https://playpoint-sim.com/',
   adsenseFailures = 0,
   animationFrames = false,
   visibilityState = 'visible',
@@ -35,13 +38,15 @@ function createRuntime({
   const timers = [];
   const idleTasks = [];
   const frames = [];
+  const rootAttributes = new Map();
   let remainingAdsenseFailures = adsenseFailures;
+  const parsedHref = new URL(href);
 
   const context = {
     console: { log() {}, warn() {}, error() {} },
     URL,
     URLSearchParams,
-    location: { href: 'https://playpoint-sim.com/', origin: 'https://playpoint-sim.com', pathname: '/', search: '' },
+    location: { href: parsedHref.href, origin: parsedHref.origin, pathname: parsedHref.pathname, search: parsedHref.search },
     navigator: { standalone },
     matchMedia(query) { return { matches: standalone && query === '(display-mode: standalone)' }; },
     sessionStorage: {
@@ -62,6 +67,10 @@ function createRuntime({
     referrer: '',
     readyState,
     visibilityState,
+    documentElement: {
+      setAttribute(key, value) { rootAttributes.set(key, String(value)); },
+      getAttribute(key) { return rootAttributes.has(key) ? rootAttributes.get(key) : null; }
+    },
     currentScript: {
       src: 'https://playpoint-sim.com/js/third-party.js?v=test',
       getAttribute(name) { return name === 'src' ? '/js/third-party.js?v=test' : null; }
@@ -73,12 +82,17 @@ function createRuntime({
       const exactSrc = selector.match(/^script\[src="([^"]+)"\]$/)?.[1];
       if (exactSrc) return scriptsBySrc.get(exactSrc) || null;
       if (selector === 'script[src*="js/third-party.js"]') return this.currentScript;
+      if (selector === 'script[src*="blog/article.js"]') return hasBlogArticleScript ? { src: '/blog/article.js' } : null;
       return null;
     },
     querySelectorAll(selector) {
-      return selector === '.lp-ad-container ins.adsbygoogle, .game-ad-container ins.adsbygoogle, body[data-game-guide-article] .article-ad-container ins.adsbygoogle'
-        ? managedAds
-        : [];
+      if (selector === '.lp-ad-container ins.adsbygoogle, .game-ad-container ins.adsbygoogle, body[data-game-guide-article] .article-ad-container ins.adsbygoogle') {
+        return managedAds;
+      }
+      if (selector === '.intl-layout-container .article-ad-container ins.adsbygoogle') {
+        return intlAds;
+      }
+      return [];
     },
     createElement(tagName) {
       assert.equal(tagName, 'script');
@@ -328,4 +342,29 @@ test('standalone表示ではGA4へdisplay modeをstandaloneとして送る', asy
   await advanceAnalytics(runtime);
   const setCall = gtagCalls(runtime.context).find(call => call[0] === 'set' && call[1]?.app_display_mode);
   assert.deepEqual(JSON.parse(JSON.stringify(setCall?.[1])), { app_display_mode: 'standalone', page_location: 'https://playpoint-sim.com/', page_referrer: '' });
+});
+
+test('blog/article.jsが無い国際記事の末尾広告枠をConsent許可後に初期化し、article.js併用時は委譲する', async () => {
+  const standaloneIntlAd = createAd();
+  const standaloneRuntime = createRuntime({ adsConsent: 'granted', intlAds: [standaloneIntlAd], hasBlogArticleScript: false });
+  await settleAsyncWork();
+  assert.equal(standaloneRuntime.context.adsbygoogle.length, 1);
+  assert.equal(standaloneIntlAd.dataset.adSlot, '8250492620');
+  assert.equal(standaloneIntlAd.dataset.playpointAdRequested, 'true');
+
+  const delegatedIntlAd = createAd();
+  const delegatedRuntime = createRuntime({ adsConsent: 'granted', intlAds: [delegatedIntlAd], hasBlogArticleScript: true });
+  await settleAsyncWork();
+  assert.equal(delegatedRuntime.context.adsbygoogle.length, 0);
+  assert.equal(delegatedIntlAd.dataset.playpointAdRequested, undefined);
+});
+
+test('URL保護で広告要求を保留している場合は空枠非表示用のroot属性を設定する', async () => {
+  const pausedRuntime = createRuntime({ href: 'https://playpoint-sim.com/?mode=main&points=100' });
+  await settleAsyncWork();
+  assert.equal(pausedRuntime.context.document.documentElement.getAttribute('data-ad-requests-paused'), 'true');
+
+  const cleanRuntime = createRuntime({ href: 'https://playpoint-sim.com/' });
+  await settleAsyncWork();
+  assert.equal(cleanRuntime.context.document.documentElement.getAttribute('data-ad-requests-paused'), null);
 });

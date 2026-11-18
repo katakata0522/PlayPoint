@@ -307,6 +307,7 @@
                 ...context,
                 destination_path: url.pathname
             });
+            analytics.handoffCalculatorPresetNavigation?.(event, link);
         });
     }
 
@@ -388,8 +389,15 @@
         });
     }
 
+    function syncAdPausedAttribute() {
+        if (window.PlayPointAdPrivacy?.getState?.().paused === true) {
+            document?.documentElement?.setAttribute?.('data-ad-requests-paused', 'true');
+        }
+    }
+
     // AdSense本体はページ解析をブロックしないasyncで早期取得し、固定スクロール量による機会損失を避ける。
     function loadArticleAdsense() {
+        syncAdPausedAttribute();
         if (window.PlayPointAdPrivacy?.protect?.() !== true) return;
         if (articleAdsenseLoaded) {
             initializeManagedArticleAds();
@@ -425,6 +433,7 @@
     }
 
     function setupArticleAdsense() {
+        syncAdPausedAttribute();
         if (window.PlayPointConsent) {
             scheduleArticleAdsenseLoad();
             return;

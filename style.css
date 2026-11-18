@@ -2691,6 +2691,9 @@ overflow-wrap: anywhere;
 padding: 6px;
 font-size: 0.8rem;
 }
+html:lang(ja) .top-bar > .region-switch + .header-links { grid-template-columns:minmax(0,1.5fr) auto auto; gap:4px !important; }
+html:lang(ja) .top-bar > .region-switch + .header-links a.alert-link { overflow-wrap:break-word; }
+html:lang(ja) .top-bar > .region-switch + .header-links a:not(.alert-link) { padding-inline:4px; word-break:keep-all; overflow-wrap:normal; white-space:nowrap; }
 html:is(:lang(ko),:lang(zh-TW)) .top-bar > .region-switch + .header-links { grid-template-columns:minmax(0,1.5fr) auto auto; gap:4px !important; }
 html:is(:lang(ko),:lang(zh-TW)) .top-bar > .region-switch + .header-links a:not(.alert-link) { padding-inline:3px; word-break:keep-all; overflow-wrap:normal; white-space:nowrap; }
 html:lang(en) .top-bar > .region-switch + .header-links { grid-template-columns:auto minmax(0,1fr) auto; gap:4px !important; }
@@ -2784,4 +2787,12 @@ body:has(>main.lp-wrapper) { background:#f4f7f6; }
     font-size: 14px;
     line-height: 1.55;
   }
+}
+
+/* URL保護による要求保留時および未配信確定時に空の広告枠や余白を残さない */
+ins.adsbygoogle[data-ad-status="unfilled"],
+.google-auto-placed:has(> ins.adsbygoogle[data-ad-status="unfilled"]),
+.lp-ad-container:has(> ins.adsbygoogle[data-ad-status="unfilled"]),
+html[data-ad-requests-paused="true"] :is(.google-auto-placed, ins.adsbygoogle, .lp-ad-container) {
+  display: none !important;
 }

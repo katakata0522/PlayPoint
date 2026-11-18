@@ -426,3 +426,60 @@ test('ゲーム計算と記事絞り込みは同意と固定選択肢を守り�
   denied.PlayPointAnalytics.track('game_form_started', { game_id: 'monst', region: 'JP' });
   assert.equal(eventCalls(denied, 'game_form_started').length, 0);
 });
+
+test('内部プリセット遷移はsessionStorageへ退避してUTMだけを残したクリーンURLへ移動する', () => {
+  const { context, storage } = createRuntime('denied');
+  const assigned = [];
+  context.location.assign = nextHref => assigned.push(nextHref);
+
+  const createClickEvent = overrides => ({
+    defaultPrevented: false,
+    button: 0,
+    metaKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    altKey: false,
+    preventDefault() { this.defaultPrevented = true; },
+    ...overrides
+  });
+  const createLink = (href, extra = {}) => ({
+    href,
+    target: '',
+    hasAttribute(name) { return Boolean(extra.attributes && extra.attributes.includes(name)); },
+    ...extra
+  });
+
+  const validEvent = createClickEvent();
+  const validLink = createLink('https://playpoint-sim.com/en/?mode=main&status=1.75&target=diamond&points=3000&utm_source=blog');
+  assert.equal(context.PlayPointAnalytics.handoffCalculatorPresetNavigation(validEvent, validLink), true);
+  assert.equal(validEvent.defaultPrevented, true);
+  assert.deepEqual(assigned, ['https://playpoint-sim.com/en/?utm_source=blog']);
+  const saved = JSON.parse(storage.get('playpointPendingCalculatorPreset'));
+  assert.equal(saved.pathname, '/en/');
+  assert.equal(saved.search, '?mode=main&status=1.75&target=diamond&points=3000&utm_source=blog');
+  assert.equal(typeof saved.recorded_at, 'number');
+
+  storage.clear();
+  assigned.length = 0;
+  const ignoredCases = [
+    [createClickEvent({ ctrlKey: true }), validLink],
+    [createClickEvent({ button: 1 }), validLink],
+    [createClickEvent({ defaultPrevented: true }), validLink],
+    [createClickEvent(), createLink('https://playpoint-sim.com/en/?mode=main&points=100', { target: '_blank' })],
+    [createClickEvent(), createLink('https://playpoint-sim.com/en/?mode=main&points=100', { attributes: ['download'] })],
+    [createClickEvent(), createLink('https://playpoint-sim.com/?mode=diary')],
+    [createClickEvent(), createLink('https://playpoint-sim.com/games/genshin/?mode=main&points=100')],
+    [createClickEvent(), createLink('https://playpoint-sim.com/')]
+  ];
+  for (const [ev, link] of ignoredCases) {
+    assert.equal(context.PlayPointAnalytics.handoffCalculatorPresetNavigation(ev, link), false);
+  }
+  assert.equal(storage.size, 0);
+  assert.deepEqual(assigned, []);
+
+  context.sessionStorage.setItem = () => { throw new Error('storage blocked'); };
+  const throwingEvent = createClickEvent();
+  assert.equal(context.PlayPointAnalytics.handoffCalculatorPresetNavigation(throwingEvent, validLink), false);
+  assert.equal(throwingEvent.defaultPrevented, false);
+  assert.deepEqual(assigned, []);
+});

@@ -347,6 +347,12 @@ flex-wrap: wrap;
 flex: 1;
 min-width: 240px;
 }
+.game-giftcard-cta .game-directory-ad-label {
+margin: 0 0 6px;
+color: #78350f;
+font-size: 0.75rem;
+font-weight: 700;
+}
 .game-giftcard-cta-title {
 font-size: 0.98rem;
 font-weight: 800;
@@ -800,4 +806,12 @@ body .site-header .site-logo { justify-content:flex-start; }
 @media(max-width:760px) {
   .game-sim-card #game-sim-form[data-input-mode="amount"] .input-field:has(#sim-custom-amount) { padding:0; border:0; background:transparent; }
   .game-sim-card .game-sim-lead { margin-bottom:12px; font-size:14px; line-height:1.65; }
+}
+
+/* URL保護による要求保留時および未配信確定時に空の広告枠や余白を残さない */
+ins.adsbygoogle[data-ad-status="unfilled"],
+.google-auto-placed:has(> ins.adsbygoogle[data-ad-status="unfilled"]),
+.game-ad-container:has(> ins.adsbygoogle[data-ad-status="unfilled"]),
+html[data-ad-requests-paused="true"] :is(.google-auto-placed, ins.adsbygoogle, .game-ad-container) {
+  display: none !important;
 }

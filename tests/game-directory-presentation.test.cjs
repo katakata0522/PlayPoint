@@ -41,3 +41,12 @@ test('一覧のスタイルは個別ゲーム計算機を巻き込まない', ()
   assert.match(css, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
   assert.match(css, /@media \(max-width: 650px\)/);
 });
+
+test('個別ゲームページのギフトカードCTAは誇張を避け広告表記を備える', () => {
+  for (const slug of ['genshin', 'fgo']) {
+    const html = fs.readFileSync(path.join(root, 'games', slug, 'index.html'), 'utf8');
+    assert.doesNotMatch(html, /さらにお得にする裏技/);
+    assert.match(html, /class="game-directory-ad-label">広告・アフィリエイト</);
+    assert.match(html, /ギフトコードの購入条件も確認/);
+  }
+});

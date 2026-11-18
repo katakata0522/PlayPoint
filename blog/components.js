@@ -40,14 +40,14 @@
         if (analyticsCorePromise) return analyticsCorePromise;
 
         analyticsCorePromise = new Promise((resolve, reject) => {
-            const existing = document.querySelector('script[src*="/js/analytics-core.js?v=54113d03bd"]');
+            const existing = document.querySelector('script[src*="/js/analytics-core.js?v=7a8471c9da"]');
             if (existing) {
                 existing.addEventListener('load', () => resolve(window.PlayPointAnalytics), { once: true });
                 existing.addEventListener('error', reject, { once: true });
                 return;
             }
             const script = document.createElement('script');
-            script.src = rootPath + 'js/analytics-core.js?v=54113d03bd';
+            script.src = rootPath + 'js/analytics-core.js?v=7a8471c9da';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointAnalytics), { once: true });
             script.addEventListener('error', reject, { once: true });
@@ -125,7 +125,14 @@
         window.setTimeout(() => void runAfterConsent(loadCommonAnalytics), 1500);
     }
 
+    function syncAdPausedAttribute() {
+        if (window.PlayPointAdPrivacy?.getState?.().paused === true) {
+            document?.documentElement?.setAttribute?.('data-ad-requests-paused', 'true');
+        }
+    }
+
     function loadBlogAdsense() {
+        syncAdPausedAttribute();
         if (window.PlayPointAdPrivacy?.protect?.() !== true) return;
         if (blogAdsenseLoaded) return;
         blogAdsenseLoaded = true;
@@ -168,6 +175,7 @@
     window.PlayPointBlogAds = { request: requestBlogAds };
 
     function setupBlogAdsense() {
+        syncAdPausedAttribute();
         if (!(isBlogPage || isArticlePageTop)) return;
         // CMPは最初の描画機会の直後に取得し、本文の描画を先に進める。
         // 手動広告枠のpushはarticle.js側でad_storage許可後にだけ実行する。
@@ -185,7 +193,7 @@
         if (document.querySelector('link[data-common-components-style]')) return;
         const stylesheet = document.createElement('link');
         stylesheet.rel = 'stylesheet';
-        stylesheet.href = rootPath + 'blog/common-components.css?v=4068bc19b7';
+        stylesheet.href = rootPath + 'blog/common-components.css?v=7265a30c61';
         stylesheet.dataset.commonComponentsStyle = 'true';
         document.head.appendChild(stylesheet);
     }

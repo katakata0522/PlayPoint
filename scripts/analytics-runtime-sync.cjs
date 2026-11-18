@@ -26,12 +26,41 @@ function ensureAnalyticsCoreScript(html) {
   ));
 }
 
+function ensureCollapsedBottomAnchorAds(html) {
+  const tokens = /<!--[\s\S]*?(?:-->|$)|<plaintext\b[^>]*>[\s\S]*|<(script|style|textarea|title|noscript|xmp|iframe|noembed)\b((?:"[^"]*"|'[^']*'|[^'">])*)>[\s\S]*?(?:<\/\1(?=[\s/>])[^>]*>|$)|<\/?([a-z][\w:-]*)\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
+  const nodes = [...html.matchAll(tokens)];
+  const scriptSrc = node => /\bsrc\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(node[2] || '')?.slice(1).find(value => value !== undefined) || '';
+  const hasAdRuntime = nodes.some(node => node[1]?.toLowerCase() === 'script'
+    && (/(?:^|\/)(?:js\/third-party|blog\/(?:components|article)|components)\.js(?:[?#]|$)/i.test(scriptSrc(node))
+      || /pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js/i.test(scriptSrc(node))));
+  if (!hasAdRuntime) return html;
+
+  const hasAnchorMeta = nodes.some(node => node[3]?.toLowerCase() === 'meta'
+    && !node[0].startsWith('</')
+    && /\bname\s*=\s*(?:"playpoint:anchor-ads"|'playpoint:anchor-ads'|playpoint:anchor-ads(?=\s|>))/i.test(node[0]));
+  if (hasAnchorMeta) return html;
+
+  const closeHead = nodes.find(node => node[3]?.toLowerCase() === 'head' && node[0].startsWith('</'));
+  if (!closeHead) return html;
+
+  const lineStart = html.lastIndexOf('\n', closeHead.index - 1) + 1;
+  const indent = /^[ \t]*$/.test(html.slice(lineStart, closeHead.index))
+    ? html.slice(lineStart, closeHead.index)
+    : '';
+  const newline = /\r\n/.test(html) ? '\r\n' : '\n';
+  return html.slice(0, closeHead.index)
+    + `${indent}<meta name="playpoint:anchor-ads" content="collapsed-bottom">${newline}`
+    + html.slice(closeHead.index);
+}
+
 function syncAnalyticsRuntimeScripts(rootDir) {
   let updatedFiles = 0;
   const privacyVersion = createRevision(path.join(rootDir, 'js/ad-url-privacy.js'));
   for (const htmlFile of listPublicHtmlFiles(rootDir)) {
     const original = fs.readFileSync(htmlFile, 'utf8');
-    const updated = ensureAdPrivacyScript(ensureAnalyticsCoreScript(original), privacyVersion);
+    const updated = ensureCollapsedBottomAnchorAds(
+      ensureAdPrivacyScript(ensureAnalyticsCoreScript(original), privacyVersion)
+    );
     if (updated === original) continue;
     fs.writeFileSync(htmlFile, updated, 'utf8');
     updatedFiles += 1;
@@ -74,5 +103,6 @@ module.exports = {
   AD_PRIVACY_SCRIPT,
   ensureAnalyticsCoreScript,
   ensureAdPrivacyScript,
+  ensureCollapsedBottomAnchorAds,
   syncAnalyticsRuntimeScripts
 };

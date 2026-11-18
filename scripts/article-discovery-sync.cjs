@@ -30,6 +30,7 @@ function extractSections(html) {
     .replace(/<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->/g, ' ')
     .replace(/<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '')
     .replace(/<details\b[^>]*class=["'][^"']*\breader-toc--intl\b[^"']*["'][^>]*>[\s\S]*?<\/details>/gi, ' ')
+    .replace(/<div\b[^>]*class=["'][^"']*\barticle-ad-(?:container|slot)\b[^"']*["'][^>]*>[\s\S]*?<\/div>/gi, '')
     .replace(/<aside\b[^>]*>[\s\S]*?<\/aside>/gi, '').replace(/<nav\b[^>]*>[\s\S]*?<\/nav>/gi, '');
   const headings = [...body.matchAll(/<h([23])\b([^>]*)>([\s\S]*?)<\/h\1>/gi)];
   const sections = headings.map((m, i) => ({ id: m[2].match(/\bid=["']([^"']+)/)?.[1] || '', heading: text(m[3]),

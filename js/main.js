@@ -1,7 +1,7 @@
 'use strict';
 
 // 旧SWの無版configより先に、現行の計測保護を実行する。
-import './analytics-core.js?v=54113d03bd';
+import './analytics-core.js?v=7a8471c9da';
 import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
 import { SHARE, restoreRateInput } from './share.js';
@@ -70,6 +70,11 @@ function switchCalculatorMode(mode, { openCurrentWeek = false } = {}) {
         UI.switchMode(CONSTANTS.MODE_DIARY);
         if (openCurrentWeek) DIARY.openCurrentWeek();
     });
+}
+
+// URL保護により広告要求を保留している場合は空広告枠の余白も残さない。
+if (window.PlayPointAdPrivacy?.getState?.().paused === true) {
+    document?.documentElement?.setAttribute?.('data-ad-requests-paused', 'true');
 }
 
 // 早い段階から観測し、送信は既存の同意管理と匿名区分に限定する。

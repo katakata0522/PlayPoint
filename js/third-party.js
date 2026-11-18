@@ -73,11 +73,22 @@
         }
     }
 
+    function syncAdPausedAttribute() {
+        if (window.PlayPointAdPrivacy?.getState?.().paused === true) {
+            document?.documentElement?.setAttribute?.('data-ad-requests-paused', 'true');
+        }
+    }
+
     function initializeManagedAds() {
+        syncAdPausedAttribute();
         if (window.PlayPointAdPrivacy?.protect?.() !== true) return;
-        document.querySelectorAll('.lp-ad-container ins.adsbygoogle, .game-ad-container ins.adsbygoogle, body[data-game-guide-article] .article-ad-container ins.adsbygoogle').forEach((ad) => {
+        const primaryAds = Array.from(document.querySelectorAll('.lp-ad-container ins.adsbygoogle, .game-ad-container ins.adsbygoogle, body[data-game-guide-article] .article-ad-container ins.adsbygoogle') || []);
+        const intlArticleAds = !document.querySelector('script[src*="blog/article.js"]')
+            ? Array.from(document.querySelectorAll('.intl-layout-container .article-ad-container ins.adsbygoogle') || [])
+            : [];
+        for (const ad of new Set([...primaryAds, ...intlArticleAds])) {
             if (!ad.dataset.adSlot) ad.dataset.adSlot = MANAGED_ADSENSE_SLOT;
-            if (ad.dataset.playpointAdRequested === 'true' || ad.dataset.adsbygoogleStatus) return;
+            if (ad.dataset.playpointAdRequested === 'true' || ad.dataset.adsbygoogleStatus) continue;
             ad.dataset.playpointAdRequested = 'true';
             try {
                 (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -85,10 +96,11 @@
                 delete ad.dataset.playpointAdRequested;
                 console.error('AdSense slot initialization failed:', error);
             }
-        });
+        }
     }
 
     async function loadAdsense() {
+        syncAdPausedAttribute();
         if (window.PlayPointAdPrivacy?.protect?.() !== true) return;
         if (adsLoaded) return;
         try {
@@ -138,7 +150,7 @@
         if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
         if (!analyticsCorePromise) {
             const prefix = getCurrentAssetPrefix();
-            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=54113d03bd`)
+            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=7a8471c9da`)
                 .then(() => {
                     if (!window.PlayPointAnalytics) {
                         throw new Error('Analytics core loaded without PlayPointAnalytics.');
@@ -230,6 +242,7 @@
     }
 
     function initializeThirdParty() {
+        syncAdPausedAttribute();
         // Preload failures are recoverable: dependency promises reset and later scheduled work retries.
         void ensureAnalyticsCore().catch((error) => console.warn('Analytics core preload failed:', error));
         void ensureConsentManager().catch((error) => console.warn('Consent manager preload failed:', error));
