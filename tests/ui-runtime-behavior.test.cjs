@@ -20,7 +20,7 @@ function loadUi({ lang = 'ja', reducedMotion = false, configs = {}, region = 'JP
   const window = {
     __TEST_ENV__: true,
     PP_APP: {},
-    location: { pathname },
+    location: { pathname, origin: 'https://playpoint-sim.com' },
     matchMedia() { return { matches: reducedMotion }; },
     requestAnimationFrame(callback) {
       rafCallbacks.push(callback);
@@ -30,6 +30,7 @@ function loadUi({ lang = 'ja', reducedMotion = false, configs = {}, region = 'JP
   const context = {
     document,
     window,
+    URL,
     CONFIGS: configs,
     STATE: { currentRegion: region, dom: {} },
     CONSTANTS: {
@@ -44,7 +45,7 @@ function loadUi({ lang = 'ja', reducedMotion = false, configs = {}, region = 'JP
       SELECTOR_INFO_BTN: '.info-btn'
     },
     getNextFridayCalendarWindow() { return { start: '', end: '' }; },
-    console: { error() {}, log() {} },
+    console: { error() {}, warn() {}, log() {} },
     setTimeout() { return 1; },
     clearTimeout() {}
   };
@@ -155,6 +156,22 @@ test('global error toast follows the static document language at runtime', () =>
     assert.equal(handled, true, `${lang}: global error should be handled`);
     assert.deepEqual(calls, [[message, 'error']], `${lang}: localized error toast`);
   }
+});
+
+test('広告タグや外部オリジン・拡張機能由来のwindow.onerrorでは計算機エラートーストを出さない', () => {
+  const { UI, window } = loadUi({ lang: 'ja' });
+  const calls = [];
+  UI.showToast = (...args) => calls.push(args);
+
+  assert.equal(window.onerror('Uncaught TagError: adsbygoogle.push() error: No slot size for availableWidth=0', 'https://playpoint-sim.com/js/main.js', 1, 1, Object.assign(new Error('No slot size for availableWidth=0'), { name: 'TagError' })), true);
+  assert.equal(window.onerror('Script error.', '', 0, 0, null), true);
+  assert.equal(window.onerror('Blocked a frame', 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', 10, 5, new Error('ad')), true);
+  assert.equal(window.onerror('Extension failed', 'chrome-extension://abcdef/content.js', 1, 1, new Error('ext')), true);
+  assert.equal(calls.length, 0);
+
+  assert.equal(window.onerror('ReferenceError: x is not defined', 'https://playpoint-sim.com/js/main.js', 10, 2, new ReferenceError('x')), true);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0][1], 'error');
 });
 
 

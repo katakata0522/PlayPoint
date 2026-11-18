@@ -359,8 +359,35 @@ export const UI = {
     }
 };
 
+function isNonAppScriptError(message, source, error) {
+    const rawMessage = String(message || error?.message || '');
+    const rawName = String(error?.name || '');
+    const rawSource = String(source || '').trim();
+    if (rawName === 'TagError' || /\bTagError\b|\badsbygoogle\b/i.test(rawMessage) || /^Script error\.?$/i.test(rawMessage)) {
+        return true;
+    }
+    if (!rawSource) return false;
+    if (/^(?:chrome|moz|safari|edge|about|blob)(?:-extension)?:/i.test(rawSource)
+        || /\b(?:googlesyndication|googletagmanager|googleadservices|doubleclick|fundingchoices)\b/i.test(rawSource)) {
+        return true;
+    }
+    const origin = typeof window !== 'undefined' ? window.location?.origin : '';
+    if (origin && /^https?:\/\//i.test(rawSource) && typeof URL === 'function') {
+        try {
+            return new URL(rawSource, origin).origin !== origin;
+        } catch {
+            return false;
+        }
+    }
+    return false;
+}
+
 // グローバルエラーハンドラ
 window.onerror = function(message, source, lineno, colno, error) {
+    if (isNonAppScriptError(message, source, error)) {
+        (console.warn || console.log)?.('外部・広告スクリプトのエラーを検知しました:', { message, source, lineno, colno });
+        return true;
+    }
     console.error("予期せぬエラーが発生しました:", { message, source, lineno, colno, error });
     if (UI && typeof UI.showToast === 'function') {
         UI.showToast(getUnexpectedErrorMessage(), 'error');
