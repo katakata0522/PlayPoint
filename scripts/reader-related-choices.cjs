@@ -81,7 +81,7 @@ function improveReaderLinks(html, article, byId) {
     const links = ids.map(id => {
       const target = byId.get(id);
       if (!target || target.listed === false || id === article.id) throw new Error(article.id + ': 不正な関連記事 ' + id);
-      return '<li><a href="/' + escape(target.file.slice(3)) + '">' + escape(target.listTitle || target.title) + '</a></li>';
+      return '<li><a href="/' + escape(target.file.slice(3).replace(/\/index\.html$/, '/')) + '">' + escape(target.listTitle || target.title) + '</a></li>';
     }).join('');
     const className = article.id === 'points-value-1' ? 'section contextual-guide-links related-links-section' : 'section related-links-section';
     const section = '<section class="' + className + '"><h2 id="' + headingId + '">あわせて読みたい</h2><ul>' + links + '</ul></section>';

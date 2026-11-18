@@ -48,7 +48,7 @@ test('一覧の全ページはJavaScriptなしでも別の記事へ進め、専�
     }
   }
   assert.equal(new Set(seen).size, manifest.length);
-  assert.deepEqual([...new Set(seen)].sort(), manifest.map(article => new URL(article.file, 'https://playpoint-sim.com/blog/').pathname).sort());
+  assert.deepEqual([...new Set(seen)].sort(), manifest.map(article => new URL(article.file, 'https://playpoint-sim.com/blog/').pathname.replace(/\/index\.html$/, '/')).sort());
 });
 
 test('記事パンくずは表示用7分類と構造化データを一致させる', () => {

@@ -161,7 +161,7 @@
   {
     "id": "zzz-membership-value-2026",
     "modified": "2026-10-30",
-    "listDescription": "ゼンゼロのインターノット会員は購入時のモノクローム300個と毎日90ポリクローム。10日・20日・30日に使える量と、即時チャージとの違いを解説します。",
+    "listDescription": "ゼンゼロのインターノット会員は購入時のモノクローム300個と毎日90ポリクローム。日数別の受取量や即時チャージとの違い、Google Play Pointsも解説します。",
     "title": "ゼンゼロのインターノット会員で毎日90ポリクローム！30日間の受取内容",
     "category": "使い方",
     "gameTitle": "ゼンゼロ",
@@ -173,7 +173,7 @@
       "月パス",
       "Play Points"
     ],
-    "description": "ゼンゼロのインターノット会員は購入時のモノクローム300個と毎日90ポリクローム。10日・20日・30日に使える量と、即時チャージとの違いを解説します。",
+    "description": "ゼンゼロのインターノット会員は購入時のモノクローム300個と毎日90ポリクローム。日数別の受取量や即時チャージとの違い、Google Play Pointsも解説します。",
     "file": "../games/zzz/membership-value/index.html",
     "related": [
       [
@@ -824,7 +824,7 @@
     "id": "diamond-play-pass-break-even-2026",
     "title": "ダイヤモンド会員はPlay Passに絶対入れ！……と言いたくなる理由。年額5,400円の元は取れる？",
     "listTitle": "ダイヤモンドならPlay Passも気になる！年額5,400円の元を取る条件",
-    "description": "2026年10月にダイヤモンド会員が確認したPlay Passの体験記。魔法石・オーブ・FGO割引などの実例と年額費用を比較し、加入をおすすめしたい人を考えます。",
+    "description": "Google Play Pointsのダイヤモンド会員が2026年10月に確認したPlay Pass体験記。魔法石・オーブ・FGO割引の実例と年額費用を比べます。",
     "category": "ランク",
     "browseCategory": "ランク・ステータス",
     "tags": [
@@ -866,7 +866,7 @@
     "id": "google-play-fest-2026-editorial",
     "title": "Google Playフェス2026の記録｜限定交換品・書籍15倍【開催終了】",
     "listTitle": "Playフェス2026の記録｜限定交換品と書籍15倍【終了】",
-    "description": "10月13〜19日に開催されたPlayフェスを、本人撮影の画面と当時の公式案内で振り返ります。ホテルのクーポンなどの交換品、書籍15倍、Play Passの40pt受取を記録しました。",
+    "description": "Google Play Pointsの特別企画Playフェス2026（10月13〜19日）を記録。本人撮影の画面と公式案内で交換品、書籍15倍、40pt受取を振り返ります。",
     "category": "キャンペーン",
     "browseCategory": "最新情報・イベント",
     "tags": [
@@ -930,7 +930,7 @@
     "id": "play-pass-fest-bonus-2026",
     "title": "Play Pass特典が2倍に！40ptと6倍ブーストの記録【2026年10月】【終了】",
     "listTitle": "Play Passの2倍・6倍と40ptの記録【終了】",
-    "description": "2026年10月のPlayフェスで確認した週次ボーナス2倍・40ptと6倍ブーストの記録。開催終了と、現在の特典を確認する際の違いを整理します。",
+    "description": "2026年10月のGoogle Playフェスで確認したPlay Pass週次ボーナス2倍・40ptとPlay Points 6倍ブーストの記録。開催終了と現行特典の違いを整理します。",
     "category": "キャンペーン",
     "browseCategory": "貯める・キャンペーン",
     "tags": [
@@ -963,7 +963,7 @@
     "id": "super-weekly-results-2026-10",
     "title": "ダイヤモンドでも3pt、プラチナは45pt。スーパーウィークリーの記録【2026年10月】",
     "listTitle": "スーパーウィークリーの記録｜ダイヤ3pt・プラチナ45pt【2026年10月】",
-    "description": "2026年10月に確認したプラチナ45pt、ダイヤモンド3pt・14ptの画面を紹介。上位ランクでも少額の日がある週次リワードの実感と、Super Ticketで再挑戦する前に考えたいことをまとめました。",
+    "description": "Google Play Pointsのスーパーウィークリー体験記。2026年10月に確認したプラチナ45pt、ダイヤモンド3pt・14ptとSuper Ticket前の確認点をまとめました。",
     "category": "ランク",
     "browseCategory": "最新情報・イベント",
     "tags": [
@@ -1315,7 +1315,7 @@
       "Play Gamesストリーク",
       "年間スケジュール"
     ],
-    "description": "火曜のSuper Ticket、木曜のPlay Pass特典、金曜の週次リワード、月初の増量案内を確認する日の目安です。対象条件と開催が未確定のイベントを分け、必要な確認日だけカレンダーに保存できます。",
+    "description": "Google Play Pointsの週次・月次確認カレンダー。火曜のSuper Ticket、木曜のPlay Pass特典、金曜の週次リワード、月初の増量案内を確認できます。",
     "file": "../articles/2026-09-19-play-points-calendar-schedule-guide.html",
     "related": [
       [
@@ -1387,7 +1387,7 @@
       "パズドラパス",
       "Play Points"
     ],
-    "description": "欲しいキャラが決まっているなら確定セット、毎日のプレイに特典を足すならパズドラパス。魔法石の単品購入との選び分けを、販売終了したハロウィン商品の例や月額980円の特典から考えます。",
+    "description": "パズドラの確定セット・パズドラパス・魔法石単品購入を費用とGoogle Play Pointsの視点から比較。販売終了例や月額980円特典の考え方も整理します。",
     "file": "../articles/2026-08-25-pad-puzzle-and-dragons-play-points.html",
     "thumbnail": "../images/game-icons/pad.webp",
     "modified": "2026-11-01",
@@ -1429,7 +1429,7 @@
       "ハーフアニバ",
       "Play Points"
     ],
-    "description": "欲しいウマ娘・サポートカードが決まっているなら引換券、開催中のガチャに使うなら受取時期から比較。2025年4.5周年の販売例をもとに、ジュエル商品の選び方を解説します。",
+    "description": "ウマ娘の周年・引換券・限定ジュエル商品の選び方をGoogle Play Points計算前に整理。ガチャ向け受取時期と2025年4.5周年例から比較します。",
     "file": "../articles/2026-08-24-umamusume-half-anniversary-points.html",
     "thumbnail": "../images/game-icons/umamusume.webp",
     "modified": "2026-11-01",
@@ -1677,7 +1677,7 @@
       "1,000ポイント",
       "計算機"
     ],
-    "description": "日本のゴールドは暦年1,000ポイントです。シルバー現在なら残りを1.25ポイント/100円で概算し、スーパー週次の対象確認と表示中の高獲得率へ購入予定を合わせます。",
+    "description": "日本のGoogle Play Pointsゴールドは暦年1,000ポイント。シルバーから1.25pt/100円での必要額概算と、特別獲得率の活用法を解説します。",
     "file": "../articles/2026-08-16-fastest-gold.html",
     "thumbnail": "../articles/thumbnails/fastest-gold-square-v1.webp",
     "modified": "2026-10-30",
@@ -1698,7 +1698,7 @@
       "4,000ポイント",
       "プレミアムサポート"
     ],
-    "description": "日本のプラチナは暦年4,000ポイントです。ゴールド現在なら残り3,000ポイントを獲得率1.50で概算すると税抜約20万円です。プレミアムサポートはプラチナ以上です。",
+    "description": "日本のGoogle Play Pointsプラチナは暦年4,000ポイント。ゴールド現在・残3,000ptを1.50pt/100円で概算した税抜約20万円の計算例と特典を整理します。",
     "file": "../articles/2026-08-16-fastest-platinum.html",
     "thumbnail": "../articles/thumbnails/fastest-platinum-square-v1.webp",
     "modified": "2026-10-30",
@@ -1719,7 +1719,7 @@
       "プラチナ",
       "費用対効果"
     ],
-    "description": "ゴールドとプラチナの獲得率・週次特典・サポートを比較。追加約20万円は今年の進捗1,000ポイントからの概算で、現在の不足分と購入予定に合わせて判断します。",
+    "description": "Google Play Pointsのゴールドとプラチナを還元率・週次特典・サポートで比較。今年1,000ptからの追加約20万円の概算と課金予定の見分け方を解説します。",
     "file": "../articles/2026-08-16-gold-platinum-worth-it.html",
     "thumbnail": "../articles/thumbnails/gold-platinum-worth-it-square-v1.webp",
     "modified": "2026-10-30",
@@ -1740,7 +1740,7 @@
       "プラチナ",
       "ダイヤモンド"
     ],
-    "description": "日本向けの公式案内では、プレミアムサポートはプラチナとダイヤモンドが対象です。対象アカウントでログインし、利用できる問い合わせ方法を確認しましょう。待ち時間の短縮は保証されません。",
+    "description": "日本向けGoogle Play Pointsのプレミアムサポートはプラチナ・ダイヤモンドが対象。対象アカウントでの確認手順と対応範囲を公式案内で整理します。",
     "file": "../articles/2026-08-16-premium-support.html",
     "thumbnail": "../articles/thumbnails/premium-support-square-v1.webp",
     "modified": "2026-10-31",
@@ -1801,7 +1801,7 @@
       "子ども",
       "対象外"
     ],
-    "description": "Family Linkで管理されているアカウントと、家族の別アカウントの参加条件を整理。Play Pass週次特典は、一般ヘルプと個別規約の案内の違いも確認します。",
+    "description": "Google Play PointsにおけるFamily Link子どもアカウントと家族別アカウントの参加条件を整理。Play Pass週次特典の規約差も確認します。",
     "file": "../articles/2026-08-16-family-link-play-points.html",
     "thumbnail": "../articles/thumbnails/family-link-play-points-square-v1.webp",
     "modified": "2026-10-30",
@@ -1884,7 +1884,7 @@
       "特典",
       "表示されない"
     ],
-    "description": "通常のウィークリーリワードはシルバー以上、日本の金曜日にリセットされます。ボタンが無い時はランク、アカウント、受取済み、Play Pass木曜特典の取り違えを順に確認します。",
+    "description": "Google Play Pointsのウィークリーリワードが表示されない時の確認順。ランク条件、アカウント違い、受取済み、木曜特典との混同を切り分けます。",
     "file": "../articles/2026-08-16-weekly-reward-not-showing.html",
     "thumbnail": "../articles/thumbnails/weekly-reward-not-showing-square-v1.webp",
     "modified": "2026-11-01",
@@ -2005,7 +2005,7 @@
       "お得",
       "250ポイント"
     ],
-    "description": "ブロンズからシルバーまでの250ポイントを、クエスト、アプリ体験オファー、Play Pass週次特典、倍率キャンペーン、購入予定の組み合わせで効率よく貯める順番と必要額を解説します。",
+    "description": "Google Play Pointsのブロンズからシルバーまでの250ポイントを効率よく貯める順番を解説。クエスト、体験オファー、週次特典や増量キャンペーンの使い方を整理。",
     "file": "../articles/2026-08-05-fastest-silver.html",
     "thumbnail": "../articles/thumbnails/fastest-silver-square-v1.webp",
     "modified": "2026-10-30",
@@ -2047,7 +2047,7 @@
       "ゴールド",
       "毎週"
     ],
-    "description": "スーパーウィークリーの対象ランクと賞品を確認。今週の特典画面と過去の賞品例を分け、当選確率の確認範囲、Super Ticketの使い方を解説します。",
+    "description": "Google Play Pointsスーパーウィークリーリワードの対象ランクと賞品を解説。今週の特典画面と過去例、当選確率、Super Ticketの使い方を整理します。",
     "file": "../articles/2026-07-31-super-weekly-reward.html",
     "thumbnail": "../articles/thumbnails/super-weekly-reward-square-v1.webp",
     "browseCategory": "ランク・ステータス",
@@ -2176,7 +2176,7 @@
       "1000ポイント",
       "必要金額"
     ],
-    "description": "500・1,000ポイントの必要額を日本の獲得率別に比較。固定率の目安と途中昇格を含む計算の違い、税抜価格・丸め・交換価値を分けて解説します。",
+    "description": "Google Play Pointsで500・1,000ポイントを貯める必要額を日本の獲得率別に比較。固定率概算と途中昇格、税抜・丸め・交換価値の違いを解説します。",
     "file": "../articles/2026-07-24-play-points-500-1000-value.html",
     "thumbnail": "../articles/thumbnails/points-value-500-1000-square-v1.webp",
     "browseCategory": "ランク・ステータス",
@@ -2237,7 +2237,7 @@
       "割引",
       "ポイント還元"
     ],
-    "description": "楽天の旧500円OFFは終了。次回の利用は11月19日20時から。セブンの抽選と、ファミマ・ローソンの受付終了後の期限も購入先ごとに確認できます。",
+    "description": "Google Play ギフトコードを楽天・コンビニ各社で買う際の条件整理。楽天の旧500円OFF終了や次回11月19日20時利用、セブン抽選や終了後期限を確認できます。",
     "file": "../articles/2026-06-20-discount-gift-cards.html",
     "thumbnail": "../articles/thumbnails/discount-gift-cards-square-v1.webp",
     "modified": "2026-11-13",
@@ -2715,7 +2715,7 @@
       "POSA",
       "ファミリーマート"
     ],
-    "description": "ファミマの抽選は購入11月2日、応募11月3日で終了。当選メールは11月26日配信予定です。レシートの保管とギフトの交換期限、ファミペイ還元の条件をまとめました。",
+    "description": "ファミマのGoogle Play ギフトカード抽選（応募終了・11月26日当選発表予定）の記録。レシート保管や交換期限、ファミペイ還元の確認ポイントをまとめました。",
     "listTitle": "【応募終了】ファミマのGoogle Playギフトカード抽選｜当選メールは11月26日配信予定",
     "listDescription": "ファミマの抽選は購入11月2日、応募11月3日で終了。当選メールは11月26日配信予定です。レシートの保管とギフトの交換期限、ファミペイ還元の条件をまとめました。",
     "file": "../articles/2026-10-23-familymart-gift-card-lottery.html",

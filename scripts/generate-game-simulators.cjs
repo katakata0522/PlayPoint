@@ -35,6 +35,7 @@ const LOCALES = {
     verifiedDate: 'Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）',
     badgeText: '人気ゲーム別シミュレーター',
     portalBadge: '🎮 ソシャゲ特化',
+    portalTitleTag: 'ゲーム別 Google Play Points 計算機一覧 | Playポイント計算機',
     portalH1: 'ゲーム別 Playポイント計算機',
     portalMeta: 'いつものゲームで課金する前に、貯まるPlayポイントをチェック。原神・スタレ・ブルアカ・ウマ娘など、ゲーム別の計算機と購入前に読みたい記事をまとめました。',
     portalLead: '今回の課金で、何ポイント貯まる？遊んでいるゲームを選んで、購入予定額を入れてみましょう。ランクやキャンペーンによる違いを比べられます。月額商品の選び方や購入先で迷ったら、各ゲームの関連記事もどうぞ。',
@@ -140,6 +141,7 @@ const LOCALES = {
     verifiedDate: 'Play Points rates checked: August 2026 (game prices/pity are reference values)',
     badgeText: 'Mobile Game Points Simulator',
     portalBadge: '🎮 Mobile Game Special',
+    portalTitleTag: 'Mobile Game Google Play Points Calculators | PlayPoint',
     portalH1: 'Google Play Points Mobile Game Spending Calculators',
     portalMeta: 'Select your favorite mobile game to calculate Google Play Points earned on in-app purchases, monthly passes, and pity summons.',
     portalLead: 'Accurate Play Points simulation for top mobile titles including Genshin Impact, Honkai: Star Rail, Zenless Zone Zero, Blue Archive, Pokémon TCG Pocket, FGO, NIKKE, Wuthering Waves, Dokkan Battle, and Arknights. Estimate points earned from monthly passes, pity summons, and level-up progress in one click.',
@@ -242,6 +244,7 @@ const LOCALES = {
     verifiedDate: 'Play Points 적립률 확인: 2026년 8월 (게임 가격/천장은 참고값)',
     badgeText: '인기 게임별 포인트 시뮬레이터',
     portalBadge: '🎮 모바일 게임 특화',
+    portalTitleTag: '모바일 게임 Google Play Points 계산기 모음',
     portalH1: '모바일 게임 구매 금액으로 Google Play Points 계산',
     portalMeta: '원신, 붕괴: 스타레일, 젠레스 존 제로, 블루 아카이브, 포켓몬 카드 게임 Pocket, 니케, 명조 등 인기 게임의 패키지 과금 시 적립되는 Play Points를 계산하세요.',
     portalLead: 'Google Play 스토어에서 서비스 중인 주요 모바일 게임의 인앱 결제 패키지(창세의 결정, 오래된 꿈, 모노크롬, 청휘석, 포켓골드, 달빛, 유료 쥬얼, 용석, 순수한 원석 등) 가격에 대응! 천장 가챠 결제 시 적립 포인트 및 등급 달성을 즉시 시뮬레이션할 수 있습니다.',
@@ -344,6 +347,7 @@ const LOCALES = {
     verifiedDate: 'Play Points 獲點率確認：2026年8月（遊戲價格／保底為參考值）',
     badgeText: '熱門手遊點數試算工具',
     portalBadge: '🎮 手遊課金專區',
+    portalTitleTag: '手遊課金 Google Play Points 計算器總覽',
     portalH1: '手遊課金 Google Play Points 計算器',
     portalMeta: '針對原神、崩壞：星穹鐵道、絕區零、蔚藍檔案、寶可夢卡牌、妮姬、鳴潮等熱門遊戲，快速計算課金禮包與保底可獲得的 Play Points。',
     portalLead: '支援 Google Play 商店熱門手機遊戲（創世結晶、古老夢華、菲林底片、青輝石、寶可金塊、月相、付費珠寶、龍石、至純源石等）價格匯率！一鍵計算大保底能拿多少點數回饋、距離白金與鑽石等級還差多少。',
@@ -1973,7 +1977,7 @@ function generateGamePageHtml(game, localeKey) {
   const escapeReadingText = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
   const readingGuidesHtml = readingGuides.length
     ? '          <section class="section game-reading-guides"><h2>購入前に読みたい' + escapeReadingText(game.shortNames.ja) + 'の記事</h2><ul>'
-      + readingGuides.map(article => '<li><a href="/' + escapeReadingText(article.file.replace(/^\.\.\//, '')) + '">' + escapeReadingText(article.listTitle || article.title) + '</a></li>').join('')
+      + readingGuides.map(article => '<li><a href="/' + escapeReadingText(article.file.replace(/^\.\.\//, '').replace(/\/index\.html$/, '/')) + '">' + escapeReadingText(article.listTitle || article.title) + '</a></li>').join('')
       + '</ul></section>\n'
     : '';
 
@@ -2079,7 +2083,7 @@ function generateGamePageHtml(game, localeKey) {
   <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/${game.id}/" />
   <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/games/${game.id}/" />
   <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/games/${game.id}/" />
-  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/games/${game.id}/" />
+  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/games/${game.id}/" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="${loc.siteName}" />
@@ -2446,6 +2450,7 @@ function generatePortalPageHtml(localeKey) {
     "@type": "CollectionPage",
     "name": loc.portalH1,
     "url": `https://playpoint-sim.com${langPrefix}/games/`,
+    "inLanguage": loc.langCode,
     "description": loc.portalMeta
   };
 
@@ -2458,23 +2463,23 @@ function generatePortalPageHtml(localeKey) {
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="author" content="${loc.authorName}" />
   <link rel="icon" href="${assetsRelative}favicon.svg" type="image/svg+xml" />
-  <title>${loc.portalH1} - ${loc.siteName}</title>
+  <title>${loc.portalTitleTag || `${loc.portalH1} - ${loc.siteName}`}</title>
   <meta name="description" content="${loc.portalMeta}" />
   <link rel="canonical" href="https://playpoint-sim.com${langPrefix}/games/" />
   <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/" />
   <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/" />
   <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/games/" />
   <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/games/" />
-  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/games/" />
+  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/games/" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="${loc.siteName}" />
-  <meta property="og:title" content="${loc.portalH1} - ${loc.siteName}" />
+  <meta property="og:title" content="${loc.portalTitleTag || `${loc.portalH1} - ${loc.siteName}`}" />
   <meta property="og:description" content="${loc.portalMeta}" />
   <meta property="og:url" content="https://playpoint-sim.com${langPrefix}/games/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${loc.portalH1} - ${loc.siteName}" />
+  <meta name="twitter:title" content="${loc.portalTitleTag || `${loc.portalH1} - ${loc.siteName}`}" />
   <meta name="twitter:description" content="${loc.portalMeta}" />
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
 

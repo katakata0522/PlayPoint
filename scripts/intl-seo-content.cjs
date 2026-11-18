@@ -318,7 +318,7 @@ const PAGE_TYPES = {
     en: {
       query: 'status=1&target=silver&points=150&multiplier=1',
       title: 'Google Play Points Silver cost calculator for the US',
-      description: 'Estimate the United States Silver threshold of 150 points and compare planned purchases with confirmed earning offers.',
+      description: 'Estimate the US Google Play Points Silver threshold of 150 points and compare planned purchases with confirmed earning offers.',
       eyebrow: 'US Silver planning',
       h1: 'How much does it take to reach Google Play Points Silver in the US?',
       lead: 'US Silver starts at 150 annual points. Check the exact missing points, then align planned purchases with the highest eligible earning rate shown on your account.',
@@ -341,7 +341,7 @@ const PAGE_TYPES = {
     ko: {
       query: 'status=1&target=silver&points=150&multiplier=1',
       title: '한국 Google Play Points 실버 필요 금액 계산',
-      description: '한국 실버 150포인트까지 남은 포인트와 예정 결제를 계산하고 실제 대상 적립 오퍼를 비교합니다.',
+      description: '한국 Google Play Points 실버 150포인트까지 남은 포인트와 예정 결제를 계산하고 실제 대상 적립 오퍼를 비교합니다.',
       eyebrow: '한국 실버 계획',
       h1: '한국 Google Play Points 실버는 얼마가 필요할까요?',
       lead: '한국 실버는 연간 150포인트부터입니다. 부족한 포인트를 확인하고 예정된 결제를 계정에 표시된 가장 높은 대상 적립률과 맞춰 보세요.',

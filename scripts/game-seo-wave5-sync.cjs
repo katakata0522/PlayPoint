@@ -12,6 +12,7 @@ const GAME_ORDER = Object.freeze(['prospi-a', 'pokemon-go', 'efootball']);
 const COPY = Object.freeze({
   ja: {
     htmlLang: 'ja', dir: '', home: 'ホーム', games: 'ゲーム別計算', guides: '記事一覧', operator: '運営者',
+    siteName: 'Playポイント計算機', authorName: 'かたかた', authorUrl: 'https://playpoint-sim.com/author/katakata.html',
     badge: '🔎 公式情報を基準に検証', verified: '最終確認', input: 'Google Playの表示額を入力',
     pack: '課金額', count: '購入回数', amount: '課金予定合計額（円）', earnRate: 'キャンペーン特別獲得率', status: '現在の会員ランク',
     total: '課金合計金額', points: '獲得予定 Playポイント', value: '交換価値（Play画面で確認）', rank: '0ptから見た参考ランク', progress: '0ptから見た参考進捗',
@@ -23,6 +24,7 @@ const COPY = Object.freeze({
   },
   en: {
     htmlLang: 'en', dir: 'en/', home: 'Home', games: 'Game calculators', guides: 'Guides', operator: 'About',
+    siteName: 'PlayPoint Calculator', authorName: 'Katakata', authorUrl: 'https://playpoint-sim.com/en/author/katakata.html',
     badge: '🔎 Verified against official sources', verified: 'Last checked', input: 'Enter the amount shown by Google Play',
     pack: 'Purchase amount', count: 'Purchases', amount: 'Planned Google Play spend', earnRate: 'Special earn rate', status: 'Current Play Points tier',
     total: 'Total spend', points: 'Estimated Play Points', value: 'Redemption value (check Play)', rank: 'Reference tier from 0 pts', progress: 'Reference progress from 0 pts',
@@ -34,6 +36,7 @@ const COPY = Object.freeze({
   },
   ko: {
     htmlLang: 'ko', dir: 'ko/', home: '홈', games: '게임별 계산', guides: '가이드', operator: '운영자',
+    siteName: 'Google Play Points 계산기', authorName: 'Katakata', authorUrl: 'https://playpoint-sim.com/ko/author/katakata.html',
     badge: '🔎 공식 정보를 기준으로 검증', verified: '최종 확인', input: 'Google Play에 표시된 금액 입력',
     pack: '결제 금액', count: '구매 횟수', amount: 'Google Play 결제 예정 총액', earnRate: '특별 적립률', status: '현재 Play Points 등급',
     total: '총 결제 금액', points: '예상 Play Points', value: '교환 가치(Play에서 확인)', rank: '0pt 기준 참고 등급', progress: '0pt 기준 참고 진행도',
@@ -44,7 +47,8 @@ const COPY = Object.freeze({
     faqA: 'Google Play 결제 화면을 최종 기준으로 확인하세요. 적격 Google Play 구매로 처리되고 예상 적립 포인트가 표시되는 경우 그 금액을 계산에 사용할 수 있습니다. 웹 스토어 결제는 별도입니다.'
   },
   tw: {
-    htmlLang: 'zh-Hant', dir: 'tw/', home: '首頁', games: '遊戲計算', guides: '攻略', operator: '營運者',
+    htmlLang: 'zh-TW', dir: 'tw/', home: '首頁', games: '遊戲計算', guides: '攻略', operator: '營運者',
+    siteName: 'Google Play Points 計算器', authorName: 'Katakata', authorUrl: 'https://playpoint-sim.com/tw/author/katakata.html',
     badge: '🔎 依官方資訊驗證', verified: '最後確認', input: '輸入 Google Play 顯示的金額',
     pack: '課金金額', count: '購買次數', amount: '預計 Google Play 課金總額', earnRate: '活動特殊積點率', status: '目前 Play Points 等級',
     total: '課金總額', points: '預估 Play Points', value: '兌換價值（請在 Play 確認）', rank: '從 0pt 起算的參考等級', progress: '從 0pt 起算的參考進度',
@@ -111,7 +115,7 @@ function canonicalFor(locale, slug) {
 }
 
 function alternates(slug) {
-  return `<link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/${slug}/" />\n  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/${slug}/" />\n  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/games/${slug}/" />\n  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/games/${slug}/" />\n  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/games/${slug}/" />`;
+  return `<link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/${slug}/" />\n  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/${slug}/" />\n  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/games/${slug}/" />\n  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/games/${slug}/" />\n  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/games/${slug}/" />`;
 }
 
 function sourceLinks(slug, locale) {
@@ -151,7 +155,7 @@ function parentPage(slug, locale) {
   const canonical = canonicalFor(locale, slug);
   const guide = locale === 'ja' ? `<section class="section"><h2>${c.related}</h2><p><a href="./${GUIDE_PATHS[slug]}/">${g.guide} ➔</a></p></section>` : '';
   const faq = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: [{ '@type': 'Question', name: c.faqQ, acceptedAnswer: { '@type': 'Answer', text: c.faqA } }] };
-  const app = { '@context': 'https://schema.org', '@type': 'WebApplication', name: `${g.name} Google Play Points Calculator`, url: canonical, applicationCategory: 'UtilityApplication', operatingSystem: 'All', inLanguage: c.htmlLang, offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' }, author: { '@type': 'Person', name: 'かたかた', url: 'https://playpoint-sim.com/author/katakata.html' } };
+  const app = { '@context': 'https://schema.org', '@type': 'WebApplication', name: `${g.name} Google Play Points Calculator`, url: canonical, applicationCategory: 'UtilityApplication', operatingSystem: 'All', inLanguage: c.htmlLang, offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' }, author: { '@type': 'Person', name: c.authorName, url: c.authorUrl } };
   const breadcrumb = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: c.home, item: `https://playpoint-sim.com/${localePrefix(locale)}` },
     { '@type': 'ListItem', position: 2, name: c.games, item: `https://playpoint-sim.com/${localePrefix(locale)}games/` },
@@ -164,14 +168,14 @@ function parentPage(slug, locale) {
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="last-modified" content="${VERIFIED_AT}" />
-  <meta name="author" content="かたかた" />
+  <meta name="author" content="${c.authorName}" />
   <link rel="icon" href="${root}favicon.svg" type="image/svg+xml" />
   <title>${g.name} - Google Play Points Calculator | PlayPoint</title>
   <meta name="description" content="${g.description}" />
   <link rel="canonical" href="${canonical}" />
   ${alternates(slug)}
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Playポイント計算機" />
+  <meta property="og:site_name" content="${c.siteName}" />
   <meta property="og:title" content="${g.name} - Google Play Points Calculator" />
   <meta property="og:description" content="${g.description}" />
   <meta property="og:url" content="${canonical}" />

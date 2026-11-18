@@ -118,7 +118,7 @@ test('海外向け維持計算は地域別の公式門檻・積点率・通貨�
     assert.ok(html.includes('data-rate="' + page.rate + '"'));
     assert.ok(html.includes('data-spend-unit="' + page.unit + '"'));
     assert.ok(html.includes('data-currency="' + page.currency + '"'));
-    assert.ok(html.includes('<meta name="robots" content="index,follow">'));
+    assert.match(html, /<meta name="robots" content="index,\s*follow(?:,\s*max-image-preview:large)?">/);
     assert.ok(html.includes('<link rel="canonical" href="' + canonical + '">'));
     assert.ok(html.includes('<meta property="og:url" content="' + canonical + '">'));
     assert.ok(html.includes('/maintenance/intl-maintenance.css?v='));

@@ -10,6 +10,7 @@ const { extractRelatedTargets } = require('./article-role-next-action-audit.cjs'
 const { selectRelatedArticles } = require('./intl-related-guides.cjs');
 const BlogUtils = require('../blog/utils.js');
 const { getJapanesePopularGuides, POPULAR_GUIDES_SNAPSHOT, POPULAR_GUIDES_WINDOW } = require('./japanese-popular-guides.cjs');
+const { readPublicImageDimensions } = require('./seo-head-audit.cjs');
 
 const BROWSE_CATEGORIES = Object.freeze([
   'はじめて・基本',
@@ -119,21 +120,22 @@ function isSquareThumbnail(value) {
   return /^(?:articles\/thumbnails\/[a-z0-9-]+\.webp|images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp))$/i.test(relative);
 }
 
-function renderPopularWidget(article, catalog = []) {
+function renderPopularWidget(article, catalog = [], root = path.resolve(__dirname, '..'), imageCache = new Map()) {
   const popular = getJapanesePopularGuides(article.href, 5);
   const byHref = new Map(catalog.map(item => [item.href, item]));
   return `  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}"><h2 class="sidebar-widget-title">よく読まれている記事</h2><div class="sidebar-widget-body"><p class="sidebar-widget-note">集計期間 ${escapeHtml(POPULAR_GUIDES_WINDOW)}</p><ol class="sidebar-popular-list">${popular.map(item => {
     const rank = String(item.rank).padStart(2, '0');
     const meta = byHref.get(item.href);
     const featured = item.rank === 1;
-    const thumbnail = featured ? publicThumbnail(meta?.thumbnail) : '';
+    const thumbnail = featured ? publicThumbnail(meta?.thumbnail, root) : '';
+    const thumbDim = thumbnail ? readPublicImageDimensions(root, thumbnail, imageCache) : null;
     const squareThumbnail = thumbnail && isSquareThumbnail(meta?.thumbnail);
     const topic = featured && meta?.browseCategory ? `<span class="sidebar-popular-topic">${escapeHtml(meta.browseCategory)}</span>` : '';
     const title = item.isCurrent
       ? `<span class="sidebar-popular-current-title">${escapeHtml(item.label)}</span><span class="sidebar-popular-reading">閲覧中</span>`
       : `<a class="sidebar-popular-link" href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a>`;
     if (featured) {
-      return `<li class="sidebar-popular-item sidebar-popular-item--featured${thumbnail ? '' : ' sidebar-popular-item--text-only'}${item.isCurrent ? ' is-current' : ''}"><span class="sidebar-popular-rank">${rank}</span>${thumbnail ? `<div class="sidebar-popular-thumb${squareThumbnail ? ' sidebar-popular-thumb--square' : ''}"><img src="${escapeHtml(thumbnail)}" alt="" loading="lazy" decoding="async"></div>` : ''}<div class="sidebar-popular-feature-copy">${topic}${title}</div></li>`;
+      return `<li class="sidebar-popular-item sidebar-popular-item--featured${thumbnail ? '' : ' sidebar-popular-item--text-only'}${item.isCurrent ? ' is-current' : ''}"><span class="sidebar-popular-rank">${rank}</span>${thumbnail ? `<div class="sidebar-popular-thumb${squareThumbnail ? ' sidebar-popular-thumb--square' : ''}"><img src="${escapeHtml(thumbnail)}"${thumbDim ? ` width="${thumbDim.width}" height="${thumbDim.height}"` : ''} alt="" loading="lazy" decoding="async"></div>` : ''}<div class="sidebar-popular-feature-copy">${topic}${title}</div></li>`;
     }
     return `<li class="sidebar-popular-item${item.isCurrent ? ' is-current' : ''}"><span class="sidebar-popular-rank">${rank}</span><div>${title}</div></li>`;
   }).join('')}</ol></div></section>`;
@@ -170,18 +172,18 @@ function renderNavigation(current) {
     + NAV.map(([href, label]) => `<a class="nav-item" href="${escapeHtml(href)}"${href === current ? ' aria-current="page"' : ''}><span>${label}</span></a>`).join('') + '</div></nav>';
 }
 
-function renderHubSidebar(current, catalog = []) {
+function renderHubSidebar(current, catalog = [], root = path.resolve(__dirname, '..'), imageCache = new Map()) {
   return `<aside class="sidebar-column ja-article-sidebar guide-hub-sidebar" aria-label="カテゴリー・人気記事と計算機">
 ${renderSearchWidget()}
 ${renderBrowseWidget(catalog)}
 ${renderGamesWidget(catalog)}
-${renderPopularWidget({ href: current }, catalog)}
+${renderPopularWidget({ href: current }, catalog, root, imageCache)}
 <section class="sidebar-widget"><h2 class="sidebar-widget-title">必要額を計算する</h2><div class="sidebar-widget-body"><p>目標ランクまであといくら？現在のポイントから確認できます。</p><a class="sidebar-next-link" href="/">Playポイント計算機へ →</a></div></section>
 ${renderAuthorWidget()}
 </aside>`;
 }
 
-function syncGuideHubs(root, catalog) {
+function syncGuideHubs(root, catalog, imageCache = new Map()) {
   for (const [file, current] of [['blog/index.html', '/blog/'], ['latest/index.html', '/latest/']]) {
     const absolute = path.join(root, file);
     if (!fs.existsSync(absolute)) continue;
@@ -202,33 +204,36 @@ function syncGuideHubs(root, catalog) {
       html = html.replace('<html lang="ja">', '<html lang="ja" data-reading-theme="light">');
       html = html.replace('</head>', '<script src="/js/reading-theme.js"></script>\n<link rel="stylesheet" href="/articles/reading-theme.css">\n</head>');
     }
-    html = html.replace(/<!-- guide-sidebar:start -->[\s\S]*?<!-- guide-sidebar:end -->/, `<!-- guide-sidebar:start -->${renderHubSidebar(current, catalog)}<!-- guide-sidebar:end -->`);
+    html = html.replace(/<!-- guide-sidebar:start -->[\s\S]*?<!-- guide-sidebar:end -->/, `<!-- guide-sidebar:start -->${renderHubSidebar(current, catalog, root, imageCache)}<!-- guide-sidebar:end -->`);
     if (!html.includes('/articles/japanese-shell.css')) html = html.replace('</head>', '<link rel="stylesheet" href="/articles/japanese-shell.css">\n</head>');
     html = navigationAssets(html);
     if (before !== html) fs.writeFileSync(absolute, html);
   }
 }
 
-function renderSidebar(article, role, related, catalog = []) {
-  const [href, label] = nextFor(role, related, article);
-  const nextRead = related.find(item => item.href !== href);
+function renderSidebar(article, role, related, catalog = [], root = path.resolve(__dirname, '..'), imageCache = new Map()) {
+  const canonical = href => String(href || '').replace(/\/index\.html$/, '/');
+  const [rawHref, label] = nextFor(role, related, article);
+  const href = canonical(rawHref);
+  const nextRead = related.find(item => canonical(item.href) !== href);
+  const nextReadHref = nextRead ? canonical(nextRead.href) : '';
   return `<aside class="sidebar-column ja-article-sidebar" aria-label="記事検索・カテゴリー・人気記事・次の行動" data-article-role="${role}" data-article-category="${categoryFor(article, role)}">
 ${renderSearchWidget()}
-  <section class="sidebar-widget sidebar-widget--next sidebar-widget--role-${role}"><h2 class="sidebar-widget-title">次にやること</h2><div class="sidebar-widget-body"><a class="sidebar-next-link" href="${escapeHtml(href)}">${escapeHtml(label)}</a>${nextRead ? '<p class="reader-next-read"><a class="sidebar-related-link" href="' + escapeHtml(nextRead.href) + '">' + escapeHtml(nextRead.label) + '</a></p>' : ''}</div></section>
-${renderPopularWidget(article, catalog)}
+  <section class="sidebar-widget sidebar-widget--next sidebar-widget--role-${role}"><h2 class="sidebar-widget-title">次にやること</h2><div class="sidebar-widget-body"><a class="sidebar-next-link" href="${escapeHtml(href)}">${escapeHtml(label)}</a>${nextRead ? '<p class="reader-next-read"><a class="sidebar-related-link" href="' + escapeHtml(nextReadHref) + '">' + escapeHtml(nextRead.label) + '</a></p>' : ''}</div></section>
+${renderPopularWidget(article, catalog, root, imageCache)}
 ${renderBrowseWidget(catalog, article)}
 ${renderGamesWidget(catalog)}
 ${renderAuthorWidget()}
 </aside>`;
 }
 
-function transformArticle(html, article, catalog) {
+function transformArticle(html, article, catalog, root = path.resolve(__dirname, '..'), imageCache = new Map()) {
   if (!GLOBAL_NAV.test(html)) throw new Error(article.path + ': 記事の共通ナビ・サイドバーが見つかりません');
   const role = classifyArticleRole(article.path, { listed: article.listed !== false });
   if (!role) throw new Error(article.path + ': 記事Roleがありません');
   const related = relatedFor(article, html, catalog);
   const nav = renderNavigation(article.href);
-  const sidebar = renderSidebar(article, role, related, catalog);
+  const sidebar = renderSidebar(article, role, related, catalog, root, imageCache);
   let after = normalizeSharedArticleCopy(removeLegacySidebarStylesheet(html.replace(GLOBAL_NAV, nav)));
   const topic = article.browseCategory || categoryFor(article, role);
   const trail = [{ name: '記事トップ', href: '/blog/' },
@@ -269,16 +274,17 @@ function transformArticle(html, article, catalog) {
 
 function syncJapaneseNavigation(root) {
   const manifest = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8'));
-  const articles = manifest.map(item => ({ ...item, path: item.file.replace(/^\.\.\//, ''), href: '/' + item.file.replace(/^\.\.\//, ''), label: item.title }));
+  const articles = manifest.map(item => ({ ...item, path: item.file.replace(/^\.\.\//, ''), href: '/' + item.file.replace(/^\.\.\//, '').replace(/\/index\.html$/, '/'), label: item.title }));
   const catalog = articles.filter(item => item.listed !== false);
+  const imageCache = new Map();
   let changed = 0;
   for (const article of catalog) {
     const absolute = path.join(root, article.path);
     const before = fs.readFileSync(absolute, 'utf8');
-    const after = transformArticle(before, article, catalog);
+    const after = transformArticle(before, article, catalog, root, imageCache);
     if (before !== after) { fs.writeFileSync(absolute, after); changed++; }
   }
-  syncGuideHubs(root, catalog);
+  syncGuideHubs(root, catalog, imageCache);
   const home = path.join(root, 'index.html');
   const homeBefore = fs.readFileSync(home, 'utf8');
   // 計算機トップは9月22日の独立したヘッダーを維持する。

@@ -17,21 +17,30 @@ const REGION = Object.freeze({
     base: '$1',
     ...calculationFields('US'),
     baseCopy: 'Standard',
-    specialCopy: 'Special earn rate'
+    specialCopy: 'Special earn rate',
+    siteName: 'PlayPoint Calculator',
+    authorName: 'Katakata',
+    authorUrl: 'https://playpoint-sim.com/en/author/katakata.html'
   },
   ko: {
     amountLabel: 'Google Play 결제 예정 총액 (원)',
     base: '1,000원',
     ...calculationFields('KR'),
     baseCopy: '기본 기준',
-    specialCopy: '특별 적립률'
+    specialCopy: '특별 적립률',
+    siteName: 'Google Play Points 계산기',
+    authorName: 'Katakata',
+    authorUrl: 'https://playpoint-sim.com/ko/author/katakata.html'
   },
   tw: {
     amountLabel: '預計 Google Play 課金總額（新台幣）',
     base: 'NT$30',
     ...calculationFields('TW'),
     baseCopy: '基本參考',
-    specialCopy: '特殊積點率'
+    specialCopy: '特殊積點率',
+    siteName: 'Google Play Points 計算器',
+    authorName: 'Katakata',
+    authorUrl: 'https://playpoint-sim.com/tw/author/katakata.html'
   }
 });
 
@@ -62,11 +71,18 @@ function syncLocaleNavigation(html) {
     .replace(/(<div class="breadcrumbs-wrapper"><nav[^>]*><a) href="\.\.\/\.\.\/\.\.\/"/, '$1 href="../../"');
 }
 
-function syncEnglishMetadata(html) {
-  return html
-    .replace('<meta name="author" content="かたかた" />', '<meta name="author" content="Katakata" />')
-    .replace('<meta property="og:site_name" content="Playポイント計算機" />', '<meta property="og:site_name" content="PlayPoint Calculator" />')
-    .replaceAll('"name":"かたかた"', '"name":"Katakata"');
+function syncLocaleMetadata(html, locale, cfg) {
+  let next = html
+    .replace('<meta name="author" content="かたかた" />', `<meta name="author" content="${cfg.authorName}" />`)
+    .replace(/<meta property="og:site_name" content="[^"]*" \/>/, `<meta property="og:site_name" content="${cfg.siteName}" />`)
+    .replaceAll('"name":"かたかた"', `"name":"${cfg.authorName}"`)
+    .replace('"url":"https://playpoint-sim.com/author/katakata.html"', `"url":"${cfg.authorUrl}"`);
+  if (locale === 'tw') {
+    next = next
+      .replace('<html lang="zh-Hant">', '<html lang="zh-TW">')
+      .replace('"inLanguage":"zh-Hant"', '"inLanguage":"zh-TW"');
+  }
+  return next;
 }
 
 function syncGameSeoWave5RegionalRates(rootDir) {
@@ -89,7 +105,7 @@ function syncGameSeoWave5RegionalRates(rootDir) {
       html = replaceSelect(html, 'sim-status', tierOptions(cfg), file);
       html = html.replace('"priceCurrency":"JPY"', `"priceCurrency":"${cfg.currencyCode}"`);
       html = syncLocaleNavigation(html);
-      if (locale === 'en') html = syncEnglishMetadata(html);
+      html = syncLocaleMetadata(html, locale, cfg);
       if (html !== before) {
         fs.writeFileSync(full, html, 'utf8');
         changedFiles.push(file);

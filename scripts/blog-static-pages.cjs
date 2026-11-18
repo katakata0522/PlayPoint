@@ -27,9 +27,10 @@ function pagination(page, count) {
 }
 function renderStaticPage(template, articles, page, coreVersion = '', privacyVersion = '') {
   const count = Math.ceil(articles.length / PAGE_SIZE), items = articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-  const description = `Google Play Pointsの記事一覧（${page}ページ目）。${(page - 1) * PAGE_SIZE + 1}〜${Math.min(page * PAGE_SIZE, articles.length)}件目、全${articles.length}件。${items.slice(0, 2).map(article => article.listTitle || article.title).join('、')}などの記事を掲載しています。`;
+  const sampleTitles = items.slice(0, 2).map(article => (article.listTitle || article.title).replace(/｜.*$/, '').slice(0, 28)).join('・');
+  const description = `Google Play Pointsの記事一覧（${page}ページ目・全${articles.length}件中${(page - 1) * PAGE_SIZE + 1}〜${Math.min(page * PAGE_SIZE, articles.length)}件）。${sampleTitles}などを掲載。`;
   let html = template.replace(/\s*<!-- static-pagination:start -->[\s\S]*?<!-- static-pagination:end -->/g, '');
-  const cards = items.map((article, i) => `<a class="article-card${article.thumbnailKind !== 'app-icon' ? ' article-card--visual' : ''}" data-blog-initial-card="true" data-blog-initial-signature="${escapeHtml(BlogUtils.articleCardIdentity(article))}" href="${escapeHtml(article.file)}" aria-label="${escapeHtml(article.title)}">${BlogUtils.articleCardMarkup(article, { first: i === 0, staticCard: true })}</a>`).join('\n');
+  const cards = items.map((article, i) => `<a class="article-card${article.thumbnailKind !== 'app-icon' ? ' article-card--visual' : ''}" data-blog-initial-card="true" data-blog-initial-signature="${escapeHtml(BlogUtils.articleCardIdentity(article))}" href="${escapeHtml(article.file.replace(/\/index\.html$/, '/'))}" aria-label="${escapeHtml(article.title)}">${BlogUtils.articleCardMarkup(article, { first: i === 0, staticCard: true })}</a>`).join('\n');
   html = html.replace(/(<div\b[^>]*id="article-grid"[^>]*>)[\s\S]*?(?=<noscript>)/, '$1\n' + cards + '\n');
   html = html.replace(/(<div\b[^>]*id="pagination"[^>]*>)\s*(?:<!-- Populated by JS -->\s*)?(<\/div>)/, '$1' + pagination(page, count) + '$2');
   html = html.replace(/(<p\b[^>]*id="article-page-summary"[^>]*>)[\s\S]*?(<\/p>)/, `$1${(page - 1) * PAGE_SIZE + 1}〜${Math.min(page * PAGE_SIZE, articles.length)}件目 / ${articles.length}件 · ${page} / ${count}ページ$2`);
@@ -38,7 +39,14 @@ function renderStaticPage(template, articles, page, coreVersion = '', privacyVer
     .replace(/(<h1 class="hero-title">)[\s\S]*?(<\/h1>)/, `$1Google Play Points 記事一覧（${page}ページ目）$2`)
     .replace(/\s*<link\b(?=[^>]*\bhreflang=)[^>]*>/g, '').replace(/(<script\b[^>]*type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/g, (whole, start, json, end) => {
     const data = JSON.parse(json);
-    if (data['@type'] === 'Blog') return start + JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', url: ORIGIN + pagePath(page), name: `Google Play Points 記事一覧（${page}ページ目）`, description, inLanguage: 'ja', isPartOf: { '@type': 'Blog', url: ORIGIN + '/blog/' } }) + end;
+    if (data['@type'] === 'Blog') {
+      const collection = { '@context': 'https://schema.org', '@type': 'CollectionPage', url: ORIGIN + pagePath(page), name: `Google Play Points 記事一覧（${page}ページ目）`, description, inLanguage: 'ja', isPartOf: { '@type': 'Blog', url: ORIGIN + '/blog/' } };
+      const breadcrumb = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+        { '@type': 'ListItem', position: 1, name: '記事トップ', item: ORIGIN + '/blog/' },
+        { '@type': 'ListItem', position: 2, name: `${page}ページ目`, item: ORIGIN + pagePath(page) }
+      ] };
+      return start + JSON.stringify(collection) + end + '\n' + start + JSON.stringify(breadcrumb) + end;
+    }
     if (data['@type'] === 'BreadcrumbList') data.itemListElement.push({ '@type': 'ListItem', position: data.itemListElement.length + 1, name: `${page}ページ目`, item: ORIGIN + pagePath(page) });
     return start + JSON.stringify(data) + end;
   });

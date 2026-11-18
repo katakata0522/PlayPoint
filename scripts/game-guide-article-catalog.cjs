@@ -80,13 +80,13 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   {
     id: 'zzz-membership-value-2026',
     modified: '2026-10-30',
-    listDescription: "ゼンゼロのインターノット会員は購入時のモノクローム300個と毎日90ポリクローム。10日・20日・30日に使える量と、即時チャージとの違いを解説します。",
+    listDescription: "ゼンゼロのインターノット会員は購入時のモノクローム300個と毎日90ポリクローム。日数別の受取量や即時チャージとの違い、Google Play Pointsも解説します。",
     title: "ゼンゼロのインターノット会員で毎日90ポリクローム！30日間の受取内容",
     category: '使い方',
     gameTitle: 'ゼンゼロ',
     listTitle: "ゼンゼロのインターノット会員｜毎日90個とガチャまでの受取量",
     tags: ['ゼンゼロ', 'ゼンレスゾーンゼロ', 'インターノット会員', '月パス', 'Play Points'],
-    description: "ゼンゼロのインターノット会員は購入時のモノクローム300個と毎日90ポリクローム。10日・20日・30日に使える量と、即時チャージとの違いを解説します。",
+    description: "ゼンゼロのインターノット会員は購入時のモノクローム300個と毎日90ポリクローム。日数別の受取量や即時チャージとの違い、Google Play Pointsも解説します。",
     file: '../games/zzz/membership-value/index.html',
     related: [
       ["/articles/2025-12-25-subscription.html","定期購入のPlay Points条件を確認する"],
