@@ -180,7 +180,16 @@ test('海外の主題バッジは題名と同じ意味だけを省き、固有�
 
 test('海外本文の句だけを強調・リンクし、文字・段落・地域条件と既存リンクを保つ', () => {
   const {applyEditorialCues,CUES}=require('../scripts/intl-editorial-cues.cjs');
-  const strip=s=>s.replace(/<[^>]*>/g,'');
+  const strip = s => {
+    let text = '';
+    let inTag = false;
+    for (const ch of String(s)) {
+      if (ch === '<') inTag = true;
+      else if (ch === '>') inTag = false;
+      else if (!inTag) text += ch;
+    }
+    return text;
+  };
   const source='<article class="content"><header><p>item price</p></header><p>Points use item price, not taxes, then the nearest whole point.</p><p><a href="/existing/">item price</a> stays here.</p><aside><p>item price</p></aside></article>';
   const output=applyEditorialCues(source,'en/articles/google-play-points-rounding-tax.html');
   assert.equal(strip(output),strip(source));

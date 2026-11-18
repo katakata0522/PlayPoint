@@ -51,10 +51,21 @@ function decodeHtmlEntities(value) {
     .replace(/&(amp|lt|gt|quot|#39);/g, entity => ({ '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'" })[entity]);
 }
 
+function stripMarkupTags(value) {
+  let text = '';
+  let inTag = false;
+  for (const ch of String(value)) {
+    if (ch === '<') inTag = true;
+    else if (ch === '>') inTag = false;
+    else if (!inTag) text += ch;
+  }
+  return text;
+}
+
 function extractTitle(html, relativePath) {
   const match = String(html).match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
   if (!match) throw new Error(relativePath + ': h1 is missing');
-  return decodeHtmlEntities(match[1].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim());
+  return decodeHtmlEntities(stripMarkupTags(match[1]).replace(/\s+/g, ' ').trim());
 }
 
 function categoryHref(localeKey, section) {
