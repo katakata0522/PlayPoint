@@ -76,7 +76,7 @@ function description(name, entry, locale, id) {
     ].filter(Boolean);
     return candidates.find(text => text.length <= 155) || candidates[candidates.length - 1];
   }
-  return locale === 'ko' ? `${name}${names ? ` ${names}` : ''} 구매 전 확인과 한국 원화 Google Play Points 계산. 공식 출처, 결제 경로 차이, 실제 결제액으로 포인트를 확인하세요.` : `${name}${names ? `的${names}` : ''}購買前確認，依台灣新台幣Google Play結帳金額計算積點。附官方來源與付款管道差異。`;
+  return locale === 'ko' ? `${name}${names ? ` ${names}` : ''} 구매 전 확인과 한국 원화 Google Play Points 계산. 공식 출처, 결제 경로 차이, 실제 결제액으로 포인트를 확인하세요.` : `${name}${names ? `的${names}` : ''}購買前確認與禮包試算，依台灣新台幣 Google Play 結帳金額估算可獲得點數，並附上官方來源與不同付款管道差異。`;
 }
 function sourceLink(s, c) {
   return `<a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">${escape(c.labels[s.kind])}</a> — ${escape(c.regionNames[s.scope])}`;
@@ -108,7 +108,8 @@ function hreflangs(html, id) {
 }
 function updateMetadata(html, name, desc, locale, id, questions) {
   const c = COPY[locale], reference = isReference(locale, id);
-  const title = `${name} — ${reference ? c.reference : `Google Play Points (${c.region})`}`;
+  const rawTitle = `${name} — ${reference ? c.reference : `Google Play Points (${c.region})`}`;
+  const title = !reference && rawTitle.length > 65 ? `${name} — Play Points (${c.code})` : rawTitle;
   let next = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${escape(title)}</title>`);
   next = next.replace(/(<meta\s+(?:name|property)="(?:description|og:description|twitter:description)"\s+content=")[^"]*("[^>]*>)/g, (_m, a, b) => a + escape(desc) + b);
   next = next.replace(/(<meta\s+(?:name|property)="(?:og:title|twitter:title|og:image:alt)"\s+content=")[^"]*("[^>]*>)/g, (_m, a, b) => a + escape(title) + b);

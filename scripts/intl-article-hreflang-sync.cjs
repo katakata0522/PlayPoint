@@ -22,7 +22,8 @@ const ARTICLE_JA_ALTERNATES = Object.freeze({
   'google-play-points-apps-books-purchases.html': '/articles/2025-12-25-movies-books.html',
   'google-play-points-balance-history-progress.html': '/articles/2025-12-25-check-balance.html',
   'google-play-points-device-change.html': '/articles/2026-08-03-play-points-device-change.html',
-  'google-play-points-earn-free.html': '/articles/2026-07-24-earn-play-points-free.html'
+  'google-play-points-earn-free.html': '/articles/2026-07-24-earn-play-points-free.html',
+  'google-play-balance-combine-payment.html': '/articles/2026-11-19-google-play-balance-combine-payment.html'
 });
 const ARTICLE_JA_PARTIAL_ALTERNATES = Object.freeze({
   'google-play-pass-guide.html': { jaPath: '/articles/2026-08-16-play-pass-worth-it.html', locales: ['en'] },

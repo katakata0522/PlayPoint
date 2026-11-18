@@ -210,6 +210,12 @@ const CUES = {
   },
   'google-play-quests': {
     en:{mark:'all of its required steps'},ko:{mark:'여러 단계를 모두 완료'},tw:{mark:'所有指定步驟'}
+  },
+  'google-play-games-pc-play-points': {
+    en:{mark:'applies strictly to qualifying computer purchases'},ko:{mark:'컴퓨터 결제에만 적용'},tw:{mark:'只適用在電腦完成的合格商品'}
+  },
+  'web-store-external-billing-play-points': {
+    en:{mark:'cannot earn Google Play Points'},ko:{mark:'Play Points 적립 및 연간 등급 진행도에 포함되지 않습니다'},tw:{mark:'無法賺取 Google Play Points'}
   }
 };
 function applyEditorialCues(html, file) {

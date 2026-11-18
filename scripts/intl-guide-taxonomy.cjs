@@ -73,7 +73,9 @@ const CATEGORY_OVERRIDES = Object.freeze({
   'google-play-points-coupon-not-applied': 'troubleshooting',
   'google-play-points-promotion-not-applied': 'troubleshooting',
   'google-play-points-play-credit-not-working': 'troubleshooting',
-  'google-play-points-not-showing': 'troubleshooting'
+  'google-play-points-not-showing': 'troubleshooting',
+  'google-play-games-pc-play-points': 'earn',
+  'web-store-external-billing-play-points': 'earn'
 });
 
 function normalizeGuideSlug(value) {

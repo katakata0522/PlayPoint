@@ -24,7 +24,7 @@ const JP = {
         ],
         campaign: [
             { href: 'articles/2025-12-25-campaign.html', title: 'ポイント増量キャンペーンの仕組み' },
-            { href: 'articles/2025-12-25-new-year-campaign.html', title: '年末年始キャンペーンの傾向' },
+            { href: 'latest/', title: 'いま開催中の特典・キャンペーンを確認する' },
             { href: 'articles/2025-12-25-gift-card.html', title: 'ギフトカードとポイント付与の関係' },
             { href: 'articles/2026-06-20-discount-gift-cards.html', title: 'お得に課金するためのギフトコード活用' }
         ],
@@ -102,43 +102,45 @@ const TW = {
     giftCards: { href: 'articles/google-play-points-gift-cards.html', title: '確認禮物卡條件', note: '購買前確認是否符合資格' }
 };
 
+const HK_GUIDE = { href: 'google-play-points-guide.html', title: '香港版 Play Points 等級與 HK$7 攻略', note: '查看銅級至鑽石級門檻、四捨五入與有效期' };
 const HK_OFFICIAL = { href: OFFICIAL_HK, title: 'Google Play 香港官方等級與獲點率', note: '確認最新香港條件' };
 const HK_NOTES = { href: '../attention.html', title: '查看國家／地區注意事項', note: '購買前確認適用條件' };
 const HK = {
     statusPageRanks: Object.freeze([]),
     maintenancePageRanks: Object.freeze([]),
     relatedArticleGroups: {
-        platinum: [HK_OFFICIAL, HK_NOTES],
-        diamond: [HK_OFFICIAL, HK_NOTES],
-        campaign: [HK_OFFICIAL, HK_NOTES],
-        default: [HK_OFFICIAL, HK_NOTES]
+        platinum: [HK_GUIDE, HK_OFFICIAL],
+        diamond: [HK_GUIDE, HK_OFFICIAL],
+        campaign: [HK_GUIDE, HK_OFFICIAL],
+        default: [HK_GUIDE, HK_OFFICIAL]
     },
     decisionTitle: '接下來可以確認',
-    highSpend: HK_NOTES,
-    campaign: HK_OFFICIAL,
-    diamond: HK_OFFICIAL,
-    platinum: HK_OFFICIAL,
-    nearYearEnd: HK_OFFICIAL,
+    highSpend: HK_GUIDE,
+    campaign: HK_GUIDE,
+    diamond: HK_GUIDE,
+    platinum: HK_GUIDE,
+    nearYearEnd: HK_GUIDE,
     giftCards: HK_NOTES
 };
 
+const IN_GUIDE = { href: 'google-play-points-guide.html', title: 'India Play Points Levels & ₹5 Earn Guide', note: 'Bronze to Platinum tiers, rounding and perks' };
 const IN_OFFICIAL = { href: OFFICIAL_IN, title: 'Official Google Play India levels and earn rates', note: 'Check the latest India conditions' };
 const IN_NOTES = { href: '../attention.html', title: 'Check country and promotion notes', note: 'Confirm eligibility before buying' };
 const IN = {
     statusPageRanks: Object.freeze([]),
     maintenancePageRanks: Object.freeze([]),
     relatedArticleGroups: {
-        platinum: [IN_OFFICIAL, IN_NOTES],
-        diamond: [IN_OFFICIAL, IN_NOTES],
-        campaign: [IN_OFFICIAL, IN_NOTES],
-        default: [IN_OFFICIAL, IN_NOTES]
+        platinum: [IN_GUIDE, IN_OFFICIAL],
+        diamond: [IN_GUIDE, IN_OFFICIAL],
+        campaign: [IN_GUIDE, IN_OFFICIAL],
+        default: [IN_GUIDE, IN_OFFICIAL]
     },
     decisionTitle: 'What to check next',
-    highSpend: IN_NOTES,
-    campaign: IN_OFFICIAL,
-    diamond: IN_OFFICIAL,
-    platinum: IN_OFFICIAL,
-    nearYearEnd: IN_OFFICIAL,
+    highSpend: IN_GUIDE,
+    campaign: IN_GUIDE,
+    diamond: IN_GUIDE,
+    platinum: IN_GUIDE,
+    nearYearEnd: IN_GUIDE,
     giftCards: IN_NOTES
 };
 
