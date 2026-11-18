@@ -1617,7 +1617,15 @@ outline-offset: 3px;
 /* URL保護による要求保留時および未配信確定時に空の広告枠や余白を残さない */
 ins.adsbygoogle[data-ad-status="unfilled"],
 .google-auto-placed:has(> ins.adsbygoogle[data-ad-status="unfilled"]),
-.article-ad-container:has(> ins.adsbygoogle[data-ad-status="unfilled"]),
-html[data-ad-requests-paused="true"] :is(.google-auto-placed, ins.adsbygoogle, .article-ad-container) {
+.article-ad-container:has(> ins.adsbygoogle[data-ad-status="unfilled"]) {
   display: none !important;
+}
+html[data-ad-requests-paused="true"] :is(.google-auto-placed, ins.adsbygoogle, .article-ad-container) {
+  height: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
 }
