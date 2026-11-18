@@ -195,6 +195,20 @@ test('計算結果の直後に買う前のギフト確認リンクを出す', ()
   reverseCalculate();
   assert.ok(renderedResults[1].content.includes('result-purchase-check'));
   assert.ok(renderedResults[1].content.includes('articles/2026-06-20-discount-gift-cards.html'));
+  assert.ok(renderedResultDetails[0].includes('href="games/"'));
+  assert.ok(renderedResultDetails[0].includes('data-link-position="game-calculators"'));
+  assert.ok(renderedResults[1].content.includes('href="games/"'));
+  assert.ok(renderedResults[1].content.includes('data-link-position="game-calculators"'));
+
+  for (const region of ['US', 'KR', 'TW']) {
+    PP_STATE.currentRegion = region;
+    populateStatusSelects();
+    updateBaseRateAndTarget();
+    calculate();
+    const detail = renderedResultDetails.at(-1);
+    assert.ok(detail.includes('href="games/"'), `${region}: ゲーム別試算リンクが必要です`);
+    assert.ok(detail.includes('data-link-position="game-calculators"'), `${region}: link_positionが必要です`);
+  }
 });
 
 test('海外版の計算結果導線は各言語の実在ページだけを使う', () => {

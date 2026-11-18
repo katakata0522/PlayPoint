@@ -41,6 +41,7 @@ const JP = {
     diamond: { href: 'articles/2025-12-25-diamond-worth-it.html', title: 'ダイヤモンドが本当に得か見る', note: '必要額と特典価値を比較' },
     platinum: { href: 'maintenance/platinum/', title: 'プラチナ維持も確認する', note: '到達後のペースを確認' },
     nearYearEnd: { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: '年末前に反映タイミングを見る', note: '締め直前の遅れを避ける' },
+    gameCalculators: { href: 'games/', title: 'ゲームのパック・課金額別で試算', note: '遊ぶゲームの目安をそのまま計算' },
     giftCards: { href: 'articles/2026-06-20-discount-gift-cards.html', title: '購入前チェックで使いすぎを防ぐ', note: 'ギフトコードや還元上限を確認' }
 };
 
@@ -59,6 +60,7 @@ const US = {
     diamond: { href: 'status/diamond/', title: 'Check the Diamond target', note: 'Review the points and spending estimate' },
     platinum: { href: 'status/platinum/', title: 'Check the Platinum target', note: 'Review the points and spending estimate' },
     nearYearEnd: { href: 'articles/google-play-points-not-showing.html', title: 'Check point reflection timing', note: 'Avoid a delay near year-end' },
+    gameCalculators: { href: 'games/', title: 'Estimate by game pack & bundles', note: 'Calculate directly by game title' },
     giftCards: { href: 'articles/google-play-points-gift-cards.html', title: 'Check gift card conditions', note: 'Confirm eligibility before buying' }
 };
 
@@ -77,6 +79,7 @@ const KR = {
     diamond: { href: 'status/diamond/', title: '다이아몬드 목표 확인', note: '필요 포인트와 예상 금액을 확인하세요' },
     platinum: { href: 'status/platinum/', title: '플래티넘 목표 확인', note: '필요 포인트와 예상 금액을 확인하세요' },
     nearYearEnd: { href: 'articles/google-play-points-not-showing.html', title: '포인트 반영 상태 확인', note: '연말 전 반영 상태를 확인하세요' },
+    gameCalculators: { href: 'games/', title: '게임별 패키지·결제 금액 계산', note: '즐기는 게임 기준으로 바로 계산' },
     giftCards: { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인', note: '구매 전 대상 여부를 확인하세요' }
 };
 
@@ -95,6 +98,7 @@ const TW = {
     diamond: { href: 'status/diamond/', title: '確認鑽石級目標', note: '確認所需點數與預估金額' },
     platinum: { href: 'status/platinum/', title: '確認白金級目標', note: '確認所需點數與預估金額' },
     nearYearEnd: { href: 'articles/google-play-points-not-showing.html', title: '確認點數入帳狀態', note: '年底前確認入帳狀態' },
+    gameCalculators: { href: 'games/', title: '依各遊戲禮包與儲值金額試算', note: '直接查看常玩遊戲的試算頁' },
     giftCards: { href: 'articles/google-play-points-gift-cards.html', title: '確認禮物卡條件', note: '購買前確認是否符合資格' }
 };
 

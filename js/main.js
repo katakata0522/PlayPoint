@@ -1,7 +1,7 @@
 'use strict';
 
 // 旧SWの無版configより先に、現行の計測保護を実行する。
-import './analytics-core.js?v=7a8471c9da';
+import './analytics-core.js?v=8c30c353a7';
 import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
 import { SHARE, restoreRateInput } from './share.js';

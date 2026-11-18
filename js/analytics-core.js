@@ -43,7 +43,7 @@
     });
     const RESULT_DECISION_PARAM_VALUES = Object.freeze({
         ...RESULT_LINK_PARAM_VALUES,
-        link_position: new Set(['purchase-check'])
+        link_position: new Set(['purchase-check', 'game-calculators'])
     });
     const ENUM_PARAM_VALUES = Object.freeze({
         purchase_comparison_opened: Object.freeze({ game_id: new Set(['monst']), region: new Set(['JP']) }),

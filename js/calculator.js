@@ -154,18 +154,23 @@ export const CALC = {
         `;
     },
 
-    // 計算の前提と比較を確認した後に、必要な人だけ購入条件へ進める。
+    // 計算の前提と比較を確認した後に、必要な人だけゲーム別試算や購入条件へ進める。
     renderPurchaseCheckLink() {
-        const gift = this.getResultNavigation().giftCards;
+        const navigation = this.getResultNavigation();
+        const gift = navigation.giftCards;
         if (!gift?.href) return '';
         const texts = CONFIGS[STATE.currentRegion]?.uiText || {};
         const label = texts.purchaseCheckLabel || gift.title;
         const note = texts.purchaseCheckNote || gift.note || '';
+        const game = navigation.gameCalculators;
+        const gameItem = game?.href
+            ? `<a href="${game.href}" data-result-decision-link data-link-position="game-calculators">${game.title}${game.note ? `<small>${game.note}</small>` : ''}</a>`
+            : '';
         return `
-            <p class="result-purchase-check">
-                <a href="${gift.href}" data-result-decision-link data-link-position="purchase-check">${label}</a>
-                ${note ? `<small>${note}</small>` : ''}
-            </p>
+            <div class="result-purchase-check">
+                ${gameItem}
+                <a href="${gift.href}" data-result-decision-link data-link-position="purchase-check">${label}${note ? `<small>${note}</small>` : ''}</a>
+            </div>
         `;
     },
 

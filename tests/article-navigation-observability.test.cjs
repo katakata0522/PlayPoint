@@ -282,10 +282,12 @@ test('購入確認位置は対象イベントだけに保持し、クエリと�
   const h = harness();
   const result = h.api.sanitizeParams('result_decision_link_clicked', { ...decision, email: 'test@example.invalid' });
   assert.equal(result.link_position, 'purchase-check');
+  assert.equal(h.api.sanitizeParams('result_decision_link_clicked', { ...decision, link_position: 'game-calculators' }).link_position, 'game-calculators');
   assert.equal(result.source_path, '/');
   assert.equal(result.target_path, '/latest/');
   assert.equal(result.email, undefined);
   assert.equal(h.api.sanitizeParams('result_related_article_clicked', decision).link_position, undefined);
+  assert.equal(h.api.sanitizeParams('result_related_article_clicked', { ...decision, link_position: 'game-calculators' }).link_position, undefined);
   for (const position of ['arbitrary', 'purchase-check?secret=1', 0, 11, 1.5]) {
     assert.equal(h.api.sanitizeParams('result_decision_link_clicked', { ...decision, link_position: position }).link_position, undefined);
   }
