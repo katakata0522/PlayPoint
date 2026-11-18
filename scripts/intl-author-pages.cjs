@@ -3,12 +3,15 @@
 const { LOCALES } = require('./intl-seo-content.cjs');
 const { formatArticleDateTime } = require('./article-date-contract.cjs');
 const { renderArticleChrome, renderSidebar } = require('./intl-article-layout.cjs');
+const { ogpPathForRelativePage } = require('./generate-site-ogp-cards.cjs');
 
 const UPDATED_AT = '2026-10-08';
 
 const AUTHOR_CONTENT = Object.freeze({
   en: {
     title: 'About Katakata & editorial standards',
+    seoTitle: 'About Katakata & Editorial Policy | PlayPoint',
+    description: 'Editorial standards and calculator verification notes by Katakata: checking first-party Google Play Help docs and country rules before publishing.',
     eyebrow: 'Operator profile',
     lead: 'Katakata builds and runs the Google Play Points Calculator and edits guides on Play Points math, redemptions, regional differences, and troubleshooting. Reaching Diamond tier in September 2026 myself (nobody was more surprised than me!), I maintain these tools and weekly reward logs while actually using Play Points across mobile games and everyday apps.',
     purposeTitle: 'Make the purchase decision easier', purposeBody: 'PlayPoint brings the product, its timing, and the points calculation into one flow. A monthly pack can work well for rewards you will collect over time; a top-up may fit a deadline today. The guides help you compare those choices before you enter a spending amount.', verificationTitle: 'How guides are verified',
@@ -39,6 +42,7 @@ const AUTHOR_CONTENT = Object.freeze({
   },
   ko: {
     title: '운영자 Katakata와 기사 검증 기준',
+    description: 'Google Play Points 계산기와 지역별 가이드의 검증 원칙을 안내합니다. 공식 도움말 대조, 계산 재현, 수정 기준을 확인하세요.',
     eyebrow: '운영자 프로필',
     lead: 'Katakata는 Google Play Points 계산기를 직접 개발·운영하며 적립 계산, 포인트 사용법, 국가별 차이, 문제 해결 가이드를 편집합니다. 2026년 9월 직접 다이아몬드 등급에 도달한 경험을 바탕으로(제 자신이 가장 놀랐습니다!), 실제 모바일 게임 결제와 주간 리워드 기록에 활용하면서 누구나 쉽게 다음 등급까지 필요한 금액을 가늠할 수 있도록 도구를 가꾸고 있습니다.',
     purposeTitle: '구매 결정을 더 쉽게', purposeBody: 'PlayPoint는 상품 내용, 보상 시점, 포인트 계산을 한 흐름으로 연결합니다. 앞으로 받을 보상에는 월간 상품이 맞을 수 있고 오늘 마감하는 목표에는 즉시 충전이 맞을 수 있습니다. 결제 금액을 입력하기 전에 이 차이를 비교할 수 있도록 안내합니다.', verificationTitle: '기사 검증 원칙',
@@ -69,6 +73,7 @@ const AUTHOR_CONTENT = Object.freeze({
   },
   tw: {
     title: '營運者 Katakata 與文章驗證標準',
+    description: '說明 Google Play Points 計算器與各地區指南的查證標準：優先核對 Google 官方說明、重現計算並持續更新修正。',
     eyebrow: '營運者簡介',
     lead: 'Katakata 開發並維護 Google Play Points 計算器，同時撰寫點數計算、兌換方式、各地區規則差異與問題排解指南。自己在 2026 年 9 月實際升上鑽石級（最驚訝的其實是自己！），平時就在手遊課金與每週獎勵紀錄中實際使用這些點數，並把這個個人試算工具持續維護至今。',
     purposeTitle: '讓消費選擇更容易', purposeBody: 'PlayPoint 把商品內容、獎勵時間與點數計算放在同一條閱讀路線。能慢慢領取的獎勵可以比較月卡；今天就要達成的目標，可能需要立即儲值。指南先幫你比較這些差別，再帶入消費金額。', verificationTitle: '文章驗證原則',
@@ -138,6 +143,8 @@ function renderIntlAuthorPage(localeKey, assetVersions = {}) {
     }
   }, null, 2).replace(/</g, '\\u003c');
 
+  const pageTitle = content.seoTitle || `${content.title} | ${locale.siteName}`;
+  const pageDescription = content.description || content.lead;
   return `<!doctype html>
 <html lang="${locale.lang}">
 <head>
@@ -146,8 +153,8 @@ function renderIntlAuthorPage(localeKey, assetVersions = {}) {
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="author" content="Katakata">
   <meta name="last-modified" content="${UPDATED_AT}">
-  <title>${escapeHtml(content.title)} | ${escapeHtml(locale.siteName)}</title>
-  <meta name="description" content="${escapeHtml(content.lead)}">
+  <title>${escapeHtml(pageTitle)}</title>
+  <meta name="description" content="${escapeHtml(pageDescription)}">
   <link rel="canonical" href="${canonical}">
   <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/author/katakata.html">
   <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/author/katakata.html">
@@ -162,10 +169,13 @@ function renderIntlAuthorPage(localeKey, assetVersions = {}) {
   <meta property="og:type" content="profile">
   <meta property="og:site_name" content="${escapeHtml(locale.siteName)}">
   <meta property="og:title" content="${escapeHtml(content.title)}">
-  <meta property="og:description" content="${escapeHtml(content.lead)}">
+  <meta property="og:description" content="${escapeHtml(pageDescription)}">
   <meta property="og:url" content="${canonical}">
-  <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+  <meta property="og:image" content="https://playpoint-sim.com/${ogpPathForRelativePage(`${localeKey}/author/katakata.html`)}">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${escapeHtml(content.title)}">
+  <meta name="twitter:description" content="${escapeHtml(pageDescription)}">
+  <meta name="twitter:image" content="https://playpoint-sim.com/${ogpPathForRelativePage(`${localeKey}/author/katakata.html`)}">
   <script type="application/ld+json">${schema}</script>
 </head>
 <body>

@@ -14,6 +14,7 @@ const { INTL_LAYOUT_CSS, renderArticleChrome, renderSidebar } = require('./intl-
 const { getIntlAuthorPageFiles, getIntlAuthorSitemapEntries, writeIntlAuthorPages } = require('./intl-author-pages.cjs');
 const { GENERATED_INTL_PAGE_CONTENT_DATE, getGeneratedIntlPageContentDate } = require('./content-dates.cjs');
 const { ALL_GUIDES } = require('./intl-game-guide-expansion.cjs');
+const { ogpPathForRelativePage } = require('./generate-site-ogp-cards.cjs');
 function getHubModifiedAt(localeKey, articles) {
   return [ARTICLE_HUB_CONTENT[localeKey].extraModifiedAt, GENERATED_INTL_PAGE_CONTENT_DATE,
     ...articles.map(article => article.modifiedAt), ...ALL_GUIDES.map(guide => guide.modifiedAt[localeKey])]
@@ -206,11 +207,11 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = ge
     <meta property="og:title" content="${escapeHtml(content.title)}">
     <meta property="og:description" content="${escapeHtml(content.description)}">
     <meta property="og:url" content="${canonical}">
-    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta property="og:image" content="https://playpoint-sim.com/${ogpPathForRelativePage(`${localeKey}/${page.slug}/index.html`)}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(content.title)}">
     <meta name="twitter:description" content="${escapeHtml(content.description)}">
-    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
+    <meta name="twitter:image" content="https://playpoint-sim.com/${ogpPathForRelativePage(`${localeKey}/${page.slug}/index.html`)}">
     <link rel="canonical" href="${canonical}">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com${page.jaPath}">
     <link rel="alternate" hreflang="en" href="${pageUrl('en', page.slug)}">
@@ -360,7 +361,7 @@ function renderArticle(article, assetVersions) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${escapeHtml(localeKey === 'en' ? article.title : `${article.title} | ${siteName}`)}</title>
+    <title>${escapeHtml(article.seoTitle || (localeKey === 'en' ? article.title : `${article.title} | ${siteName}`.length > 65 ? article.title : `${article.title} | ${siteName}`))}</title>
     <meta name="description" content="${escapeHtml(article.description)}">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="author" content="${escapeHtml(authorName)}">
@@ -499,7 +500,7 @@ function renderArticleHub(localeKey, assetVersions) {
     if (priorityHrefs.has(href)) bucket = 'start';
     else if (/not-showing|not-applied|quests|refund|coupon|play-credit|device-change/.test(href)) bucket = 'trouble';
     else if (/level|silver|gold|platinum|diamond|weekly|reward/.test(href)) bucket = 'levels';
-    else if (/earn|amount|500-1000|apps-books|subscription|gift-card|discount|promo|promotion|rounding|cash-conversion|use-coupons/.test(href)) bucket = 'earn';
+    else if (/earn|amount|500-1000|apps-books|subscription|gift-card|discount|promo|promotion|rounding|cash-conversion|use-coupons|points-cost|campaign/.test(href)) bucket = 'earn';
     else if (/join|balance|history|account|family|country/.test(href)) bucket = 'account';
     buckets[bucket].push(link);
   }
@@ -569,8 +570,11 @@ ${buckets[key].map(([href, title]) => `                <li><a href="${escapeHtml
     <meta property="og:title" content="${escapeHtml(content.title)}">
     <meta property="og:description" content="${escapeHtml(content.description)}">
     <meta property="og:url" content="${canonical}">
-    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta property="og:image" content="https://playpoint-sim.com/${ogpPathForRelativePage(`${localeKey}/articles/index.html`)}">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${escapeHtml(content.title)}">
+    <meta name="twitter:description" content="${escapeHtml(content.description)}">
+    <meta name="twitter:image" content="https://playpoint-sim.com/${ogpPathForRelativePage(`${localeKey}/articles/index.html`)}">
     <script type="application/ld+json">
 ${jsonLd(schema)}
     </script>

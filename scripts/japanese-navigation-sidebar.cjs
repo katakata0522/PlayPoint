@@ -120,8 +120,12 @@ function isSquareThumbnail(value) {
   return /^(?:articles\/thumbnails\/[a-z0-9-]+\.webp|images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp))$/i.test(relative);
 }
 
+const isEndedPopularGuide = item => /【(?:開催|会場|応募(?:・抽選)?)?終了】/.test(item && item.title || '');
+
 function renderPopularWidget(article, catalog = [], root = path.resolve(__dirname, '..'), imageCache = new Map()) {
-  const popular = getJapanesePopularGuides(article.href, 5);
+  const popular = getJapanesePopularGuides(article.href, 5)
+    .slice()
+    .sort((a, b) => Number(isEndedPopularGuide(a)) - Number(isEndedPopularGuide(b)));
   const byHref = new Map(catalog.map(item => [item.href, item]));
   return `  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}"><h2 class="sidebar-widget-title">よく読まれている記事</h2><div class="sidebar-widget-body"><p class="sidebar-widget-note">集計期間 ${escapeHtml(POPULAR_GUIDES_WINDOW)}</p><ol class="sidebar-popular-list">${popular.map(item => {
     const rank = String(item.rank).padStart(2, '0');

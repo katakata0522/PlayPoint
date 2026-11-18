@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { VERIFIED_AT, SOURCES, GAME_SEO_WAVE5 } = require('./game-seo-wave5-data.cjs');
 const { articleForPath } = require('./game-guide-article-catalog.cjs');
+const { ogpPathForRelativePage } = require('./generate-site-ogp-cards.cjs');
 
 const LOCALES = Object.freeze(['ja', 'en', 'ko', 'tw']);
 const GAME_ORDER = Object.freeze(['prospi-a', 'pokemon-go', 'efootball']);
@@ -131,7 +132,7 @@ function statusOptions(locale) {
     ja: ['ブロンズ', 'シルバー', 'ゴールド', 'プラチナ', 'ダイヤモンド'],
     en: ['Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond'],
     ko: ['브론즈', '실버', '골드', '플래티넘', '다이아몬드'],
-    tw: ['銅級', '銀級', '金級', '白金級', '鑽石級']
+    tw: ['銅級', '銀級', '黃金級', '白金級', '鑽石級']
   }[locale];
   return [1, 1.25, 1.5, 1.75, 2].map((value, i) => `<option value="${value}">${labels[i]}（100${locale === 'en' ? ' JPY' : '円'}=${value}pt）</option>`).join('');
 }
@@ -170,17 +171,22 @@ function parentPage(slug, locale) {
   <meta name="last-modified" content="${VERIFIED_AT}" />
   <meta name="author" content="${c.authorName}" />
   <link rel="icon" href="${root}favicon.svg" type="image/svg+xml" />
-  <title>${g.name} - Google Play Points Calculator | PlayPoint</title>
+  <title>${locale === 'en' ? `${g.name} - Google Play Points Calculator` : `${g.name} - ${c.siteName}`} | PlayPoint</title>
   <meta name="description" content="${g.description}" />
   <link rel="canonical" href="${canonical}" />
   ${alternates(slug)}
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="${c.siteName}" />
-  <meta property="og:title" content="${g.name} - Google Play Points Calculator" />
+  <meta property="og:title" content="${locale === 'en' ? `${g.name} - Google Play Points Calculator` : `${g.name} - ${c.siteName}`}" />
+  <meta property="og:image:alt" content="${locale === 'en' ? `${g.name} - Google Play Points Calculator` : `${g.name} - ${c.siteName}`}" />
+  <meta name="twitter:image:alt" content="${locale === 'en' ? `${g.name} - Google Play Points Calculator` : `${g.name} - ${c.siteName}`}" />
   <meta property="og:description" content="${g.description}" />
   <meta property="og:url" content="${canonical}" />
-  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta property="og:image" content="https://playpoint-sim.com/${ogpPathForRelativePage(`${localePrefix(locale)}games/${slug}/index.html`)}" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${locale === 'en' ? `${g.name} - Google Play Points Calculator` : `${g.name} - ${c.siteName}`}" />
+  <meta name="twitter:description" content="${g.description}" />
+  <meta name="twitter:image" content="https://playpoint-sim.com/${ogpPathForRelativePage(`${localePrefix(locale)}games/${slug}/index.html`)}" />
   <link rel="stylesheet" href="${root}articles/article-shared.css?v=1f3377e639" />
   <link rel="stylesheet" href="${root}games/games.css?v=09016b3c58" />
   <script type="application/ld+json">${JSON.stringify(app)}</script>

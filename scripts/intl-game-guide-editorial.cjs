@@ -15,7 +15,7 @@ const EDITORIAL = {
     chapters: [chapter(t('What changes the value of a daily pack?', '쥬얼만 보고 고르면 놓치는 부분', '每日包該怎麼與一般儲值比較？'), t(
       ['Put the purchase-day reward, later login rewards and any other benefits on separate lines. Then compare the price with the one-off pack you would otherwise buy. A larger advertised total is useful only when you can collect it before you need it.', 'For example, if your banner ends in six days, compare the purchase-day reward plus daily rewards available during those six days. Later rewards can go toward the next banner. Keep paid and free Carats separate when your intended Scout requires paid currency; the pack panel tells you which balance each reward enters.'],
       ['먼슬리 우마는 로그인 무료 쥬얼 50개, 일부 육성 보상 2배, 데일리 레이스 티켓 매일 3장 추가를 제공합니다. 육성 보상 2배는 모든 보상에 적용되는 것은 아니며 친밀도·팬 수 등은 제외됩니다.', '여기서 중요한 차이는 놓친 로그인 보상입니다. 카카오게임즈 FAQ는 미수령 무료 쥬얼을 다음 로그인 때 한꺼번에 지급한다고 안내합니다. 다른 게임 월정액의 “하루 놓치면 소멸” 규칙을 이 상품에 적용하면 계산이 틀립니다.'],
-      ['把購買當下、每天領取及其他特典分開列出，再與原本想買的單次寶石包比較。若主要需求是近期抽卡，就以卡池截止前能取得的數量來算。', '繁中版商品詳情會列出每日寶石包目前的價格與獎勵。把這兩項帶入自己的抽卡計畫；日版ウマスク的月費與育成特典屬於另一個服務，不併入比較。']))]
+      ['把購買當下、每天領取及其他特典分開列出，再與原本想買的單次寶石包比較。若主要需求是近期抽卡，就以卡池截止前能取得的數量來算。', '繁中版商品詳情會列出每日寶石包目前的價格與獎勵。把這兩項帶入自己的抽卡計畫；日本版月費方案（Umasuku）與育成特典屬於另一個服務，不併入比較。']))]
   },
   pokepoke: {
     titles: t('Pokémon TCG Pocket Premium Pass: benefits, trial and cancellation', '포켓몬 카드 게임 Pocket 프리미엄 패스: 혜택·체험·해지', 'Pokémon TCG Pocket 特級護照：獎勵、試用與取消'),
@@ -142,7 +142,7 @@ EDITORIAL.pokepoke.chapters.unshift(chapter(t('How many extra packs will you act
   ['每天追加1包，10天就是10包、30天就是30包。這是使用天數的例子，不是訂閱當下整批拿到。只比較開包時，以Android月費除以會使用的追加開包次數；特級任務道具另外評價。', '每日追加開包出自Google Play的商品介紹。規劃時使用遊戲內特級護照顯示的當期內容，任務獎勵則要在各自期限內領取。'])));
 
 const FAQ = {
-  umamusume: t(['Should I count all later pack rewards for a banner ending tomorrow?', 'No. Include only rewards available before that banner closes. Later Carats can help a future banner, but not the current shortfall.'], ['먼슬리 우마의 로그인 쥬얼을 하루 놓치면 사라지나요?', '카카오게임즈 FAQ는 미수령 무료 쥬얼을 다음 로그인 때 한꺼번에 지급한다고 안내합니다.'], ['每日寶石包可以套用日版ウマスク的特典嗎？', '不能，兩者屬不同服務的商品，請用繁中客戶端的明細。']),
+  umamusume: t(['Should I count all later pack rewards for a banner ending tomorrow?', 'No. Include only rewards available before that banner closes. Later Carats can help a future banner, but not the current shortfall.'], ['먼슬리 우마의 로그인 쥬얼을 하루 놓치면 사라지나요?', '카카오게임즈 FAQ는 미수령 무료 쥬얼을 다음 로그인 때 한꺼번에 지급한다고 안내합니다.'], ['每日寶石包可以套用日本版月費方案（Umasuku）的特典嗎？', '不能，兩者屬不同服務的商品，請用繁中客戶端的明細。']),
   pad: t(['Where do I find the current Android P&D Pass price?', 'Open Shop → P&D PASS in the US Android client. The publisher FAQ lists US$8.99 as its published reference, while your checkout shows the actual charge.'], ['북미판 무료 체험을 한국판에도 적용할 수 있나요?', '북미 FAQ의 한 주 체험은 북미판 조건입니다. 한국 퍼드패스는 한국 구매 화면의 조건을 사용하세요.'], ['美版試用條件就是香港／台灣版條件嗎？', '不是。本頁未確認香港／台灣服務的本地通行證條款，不能以美版代替。']),
   proseka: t(['Are Colorful+ and MYSEKAI Mission Pass the same subscription?', 'No. Colorful+ focuses on Crystals and its tier benefits; the MYSEKAI products have different contents and goals.'], ['미션 패스 보상은 전부 구매 즉시 받나요?', '상품 구매와 미션 진행도를 나눠 보세요. 받을 수 있는 보상은 해당 상품의 진행·수령 조건으로 비교합니다.'], ['世界通行證可以只用水晶數量評價嗎？', '不適合。先看家具、工具與任務等自己要用的內容，再與水晶商品分開比較。']),
   hbr: t(['Should I choose Premium just because it includes more?', 'Only if you will use the additional contents. Compare the current Light and Premium offers with the same play schedule and budget.'], ['프리미엄 패스가 더 많은 혜택이면 무조건 유리한가요?', '추가 혜택을 실제로 사용할 때 의미가 있습니다. 같은 플레이 일정과 예산으로 라이트와 비교하세요.'], ['WEBSHOP 點數會同時變成 Play Points嗎？', '不會。WEBSHOP 與 Google Play 分別結帳，使用不同回饋制度。'])

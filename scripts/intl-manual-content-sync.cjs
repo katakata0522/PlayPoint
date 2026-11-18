@@ -23,7 +23,7 @@ const HUB_CONTENT = {
   },
   tw: {
     modifiedAt: '2026-10-12',
-    description: '瀏覽依台灣官方條件核對的 Google Play Points 等級、加入、活動、帳號問題與遊戲消費判斷指南。',
+    description: '瀏覽依台灣官方條件核對的 Google Play Points 等級規則、加入資格、活動加碼、帳號疑難排解與遊戲課金計算與購買前判斷指南。',
     links: [
       ['/tw/articles/google-play-points-super-weekly-reward.html', '超級每週獎勵資格、庫存與超級票券'],
       ['/tw/articles/google-play-quests.html', 'Google Play 任務沒有顯示或無法完成']

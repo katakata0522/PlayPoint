@@ -23,7 +23,15 @@
     if (filter === 'all') return true;
     return filter === 'active' ? state === 'active' || state === 'soon' : state === filter;
   }
-  if (typeof module !== 'undefined' && module.exports) module.exports = { classifyBenefit, matchesAudience, matchesFilter };
+  function sortBucket(state, offer = {}) {
+    if (state === 'ended') return 5;
+    if (state === 'unknown') return 4;
+    if (offer.category === 'other') return 3;
+    if (offer.kind === 'weekly' || offer.kind === 'account') return 2;
+    if (state === 'upcoming') return 1;
+    return 0;
+  }
+  if (typeof module !== 'undefined' && module.exports) module.exports = { classifyBenefit, matchesAudience, matchesFilter, sortBucket };
   if (typeof document === 'undefined') return;
   const board = document.querySelector('.benefit-board');
   if (!board) return;
@@ -74,14 +82,14 @@
       tab.tabIndex = current ? 0 : -1;
       if (current && focus) tab.focus();
     });
-    // 全件では開催中を先に、終了済みを最後に置く。同じ時期の中は掲載順を保つ。
-    const order = { active:0, soon:0, upcoming:1, unknown:2, ended:3 };
-    cards.map((card, index) => ({ card, index })).sort((a, b) => order[states[a.index]] - order[states[b.index]]).forEach(({ card, index }, position) => {
+    // 全件では期間限定の開催中・まもなく終了・開始予定を先に、通常特典を中段、終了済みを最後に置く。同じ区分の中は掲載順を保つ。
+    cards.map((card, index) => ({ card, index })).sort((a, b) => sortBucket(states[a.index], a.card.dataset) - sortBucket(states[b.index], b.card.dataset)).forEach(({ card, index }, position) => {
       const state = states[index];
       const badge = card.querySelector('[data-benefit-status]');
       const positionedCard = [...grid.children].filter(child => cards.includes(child))[position];
       if (positionedCard !== card) grid.insertBefore(card, positionedCard || null);
       const shown = matchesFilter(state, filter) && matchesAudience(card.dataset, rank, pass);
+      card.dataset.benefitState = state;
       card.hidden = !shown;
       if (shown) visible++;
       badge.textContent = state === 'ended' ? '終了' : state === 'upcoming' ? '開始予定' : state === 'soon' ? 'まもなく終了' : card.dataset.kind === 'report' ? '配布報告・条件は個別確認' : state === 'unknown' ? '日時を確認中' : card.dataset.category === 'other' ? '個別の対象を確認' : card.dataset.kind === 'weekly' ? '毎週チェック' : card.dataset.kind === 'account' ? 'アカウント別' : '開催中';

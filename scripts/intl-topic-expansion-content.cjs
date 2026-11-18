@@ -6,6 +6,7 @@ const TOPICS = [
     slug: 'google-play-points-basics', jaAlternate: '/about-playpoints.html', source: '15776742', category: 'account',
     en: {
       title: 'Google Play Points explained: earning, rewards and levels in the US',
+      seoTitle: 'Google Play Points US Guide: Earning, Rewards & Levels',
       description: 'Start with Google Play Points: how to join, earn points, choose coupons or Play credit, and read US level progress without confusing it with your balance.',
       intro: 'Your next game purchase might also bring a useful reward. Google Play Points connects eligible Google Play purchases with points, coupons and level benefits. Start with the three parts of the program, then choose what is useful for you.',
       sections: [
@@ -34,7 +35,7 @@ const TOPICS = [
     },
     tw: {
       title: 'Google Play Points 入門：台灣積點、兌換與會員等級',
-      description: '從加入到兌換，看懂 Google Play Points 的運作。用台灣基本積點率示範，分清點數、Play 餘額與年度等級進度。',
+      description: '從加入條件到點數兌換，完整看懂 Google Play Points 的運作方式，並以台灣基本積點率示範如何區分點數餘額、Play 餘額與年度等級進度。',
       intro: '本來就想買的遊戲商品，如果還能多拿一份回饋，會更有樂趣。Google Play Points 讓你透過符合資格的消費累積點數，再選擇優惠券或遊戲道具。先分清加入、兌換和等級，就容易上手。',
       sections: [
         ['先加入，再累積', '在 Play 商店開啟個人資料，選擇 Play Points。加入前的消費不會追溯積點，因此請先用實際購買的 Google 帳號加入。'],
@@ -51,6 +52,7 @@ const TOPICS = [
     slug: 'google-play-credit-subscriptions', jaAlternate: '/articles/2026-10-14-play-credit-subscription.html', source: '6080850', category: 'earn',
     en: {
       title: 'Use Google Play credit for subscriptions: check the first payment and renewal',
+      seoTitle: 'Use Play Credit for Subscriptions: First Pay & Renewal',
       description: 'Can Play credit redeemed from Play Points pay for a subscription? Check the billing store, balance, currency and renewal payment method before you subscribe.',
       intro: 'Turning Play Points into credit can make a subscription more affordable. The useful question is not just whether a balance exists, but whether this subscription accepts it now and will use the same payment method at renewal.',
       sections: [
@@ -78,7 +80,7 @@ const TOPICS = [
     tw: {
       title: 'Google Play 抵用金支付訂閱：首次付款與續訂要分開看',
       modifiedAt: '2026-10-16',
-      description: '用 Play Points 兌換的 Google Play 抵用金支付訂閱前，確認付款平台、帳號、幣別、餘額與續訂付款方式。',
+      description: '使用 Play Points 兌換的 Google Play 抵用金支付訂閱方案前，先逐一確認實際請款平台、Google 帳號、交易幣別、可用餘額與自動續訂付款方式。',
       intro: '把累積的 Play Points 換成抵用金，可以替訂閱費用出一份力。關鍵不只是帳號有餘額，還要確認這筆訂閱首次付款和下一次續訂是否能用同一份餘額。',
       sections: [
         ['先找出實際請款的平台', '台灣 Google Play 餘額可用於支援的訂閱；網站或 Apple 請款是不同的購買管道。先確認這筆訂閱是否出現在同一 Google 帳號的 Play 商店訂閱清單。'],
@@ -120,7 +122,7 @@ const TOPICS = [
     },
     tw: {
       title: 'Google Play Points 集章卡：購買次數與每筆金額要一起看',
-      description: '看懂 Play Points 集章卡的購買次數、每筆最低金額、幣別、啟用與領獎期限，分清加倍活動和任務的差別。',
+      description: '一次看懂 Google Play Points 集章卡的指定購買次數、單筆最低消費金額、交易幣別、活動啟用與領獎期限，分清加倍活動和任務差別。',
       intro: '看到「再買一次就完成」，很容易想把卡片填滿。這類集點卡依指定次數的合格購買提供回饋；如果原本的購買計畫就能完成，會是一份很實用的額外獎勵。',
       sections: [
         ['集章卡看的是購買條件', '集章卡看合格購買次數，加倍活動看獲點率，任務則看指定行動。先讀每筆最低金額和需要幾次購買，不要把次數直接當成點數倍率。'],
@@ -138,6 +140,7 @@ const TOPICS = [
     sourceHrefByLocale: { tw: 'https://app-psl.pokemon-support.com/hc/zh-tw/articles/20406040940185' },
     en: {
       title: 'Pokémon Sleep Premium Pass: one month or six months? Compare the daily benefits',
+      seoTitle: 'Pokémon Sleep Premium Pass: 1 vs 6 Months Compared',
       description: 'Compare Pokémon Sleep Premium Pass monthly and six-month plans, daily sleep points, local prices and subscription-streak rules. Sleep points and Play Points are separate.',
       intro: 'If checking new Pokémon sleep styles has become part of your morning, the Premium Pass may be tempting. One month gives you a way to try it; six months deserves a closer look when you already want to keep playing. Start with what you will use each day.',
       sections: [
@@ -166,7 +169,7 @@ const TOPICS = [
     },
     tw: {
       title: 'Pokémon Sleep 進階票證：1個月或6個月？從每日福利來選',
-      description: '比較 Pokémon Sleep 進階票證的每日睡眠點數、1個月與6個月方案，以及台灣價格和變更訂閱時的連續訂閱期間。',
+      description: '比較 Pokémon Sleep 進階票證的每日睡眠點數獎勵、1個月與6個月方案差異，並說明台灣售價計算與變更訂閱時的連續訂閱計算規則。',
       intro: '每天早上查看新的寶可夢睡姿，已經成為習慣的話，進階票證會很吸引人。先試一個月，或決定用六個月？在比較價格之前，先看看自己每天會享受哪些福利。',
       sections: [
         ['每日獎勵會慢慢累積', '進階票證有效期間，在記錄睡眠的日子每天可領一次額外 100 睡眠點數。符合條件地記錄 30 天，額外點數就有 3,000 點。進階兌換處與每天的獎勵沙布蕾+，也讓日常記錄多一份樂趣。'],
@@ -177,6 +180,93 @@ const TOPICS = [
         ['選擇每天真的用得到的福利', '列出會使用的功能和預計繼續遊玩的月份，就能把價格比較連結到自己的習慣，而不是只因為方案最長就選它。']
       ],
       faq: [['每日獎勵會增加 Google Play Points 嗎？', '不會。這是 Pokémon Sleep 遊戲內的睡眠點數。'], ['可以直接用日本價格比較台灣方案嗎？', '不可以。請使用自己地區和購買平台現在顯示的價格。']]
+    }
+  },
+  {
+    slug: 'google-play-games-pc-play-points', jaAlternate: '/articles/2026-08-16-pc-play-games-points.html', source: '9077192', category: 'earn',
+    publishedAt: '2026-11-19', modifiedAt: '2026-11-19',
+    en: {
+      title: 'Google Play Games on PC and Play Points: PC Boost Rules',
+      seoTitle: 'Google Play Games on PC & Play Points: PC Boost Rules',
+      description: 'Learn how PC purchases in Google Play Games earn Play Points, why PC-only boosts never apply on Android phones, and why quests stay mobile-only.',
+      intro: 'Buying packs on Google Play Games on PC can earn Google Play Points, just like purchases on Android. The catch is that PC-labeled promotions follow separate device rules that often surprise players who switch between desktop and phone.',
+      sections: [
+        ['Desktop purchases earn base Play Points', 'Official Google Play Points rules confirm you earn points on eligible Google Play purchases made on an Android device, computer, or smart TV. You do not earn regular Play Points merely by launching or playing games on PC without an eligible purchase.'],
+        ['How to check your Play Points level on PC', 'Open Google Play Games on your computer, select Play Points on the left menu, and choose Level benefits to view your current tier, base rate, and annual progress deadline.'],
+        ['PC-only boosts stay strictly on PC', 'If you activate a points boost marked "on PC", that promotional rate applies strictly to qualifying computer purchases. Even if you activated the boost while sitting at your PC, purchases made on your Android phone still earn your regular rate.'],
+        ['Quests and stamp cards remain mobile-only', 'Google Play Quests and Play Points stamp cards are currently unavailable on Google Play Games on PC and the Google Play website. Open the mobile Play Store app with the same Google account if you want to check or progress mobile missions.'],
+        ['If points from a PC purchase look delayed', 'Close and reopen Google Play Games on PC first, then inspect your Play Points history on the exact Google account that completed checkout. Points earned on computer purchases can take extra time to appear before confirming an issue.']
+      ],
+      faq: [['Do "on PC" Play Points boosts apply to Android phone purchases?', 'No. Google explicitly notes that a points boost labeled "on PC" applies only to computer purchases, even after activation.'], ['Can I complete Google Play Quests from PC?', 'No. Quests and stamp cards are supported in the mobile Play Store app rather than Google Play Games on PC or the website.']]
+    },
+    ko: {
+      title: 'PC용 Google Play Games 결제와 Play Points: PC 전용 부스트',
+      description: 'PC용 Google Play Games 결제 시 Play Points 적립 조건, PC 전용 부스트가 모바일 결제에 적용되지 않는 이유, PC 확인 방법을 정리합니다.',
+      intro: '컴퓨터에서 PC용 Google Play Games로 결제해도 Google Play 적격 구매라면 Play Points가 적립됩니다. 다만 PC 전용으로 표시된 부스트와 퀘스트 지원 범위는 모바일과 달라 혼동하기 쉽습니다.',
+      sections: [
+        ['PC 결제도 기본 Play Points 적립 대상입니다', 'Google 공식 안내에 따르면 Android 기기뿐 아니라 컴퓨터와 스마트 TV에서 진행한 적격 Google Play 구매에서도 포인트를 적립할 수 있습니다. 단순히 PC에서 게임을 플레이하는 것만으로는 일반 구매 포인트가 쌓이지 않습니다.'],
+        ['PC에서 내 Play Points 등급 확인하기', '컴퓨터에서 Google Play Games를 연 뒤 왼쪽 메뉴에서 Play Points를 선택하고 등급 혜택을 클릭하면 현재 등급, 혜택, 다음 등급까지의 기한을 확인할 수 있습니다.'],
+        ['PC 전용 부스트는 모바일에 적용되지 않습니다', '프로모션에 "PC에서" 또는 PC 전용 표시가 붙은 포인트 부스트는 컴퓨터 결제에만 적용됩니다. PC에서 미리 시작 버튼을 눌렀더라도 스마트폰에서 결제하면 해당 PC 전용 배율은 적용되지 않습니다.'],
+        ['퀘스트와 스탬프 카드는 모바일 전용입니다', 'Google Play 퀘스트와 스탬프 카드는 현재 PC용 Google Play Games 및 Google Play 웹사이트에서 지원되지 않습니다. 동일한 Google 계정의 스마트폰 Play 스토어 앱에서 확인하세요.'],
+        ['PC 결제 포인트 반영이 늦게 보일 때', '먼저 PC 앱을 종료했다가 다시 실행하고 결제한 Google 계정으로 포인트 기록을 확인하세요. PC 구매분은 계정에 반영되기까지 시간이 더 걸릴 수 있으므로 바로 보이지 않아도 잠시 기다린 뒤 확인하는 편이 정확합니다.']
+      ],
+      faq: [['PC에서 부스트를 시작하면 휴대폰 결제도 추가 적립되나요?', '아니요. PC용 포인트 부스트는 컴퓨터에서 구매한 항목에만 적용됩니다.'], ['PC에서도 Play Points 퀘스트를 깰 수 있나요?', '아니요. 퀘스트와 스탬프 카드는 PC용 Play Games나 웹사이트가 아닌 스마트폰 Play 스토어 앱에서만 이용할 수 있습니다.']]
+    },
+    tw: {
+      title: 'Google Play Games 電腦版消費與 Play Points：加倍規則整理',
+      seoTitle: 'Google Play Games 電腦版與 Play Points：電腦版加倍規則',
+      description: '一次看懂 Google Play Games 電腦版消費能否累積 Play Points、電腦版限定加倍為何不適用手機，以及任務與集章卡限制。',
+      intro: '在電腦版 Google Play Games 儲值，只要透過符合資格的 Google Play 結帳同樣能累積 Play Points。不過電腦版限定的點數加倍與手機任務規則並不相同，跨裝置儲值前先分清楚最不容易吃虧。',
+      sections: [
+        ['電腦消費同樣符合基本積點資格', '依 Google 官方說明，在 Android 裝置、電腦與智慧電視透過 Google Play 完成的符合資格購買皆可累積點數；單純在電腦開啟遊玩而不涉及合格消費，不會直接獲得一般購買點數。'],
+        ['如何在電腦版查看 Play Points 等級', '在電腦開啟 Google Play Games 後，點選左側的「Play Points」，再進入「等級禮遇」，即可查看目前等級、各項福利與升級限期日。'],
+        ['「電腦版」點數倍增優惠只限電腦交易', '若你啟用標註「電腦版」的點數倍增活動，該加成倍率只適用在電腦完成的合格商品。即使在電腦啟用完成，回到手機上的結帳仍只會依手機當下的適用倍率計算。'],
+        ['任務與集章卡目前不支援電腦版', 'Google Play 任務與集章卡僅在手機版 Play 商店提供，Google Play Games 電腦版與網頁版目前無法參與或追蹤任務進度。請改用同一 Google 帳號在手機上操作。'],
+        ['電腦消費後點數較慢顯示怎麼辦', '請先關閉並重新開啟電腦版 Google Play Games，並確認登入的是完成付款的 Google 帳號。電腦版交易有時需要較長處理時間才會更新在點數記錄中。']
+      ],
+      faq: [['在電腦版啟用「電腦版加倍」後，用手機課金能享有同倍率嗎？', '不能。標註電腦版的點數倍增活動僅適用於電腦端完成的購買交易。'], ['可以在電腦版完成 Play Points 任務或集章卡嗎？', '不行。Google 說明任務與集章卡目前僅支援手機版 Play 商店，不適用於電腦版 Play Games 或網頁版。']]
+    }
+  },
+  {
+    slug: 'web-store-external-billing-play-points', jaAlternate: '/articles/2026-08-19-web-store-external-billing-points.html', source: '11174377', category: 'earn',
+    publishedAt: '2026-11-19', modifiedAt: '2026-11-19',
+    en: {
+      title: 'Game Web Stores & External Billing: Do They Earn Play Points?',
+      seoTitle: 'Game Web Stores & External Billing: Play Points Rules',
+      description: 'Official game web shops and alternative in-app billing are not Google Play billing. Learn why Play Points, coupons and Play balance do not carry over.',
+      intro: 'Many mobile games promote official web stores with bonus gems or extra bundles. Before assuming those purchases still help your Google Play Points progress, check which billing system actually processes the payment.',
+      sections: [
+        ['Official publisher store does not mean Google Play billing', 'A game developer’s official web shop is an official sales channel for that game, but browser checkouts paid directly to the publisher or an external processor bypass Google Play’s billing system. Do not expect Play Points from those browser transactions.'],
+        ['Alternative in-app billing excludes Play Points and Play balance', 'Google’s billing policy states that purchases processed through an alternative billing system cannot earn Google Play Points, cannot use Google Play balance or gift cards, and are not eligible for Play offers.'],
+        ['How to compare an external bonus against Play Points fairly', 'Compare the same dollar budget side by side: count guaranteed extra in-game items or discounts on the publisher web store on one side, and Google Play’s regular/boosted points plus Play coupons on the other—without treating Play Points and in-game currency as equal 1:1 numbers.'],
+        ['Refund support also follows the processor', 'Transactions completed outside Google Play’s billing system are managed by the developer or alternative payment provider, not Google Play. Check the seller’s support and refund terms before paying on an external site.']
+      ],
+      faq: [['If a web shop is run by the official game studio, will I still get Play Points?', 'No, unless checkout runs through Google Play’s billing system. Official publisher web stores paying the studio or a third-party gateway directly do not count toward Play Points.'], ['Can I spend Google Play balance on an official game web store?', 'No. Alternative billing and external browser checkouts do not accept Google Play balance or Google Play gift cards.']]
+    },
+    ko: {
+      title: '게임 공식 웹 스토어·외부 결제에서도 Play Points가 적립될까?',
+      description: '게임사 공식 웹 스토어와 앱 내 대체 결제가 Google Play 결제 시스템과 어떻게 다른지, Play Points 적립·Play 잔액·환불 기준을 정리합니다.',
+      intro: '공식 웹 스토어에서 보너스 재화를 더 주는 게임을 자주 볼 수 있습니다. 하지만 게임사 공식 몰이라는 이유만으로 Google Play Points가 함께 적립되지는 않으므로 결제 경로를 나눠서 비교해야 합니다.',
+      sections: [
+        ['게임사 공식 스토어와 Google Play 결제는 다릅니다', '개발사가 운영하는 공식 웹 스토어는 정식 판매 채널이지만, 브라우저에서 외부 결제사로 바로 결제하는 거래는 Google Play 결제 시스템을 거치지 않습니다. 이 경우 Play Points 적립 및 연간 등급 진행도에 포함되지 않습니다.'],
+        ['앱 내 대체 결제는 Play Points와 Play 잔액이 불가합니다', 'Google 결제 도움말은 Google Play 결제 시스템이 아닌 대체 결제 시스템을 이용할 경우 Play Points 적립, Google Play 잔액·기프트카드 결제, Play 프로모션 적용이 불가능하다고 명시합니다.'],
+        ['어느 쪽이 유리한지는 같은 결제 금액으로 비교하세요', '웹 스토어 쪽의 실제 할인·보너스 수량과 Google Play 쪽의 기본 적립·부스트·보유 쿠폰 가치를 같은 지출 금액 기준으로 나란히 비교하세요. 포인트와 게임 내 재화를 단순 합산하지 않는 편이 정확합니다.'],
+        ['환불과 문의 창구도 결제 경로에 따라 달라집니다', 'Google Play를 거치지 않은 웹 스토어나 대체 결제 거래는 Google Play 주문 관리 대상이 아니므로 해당 판매자 또는 결제 제공사의 지원·환불 정책을 확인해야 합니다.']
+      ],
+      faq: [['게임사가 직접 운영하는 공식 웹 상점이라면 Play Points가 쌓이나요?', '아니요. 결제 자체가 Google Play 결제 시스템으로 처리되지 않는 공식 웹 상점 결제는 Play Points 적립 대상이 아닙니다.'], ['대체 결제 화면에서 Google Play 잔액을 쓸 수 있나요?', '사용할 수 없습니다. Google은 대체 결제 시스템에서 Google Play 잔액 및 기프트카드를 사용할 수 없다고 안내합니다.']]
+    },
+    tw: {
+      title: '遊戲官方 Web 商店與外部付款能累積 Play Points 嗎？',
+      seoTitle: '遊戲官方 Web 商店與外部付款：Play Points 規則比較',
+      description: '釐清遊戲官方網頁商店、App 內替代付款與 Google Play 計費系統的差異，說明為何無法累積 Play Points、無法使用 Play 餘額及比較原則。',
+      intro: '許多熱門手遊都會在官方 Web 商店提供加贈道具或折扣，讓人好奇「那邊買也能順便拿 Play Points 嗎？」。判斷關鍵不是商店是否官方，而是實際收款是否走 Google Play 計費系統。',
+      sections: [
+        ['遊戲商官方通路不等於 Google Play 計費系統', '開發商直營的 Web 商店雖然是正規官方銷售管道，但瀏覽器結帳若由第三方金流或官方自行收款，並未經過 Google Play 計費系統，因此無法獲得 Play Points，也不會計入年度等級進度。'],
+        ['App 內替代計費無法積點也無法用 Play 餘額', '依 Google 付款說明，若選擇 Google Play 以外的替代計費系統，交易將無法賺取 Google Play Points、無法使用 Google Play 餘額或禮物卡，亦不適用 Google Play 優惠活動。'],
+        ['怎麼用同一筆預算比較哪邊划算？', '把同預算可拿到的遊戲幣與實際折扣放一邊，另一邊則計算 Google Play 當下的點數倍率與會用到的 Play 優惠券價值，分開對比後再決定，不要直接把點數與遊戲幣相加。'],
+        ['退款與客服窗口也會不同', '未經 Google Play 結帳的外部購買不歸 Google Play 管理訂單與退款；付款前請先確認該 Web 商店或支付平台的退款規則與客服聯絡方式。']
+      ],
+      faq: [['只要是遊戲公司官方開的網頁儲值，就能累積 Play Points 嗎？', '不能。必須是經由 Google Play 計費系統處理的合格交易才會累積；官方自建網頁金流不計入 Play Points。'], ['替代付款可以使用 Google Play 餘額嗎？', '不可以。替代計費系統不支援使用 Google Play 餘額或 Google Play 禮物卡付款。']]
     }
   }
 ];
@@ -191,12 +281,14 @@ const EXTRA_SOURCES = {
   'google-play-points-basics': [['9080348', 'levels']],
   'google-play-credit-subscriptions': [['7018481', 'renewal'], ['4646404', 'payments']],
   'google-play-points-stamp-cards': [['9077247', 'devices'], ['android-developer/16517110', 'cards']],
-  'pokemon-sleep-premium-pass-plans': [['pokemon-benefits', 'benefits']]
+  'pokemon-sleep-premium-pass-plans': [['pokemon-benefits', 'benefits']],
+  'google-play-games-pc-play-points': [['9080348', 'levels'], ['9077247', 'devices']],
+  'web-store-external-billing-play-points': [['9077192', 'earn']]
 };
 const SOURCE_LABELS = {
-  en: { levels: 'US levels and benefits', renewal: 'Subscription renewal and payment methods', payments: 'US accepted payment methods', devices: 'Devices supported for quests and stamp cards', cards: 'Google’s stamp-card promotion overview', benefits: 'Pokémon Sleep Premium Pass benefits' },
-  ko: { levels: '한국 등급과 혜택', renewal: '구독 갱신과 결제 수단', payments: '한국 지원 결제 수단', devices: '퀘스트·스탬프 카드 지원 기기', cards: 'Google 스탬프 카드 프로모션 안내', benefits: 'Pokémon Sleep 프리미엄 패스 혜택' },
-  tw: { levels: '台灣等級與福利', renewal: '訂閱續訂與付款方式', payments: '台灣支援的付款方式', devices: '任務與集章卡支援的裝置', cards: 'Google 集章卡活動說明', benefits: 'Pokémon Sleep 進階票證福利' }
+  en: { levels: 'US levels and benefits', renewal: 'Subscription renewal and payment methods', payments: 'US accepted payment methods', devices: 'Devices supported for quests and stamp cards', cards: 'Google’s stamp-card promotion overview', benefits: 'Pokémon Sleep Premium Pass benefits', earn: 'Earn and track Google Play Points' },
+  ko: { levels: '한국 등급과 혜택', renewal: '구독 갱신과 결제 수단', payments: '한국 지원 결제 수단', devices: '퀘스트·스탬프 카드 지원 기기', cards: 'Google 스탬프 카드 프로모션 안내', benefits: 'Pokémon Sleep 프리미엄 패스 혜택', earn: 'Google Play Points 적립 및 추적' },
+  tw: { levels: '台灣等級與福利', renewal: '訂閱續訂與付款方式', payments: '台灣支援的付款方式', devices: '任務與集章卡支援的裝置', cards: 'Google 集章卡活動說明', benefits: 'Pokémon Sleep 進階票證福利', earn: '賺取與追蹤 Google Play Points' }
 };
 
 function buildLocalizedTopicArticles(locales, labels) {
@@ -208,7 +300,7 @@ function buildLocalizedTopicArticles(locales, labels) {
     return {
       ...content, file: `${locale}/articles/${topic.slug}.html`, lang: locale === 'tw' ? 'zh-TW' : locale,
       h1: content.title, lead: content.intro, badge: { en: 'Practical guide', ko: '실용 가이드', tw: '實用指南' }[locale],
-      publishedAt: '2026-10-14', modifiedAt: content.modifiedAt || '2026-10-14', jaAlternate: topic.jaAlternate,
+      publishedAt: topic.publishedAt || '2026-10-14', modifiedAt: topic.modifiedAt || content.modifiedAt || '2026-10-14', jaAlternate: topic.jaAlternate,
       labels: labels[locale], siteName: locales[locale].siteName, ctaHref: `/${locale}/`,
       officialSourceTitle: copy.title, officialSourceBody: copy.body,
       officialSourceHref: topic.sourceHrefByLocale?.[locale] || topic.sourceHref || `https://support.google.com/googleplay/answer/${topic.source}?co=GENIE.CountryCode%3D${region.country}&hl=${region.hl}`,

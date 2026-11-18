@@ -1817,3 +1817,7 @@ text-align: center;
 }
 .pagination-nav[aria-disabled="true"] { opacity: .45; cursor: default; }
 .pagination-nav { text-decoration: none; }
+.pagination-static-nav { flex-wrap: wrap; gap: 0.45rem; }
+.pagination-page { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 0.65rem; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-secondary); color: var(--text-secondary); font-weight: 700; text-decoration: none; box-sizing: border-box; }
+a.pagination-page:hover { border-color: var(--accent); color: var(--accent); background: var(--bg-card); }
+.pagination-page.is-current { background: var(--accent); color: var(--bg-primary); border-color: var(--accent); }

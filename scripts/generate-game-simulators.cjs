@@ -2090,11 +2090,11 @@ function generateGamePageHtml(game, localeKey) {
   <meta property="og:title" content="${pageTitle}" />
   <meta property="og:description" content="${gameDesc}" />
   <meta property="og:url" content="https://playpoint-sim.com${langPrefix}/games/${game.id}/" />
-  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta property="og:image" content="https://playpoint-sim.com/images/ogp/games/${localeKey}-${game.id}.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${pageTitle}" />
   <meta name="twitter:description" content="${gameDesc}" />
-  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta name="twitter:image" content="https://playpoint-sim.com/images/ogp/games/${localeKey}-${game.id}.jpg" />
 
   <link rel="stylesheet" href="${assetsRelative}articles/article-shared.css?v=eb2e12f5ef" />
   <link rel="stylesheet" href="${assetsRelative}games/games.css" />
@@ -2477,11 +2477,11 @@ function generatePortalPageHtml(localeKey) {
   <meta property="og:title" content="${loc.portalTitleTag || `${loc.portalH1} - ${loc.siteName}`}" />
   <meta property="og:description" content="${loc.portalMeta}" />
   <meta property="og:url" content="https://playpoint-sim.com${langPrefix}/games/" />
-  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta property="og:image" content="https://playpoint-sim.com/images/ogp/games/${localeKey}-portal.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${loc.portalTitleTag || `${loc.portalH1} - ${loc.siteName}`}" />
   <meta name="twitter:description" content="${loc.portalMeta}" />
-  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta name="twitter:image" content="https://playpoint-sim.com/images/ogp/games/${localeKey}-portal.jpg" />
 
   <link rel="stylesheet" href="${assetsRelative}articles/article-shared.css?v=eb2e12f5ef" />
   <link rel="stylesheet" href="${assetsRelative}games/games.css" />

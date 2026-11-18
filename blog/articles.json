@@ -720,6 +720,44 @@
     ]
   },
   {
+    "id": "google-play-balance-combine-payment",
+    "title": "Google Play残高とクレカ・携帯決済は併用できる？不足分の払い方",
+    "date": "2026-11-19",
+    "modified": "2026-11-19",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "listTitle": "Google Play残高と別決済の併用方法｜不足分の払い方",
+    "listDescription": "Play Points交換のPlayクレジットやGoogle Play残高が足りない時、クレカやキャリア決済と併用できる条件と例外を解説。",
+    "description": "Play Pointsから交換したGoogle Playクレジット（Play残高）が購入額より足りないとき、クレジットカードやキャリア決済と併用して不足分を支払える条件と併用できない原因をまとめました。",
+    "tags": [
+      "Play Points",
+      "Playクレジット",
+      "Google Play残高",
+      "併用決済",
+      "使い道"
+    ],
+    "file": "../articles/2026-11-19-google-play-balance-combine-payment.html",
+    "thumbnail": "../articles/thumbnails/google-play-balance-combine-payment-square-v1.webp",
+    "thumbnailKind": "generic",
+    "ogp": "../articles/ogp/2026-11-19-google-play-balance-combine-payment.jpg",
+    "source": "editorial",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2025-12-25-best-use.html",
+        "使い道・クーポンとPlayクレジットを比較"
+      ],
+      [
+        "/articles/2026-10-14-play-credit-subscription.html",
+        "Playクレジットでサブスク払い：初回と更新時の違い"
+      ],
+      [
+        "/articles/2026-07-25-play-credit-not-working.html",
+        "交換したPlayクレジットを使えないときの原因"
+      ]
+    ]
+  },
+  {
     "id": "play-credit-subscription-2026",
     "title": "Play Pointsで交換したGoogle Playクレジットはサブスクに使える？初回と更新時の違い【2026年】",
     "date": "2026-10-14",
@@ -2668,9 +2706,9 @@
   },
   {
     "id": "2026-10-23-seven-eleven-gift-card-lottery",
-    "title": "【11/15まで】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件",
+    "title": "【応募・抽選終了】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件",
     "date": "2026-10-28",
-    "modified": "2026-11-01",
+    "modified": "2026-11-19",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2678,9 +2716,9 @@
       "POSA",
       "セブン‐イレブン"
     ],
-    "description": "セブンのGoogle Playギフトカード購入で1,000円につき抽選1口。1万円分の10口まとめ抽選で100ポイント保証になる条件と、購入・応募・抽選の締切を解説します。",
-    "listTitle": "【11/15まで】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件",
-    "listDescription": "セブンのGoogle Playギフトカード購入で1,000円につき抽選1口。1万円分の10口まとめ抽選で100ポイント保証になる条件と、購入・応募・抽選の締切を解説します。",
+    "description": "セブンのGoogle Playギフトカード抽選（購入11/15・応募11/16・抽選11/17で終了）の条件記録。1万円分の10口まとめ抽選で100pt保証の仕組みと、次の購入先を整理しました。",
+    "listTitle": "【応募・抽選終了】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件",
+    "listDescription": "セブンのGoogle Playギフトカード抽選は購入11/15・応募11/16・抽選11/17で受付終了。10口まとめ抽選の仕組みと現在のギフトカードキャンペーン比較へ案内します。",
     "file": "../articles/2026-10-23-seven-eleven-gift-card-lottery.html",
     "ogp": "../articles/ogp/2026-10-23-seven-eleven-gift-card-lottery.jpg",
     "thumbnail": "../articles/thumbnails/2026-10-23-seven-eleven-gift-card-lottery-square-v1.webp",
@@ -2725,7 +2763,7 @@
     "related": [
       [
         "/articles/2026-10-23-seven-eleven-gift-card-lottery.html",
-        "【11/15まで】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件"
+        "【応募・抽選終了】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件"
       ],
       [
         "/articles/2026-10-23-google-play-gift-card-comparison.html",
@@ -2744,7 +2782,7 @@
     "id": "2026-10-23-google-play-gift-card-comparison",
     "title": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】",
     "date": "2026-10-28",
-    "modified": "2026-11-13",
+    "modified": "2026-11-19",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2752,9 +2790,9 @@
       "POSA",
       "購入先比較"
     ],
-    "description": "11月13日時点のGoogle Playギフトカード購入先を比較。楽天の旧500円OFF終了と次回の利用開始日、セブンの10口抽選、ファミマの当選メールを案内します。",
+    "description": "11月19日時点のGoogle Playギフトカード購入先を比較。ストア内デジタルギフト最大10％還元や楽天11/19開始500円OFF、セブン・ファミマ終了後の確認点を案内します。",
     "listTitle": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】",
-    "listDescription": "11月13日時点のGoogle Playギフトカード購入先を比較。楽天の旧500円OFF終了と次回の利用開始日、セブンの10口抽選、ファミマの当選メールを案内します。",
+    "listDescription": "11月19日時点のGoogle Playギフトカード購入先を比較。ストア内デジタルギフト最大10％還元や楽天11/19開始500円OFF、セブン・ファミマ終了後の確認点を案内します。",
     "file": "../articles/2026-10-23-google-play-gift-card-comparison.html",
     "ogp": "../articles/ogp/2026-10-23-google-play-gift-card-comparison.jpg",
     "thumbnail": "../articles/thumbnails/2026-10-23-google-play-gift-card-comparison-square-v1.webp",
@@ -2762,7 +2800,7 @@
     "related": [
       [
         "/articles/2026-10-23-seven-eleven-gift-card-lottery.html",
-        "【11/15まで】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件"
+        "【応募・抽選終了】セブンのGoogle Playギフトカード抽選｜1万円で100pt保証の条件"
       ],
       [
         "/articles/2026-10-23-familymart-gift-card-lottery.html",

@@ -113,6 +113,8 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   if (LOCALE_OG[langDir]) {
     output = output.replace(/(<meta property="og:locale" content=")[^"]+(">)/, `<meta property="og:locale" content="${LOCALE_OG[langDir]}">`);
     output = output.replace(/(<meta property="og:image:alt" content=")[^"]+(">)/, `<meta property="og:image:alt" content="${ALT_OG[langDir]}">`);
+    output = output.replace(/(<meta name="twitter:image:alt" content=")[^"]+(">)/, `<meta name="twitter:image:alt" content="${ALT_OG[langDir]}">`);
+    output = output.replaceAll('https://playpoint-sim.com/blog/?q={search_term_string}', `https://playpoint-sim.com/${langDir}/articles/?q={search_term_string}`);
   }
   // og:url は各言語版の実URLに置換（SNSシェア・OGP正確性のため必須）
   output = output.replace(
@@ -196,6 +198,49 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
 
   // 12. フッター meta-line の置換
   output = output.replace(/<!-- META_LINE_START -->[\s\S]*?<!-- META_LINE_END -->/, config.metaLine);
+
+  // 12b. 多言語フッターの地域リンクを各言語の許容文字・リンクへ置換
+  const FOOTER_LANG_LINKS = {
+    en: `<p class="footer-lang-links" aria-label="Language versions">
+          <a href="/" hreflang="ja">Japanese (JP)</a>
+          <span class="footer-separator">|</span>
+          <a href="/ko/" hreflang="ko">Korean (KR)</a>
+          <span class="footer-separator">|</span>
+          <a href="/tw/" hreflang="zh-TW">Traditional Chinese (TW)</a>
+          <span class="footer-separator">|</span>
+          <a href="/hk/" hreflang="zh-HK">Hong Kong (HK)</a>
+          <span class="footer-separator">|</span>
+          <a href="/in/" hreflang="en-IN">India (IN)</a>
+        </p>`,
+    ko: `<p class="footer-lang-links" aria-label="언어 및 지역 버전">
+          <a href="/" hreflang="ja">일본어 (JP)</a>
+          <span class="footer-separator">|</span>
+          <a href="/en/" hreflang="en">English (US)</a>
+          <span class="footer-separator">|</span>
+          <a href="/tw/" hreflang="zh-TW">번체 중문 (TW)</a>
+          <span class="footer-separator">|</span>
+          <a href="/hk/" hreflang="zh-HK">홍콩 (HK)</a>
+          <span class="footer-separator">|</span>
+          <a href="/in/" hreflang="en-IN">인도 (IN)</a>
+        </p>`,
+    tw: `<p class="footer-lang-links" aria-label="語言與地區版本">
+          <a href="/" hreflang="ja">日文 (JP)</a>
+          <span class="footer-separator">|</span>
+          <a href="/en/" hreflang="en">English (US)</a>
+          <span class="footer-separator">|</span>
+          <a href="/ko/" hreflang="ko">韓文 (KR)</a>
+          <span class="footer-separator">|</span>
+          <a href="/hk/" hreflang="zh-HK">香港 (HK)</a>
+          <span class="footer-separator">|</span>
+          <a href="/in/" hreflang="en-IN">印度 (IN)</a>
+        </p>`
+  };
+  if (FOOTER_LANG_LINKS[langDir]) {
+    output = output.replace(
+      /<!-- FOOTER_LANG_LINKS_START -->[\s\S]*?<!-- FOOTER_LANG_LINKS_END -->/,
+      FOOTER_LANG_LINKS[langDir]
+    );
+  }
 
   // 13. 商標免責の置換
   if (config.trademarkDisclaimer) {

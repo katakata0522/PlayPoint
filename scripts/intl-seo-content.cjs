@@ -215,7 +215,7 @@ const PAGE_TYPES = {
     },
     tw: {
       title: 'Google Play Points 白金等級需要多少？',
-      description: '估算 Google Play Points 白金等級所需點數與金額，並確認台灣、美國、韓國、日本的地區差異。',
+      description: '估算台灣 Google Play Points 白金等級所需點數與大約課金金額，並整理台灣、美國、韓國與日本的等級門檻及回饋差異。',
       eyebrow: '白金等級規劃',
       h1: 'Google Play Points 白金等級需要多少？',
       lead: '白金是許多使用者會先規劃的等級。請先確認還差多少點，再比較目前等級回饋、活動特別獲點率與所在地區的適用條件。',
@@ -810,7 +810,7 @@ const ADDITIONAL_EN_ARTICLES = [
   },
   {
     file: 'en/articles/google-play-points-promotion-not-applied.html',
-    title: 'Google Play Points promotion not applied? Check the offer and your purchase',
+    title: 'Google Play Points promotion not applied? Check your offer',
     description: 'A step-by-step checklist for Google Play Points bonuses that did not apply, including activation, dates, app eligibility, caps, and comparison with base-rate points.',
     h1: 'Google Play Points promotion not applied? Check the offer and your purchase',
     badge: 'Promotion check',
@@ -1875,7 +1875,13 @@ const ARTICLE_HUB_CONTENT = {
       ['/en/articles/google-play-points-level-maintenance-reset.html', 'Keeping your level and the yearly reset'],
       ['/en/status/silver/', 'US Silver: estimate the remaining cost'],
       ['/en/status/gold/', 'US Gold: estimate the remaining cost'],
+      ['/en/status/platinum/', 'US Platinum: estimate the remaining cost'],
+      ['/en/status/diamond/', 'US Diamond: estimate the remaining cost'],
       ['/en/amount/10000/', 'Points for $50 of eligible US spending'],
+      ['/en/points-cost/', 'Points-to-spend converter (100 to 1,000 pt)'],
+      ['/en/campaign/2x/', '2x Play Points promo calculator'],
+      ['/en/campaign/3x/', '3x Play Points promo calculator'],
+      ['/en/campaign/wait/', 'Should you wait for a Play Points promo?'],
       ['/en/maintenance/platinum/', 'Platinum maintenance calculator'],
       ['/en/maintenance/diamond/', 'Diamond maintenance calculator']
     ]
@@ -1903,7 +1909,13 @@ const ARTICLE_HUB_CONTENT = {
       ['/ko/articles/google-play-points-level-maintenance-reset.html', '등급 유지와 연초 재산정'],
       ['/ko/status/silver/', '한국 실버까지 필요한 금액'],
       ['/ko/status/gold/', '한국 골드까지 필요한 금액'],
+      ['/ko/status/platinum/', '한국 플래티넘까지 필요한 금액'],
+      ['/ko/status/diamond/', '한국 다이아몬드까지 필요한 금액'],
       ['/ko/amount/10000/', '한국 50,000원 구매 시 예상 포인트'],
+      ['/ko/points-cost/', '목표 포인트별 필요 금액 비교'],
+      ['/ko/campaign/2x/', '2배 적립 캠페인 계산기'],
+      ['/ko/campaign/3x/', '3배 적립 캠페인 계산기'],
+      ['/ko/campaign/wait/', '캠페인을 기다려야 할까?'],
       ['/ko/maintenance/platinum/', '플래티넘 유지 계산기'],
       ['/ko/maintenance/diamond/', '다이아몬드 유지 계산기']
     ]
@@ -1931,7 +1943,13 @@ const ARTICLE_HUB_CONTENT = {
       ['/tw/articles/google-play-points-level-maintenance-reset.html', '等級維持與年初重新判定'],
       ['/tw/status/silver/', '台灣銀級尚需消費多少'],
       ['/tw/status/gold/', '台灣黃金級尚需消費多少'],
+      ['/tw/status/platinum/', '台灣白金級尚需消費多少'],
+      ['/tw/status/diamond/', '台灣鑽石級尚需消費多少'],
       ['/tw/amount/10000/', '台灣消費 NT$1,500 的預估點數'],
+      ['/tw/points-cost/', '目標點數對應金額換算'],
+      ['/tw/campaign/2x/', '2 倍活動點數計算機'],
+      ['/tw/campaign/3x/', '3 倍活動點數計算機'],
+      ['/tw/campaign/wait/', '該等活動加碼再儲值嗎？'],
       ['/tw/maintenance/platinum/', '白金級維持計算器'],
       ['/tw/maintenance/diamond/', '鑽石級維持計算器']
     ]

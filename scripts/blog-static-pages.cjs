@@ -23,7 +23,12 @@ function absoluteBlogLinks(html) {
 }
 function pagination(page, count) {
   const link = (number, label, direction) => `<a class="pagination-nav pagination-box pagination-${direction}" href="${pagePath(number)}">${label}</a>`;
-  return `<!-- static-pagination:start --><div class="pagination-compact-wrapper">${page > 1 ? link(page - 1, '← 前へ', 'prev') : '<span class="pagination-nav pagination-box" aria-disabled="true">← 前へ</span>'}<span aria-current="page">${page} / ${count}ページ</span>${page < count ? link(page + 1, '次へ →', 'next') : '<span class="pagination-nav pagination-box" aria-disabled="true">次へ →</span>'}</div><!-- static-pagination:end -->`;
+  const pageLinks = Array.from({ length: count }, (_, idx) => idx + 1)
+    .map(number => number === page
+      ? `<span class="pagination-box pagination-page is-current" aria-current="page">${number}</span>`
+      : `<a class="pagination-box pagination-page" href="${pagePath(number)}">${number}</a>`)
+    .join('');
+  return `<!-- static-pagination:start --><nav class="pagination-compact-wrapper pagination-static-nav" aria-label="ページ送り">${page > 1 ? link(page - 1, '← 前へ', 'prev') : '<span class="pagination-nav pagination-box" aria-disabled="true">← 前へ</span>'}${pageLinks}${page < count ? link(page + 1, '次へ →', 'next') : '<span class="pagination-nav pagination-box" aria-disabled="true">次へ →</span>'}</nav><!-- static-pagination:end -->`;
 }
 function renderStaticPage(template, articles, page, coreVersion = '', privacyVersion = '') {
   const count = Math.ceil(articles.length / PAGE_SIZE), items = articles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);

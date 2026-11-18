@@ -100,7 +100,7 @@ const GAME_EVIDENCE = {
     offers: {
       en: [offer(text('Daily Carat Pack'), text('Daily Carat Pack is the product to look for in the English version. Its rewards and price belong to that version; Japanese Umasuku and Umaplan have separate benefits.'), S.umaUS)],
       ko: [offer(text(null, '먼슬리 우마'), text(null, '구매·갱신 시 유료 쥬얼 500개, 매일 무료 쥬얼 50개와 데일리 레이스 티켓 추가 보충 등을 제공합니다. 못 받은 일일 무료 쥬얼은 다음 로그인에 모아서 지급됩니다.'), S.umaKR, true)],
-      tw: [offer(text(null, null, '每日寶石包'), text(null, null, '繁體中文版的發行商商品列表列有每日寶石包。不要直接套用日本版ウマスク與ウマプラン的特典或日圓價格。'), S.umaTW)]
+      tw: [offer(text(null, null, '每日寶石包'), text(null, null, '繁體中文版的發行商商品列表列有每日寶石包。不要直接套用日本版月費方案（Umasuku／Uma Plan）的特典或日圓價格。'), S.umaTW)]
     }
   },
   fgo: {

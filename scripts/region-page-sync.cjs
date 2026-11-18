@@ -17,7 +17,7 @@ const REGION_PAGES = Object.freeze({
     description: '香港 Play Points 升級要花多少？以鉑金級 4,000 分、鑽石級 15,000 分及每 HK$7 的獲點率，估算尚欠積分與港元消費金額。',
     mainTitle: 'Google Play Points 計算器（香港）',
     siteDescription: "輸入目前等級與尚欠積分，試算香港升級所需的港元消費金額。",
-    factNote: `<div class="region-fact-note" role="note" aria-label="香港 Play Points 官方條件"><p><strong>香港版：</strong>基本獲點率以每 HK$7 計算。香港目前有銅級、銀級、金級、鉑金級、鑽石級五個等級。鉑金級需要一年度內賺取 4,000 分，鑽石級需要 15,000 分；升級看的是年度積分進度，不是兌換後剩下的積分餘額。</p><p><strong>升級要花多少？</strong>例如剛達到金級、年度進度為 1,000 分，升至鉑金級尚欠 3,000 分。按金級每 HK$7 賺 1.5 分計算，約需 HK$14,000。若剛達到鉑金級、年度進度為 4,000 分，升至鑽石級尚欠 11,000 分，按每 HK$7 賺 1.75 分計算，約需 HK$44,000。</p><p>以上是維持該基本獲點率、不計活動或獎賞的稅前試算；Google 會按每筆購買四捨五入。你的年度進度通常不會剛好停在門檻，將 Play Points 畫面顯示的尚欠分數填入下方，會更貼近自己的情況。</p><p><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DHK&hl=zh-HK" target="_blank" rel="noopener noreferrer">香港官方等級與獲點率</a> · <a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DHK&hl=zh-HK" target="_blank" rel="noopener noreferrer">年度進度、兌換與獲點計算方式</a></p></div>`
+    factNote: `<div class="region-fact-note" role="note" aria-label="香港 Play Points 官方條件"><p><strong>香港版：</strong>基本獲點率以每 HK$7 計算。香港目前有銅級、銀級、金級、鉑金級、鑽石級五個等級。鉑金級需要一年度內賺取 4,000 分，鑽石級需要 15,000 分；升級看的是年度積分進度，不是兌換後剩下的積分餘額。</p><p><strong>升級要花多少？</strong>例如剛達到金級、年度進度為 1,000 分，升至鉑金級尚欠 3,000 分。按金級每 HK$7 賺 1.5 分計算，約需 HK$14,000。若剛達到鉑金級、年度進度為 4,000 分，升至鑽石級尚欠 11,000 分，按每 HK$7 賺 1.75 分計算，約需 HK$44,000。</p><p>以上是維持該基本獲點率、不計活動或獎賞的稅前試算；Google 會按每筆購買四捨五入。你的年度進度通常不會剛好停在門檻，將 Play Points 畫面顯示的尚欠分數填入下方，會更貼近自己的情況。</p><p><a href="google-play-points-guide.html">香港版 Play Points 完整等級、HK$7 計分與獎賞攻略</a> · <a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DHK&hl=zh-HK" target="_blank" rel="noopener noreferrer">香港官方等級與獲點率</a> · <a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DHK&hl=zh-HK" target="_blank" rel="noopener noreferrer">年度進度、兌換與獲點計算方式</a></p></div>`
   },
   in: {
     source: 'en',
@@ -28,7 +28,7 @@ const REGION_PAGES = Object.freeze({
     description: 'Calculate Play Points earned from Indian rupee spending and the INR needed to level up. Bronze earns 1 point per ₹5 spent; reward redemption values are separate.',
     mainTitle: 'Google Play Points Calculator — India',
     siteDescription: "Enter your levels and points needed to estimate spending in Indian rupees.",
-    factNote: `<div class="region-fact-note" role="note" aria-label="India Play Points official conditions"><p><strong>India edition:</strong> Bronze earns 1 point per ₹5 of eligible pre-tax spending; ₹5 is the earning unit, not the rupee cash value of a point. Google currently lists Bronze, Silver, Gold, and Platinum for India, with Platinum starting at 4,000 points.</p><p>For example, ₹500 of eligible spending earns about 100 points at Bronze; to value points you already have, compare the reward and required points in your Play Points Use tab. Points cannot be converted to cash.</p><p><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DIN&hl=en-IN" target="_blank" rel="noopener noreferrer">Check the official Google Play India level and earn-rate table</a> · <a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DIN&hl=en" target="_blank" rel="noopener noreferrer">India earning and redemption rules</a></p></div>`
+    factNote: `<div class="region-fact-note" role="note" aria-label="India Play Points official conditions"><p><strong>India edition:</strong> Bronze earns 1 point per ₹5 of eligible pre-tax spending; ₹5 is the earning unit, not the rupee cash value of a point. Google currently lists Bronze, Silver, Gold, and Platinum for India, with Platinum starting at 4,000 points.</p><p>For example, ₹500 of eligible spending earns about 100 points at Bronze; to value points you already have, compare the reward and required points in your Play Points Use tab. Points cannot be converted to cash.</p><p><a href="google-play-points-guide.html">Read the India Play Points Levels &amp; ₹5 Earning Guide (Bronze–Platinum)</a> · <a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DIN&hl=en-IN" target="_blank" rel="noopener noreferrer">Check the official Google Play India level and earn-rate table</a> · <a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DIN&hl=en" target="_blank" rel="noopener noreferrer">India earning and redemption rules</a></p></div>`
   }
 });
 
@@ -91,6 +91,7 @@ function buildHongKongPage(source) {
   html = replaceMetaContent(html, 'property="og:description"', config.description);
   html = replaceMetaContent(html, 'property="og:locale"', 'zh_HK');
   html = replaceMetaContent(html, 'property="og:image:alt"', 'Google Play Points 計算器（香港） OGP 圖片');
+  html = replaceMetaContent(html, 'name="twitter:image:alt"', 'Google Play Points 計算器（香港） OGP 圖片');
   html = replaceMetaContent(html, 'name="twitter:title"', config.title);
   html = replaceMetaContent(html, 'name="twitter:description"', config.description);
   html = html.replace(/("@type": "SoftwareApplication",[\s\S]*?"description": ")[^"]*(")/, `$1${config.description}$2`);
@@ -113,6 +114,7 @@ function buildHongKongPage(source) {
   html = mapOutsideForeignTerminology(html, chunk => chunk
     .replace(/黃金級/g, '金級')
     .replace(/白金級/g, '鉑金級'));
+  html = html.replace('<a href="/hk/" hreflang="zh-HK">香港 (HK)</a>', '<a href="/tw/" hreflang="zh-TW">台灣 (TW)</a>');
   html = replaceContentDate(html, config.contentDate);
   return ensureTopHreflang(html);
 }
@@ -127,6 +129,7 @@ function buildIndiaPage(source) {
   html = replaceMetaContent(html, 'property="og:description"', config.description);
   html = replaceMetaContent(html, 'property="og:locale"', 'en_IN');
   html = replaceMetaContent(html, 'property="og:image:alt"', 'Google Play Points Calculator India OGP Image');
+  html = replaceMetaContent(html, 'name="twitter:image:alt"', 'Google Play Points Calculator India OGP Image');
   html = replaceMetaContent(html, 'name="twitter:title"', config.title);
   html = replaceMetaContent(html, 'name="twitter:description"', config.description);
   html = html.replace(/("@type": "SoftwareApplication",[\s\S]*?"description": ")[^"]*(")/, `$1${config.description}$2`);
@@ -147,6 +150,7 @@ function buildIndiaPage(source) {
   html = html.replace(/Amount spent \(USD\)/g, 'Amount spent (INR)');
   html = html.replace(/Estimate the required spending to reach Platinum or Diamond status\./g, 'Estimate the required spending to reach Platinum status in India.');
   html = html.replace(/such as "just a little more to Platinum," "want to know if I can reach Diamond," or /g, 'such as "just a little more to Platinum" or ');
+  html = html.replace('<a href="/in/" hreflang="en-IN">India (IN)</a>', '<a href="/en/" hreflang="en">United States (EN)</a>');
   html = replaceContentDate(html, config.contentDate);
   return ensureTopHreflang(html);
 }

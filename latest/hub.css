@@ -113,10 +113,16 @@ body.latest-hub .benefit-product { font-size:13px; margin-bottom:3px; }
 body.latest-hub .lp-hero .lp-lead { margin:8px 0 6px; font-size:14px; line-height:1.7; }
 body.latest-hub .lp-trust-line span { font-size:12px; }
 html[lang] body.latest-hub .guide-latest-layout .benefit-tabs { grid-template-columns:repeat(4,minmax(0,1fr)); margin:0; }
-/* 共通ボタンのhover色を引き継がず、塗りつぶしは選択中だけに使う。 */
-html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button { font-size:14px; min-height:44px; white-space:nowrap; background:transparent; color:var(--reading-text); transition:none; }
+/* 共通ボタンのhover色を引き継がず、選択中・非選択の識別を下線インジケーターと色対比の両方で担保する。 */
+html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button { position:relative; font-size:14px; min-height:44px; white-space:nowrap; background:transparent; color:var(--reading-text); transition:none; }
 html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button[aria-selected="false"]:is(:hover,:active) { background:var(--reading-surface); color:var(--reading-text); border-color:var(--reading-link); }
 html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button[aria-selected="true"] { background:var(--reading-selected); color:var(--reading-on-selected); border-color:var(--reading-selected); }
+html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button[aria-selected="true"]::after { content:""; position:absolute; inset-inline:10px; inset-block-end:3px; border-block-end:3px solid currentColor; border-radius:2px; pointer-events:none; }
+body.latest-hub .latest-calc-shortcut { display:inline-flex; align-items:center; gap:6px; min-height:44px; margin-top:4px; padding:6px 12px; border:1px solid var(--reading-border); border-radius:8px; background:var(--reading-soft); color:var(--reading-link); font-size:14px; font-weight:700; text-decoration:none; }
+body.latest-hub .latest-calc-shortcut:hover { text-decoration:underline; text-underline-offset:3px; }
+body.latest-hub .benefit-card[data-benefit-state="soon"] { border-top:3px solid var(--reading-link); }
+body.latest-hub .benefit-card[data-benefit-state="ended"] { background:var(--reading-surface); border-style:dashed; }
+body.latest-hub .benefit-card[data-benefit-state="ended"] .benefit-action { background:transparent; border-color:var(--reading-border); color:var(--reading-text); }
 body.latest-hub .benefit-audience { border:0; border-bottom:1px solid var(--reading-border); border-radius:0; padding:0; margin:4px 0 0; background:none; }
 body.latest-hub .benefit-audience > summary { font-size:13px; font-weight:600; padding:12px 0; }
 body.latest-hub [data-audience-summary]:not(:empty) { margin-left:8px; padding:2px 6px; color:var(--reading-link); background:var(--reading-soft); border-radius:4px; font-size:12px; }
