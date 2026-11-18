@@ -21,7 +21,7 @@ function createSelect(values, current = values[0], labels = {}) {
   };
 }
 
-function loadShare({ search = '', href = 'https://playpoint-sim.com/?utm_source=test#result', dom = {} } = {}) {
+function loadShare({ search = '', href = 'https://playpoint-sim.com/?utm_source=test#result', pathname = new URL(href).pathname, dom = {}, sessionStorage, document } = {}) {
   const calls = [];
   const STATE = { dom, currentRegion: 'JP' };
   const CALC = {
@@ -41,10 +41,11 @@ function loadShare({ search = '', href = 'https://playpoint-sim.com/?utm_source=
   };
   const CONSTANTS = { MODE_MAIN: 'main', MODE_REVERSE: 'reverse' };
   const window = {
-    location: { search, href },
+    location: { search, href, pathname },
     __TEST_ENV__: true,
     PP_APP: {}
   };
+  if (sessionStorage !== undefined) window.sessionStorage = sessionStorage;
 
   const source = fs.readFileSync(path.join(root, 'js', 'share.js'), 'utf8')
     .replace(/^import\s+.*$/gm, '')
@@ -60,6 +61,7 @@ function loadShare({ search = '', href = 'https://playpoint-sim.com/?utm_source=
     URLSearchParams,
     console
   };
+  if (document !== undefined) context.document = document;
   vm.createContext(context);
   vm.runInContext(source, context, { filename: 'share.js' });
 
@@ -223,4 +225,112 @@ test('対象額を共有URLへ保存し、復元・省略・不正値の扱い�
   dom.reverseEligibleAmount.value = '909';
   loadShare({ search: '?mode=reverse&amount=1000&status=1&multiplier=1', dom }).SHARE.applyFromUrl();
   assert.equal(dom.reverseEligibleAmount.value, '', '従来URLは対象額を持ち越さない');
+});
+
+test('クリーンURL遷移時はsessionStorageの一時プリセットから計算を復元して即時削除する', () => {
+  const store = new Map();
+  const sessionStorage = {
+    getItem(key) { return store.has(key) ? store.get(key) : null; },
+    setItem(key, value) { store.set(key, String(value)); },
+    removeItem(key) { store.delete(key); }
+  };
+  const createDom = () => ({
+    currentStatus: createSelect([1, 1.25, 1.5, 1.75, 2], 1),
+    targetStatus: createSelect([1000, 4000], 1000, { 1000: 'Gold', 4000: 'Platinum' }),
+    neededPoints: { value: '', max: '1000000' },
+    multiplier: { value: '1' },
+    baseRate: { value: '1' },
+    reverseStatus: createSelect([1, 1.25, 1.5, 1.75, 2], 1),
+    amountYen: { value: '' },
+    reverseMultiplier: { value: '1' }
+  });
+  const createDoc = () => {
+    const attrs = new Map();
+    const wrapperClasses = new Set();
+    const toggleAttrs = new Map();
+    const toggle = { setAttribute(k, v) { toggleAttrs.set(k, String(v)); } };
+    const wrapper = {
+      classList: { add(name) { wrapperClasses.add(name); } },
+      querySelector(sel) { return sel === '.calculator-advanced-settings__toggle' ? toggle : null; }
+    };
+    return {
+      attrs,
+      wrapperClasses,
+      toggleAttrs,
+      documentElement: { setAttribute(k, v) { attrs.set(k, String(v)); } },
+      getElementById(id) { return id === 'calculator-advanced-settings' ? wrapper : null; }
+    };
+  };
+
+  store.set('playpointPendingCalculatorPreset', JSON.stringify({
+    pathname: '/',
+    search: '?mode=main&status=1.75&target=platinum&points=1728&multiplier=3',
+    recorded_at: Date.now()
+  }));
+  const domMain = createDom();
+  const docMain = createDoc();
+  const mainCtx = loadShare({
+    search: '',
+    href: 'https://playpoint-sim.com/',
+    pathname: '/',
+    dom: domMain,
+    sessionStorage,
+    document: docMain
+  });
+  mainCtx.SHARE.applyFromUrl();
+
+  assert.equal(domMain.currentStatus.value, '1.75');
+  assert.equal(domMain.targetStatus.selectedIndex, 1);
+  assert.equal(domMain.neededPoints.value, '1728');
+  assert.equal(domMain.multiplier.value, '3');
+  assert.equal(store.has('playpointPendingCalculatorPreset'), false);
+  assert.equal(docMain.attrs.get('data-playpoint-advanced-settings'), 'open');
+  assert.equal(docMain.wrapperClasses.has('is-open'), true);
+  assert.equal(docMain.toggleAttrs.get('aria-expanded'), 'true');
+  assert.deepEqual(mainCtx.calls.slice(-2), [['switchMode', 'main'], 'calculate']);
+
+  store.set('playpointPendingCalculatorPreset', JSON.stringify({
+    pathname: '/',
+    search: '?mode=main&status=1.5&target=gold&points=1000',
+    recorded_at: Date.now() - 3 * 60 * 1000
+  }));
+  const domExpired = createDom();
+  const expiredCtx = loadShare({ search: '', href: 'https://playpoint-sim.com/', pathname: '/', dom: domExpired, sessionStorage });
+  expiredCtx.SHARE.applyFromUrl();
+  assert.equal(store.has('playpointPendingCalculatorPreset'), false);
+  assert.deepEqual(expiredCtx.calls, []);
+
+  store.set('playpointPendingCalculatorPreset', JSON.stringify({
+    pathname: '/en/',
+    search: '?mode=main&status=1.5&target=gold&points=1000',
+    recorded_at: Date.now()
+  }));
+  const mismatchCtx = loadShare({ search: '', href: 'https://playpoint-sim.com/', pathname: '/', dom: createDom(), sessionStorage });
+  mismatchCtx.SHARE.applyFromUrl();
+  assert.equal(store.has('playpointPendingCalculatorPreset'), false);
+  assert.deepEqual(mismatchCtx.calls, []);
+
+  store.set('playpointPendingCalculatorPreset', JSON.stringify({
+    pathname: '/',
+    search: '?mode=main&status=1.75&target=platinum&points=1728',
+    recorded_at: Date.now()
+  }));
+  const diaryCtx = loadShare({ search: '?mode=diary', href: 'https://playpoint-sim.com/?mode=diary', pathname: '/', dom: createDom(), sessionStorage });
+  diaryCtx.SHARE.applyFromUrl();
+  assert.deepEqual(diaryCtx.calls, []);
+
+  store.clear();
+  store.set('playpointPendingCalculatorPreset', JSON.stringify({
+    pathname: '/en/',
+    search: '?mode=reverse&status=1.5&amount=5000&multiplier=2',
+    recorded_at: Date.now()
+  }));
+  const domReverse = createDom();
+  const reverseCtx = loadShare({ search: '', href: 'https://playpoint-sim.com/en/', pathname: '/en/', dom: domReverse, sessionStorage });
+  reverseCtx.SHARE.applyFromUrl();
+  assert.equal(domReverse.reverseStatus.value, '1.5');
+  assert.equal(domReverse.amountYen.value, '5000');
+  assert.equal(domReverse.reverseMultiplier.value, '2');
+  assert.equal(store.has('playpointPendingCalculatorPreset'), false);
+  assert.deepEqual(reverseCtx.calls, ['updateReverseBaseRate', ['switchMode', 'reverse'], 'reverseCalculate']);
 });

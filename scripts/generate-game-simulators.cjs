@@ -2067,6 +2067,7 @@ function generateGamePageHtml(game, localeKey) {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="playpoint:anchor-ads" content="collapsed-bottom" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="last-modified" content="${GAME_CONTENT_UPDATED_AT}" />
   <meta name="author" content="${loc.authorName}" />
@@ -2453,6 +2454,7 @@ function generatePortalPageHtml(localeKey) {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="playpoint:anchor-ads" content="collapsed-bottom" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="author" content="${loc.authorName}" />
   <link rel="icon" href="${assetsRelative}favicon.svg" type="image/svg+xml" />

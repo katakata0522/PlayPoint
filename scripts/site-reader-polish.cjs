@@ -27,6 +27,17 @@ const DIRECTORY_COPY = Object.freeze({
     "guides": "購買前參考指南"
   }
 });
+function polishJapaneseGiftCardCta(html) {
+  html = html.replace(
+    '<div class="game-giftcard-cta-title">💳 課金前にチェック！さらにお得にする裏技</div>',
+    '<p class="game-directory-ad-label">広告・アフィリエイト</p>\n                  <div class="game-giftcard-cta-title">ギフトコードの購入条件も確認</div>'
+  );
+  html = html.replace(/(<a class="game-giftcard-cta-btn rakuten-primary-btn"[^>]*>)[\s\S]*?(<\/a>)/,
+    '$1楽天市場の認定店を確認する →$2');
+  html = html.replace(/(<a class="game-giftcard-cta-sublink"[^>]*>)[\s\S]*?(<\/a>)/,
+    '$1ギフトコードの購入ガイド →$2');
+  return html;
+}
 function polishGameDirectory(html, locale) {
   const copy = DIRECTORY_COPY[locale] || DIRECTORY_COPY.ja;
   // 計算機個別ページには適用しない、一覧専用の表示契約。
@@ -43,14 +54,7 @@ function polishGameDirectory(html, locale) {
       '$1\n  <link rel="stylesheet" href="/games/directory.css" />');
   }
   if (locale === 'ja') {
-    html = html.replace(
-      '<div class="game-giftcard-cta-title">💳 課金前にチェック！さらにお得にする裏技</div>',
-      '<p class="game-directory-ad-label">広告・アフィリエイト</p>\n                  <div class="game-giftcard-cta-title">ギフトコードの購入条件も確認</div>'
-    );
-    html = html.replace(/(<a class="game-giftcard-cta-btn rakuten-primary-btn"[^>]*>)[\s\S]*?(<\/a>)/,
-      '$1楽天市場の認定店を確認する →$2');
-    html = html.replace(/(<a class="game-giftcard-cta-sublink"[^>]*>)[\s\S]*?(<\/a>)/,
-      '$1ギフトコードの購入ガイド →$2');
+    html = polishJapaneseGiftCardCta(html);
   }
   // 短いサイドバーを廃止し、参考記事は一覧の末尾に折りたたんで残す。
   const sidebar = html.match(/\s*<!-- サイドバー -->\s*<aside class="sidebar-column">([\s\S]*?)<\/aside>/);
@@ -63,6 +67,39 @@ function polishGameDirectory(html, locale) {
     html = html.replace(sidebar[0], '');
   }
   return html;
+}
+const AD_LABEL_BY_LOCALE = Object.freeze({
+  ja: 'スポンサーリンク',
+  en: 'Sponsored',
+  ko: '광고',
+  tw: '廣告'
+});
+function syncArticleAdSlot(html, file, locale) {
+  if (!/^(?:(?:en|ko|tw)\/)?articles\/[^/]+\.html$/.test(file) || path.basename(file) === 'index.html') {
+    return html;
+  }
+  // 同意・URL境界を通らず即時実行する旧インライン広告枠を除去する。
+  html = html.replace(/\s*<div class="article-ad-slot">[\s\S]*?<\/div>\s*/g, '\n');
+  const isNoindex = /<meta\b[^>]*\bname=["']robots["'][^>]*\bcontent=["'][^"']*noindex/i.test(html);
+  if (isNoindex) {
+    return html.replace(/\s*<!-- 記事下 広告枠（レスポンシブ） -->\s*/g, '\n')
+      .replace(/\s*<div class="article-ad-container"[^>]*>[\s\S]*?<\/div>\s*/g, '\n');
+  }
+  if (!/\bclass=["'][^"']*\barticle-ad-container\b/i.test(html) && html.includes('</article>')) {
+    const adLabel = AD_LABEL_BY_LOCALE[locale] || AD_LABEL_BY_LOCALE.ja;
+    const container = `<div class="article-ad-container">\n  <span class="article-ad-label">${adLabel}</span>\n  <ins class="adsbygoogle"\n       style="display:block"\n       data-ad-client="ca-pub-3845885843809455"\n       data-ad-slot="8250492620"\n       data-ad-format="auto"\n       data-full-width-responsive="true"></ins>\n</div>`;
+    html = html.replace('</article>', `\n${container}\n</article>`);
+  }
+  return html;
+}
+function stripHtmlTags(value) {
+  let text = String(value || '');
+  let previous;
+  do {
+    previous = text;
+    text = text.replace(/<[^>]*>/g, '');
+  } while (text !== previous);
+  return text.replaceAll('<', '').replaceAll('>', '');
 }
 function contentEnd(html, index) {
   const tokens = /<\/?article\b[^>]*>/gi;
@@ -81,7 +118,7 @@ function polishPage(html, file) {
     '<details class="inpage-toc reader-toc"><summary class="inpage-toc-title"$2>$3</summary><nav class="article-toc"$1>$4</nav></details>');
   if (locale !== 'ja' && /\/articles\/[^/]+\.html$/.test(file)) {
     // 題名に含まれる主題の繰り返しだけを省く。固有の開催時期などは残す。
-    const normalize = value => value.replace(/<[^>]*>/g, '').toLowerCase()
+    const normalize = value => stripHtmlTags(value).toLowerCase()
       .replace(/google\s*play|구글\s*플레이/g, 'googleplay').replace(/\bquests\b/g, 'quest')
       .replace(/[\s\p{P}\p{S}]/gu, '');
     const title = normalize(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] || '');
@@ -134,6 +171,7 @@ function polishPage(html, file) {
     html = polishGameDirectory(html, locale);
     tools = true;
   }
+  if (/^games\/[^/]+\/index\.html$/.test(file)) html = polishJapaneseGiftCardCta(html);
   if (/^(?:en\/|ko\/|tw\/)?games\//.test(file)) html = html.replace(/<span class="site-logo-text">[\s\S]*?<\/span>/, '<span class="site-logo-text">PlayPoint</span>');
   if (html.includes('res-earned-points')) tools = true;
   if (tools && !html.includes('data-site-reader-tools')) html = html.replace('</body>', '<script src="/js/site-reader-tools.js" defer data-site-reader-tools></script>\n</body>');
@@ -145,6 +183,7 @@ function polishPage(html, file) {
     // Google公式が案内する通常アンカーの下部限定設定を、操作のある主計算機へ適用する。
     if (!html.includes('name="playpoint:anchor-ads"')) html = html.replace('</head>', '<meta name="playpoint:anchor-ads" content="collapsed-bottom">\n</head>');
   }
+  html = syncArticleAdSlot(html, file, locale);
   return html.replace(/^[\t ]+(?=\r?$)/gm, '');
 }
 function syncSiteReaderPolish(root) {
@@ -175,7 +214,7 @@ function addPracticalToc(html, file, locale) {
     .filter(h => !/^(?:related|author|reading|article-next|intl-hub)/.test(h[1]));
   if (headings.length < 5) return html;
   const label = {en:'On this page',ko:'이 글의 목차',tw:'本頁目錄'}[locale];
-  const toc = `<details class="intl-article-toc reader-toc"><summary>${label}</summary><nav aria-label="${label}"><ol>${headings.map(h => `<li><a href="#${h[1]}">${h[2].replace(/<[^>]+>/g, '')}</a></li>`).join('')}</ol></nav></details>`;
+  const toc = `<details class="intl-article-toc reader-toc"><summary>${label}</summary><nav aria-label="${label}"><ol>${headings.map(h => `<li><a href="#${h[1]}">${stripHtmlTags(h[2])}</a></li>`).join('')}</ol></nav></details>`;
   const headingStart = body.indexOf(headings[0][0]), prefix = body.slice(0, headingStart);
   const section = prefix.lastIndexOf('<section');
   const first = section > prefix.lastIndexOf('</section>') ? section : headingStart;

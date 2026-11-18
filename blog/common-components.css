@@ -146,3 +146,12 @@ vertical-align: middle;
 border: 1px solid #e2e8f0;
 letter-spacing: 0.02em;
 }
+
+/* URL保護による要求保留時および未配信確定時に空の広告枠や余白を残さない */
+ins.adsbygoogle[data-ad-status="unfilled"],
+.google-auto-placed:has(> ins.adsbygoogle[data-ad-status="unfilled"]),
+.article-ad:has(> ins.adsbygoogle[data-ad-status="unfilled"]),
+.blog-bottom-ad:has(> ins.adsbygoogle[data-ad-status="unfilled"]),
+html[data-ad-requests-paused="true"] :is(.google-auto-placed, ins.adsbygoogle, .article-ad, .blog-bottom-ad) {
+  display: none !important;
+}

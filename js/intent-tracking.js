@@ -37,6 +37,7 @@
             };
             analytics.rememberCalculatorEntry(url, context);
             track('lp_to_calculator_clicked', context);
+            analytics.handoffCalculatorPresetNavigation?.(event, link);
             return;
         }
 

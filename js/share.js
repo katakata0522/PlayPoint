@@ -94,8 +94,32 @@ export const SHARE = {
         return url.toString();
     },
 
+    consumePendingPreset() {
+        try {
+            const raw = window.sessionStorage?.getItem('playpointPendingCalculatorPreset');
+            if (!raw) return null;
+            window.sessionStorage.removeItem('playpointPendingCalculatorPreset');
+            const parsed = JSON.parse(raw);
+            const recordedAt = Number(parsed?.recorded_at);
+            if (!parsed || typeof parsed !== 'object'
+                || parsed.pathname !== window.location.pathname
+                || typeof parsed.search !== 'string'
+                || !Number.isFinite(recordedAt)
+                || recordedAt > Date.now() + 60 * 1000
+                || Date.now() - recordedAt > 2 * 60 * 1000) {
+                return null;
+            }
+            return new URLSearchParams(parsed.search);
+        } catch {
+            try { window.sessionStorage?.removeItem('playpointPendingCalculatorPreset'); } catch {}
+            return null;
+        }
+    },
+
     applyFromUrl() {
-        const params = new URLSearchParams(window.location.search);
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasUrlMode = Boolean(urlParams.get('mode'));
+        const params = hasUrlMode ? urlParams : (this.consumePendingPreset() || urlParams);
         const mode = params.get('mode');
         const status = this.getNumber(params, 'status', 1, 2);
         const target = params.get('target');
@@ -134,6 +158,13 @@ export const SHARE = {
             dom.neededPoints.value = String(points);
         }
         restoreRateInput(dom.multiplier, multiplier, 1, 10);
+        if ((multiplier > 1 || this.getNumber(params, 'baseRate', 0.1, 100) > 0) && typeof document !== 'undefined') {
+            document.documentElement?.setAttribute?.('data-playpoint-advanced-settings', 'open');
+            const advancedWrapper = document.getElementById?.('calculator-advanced-settings');
+            const advancedToggle = advancedWrapper?.querySelector?.('.calculator-advanced-settings__toggle');
+            advancedWrapper?.classList?.add('is-open');
+            advancedToggle?.setAttribute?.('aria-expanded', 'true');
+        }
         UI.switchMode(CONSTANTS.MODE_MAIN);
 
         // 共有URLからの復元時に自動計算を実行

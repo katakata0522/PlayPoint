@@ -4,6 +4,7 @@
     if (window.PlayPointAnalytics) return;
 
     const ENTRY_STORAGE_KEY = 'playpointCalculatorEntryContext';
+    const PRESET_STORAGE_KEY = 'playpointPendingCalculatorPreset';
     const ENTRY_MAX_AGE_MS = 30 * 60 * 1000;
     const MAX_PENDING_EVENTS = 20;
     const MAX_TEXT_LENGTH = 120;
@@ -283,6 +284,38 @@
             return true;
         } catch (error) {
             console.warn('計算機の流入情報を保存できませんでした。', error);
+            return false;
+        }
+    }
+
+    function handoffCalculatorPresetNavigation(event, link) {
+        if (!event || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+            return false;
+        }
+        if (!link || (link.target && link.target !== '_self') || link.hasAttribute?.('download')) {
+            return false;
+        }
+        try {
+            const url = resolveUrl(link);
+            if (url.origin !== window.location.origin || !CALCULATOR_PATHS.has(url.pathname)) return false;
+            const mode = url.searchParams.get('mode');
+            if (mode !== 'main' && mode !== 'reverse') return false;
+
+            window.sessionStorage.setItem(PRESET_STORAGE_KEY, JSON.stringify({
+                pathname: url.pathname,
+                search: url.search,
+                recorded_at: Date.now()
+            }));
+
+            const cleanUrl = new URL(url.pathname, url.origin);
+            for (const [key, value] of url.searchParams.entries()) {
+                if (ATTRIBUTION_QUERY_KEYS.has(key)) cleanUrl.searchParams.append(key, value);
+            }
+            if (typeof event.preventDefault === 'function') event.preventDefault();
+            if (typeof window.location.assign === 'function') window.location.assign(cleanUrl.href);
+            else window.location.href = cleanUrl.href;
+            return true;
+        } catch (error) {
             return false;
         }
     }
@@ -631,6 +664,7 @@
         clearCalculatorEntry,
         flushPending,
         getEntryContext,
+        handoffCalculatorPresetNavigation,
         hasConsent,
         installGtagBridge,
         isCalculatorDestination,

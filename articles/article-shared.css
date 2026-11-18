@@ -1613,3 +1613,11 @@ html { scroll-behavior: auto !important; }
 outline: 3px solid var(--reading-link, #0b57d0);
 outline-offset: 3px;
 }
+
+/* URL保護による要求保留時および未配信確定時に空の広告枠や余白を残さない */
+ins.adsbygoogle[data-ad-status="unfilled"],
+.google-auto-placed:has(> ins.adsbygoogle[data-ad-status="unfilled"]),
+.article-ad-container:has(> ins.adsbygoogle[data-ad-status="unfilled"]),
+html[data-ad-requests-paused="true"] :is(.google-auto-placed, ins.adsbygoogle, .article-ad-container) {
+  display: none !important;
+}
