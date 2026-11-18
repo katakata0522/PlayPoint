@@ -155,9 +155,10 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = ge
       ['https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3D' + country + '&hl=' + locale.lang, sourceLabel],
       ['https://support.google.com/googleplay/answer/15776742?co=GENIE.CountryCode%3D' + country + '&hl=' + locale.lang, sourceLabel]
     ] : []),
-    [page.jaPath, locale.referenceLabel],
     ...locale.articles,
-    [`/${localeKey}/author/katakata.html`, locale.policyLabel]
+    [`/${localeKey}/author/katakata.html`, locale.policyLabel],
+    ...(localeKey === 'en' && page.slug === 'status/diamond' ? [['/articles/2025-12-25-diamond-worth-it.html', 'Read Diamond value notes (Japan, Japanese)']] : []),
+    [page.jaPath, locale.referenceLabel]
   ];
   const schemas = [
     {
@@ -257,7 +258,6 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = ge
     <section class="section">
         <h2>${escapeHtml(locale.relatedTitle)}</h2>
         <ul class="lp-related-list">
-${localeKey === 'en' && page.slug === 'status/diamond' ? '            <li><a href="/articles/2025-12-25-diamond-worth-it.html">Read Diamond value notes (Japan, Japanese)</a></li>' : ''}
             ${related.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join('\n            ')}
         </ul>
     </section>
@@ -390,7 +390,7 @@ ${jsonLd(faqSchema)}
     <div class="hero">
         <span class="hero-badge">${escapeHtml(article.badge || 'International guide')}</span>
         <h1>${escapeHtml(article.h1)}</h1>
-        <p class="hero-meta">${escapeHtml(labels.updatedPrefix)} ${modifiedAt} ・ ${escapeHtml(labels.guideSuffix)}</p>
+        <p class="hero-meta">${escapeHtml(labels.updatedPrefix)} ${modifiedAt} · ${escapeHtml(labels.guideSuffix)}</p>
     </div>
 
     <article class="content">

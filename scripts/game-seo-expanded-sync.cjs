@@ -25,14 +25,14 @@ function pointTableHtml(amount) {
 const guideShell = createGuideShell({
   verifiedAt: VERIFIED_AT,
   badge: '🔎 現行情報を検証',
-  verificationPolicy: 'ゲーム内価格・定額商品・ガチャ仕様は変更されることがあります。この記事では確認できた公式情報を掲載し、未確認の価格は推測で補っていません。購入前に、商品の最新価格・内容とGoogle Playの獲得予定ポイントを確認してください。'
+  verificationPolicy: 'ゲーム内の価格や商品内容、キャンペーンの条件は時期によって変わります。購入前に、ゲーム内・公式ショップ・Google Playの購入画面で最新の販売価格と獲得予定ポイントを見比べてから選ぶのがおすすめです。'
 });
 
 function renderStarrailGuide() {
   const body = `
     <section class="section answer-box" data-editorial-flow="2026-10"><h2>毎日受け取れるなら候補。すぐ必要な星玉とは分けて考える</h2><p>列車補給標章は、購入時の往日の夢華300個と、30日間のログインで受け取る星玉90個ずつを合わせた商品です。夢華を1:1で星玉へ交換し、毎日分もすべて受け取れば<strong>最大3,000星玉相当</strong>になります。</p><p>選ぶときに大切なのは、<span class="marker-yellow">欲しいガチャの終了までに、何日分を受け取れるか</span>です。購入直後に3,000個使える商品ではありません。</p><p class="reader-source">出典：<a href="${SOURCES.starrailSupplyPassReference}" target="_blank" rel="noopener noreferrer">COGNOSPHEREの商品説明：購入時300夢華・ログイン日の90星玉</a></p></section>
     <section class="section"><h2>10日・20日・30日で、使える量はどれくらい？</h2><div class="pack-table-wrap"><table class="pack-table"><caption>購入時の300夢華を1:1で星玉へ交換する場合</caption><thead><tr><th scope="col">受け取った日数</th><th scope="col">毎日分の星玉</th><th scope="col">購入時分を含む星玉相当</th></tr></thead><tbody><tr><th scope="row">10日</th><td>90×10＝900</td><td>1,200</td></tr><tr><th scope="row">20日</th><td>90×20＝1,800</td><td>2,100</td></tr><tr><th scope="row">30日</th><td>90×30＝2,700</td><td>3,000</td></tr></tbody></table></div><p>たとえばガチャ終了までに受け取れるのが10日分なら、その期間に使えるのは最大1,200星玉相当です。残り20日分は後で受け取る分なので、今のガチャの不足分には含めません。</p><p><strong>ログインしなかった日の90星玉は、後からまとめて受け取れない仕組みです。</strong> 30日分の合計より、自分が受け取れる日数で比較すると選びやすくなります。</p></section>
-    <section class="section"><h2>即時チャージと迷ったら、必要な日を先に決める</h2><p>日々受け取って次のガチャへ備えるなら、列車補給標章を候補にできます。今日の不足分を埋めたいなら、手持ちの星玉・チケット・期限までに受け取れる配布分を確認し、その不足分に合う商品を比較します。</p><p>同じ支払額でも、初回増量の有無や購入経路で内容が変わることがあります。それぞれの購入画面で、同じ時点の価格と内容を比べてください。日本のGoogle Playの現行価格は、このページでは固定の円額として断定していません。</p></section>
+    <section class="section"><h2>即時チャージと迷ったら、必要な日を先に決める</h2><p>日々受け取って次のガチャへ備えるなら、列車補給標章を候補にできます。今日の不足分を埋めたいなら、手持ちの星玉・チケット・期限までに受け取れる配布分を確認し、その不足分に合う商品を比較します。</p><p>同じ支払額でも、初回増量の有無や購入経路で内容が変わることがあります。日本のGoogle Playでの現行価格は時期によって変わる場合があるため、固定の円額として決め打ちせず、それぞれの購入画面で同じ時点の価格と内容を比べてみてください。</p></section>
     <section class="section"><h2>Play Pointsは、Google Playから買う分で計算する</h2><p>Google Playでの対象購入ならPlay Pointsを確認できます。HoYoverseの別決済経路で買った分を、そのままGoogle Play購入として加算はしません。経路の違いは<a href="/articles/2026-08-19-web-store-external-billing-points.html">詳しくはこちら</a>です。</p><p>以下は税込1,000円の対象商品を1回購入する場合の例で、列車補給標章の販売価格ではありません。</p>${pointTableHtml(1000)}<p>価格が分かったら、購入予定額と現在のランクを同じゲームの計算機へ入力できます。ゲーム内通貨とPlayポイントは、使い道が違うものとして比べてください。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.starrailSupplyPassReference}" target="_blank" rel="noopener noreferrer">COGNOSPHEREの商品説明（Epic Games）：列車補給標章の内容。Google Play価格の出典ではありません</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">スターレイル Play Points計算機へ戻る ➔</a></p>`;
@@ -141,7 +141,7 @@ function syncUmamusume(rootDir) {
   const file = 'games/umamusume/index.html';
   let html = read(rootDir, file);
   html = replaceAllRequired(html, 'ウマ娘の天井（200連=6万円）で何ポイント貯まりますか？', 'ウマ娘の200連は固定で6万円ですか？', 'Uma FAQ question');
-  html = replaceAllRequired(html, '通常時で約600ポイント、Google Playポイント5倍キャンペーン時なら約3,000ポイント貯まります。', '200連には通常30,000ジュエルが必要ですが、所持ジュエル・有償/無償・期間限定商品・購入経路で実際の現金負担が変わるため、固定6万円とは断定しません。', 'Uma FAQ answer');
+  html = replaceAllRequired(html, '通常時で約600ポイント、Google Playポイント5倍キャンペーン時なら約3,000ポイント貯まります。', '200連には通常30,000ジュエルが必要ですが、所持ジュエルや無償分・期間限定商品・購入経路によって必要な課金額は変わります。購入予定の金額を計算機へ入力して目安を確認してみてください。', 'Uma FAQ answer');
   html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `ウマスク・ウマプラン・Play Points確認：${VERIFIED_AT}`);
   const block = `<section class="section" data-game-seo-guide="umamusume"><h2>終了済みのデイリージュエルパックを現行商品から除外</h2><p>デイリージュエルパックは2024年12月19日4:59に終了しています。現在の月額ウマスク980円、ウマプラン1,980円、または実際の課金予定額を使って計算します。</p><p><a href="./umasuku-value/">ウマスク980円の特典・受取仕様・Play Pointsを詳しく見る ➔</a></p></section>`;
   html = insertBeforeRequired(html, '<section class="section game-source-section">', block, 'data-game-seo-guide="umamusume"', 'Uma guide block');

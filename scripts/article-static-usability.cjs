@@ -46,7 +46,7 @@ const ARTICLE_PROMPT_COPY = Object.freeze({
     aria: "ダイヤモンドまでの不足額",
     label: "予定外の購入を決める前に",
     heading: "ダイヤモンドまでの不足額",
-    body: "プラチナでダイヤモンドまで残り3,000ptの例を開けます。不足ポイントと獲得率は、Google Playに表示された自分の条件に直して試算してください。税や購入ごとの丸めなどで実際の必要額は変わります。",
+    body: "プラチナでダイヤモンドまで残り3,000ptの例を開けます。不足ポイントと獲得率は、Google Playに表示された自分の条件に直して試算してみてください。",
     cta: "残り3,000ptの例を計算する",
     href: "/?mode=main&amp;status=1.75&amp;target=diamond&amp;points=3000&amp;multiplier=1"
   },

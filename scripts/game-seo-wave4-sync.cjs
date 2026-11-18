@@ -8,7 +8,7 @@ const { VERIFIED_AT, SOURCES, GAME_SEO_WAVE4 } = require('./game-seo-wave4-data.
 const guideShell = createGuideShell({
   verifiedAt: VERIFIED_AT,
   badge: '🔎 公式情報を基準に検証',
-  verificationPolicy: 'Google Playと公式Web決済は別の購入経路です。現行Google Play価格を公開一次情報で確認できない場合は推測で補わず、ゲーム内・Google Playの購入画面を購入前に確認してください。'
+  verificationPolicy: 'Google Playと公式Web決済では、使える特典や貯まるポイントが異なります。同じ商品でも金額が違うことがあるので、ゲーム内・Google Playと公式Webの購入画面を見比べて選びましょう。'
 });
 
 function syncParentGuide(rootDir, config) {

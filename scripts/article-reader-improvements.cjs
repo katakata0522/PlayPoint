@@ -119,7 +119,7 @@ function syncReaderImprovements(root) {
   let calendarAfter = calendarBefore.replace(/<!-- reader-calendar:start -->[\s\S]*?<!-- reader-calendar:end -->\s*/g, '');
   const calendar = `<!-- reader-calendar:start --><section class="section reader-calendar" aria-labelledby="reader-calendar-title">
 <h2 id="reader-calendar-title">自分の確認日をカレンダーに残す</h2>
-<p>自分に関係する日だけを選べます。各予定は次回から3回分の終日予定です。開催日時や特典の提供を保証するものではありません。</p>
+<p>自分に関係する日だけを選べます。各予定は次回から3回分の終日予定で、実際の開催日時や特典内容はGoogle Playアプリ内の表示もあわせてご確認ください。</p>
 <form data-reader-calendar hidden><fieldset><legend>保存したい確認日</legend>
 <label><input type="checkbox" name="check-day" value="ticket">火曜：Super Ticket（プラチナ・ダイヤモンド）</label>
 <label><input type="checkbox" name="check-day" value="pass">木曜：Play Pass週次特典（対象の利用者）</label>
