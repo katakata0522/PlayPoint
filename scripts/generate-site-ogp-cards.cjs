@@ -96,13 +96,27 @@ function collectFallbackPages(rootDir = ROOT) {
   return results.sort();
 }
 
+const HTML_ENTITIES = Object.freeze({
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&#39;': "'"
+});
+
+function stripTags(str) {
+  let prev;
+  let next = String(str || '');
+  do {
+    prev = next;
+    next = next.replace(/<[^>]*>?/g, '');
+  } while (next !== prev);
+  return next.replace(/[<>]/g, '');
+}
+
 function decodeHtml(str) {
   return String(str || '')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replace(/&(?:amp|lt|gt|quot|#39);/g, match => HTML_ENTITIES[match])
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -110,7 +124,7 @@ function decodeHtml(str) {
 function extractPageInfo(rootDir, rel) {
   const html = fs.readFileSync(path.join(rootDir, rel), 'utf8');
   const loc = localeForRel(rel);
-  const h1 = decodeHtml((html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || '').replace(/<[^>]+>/g, ''));
+  const h1 = decodeHtml(stripTags(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || ''));
   const titleTag = decodeHtml(html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] || '');
   const desc = decodeHtml(html.match(/<meta\s+name=["']description["']\s+content=["']([\s\S]*?)["']/i)?.[1] || '');
   const title = h1 || titleTag.split(/\s*[|—–]\s*/)[0].trim();
