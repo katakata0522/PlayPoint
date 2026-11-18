@@ -916,10 +916,16 @@ font-weight: normal;
 color: var(--link-color);
 }
 .result-purchase-check {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 0.55em;
 margin: 0.75em 0 0;
 }
 .result-purchase-check a {
-display: block;
+display: flex;
+flex-direction: column;
+justify-content: center;
+box-sizing: border-box;
 min-height: 44px;
 padding: 0.6em 0.7em;
 border: 1px solid rgba(11, 87, 208, 0.2);
@@ -2720,10 +2726,10 @@ outline: 3px solid var(--reading-link, #0b57d0);
 outline-offset: 3px;
 }
 .calculator-brand { display:block; text-align:center; margin:12px 0 0; font-size:14px; font-weight:800; letter-spacing:.04em; color:#176773; }
-html { scroll-padding-bottom:140px; }
-body { padding-bottom:110px; }
+html { scroll-padding-bottom:160px; }
+body { padding-bottom:130px; }
 .calculator-wrapper .tab-switch { scroll-margin-top:16px; }
-.calculator-wrapper :is(input,button,.result-box) { scroll-margin-bottom:150px; }/* モードの選択、hover、フォーカスを別の状態として示す。 */
+.calculator-wrapper :is(input,button,.result-box,#result-details,.result-purchase-check a) { scroll-margin-bottom:160px; }/* モードの選択、hover、フォーカスを別の状態として示す。 */
 .tab-switch button[aria-selected="true"] { background:#17694f; color:#fff; box-shadow:inset 0 -3px 0 #cce9bd; }
 .tab-switch button[aria-selected="false"]:hover:not(:disabled) { background:#e2ede8; color:#183e36; transform:none; box-shadow:none; }
 .tab-switch button:focus-visible { outline:3px solid #145f83; outline-offset:3px; }

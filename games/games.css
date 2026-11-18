@@ -807,6 +807,8 @@ body .site-header .site-logo { justify-content:flex-start; }
   .game-sim-card #game-sim-form[data-input-mode="amount"] .input-field:has(#sim-custom-amount) { padding:0; border:0; background:transparent; }
   .game-sim-card .game-sim-lead { margin-bottom:12px; font-size:14px; line-height:1.65; }
 }
+html { scroll-padding-bottom: 140px; }
+@media (max-width: 760px) { body { padding-bottom: 130px; } }
 
 /* URL保護による要求保留時および未配信確定時に空の広告枠や余白を残さない */
 ins.adsbygoogle[data-ad-status="unfilled"],
