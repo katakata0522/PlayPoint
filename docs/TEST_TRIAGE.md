@@ -1,5 +1,11 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-11-18 国際SEO・Head・正規URL・CLS完全性検証
+
+| テストファイル | 分類 | 保証 |
+| --- | --- | --- |
+| `seo-international-perfection.test.cjs` | 国際SEO・Head完全性統合 | 全送信URLのHead監査（`errors=0, warnings=0`）、`x-default` の英語版優先、全対応言語の `og:locale:alternate`、台湾版 `zh-TW` 統一・非日本語メタの日本語混入排除、Gakumas 日台相互 `hreflang`、内部リンク末尾 `index.html` 除去、サイドバー画像の `width`/`height` 指定を保証 |
+
 ## 2026-11-17 終了企画の注目解除・役割別の次の行動
 
 既存 `reader-discovery.test.cjs` は4地域の常設確認先がHTMLと実行後の両方で表示されること、期限付きの旧表示が開いたまま期限を越えても消えることを担当する。終了イベントの記録記事は削除しない。

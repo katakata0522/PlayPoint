@@ -27,7 +27,8 @@ const ARTICLE_JA_ALTERNATES = Object.freeze({
 const ARTICLE_JA_PARTIAL_ALTERNATES = Object.freeze({
   'google-play-pass-guide.html': { jaPath: '/articles/2026-08-16-play-pass-worth-it.html', locales: ['en'] },
   'google-play-points-account-locked.html': { jaPath: '/articles/2026-08-19-play-points-locked.html', locales: ['en'] },
-  'google-play-points-install-offer-not-received.html': { jaPath: '/articles/2026-08-19-install-offer-points-not-received.html', locales: ['en'] }
+  'google-play-points-install-offer-not-received.html': { jaPath: '/articles/2026-08-19-install-offer-points-not-received.html', locales: ['en'] },
+  'gakuen-idolmaster-japan-google-play-vs-web-shop.html': { jaPath: '/articles/2026-09-26-gakumas-webshop-google-play.html', locales: ['tw'] }
 });
 
 function getJapaneseAlternateForSlug(slug) {
@@ -45,8 +46,8 @@ function intlUrl(locale, slug) {
 function upsertIntlJa(html, jaPath) {
   const tag = '    <link rel="alternate" hreflang="ja" href="' + SITE_ORIGIN + jaPath + '">';
   let next = html.replace(/^[\t ]*<link\b[^>]*\brel=["']alternate["'][^>]*\bhreflang=["']ja["'][^>]*>[\t ]*\r?\n?/gim, '');
-  const anchor = /(^[\t ]*<link\b[^>]*\brel=["']alternate["'][^>]*\bhreflang=["']en["'][^>]*>)/im;
-  if (!anchor.test(next)) throw new Error('International article is missing en hreflang anchor.');
+  const anchor = /(^[\t ]*<link\b[^>]*\brel=["']alternate["'][^>]*\bhreflang=["'][^"']+["'][^>]*>)/im;
+  if (!anchor.test(next)) throw new Error('International article is missing hreflang anchor.');
   return next.replace(anchor, tag + '\n$1');
 }
 function upsertJapaneseIntlSet(html, slug, jaPath, locales = INTL_LOCALES) {

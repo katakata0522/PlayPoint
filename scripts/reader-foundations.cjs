@@ -62,7 +62,7 @@ function syncMetadata(root) {
   bestUse.title = 'Google Play Pointsの交換先おすすめ｜使い道・クーポン・Playクレジットを比較';
   calendar.title = 'Play Pointsのお得カレンダー｜毎週・毎月の確認日';
   calendar.listTitle = calendar.title;
-  calendar.description = '火曜のSuper Ticket、木曜のPlay Pass特典、金曜の週次リワード、月初の増量案内を確認する日の目安です。対象条件と開催が未確定のイベントを分け、必要な確認日だけカレンダーに保存できます。';
+  calendar.description = 'Google Play Pointsの週次・月次確認カレンダー。火曜のSuper Ticket、木曜のPlay Pass特典、金曜の週次リワード、月初の増量案内を確認できます。';
   const pass = registry.find(article => article.id === 'play-pass-worth-it');
   pass.description = 'Google Play Passのカタログで遊ぶ楽しみと、木曜更新のポイント特典を紹介。家族共有・無料試用・PC利用の違いや、加入前に見たい料金と条件も確認できます。';
   const jsonFile = path.join(root, 'blog/articles.json');
@@ -79,7 +79,7 @@ function syncMetadata(root) {
 function syncReaderFoundations(root, { hubOnly = false } = {}) {
   const { registry } = syncMetadata(root);
   const byId = new Map(registry.map(a => [a.id, a]));
-  const catalog = registry.map(a => ({ ...a, path: a.file.replace(/^\.\.\//, ''), href: '/' + a.file.replace(/^\.\.\//, '') }));
+  const catalog = registry.map(a => ({ ...a, path: a.file.replace(/^\.\.\//, ''), href: '/' + a.file.replace(/^\.\.\//, '').replace(/\/index\.html$/, '/') }));
   for (const article of registry.filter(a => !hubOnly && a.listed !== false)) {
     const file = path.join(root, article.file.replace(/^\.\.\//, ''));
     let html = fs.readFileSync(file, 'utf8');
@@ -89,7 +89,7 @@ function syncReaderFoundations(root, { hubOnly = false } = {}) {
       if (!html.includes('id="play-pass-basics"')) throw Error('Play Passの基本説明を配置できません');
     }
     const role = classifyArticleRole(article.file.replace(/^\.\.\//, ''));
-    const related = (RELATED_CHOICES[article.id] || []).map(id => byId.get(id)).filter(Boolean).map(a => ({ href: '/' + a.file.replace(/^\.\.\//, ''), label: a.listTitle || a.title }));
+    const related = (RELATED_CHOICES[article.id] || []).map(id => byId.get(id)).filter(Boolean).map(a => ({ href: '/' + a.file.replace(/^\.\.\//, '').replace(/\/index\.html$/, '/'), label: a.listTitle || a.title }));
     const [href, label] = nextFor(role, related, catalog.find(a => a.id === article.id));
     const actions = article.id === 'play-pass-worth-it'
       ? [['/articles/2026-09-19-play-points-calendar-schedule-guide.html#reader-calendar-title', '加入中なら、木曜の確認日を残す'], ['/articles/2025-12-25-weekly-reward.html', '金曜のリワードとの違いを読む']]

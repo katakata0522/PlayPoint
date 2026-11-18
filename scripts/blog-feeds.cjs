@@ -25,8 +25,12 @@ function escapeHtml(value) {
     .replace(/"/g, '&quot;');
 }
 
+function canonicalArticleHref(file) {
+  return String(file || '').replace(/\/index\.html$/, '/');
+}
+
 function toArticleUrl(file) {
-  return `${SITE_ORIGIN}/${String(file || '').replace(/^\.\.\//, '')}`;
+  return `${SITE_ORIGIN}/${canonicalArticleHref(file).replace(/^\.\.\//, '')}`;
 }
 
 function toRssDate(date) {
@@ -82,7 +86,7 @@ function replaceFirstListInRange(html, rangeStart, rangeEnd, items, itemIndent, 
 }
 
 function articleListItem(article) {
-  return `<li><a href="${escapeHtml(article.file)}">${escapeHtml(article.title)}</a></li>`;
+  return `<li><a href="${escapeHtml(canonicalArticleHref(article.file))}">${escapeHtml(article.title)}</a></li>`;
 }
 
 function syncBlogStaticArticleIndex(rootDir, articles) {
@@ -106,7 +110,7 @@ function syncBlogStaticArticleIndex(rootDir, articles) {
   const original = html;
   if (html.includes('id="article-grid"')) {
     const cards = BlogUtils.sortListedArticles(articles.map(BlogUtils.normalizeArticle).filter(a => a.file !== '#' && a.listed !== false && !/side[ -]?fire|サイドfire/i.test(a.title + ' ' + a.description + ' ' + a.tags.join(' '))), { mode: 'newest' }).slice(0, 12);
-    const markup = cards.map((article, i) => '<a class="article-card' + (article.thumbnailKind !== 'app-icon' ? ' article-card--visual' : '') + '" data-blog-initial-card="true" data-blog-initial-signature="' + escapeHtml(BlogUtils.articleCardIdentity(article)) + '" href="' + escapeHtml(article.file) + '" aria-label="' + escapeHtml(article.title) + '">' + BlogUtils.articleCardMarkup(article, { first: i === 0, staticCard: true }) + '</a>').join(detectNewline(html));
+    const markup = cards.map((article, i) => '<a class="article-card' + (article.thumbnailKind !== 'app-icon' ? ' article-card--visual' : '') + '" data-blog-initial-card="true" data-blog-initial-signature="' + escapeHtml(BlogUtils.articleCardIdentity(article)) + '" href="' + escapeHtml(canonicalArticleHref(article.file)) + '" aria-label="' + escapeHtml(article.title) + '">' + BlogUtils.articleCardMarkup(article, { first: i === 0, staticCard: true }) + '</a>').join(detectNewline(html));
     // noscriptの全カテゴリ索引は引き続き残す。
     html = html.replace(/(<div\b[^>]*id="article-grid"[^>]*>)[\s\S]*?(?=<noscript>)/, (match, opening) => opening + detectNewline(html) + markup + detectNewline(html));
     html = html.replace(/(<script src="(?:utils|components|script)\.js[^" ]*"[^>]*)(>)/g, (m, open, close) => /\bdefer\b/.test(open) ? m : open + ' defer' + close);

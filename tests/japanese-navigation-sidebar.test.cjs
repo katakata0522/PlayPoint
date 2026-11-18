@@ -7,7 +7,7 @@ const { BROWSE_CATEGORIES, transformArticle, nextFor, renderSidebar } = require(
 const { JAPANESE_POPULAR_GUIDES, POPULAR_GUIDES_SNAPSHOT, POPULAR_GUIDES_WINDOW } = require('../scripts/japanese-popular-guides.cjs');
 const root = path.resolve(__dirname, '..');
 const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8')).filter(a => a.listed !== false)
-  .map(a => ({ ...a, path: a.file.replace(/^\.\.\//, ''), href: '/' + a.file.replace(/^\.\.\//, ''), label: a.title }));
+  .map(a => ({ ...a, path: a.file.replace(/^\.\.\//, ''), href: '/' + a.file.replace(/^\.\.\//, '').replace(/\/index\.html$/, '/'), label: a.title }));
 
 test('日本語の全公開記事は検索・人気5件・次行動1件を持ち、関連記事は本文に集約する', () => {
   for (const article of articles) {

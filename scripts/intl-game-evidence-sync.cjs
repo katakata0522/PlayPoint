@@ -64,9 +64,19 @@ function nameFrom(html, entry, locale) {
 }
 function description(name, entry, locale, id) {
   if (entry.descriptions?.[locale]) return entry.descriptions[locale];
-  const names = entry.offers[locale].map(item => item.names[locale]).join(locale === 'en' ? ', ' : '・');
+  const sep = locale === 'en' ? ', ' : locale === 'tw' ? '、' : '·';
+  const names = entry.offers[locale].map(item => item.names[locale]).join(sep);
   if (isReference(locale, id)) return locale === 'en' ? `${name}: Japanese edition reference and Japan calculator link. Regional products are unconfirmed; no converted yen prices are published.` : locale === 'ko' ? `${name} 일본판 안내와 일본 계산기 링크. 현지 상품은 미확인으로, 일본 가격을 원화로 환산하지 않습니다.` : `${name}日本版參考與日本計算器連結。當地商品未確認，不會把日圓價格換算為新台幣商品表。`;
-  return locale === 'en' ? `${name}: ${names ? `compare ${names}, then ` : ''}estimate Google Play Points from your US dollar checkout amount. Official sources and payment-channel differences included.` : locale === 'ko' ? `${name}${names ? ` ${names}` : ''} 구매 전 확인과 한국 원화 Google Play Points 계산. 공식 출처, 결제 경로 차이, 실제 결제액으로 포인트를 확인하세요.` : `${name}${names ? `的${names}` : ''}購買前確認，依台灣新台幣Google Play結帳金額計算積點。附官方來源與付款管道差異。`;
+  if (locale === 'en') {
+    const firstOffer = entry.offers.en[0]?.names.en || '';
+    const candidates = [
+      `${name}: ${names ? `compare ${names} and ` : ''}estimate US Google Play Points from your USD checkout amount.`,
+      firstOffer ? `${name}: compare ${firstOffer} & more to estimate US Google Play Points from USD purchases.` : '',
+      `${name}: estimate US Google Play Points from USD in-app purchases, passes & promo rates.`
+    ].filter(Boolean);
+    return candidates.find(text => text.length <= 155) || candidates[candidates.length - 1];
+  }
+  return locale === 'ko' ? `${name}${names ? ` ${names}` : ''} 구매 전 확인과 한국 원화 Google Play Points 계산. 공식 출처, 결제 경로 차이, 실제 결제액으로 포인트를 확인하세요.` : `${name}${names ? `的${names}` : ''}購買前確認，依台灣新台幣Google Play結帳金額計算積點。附官方來源與付款管道差異。`;
 }
 function sourceLink(s, c) {
   return `<a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">${escape(c.labels[s.kind])}</a> — ${escape(c.regionNames[s.scope])}`;
@@ -92,7 +102,8 @@ function normalizeCalculator(calc, c) {
 }
 function hreflangs(html, id) {
   const available = locales.filter(locale => !isReference(locale, id));
-  const tags = [`<link rel="alternate" hreflang="ja" href="${ORIGIN}/games/${id}/" />`, ...available.map(locale => `<link rel="alternate" hreflang="${COPY[locale].hreflang}" href="${ORIGIN}/${locale}/games/${id}/" />`), `<link rel="alternate" hreflang="x-default" href="${ORIGIN}/games/${id}/" />`].join('\n  ');
+  const xDefaultHref = available.includes('en') ? `${ORIGIN}/en/games/${id}/` : `${ORIGIN}/games/${id}/`;
+  const tags = [`<link rel="alternate" hreflang="ja" href="${ORIGIN}/games/${id}/" />`, ...available.map(locale => `<link rel="alternate" hreflang="${COPY[locale].hreflang}" href="${ORIGIN}/${locale}/games/${id}/" />`), `<link rel="alternate" hreflang="x-default" href="${xDefaultHref}" />`].join('\n  ');
   return html.replace(/\s*<link\b[^>]*rel="alternate"[^>]*hreflang="[^"]+"[^>]*>/g, '').replace(/(<link rel="canonical"[^>]*>)/, (_m, canonical) => `${canonical}\n  ${tags}`);
 }
 function updateMetadata(html, name, desc, locale, id, questions) {
@@ -174,12 +185,12 @@ function syncIntlGameEvidence(rootDir) {
     portal = portal.replace(/(<p class="site-tagline">)[\s\S]*?(<\/p>)/, (_m, a, b) => a + c.lead + b);
     portal = portal.replace(/<p class="(?:game-meta|game-portal-lead)">[\s\S]*?<\/p>/g, '');
     // 一覧の検索説明も計算機が提供する機能に合わせる。
-    const portalDesc = locale === 'en' ? 'Game-by-game Google Play Points calculators for US dollar purchases. Compare verified regional passes and special products, with official sources and Japanese reference links.' : locale === 'ko' ? '한국 원화 Google Play Points 게임별 계산기. 지역별 패스·특별 상품과 공식 출처를 확인하고 실제 결제액으로 계산하세요. 일본판 참고 링크는 별도로 표시합니다.' : '台灣新台幣Google Play Points遊戲計算器。先看各版本通行證與特別商品、官方來源，再依實際結帳金額計算；日本版參考另行標示。';
+    const portalDesc = locale === 'en' ? 'Game-by-game Google Play Points calculators for US dollar purchases. Compare verified passes, official sources and billing differences.' : locale === 'ko' ? '한국 원화 Google Play Points 게임별 계산기. 지역별 패스·특별 상품과 공식 출처를 확인하고 실제 결제액으로 계산하세요. 일본판 참고 링크는 별도로 표시합니다.' : '台灣新台幣Google Play Points遊戲計算器。先看各版本通行證與特別商品、官方來源，再依實際結帳金額計算；日本版參考另行標示。';
     portal = portal.replace(/(<meta\s+(?:name|property)="(?:description|og:description|twitter:description)"\s+content=")[^"]*("[^>]*>)/g, (_m, a, b) => a + escape(portalDesc) + b);
     portal = portal.replace(/(<header class="game-header">[\s\S]*?<\/header>)/, (_m, h) => `${h}<p class="game-meta">${c.region}</p><p class="game-portal-lead">${escape(portalDesc)}</p>`);
     portal = portal.replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g, (_m, raw) => {
       const object = JSON.parse(raw);
-      if (object['@type'] === 'WebPage') { object.description = portalDesc; object.inLanguage = c.hreflang; object.dateModified = REVIEWED_AT; }
+      if (object['@type'] === 'WebPage' || object['@type'] === 'CollectionPage') { object.description = portalDesc; object.inLanguage = c.hreflang; object.dateModified = REVIEWED_AT; }
       return `<script type="application/ld+json">${json(object)}</script>`;
     });
     write(portalFile, portal.replace(/^[\t ]+$/gm, ''));

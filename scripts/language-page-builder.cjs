@@ -169,7 +169,7 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   output = output.replace(/"priceCurrency": "JPY"/, `"priceCurrency": "${config.currency}"`);
   output = output.replace(/"url": "https:\/\/playpoint-sim\.com\/"/g, `"url": "https://playpoint-sim.com/${langDir}/"`);
   // JSON-LD の inLanguage を各言語版の BCP47 コードに置換
-  output = output.replace(/"inLanguage":\s*\[[^\]]+\]/, `"inLanguage": "${config.inLanguage}"`);
+  output = output.replace(/"inLanguage":\s*(?:"ja"|\[[^\]]+\])/g, `"inLanguage": "${config.inLanguage}"`);
 
   // WebSite
   output = output.replace(/"name": "(?:Play\+?ポイント計算機|Google Play Points 計算機)"/g, `"name": "${config.appName}"`);

@@ -10,7 +10,7 @@ function createLocales() {
         inLanguage: 'en',
         modifiedAt: TOP_PAGE_CONTENT_DATES.en,
         title: 'Google Play Points Calculator | How much to reach the next level?',
-        description: 'Google Play Points calculator. Estimate spending to reach Silver, Gold, Platinum, or Diamond using your base earn rate and any special earn rate shown in Google Play, plus weekly reward notes.',
+        description: 'Google Play Points calculator. Estimate spending to reach Silver, Gold, Platinum, or Diamond with base and promo earn rates, plus weekly reward notes.',
         ogTitle: 'Google Play Points Calculator | How much to reach the next level?',
         ogDescription: 'Estimate Play Points level-up spending and reverse calculations using the higher of your base earn rate or the special earn rate shown in Google Play.',
         currency: 'USD',

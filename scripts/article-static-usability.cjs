@@ -15,7 +15,7 @@ const ARTICLE_PROMPT_PATTERN = /<aside\b[^>]*class=["'][^"']*\barticle-calculato
 
 const HEADER_HTML = `    <header class="header article-static-header">
         <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 ${GUIDE_BRAND}</a>
+            <a class="logo" href="../">🎮 ${GUIDE_BRAND}</a>
             <nav class="nav" aria-label="記事サイト">
                 <a href="../blog/">📝 記事一覧</a>
                 <a href="../latest/">最新情報</a>

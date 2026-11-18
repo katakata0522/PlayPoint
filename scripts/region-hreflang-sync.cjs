@@ -24,7 +24,7 @@ function normalizeTopPageHreflang(html) {
 
   const block = REGION_ALTERNATES
     .map(([hreflang, href]) => `    <link rel="alternate" hreflang="${hreflang}" href="${href}">`)
-    .concat('    <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/">')
+    .concat('    <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/">')
     .join('\n');
 
   return next.replace(canonicalMatch[0], `${canonicalMatch[0]}\n${block}`);

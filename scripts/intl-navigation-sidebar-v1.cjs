@@ -10,6 +10,7 @@ const { extractRelatedTargets } = require('./article-role-next-action-audit.cjs'
 const { classifyArticleRole } = require('./article-role-registry.cjs');
 const { getPopularGuides, POPULAR_GUIDES_SNAPSHOT, POPULAR_GUIDES_WINDOW_START, POPULAR_GUIDES_WINDOW_END } = require('./intl-popular-guides.cjs');
 const { COPY } = require('./intl-shell-copy.cjs');
+const { readPublicImageDimensions } = require('./seo-head-audit.cjs');
 
 const CHROME_START = '<!-- INTL_ARTICLE_CHROME_START -->';
 const CHROME_END = '<!-- INTL_ARTICLE_CHROME_END -->';
@@ -50,10 +51,21 @@ function decodeHtmlEntities(value) {
     .replace(/&(amp|lt|gt|quot|#39);/g, entity => ({ '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'" })[entity]);
 }
 
+function stripMarkupTags(value) {
+  let text = '';
+  let inTag = false;
+  for (const ch of String(value)) {
+    if (ch === '<') inTag = true;
+    else if (ch === '>') inTag = false;
+    else if (!inTag) text += ch;
+  }
+  return text;
+}
+
 function extractTitle(html, relativePath) {
   const match = String(html).match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
   if (!match) throw new Error(relativePath + ': h1 is missing');
-  return decodeHtmlEntities(match[1].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim());
+  return decodeHtmlEntities(stripMarkupTags(match[1]).replace(/\s+/g, ' ').trim());
 }
 
 function categoryHref(localeKey, section) {
@@ -242,6 +254,7 @@ function renderPopularWidget(localeKey, currentPath, catalog = [], rootDir = pat
   const copy = COPY[localeKey];
   const popular = getPopularGuides(localeKey, currentPath, 5);
   const byHref = new Map(catalog.map(item => [item.href, item]));
+  const imageCache = new Map();
   return [
     '  <section class="sidebar-widget sidebar-widget--popular" id="reader-popular" data-popular-snapshot="' + escapeHtml(POPULAR_GUIDES_SNAPSHOT) + '">',
     '    <h2 class="sidebar-widget-title">' + escapeHtml(copy.popularTitle) + '</h2>',
@@ -253,13 +266,14 @@ function renderPopularWidget(localeKey, currentPath, catalog = [], rootDir = pat
       const meta = byHref.get(item.href);
       const featured = item.rank === 1;
       const thumbSrc = featured ? publicThumbnail(meta?.thumbnail, rootDir) : '';
+      const dim = thumbSrc ? readPublicImageDimensions(rootDir, thumbSrc, imageCache) : null;
       const square = thumbSrc && isSquareThumbnail(meta?.thumbnail);
       const isCurrentClass = item.isCurrent ? ' is-current' : '';
       const title = item.isCurrent
         ? '<span class="sidebar-popular-current-title">' + escapeHtml(item.label) + '</span><span class="sidebar-popular-reading">' + escapeHtml(copy.reading) + '</span>'
         : '<a class="sidebar-popular-link" href="' + escapeHtml(item.href) + '">' + escapeHtml(item.label) + '</a>';
       if (featured && thumbSrc) {
-        return '        <li class="sidebar-popular-item' + isCurrentClass + '"><span class="sidebar-popular-rank">' + rank + '</span><div class="sidebar-popular-thumb' + (square ? ' sidebar-popular-thumb--square' : '') + '"><img src="' + escapeHtml(thumbSrc) + '" alt="" loading="lazy" decoding="async"></div><div class="sidebar-popular-feature-copy">' + title + '</div></li>';
+        return '        <li class="sidebar-popular-item' + isCurrentClass + '"><span class="sidebar-popular-rank">' + rank + '</span><div class="sidebar-popular-thumb' + (square ? ' sidebar-popular-thumb--square' : '') + '"><img src="' + escapeHtml(thumbSrc) + '"' + (dim ? ' width="' + dim.width + '" height="' + dim.height + '"' : '') + ' alt="" loading="lazy" decoding="async"></div><div class="sidebar-popular-feature-copy">' + title + '</div></li>';
       }
       return '        <li class="sidebar-popular-item' + isCurrentClass + '"><span class="sidebar-popular-rank">' + rank + '</span><div>' + title + '</div></li>';
     }),

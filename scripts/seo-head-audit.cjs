@@ -6,6 +6,20 @@ const path = require('node:path');
 const ORIGIN = 'https://playpoint-sim.com';
 const EXCLUDED_DIRECTORIES = new Set(['.git', '.github', 'docs', 'node_modules', 'scripts', 'tests']);
 const LOCALE_PREFIXES = new Set(['en', 'ko', 'tw', 'hk', 'in']);
+const HREFLANG_TO_OG_LOCALE = Object.freeze({
+  ja: 'ja_JP',
+  en: 'en_US',
+  'en-us': 'en_US',
+  ko: 'ko_KR',
+  'ko-kr': 'ko_KR',
+  'zh-tw': 'zh_TW',
+  'zh-hk': 'zh_HK',
+  'en-in': 'en_IN'
+});
+const INLANGUAGE_REQUIRED_TYPES = new Set([
+  'WebPage', 'CollectionPage', 'ProfilePage', 'Article', 'BlogPosting', 'NewsArticle', 'WebApplication', 'SoftwareApplication', 'Blog', 'WebSite'
+]);
+const ARTICLE_REQUIRED_TYPES = new Set(['Article', 'BlogPosting', 'NewsArticle']);
 const HTML_TEXT_ENTITIES = Object.freeze({
   '&amp;': '&',
   '&quot;': '"',
@@ -28,22 +42,55 @@ function getImageDimensions(buffer) {
       height: buffer.readUInt32BE(20)
     };
   }
+  if (buffer.subarray(0, 4).toString('ascii') === 'RIFF' && buffer.subarray(8, 12).toString('ascii') === 'WEBP') {
+    const chunk = buffer.subarray(12, 16).toString('ascii');
+    if (chunk === 'VP8X' && buffer.length >= 30) {
+      return { width: 1 + buffer.readUIntLE(24, 3), height: 1 + buffer.readUIntLE(27, 3) };
+    }
+    if (chunk === 'VP8L' && buffer.length >= 25) {
+      const bits = buffer.readUInt32LE(21);
+      return { width: (bits & 0x3FFF) + 1, height: ((bits >> 14) & 0x3FFF) + 1 };
+    }
+    if (chunk === 'VP8 ' && buffer.length >= 30) {
+      return { width: buffer.readUInt16LE(26) & 0x3FFF, height: buffer.readUInt16LE(28) & 0x3FFF };
+    }
+  }
   if (buffer[0] === 0xFF && buffer[1] === 0xD8) {
     let i = 2;
-    while (i < buffer.length) {
+    while (i + 3 < buffer.length) {
       if (buffer[i] !== 0xFF) { i++; continue; }
+      while (i + 1 < buffer.length && buffer[i + 1] === 0xFF) i++;
+      if (i + 1 >= buffer.length) break;
       const marker = buffer[i + 1];
-      if (marker === 0xC0 || marker === 0xC2) {
+      if (marker === 0xD9 || marker === 0xDA) break;
+      if (marker === 0x01 || (marker >= 0xD0 && marker <= 0xD8)) { i += 2; continue; }
+      if (marker >= 0xC0 && marker <= 0xC3 && i + 8 < buffer.length) {
         return {
           height: buffer.readUInt16BE(i + 5),
           width: buffer.readUInt16BE(i + 7)
         };
       }
       const len = buffer.readUInt16BE(i + 2);
+      if (len < 2) break;
       i += 2 + len;
     }
   }
   return null;
+}
+
+function readPublicImageDimensions(rootDir, sitePath, cache = new Map()) {
+  const relative = decodeURIComponent(String(sitePath || '').split(/[?#]/)[0]).replace(/^\//, '');
+  if (!relative) return null;
+  if (cache.has(relative)) return cache.get(relative);
+  const rootResolved = path.resolve(rootDir);
+  const filePath = path.resolve(rootResolved, relative);
+  if (!filePath.startsWith(rootResolved + path.sep) || !fs.existsSync(filePath)) {
+    cache.set(relative, null);
+    return null;
+  }
+  const dimensions = getImageDimensions(fs.readFileSync(filePath));
+  cache.set(relative, dimensions);
+  return dimensions;
 }
 
 function parseAttributes(tag) {
@@ -238,9 +285,14 @@ function inspectPage(url, file, html, rootDir = path.resolve(__dirname, '..')) {
   }
   if (robotsValues.some(value => /(?:^|,)\s*noindex\b/i.test(value))) {
     errors.push(createIssue('sitemap-page-noindex', { url, file, detail: robotsValues.join(' | ') }));
+  } else if (!robotsValues.some(value => /(?:^|,)\s*max-image-preview\s*:\s*large\s*(?:,|$)/i.test(value))) {
+    errors.push(createIssue('robots-max-image-preview-missing', { url, file, detail: robotsValues.join(' | ') || 'missing' }));
   }
   if (h1Values.length !== 1) {
     errors.push(createIssue('h1-count', { url, file, detail: `count=${h1Values.length}` }));
+  }
+  if (htmlLang.toLowerCase() === 'zh-hant') {
+    errors.push(createIssue('lang-zh-hant-forbidden', { url, file, detail: `html[lang]=${htmlLang}` }));
   }
 
   jsonLd.filter(entry => entry.error).forEach(entry => {
@@ -248,8 +300,23 @@ function inspectPage(url, file, html, rootDir = path.resolve(__dirname, '..')) {
   });
   if (jsonLd.length === 0) {
     warnings.push(createIssue('jsonld-missing', { url, file }));
+  } else {
+    const checkJsonLdNode = node => {
+      if (Array.isArray(node)) { node.forEach(checkJsonLdNode); return; }
+      if (!node || typeof node !== 'object') return;
+      const types = [].concat(node['@type'] || []).map(String);
+      if (types.some(t => INLANGUAGE_REQUIRED_TYPES.has(t)) && (!node.inLanguage || (Array.isArray(node.inLanguage) && node.inLanguage.length === 0))) {
+        errors.push(createIssue('jsonld-inlanguage-missing', { url, file, detail: types.join(',') }));
+      }
+      if (types.some(t => ARTICLE_REQUIRED_TYPES.has(t)) && !node.mainEntityOfPage) {
+        errors.push(createIssue('jsonld-main-entity-missing', { url, file, detail: types.join(',') }));
+      }
+      Object.values(node).forEach(checkJsonLdNode);
+    };
+    jsonLd.filter(entry => !entry.error && entry.value).forEach(entry => checkJsonLdNode(entry.value));
   }
 
+  const ogSiteName = metaContent(metaTags, 'property', 'og:site_name').filter(Boolean);
   const ogTitle = metaContent(metaTags, 'property', 'og:title').filter(Boolean);
   const ogDescription = metaContent(metaTags, 'property', 'og:description').filter(Boolean);
   const ogImage = metaContent(metaTags, 'property', 'og:image').filter(Boolean);
@@ -259,7 +326,11 @@ function inspectPage(url, file, html, rootDir = path.resolve(__dirname, '..')) {
   const ogAlt = metaContent(metaTags, 'property', 'og:image:alt').filter(Boolean);
   const ogType = metaContent(metaTags, 'property', 'og:image:type').filter(Boolean);
   const ogLocale = metaContent(metaTags, 'property', 'og:locale').filter(Boolean);
+  const ogLocaleAlternates = metaContent(metaTags, 'property', 'og:locale:alternate').filter(Boolean);
+  const twitterTitle = metaContent(metaTags, 'name', 'twitter:title').filter(Boolean);
+  const twitterDescription = metaContent(metaTags, 'name', 'twitter:description').filter(Boolean);
   const twitterImage = metaContent(metaTags, 'name', 'twitter:image').filter(Boolean);
+  const twitterImageAlt = metaContent(metaTags, 'name', 'twitter:image:alt').filter(Boolean);
 
   const missingOgp = [
     ['og:title', ogTitle],
@@ -289,6 +360,18 @@ function inspectPage(url, file, html, rootDir = path.resolve(__dirname, '..')) {
     }
     if (ogLocale.length !== 1 || !ogLocale[0]) {
       errors.push(createIssue('og-locale-missing', { url, file }));
+    }
+    if (ogSiteName.length !== 1 || !ogSiteName[0]) {
+      errors.push(createIssue('og-site-name-missing', { url, file }));
+    }
+    if (twitterTitle.length !== 1 || !twitterTitle[0]) {
+      errors.push(createIssue('twitter-title-missing', { url, file }));
+    }
+    if (twitterDescription.length !== 1 || !twitterDescription[0]) {
+      errors.push(createIssue('twitter-description-missing', { url, file }));
+    }
+    if (twitterImageAlt.length !== 1 || !twitterImageAlt[0]) {
+      errors.push(createIssue('twitter-image-alt-missing', { url, file }));
     }
     if (twitterImage.length !== 1) {
       errors.push(createIssue('twitter-image-missing', { url, file }));
@@ -336,6 +419,9 @@ function inspectPage(url, file, html, rootDir = path.resolve(__dirname, '..')) {
     errors.push(createIssue('hreflang-self-missing', { url, file }));
   }
   for (const alternate of alternates) {
+    if (alternate.hreflang.toLowerCase() === 'zh-hant') {
+      errors.push(createIssue('lang-zh-hant-forbidden', { url, file, detail: `hreflang=${alternate.hreflang}` }));
+    }
     try {
       const parsed = new URL(alternate.href);
       if (parsed.origin !== ORIGIN) {
@@ -343,6 +429,47 @@ function inspectPage(url, file, html, rootDir = path.resolve(__dirname, '..')) {
       }
     } catch {
       errors.push(createIssue('hreflang-invalid-url', { url, file, detail: `${alternate.hreflang}=${alternate.href}` }));
+    }
+  }
+  const enAlternate = alternates.find(item => /^en(?:-us)?$/i.test(item.hreflang));
+  if (enAlternate) {
+    const xDefaultAlternate = alternates.find(item => item.hreflang.toLowerCase() === 'x-default');
+    if (!xDefaultAlternate || xDefaultAlternate.href !== enAlternate.href) {
+      errors.push(createIssue('hreflang-x-default-not-en', {
+        url,
+        file,
+        detail: `x-default=${xDefaultAlternate?.href || 'missing'} vs en=${enAlternate.href}`
+      }));
+    }
+  }
+
+  const expectedAltLocales = [...new Set(
+    alternates
+      .map(item => HREFLANG_TO_OG_LOCALE[item.hreflang.toLowerCase()])
+      .filter(code => code && code !== ogLocale[0])
+  )].sort();
+  const actualAltLocales = [...new Set(ogLocaleAlternates)].sort();
+  if (ogLocaleAlternates.length !== actualAltLocales.length || JSON.stringify(expectedAltLocales) !== JSON.stringify(actualAltLocales)) {
+    errors.push(createIssue('og-locale-alternate-mismatch', {
+      url,
+      file,
+      detail: `expected=[${expectedAltLocales.join(',')}] actual=[${ogLocaleAlternates.join(',')}]`
+    }));
+  }
+
+  for (const anchorAttrs of extractTagAttributes(html, 'a')) {
+    const href = normalizeText(anchorAttrs.href);
+    if (!href || /^(?:mailto:|tel:|javascript:|#)/i.test(href)) continue;
+    if (/^(?:https?:)?\/\//i.test(href) && !href.startsWith(`${ORIGIN}/`)) continue;
+    const relativeHref = href.startsWith(`${ORIGIN}/`) ? href.slice(ORIGIN.length) : href;
+    if (/(?:^|\/)index\.html(?:[?#]|$)/i.test(relativeHref)) {
+      errors.push(createIssue('internal-link-index-html', { url, file, detail: href }));
+    }
+  }
+
+  for (const imgAttrs of extractTagAttributes(html, 'img')) {
+    if (!(/^\d+$/.test(imgAttrs.width || '') && /^\d+$/.test(imgAttrs.height || ''))) {
+      errors.push(createIssue('image-dimensions-missing', { url, file, detail: imgAttrs.src || '<img>' }));
     }
   }
 
@@ -518,6 +645,7 @@ module.exports = {
   parseAttributes,
   normalizeText,
   getImageDimensions,
+  readPublicImageDimensions,
   sitemapFilesFromRobots,
   sitemapUrls,
   urlToLocalHtml

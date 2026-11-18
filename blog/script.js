@@ -901,7 +901,7 @@
             const card = document.createElement('a');
             card.setAttribute('aria-label', article.title);
             const snippet = window.PlayPointSearch?.excerpt(article, currentSearch, 'ja');
-            card.href = new URL(article.file, location.origin + '/blog/').pathname;
+            card.href = new URL(article.file, location.origin + '/blog/').pathname.replace(/\/index\.html$/, '/');
             if (currentSearch && snippet?.id) card.href += '#' + encodeURIComponent(snippet.id);
             card.className = 'article-card';
             card.classList.toggle('article-card--visual', article.thumbnailKind !== 'app-icon');
