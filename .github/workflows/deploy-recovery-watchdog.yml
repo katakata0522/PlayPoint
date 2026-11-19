@@ -13,13 +13,13 @@ permissions:
   contents: read
   actions: read
 
-# Deploy・manual rollback・watchdog restoreは同じ本番を所有するため直列化する。
-concurrency:
-  group: deploy-playpoint-main
-
 jobs:
   recover:
     if: ${{ contains(fromJSON('["failure","cancelled","timed_out","action_required","stale","startup_failure"]'), github.event.workflow_run.conclusion) }}
+    # 復旧対象だけが配信・手動復元と同じ待ち行列を使う。
+    concurrency:
+      group: deploy-playpoint-main
+      queue: max
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:

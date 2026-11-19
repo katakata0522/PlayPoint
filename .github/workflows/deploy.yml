@@ -10,9 +10,10 @@ on:
 permissions:
   contents: read
 
-# 実行中の本番反映は中断せず、待機中は最新の1件だけを残す
+# 配信・復元の待機要求を保持し、ロック取得時点で古い通常配信だけを省く。
 concurrency:
   group: deploy-playpoint-main
+  queue: max
 
 jobs:
   deploy:
@@ -45,8 +46,22 @@ jobs:
       - name: Detect production deploy impact
         id: deploy-impact
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+
+          main_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')"
+          if ! [[ "$main_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            echo '::error::現在のmainを確認できません。本番配信を中止します。'
+            exit 1
+          fi
+          if [ "$GITHUB_SHA" != "$main_sha" ]; then
+            echo "対象の $GITHUB_SHA は現在のmain $main_sha と異なるため、配信を見送りました。" >> "$GITHUB_STEP_SUMMARY"
+            echo 'deploy_needed=false' >> "$GITHUB_OUTPUT"
+            echo 'base_source=superseded' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
             echo 'Manual deployment requested; production deploy is required.'
@@ -116,7 +131,7 @@ jobs:
       - name: Skip production deployment for non-public changes
         id: skip_production_deployment_for_non_public_changes
         if: steps.deploy-impact.outputs.deploy_needed == 'false'
-        run: echo 'No public/deployment input changed. Skipping preflight preparation, browser setup, SSH, rsync, and production verification.'
+        run: echo '配信判定に従い、ビルド・SSH転送・本番検証を省略しました。'
 
       - name: Run complete preflight and prepare deploy assets
         id: run_complete_preflight_and_prepare_deploy_assets
