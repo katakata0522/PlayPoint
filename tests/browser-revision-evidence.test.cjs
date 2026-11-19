@@ -7,6 +7,7 @@ const http = require('node:http');
 const test = require('node:test');
 const { createRevisionSession } = require('../.github/scripts/browser-revision-evidence.cjs');
 const { bindEvidence, verifyManifest, checkReport } = require('../.github/scripts/bind-browser-evidence.cjs');
+const { runReleaseChecks } = require('../.github/scripts/run-release-browser-checks.cjs');
 const root = path.resolve(__dirname, '..');
 const SHA = 'a'.repeat(40), OTHER = 'b'.repeat(40);
 const readiness = { attempts: 1, delayMs: 0, timeoutMs: 1000, onRetry() {} };
@@ -125,11 +126,63 @@ test('4つの本番・復旧レーンはHTTPと同じSHAを渡し、全browser s
       if (!block.includes('SMOKE_BASE_URL:')) continue;
       count++;
       assert.equal(block.match(/SMOKE_EXPECT_REVISION:\s*(.+)/)?.[1].trim(), httpRevision, file);
-      assert.ok(block.indexOf('bind-browser-evidence.cjs') > block.indexOf('embed-widget-smoke.cjs'), file);
+      const lastCheck = block.includes('working-directory:') ? 'embed-widget-smoke.cjs' : 'run-release-browser-checks.cjs';
+      assert.ok(block.includes(lastCheck) && block.indexOf('bind-browser-evidence.cjs') > block.indexOf(lastCheck), file);
       if (block.includes('working-directory:')) assert.ok(block.includes('$GITHUB_WORKSPACE/.github/scripts/bind-browser-evidence.cjs'), '復旧先に新helperを要求しない');
     }
   }
   assert.equal(count, 4);
+});
+
+test('通常配信は6検査を最大2本で動かし、両方の新しい証跡がそろってから結合できる', async t => {
+  const directory = fixture(t, {});
+  let active = 0, peak = 0;
+  const completed = [];
+  let releaseCore;
+  const secondaryStarted = new Promise(resolve => { releaseCore = resolve; });
+  const checks = ['browser-smoke.cjs', 'article-css-smoke.cjs', 'article-design-smoke.cjs',
+    'mobile-region-layout-smoke.cjs', 'browser-revenue-smoke.cjs', 'embed-widget-smoke.cjs'];
+  await runReleaseChecks(directory, async (name, args = []) => {
+    active++;
+    peak = Math.max(peak, active);
+    if (name === checks[0]) {
+      assert.deepEqual(args, ['--release']);
+      await secondaryStarted;
+    } else {
+      assert.deepEqual(args, []);
+      if (name === checks[1]) releaseCore();
+      await new Promise(resolve => setImmediate(resolve));
+    }
+    fs.writeFileSync(path.join(directory, name + '.json'), name);
+    completed.push(name);
+    active--;
+  });
+  assert.equal(peak, 2);
+  assert.deepEqual(completed.filter(name => name !== checks[0]), checks.slice(1));
+  assert.deepEqual(fs.readdirSync(directory).sort(), checks.map(name => name + '.json').sort());
+});
+
+test('片方が失敗すると同じ列を止め、動作中の列の終了と証跡を待って失敗を返す', async t => {
+  const directory = fixture(t, {});
+  const started = [];
+  let finishCore;
+  const failed = new Promise(resolve => { finishCore = resolve; });
+  const run = async name => {
+    started.push(name);
+    if (name === 'browser-smoke.cjs') {
+      await failed;
+      await new Promise(resolve => setImmediate(resolve));
+      fs.writeFileSync(path.join(directory, 'core.json'), 'finished');
+    } else {
+      fs.writeFileSync(path.join(directory, 'partial.json'), 'partial');
+      finishCore();
+      throw new Error('browser interrupted');
+    }
+  };
+  await assert.rejects(runReleaseChecks(directory, run), error =>
+    error instanceof AggregateError && error.errors.some(failure => failure.message === 'browser interrupted'));
+  assert.deepEqual(started, ['browser-smoke.cjs', 'article-css-smoke.cjs']);
+  assert.deepEqual(fs.readdirSync(directory).sort(), ['core.json', 'partial.json']);
 });
 
 test('CLIはブラウザとDeployの2成果物へ同一manifestを保存し機械照合できる', async t => {

@@ -57,7 +57,8 @@ test('配信成果物を実行時に変える非公開ビルド入力はDeploy�
     '.github/scripts/deploy-status.cjs', '.github/scripts/resolve-live-deploy-base.cjs',
     '.github/scripts/setup-browser-runtime.sh',
     '.github/scripts/ci-evidence.cjs', '.github/scripts/ci-phase-runner.cjs',
-    '.github/scripts/browser-navigation-retry.cjs', '.github/ci-runtime/package.json',
+    '.github/scripts/browser-navigation-retry.cjs', '.github/scripts/run-release-browser-checks.cjs',
+    '.github/ci-runtime/package.json',
     '.github/ci-runtime/package-lock.json',
     '.github/ci-runtime/node-version', 'scripts/asset-sync.cjs',
     'scripts/article-asset-versioning.cjs', 'scripts/html-replacements.cjs'

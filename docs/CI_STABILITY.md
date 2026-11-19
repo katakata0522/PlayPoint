@@ -82,3 +82,7 @@ SMOKE_EXPECT_REVISION=<exact-40-character-sha> node .github/scripts/bind-browser
 - GitHub CodeQLはPR / main pushで実行されるsecurity signalで、現時点ではrequired merge checkではない。
 - requiredかadvisoryかを「走っているかどうか」と混同しない。merge阻止が必要な契約はPR Gateへ統合する。
 - PR Gateは変更影響を分類し、docs/tests-onlyではApache実HTTPとChromiumを省略できる。公開成果物・runtime・browser検証基盤の変更では従来どおり必須とする。workflow_dispatchや差分不明時はfull verificationへfail-safeする。
+
+### Node.js の更新
+
+2026-11-19から検証・配信にはNode.js 24 LTSを使用する。パッチ番号の正本は `.github/ci-runtime/node-version`。更新時はNode.js公式の24系リリースと照合し、このファイルを通常のPRで変更する。PR Gateと対象パスで自動起動するLighthouseで新しい実行環境を確認し、マージ後は配信証跡の実バージョンを照合する。

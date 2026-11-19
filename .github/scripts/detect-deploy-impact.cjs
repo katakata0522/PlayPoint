@@ -25,6 +25,7 @@ const DEPLOYMENT_INPUTS = new Set([
   '.github/scripts/ci-evidence.cjs',
   '.github/scripts/ci-phase-runner.cjs',
   '.github/scripts/browser-navigation-retry.cjs',
+  '.github/scripts/run-release-browser-checks.cjs',
   '.github/ci-runtime/package.json',
   '.github/ci-runtime/package-lock.json',
   '.github/ci-runtime/node-version',
