@@ -122,10 +122,17 @@ for (const [label, scenario, extra, expected] of [
   ['通常jobは性能依存をinstallしない', '', [], 0],
   ['性能jobだけ独立lockをinstallする', '', ['--performance'], 0],
   ['Node不一致はinstall前に停止する', 'node-mismatch', [], 2],
-  ['APT更新timeoutはフォントとブラウザの準備前に失敗する', 'apt-update-timeout', [], 124],
-  ['フォント取得timeoutはブラウザの準備前に失敗する', 'font-install-timeout', [], 124],
-  ['通常mirror timeout時に署名付き公式mirrorへ一度だけ切替える', 'font-fallback-success', [], 0],
-  ['APTの取得失敗を合格扱いしない', 'apt-failure', [], 100],
+  ['公式索引の取得失敗はrunnerの索引へ一度だけ切り替える', 'index-fallback', [], 0],
+  ['公式フォントの取得失敗はrunnerの索引から再開する', 'font-fallback', [], 0],
+  ['公式のOS依存取得失敗はrunnerの候補で再計画する', 'deps-fallback', [], 0],
+  ['両方の索引がタイムアウトしたら取得を止める', 'index-timeout', [], 124],
+  ['両方のフォント取得がタイムアウトしたら導入しない', 'font-timeout', [], 124],
+  ['両方のOS依存取得に失敗したら導入しない', 'deps-failure', [], 100],
+  ['OS依存が揃っているときは追加取得を省く', 'deps-present', [], 0],
+  ['想定外の依存一覧をaptへ渡さない', 'invalid-plan', [], 1],
+  ['パッケージ設定の失敗は再試行せずに伝える', 'install-failure', [], 100],
+  ['導入後の依存不足をブラウザ成功にしない', 'incomplete-install', [], 1],
+  ['フォントが導入されていなければブラウザを起動しない', 'missing-font', [], 1],
   ['lockのinstall失敗を隠さない', 'npm-failure', [], 7],
   ['Chromium取得失敗をPATHのChromeで代替しない', 'browser-failure', [], 9]
 ]) {
@@ -136,20 +143,35 @@ for (const [label, scenario, extra, expected] of [
     fs.writeFileSync(path.join(runtime, 'package-lock.json'), '{}');
     fs.writeFileSync(path.join(runtime, 'node-version'), '22.23.2\n');
     const log = path.join(dir, 'commands.txt');
-    for (const name of ['sudo', 'npm', 'fc-match', 'fake-chrome', 'dpkg-query']) {
+    for (const name of ['npm', 'fc-match', 'fake-chrome', 'dpkg-query']) {
       const body = name === 'npm' ? 'if [ "$SCENARIO" = npm-failure ]; then exit 7; fi\n'
-        : name === 'sudo' ? 'if [ "$SCENARIO" = apt-failure ]; then exit 100; fi\n'
-        : name === 'dpkg-query' ? 'echo "install ok installed"\n' : '';
+        : name === 'dpkg-query' ? 'if [ "$SCENARIO" != missing-font ]; then echo "install ok installed"; fi\n' : '';
       fs.writeFileSync(path.join(bin, name), `#!/bin/bash\nprintf '%s\\n' "${name} $*" >> "$MOCK_LOG"\n${body}exit 0\n`, { mode: 0o755 });
     }
     fs.writeFileSync(path.join(bin, 'timeout'), `#!/bin/bash
-printf '%s\\n' "timeout $*" >> "$MOCK_LOG"
-if [ "$SCENARIO" = apt-update-timeout ] && [[ "$*" == *" update "* ]]; then exit 124; fi
-if [ "$SCENARIO" = font-install-timeout ] && [[ "$*" == *"fonts-noto-cjk"* ]]; then exit 124; fi
-if [ "$SCENARIO" = font-fallback-success ] && [[ "$*" == *"fonts-noto-cjk"* ]] && [[ "$*" != *"Dir::Etc::sourcelist="* ]]; then exit 124; fi
-shift
-shift
+printf '%s\\n' "timeout $1 $2" >> "$MOCK_LOG"
+shift 2
 exec "$@"
+`, { mode: 0o755 });
+    fs.writeFileSync(path.join(bin, 'sudo'), `#!/bin/bash
+set -eu
+config=\${1#APT_CONFIG=}
+shift
+[[ $1 == apt-get ]] || exit 99
+route=runner
+if [[ $config != /dev/null ]]; then
+  route=ubuntu
+  sources=$(sed -n 's/^Dir::Etc::sourcelist "\\(.*\\)";$/\\1/p' "$config")
+  cat "$sources" >> "$MOCK_LOG"
+fi
+printf '%s\\n' "apt $route $*" >> "$MOCK_LOG"
+case "$*" in
+  *" update "*) [[ $SCENARIO != index-timeout && $route/$SCENARIO != ubuntu/index-fallback ]] || exit 124 ;;
+  *--download-only*fonts-noto-cjk*) [[ $SCENARIO != font-timeout && $route/$SCENARIO != ubuntu/font-fallback ]] || exit 124 ;;
+  *--download-only*) [[ $SCENARIO != deps-failure && $route/$SCENARIO != ubuntu/deps-fallback ]] || exit 100 ;;
+  *--no-download*) [[ $SCENARIO != install-failure ]] || exit 100; touch "$MOCK_BIN/installed" ;;
+  *) exit 98 ;;
+esac
 `, { mode: 0o755 });
     fs.writeFileSync(path.join(bin, 'node'), `#!/bin/bash
 printf '%s\\n' "node $*" >> "$MOCK_LOG"
@@ -157,31 +179,48 @@ if [ "$1" = -p ]; then
   if [[ "$2" == *process.versions.node* ]]; then
     if [ "$SCENARIO" = node-mismatch ]; then echo 0.0.0; else echo 22.23.2; fi
   else echo "$MOCK_BIN/fake-chrome"; fi
-elif [[ "$1" == */cli.js ]] && [ "$SCENARIO" = browser-failure ]; then exit 9; fi
+elif [[ "$*" == *"install-deps --dry-run chromium" ]]; then
+  if [[ $SCENARIO == invalid-plan ]]; then printf 'Missing system dependencies (2):\\n  liba\\n  --bad-option\\n'; exit 1; fi
+  if [[ $SCENARIO != deps-present && ( ! -f "$MOCK_BIN/installed" || $SCENARIO == incomplete-install ) ]]; then
+    library=libexample:amd64
+    if [[ $APT_CONFIG == /dev/null ]]; then library=libalternate; fi
+    printf 'Missing system dependencies (2):\\n  fonts-liberation\\n  %s\\n' "$library"
+    exit 1
+  fi
+elif [[ "$*" == *"install --no-shell chromium" && $SCENARIO == browser-failure ]]; then exit 9; fi
 `, { mode: 0o755 });
     const result = spawnSync('bash', [path.join(root, '.github/scripts/setup-browser-runtime.sh'), ...extra], {
       encoding: 'utf8', env: { ...process.env, PATH: bin + path.delimiter + process.env.PATH, MOCK_BIN: bin, MOCK_LOG: log,
         SCENARIO: scenario, GITHUB_ENV: path.join(dir, 'env'), GITHUB_WORKSPACE: dir, RUNNER_TEMP: dir } });
-    assert.equal(result.status, expected, result.stderr);
+    assert.equal(result.status, expected, result.stdout + result.stderr);
     const commands = fs.readFileSync(log, 'utf8');
+    const routes = [...commands.matchAll(/^apt (ubuntu|runner) .* update -qq$/gm)].map(match => match[1]);
+    if (['node-mismatch', 'npm-failure'].includes(scenario)) {
+      assert.equal(routes.length, 0);
+    } else {
+      const fallback = /fallback|timeout|deps-failure|invalid-plan/.test(scenario);
+      assert.deepEqual(routes, fallback ? ['ubuntu', 'runner'] : ['ubuntu']);
+      assert.match(commands, /signed-by=\/usr\/share\/keyrings\/ubuntu-archive-keyring\.gpg\] https:\/\/archive\.ubuntu\.com\/ubuntu noble-updates main universe/);
+      assert.match(commands, /https:\/\/security\.ubuntu\.com\/ubuntu noble-security main universe/);
+    }
     if (expected === 0) {
       assert.equal((commands.match(/^npm ci/gm) || []).length, extra.length ? 2 : 1);
-      assert.match(commands, /timeout --kill-after=10s 120s sudo apt-get .* update -qq/);
-      assert.match(commands, /timeout --kill-after=10s 180s sudo apt-get .* install -y --no-install-recommends fonts-noto-cjk/);
-      assert.match(commands, /Acquire::Retries=2.*Acquire::http::Timeout=30.*Acquire::https::Timeout=30/);
-      assert.match(commands, /install --with-deps --no-shell chromium/);
-      if (scenario === 'font-fallback-success') {
-        assert.match(commands, /sudo apt-get .*Dir::Etc::sourcelist=.* update -qq/);
-        assert.match(commands, /sudo apt-get .*Dir::Etc::sourcelist=.* install -y --no-install-recommends fonts-noto-cjk/);
-      }
+      const installed = commands.split('\n').filter(line => line.startsWith('apt ') && line.includes('--no-download'));
+      assert.equal(installed.length, 1);
+      assert.match(installed[0], /install -y --no-install-recommends fonts-noto-cjk/);
+      if (scenario === 'deps-present') assert.doesNotMatch(commands, /--download-only .*fonts-liberation/);
+      else assert.ok(installed[0].endsWith('fonts-liberation ' + (routes.includes('runner') ? 'libalternate' : 'libexample:amd64')));
+      assert.match(commands, /timeout --kill-after=10s 90s/);
+      assert.match(commands, /timeout --kill-after=10s 120s/);
+      assert.match(commands, /Acquire::Retries=1.*APT::Update::Error-Mode=any/);
+      assert.match(commands, /--no-download[^\n]*\nnode [^\n]*install-deps --dry-run chromium\n/);
+      assert.match(result.stdout, /\[browser-runtime\] chromium \d+s \(exit 0\)/);
       assert.match(fs.readFileSync(path.join(dir, 'env'), 'utf8'), /CHROME_PATH=.*fake-chrome/);
     } else {
       assert.equal(fs.existsSync(path.join(dir, 'env')), false);
       if (scenario === 'node-mismatch') assert.doesNotMatch(commands, /npm|sudo/);
-      if (scenario.startsWith('apt-') || scenario === 'font-install-timeout') {
-        assert.doesNotMatch(commands, /^npm |^fc-match |\/cli\.js/m);
-        if (scenario === 'apt-update-timeout') assert.doesNotMatch(commands, /fonts-noto-cjk/);
-      }
+      if (scenario !== 'browser-failure') assert.doesNotMatch(commands, / install --no-shell chromium/);
+      if (['index-timeout', 'font-timeout', 'deps-failure', 'invalid-plan'].includes(scenario)) assert.doesNotMatch(commands, /--no-download|--bad-option/);
     }
   });
 }
