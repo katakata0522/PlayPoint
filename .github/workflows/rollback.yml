@@ -23,6 +23,7 @@ permissions:
 # Deploy・watchdog・rollback・snapshot履歴は同じ本番を所有するため、絶対に並行実行しない。
 concurrency:
   group: deploy-playpoint-main
+  queue: max
 
 jobs:
   rollback:

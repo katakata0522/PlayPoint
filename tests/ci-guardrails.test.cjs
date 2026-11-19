@@ -1,7 +1,9 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { execFileSync, spawnSync } = require('node:child_process');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 const { runPreflight } = require('./helpers/preflight-fixture.cjs');
@@ -72,6 +74,52 @@ test('Deployはmainの全pushでverified productionとの差分を照合し、�
 
   const skipBlock = getStepBlock(workflow, 'Skip production deployment for non-public changes');
   assert.match(skipBlock, /steps\.deploy-impact\.outputs\.deploy_needed == 'false'/);
+});
+
+test('通常配信はロック取得後のmainだけを許し、古い再実行と手動配信を転送前に止める', t => {
+  const step = getStepBlock(read('.github/workflows/deploy.yml'), 'Detect production deploy impact');
+  const script = step.split('run: |\n')[1];
+  const bash = process.platform === 'win32' ? execFileSync('git', ['var', 'GIT_SHELL_PATH'], { encoding: 'utf8' }).trim() : 'bash';
+  const candidate = 'a'.repeat(40);
+  const newer = 'b'.repeat(40);
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pp-deploy-impact-'));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const output = path.join(dir, 'output');
+  const summary = path.join(dir, 'summary');
+  function run(event, current, apiExit = 0) {
+    fs.writeFileSync(output, '');
+    fs.writeFileSync(summary, '');
+    const stubs = [
+      'gh() { [[ "$*" == "api repos/test/site/git/ref/heads/main --jq .object.sha" ]] || return 2; printf "%s\\n" "$TEST_MAIN"; return "$TEST_API_EXIT"; }',
+      'node() { printf "%s\\n" "$GITHUB_SHA"; }',
+    ];
+    const result = spawnSync(bash, ['-s'], {
+      input: [...stubs, script].join('\n'), encoding: 'utf8', timeout: 5000,
+      env: { ...process.env, GITHUB_SHA: candidate, GITHUB_REPOSITORY: 'test/site', GITHUB_EVENT_NAME: event,
+        GITHUB_OUTPUT: output.replaceAll('\\', '/'), GITHUB_STEP_SUMMARY: summary.replaceAll('\\', '/'),
+        TEST_MAIN: current, TEST_API_EXIT: String(apiExit) },
+    });
+    assert.ifError(result.error);
+    return { status: result.status, stderr: result.stderr, outputs: fs.readFileSync(output, 'utf8') };
+  }
+  for (const event of ['push', 'workflow_dispatch']) {
+    const stale = run(event, newer);
+    assert.equal(stale.status, 0, stale.stderr);
+    assert.match(stale.outputs, /deploy_needed=false/);
+    assert.match(stale.outputs, /base_source=superseded/);
+    assert.ok(fs.readFileSync(summary, 'utf8').includes(newer));
+  }
+  const manual = run('workflow_dispatch', candidate);
+  assert.equal(manual.status, 0, manual.stderr);
+  assert.match(manual.outputs, /deploy_needed=true/);
+  const verified = run('push', candidate);
+  assert.equal(verified.status, 0, verified.stderr);
+  assert.match(verified.outputs, /base_source=verified-production/);
+  assert.match(verified.outputs, /deploy_needed=false/);
+  for (const failed of [run('push', ''), run('workflow_dispatch', 'invalid'), run('push', candidate, 1)]) {
+    assert.notEqual(failed.status, 0);
+    assert.doesNotMatch(failed.outputs, /deploy_needed=true/);
+  }
 });
 
 test('AI同期プリフライト本体は非公開toolsに置き、公開ミラーから除外する', () => {
