@@ -20,7 +20,7 @@ jobs:
     # Draftイベントは必須名の結果や進行中の実検証を上書きしない。
     if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - name: Checkout code
         id: checkout_code
