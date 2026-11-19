@@ -58,6 +58,17 @@ test('browser検証を所有するworkflowは共通helperだけを呼ぶ', () =>
   }
 });
 
+test('Actionsで使用するNodeの完全な版は全workflowで同じファイルから取得する', () => {
+  const directory = '.github/workflows';
+  for (const name of fs.readdirSync(path.join(root, directory)).filter(file => /\.ya?ml$/.test(file))) {
+    const steps = read(directory + '/' + name).split(/^\s*- (?=(?:name|uses):)/m);
+    for (const step of steps.filter(value => /uses:\s*actions\/setup-node@/.test(value))) {
+      assert.match(step, /^\s*node-version-file:\s*\.github\/ci-runtime\/node-version\s*$/m, name);
+      assert.doesNotMatch(step, /^\s*node-version:/m, name);
+    }
+  }
+});
+
 test('退避したmanual Browser Smokeも共通helper参照だけを保持する', () => {
   const recipe = read('.github/manual-workflows/browser-smoke.yml');
   const calls = recipe.match(/bash \.github\/scripts\/setup-browser-runtime\.sh/g) || [];

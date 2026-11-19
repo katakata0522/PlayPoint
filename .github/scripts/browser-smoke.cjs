@@ -13,6 +13,7 @@ const { verifyReadingUi } = require('./browser-reading-ui.cjs');
 const { verifyStaticPresentation, verifyResultPresentation } = require('./calculator-presentation-contract.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
+const RELEASE = process.argv.includes('--release');
 const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
 const CHROME_PATH = process.env.CHROME_PATH;
 const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
@@ -459,7 +460,6 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
       lazyDiary = { checked: true, deferredUntilUse: true, offlineAfterUse: true };
     }
 
-    await page.waitForTimeout(locale.key === 'JP' ? 700 : 700);
     // 計算・オフライン検証後に実際のリンクを押し、著者ページ到達まで確認する。
     const authorPath = expectedAuthorPath(locale);
     await Promise.all([
@@ -723,9 +723,15 @@ async function verifyBlogPage(browser, baseUrl) {
     // 記事トップで疑問を選べる。記事一覧へ進んだ後は見出し・説明と画像を読む。
     await page.setViewportSize({ width:390, height:844 });
     await page.evaluate(() => scrollTo(0, 0));
-    assert(await page.locator('.reader-entry-questions[aria-label="まず知っておきたいこと"] a').count() === 3, 'Three introductory questions available');
-    const purposeHrefs = await page.locator('.reader-hub-entry nav[aria-label="目的別の案内"] a').evaluateAll(links => links.map(link => link.getAttribute('href')));
-    assert(JSON.stringify(purposeHrefs) === JSON.stringify(['/guides/ranks/', '/guides/using-points/', '/guides/troubleshooting/', '/games/', '/latest/']), 'Five purpose-specific destinations available separately from introductory questions');
+    const entryLinks = {
+      'まず知っておきたいこと': ['/articles/2026-08-16-play-pass-worth-it.html#play-pass-basics', '/articles/2026-08-05-play-points-levels-guide.html', '/articles/2025-12-25-check-balance.html'],
+      '目的別の案内': ['/guides/ranks/', '/guides/using-points/', '/guides/troubleshooting/', '/games/', '/latest/'],
+    };
+    for (const [label, required] of Object.entries(entryLinks)) {
+      const links = page.locator(`.reader-hub-entry nav[aria-label="${label}"] a`);
+      const hrefs = await links.evaluateAll(items => items.map(item => item.getAttribute('href')));
+      for (const href of required) assert(hrefs.includes(href), `${label} に ${href} が見つかりません`);
+    }
     await page.locator('.hub-skip-link').focus();
     await page.keyboard.press('Enter');
     await page.waitForFunction(() => {
@@ -741,9 +747,8 @@ async function verifyBlogPage(browser, baseUrl) {
     }, null, { polling:'raf', timeout:5_000 });
     await page.screenshot({ path:path.join(ARTIFACT_DIR,'blog-first-view-390.png'), fullPage:false });
 
-    await page.waitForTimeout(500);
+    const readingUi = await verifyReadingUi(browser, baseUrl, blockExternalRequests, ARTIFACT_DIR, { syntheticFixtures: !RELEASE });
     browserState.verify('Blog browser errors');
-    const readingUi = await verifyReadingUi(browser, baseUrl, blockExternalRequests, ARTIFACT_DIR);
     return { initial, resetState, topic, readingUi, errors: browserState.values };
   } catch (error) {
     await saveScreenshot(page, 'blog.png');
@@ -754,7 +759,7 @@ async function verifyBlogPage(browser, baseUrl) {
 }
 
 async function main() {
-  fs.rmSync(ARTIFACT_DIR, { recursive: true, force: true });
+  if (!RELEASE) fs.rmSync(ARTIFACT_DIR, { recursive: true, force: true });
   fs.mkdirSync(ARTIFACT_DIR, { recursive: true });
   navigationAttempts.length = 0;
   let localServer;

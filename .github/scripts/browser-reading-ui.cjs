@@ -5,9 +5,10 @@ const fs = require('node:fs');
 const { INTERNATIONAL_LOCALES } = require('../../scripts/locale-ids.cjs');
 
 // 同じPR Gate/本番ブラウザsuiteに統合。外部広告は押さず、故障条件はこのcontextだけへ注入する。
-async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifactDir) {
+async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifactDir, { syntheticFixtures = true } = {}) {
   const origin = new URL(baseUrl).origin;
   const report = { themes: [], interactions: {}, faults: {}, storage: {}, scope: 'browser; third-party responses stubbed; synthetic storage only' };
+  report.syntheticReaderFixtures = syntheticFixtures ? 'included' : 'covered-by-pr-gate';
   const contexts = [];
   let lastPage;
   async function context() {
@@ -251,7 +252,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
         assert(entry&&entry.y>=0&&entry.y+entry.height<=844&&entry.x>=0&&entry.x+entry.width<=width&&entry.height>=44,`記事トップの入門入口を最初の画面で開ける: ${width}`);
         assert(state.menuRight===true,`Mobile menu button must sit to the right of the centered brand at ${width}`);
       } else {
-        assert(await page.locator('.reader-entry-questions[aria-label="まず知っておきたいこと"] a').count()===3,'PCでも疑問から読む入口を使える');
+        assert(await page.locator('.reader-hub-entry > summary').isVisible(),'PCでも入門案内を開ける');
       }
       responsive.push({width,...state});
     }
@@ -442,11 +443,11 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     report.interactions.followthrough={searchHistory:true,campaignArrival:true,guideThemes:true,guideAnchors:true,benefitFilter:true,calendarDownload:true};
     await goto(page,'blog/'); await cards(page);
     await page.locator('.reader-hub-entry > summary').click();
-    await page.locator('.reader-entry-questions[aria-label="まず知っておきたいこと"] a').first().click();
+    await page.locator('.reader-entry-questions[aria-label="まず知っておきたいこと"] a[href$="#play-pass-basics"]').click();
     await page.locator('#play-pass-basics').waitFor({state:'visible'});
     assert.equal(new URL(page.url()).hash,'#play-pass-basics');
     assert.equal(await page.locator('.breadcrumbs-wrapper a').first().getAttribute('href'),'/blog/');
-    await page.locator('.reader-followthrough a').first().click();
+    await page.locator('.reader-followthrough a[href$="#reader-calendar-title"]').click();
     await page.locator('[data-reader-calendar]').waitFor({state:'visible'});
     assert.equal(new URL(page.url()).hash,'#reader-calendar-title');
     report.interactions.questionToAction=true;
@@ -587,86 +588,89 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       report.interactions.mobileNavigation.push({name,shots});
     }
 
-    // 画面外の表を強制計測せず、接近・幅変更・履歴復帰でも操作を準備できる。
-    const tableContext = await context();
-    await tableContext.addInitScript(() => {
-      const native = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollWidth');
-      window.__tableMeasurements = [];
-      Object.defineProperty(Element.prototype, 'scrollWidth', { ...native, get() {
-        if (this.hasAttribute('data-reading-table')) window.__tableMeasurements.push(this.id);
-        return native.get.call(this);
-      } });
-    });
-    const tablePage = await tableContext.newPage();
-    const tableFixture = '/articles/reading-table-performance-fixture.html';
-    await tablePage.route(new URL(tableFixture, baseUrl).href, route => route.fulfill({contentType:'text/html',body:
-      '<html><head><style>table{min-width:900px}.table-wrap{overflow:auto}.spacer{height:12000px}.section{content-visibility:auto;contain-intrinsic-size:auto 480px}</style></head><body><article class="content"><section class="section"><div class="table-wrap" id="near"><table><tr><td>A</td><td>B</td><td>C</td></tr></table></div></section><div class="spacer"></div><section class="section"><div class="table-wrap" id="far"><table><tr><td>D</td><td>E</td><td>F</td></tr></table></div></section></article><script src="/js/reading-experience.js"></script></body></html>'}));
-    await goto(tablePage, tableFixture);
-    await tablePage.locator('#near[tabindex="0"]').waitFor();
-    assert.equal(await tablePage.evaluate(()=>window.__tableMeasurements.includes('far')),false,'Offscreen table must not force initial layout');
-    await tablePage.locator('#far').scrollIntoViewIfNeeded();
-    await tablePage.locator('#far[tabindex="0"][role="region"]').waitFor();
-    await tablePage.locator('#far').focus(); await tablePage.keyboard.press('ArrowRight');
-    await tablePage.waitForFunction(()=>document.getElementById('far').scrollLeft>0);
-    await tablePage.setViewportSize({width:1280,height:844});
-    await tablePage.waitForFunction(()=>!document.getElementById('far').hasAttribute('tabindex'));
-    await tablePage.evaluate(()=>{dispatchEvent(new PageTransitionEvent('pagehide'));dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}));});
-    await tablePage.setViewportSize({width:320,height:844});
-    await tablePage.locator('#far[tabindex="0"]').waitFor();
-    await tablePage.addInitScript(()=>{window.IntersectionObserver=undefined;});
-    await goto(tablePage,tableFixture);
-    await tablePage.locator('#far[tabindex="0"]').waitFor({state:'attached'});
-    report.interactions.tableVisibility = report.interactions.tableResize = report.interactions.tableHistoryRestore = report.interactions.tableObserverFallback = true;
+    // 架空の表・強制した通信障害・合成の検索順位はPRで再現する。本番では実カタログの操作を検査する。
+    if (syntheticFixtures) {
+      // 画面外の表を強制計測せず、接近・幅変更・履歴復帰でも操作を準備できる。
+      const tableContext = await context();
+      await tableContext.addInitScript(() => {
+        const native = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollWidth');
+        window.__tableMeasurements = [];
+        Object.defineProperty(Element.prototype, 'scrollWidth', { ...native, get() {
+          if (this.hasAttribute('data-reading-table')) window.__tableMeasurements.push(this.id);
+          return native.get.call(this);
+        } });
+      });
+      const tablePage = await tableContext.newPage();
+      const tableFixture = '/articles/reading-table-performance-fixture.html';
+      await tablePage.route(new URL(tableFixture, baseUrl).href, route => route.fulfill({contentType:'text/html',body:
+        '<html><head><style>table{min-width:900px}.table-wrap{overflow:auto}.spacer{height:12000px}.section{content-visibility:auto;contain-intrinsic-size:auto 480px}</style></head><body><article class="content"><section class="section"><div class="table-wrap" id="near"><table><tr><td>A</td><td>B</td><td>C</td></tr></table></div></section><div class="spacer"></div><section class="section"><div class="table-wrap" id="far"><table><tr><td>D</td><td>E</td><td>F</td></tr></table></div></section></article><script src="/js/reading-experience.js"></script></body></html>'}));
+      await goto(tablePage, tableFixture);
+      await tablePage.locator('#near[tabindex="0"]').waitFor();
+      assert.equal(await tablePage.evaluate(()=>window.__tableMeasurements.includes('far')),false,'Offscreen table must not force initial layout');
+      await tablePage.locator('#far').scrollIntoViewIfNeeded();
+      await tablePage.locator('#far[tabindex="0"][role="region"]').waitFor();
+      await tablePage.locator('#far').focus(); await tablePage.keyboard.press('ArrowRight');
+      await tablePage.waitForFunction(()=>document.getElementById('far').scrollLeft>0);
+      await tablePage.setViewportSize({width:1280,height:844});
+      await tablePage.waitForFunction(()=>!document.getElementById('far').hasAttribute('tabindex'));
+      await tablePage.evaluate(()=>{dispatchEvent(new PageTransitionEvent('pagehide'));dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}));});
+      await tablePage.setViewportSize({width:320,height:844});
+      await tablePage.locator('#far[tabindex="0"]').waitFor();
+      await tablePage.addInitScript(()=>{window.IntersectionObserver=undefined;});
+      await goto(tablePage,tableFixture);
+      await tablePage.locator('#far[tabindex="0"]').waitFor({state:'attached'});
+      report.interactions.tableVisibility = report.interactions.tableResize = report.interactions.tableHistoryRestore = report.interactions.tableObserverFallback = true;
 
-    // 三つの同意状態と、故障条件は専用context。実ユーザーの保存データを利用しない。
-    const f = await context();
-    await f.addInitScript(()=>{
-      const Native=window.IntersectionObserver; window.__readingObservers=[];
-      window.IntersectionObserver=class extends Native {
-        constructor(callback, options){super(callback,options);this.targets=new Set();window.__readingObservers.push(this);}
-        observe(el){this.targets.add(el);return super.observe(el);}
-        unobserve(el){this.targets.delete(el);return super.unobserve(el);}
-        disconnect(){this.targets.clear();return super.disconnect();}
-      };
-    });
-    let indexAllowed=false,indexAttempts=0;
-    await f.route('**/blog/article-search-index.json*',async route=>{indexAttempts++;if(!indexAllowed)return route.fulfill({status:503,body:'temporarily unavailable'});return route.continue();});
-    await f.route('**/images/game-icons/fgo.webp*',route=>route.fulfill({status:404,body:'fixture image failure'}));
-    const fault=await f.newPage(),faultErrors=[];fault.on('pageerror',e=>faultErrors.push(e.message));
-    await goto(fault,'blog/?game=FGO');await cards(fault);
-    await fault.waitForFunction(()=>document.querySelector('.article-card[href*="fgo/pity-cost"] .card-thumb img')?.src.endsWith('/images/article-placeholder.svg'));
-    await fault.locator('#search-input').fill('329回以内');
-    await fault.locator('#body-search-notice button').waitFor({state:'visible'});
-    indexAllowed=true; await fault.locator('#body-search-notice button').click();
-    await fault.locator('.article-card[href*="fgo/pity-cost"]').waitFor({state:'visible'});
-    assert(indexAttempts>=2,'Index retries after transient failure');
-    await fault.locator('#article-result-status button').click(); await cards(fault);
-    await openOptionalFilters(fault);
-    for(let i=0;i<20;i++) await fault.locator('#sort-toggle').selectOption(i%2?'newest':'oldest');
-    assert(await fault.evaluate(()=>window.__readingObservers.every(o=>[...o.targets].every(t=>t.isConnected))),'Detached image targets are released');
-    assert.equal(faultErrors.length,0,JSON.stringify(faultErrors));
-    report.faults = {indexAttempts,localImageFallback:true,observerCleanup:true,uncaughtErrors:faultErrors};
+      // 三つの同意状態と、故障条件は専用context。実ユーザーの保存データを利用しない。
+      const f = await context();
+      await f.addInitScript(()=>{
+        const Native=window.IntersectionObserver; window.__readingObservers=[];
+        window.IntersectionObserver=class extends Native {
+          constructor(callback, options){super(callback,options);this.targets=new Set();window.__readingObservers.push(this);}
+          observe(el){this.targets.add(el);return super.observe(el);}
+          unobserve(el){this.targets.delete(el);return super.unobserve(el);}
+          disconnect(){this.targets.clear();return super.disconnect();}
+        };
+      });
+      let indexAllowed=false,indexAttempts=0;
+      await f.route('**/blog/article-search-index.json*',async route=>{indexAttempts++;if(!indexAllowed)return route.fulfill({status:503,body:'temporarily unavailable'});return route.continue();});
+      await f.route('**/images/game-icons/fgo.webp*',route=>route.fulfill({status:404,body:'fixture image failure'}));
+      const fault=await f.newPage(),faultErrors=[];fault.on('pageerror',e=>faultErrors.push(e.message));
+      await goto(fault,'blog/?game=FGO');await cards(fault);
+      await fault.waitForFunction(()=>document.querySelector('.article-card[href*="fgo/pity-cost"] .card-thumb img')?.src.endsWith('/images/article-placeholder.svg'));
+      await fault.locator('#search-input').fill('329回以内');
+      await fault.locator('#body-search-notice button').waitFor({state:'visible'});
+      indexAllowed=true; await fault.locator('#body-search-notice button').click();
+      await fault.locator('.article-card[href*="fgo/pity-cost"]').waitFor({state:'visible'});
+      assert(indexAttempts>=2,'Index retries after transient failure');
+      await fault.locator('#article-result-status button').click(); await cards(fault);
+      await openOptionalFilters(fault);
+      for(let i=0;i<20;i++) await fault.locator('#sort-toggle').selectOption(i%2?'newest':'oldest');
+      assert(await fault.evaluate(()=>window.__readingObservers.every(o=>[...o.targets].every(t=>t.isConnected))),'Detached image targets are released');
+      assert.equal(faultErrors.length,0,JSON.stringify(faultErrors));
+      report.faults = {indexAttempts,localImageFallback:true,observerCleanup:true,uncaughtErrors:faultErrors};
 
-    // 異なる関連度・公開日・更新日を持つ合成レコードで、成功検索の実際の順を比較。
-    const sortContext=await context();
-    const fixture=[
-      {id:'old',title:'Old guide',description:'auditneedle',date:'2025-12-25',modified:'2026-09-18',category:'使い方',tags:[],file:'../articles/2025-12-25-best-use.html',thumbnail:'../ogp.png'},
-      {id:'new',title:'auditneedle new guide',description:'New guide',date:'2026-09-13',modified:'2026-09-13',category:'使い方',tags:[],file:'../games/fgo/pity-cost/index.html',thumbnail:'../ogp.png'}
-    ];
-    await sortContext.route('**/blog/articles.json*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture)}));
-    await sortContext.route('**/blog/article-search-index.json*',route=>route.fulfill({status:200,contentType:'application/json',body:'{"articles":[]}'}));
-    const sp=await sortContext.newPage();await goto(sp,'blog/?q=auditneedle');await cards(sp);
-    await openOptionalFilters(sp);
-    const orders={};
-    for(const [mode,expected] of [['relevance','fgo/pity-cost'],['oldest','2025-12-25-best-use'],['newest','fgo/pity-cost'],['updated','2025-12-25-best-use']]) {
-      await sp.locator('#sort-toggle').selectOption(mode);
-      orders[mode]=await sp.locator('.article-card').first().getAttribute('href');
-      assert(orders[mode].includes(expected),`${mode} returned ${orders[mode]}`);
+      // 異なる関連度・公開日・更新日を持つ合成レコードで、成功検索の実際の順を比較。
+      const sortContext=await context();
+      const fixture=[
+        {id:'old',title:'Old guide',description:'auditneedle',date:'2025-12-25',modified:'2026-09-18',category:'使い方',tags:[],file:'../articles/2025-12-25-best-use.html',thumbnail:'../ogp.png'},
+        {id:'new',title:'auditneedle new guide',description:'New guide',date:'2026-09-13',modified:'2026-09-13',category:'使い方',tags:[],file:'../games/fgo/pity-cost/index.html',thumbnail:'../ogp.png'}
+      ];
+      await sortContext.route('**/blog/articles.json*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture)}));
+      await sortContext.route('**/blog/article-search-index.json*',route=>route.fulfill({status:200,contentType:'application/json',body:'{"articles":[]}'}));
+      const sp=await sortContext.newPage();await goto(sp,'blog/?q=auditneedle');await cards(sp);
+      await openOptionalFilters(sp);
+      const orders={};
+      for(const [mode,expected] of [['relevance','fgo/pity-cost'],['oldest','2025-12-25-best-use'],['newest','fgo/pity-cost'],['updated','2025-12-25-best-use']]) {
+        await sp.locator('#sort-toggle').selectOption(mode);
+        orders[mode]=await sp.locator('.article-card').first().getAttribute('href');
+        assert(orders[mode].includes(expected),`${mode} returned ${orders[mode]}`);
+      }
+      await sp.locator('#sort-toggle').selectOption('oldest');
+      await goto(sp,'blog/');await cards(sp);assert.equal(await sp.locator('#sort-toggle').inputValue(),'oldest');
+      await goto(sp,'blog/?sort=newest');await cards(sp);assert.equal(await sp.locator('#sort-toggle').inputValue(),'newest');
+      report.interactions.sorts=orders;report.interactions.savedSort=true;
     }
-    await sp.locator('#sort-toggle').selectOption('oldest');
-    await goto(sp,'blog/');await cards(sp);assert.equal(await sp.locator('#sort-toggle').inputValue(),'oldest');
-    await goto(sp,'blog/?sort=newest');await cards(sp);assert.equal(await sp.locator('#sort-toggle').inputValue(),'newest');
-    report.interactions.sorts=orders;report.interactions.savedSort=true;
 
     const storageContext=await context();
     await storageContext.addInitScript(()=>{localStorage.setItem('playpoint_reading_library_v1','{broken');});
