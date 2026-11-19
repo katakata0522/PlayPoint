@@ -511,6 +511,15 @@ background: var(--section-bg-color);
 outline: 2px solid var(--input-focus-border-color);
 outline-offset: 2px;
 }
+:is(#main-calculator-inputs, #reverseMode) :is(select, input[type="number"]) {
+background-color: var(--section-bg-color);
+border-color: #84928c;
+border-radius: 8px;
+box-shadow: none;
+}
+:is(#main-calculator-inputs, #reverseMode) :is(select, input[type="number"]):focus {
+border-color: var(--input-focus-border-color);
+}
 button {
 background: var(--button-bg-color);
 color: var(--button-text-color);
@@ -1012,43 +1021,44 @@ font-weight: normal;
 box-shadow: none;
 }
 .info-btn {
-background: rgba(11, 87, 208, 0.08);
-color: #0b57d0;
-border-radius: 50%;
-width: 24px;
-height: 24px;
-min-width: 24px;
-min-height: 24px;
+color: #465773;
+width: 22px;
+height: 22px;
 line-height: 1;
-font-size: 0.76em;
+font-size: 12px;
 font-weight: bold;
-text-align: center;
-display: inline-flex;
-align-items: center;
-justify-content: center;
+display: inline-grid;
+place-items: center;
 cursor: pointer;
-margin-left: 0;
 position: relative;
-vertical-align: middle;
-margin-top: 0;
+isolation: isolate;
 user-select: none;
-border: 1.2px solid rgba(11, 87, 208, 0.2);
 flex-shrink: 0;
-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.info-btn:hover {
-background: #0b57d0;
-color: white;
-border-color: #0b57d0;
-transform: scale(1.04);
+.info-btn::before {
+content: "";
+position: absolute;
+z-index: -1;
+width: 22px;
+height: 22px;
+box-sizing: border-box;
+border: 1px solid #cbd5e1;
+border-radius: 50%;
+background: #f4f7fb;
 }
-.info-btn:focus {
-outline: 3px solid transparent;
-background: #0b57d0;
-color: white;
-border-color: #0b57d0;
-box-shadow: 0 0 0 3px rgba(11, 87, 208, 0.25);
-transform: scale(1.04);
+.info-btn[aria-expanded="true"]::before {
+background: #e7eef7;
+border-color: #9bafc9;
+}
+@media (hover: hover) {
+.info-btn:hover::before { border-color: #9bafc9; }
+}
+.info-btn:focus-visible {
+outline: none;
+}
+.info-btn:focus-visible::before {
+outline: 2px solid var(--input-focus-border-color);
+outline-offset: 2px;
 }
 .info-btn::after {
 content: "";
@@ -2805,8 +2815,6 @@ body:has(>main.lp-wrapper) { background:#f4f7f6; }
   .calculator-wrapper .label-with-tooltip .info-btn {
     width: 44px;
     height: 44px;
-    box-sizing: border-box;
-    font-size: 14px;
   }
   .calculator-wrapper #needed-points-hint {
     font-size: 14px;

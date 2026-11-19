@@ -17,10 +17,11 @@ const ADVANCED_SETTINGS_COPY = '獲得率・キャンペーンを調整（任意
 const ADVANCED_SETTINGS_CRITICAL_STYLE = `<style id="${ADVANCED_SETTINGS_STYLE_ID}">
 #main-calculator-inputs{display:flex;flex-direction:column}
 #main-calculator-inputs>#calculateButton{order:2;margin-top:1em}
-.calculator-last-value{display:flex;align-items:center;gap:.45em;flex-wrap:wrap;margin:.55em 0 0;font-size:.88em;line-height:1.5;color:var(--muted-text-color,#5f6368)}
+.calculator-last-value{display:flex;align-items:center;gap:0 .85em;flex-wrap:wrap;margin:.35em 0 0;font-size:.88em;line-height:1.5;color:var(--muted-text-color,#5f6368)}
 .calculator-last-value[hidden]{display:none!important}
-.calculator-last-value__reuse{appearance:none;border:0;background:transparent;color:var(--link-color,#0b57d0);padding:.1em .15em;font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;box-shadow:none}
-.calculator-last-value__reuse:hover{background:transparent;box-shadow:none;transform:none}
+.calculator-last-value__reuse{display:inline-flex;align-items:center;min-height:36px;margin:0;padding:0;appearance:none;border:0;background:transparent;color:var(--link-color,#0b57d0);font:inherit;font-weight:700;text-align:start;text-decoration:underline;text-underline-offset:2px;cursor:pointer;box-shadow:none}
+.calculator-last-value__reuse:hover:not(:disabled){background:transparent;color:var(--link-hover-color,#005fcc)}
+.calculator-last-value__reuse:active{transform:none}
 .calculator-last-value__reuse:focus-visible{outline:3px solid var(--input-focus-border-color,#005fcc);outline-offset:2px}
 .calculator-advanced-settings,.calculator-advanced-settings__body{display:contents}
 .calculator-advanced-settings__toggle{display:none}
