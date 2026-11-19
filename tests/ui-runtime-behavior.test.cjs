@@ -128,14 +128,31 @@ test('calculator tab keyboard navigation moves focus/click by WAI-ARIA order and
   assert.equal(ignored.prevented, false);
 });
 
-test('calculator count-up renders the final value immediately when reduced motion is requested', () => {
-  const { UI, rafCallbacks } = loadUi({ reducedMotion: true });
-  const target = { textContent: '' };
+test('計算結果は動きの設定にかかわらず、最初の描画から確定ポイントと金額を表示する', () => {
+  for (const reducedMotion of [false, true]) {
+    const { UI, rafCallbacks } = loadUi({ reducedMotion, configs: { JP: { lang: 'ja' } } });
+    const points = { dataset: { value: '250' }, textContent: '0' };
+    const amount = { dataset: { value: '25000' }, textContent: '0' };
+    const target = {
+      dataset: {},
+      innerHTML: '',
+      classList: { add() {} },
+      querySelectorAll() { return [points, amount]; }
+    };
 
-  UI.animateValue(target, 0, 1234, 800, 'en-US');
+    UI.displayResult(target, '計算済みの結果');
 
-  assert.equal(target.textContent, (1234).toLocaleString('en-US'));
-  assert.equal(rafCallbacks.length, 0);
+    assert.equal(points.textContent, '250');
+    assert.equal(amount.textContent, '25,000');
+    assert.equal(rafCallbacks.length, 0, '途中の数値を表示する更新を予約しない');
+
+    points.dataset.value = '137';
+    amount.dataset.value = '13700';
+    UI.displayResult(target, '次の計算結果');
+    assert.equal(points.textContent, '137');
+    assert.equal(amount.textContent, '13,700');
+    assert.equal(rafCallbacks.length, 0, '再計算を古いアニメーションで上書きしない');
+  }
 });
 
 test('global error toast follows the static document language at runtime', () => {

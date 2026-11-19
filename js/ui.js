@@ -153,30 +153,9 @@ export const UI = {
         }, 3000);
     },
 
-    // 数値を 0 から目標値までスムーズにカウントアップするアニメーションメソッド
-    animateValue(obj, start, end, duration, formatLang = 'ja') {
-        const prefersReducedMotion = typeof window.matchMedia === 'function'
-            && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (prefersReducedMotion || duration <= 0) {
-            obj.textContent = end.toLocaleString(formatLang);
-            return;
-        }
-
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            // イージング関数（滑らかに減速する Quadratic ease-out）を適用
-            const easeOutQuad = progress * (2 - progress);
-            const value = Math.floor(easeOutQuad * (end - start) + start);
-            obj.textContent = value.toLocaleString(formatLang);
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            } else {
-                obj.textContent = end.toLocaleString(formatLang);
-            }
-        };
-        window.requestAnimationFrame(step);
+    // 途中の数字を計算結果と誤認しないよう、確定値を最初から表示する。
+    displayResultValue(element, value, formatLang = 'ja') {
+        element.textContent = value.toLocaleString(formatLang);
     },
 
     // UIテキストを現在の言語設定でアップデートするメソッド
@@ -260,7 +239,7 @@ export const UI = {
         targetElement.querySelectorAll('.count-target').forEach(element => {
             const endValue = parseFloat(element.dataset.value);
             if (!Number.isNaN(endValue)) {
-                this.animateValue(element, 0, endValue, 800, config.lang);
+                this.displayResultValue(element, endValue, config.lang);
             }
         });
     },
@@ -272,7 +251,7 @@ export const UI = {
         setElementVisibility(targetElement, false);
     },
 
-    // 結果表示メソッド（カウントアップアニメーション発火）
+    // 結果表示メソッド
     displayResult(targetElement, content, isError = false) {
         if (!targetElement) return;
         this.clearResultData(targetElement);
@@ -289,14 +268,14 @@ export const UI = {
         }
         targetElement.classList.add(CONSTANTS.CLASS_HAS_RESULT);
 
-        // 正常な計算結果表示時のアニメーション処理
+        // 数値は描画を待たずに揃え、ポイントと金額の途中値を見せない。
         if (!isError) {
             const targets = targetElement.querySelectorAll('.count-target');
             const config = CONFIGS[STATE.currentRegion];
             targets.forEach(el => {
                 const endValue = parseFloat(el.dataset.value);
                 if (!isNaN(endValue)) {
-                    this.animateValue(el, 0, endValue, 800, config.lang);
+                    this.displayResultValue(el, endValue, config.lang);
                 }
             });
         }
