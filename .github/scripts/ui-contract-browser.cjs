@@ -6,16 +6,18 @@ const path = require('node:path');
 // 既存browser-smokeの一部として実行する。外部送信は同じ遮断器へ委譲する。
 async function verifyUiContracts(browser, baseUrl, locales, blockExternalRequests, artifactDir) {
   const results = {};
-  const contexts = [];
-  async function open(relative, options = {}, init) {
+  // 各シナリオは独立して順に実行する。完了したページのタイマーや描画を後続の検査に持ち越さない。
+  let activeContext;
+  async function open(relative, options = {}, beforeNavigation) {
+    await activeContext?.close();
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', serviceWorkers: 'block', timezoneId: 'Asia/Tokyo', ...options });
-    contexts.push(context);
+    activeContext = context;
     await blockExternalRequests(context, new URL(baseUrl).origin);
-    if (init) await context.addInitScript(init);
     const page = await context.newPage();
     page.setDefaultTimeout(10000);
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
+    if (beforeNavigation) await beforeNavigation(page);
     const response = await page.goto(new URL(relative, baseUrl).href, { waitUntil: 'load' });
     assert.ok(response?.ok(), relative + ': HTTP');
     return { page, context, errors };
@@ -50,9 +52,7 @@ async function verifyUiContracts(browser, baseUrl, locales, blockExternalRequest
       { path: '', now: '2026-10-01T12:00:00Z', start: '20261002T010000Z', end: '20261002T020000Z' },
       { path: 'en/', now: '2026-10-02T15:00:00Z', start: '20261009T140000Z', end: '20261009T150000Z' }
     ]) {
-      const { page } = await open(fixture.path);
-      await page.clock.setFixedTime(new Date(fixture.now));
-      await page.reload({ waitUntil: 'load' });
+      const { page } = await open(fixture.path, {}, page => page.clock.setFixedTime(new Date(fixture.now)));
       await page.waitForFunction(() => document.querySelector('#currentStatus')?.options.length > 1);
       await page.locator('#tab-diary').click();
       await page.locator('#weekInputs .week-row').first().waitFor();
@@ -192,16 +192,17 @@ async function verifyUiContracts(browser, baseUrl, locales, blockExternalRequest
     }
 
     // 初回画像だけ優先し、後続は実observer通知でロードする。unsafe URLはplaceholderへ。
-    const thumbnails=await open('blog/',{},()=>{
-      window.__imageObservers=[];
-      window.IntersectionObserver=class {
-        constructor(callback){this.callback=callback;this.targets=new Set();window.__imageObservers.push(this);}
-        observe(el){this.targets.add(el);} unobserve(el){this.targets.delete(el);} disconnect(){this.targets.clear();}
-      };
-    });
     const fixture=['../images/game-icons/fgo.webp','../articles/ogp/2025-12-25-best-use.png','https://unsafe.example/image.png','//unsafe.example/x.png','../images/game-icons/../bad.webp'];
-    await thumbnails.context.route('**/blog/articles.json*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture.map((thumbnail,i)=>({id:'probe-'+i,title:'Audit '+i,date:'2026-09-01',description:'Guide',category:'使い方',file:'../articles/2025-12-25-best-use.html',thumbnail,thumbnailKind:i===0?'app-icon':'generic'})))}));
-    await thumbnails.page.reload({waitUntil:'load'});
+    const thumbnails = await open('blog/', {}, async page => {
+      await page.addInitScript(() => {
+        window.__imageObservers=[];
+        window.IntersectionObserver=class {
+          constructor(callback){this.callback=callback;this.targets=new Set();window.__imageObservers.push(this);}
+          observe(el){this.targets.add(el);} unobserve(el){this.targets.delete(el);} disconnect(){this.targets.clear();}
+        };
+      });
+      await page.route('**/blog/articles.json*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture.map((thumbnail,i)=>({id:'probe-'+i,title:'Audit '+i,date:'2026-09-01',description:'Guide',category:'使い方',file:'../articles/2025-12-25-best-use.html',thumbnail,thumbnailKind:i===0?'app-icon':'generic'})))}));
+    });
     await thumbnails.page.waitForFunction(()=>document.querySelectorAll('.article-card').length===5);
     const images=thumbnails.page.locator('.article-card img');
     assert.equal(await images.first().getAttribute('loading'),'eager');
@@ -220,10 +221,10 @@ async function verifyUiContracts(browser, baseUrl, locales, blockExternalRequest
     // clipboardはテスト内へ差し替え、成功時だけ共通trackを呼ぶ。
     results.embed=[];
     for(const [locale,expected] of [['zh-HK','/hk/'],['en-IN','/in/']]) {
-      const {page,errors}=await open('embed.html',{locale},()=>{
+      const {page,errors}=await open('embed.html',{locale}, page => page.addInitScript(() => {
         window.__copies=[];window.__copyEvents=[];
         Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText(value){window.__copies.push(value);return window.__copyReject?Promise.reject(Error('fixture denied')):Promise.resolve();}}});
-      });
+      }));
       await page.evaluate(()=>{window.PlayPointAnalytics={track:(...args)=>{window.__copyEvents.push(args);return true;}};});
       assert.equal(new URL(await page.locator('#footer-calculator-link').getAttribute('href'),page.url()).pathname,expected);
       await page.locator('#select-lang').selectOption('ja');
@@ -318,6 +319,8 @@ async function verifyUiContracts(browser, baseUrl, locales, blockExternalRequest
     }
     if(artifactDir)fs.writeFileSync(path.join(artifactDir,'ui-contract-report.json'),JSON.stringify({passed:true,...results},null,2));
     return {passed:true,...results};
-  } finally { for(const context of contexts)await context.close(); }
+  } finally {
+    await activeContext?.close();
+  }
 }
 module.exports={verifyUiContracts};

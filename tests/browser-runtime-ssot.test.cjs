@@ -37,7 +37,8 @@ test('Playwright対応Chromium・固定依存・日本語fontは単一helperが�
   assert.match(read('.github/ci-runtime/node-version').trim(), /^\d+\.\d+\.\d+$/);
   assert.match(helper, /npm ci --prefix/);
   assert.match(helper, /--ignore-scripts/);
-  assert.match(helper, /install --with-deps --no-shell chromium/);
+  assert.match(helper, /install-deps --dry-run chromium/);
+  assert.match(helper, /install --no-shell chromium/);
   assert.match(helper, /chromium\.executablePath\(\)/);
   assert.doesNotMatch(helper, /command -v (?:google-chrome|chromium)|npm install|--no-package-lock/);
   assert.match(helper, /fonts-noto-cjk/);

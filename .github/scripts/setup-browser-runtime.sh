@@ -22,34 +22,69 @@ if [ "$(node -p 'process.versions.node')" != "$expected_node" ]; then
   exit 2
 fi
 
-# ミラー停止でフォント取得だけが10分以上続いた実例への上限。
-# 検査時間・フォント・固定Chromiumは維持し、準備不能は非ゼロで止める。
-apt_options=(-o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30)
-timeout --kill-after=10s 120s sudo apt-get "${apt_options[@]}" update -qq
-if ! timeout --kill-after=10s 180s sudo apt-get "${apt_options[@]}" install -y --no-install-recommends fonts-noto-cjk; then
-  # Runnerの通常mirrorでNoto CJK(約61MB)の取得が停滞した際、署名付きUbuntu公式archiveを一度だけ試す。
-  # グローバルapt sourcesは変更せず、この呼出しだけ代替する。取得不能なら検査を失敗させる。
-  echo 'Runner apt mirror could not provide fonts-noto-cjk; trying the signed Ubuntu archive once.' >&2
-  fallback_sources="$(mktemp)"
-  trap 'rm -f "$fallback_sources"' EXIT
-  printf 'deb [signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] https://archive.ubuntu.com/ubuntu noble main\n' > "$fallback_sources"
-  fallback_options=("${apt_options[@]}" -o "Dir::Etc::sourcelist=$fallback_sources" -o Dir::Etc::sourceparts=-)
-  timeout --kill-after=10s 90s sudo apt-get "${fallback_options[@]}" update -qq
-  timeout --kill-after=10s 180s sudo apt-get "${fallback_options[@]}" install -y --no-install-recommends fonts-noto-cjk
+timed() {
+  local label=$1 started=$SECONDS status=0
+  shift
+  "$@" || status=$?
+  printf '[browser-runtime] %s %ds (exit %d)\n' "$label" "$((SECONDS - started))" "$status"
+  return "$status"
+}
+
+timed npm npm ci --prefix "$runtime_dir" --ignore-scripts --no-audit --no-fund
+# Lighthouseの依存は性能jobにだけ導入し、配信・復旧では取得しない。
+if [ "${1:-}" = "--performance" ]; then
+  timed lighthouse-npm npm ci --prefix "$runtime_dir/lighthouse" --ignore-scripts --no-audit --no-fund
 fi
-# 計測フォントは必須。導入未完をCI成功としない。
+node_path="$runtime_dir/node_modules"
+cli="$node_path/playwright-core/cli.js"
+
+# ubuntu-24.04のブラウザ用に必要な範囲だけ索引を取得する。設定はこのジョブのapt呼び出しに限定する。
+sources="$(mktemp --suffix=.list)"
+archive_config="$(mktemp)"
+trap 'rm -f "$sources" "$archive_config"' EXIT
+cat > "$sources" <<'EOF'
+deb [arch=amd64 signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] https://archive.ubuntu.com/ubuntu noble main universe
+deb [arch=amd64 signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] https://archive.ubuntu.com/ubuntu noble-updates main universe
+deb [arch=amd64 signed-by=/usr/share/keyrings/ubuntu-archive-keyring.gpg] https://security.ubuntu.com/ubuntu noble-security main universe
+EOF
+printf 'Dir::Etc::sourcelist "%s";\nDir::Etc::sourceparts "-";\n' "$sources" > "$archive_config"
+chmod 644 "$sources" "$archive_config"
+apt_options=(-o Acquire::Retries=1 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20
+  -o Acquire::Languages=none -o APT::Get::List-Cleanup=false -o APT::Update::Error-Mode=any)
+
+download_packages() {
+  local report
+  timed "$mirror/index" timeout --kill-after=10s 90s "${apt[@]}" update -qq || return $?
+  timed "$mirror/fonts-noto-cjk" timeout --kill-after=10s 120s "${apt[@]}" --download-only install -y --no-install-recommends fonts-noto-cjk || return $?
+  browser_packages=()
+  # 固定版Playwrightに不足分を問い合わせ、パッケージ名の二重管理とNodeの特権実行を避ける。
+  if ! report=$(APT_CONFIG="$config" node "$cli" install-deps --dry-run chromium); then
+    printf '%s\n' "$report"
+    mapfile -t browser_packages < <(sed -nE 's/^  ([a-z0-9][a-z0-9+.-]*(:[a-z0-9-]+)?)$/\1/p' <<< "$report")
+    if [[ ${#browser_packages[@]} == 0 || ${report%%$'\n'*} != "Missing system dependencies (${#browser_packages[@]}):" ]]; then
+      echo 'Unexpected Playwright dependency report.' >&2
+      return 1
+    fi
+    timed "$mirror/chromium-os" timeout --kill-after=10s 180s "${apt[@]}" --download-only install -y --no-install-recommends "${browser_packages[@]}" || return $?
+  fi
+}
+
+for mirror in ubuntu runner; do
+  if [[ $mirror == ubuntu ]]; then config=$archive_config; else config=/dev/null; fi
+  apt=(sudo "APT_CONFIG=$config" apt-get "${apt_options[@]}")
+  if download_packages; then break; else status=$?; fi
+  if [[ $mirror == runner ]]; then exit "$status"; fi
+  echo 'Ubuntu archive preparation failed; trying the runner sources once.' >&2
+done
+# 通信の制限時間でdpkgを中断しない。導入後は同じ索引と固定版CLIで全依存をもう一度照合する。
+timed "$mirror/install" "${apt[@]}" --no-download install -y --no-install-recommends fonts-noto-cjk "${browser_packages[@]}"
+APT_CONFIG="$config" node "$cli" install-deps --dry-run chromium
 test "$(dpkg-query -W -f='${Status}' fonts-noto-cjk)" = 'install ok installed'
 fc-match sans-serif:lang=ja
 
-npm ci --prefix "$runtime_dir" --ignore-scripts --no-audit --no-fund
-# Lighthouseの依存は性能jobにだけ導入し、配信・復旧では取得しない。
-if [ "${1:-}" = "--performance" ]; then
-  npm ci --prefix "$runtime_dir/lighthouse" --ignore-scripts --no-audit --no-fund
-fi
-node_path="$runtime_dir/node_modules"
 # Playwrightのlockに対応するChromiumを使い、runnerのChromeへfallbackしない。
 export PLAYWRIGHT_BROWSERS_PATH="${RUNNER_TEMP:?RUNNER_TEMP is required}/playpoint-browsers"
-node "$node_path/playwright-core/cli.js" install --with-deps --no-shell chromium
+timed chromium node "$cli" install --no-shell chromium
 chrome_path="$(NODE_PATH="$node_path" node -p "require('playwright-core').chromium.executablePath()")"
 test -x "$chrome_path"
 "$chrome_path" --version

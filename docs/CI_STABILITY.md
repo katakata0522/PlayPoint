@@ -14,6 +14,8 @@ Ubuntuは`ubuntu-24.04`、Nodeは`.github/ci-runtime/node-version`の完全な�
 
 Ubuntuのrunner image、aptで取得するfont、kernelやCPUは完全固定ではない。その差は`ImageVersion`、OS情報、fontの版とファイルハッシュ、CPU、メモリと環境fingerprintで観測する。セキュリティ更新を永遠に止める運用ではなく、manifest/lock/NodeファイルをPRで一緒に更新し、同じ公開ソース・同じbudgetで再検証する。
 
+ブラウザ環境の準備時間はActionsログの `[browser-runtime]` 行で確認できる。日本語フォントと固定版Playwrightが必要とするOSパッケージには、Ubuntu 24.04の署名付き公式アーカイブとセキュリティ更新を使う。取得に失敗したときはランナー標準の配布元で一度だけ再試行する。取得後にフォントとOS依存の導入を照合してからChromiumを起動する。
+
 ## 証跡
 
 各実行の`ci-evidence-<job>-<run>-<attempt>` artifactに開始時・ブラウザ準備後の環境JSONとjob結果を保存する。保存期間は7日。checkout SHA/tree、イベントSHA、PR head/baseを区別し、環境変数全体、GitHub event本文、step outputs、秘密情報は保存しない。環境準備失敗時にも取得できた範囲を残す。ただしrunnerの強制終了やcheckout自体の失敗で、artifactを保存できないことはある。
