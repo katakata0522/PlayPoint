@@ -225,6 +225,43 @@ elif [[ "$*" == *"install --no-shell chromium" && $SCENARIO == browser-failure ]
   });
 }
 
+test('PLAYWRIGHT_BROWSERS_PATH配下の検証済みキャッシュがあるときだけChromium再取得を省く', t => {
+  if (process.platform === 'win32') return t.skip('shell stubはPOSIXのCIで検証する');
+  const dir = temporary(t), bin = path.join(dir, 'bin'), runtime = path.join(dir, '.github/ci-runtime');
+  const cachedChrome = path.join(dir, 'playpoint-browsers/chromium-1234/chrome-linux/chrome');
+  fs.mkdirSync(bin); fs.mkdirSync(runtime, { recursive: true });
+  fs.mkdirSync(path.dirname(cachedChrome), { recursive: true });
+  fs.writeFileSync(path.join(runtime, 'package-lock.json'), '{}');
+  fs.writeFileSync(path.join(runtime, 'node-version'), '22.23.2\n');
+  const log = path.join(dir, 'commands.txt');
+  for (const name of ['npm', 'fc-match', 'dpkg-query']) {
+    const body = name === 'dpkg-query' ? 'echo "install ok installed"\n' : '';
+    fs.writeFileSync(path.join(bin, name), `#!/bin/bash\nprintf '%s\\n' "${name} $*" >> "$MOCK_LOG"\n${body}exit 0\n`, { mode: 0o755 });
+  }
+  fs.writeFileSync(cachedChrome, '#!/bin/bash\necho "Chromium 140.0.0.0"\n', { mode: 0o755 });
+  fs.writeFileSync(path.join(bin, 'timeout'), '#!/bin/bash\nshift 2\nexec "$@"\n', { mode: 0o755 });
+  fs.writeFileSync(path.join(bin, 'sudo'), '#!/bin/bash\nshift; [[ $1 == apt-get ]] || exit 99\nexit 0\n', { mode: 0o755 });
+  fs.writeFileSync(path.join(bin, 'node'), `#!/bin/bash
+printf '%s\\n' "node $*" >> "$MOCK_LOG"
+if [ "$1" = -p ]; then
+  if [[ "$2" == *process.versions.node* ]]; then echo 22.23.2
+  else echo "$CACHED_CHROME"; fi
+fi
+`, { mode: 0o755 });
+  const result = spawnSync('bash', [path.join(root, '.github/scripts/setup-browser-runtime.sh')], {
+    encoding: 'utf8',
+    env: {
+      ...process.env, PATH: bin + path.delimiter + process.env.PATH,
+      MOCK_LOG: log, CACHED_CHROME: cachedChrome,
+      GITHUB_ENV: path.join(dir, 'env'), GITHUB_WORKSPACE: dir, RUNNER_TEMP: dir,
+    },
+  });
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stdout, /\[browser-runtime\] chromium cache hit/);
+  assert.doesNotMatch(fs.readFileSync(log, 'utf8'), /install --no-shell chromium/);
+  assert.match(fs.readFileSync(path.join(dir, 'env'), 'utf8'), /CHROME_PATH=.*playpoint-browsers/);
+});
+
 test('構文検査は取得したnode_modulesを除外するが正本の壊れたJSは落とす', t => {
   const dir = temporary(t), scripts = path.join(dir, '.github/scripts');
   fs.mkdirSync(scripts, { recursive: true });
