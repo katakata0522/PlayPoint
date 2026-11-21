@@ -6,6 +6,7 @@ const path = require('node:path');
 const { chromium } = require('playwright-core');
 const { INTERNATIONAL_LOCALES } = require('../../scripts/locale-ids.cjs');
 const { measureTextContrast } = require('./accessibility-browser.cjs');
+const { resolveBrowserConcurrency, runWithConcurrency } = require('./browser-concurrency.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
 const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
@@ -503,14 +504,18 @@ async function inspectMarkerThemes(browser, baseUrl) {
 
 async function main() {
   assert(CHROME_PATH, 'CHROME_PATH is required');
+  fs.mkdirSync(ARTIFACT_DIR, { recursive: true });
   const local = REQUESTED_BASE_URL ? null : await startLocalServer();
   const baseUrl = REQUESTED_BASE_URL ? normalizeBaseUrl(REQUESTED_BASE_URL) : local.baseUrl;
   const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
   try {
-    for (const article of CASES) for (const viewport of VIEWPORTS) await inspect(browser, baseUrl, article, viewport);
-    await inspectGameReading(browser, baseUrl);
-    await inspectIntlReading(browser, baseUrl);
-    await inspectMarkerThemes(browser, baseUrl);
+    const tasks = [
+      ...CASES.flatMap(article => VIEWPORTS.map(viewport => () => inspect(browser, baseUrl, article, viewport))),
+      () => inspectGameReading(browser, baseUrl),
+      () => inspectIntlReading(browser, baseUrl),
+      () => inspectMarkerThemes(browser, baseUrl)
+    ];
+    await runWithConcurrency(tasks, resolveBrowserConcurrency(Boolean(REQUESTED_BASE_URL)), task => task());
   } finally {
     await browser.close();
     if (local) await local.close();

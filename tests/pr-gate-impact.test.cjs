@@ -1,8 +1,18 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 const test = require('node:test');
 const { classifyPrGateImpact } = require('../.github/scripts/detect-pr-gate-impact.cjs');
+const {
+  ARTICLE_BROWSER_CHECKS,
+  PR_BROWSER_CHECKS,
+  parseScope,
+  resolveChecks,
+  runPrChecks,
+} = require('../.github/scripts/run-pr-browser-checks.cjs');
 
 test('docs/testsだけの変更はfull preflightを残しつつApache/Chromiumを省略できる', () => {
   const result = classifyPrGateImpact([
@@ -34,9 +44,12 @@ test('browser検証基盤自身の変更もChromiumを必須にする', () => {
     '.github/scripts/browser-revision-evidence.cjs',
     '.github/scripts/verify-deploy-revision.cjs',
     '.github/scripts/detect-pr-gate-impact.cjs',
+    '.github/scripts/browser-concurrency.cjs',
+    '.github/scripts/run-pr-browser-checks.cjs',
     '.github/ci-runtime/package-lock.json',
   ]) {
     assert.equal(classifyPrGateImpact([file]).browserRequired, true, file);
+    assert.equal(classifyPrGateImpact([file]).browserScope, 'full', file);
   }
 });
 
@@ -51,6 +64,68 @@ test('Apache実HTTPは設定・cache検査・影響判定の変更時に必須�
 test('混在変更は安全側の強い検証へ昇格する', () => {
   const result = classifyPrGateImpact(['docs/note.md', 'tests/example.test.cjs', 'js/main.js']);
   assert.equal(result.browserRequired, true);
+  assert.equal(result.browserScope, 'full');
   assert.equal(result.apacheRequired, false);
   assert.deepEqual(result.browserPaths, ['js/main.js']);
+});
+
+test('独立記事HTMLだけの変更はarticles scopeへ絞り、統合対象記事やhub変更はfullへ戻す', () => {
+  const docsOnly = classifyPrGateImpact(['docs/TEST_TRIAGE.md']);
+  assert.equal(docsOnly.browserScope, 'none');
+
+  const articleOnly = classifyPrGateImpact([
+    'articles/2026-10-23-seven-eleven-gift-card-lottery.html',
+    'en/articles/google-play-points-fastest-silver.html',
+    'docs/TEST_TRIAGE.md',
+  ]);
+  assert.equal(articleOnly.browserRequired, true);
+  assert.equal(articleOnly.browserScope, 'articles');
+
+  for (const fullTrigger of [
+    'articles/2025-12-25-best-use.html',
+    'en/articles/google-play-points-weekly-reward.html',
+    'en/articles/index.html',
+    'articles/article-shared.css',
+    'articles/reading-ui.js',
+  ]) {
+    assert.equal(classifyPrGateImpact([fullTrigger]).browserScope, 'full', fullTrigger);
+  }
+
+  assert.equal(
+    classifyPrGateImpact(['articles/2026-10-23-seven-eleven-gift-card-lottery.html', 'js/main.js']).browserScope,
+    'full'
+  );
+});
+
+test('PRブラウザランナーは全8本を3レーン並列またはarticles scopeへ正しく振り分ける', async t => {
+  assert.equal(parseScope([]), 'full');
+  assert.equal(parseScope(['--scope', 'articles']), 'articles');
+  assert.throws(() => parseScope(['--scope', 'invalid']), /Unknown browser check scope/);
+  assert.deepEqual(resolveChecks('full'), PR_BROWSER_CHECKS);
+  assert.deepEqual(resolveChecks('articles'), ARTICLE_BROWSER_CHECKS);
+  assert.equal(PR_BROWSER_CHECKS.length, 8);
+  assert.deepEqual(ARTICLE_BROWSER_CHECKS, ['article-design-smoke.cjs', 'article-css-smoke.cjs', 'browser-revenue-smoke.cjs']);
+
+  const artifactsDir = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-pr-browser-'));
+  t.after(() => fs.rmSync(artifactsDir, { recursive: true, force: true }));
+  fs.writeFileSync(path.join(artifactsDir, 'stale.txt'), 'old');
+
+  const started = [];
+  let releaseCore;
+  const siblingReady = new Promise(resolve => { releaseCore = resolve; });
+  await runPrChecks({
+    scope: 'full',
+    directory: artifactsDir,
+    async run(script, args) {
+      started.push({ script, args });
+      if (script === 'browser-smoke.cjs') {
+        assert.deepEqual(args, ['--keep-artifacts']);
+        await siblingReady;
+      } else if (script === 'article-design-smoke.cjs') {
+        releaseCore();
+      }
+    }
+  });
+  assert.equal(fs.existsSync(path.join(artifactsDir, 'stale.txt')), false);
+  assert.deepEqual(started.map(item => item.script).sort(), [...PR_BROWSER_CHECKS].sort());
 });

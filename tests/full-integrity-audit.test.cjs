@@ -86,8 +86,10 @@ test('CSPはHTML属性のinline scriptを禁止する', () => {
 
 test('必須ブラウザCIはゲームと記事の収益経路を検査する', () => {
   const qualityWorkflow = read('.github/workflows/quality-check.yml');
+  const prBrowserRunner = read('.github/scripts/run-pr-browser-checks.cjs');
   const deployWorkflow = read('.github/workflows/deploy.yml');
-  assert.match(qualityWorkflow, /browser-revenue-smoke\.cjs/);
+  assert.match(qualityWorkflow, /run-pr-browser-checks\.cjs/);
+  assert.match(prBrowserRunner, /browser-revenue-smoke\.cjs/);
   assert.match(deployWorkflow, /browser-revenue-smoke\.cjs/);
   const smoke = read('.github/scripts/browser-revenue-smoke.cjs');
   assert.match(smoke, /games\/genshin/);

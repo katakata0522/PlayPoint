@@ -5,6 +5,7 @@ const http = require('node:http');
 const path = require('node:path');
 const strictAssert = require('node:assert/strict');
 const { chromium } = require('playwright-core');
+const { resolveBrowserConcurrency, runWithConcurrency } = require('./browser-concurrency.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
 const CHROME_PATH = process.env.CHROME_PATH;
@@ -144,6 +145,7 @@ async function main() {
     args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
   });
 
+  const tasks = [];
   try {
     // 旧検索リンクも復元し、自動検索が読むURLには自由入力を残さない。
     for (const width of [390, 1280]) {
@@ -152,18 +154,20 @@ async function main() {
         ['ko/articles/', '[data-guide-search]'], ['tw/articles/', '[data-guide-search]'],
         ['games/', '[data-game-directory-search] input']
       ]) {
-        const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
-        try {
-          await configureContext(context, origin);
-          const page = await context.newPage();
-          await page.goto(new URL(target + '?q=FGO', baseUrl).href, { waitUntil: 'load' });
-          await page.waitForFunction(() => window.__playpointGaConfigured === true && new URL(location.href).searchParams.get('pp_q') === 'FGO');
-          strictAssert.equal(await page.locator(selector).inputValue(), 'FGO');
-          strictAssert.equal(new URL(page.url()).searchParams.has('q'), false);
-          const configured = await page.evaluate(() => (window.dataLayer || []).find(item => item[0] === 'config')?.[2]);
-          assert(configured && !configured.page_location.includes('FGO'), '自由入力をURL文脈へ送らない');
-          console.log(`ok - legacy search restore and automatic search isolation: ${target}/${width}px`);
-        } finally { await context.close(); }
+        tasks.push(async () => {
+          const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
+          try {
+            await configureContext(context, origin);
+            const page = await context.newPage();
+            await page.goto(new URL(target + '?q=FGO', baseUrl).href, { waitUntil: 'load' });
+            await page.waitForFunction(() => window.__playpointGaConfigured === true && new URL(location.href).searchParams.get('pp_q') === 'FGO');
+            strictAssert.equal(await page.locator(selector).inputValue(), 'FGO');
+            strictAssert.equal(new URL(page.url()).searchParams.has('q'), false);
+            const configured = await page.evaluate(() => (window.dataLayer || []).find(item => item[0] === 'config')?.[2]);
+            assert(configured && !configured.page_location.includes('FGO'), '自由入力をURL文脈へ送らない');
+            console.log(`ok - legacy search restore and automatic search isolation: ${target}/${width}px`);
+          } finally { await context.close(); }
+        });
       }
     }
 
@@ -173,24 +177,26 @@ async function main() {
       ['status/gold/', 'ins.adsbygoogle'],
       ['games/fgo/', '.game-ad-container ins.adsbygoogle']
     ]) {
-      for (const mode of ['pending', 'denied']) {
-        const context = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
-        try {
-          await configureContext(context, origin, mode);
-          const page = await context.newPage();
-          await page.goto(new URL(target, baseUrl).href, { waitUntil: 'load' });
-          await page.waitForFunction(expected => window.PlayPointConsent?.getAdStatus() === expected, mode);
-          assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 許可前の広告要求');
-          await page.evaluate(() => window.__testSetConsent('granted'));
-          await waitForRevenueRuntime(page, selector);
-        } finally { await context.close(); }
-      }
-      console.log('ok - actual ad entry permission boundary: ' + target);
+      tasks.push(async () => {
+        for (const mode of ['pending', 'denied']) {
+          const context = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
+          try {
+            await configureContext(context, origin, mode);
+            const page = await context.newPage();
+            await page.goto(new URL(target, baseUrl).href, { waitUntil: 'load' });
+            await page.waitForFunction(expected => window.PlayPointConsent?.getAdStatus() === expected, mode);
+            assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 許可前の広告要求');
+            await page.evaluate(() => window.__testSetConsent('granted'));
+            await waitForRevenueRuntime(page, selector);
+          } finally { await context.close(); }
+        }
+        console.log('ok - actual ad entry permission boundary: ' + target);
+      });
     }
 
 
     // 既存目次は重複させず、記事タイトルと導入を先に読めるようにする。
-    {
+    tasks.push(async () => {
       const pages = ["articles/2026-10-10-diamond-play-pass-value.html","articles/2026-10-10-google-play-fest-2026.html","articles/2026-10-10-play-pass-double-points-6x.html","articles/2026-10-10-super-weekly-reward-results.html","articles/2026-06-20-discount-gift-cards.html","articles/2025-12-25-multiple-accounts.html","articles/2025-12-25-expiration.html","articles/2025-12-25-promo-code.html","articles/2025-12-25-refund.html","articles/2025-12-25-gift-card.html","articles/2025-12-25-family-sharing.html","articles/2025-12-25-getting-started.html","articles/2025-12-25-new-year-campaign.html","articles/2025-12-25-diamond-vip.html","articles/2025-12-25-diamond-worth-it.html","articles/2026-07-31-super-weekly-reward.html","articles/2026-03-10-play-points-reflection-timing.html","articles/2025-12-25-weekly-reward.html"];
       const duplicates = new Set(["articles/2026-07-31-super-weekly-reward.html","articles/2026-06-20-discount-gift-cards.html","articles/2026-03-10-play-points-reflection-timing.html","articles/2025-12-25-weekly-reward.html"]);
       const context = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
@@ -227,11 +233,11 @@ async function main() {
         assert((await page.locator('article').innerText()).includes('10月19日に終了'), 'Playフェス本文の終了案内がない');
         console.log('ok - article toc order, heading navigation and ended event');
       } finally { await context.close(); }
-    }
+    });
 
     // ランク維持記事は目次を重複させず、既存の節へのリンクも固定ヘッダーに隠さない。
     // 広告の横幅が画面変更後に残っても、広告を切らず枠内で最後まで閲覧できる。
-    {
+    tasks.push(async () => {
       const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: 'block' });
       try {
         await configureContext(context, origin);
@@ -286,10 +292,10 @@ async function main() {
         assert(positions.heading >= positions.header, `ランク維持記事: 見出しがヘッダーに隠れる ${JSON.stringify(positions)}`);
         console.log('ok - rank article toc, anchor, ad resize and unfilled space');
       } finally { await context.close(); }
-    }
+    });
 
     // 最新情報ページでも、配信済み広告と自動配置広告が狭い画面で本文を押し広げない。
-    {
+    tasks.push(async () => {
       const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: 'block' });
       try {
         await configureContext(context, origin);
@@ -315,48 +321,50 @@ async function main() {
         }
         console.log('ok - latest filled ads stay within page after viewport resize');
       } finally { await context.close(); }
-    }
+    });
 
     // 記事末の広告は画面外で要求せず、近づいた時点で同意を再確認して一度だけ準備する。
     for (const [target, width] of [
       ['articles/2026-03-10-play-points-reflection-timing.html', 390],
       ['articles/2026-03-10-play-points-reflection-timing.html', 1024]
     ]) {
-      const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
-      try {
-        await configureContext(context, origin);
-        const page = await context.newPage();
-        const selector = '.article-ad-container ins.adsbygoogle';
-        const settleViewport = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-        await page.goto(new URL(target, baseUrl).href, { waitUntil: 'load' });
-        await page.waitForFunction(() => window.PlayPointConsent?.getAdStatus() === 'granted' && [...document.scripts].some(script => script.src.includes('googletagmanager.com/gtag/js')));
-        assert(await page.locator(selector).evaluate(ad => ad.getBoundingClientRect().top > innerHeight * 3), target + ': 初期広告枠が十分に画面外ではない');
-        assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 遠い広告枠を初期化している');
+      tasks.push(async () => {
+        const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
+        try {
+          await configureContext(context, origin);
+          const page = await context.newPage();
+          const selector = '.article-ad-container ins.adsbygoogle';
+          const settleViewport = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+          await page.goto(new URL(target, baseUrl).href, { waitUntil: 'load' });
+          await page.waitForFunction(() => window.PlayPointConsent?.getAdStatus() === 'granted' && [...document.scripts].some(script => script.src.includes('googletagmanager.com/gtag/js')));
+          assert(await page.locator(selector).evaluate(ad => ad.getBoundingClientRect().top > innerHeight * 3), target + ': 初期広告枠が十分に画面外ではない');
+          assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 遠い広告枠を初期化している');
 
-        await page.evaluate(() => window.__testSetConsent('denied'));
-        await page.locator(selector).scrollIntoViewIfNeeded();
-        await settleViewport();
-        assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 待機中の同意取消しを無視した');
-        await page.evaluate(() => window.scrollTo(0, 0));
-        await settleViewport();
-        await page.evaluate(() => window.__testSetConsent('granted'));
-        await settleViewport();
-        assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 再許可時に遠い広告枠を初期化した');
+          await page.evaluate(() => window.__testSetConsent('denied'));
+          await page.locator(selector).scrollIntoViewIfNeeded();
+          await settleViewport();
+          assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 待機中の同意取消しを無視した');
+          await page.evaluate(() => window.scrollTo(0, 0));
+          await settleViewport();
+          await page.evaluate(() => window.__testSetConsent('granted'));
+          await settleViewport();
+          assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 再許可時に遠い広告枠を初期化した');
 
-        // まだ画面外にある一画面先で要求されることを確認し、見えてからの後追いを避ける。
-        await page.locator(selector).evaluate(ad => window.scrollTo(0, ad.getBoundingClientRect().top + scrollY - innerHeight * 2));
-        await waitForRevenueRuntime(page, selector);
-        assert(await page.locator(selector).evaluate(ad => ad.getBoundingClientRect().top >= innerHeight), target + ': 表示前の先行準備になっていない');
-        const requestsBefore = await page.evaluate(() => window.adsbygoogle.length);
-        await page.locator(selector).scrollIntoViewIfNeeded();
-        await settleViewport();
-        await page.evaluate(() => { window.__testSetConsent('denied'); window.__testSetConsent('granted'); });
-        await settleViewport();
-        strictAssert.equal(await page.evaluate(() => window.adsbygoogle.length), requestsBefore, target + ': スクロールまたは再許可で二重要求した');
-        console.log(`ok - article ad prepares before view, respects revocation, and requests once: ${target}/${width}`);
-      } finally { await context.close(); }
+          // まだ画面外にある一画面先で要求されることを確認し、見えてからの後追いを避ける。
+          await page.locator(selector).evaluate(ad => window.scrollTo(0, ad.getBoundingClientRect().top + scrollY - innerHeight * 2));
+          await waitForRevenueRuntime(page, selector);
+          assert(await page.locator(selector).evaluate(ad => ad.getBoundingClientRect().top >= innerHeight), target + ': 表示前の先行準備になっていない');
+          const requestsBefore = await page.evaluate(() => window.adsbygoogle.length);
+          await page.locator(selector).scrollIntoViewIfNeeded();
+          await settleViewport();
+          await page.evaluate(() => { window.__testSetConsent('denied'); window.__testSetConsent('granted'); });
+          await settleViewport();
+          strictAssert.equal(await page.evaluate(() => window.adsbygoogle.length), requestsBefore, target + ': スクロールまたは再許可で二重要求した');
+          console.log(`ok - article ad prepares before view, respects revocation, and requests once: ${target}/${width}`);
+        } finally { await context.close(); }
+      });
     }
-    {
+    tasks.push(async () => {
       const context = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
       try {
         await configureContext(context, origin, 'denied');
@@ -368,95 +376,101 @@ async function main() {
         await waitForRevenueRuntime(page, '.article-ad-container ins.adsbygoogle');
         console.log('ok - article ad falls back to consent-gated eager requests without IntersectionObserver');
       } finally { await context.close(); }
-    }
+    });
     // 共有URL自体は復元用に保持し、GAへ渡すURL文脈だけから入力値を除く。
     // Google/CMPは隔離stubであり、実DebugViewや地域別CMPの受け入れとは区別する。
     for (const width of [390, 1280]) {
       for (const mode of ['main', 'reverse']) {
-        const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
-        try {
-          await configureContext(context, origin);
-          const page = await context.newPage();
-          const query = mode === 'main'
-            ? '?mode=main&status=1&target=silver&points=137&multiplier=2&baseRate=2.5'
-            : '?mode=reverse&status=1&amount=23456&eligible=22000&multiplier=2&baseRate=2.5';
-          const shared = new URL(query + '&utm_source=qa&utm_medium=test#amount=23456', baseUrl).href;
-          await page.goto(shared, { waitUntil: 'load', referer: new URL('?points=137&amount=23456', baseUrl).href });
-          const eventName = mode === 'main' ? 'calculation_completed' : 'reverse_calculation_completed';
-          await page.waitForFunction(name => (window.dataLayer || []).some(item => item[0] === 'event' && item[1] === name), eventName);
-          strictAssert.equal(page.url(), shared, '共有URLを消さずに復元を維持する');
-          await assertAdPrivacy(page, true, '共有URL');
-          strictAssert.equal(await page.locator(mode === 'main' ? '#neededPoints' : '#amountYen').inputValue(), mode === 'main' ? '137' : '23456');
-          strictAssert.equal(await page.locator(mode === 'main' ? '#baseRate' : '#reverseBaseRate').inputValue(), '2.5');
-          strictAssert.equal(await page.locator(mode === 'main' ? '#multiplier' : '#reverseMultiplier').inputValue(), '2');
-          if (mode === 'reverse') strictAssert.equal(await page.locator('#reverseEligibleAmount').inputValue(), '22000');
-          const result = await page.locator(mode === 'main' ? '#result' : '#reverseResult').getAttribute(mode === 'main' ? 'data-required-yen' : 'data-earned-points');
-          // 既存仕様は直接入力2.5ptと倍率由来2ptの高い方を使い、両者を乗算しない。
-          strictAssert.equal(Number(result), mode === 'main' ? 5480 : 550);
-          const payloads = await page.evaluate(() => (window.dataLayer || []).filter(item => item[0] === 'event').map(item => item[2]));
-          assert(payloads.length > 0, '共有復元後のイベントがない');
-          for (const payload of payloads) {
-            strictAssert.equal(payload.page_location, new URL('?utm_source=qa&utm_medium=test', baseUrl).href);
-            strictAssert.equal(payload.page_referrer, baseUrl);
-            assert(!/23456|22000|137/.test(JSON.stringify(payload)), '共有URLの生入力値がpayloadに残っている');
-          }
-          console.log(`ok - shared ${mode} restore and private GA URL context: ${width}px`);
-        } finally { await context.close(); }
+        tasks.push(async () => {
+          const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
+          try {
+            await configureContext(context, origin);
+            const page = await context.newPage();
+            const query = mode === 'main'
+              ? '?mode=main&status=1&target=silver&points=137&multiplier=2&baseRate=2.5'
+              : '?mode=reverse&status=1&amount=23456&eligible=22000&multiplier=2&baseRate=2.5';
+            const shared = new URL(query + '&utm_source=qa&utm_medium=test#amount=23456', baseUrl).href;
+            await page.goto(shared, { waitUntil: 'load', referer: new URL('?points=137&amount=23456', baseUrl).href });
+            const eventName = mode === 'main' ? 'calculation_completed' : 'reverse_calculation_completed';
+            await page.waitForFunction(name => (window.dataLayer || []).some(item => item[0] === 'event' && item[1] === name), eventName);
+            strictAssert.equal(page.url(), shared, '共有URLを消さずに復元を維持する');
+            await assertAdPrivacy(page, true, '共有URL');
+            strictAssert.equal(await page.locator(mode === 'main' ? '#neededPoints' : '#amountYen').inputValue(), mode === 'main' ? '137' : '23456');
+            strictAssert.equal(await page.locator(mode === 'main' ? '#baseRate' : '#reverseBaseRate').inputValue(), '2.5');
+            strictAssert.equal(await page.locator(mode === 'main' ? '#multiplier' : '#reverseMultiplier').inputValue(), '2');
+            if (mode === 'reverse') strictAssert.equal(await page.locator('#reverseEligibleAmount').inputValue(), '22000');
+            const result = await page.locator(mode === 'main' ? '#result' : '#reverseResult').getAttribute(mode === 'main' ? 'data-required-yen' : 'data-earned-points');
+            // 既存仕様は直接入力2.5ptと倍率由来2ptの高い方を使い、両者を乗算しない。
+            strictAssert.equal(Number(result), mode === 'main' ? 5480 : 550);
+            const payloads = await page.evaluate(() => (window.dataLayer || []).filter(item => item[0] === 'event').map(item => item[2]));
+            assert(payloads.length > 0, '共有復元後のイベントがない');
+            for (const payload of payloads) {
+              strictAssert.equal(payload.page_location, new URL('?utm_source=qa&utm_medium=test', baseUrl).href);
+              strictAssert.equal(payload.page_referrer, baseUrl);
+              assert(!/23456|22000|137/.test(JSON.stringify(payload)), '共有URLの生入力値がpayloadに残っている');
+            }
+            console.log(`ok - shared ${mode} restore and private GA URL context: ${width}px`);
+          } finally { await context.close(); }
+        });
       }
       for (const initial of ['pending', 'denied']) {
-        const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
-        try {
-          await configureContext(context, origin, initial);
-          const page = await context.newPage();
-          await page.goto(new URL('?mode=main&status=1&target=silver&points=137&multiplier=1', baseUrl).href, { waitUntil: 'load' });
-          await page.waitForFunction(expected => window.PlayPointConsent?.getStatus() === expected && document.querySelector('#result')?.dataset.requiredYen, initial);
-          await assertAdPrivacy(page, true, initial);
-          const events = () => page.evaluate(() => (window.dataLayer || []).filter(item => item[0] === 'event').length);
-          strictAssert.equal(await events(), 0, `${initial}: 同意前のイベント送信`);
-          strictAssert.equal(await page.locator('script[src*="googletagmanager.com/gtag/js"]').count(), 0, `${initial}: 同意前のGA取得`);
-          await page.evaluate(() => window.__testSetConsent('granted'));
-          await page.waitForFunction(() => window.PlayPointConsent?.getStatus() === 'granted');
-          await page.locator('#calculateButton').click();
-          await page.waitForFunction(() => (window.dataLayer || []).some(item => item[0] === 'event' && item[1] === 'calculation_completed'));
-          await page.evaluate(() => window.__testSetConsent('denied'));
-          await page.waitForFunction(() => window.PlayPointConsent?.getStatus() === 'denied');
-          await assertAdPrivacy(page, true, '許可取消し後');
-          const before = await events();
-          await page.locator('#neededPoints').fill('138');
-          await page.locator('#calculateButton').click();
-          strictAssert.equal(await events(), before, '明示拒否後の追加イベント送信');
-          console.log(`ok - isolated analytics ${initial}/grant/revoke boundary: ${width}px`);
-        } finally { await context.close(); }
+        tasks.push(async () => {
+          const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
+          try {
+            await configureContext(context, origin, initial);
+            const page = await context.newPage();
+            await page.goto(new URL('?mode=main&status=1&target=silver&points=137&multiplier=1', baseUrl).href, { waitUntil: 'load' });
+            await page.waitForFunction(expected => window.PlayPointConsent?.getStatus() === expected && document.querySelector('#result')?.dataset.requiredYen, initial);
+            await assertAdPrivacy(page, true, initial);
+            const events = () => page.evaluate(() => (window.dataLayer || []).filter(item => item[0] === 'event').length);
+            strictAssert.equal(await events(), 0, `${initial}: 同意前のイベント送信`);
+            strictAssert.equal(await page.locator('script[src*="googletagmanager.com/gtag/js"]').count(), 0, `${initial}: 同意前のGA取得`);
+            await page.evaluate(() => window.__testSetConsent('granted'));
+            await page.waitForFunction(() => window.PlayPointConsent?.getStatus() === 'granted');
+            await page.locator('#calculateButton').click();
+            await page.waitForFunction(() => (window.dataLayer || []).some(item => item[0] === 'event' && item[1] === 'calculation_completed'));
+            await page.evaluate(() => window.__testSetConsent('denied'));
+            await page.waitForFunction(() => window.PlayPointConsent?.getStatus() === 'denied');
+            await assertAdPrivacy(page, true, '許可取消し後');
+            const before = await events();
+            await page.locator('#neededPoints').fill('138');
+            await page.locator('#calculateButton').click();
+            strictAssert.equal(await events(), before, '明示拒否後の追加イベント送信');
+            console.log(`ok - isolated analytics ${initial}/grant/revoke boundary: ${width}px`);
+          } finally { await context.close(); }
+        });
       }
     }
 
     // action省略時のGoogle自動form_destinationが、現在URLの入力値を拾わないようにする。
     for (const width of [390, 1280]) {
       for (const target of ['points-cost/', 'en/points-cost/', 'ko/points-cost/', 'tw/points-cost/']) {
-        const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
-        try {
-          await configureContext(context, origin);
-          const page = await context.newPage();
-          await page.goto(new URL(target + '?points=137&status=1&multiplier=2', baseUrl).href, { waitUntil: 'load' });
-          await page.waitForFunction(() => window.__playpointGaConfigured && document.querySelector('#points-cost-result')?.dataset.shareUrl);
-          strictAssert.equal(await page.locator('#points-target').inputValue(), '137');
-          strictAssert.equal(await page.locator('#points-multiplier').inputValue(), '2');
-          await assertAdPrivacy(page, true, target);
-          const expectedAction = new URL(target, baseUrl).href;
-          strictAssert.equal(await page.locator('#points-cost-form').evaluate(form => form.action), expectedAction);
-          await page.locator('#points-target').fill('138');
-          await page.locator('#points-cost-form button[type="submit"]').click();
-          await page.waitForFunction(() => new URL(document.querySelector('#points-cost-result').dataset.shareUrl).searchParams.get('points') === '138');
-          strictAssert.equal(new URL(page.url()).searchParams.get('points'), '138', '計算条件をURLへ保持する');
-          await assertAdPrivacy(page, true, '履歴更新後');
-          strictAssert.equal(await page.locator('#points-cost-form').evaluate(form => form.action), expectedAction, '履歴更新後も自動フォームの送信先は入力値なし');
-          console.log(`ok - points-cost shared restore and private form destination: ${target}/${width}px`);
-        } finally { await context.close(); }
+        tasks.push(async () => {
+          const context = await browser.newContext({ viewport: { width, height: 844 }, serviceWorkers: 'block' });
+          try {
+            await configureContext(context, origin);
+            const page = await context.newPage();
+            await page.goto(new URL(target + '?points=137&status=1&multiplier=2', baseUrl).href, { waitUntil: 'load' });
+            await page.waitForFunction(() => window.__playpointGaConfigured && document.querySelector('#points-cost-result')?.dataset.shareUrl);
+            strictAssert.equal(await page.locator('#points-target').inputValue(), '137');
+            strictAssert.equal(await page.locator('#points-multiplier').inputValue(), '2');
+            await assertAdPrivacy(page, true, target);
+            const expectedAction = new URL(target, baseUrl).href;
+            strictAssert.equal(await page.locator('#points-cost-form').evaluate(form => form.action), expectedAction);
+            await page.locator('#points-target').fill('138');
+            await page.locator('#points-cost-form button[type="submit"]').click();
+            await page.waitForFunction(() => new URL(document.querySelector('#points-cost-result').dataset.shareUrl).searchParams.get('points') === '138');
+            strictAssert.equal(new URL(page.url()).searchParams.get('points'), '138', '計算条件をURLへ保持する');
+            await assertAdPrivacy(page, true, '履歴更新後');
+            strictAssert.equal(await page.locator('#points-cost-form').evaluate(form => form.action), expectedAction, '履歴更新後も自動フォームの送信先は入力値なし');
+            console.log(`ok - points-cost shared restore and private form destination: ${target}/${width}px`);
+          } finally { await context.close(); }
+        });
       }
     }
 
     // main.jsの実DOM登録から送信手前のdataLayerへ接続。外部GAスクリプトはstub済み。
-    {
+    tasks.push(async () => {
       const context = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
       try {
         await configureContext(context, origin);
@@ -487,160 +501,172 @@ async function main() {
         strictAssert.ok(payloads.length > 0 && payloads.every(payload => !Object.hasOwn(payload, 'needed_points') && !Object.hasOwn(payload, 'amount')));
       } finally { await context.close(); }
       console.log('ok - actual calculator DOM funnel, dedupe, denied reset and Enter');
-    }
+    });
     for (const mode of ['pending','denied','granted']) {
-      const context=await browser.newContext({viewport:{width:390,height:844}});
-      await configureContext(context,origin,mode);
-      const page=await context.newPage();
-      await page.goto(new URL('blog/',baseUrl).href,{waitUntil:'domcontentloaded',timeout:45000});
-      await page.locator('.article-card').first().waitFor({state:'visible'});
-      await page.waitForFunction(expected=>window.PlayPointConsent?.getAdStatus()===expected,mode);
-      await page.locator('#sort-toggle').waitFor({state:'visible',timeout:10000});
-      await page.locator('#sort-toggle').selectOption('oldest');
-      if(mode!=='granted') {
-        assert(await page.evaluate(()=>(window.adsbygoogle?.length||0)===0),'No manual ad request before permission: '+mode);
-        assert(await page.evaluate(()=>![...document.scripts].some(s=>s.src.includes('googletagmanager.com/gtag/js'))),'No GA script before analytics permission: '+mode);
-        await page.evaluate(()=>window.__testSetConsent('granted'));
-      }
-      await waitForRevenueRuntime(page,'.article-ad ins.adsbygoogle');
-      assert(await page.locator('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]').getAttribute('data-overlays') === 'collapsed-bottom','記事一覧のアンカー広告は下側・展開なし');
-      const before=await page.evaluate(()=>{window.__auditAdNode=document.querySelector('.article-ad');return window.adsbygoogle.length;});
-      for(const order of ['newest','oldest','updated']) await page.locator('#sort-toggle').selectOption(order);
-      assert(await page.evaluate(()=>window.__auditAdNode===document.querySelector('.article-ad')&&window.__auditAdNode.isConnected),'Ad node is preserved across rendering');
-      assert(await page.evaluate(()=>window.adsbygoogle.length)===before,'Sorting does not refresh ad slots');
-      await context.close();
-      console.log('ok - article hub consent and persistent ad slots: '+mode);
+      tasks.push(async () => {
+        const context=await browser.newContext({viewport:{width:390,height:844}});
+        try {
+          await configureContext(context,origin,mode);
+          const page=await context.newPage();
+          await page.goto(new URL('blog/',baseUrl).href,{waitUntil:'domcontentloaded',timeout:45000});
+          await page.locator('.article-card').first().waitFor({state:'visible'});
+          await page.waitForFunction(expected=>window.PlayPointConsent?.getAdStatus()===expected,mode);
+          await page.locator('#sort-toggle').waitFor({state:'visible',timeout:10000});
+          await page.locator('#sort-toggle').selectOption('oldest');
+          if(mode!=='granted') {
+            assert(await page.evaluate(()=>(window.adsbygoogle?.length||0)===0),'No manual ad request before permission: '+mode);
+            assert(await page.evaluate(()=>![...document.scripts].some(s=>s.src.includes('googletagmanager.com/gtag/js'))),'No GA script before analytics permission: '+mode);
+            await page.evaluate(()=>window.__testSetConsent('granted'));
+          }
+          await waitForRevenueRuntime(page,'.article-ad ins.adsbygoogle');
+          assert(await page.locator('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]').getAttribute('data-overlays') === 'collapsed-bottom','記事一覧のアンカー広告は下側・展開なし');
+          const before=await page.evaluate(()=>{window.__auditAdNode=document.querySelector('.article-ad');return window.adsbygoogle.length;});
+          for(const order of ['newest','oldest','updated']) await page.locator('#sort-toggle').selectOption(order);
+          assert(await page.evaluate(()=>window.__auditAdNode===document.querySelector('.article-ad')&&window.__auditAdNode.isConnected),'Ad node is preserved across rendering');
+          assert(await page.evaluate(()=>window.adsbygoogle.length)===before,'Sorting does not refresh ad slots');
+          console.log('ok - article hub consent and persistent ad slots: '+mode);
+        } finally { await context.close(); }
+      });
     }
-    {
+    tasks.push(async () => {
       const context=await browser.newContext({viewport:{width:390,height:844}});
-      await configureContext(context,origin);
-      const page=await context.newPage();
-      await page.goto(new URL('games/fgo/pity-cost/',baseUrl).href,{waitUntil:'domcontentloaded',timeout:45000});
-      await waitForRevenueRuntime(page,'.article-ad-container ins.adsbygoogle');
-      await context.close();
-      console.log('ok - deep game guide consent/analytics/ad runtime');
-    }
+      try {
+        await configureContext(context,origin);
+        const page=await context.newPage();
+        await page.goto(new URL('games/fgo/pity-cost/',baseUrl).href,{waitUntil:'domcontentloaded',timeout:45000});
+        await waitForRevenueRuntime(page,'.article-ad-container ins.adsbygoogle');
+        console.log('ok - deep game guide consent/analytics/ad runtime');
+      } finally { await context.close(); }
+    });
     const gamePaths = ['games/genshin/', 'en/games/genshin/', 'ko/games/genshin/', 'tw/games/genshin/'];
     for (const gamePath of gamePaths) {
+      tasks.push(async () => {
+        const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+        try {
+          await configureContext(context, origin);
+          const page = await context.newPage();
+          const errors = [];
+          const requests = [];
+          page.on('request', request => requests.push(request.url()));
+          page.on('pageerror', error => errors.push(error.message));
+          page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+
+          const response = await page.goto(new URL(gamePath, baseUrl).href, {
+            waitUntil: 'domcontentloaded',
+            timeout: 45000
+          });
+          assert(response && response.ok(), `${gamePath} HTTP failure`);
+          await page.locator('#game-sim-form').waitFor({ state: 'attached', timeout: 30000 });
+          assert(await page.locator('#game-sim-form').getAttribute('data-input-mode') === 'amount', `${gamePath} 金額入力を使用する`);
+          assert(await page.locator('#sim-pack-select').count() === 0, `${gamePath} 不要な商品欄がない`);
+          await page.locator('#sim-custom-amount').fill(gamePath.startsWith('en/') ? '10' : '1000');
+          await page.locator('#sim-custom-amount').dispatchEvent('input');
+          await page.waitForFunction(() => {
+            const text = document.querySelector('#res-earned-points')?.textContent || '';
+            return /\d/.test(text) && !text.startsWith('-');
+          });
+          await waitForRevenueRuntime(page, '.game-ad-container ins.adsbygoogle');
+
+          const state = await page.evaluate(() => ({
+            source: Boolean(document.querySelector('.game-source-section')),
+            slot: document.querySelector('.game-ad-container ins.adsbygoogle')?.dataset.adSlot || '',
+            adRequests: window.adsbygoogle?.length || 0,
+            consentSource: window.PlayPointConsent?.getSource?.() || ''
+          }));
+          assert(state.source, `${gamePath} source scope missing`);
+          assert(state.slot === '8250492620', `${gamePath} managed ad slot missing`);
+          assert(state.adRequests >= 1, `${gamePath} adsbygoogle.push was not observed`);
+          // 配信済みのPC広告が残ったまま幅を変えても、広告を切らず枠内で閲覧できる。
+          await page.setViewportSize({width:1440,height:900});
+          await page.evaluate(() => {
+            const creative = document.createElement('div');
+            creative.style.cssText = 'width:970px;height:100px;background:#eee';
+            creative.textContent = 'Filled advertisement fixture';
+            document.querySelector('.game-ad-container ins.adsbygoogle').append(creative);
+          });
+          await page.setViewportSize({width:390,height:844});
+          const filledLayout = await page.locator('.game-ad-container').evaluate(el => ({
+            overflow:getComputedStyle(el).overflowX, scrollable:el.scrollWidth>el.clientWidth,
+            pageOverflow:document.documentElement.scrollWidth>innerWidth+1,
+            accessible:el.tabIndex===0&&Boolean(el.getAttribute('aria-label'))
+          }));
+          strictAssert.equal(filledLayout.overflow,'auto');
+          assert(filledLayout.scrollable && filledLayout.accessible && !filledLayout.pageOverflow, `${gamePath}: filled ad resize ${JSON.stringify(filledLayout)}`);
+          assert(state.consentSource === 'googlefc', `${gamePath} did not use GoogleFC consent source`);
+          assertExternalRequests(requests, gamePath);
+          assert(errors.length === 0, `${gamePath} browser errors: ${errors.join(' | ')}`);
+          console.log(`ok - game revenue smoke ${gamePath}`);
+        } finally { await context.close(); }
+      });
+    }
+
+    tasks.push(async () => {
       const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
-      await configureContext(context, origin);
-      const page = await context.newPage();
-      const errors = [];
-      const requests = [];
-      page.on('request', request => requests.push(request.url()));
-      page.on('pageerror', error => errors.push(error.message));
-      page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+      try {
+        await configureContext(context, origin);
+        const page = await context.newPage();
+        const errors = [];
+        const requests = [];
+        page.on('request', request => requests.push(request.url()));
+        page.on('pageerror', error => errors.push(error.message));
+        page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
 
-      const response = await page.goto(new URL(gamePath, baseUrl).href, {
-        waitUntil: 'domcontentloaded',
-        timeout: 45000
-      });
-      assert(response && response.ok(), `${gamePath} HTTP failure`);
-      await page.locator('#game-sim-form').waitFor({ state: 'attached', timeout: 30000 });
-      assert(await page.locator('#game-sim-form').getAttribute('data-input-mode') === 'amount', `${gamePath} 金額入力を使用する`);
-      assert(await page.locator('#sim-pack-select').count() === 0, `${gamePath} 不要な商品欄がない`);
-      await page.locator('#sim-custom-amount').fill(gamePath.startsWith('en/') ? '10' : '1000');
-      await page.locator('#sim-custom-amount').dispatchEvent('input');
-      await page.waitForFunction(() => {
-        const text = document.querySelector('#res-earned-points')?.textContent || '';
-        return /\d/.test(text) && !text.startsWith('-');
-      });
-      await waitForRevenueRuntime(page, '.game-ad-container ins.adsbygoogle');
+        const articleUrl = new URL('articles/2026-08-05-play-points-multiplier-stacking.html', baseUrl).href;
+        const response = await page.goto(articleUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
+        assert(response && response.ok(), 'article HTTP failure');
+        await page.locator('article').waitFor({ state: 'attached', timeout: 30000 });
+        await waitForRevenueRuntime(page, '.article-ad-container ins.adsbygoogle');
 
-      const state = await page.evaluate(() => ({
-        source: Boolean(document.querySelector('.game-source-section')),
-        slot: document.querySelector('.game-ad-container ins.adsbygoogle')?.dataset.adSlot || '',
-        adRequests: window.adsbygoogle?.length || 0,
-        consentSource: window.PlayPointConsent?.getSource?.() || ''
-      }));
-      assert(state.source, `${gamePath} source scope missing`);
-      assert(state.slot === '8250492620', `${gamePath} managed ad slot missing`);
-      assert(state.adRequests >= 1, `${gamePath} adsbygoogle.push was not observed`);
-      // 配信済みのPC広告が残ったまま幅を変えても、広告を切らず枠内で閲覧できる。
-      await page.setViewportSize({width:1440,height:900});
-      await page.evaluate(() => {
-        const creative = document.createElement('div');
-        creative.style.cssText = 'width:970px;height:100px;background:#eee';
-        creative.textContent = 'Filled advertisement fixture';
-        document.querySelector('.game-ad-container ins.adsbygoogle').append(creative);
-      });
-      await page.setViewportSize({width:390,height:844});
-      const filledLayout = await page.locator('.game-ad-container').evaluate(el => ({
-        overflow:getComputedStyle(el).overflowX, scrollable:el.scrollWidth>el.clientWidth,
-        pageOverflow:document.documentElement.scrollWidth>innerWidth+1,
-        accessible:el.tabIndex===0&&Boolean(el.getAttribute('aria-label'))
-      }));
-      strictAssert.equal(filledLayout.overflow,'auto');
-      assert(filledLayout.scrollable && filledLayout.accessible && !filledLayout.pageOverflow, `${gamePath}: filled ad resize ${JSON.stringify(filledLayout)}`);
-      assert(state.consentSource === 'googlefc', `${gamePath} did not use GoogleFC consent source`);
-      assertExternalRequests(requests, gamePath);
-      assert(errors.length === 0, `${gamePath} browser errors: ${errors.join(' | ')}`);
-      await context.close();
-      console.log(`ok - game revenue smoke ${gamePath}`);
-    }
+        const articleState = await page.evaluate(() => ({
+          slot: document.querySelector('.article-ad-container ins.adsbygoogle')?.dataset.adSlot || '',
+          adRequests: window.adsbygoogle?.length || 0,
+          consentSource: window.PlayPointConsent?.getSource?.() || '',
+          runtimeLoader: [...document.scripts].some(script => /blog\/(components|article)\.js/.test(script.src) || /third-party\.js/.test(script.src))
+        }));
+        assert(articleState.slot === '8250492620', 'article ad slot missing');
+        assert(articleState.adRequests >= 1, 'article adsbygoogle.push was not observed');
+        assert(articleState.consentSource === 'googlefc', 'article did not use GoogleFC consent source');
+        assert(articleState.runtimeLoader, 'article runtime loader missing');
+        assertExternalRequests(requests, 'article');
+        assert(errors.length === 0, `article browser errors: ${errors.join(' | ')}`);
 
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
-    await configureContext(context, origin);
-    const page = await context.newPage();
-    const errors = [];
-    const requests = [];
-    page.on('request', request => requests.push(request.url()));
-    page.on('pageerror', error => errors.push(error.message));
-    page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+        // 広告枠の検証に加え、広告と競合する固定案内を戻さず地域別導線を残す。
+        for (const [articlePath, calculatorPath] of [
+          ['articles/2026-08-05-fastest-silver.html', '/'],
+          ['en/articles/google-play-points-fastest-silver.html', '/en/'],
+          ['ko/articles/google-play-points-fastest-silver.html', '/ko/'],
+          ['tw/articles/google-play-points-fastest-silver.html', '/tw/']
+        ]) {
+          await page.goto(new URL(articlePath, baseUrl).href, { waitUntil: 'domcontentloaded' });
+          const prompt = page.locator('.article-calculator-prompt a');
+          await prompt.waitFor({ state: 'attached' });
+          await page.evaluate(() => window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * 0.4));
+          await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+          assert(await page.locator('.mobile-sticky-cta').count() === 0, `${articlePath}: fixed CTA must not compete with anchor ads`);
+          await prompt.click();
+          await page.waitForURL(new URL(calculatorPath, baseUrl).href);
+          assert(new URL(page.url()).pathname === calculatorPath, `${articlePath}: locale calculator destination`);
+        }
+        // 翻訳記事への汎用計算案内の再挿入と、大型アンカーの展開を確認する。
+        for (const articlePath of [
+          'en/articles/google-play-quests.html',
+          'ko/articles/google-play-points-cash-conversion.html',
+          'articles/2025-12-25-best-use.html'
+        ]) {
+          await page.goto(new URL(articlePath, baseUrl).href, { waitUntil: 'domcontentloaded' });
+          await page.waitForFunction(() => document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]'));
+          const overlay = await page.locator('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]').getAttribute('data-overlays');
+          assert(overlay === 'collapsed-bottom', `${articlePath}: use regular bottom anchors`);
+          if (articlePath.includes('google-play-quests')) {
+            assert(await page.locator('.article-calculator-prompt').count() === 0, 'quest troubleshooting must precede any spending estimate');
+            assert(await page.locator('article.content > :first-child').getAttribute('class') === 'intro', 'quest definition precedes the troubleshooting table');
+          }
+        }
+        console.log('ok - article revenue smoke');
+      } finally { await context.close(); }
+    });
 
-    const articleUrl = new URL('articles/2026-08-05-play-points-multiplier-stacking.html', baseUrl).href;
-    const response = await page.goto(articleUrl, { waitUntil: 'domcontentloaded', timeout: 45000 });
-    assert(response && response.ok(), 'article HTTP failure');
-    await page.locator('article').waitFor({ state: 'attached', timeout: 30000 });
-    await waitForRevenueRuntime(page, '.article-ad-container ins.adsbygoogle');
-
-    const articleState = await page.evaluate(() => ({
-      slot: document.querySelector('.article-ad-container ins.adsbygoogle')?.dataset.adSlot || '',
-      adRequests: window.adsbygoogle?.length || 0,
-      consentSource: window.PlayPointConsent?.getSource?.() || '',
-      runtimeLoader: [...document.scripts].some(script => /blog\/(components|article)\.js/.test(script.src) || /third-party\.js/.test(script.src))
-    }));
-    assert(articleState.slot === '8250492620', 'article ad slot missing');
-    assert(articleState.adRequests >= 1, 'article adsbygoogle.push was not observed');
-    assert(articleState.consentSource === 'googlefc', 'article did not use GoogleFC consent source');
-    assert(articleState.runtimeLoader, 'article runtime loader missing');
-    assertExternalRequests(requests, 'article');
-    assert(errors.length === 0, `article browser errors: ${errors.join(' | ')}`);
-
-    // 広告枠の検証に加え、広告と競合する固定案内を戻さず地域別導線を残す。
-    for (const [articlePath, calculatorPath] of [
-      ['articles/2026-08-05-fastest-silver.html', '/'],
-      ['en/articles/google-play-points-fastest-silver.html', '/en/'],
-      ['ko/articles/google-play-points-fastest-silver.html', '/ko/'],
-      ['tw/articles/google-play-points-fastest-silver.html', '/tw/']
-    ]) {
-      await page.goto(new URL(articlePath, baseUrl).href, { waitUntil: 'domcontentloaded' });
-      const prompt = page.locator('.article-calculator-prompt a');
-      await prompt.waitFor({ state: 'attached' });
-      await page.evaluate(() => window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * 0.4));
-      await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-      assert(await page.locator('.mobile-sticky-cta').count() === 0, `${articlePath}: fixed CTA must not compete with anchor ads`);
-      await prompt.click();
-      await page.waitForURL(new URL(calculatorPath, baseUrl).href);
-      assert(new URL(page.url()).pathname === calculatorPath, `${articlePath}: locale calculator destination`);
-    }
-    // 翻訳記事への汎用計算案内の再挿入と、大型アンカーの展開を確認する。
-    for (const articlePath of [
-      'en/articles/google-play-quests.html',
-      'ko/articles/google-play-points-cash-conversion.html',
-      'articles/2025-12-25-best-use.html'
-    ]) {
-      await page.goto(new URL(articlePath, baseUrl).href, { waitUntil: 'domcontentloaded' });
-      await page.waitForFunction(() => document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]'));
-      const overlay = await page.locator('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]').getAttribute('data-overlays');
-      assert(overlay === 'collapsed-bottom', `${articlePath}: use regular bottom anchors`);
-      if (articlePath.includes('google-play-quests')) {
-        assert(await page.locator('.article-calculator-prompt').count() === 0, 'quest troubleshooting must precede any spending estimate');
-        assert(await page.locator('article.content > :first-child').getAttribute('class') === 'intro', 'quest definition precedes the troubleshooting table');
-      }
-    }
-    await context.close();
-    console.log('ok - article revenue smoke');
+    await runWithConcurrency(tasks, resolveBrowserConcurrency(Boolean(REQUESTED_BASE_URL)), task => task());
   } finally {
     await browser.close();
     if (localServer) await localServer.close();

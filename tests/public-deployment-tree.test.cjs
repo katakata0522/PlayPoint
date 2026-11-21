@@ -23,7 +23,7 @@ test('repository root has no unreviewed deployment entries', () => {
   assert.deepEqual(audit.unknown, []);
   assert.ok(audit.publicEntries.includes('index.html'));
   assert.ok(audit.publicEntries.includes('articles'));
-  assert.ok(audit.nonPublicEntries.includes('toc_scan_report.txt'));
+  assert.ok(audit.nonPublicEntries.includes('AGENTS.md'));
 });
 
 test('public allowlist makes operational artifacts non-public by default', () => {

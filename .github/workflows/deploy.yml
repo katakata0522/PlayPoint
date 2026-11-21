@@ -160,6 +160,14 @@ jobs:
 
       # ブラウザ実行環境の準備失敗はproduction mutationではないため、snapshot/rsyncより前に失敗させる。
       # rollback後のChromiumも同じrunner・node_modules・CHROME_PATHを再利用し、緊急復旧中に外部installへ依存しない。
+      - name: Cache Playwright Chromium binary
+        id: cache_playwright_chromium
+        if: steps.deploy-impact.outputs.deploy_needed == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/playpoint-browsers
+          key: playpoint-chromium-ubuntu24-${{ hashFiles('.github/ci-runtime/package-lock.json') }}
+
       - name: Install production browser verifier
         id: ci_browser
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
