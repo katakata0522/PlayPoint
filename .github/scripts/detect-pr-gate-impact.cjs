@@ -25,9 +25,32 @@ const BROWSER_GATE_INPUTS = Object.freeze([
   '.github/scripts/verify-deploy-revision.cjs',
   '.github/scripts/detect-pr-gate-impact.cjs',
   '.github/scripts/bind-browser-evidence.cjs',
+  '.github/scripts/browser-concurrency.cjs',
+  '.github/scripts/run-pr-browser-checks.cjs',
   '.github/scripts/refactor-runtime-compatibility.cjs',
   '.github/scripts/refactor-visual-smoke.cjs',
 ]);
+
+// 代表・統合シナリオから参照されない単体記事HTMLだけの変更時は記事・収益関連のChromium検査へ絞る。
+const STANDALONE_ARTICLE_HTML = /^(?:(?:en|ko|tw|hk|in)\/)?articles\/(?!index\.html$)[^/]+\.html$/;
+const CORE_SUITE_REFERENCED_ARTICLES = new Set([
+  'articles/2025-12-25-best-use.html',
+  'articles/2025-12-25-diamond-worth-it.html',
+  'articles/2026-07-24-play-points-1-value.html',
+  'articles/2026-09-19-play-points-calendar-schedule-guide.html',
+  'articles/2026-09-26-pokemon-sleep-play-points-coupon.html',
+  'articles/2026-10-10-diamond-play-pass-value.html',
+  'en/articles/google-play-points-weekly-reward.html',
+  'ko/articles/google-play-points-weekly-reward.html',
+  'tw/articles/google-play-points-weekly-reward.html',
+  'en/articles/google-play-points-super-weekly-reward.html',
+  'ko/articles/google-play-points-super-weekly-reward.html',
+  'tw/articles/google-play-points-super-weekly-reward.html',
+]);
+
+function isStandaloneNonFixtureArticle(filePath) {
+  return STANDALONE_ARTICLE_HTML.test(filePath) && !CORE_SUITE_REFERENCED_ARTICLES.has(filePath);
+}
 
 const APACHE_GATE_INPUTS = Object.freeze([
   '.github/scripts/detect-pr-gate-impact.cjs',
@@ -48,10 +71,18 @@ function classifyPrGateImpact(changedPaths) {
   );
   const apachePaths = normalized.filter(file => APACHE_GATE_INPUTS.includes(file));
 
+  const uniqueBrowserPaths = [...new Set(browserPaths)];
+  const browserScope = uniqueBrowserPaths.length === 0
+    ? 'none'
+    : uniqueBrowserPaths.every(isStandaloneNonFixtureArticle)
+      ? 'articles'
+      : 'full';
+
   return {
-    browserRequired: browserPaths.length > 0,
+    browserRequired: uniqueBrowserPaths.length > 0,
+    browserScope,
     apacheRequired: apachePaths.length > 0,
-    browserPaths: [...new Set(browserPaths)],
+    browserPaths: uniqueBrowserPaths,
     apachePaths: [...new Set(apachePaths)],
   };
 }

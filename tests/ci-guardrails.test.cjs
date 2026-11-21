@@ -22,17 +22,21 @@ const getStepBlock = (workflow, stepName) => {
 
 test('必須PR GateがローカルChromium検証を所有し、Standalone Browser SmokeをActions登録しない', () => {
   const qualityWorkflow = read('.github/workflows/quality-check.yml');
+  const prBrowserRunner = read('.github/scripts/run-pr-browser-checks.cjs');
   const archivedBrowserRecipe = read('.github/manual-workflows/browser-smoke.yml');
 
+  assert.match(qualityWorkflow, /node \.github\/scripts\/run-pr-browser-checks\.cjs/);
   for (const script of [
     'browser-smoke.cjs',
     'article-css-smoke.cjs',
     'article-design-smoke.cjs',
     'mobile-region-layout-smoke.cjs',
+    'mobile-first-view-smoke.cjs',
+    'site-shell-vnext-smoke.cjs',
     'browser-revenue-smoke.cjs',
     'embed-widget-smoke.cjs'
   ]) {
-    assert.ok(qualityWorkflow.includes(`node .github/scripts/${script}`), `PR Gate missing ${script}`);
+    assert.ok(prBrowserRunner.includes(script), `PR Gate runner missing ${script}`);
   }
   assert.match(qualityWorkflow, /name: Install required browser driver/);
   assert.match(qualityWorkflow, /bash \.github\/scripts\/setup-browser-runtime\.sh/);

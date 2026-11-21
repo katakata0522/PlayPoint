@@ -9,11 +9,13 @@ const { writeJson } = require('./ci-evidence.cjs');
 const navigationAttempts = [];
 const { hasExplicitTargetMarker } = require('../../scripts/navigation-source-map.cjs');
 const { createRevisionSession } = require('./browser-revision-evidence.cjs');
+const { resolveBrowserConcurrency, runWithConcurrency } = require('./browser-concurrency.cjs');
 const { verifyReadingUi } = require('./browser-reading-ui.cjs');
 const { verifyStaticPresentation, verifyResultPresentation } = require('./calculator-presentation-contract.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
 const RELEASE = process.argv.includes('--release');
+const KEEP_ARTIFACTS = RELEASE || process.argv.includes('--keep-artifacts');
 const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
 const CHROME_PATH = process.env.CHROME_PATH;
 const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
@@ -759,7 +761,7 @@ async function verifyBlogPage(browser, baseUrl) {
 }
 
 async function main() {
-  if (!RELEASE) fs.rmSync(ARTIFACT_DIR, { recursive: true, force: true });
+  if (!KEEP_ARTIFACTS) fs.rmSync(ARTIFACT_DIR, { recursive: true, force: true });
   fs.mkdirSync(ARTIFACT_DIR, { recursive: true });
   navigationAttempts.length = 0;
   let localServer;
@@ -790,58 +792,72 @@ async function main() {
       args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
     });
     stage = 'verification';
-    for (const locale of LOCALES) {
-      const result = { locale: locale.key, passed: false };
-      try {
-        result.static = await verifyStaticPage(browser, baseUrl, locale);
-        result.hydrated = await verifyHydratedPage(browser, baseUrl, locale);
-        result.passed = true;
-        console.log(`ok - ${locale.key} static, main, reverse, Service Worker and browser errors`);
-      } catch (error) {
-        result.error = error.message;
-        console.error(`not ok - ${locale.key}: ${error.message}`);
-      }
-      report.locales.push(result);
-    }
-    try {
-      report.blog = { passed: true, details: await verifyBlogPage(browser, baseUrl) };
-      console.log('ok - Blog initial render, search, reset, pagination, category and sidebar');
-    } catch (error) {
-      report.blog = { passed: false, error: error.message };
-      console.error(`not ok - Blog: ${error.message}`);
-    }
-    try {
-      const { verifyGameCalculators } = require('./game-calculator-browser.cjs');
-      report.games = await verifyGameCalculators(browser, baseUrl, blockExternalRequests, ARTIFACT_DIR);
-      console.log('ok - Game calculator responsive layout, input boundaries and progress names');
-    } catch (error) {
-      report.games = { passed: false, error: error.message };
-      console.error('not ok - Game calculators:', error.message);
-    }
-    try {
-      const { verifyDiaryBoundaries } = require('./diary-browser.cjs');
-      report.diary = await verifyDiaryBoundaries(browser, baseUrl, LOCALES, blockExternalRequests, ARTIFACT_DIR);
-      console.log('ok - Diary month/year boundaries, save, edit, reload and other months');
-    } catch (error) {
-      report.diary = { passed: false, error: error.message };
-      console.error('not ok - Diary:', error.message);
-    }
-    try {
-      const { verifyCommonAccessibility } = require('./accessibility-browser.cjs');
-      report.accessibility = await verifyCommonAccessibility(browser, baseUrl, blockExternalRequests, ARTIFACT_DIR);
-      console.log('ok - Common keyboard scrolling, link identification, contrast states and share opener');
-    } catch (error) {
-      report.accessibility = { passed: false, error: error.message };
-      console.error('not ok - Common accessibility:', error.message);
-    }
-    try {
-      const { verifyUiContracts } = require('./ui-contract-browser.cjs');
-      report.uiContracts = await verifyUiContracts(browser, baseUrl, LOCALES, blockExternalRequests, ARTIFACT_DIR);
-      console.log('ok - UI keyboard, calendar outputs, comparison article, print and clipboard');
-    } catch (error) {
-      report.uiContracts = { passed: false, error: error.message };
-      console.error('not ok - UI contracts:', error.message);
-    }
+    report.locales = new Array(LOCALES.length);
+    const verificationTasks = [
+      ...LOCALES.map((locale, index) => async () => {
+        const result = { locale: locale.key, passed: false };
+        try {
+          result.static = await verifyStaticPage(browser, baseUrl, locale);
+          result.hydrated = await verifyHydratedPage(browser, baseUrl, locale);
+          result.passed = true;
+          console.log(`ok - ${locale.key} static, main, reverse, Service Worker and browser errors`);
+        } catch (error) {
+          result.error = error.message;
+          console.error(`not ok - ${locale.key}: ${error.message}`);
+        }
+        report.locales[index] = result;
+      }),
+      async () => {
+        try {
+          report.blog = { passed: true, details: await verifyBlogPage(browser, baseUrl) };
+          console.log('ok - Blog initial render, search, reset, pagination, category and sidebar');
+        } catch (error) {
+          report.blog = { passed: false, error: error.message };
+          console.error(`not ok - Blog: ${error.message}`);
+        }
+      },
+      async () => {
+        try {
+          const { verifyGameCalculators } = require('./game-calculator-browser.cjs');
+          report.games = await verifyGameCalculators(browser, baseUrl, blockExternalRequests, ARTIFACT_DIR);
+          console.log('ok - Game calculator responsive layout, input boundaries and progress names');
+        } catch (error) {
+          report.games = { passed: false, error: error.message };
+          console.error('not ok - Game calculators:', error.message);
+        }
+      },
+      async () => {
+        try {
+          const { verifyDiaryBoundaries } = require('./diary-browser.cjs');
+          report.diary = await verifyDiaryBoundaries(browser, baseUrl, LOCALES, blockExternalRequests, ARTIFACT_DIR);
+          console.log('ok - Diary month/year boundaries, save, edit, reload and other months');
+        } catch (error) {
+          report.diary = { passed: false, error: error.message };
+          console.error('not ok - Diary:', error.message);
+        }
+      },
+      async () => {
+        try {
+          const { verifyCommonAccessibility } = require('./accessibility-browser.cjs');
+          report.accessibility = await verifyCommonAccessibility(browser, baseUrl, blockExternalRequests, ARTIFACT_DIR);
+          console.log('ok - Common keyboard scrolling, link identification, contrast states and share opener');
+        } catch (error) {
+          report.accessibility = { passed: false, error: error.message };
+          console.error('not ok - Common accessibility:', error.message);
+        }
+      },
+      async () => {
+        try {
+          const { verifyUiContracts } = require('./ui-contract-browser.cjs');
+          report.uiContracts = await verifyUiContracts(browser, baseUrl, LOCALES, blockExternalRequests, ARTIFACT_DIR);
+          console.log('ok - UI keyboard, calendar outputs, comparison article, print and clipboard');
+        } catch (error) {
+          report.uiContracts = { passed: false, error: error.message };
+          console.error('not ok - UI contracts:', error.message);
+        }
+      },
+    ];
+    await runWithConcurrency(verificationTasks, resolveBrowserConcurrency(Boolean(REQUESTED_BASE_URL)), task => task());
     stage = 'revision-after';
     await revisionSession.check(baseUrl, 'after-browser');
     report.passed = report.locales.every(result => result.passed) && report.blog.passed && report.games.passed && report.diary.passed && report.accessibility.passed && report.uiContracts.passed;

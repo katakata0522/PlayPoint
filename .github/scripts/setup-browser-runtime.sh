@@ -84,8 +84,13 @@ fc-match sans-serif:lang=ja
 
 # Playwrightのlockに対応するChromiumを使い、runnerのChromeへfallbackしない。
 export PLAYWRIGHT_BROWSERS_PATH="${RUNNER_TEMP:?RUNNER_TEMP is required}/playpoint-browsers"
-timed chromium node "$cli" install --no-shell chromium
-chrome_path="$(NODE_PATH="$node_path" node -p "require('playwright-core').chromium.executablePath()")"
+chrome_path="$(NODE_PATH="$node_path" node -p "require('playwright-core').chromium.executablePath()" 2>/dev/null || true)"
+if [ -n "$chrome_path" ] && [ -x "$chrome_path" ] && "$chrome_path" --version >/dev/null 2>&1; then
+  printf '[browser-runtime] chromium cache hit (%s)\n' "$chrome_path"
+else
+  timed chromium node "$cli" install --no-shell chromium
+  chrome_path="$(NODE_PATH="$node_path" node -p "require('playwright-core').chromium.executablePath()")"
+fi
 test -x "$chrome_path"
 "$chrome_path" --version
 
