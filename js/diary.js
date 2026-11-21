@@ -93,9 +93,16 @@ let diaryViewInitialized = false;
 export const DIARY = {
     openCurrentWeek() {
         const current = DIARY_PURE.currentWeek();
+        const needsRender = !diaryViewInitialized
+            || STATE.diaryState.currentYear !== current.year
+            || STATE.diaryState.currentMonth !== current.month
+            || !STATE.dom.weekInputs?.querySelector('#week' + current.week + '_points');
         STATE.diaryState.currentYear = current.year;
         STATE.diaryState.currentMonth = current.month;
-        this.renderDiary();
+        diaryViewInitialized = true;
+        if (needsRender) {
+            this.renderDiary();
+        }
         const input = STATE.dom.weekInputs?.querySelector('#week' + current.week + '_points');
         input?.closest('.week-row')?.classList.add('is-current-week');
         input?.scrollIntoView({ block: 'center' });
@@ -522,23 +529,23 @@ export const DIARY = {
         }
     },
 
-    decorateExplicitCurrentWeek(row, weekNum, pointsValue, yearData) {
+    decorateExplicitCurrentWeek(row, weekNum, pointsValue, yearData, yearlySummary = null) {
         if (!this.isCurrentDiaryWeek(weekNum)) return;
         this.ensureWeeklyExperienceStyle();
         row.classList.add('is-weekly-current', 'is-weekly-expanded');
         this.ensureWeeklyConfirmHint(row);
         this.configureCurrentWeekRecordState(row);
-        this.renderWeeklyAchievement(row, pointsValue, DIARY_PURE.summarizeYear(yearData), false);
+        this.renderWeeklyAchievement(row, pointsValue, yearlySummary || DIARY_PURE.summarizeYear(yearData), false);
     },
 
-    refreshWeeklyAchievement(weekNum, pointsValue, yearData, animate = false, milestoneText = '') {
+    refreshWeeklyAchievement(weekNum, pointsValue, yearData, animate = false, milestoneText = '', yearlySummary = null) {
         if (!this.isCurrentDiaryWeek(weekNum)) return;
         const row = STATE.dom.weekInputs?.querySelector('#week' + weekNum + '_points')?.closest('.week-row');
         if (!row) return;
         this.ensureWeeklyExperienceStyle();
         row.classList.add('is-weekly-current', 'is-weekly-expanded');
         this.ensureWeeklyConfirmHint(row);
-        this.renderWeeklyAchievement(row, pointsValue, DIARY_PURE.summarizeYear(yearData), animate, milestoneText);
+        this.renderWeeklyAchievement(row, pointsValue, yearlySummary || DIARY_PURE.summarizeYear(yearData), animate, milestoneText);
     },
 
     // 日記（アワード）画面のレンダリング
@@ -558,8 +565,10 @@ export const DIARY = {
         STATE.dom.currentYear.textContent = `${STATE.diaryState.currentYear}${texts.yearSuffix || ''}`;
         this.renderMonthSelector();
         const data = this.loadDiaryData();
-        this.renderWeekInputs(data);
-        this.updateSummary(data);
+        const yearData = data[STATE.diaryState.currentYear] || {};
+        const yearlySummary = DIARY_PURE.summarizeYear(yearData);
+        this.renderWeekInputs(data, yearlySummary);
+        this.updateSummary(data, yearlySummary);
     },
 
     // 月選択ボタンのレンダリング
@@ -582,7 +591,7 @@ export const DIARY = {
     },
 
     // 選択された月の各週の入力行のレンダリング
-    renderWeekInputs(data = this.loadDiaryData()) {
+    renderWeekInputs(data = this.loadDiaryData(), yearlySummary = null) {
         if (!STATE.dom.weekInputs || !STATE.dom.selectedMonth) return;
         const texts = CONFIGS[STATE.currentRegion].uiText;
         STATE.dom.weekInputs.innerHTML = '';
@@ -636,14 +645,15 @@ export const DIARY = {
                 row,
                 weekNum,
                 displayPoints,
-                yearData
+                yearData,
+                yearlySummary
             );
             STATE.dom.weekInputs.appendChild(row);
         });
     },
 
     // 月間・年間の合計・平均ポイントの集計表示
-    updateSummary(data = this.loadDiaryData()) {
+    updateSummary(data = this.loadDiaryData(), yearlySummary = null) {
         if (!STATE.dom.monthlyTotal || !STATE.dom.yearlyTotal) return;
         const config = CONFIGS[STATE.currentRegion];
         const yearData = data[STATE.diaryState.currentYear] || {};
@@ -657,10 +667,10 @@ export const DIARY = {
         });
         STATE.dom.monthlyTotal.textContent = monthlyTotal.toLocaleString(config.lang);
         STATE.dom.monthlyAverage.textContent = (monthlyWeeksWithPoints > 0 ? (monthlyTotal / monthlyWeeksWithPoints).toFixed(1) : '0.0');
-        const yearlySummary = DIARY_PURE.summarizeYear(yearData);
-        STATE.dom.yearlyTotal.textContent = yearlySummary.total.toLocaleString(config.lang);
-        STATE.dom.yearlyAverage.textContent = yearlySummary.average.toFixed(1);
-        this.renderYearChart(yearlySummary);
+        const resolvedYearlySummary = yearlySummary || DIARY_PURE.summarizeYear(yearData);
+        STATE.dom.yearlyTotal.textContent = resolvedYearlySummary.total.toLocaleString(config.lang);
+        STATE.dom.yearlyAverage.textContent = resolvedYearlySummary.average.toFixed(1);
+        this.renderYearChart(resolvedYearlySummary);
     },
 
     // 保存済みデータだけを使い、月ごとの比較をDOMでアクセシブルに描画する。
@@ -778,9 +788,11 @@ export const DIARY = {
             delete data[yearKey][monthKey][weekNum];
             this.cleanEmptyDiaryContainers(data, yearKey, monthKey);
             if (!this.saveDiaryData(data)) return;
+            const nextYearData = data[yearKey] || {};
+            const nextYearlySummary = DIARY_PURE.summarizeYear(nextYearData);
             this.reflectSavedWeek(weekNum, null);
-            this.updateSummary(data);
-            this.refreshWeeklyAchievement(weekNum, '', data[yearKey] || {}, false);
+            this.updateSummary(data, nextYearlySummary);
+            this.refreshWeeklyAchievement(weekNum, '', nextYearData, false, '', nextYearlySummary);
             if (!isSilent) {
                 UI.showToast(texts.toastDiarySaveSuccess);
                 document.dispatchEvent(new CustomEvent('playpoint:diary-saved', {
@@ -820,15 +832,18 @@ export const DIARY = {
         });
         ANALYTICS.markEngaged();
 
+        const nextYearData = data[yearKey] || {};
+        const nextYearlySummary = DIARY_PURE.summarizeYear(nextYearData);
         this.reflectSavedWeek(weekNum, nextEntry);
-        this.updateSummary(data);
+        this.updateSummary(data, nextYearlySummary);
         if (!isSilent) {
             this.refreshWeeklyAchievement(
                 weekNum,
                 normalizedPoints,
-                data[yearKey] || {},
+                nextYearData,
                 true,
-                isYearBest ? this.getWeeklyExperienceCopy().yearBest : ''
+                isYearBest ? this.getWeeklyExperienceCopy().yearBest : '',
+                nextYearlySummary
             );
             UI.showToast(texts.toastDiarySaveSuccess);
             document.dispatchEvent(new CustomEvent('playpoint:diary-saved', {

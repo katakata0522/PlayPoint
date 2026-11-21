@@ -254,14 +254,16 @@ function updateArticleCount() {
     countEl.textContent = template.replace('{count}', count);
 }
 
-export function updateUIForRegion() {
+export function updateUIForRegion({ clearResults = true } = {}) {
     UI.updateUIText();
     updateSimplifiedCalculatorCopy(STATE.currentRegion);
     CALC.populateStatusSelects();
     CALC.updateBaseRateAndTarget();
     CALC.updateReverseBaseRate();
-    if (STATE.dom.result) UI.clearResult(STATE.dom.result);
-    if (STATE.dom.reverseResult) UI.clearResult(STATE.dom.reverseResult);
+    if (clearResults) {
+        if (STATE.dom.result) UI.clearResult(STATE.dom.result);
+        if (STATE.dom.reverseResult) UI.clearResult(STATE.dom.reverseResult);
+    }
     if (STATE.dom.diaryMode && !STATE.dom.diaryMode.classList.contains(CONSTANTS.CLASS_HIDDEN)) {
         queueDiaryAction((DIARY) => DIARY.renderDiary());
     }
@@ -273,6 +275,7 @@ export function switchRegion(newRegion) {
 
 // DOM要素のバインドとイベントリスナーの登録（初期化処理）
 export function init() {
+    applyRegionFromPath();
     simplifyMainCalculatorLayout(STATE.currentRegion);
 
     const ids = [
@@ -384,14 +387,12 @@ export function init() {
 
     if (STATE.dom.copyrightYear) STATE.dom.copyrightYear.textContent = new Date().getFullYear();
 
-    applyRegionFromPath();
-
     document.querySelectorAll(".region-switch button").forEach(button => {
         button.classList.toggle(CONSTANTS.CLASS_ACTIVE, button.dataset.region === STATE.currentRegion);
     });
 
     UI.switchMode(CONSTANTS.MODE_MAIN);
-    updateUIForRegion();
+    updateUIForRegion({ clearResults: false });
     updateArticleCount();
     SHARE.applyFromUrl();
     renderSavedLastMainCalculation();

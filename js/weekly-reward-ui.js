@@ -136,18 +136,6 @@
         details.append(reminder, backup);
     }
 
-    function ensureMonthlyHeading() {
-        const inputArea = document.querySelector('.diary-input-area');
-        if (!inputArea) return;
-        let heading = inputArea.querySelector('.weekly-month-section-title');
-        if (!heading) {
-            heading = document.createElement('div');
-            heading.className = 'weekly-month-section-title';
-            heading.textContent = copy.thisMonth;
-            inputArea.insertBefore(heading, document.getElementById('selectedMonth')?.nextSibling || inputArea.firstChild);
-        }
-    }
-
     function updateCompactSummary(row) {
         const compact = row.querySelector('.weekly-compact-summary');
         if (!compact) return;
@@ -245,44 +233,27 @@
         count.textContent = `${recorded}/${totalWeeks} ${copy.recordedWeeks}`;
     }
 
+    const scheduleMicrotask = typeof queueMicrotask === 'function'
+        ? queueMicrotask
+        : (callback) => Promise.resolve().then(callback);
+
     function decorateDiary() {
-        if (!document.getElementById('diaryMode')) return;
+        const diaryMode = document.getElementById('diaryMode');
+        if (!diaryMode || !document.querySelector('#weekInputs .week-row')) return;
         wrapMonthSelector();
         wrapYearChart();
         wrapTools();
-        ensureMonthlyHeading();
         decorateRows();
         decorateSummary();
-        document.getElementById('diaryMode')?.classList.add('weekly-ui-ready');
+        diaryMode.classList.add('weekly-ui-ready');
     }
 
     function queueDecorate() {
         if (decorateQueued) return;
         decorateQueued = true;
-        window.requestAnimationFrame(() => {
+        scheduleMicrotask(() => {
             decorateQueued = false;
             decorateDiary();
-        });
-    }
-
-    function selectCurrentMonth() {
-        const friday = getCurrentFriday();
-        const currentYear = getDisplayedYear();
-        const monthButton = document.querySelector(`#monthSelector button[data-month="${friday.getMonth() + 1}"]`);
-        if (currentYear === friday.getFullYear() && monthButton && !monthButton.classList.contains('active')) {
-            monthButton.click();
-        }
-    }
-
-    function bindDiaryTab() {
-        const tab = document.getElementById('tab-diary');
-        if (!tab || tab.dataset.weeklyUiBound) return;
-        tab.dataset.weeklyUiBound = 'true';
-        tab.addEventListener('click', () => {
-            window.setTimeout(() => {
-                selectCurrentMonth();
-                queueDecorate();
-            }, 0);
         });
     }
 
@@ -301,10 +272,10 @@
 
     function init() {
         ensureStyles();
-        bindDiaryTab();
         observeDiary();
-        selectCurrentMonth();
-        queueDecorate();
+        if (document.querySelector('#weekInputs .week-row')) {
+            queueDecorate();
+        }
     }
 
     if (document.readyState === 'loading') {
