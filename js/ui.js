@@ -162,8 +162,12 @@ export const UI = {
     updateUIText() {
         const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
-        document.documentElement.lang = config.lang;
-        document.title = texts.title;
+        if (document.documentElement.lang !== config.lang) {
+            document.documentElement.lang = config.lang;
+        }
+        if (document.title !== texts.title) {
+            document.title = texts.title;
+        }
         const isSubDir = isLocalizedSubdirectory(window.location.pathname);
 
         document.querySelectorAll('[data-lang-key]').forEach(el => {
@@ -177,21 +181,21 @@ export const UI = {
 
             if (HTML_TEXT_KEYS.has(key)) {
                 el.innerHTML = texts[key];
-            } else {
+            } else if (el.textContent !== texts[key]) {
                 el.textContent = texts[key];
             }
         });
 
         document.querySelectorAll('[data-lang-aria]').forEach(el => {
             const key = el.dataset.langAria;
-            if (texts[key]) {
+            if (texts[key] && (typeof el.getAttribute !== 'function' || el.getAttribute('aria-label') !== texts[key])) {
                 el.setAttribute('aria-label', texts[key]);
             }
         });
 
         document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
             const key = el.dataset.langPlaceholder;
-            if (texts[key]) {
+            if (texts[key] && el.placeholder !== texts[key]) {
                 el.placeholder = texts[key];
             }
         });
