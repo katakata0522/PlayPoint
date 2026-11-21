@@ -127,7 +127,7 @@ const CONTENT_DATE_OVERRIDES = Object.freeze({
   'about-playpoints.html': '2026-10-14',
   'info.html': '2026-09-22',
   'changelog.html': '2026-09-22',
-  'attention.html': '2026-11-19',
+  'attention.html': '2026-11-21',
   'hk/google-play-points-guide.html': '2026-11-19',
   'in/google-play-points-guide.html': '2026-11-19',
   'privacy.html': '2026-09-15',
