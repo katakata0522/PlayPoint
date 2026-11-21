@@ -81,6 +81,10 @@ async function capture(pair, name, report) {
       }));
     try {
       await entry.page.evaluate(async () => {
+        for (const img of document.querySelectorAll('img')) {
+          if (img.loading === 'lazy') img.loading = 'eager';
+          if (img.src) await img.decode().catch(() => {});
+        }
         await document.fonts.ready;
         await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       });
