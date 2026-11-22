@@ -50,7 +50,7 @@
       "name": "可以用任何順序完成步驟嗎?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "若任務進度頁沒有指定順序,通常可以;最後仍以自己的畫面說明為準。"
+        "text": "如果任務進度頁沒有特別限定步驟順序,通常可以照自己方便的節奏逐項完成。不過有些活動會要求「先按下參加/開始」才開始計算後面的消費或遊玩,因此動手前還是要以自己畫面上的說明為準。"
       }
     },
     {
@@ -58,7 +58,7 @@
       "name": "Play Pass 續訂算購買嗎?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "若會累積 Play Points 且符合任務條款,Google 將 Play Pass 訂閱續訂列為購買範例。"
+        "text": "只要該筆續訂交易會正常累積 Play Points,而且也符合當次任務的條款限制,就算符合購買條件。Google 官方說明中也直接將 Play Pass 訂閱續訂列為購買範例之一,但還沒扣款的免費試用期則不在此列。"
       }
     },
     {
@@ -66,7 +66,7 @@
       "name": "為什麼已完成的任務又變成未完成?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "完成任務後,符合條件的購買若獲得退款,任務會回到未完成狀態。若已領取獎勵,影響任務狀態的交易遭撤銷時,獎勵也可能被取消。"
+        "text": "最常見的原因是達成任務條件的那筆購買後來獲得了退款。只要影響任務資格的交易被撤銷,任務進度就會退回未完成狀態,甚至已領到的獎勵也可能一併被取消;但若還在任務截止期限內,你仍然可以重新補做符合條件的消費。"
       }
     }
   ]
@@ -198,24 +198,77 @@
 <!-- reading-tools:start --><div class="reading-tools" data-reading-tools><button type="button" disabled aria-pressed="false">稍後閱讀</button><a data-reading-library-link href="/tw/articles/#reading-library">已儲存文章與閱讀紀錄</a><span role="status"></span></div><!-- reading-tools:end -->
 </div></div>
   <article class="content">
-    <div class="intro"><strong>Google Play 任務是依帳號提供的活動，必須完成畫面中<span class="marker-yellow" data-editorial-cue>所有指定步驟</span>才能獲得獎勵。</strong>是否顯示、期限、步驟與獎勵可能因使用者而異。不要直接照搬其他人的消費金額或遊玩條件，請以自己的任務進度頁為最終規則。</div>
-    <details class="intl-article-toc" aria-label="目錄"><summary><h2 id="article-section-1">目錄</h2></summary><ol><li><a href="#section-1">任務出現在哪裡，為何你的帳號沒有</a></li><li><a href="#section-2">開始前先保存 5 項資訊</a></li><li><a href="#section-3">哪些交易算「購買」</a></li><li><a href="#section-4">Play 遊戲登入與個人化設定</a></li><li><a href="#section-5">取消、退款與進度沒有更新</a></li></ol></details>
+    <div class="intro"><strong>Google Play 任務（Quests）是依個別帳號配發的限時活動，通常必須把畫面上列出的<span class="marker-yellow" data-editorial-cue>所有指定步驟</span>全部達成才能領獎。</strong>這類活動要不要顯示、任務期限多長、要完成哪些步驟與最後送什麼獎勵，每個人的帳號都可能不一樣。看到別人分享攻略時，別直接照抄別人的消費金額或遊玩條件，務必以自己手機上的任務進度頁作為最終標準。</div>
+    <details class="intl-article-toc" aria-label="目錄"><summary><h2 id="article-section-1">目錄</h2></summary><ol><li><a href="#section-1">任務會出現在哪裡？為什麼別人的帳號有、我的沒有</a></li><li><a href="#section-2">開始衝任務前，先截圖留存這 5 項條件</a></li><li><a href="#section-3">任務條件裡的「購買」到底算哪些消費？</a></li><li><a href="#section-4">Play 遊戲登入與個人化設定該怎麼確認</a></li><li><a href="#section-5">取消、退款後進度倒退，或進度一直沒更新怎麼辦</a></li></ol></details>
 
-    <section class="section"><h2 id="section-1">任務出現在哪裡，為何你的帳號沒有</h2><p>符合資格時，任務可能出現在 Play Points 頁面，或 Play 商店的「遊戲」、「應用程式」、「個人」等分頁。別人的帳號有活動而你的沒有，並不等於系統故障。</p><p>Google 說明任務可能依帳號設定或活動而異，例如適用時的 Play Points 等級；不同使用者的步驟與獎勵也可能不同。 <span class="article-source-inline">(<a href="https://support.google.com/googleplay/answer/11534416?hl=zh-Hant">Google 官方說明</a>)</span></p></section>
+    <section class="section">
+      <h2 id="section-1">任務會出現在哪裡？為什麼別人的帳號有、我的沒有</h2>
+      <p>如果帳號剛好符合當期任務資格，任務卡片通常會出現在 Play Points 頁面裡，或是 Google Play 商店的「遊戲」、「應用程式」、「個人」等分頁。有時候看到朋友或社團玩家在解某個活動任務，自己的頁面上卻找不到，這並不代表你的帳號壞掉或系統出包。</p>
+      <p>Google 官方說明就明講過，任務是否推出會依個別帳號的設定或參與活動紀錄而異（例如某些任務會搭配特定的 Play Points 等級），就連同一檔任務裡不同人看到的步驟次數和獎勵內容也可能不一樣。 <span class="article-source-inline">(<a href="https://support.google.com/googleplay/answer/11534416?hl=zh-Hant">Google 官方說明</a>)</span></p>
+    </section>
 
-    <section class="section"><h2 id="section-2">開始前先保存 5 項資訊</h2><ol><li><strong>期限：</strong>確認完成期限與獎勵領取期限。</li><li><strong>帳號：</strong>確認開啟或開始任務的 Google 帳號。</li><li><strong>完整步驟：</strong>保存指定 App、遊戲、金額、次數與遊玩條件。</li><li><strong>順序：</strong>若頁面沒有特別指定，通常可以自行安排，但仍以畫面為準。</li><li><strong>設定：</strong>確認是否需要 Play 個人化或登入 Play 遊戲設定檔。</li></ol><p>購買前截圖保存條件，比進度沒更新後靠記憶還原可靠得多。畫面可能包含帳號名稱與個別活動資訊，請勿公開上傳。</p>
-<p class="article-worked-example">假設台灣帳號的任務要求完成兩筆各滿 NT$150 的購買，一次花 NT$300 仍只算一筆；即使購買步驟完成，另外的遊玩時間要求也不會因此自動完成。這是判讀任務條件的假設例子，不是目前推出的活動。請逐項核對自己畫面上的金額、次數與未完成步驟。</p></section>
+    <section class="section">
+      <h2 id="section-2">開始衝任務前，先截圖留存這 5 項條件</h2>
+      <p>很多玩家課完金才發現沒跳進度，回頭想找條款卻已經記不清楚細節。建議在按下任何付款或下載前，先把任務進度頁上的這五項資訊記下來：</p>
+      <ol>
+        <li><strong>截止與領獎期限</strong>：把「必須完成任務的截止時間」和「領取獎勵的最後期限」分開記，避免解完忘記按領取。</li>
+        <li><strong>參加任務的 Google 帳號</strong>：確認現在開著任務卡的是哪一個信箱，後面下載遊戲和結帳都要用同一支帳號。</li>
+        <li><strong>完整步驟明細</strong>：看清楚指定的 App 或遊戲名稱、單筆消費門檻、購買次數、是否要開啟或遊玩指定分鐘數。</li>
+        <li><strong>步驟是否有指定順序</strong>：如果頁面沒有規定必須先做哪一步，通常可以自由安排順序；但部分任務會要求先點擊「開始」再消費，務必照畫面提示走。</li>
+        <li><strong>登入與個人化設定要求</strong>：檢查看看任務條件有沒有寫明需要開啟 Play 個人化，或必須登入 Play 遊戲設定檔遊玩。</li>
+      </ol>
+      <p>課金前直接截圖保留任務條件，會比之後進度卡住時憑記憶回想可靠得多。（截圖時裡頭常帶有帳號名稱和個人活動資訊，請自己留存即可，不要直接公開貼到網路上。）</p>
+      <p class="article-worked-example">舉個假設例子來說明讀條件的重點：假如某個台灣帳號的任務寫著「完成兩筆各滿 NT$150 的購買」外加「遊玩 15 分鐘」，這時如果你一口氣刷一筆 NT$300 的禮包，系統依然只會算完成「一筆」購買，而且剩下的遊玩時間條件也不會因為多花錢就自動跳過。（這裡只是方便理解條件判讀的假設例子，實際仍請逐條確認你當下畫面顯示的門檻與尚未完成的步驟。）</p>
+    </section>
 
-    <section class="section"><h2 id="section-3">哪些交易算「購買」</h2><p>在 Play Points 獎勵任務中，Google 將會累積 Play Points 的 Google Play 交易視為購買。依地區與任務條款，可能包含：</p><ul><li>付費 App 或遊戲</li><li>App 內或遊戲內商品</li><li>訂閱付款與續訂</li><li>在該地區會累積點數的書籍或電影租借</li></ul><p><strong>用點數兌換商品，或以點數完成付款，不算任務購買。</strong>因為這些操作不會產生新的 Play Points。未實際付款的延長試用不會累積點數，也不符合購買條件。</p></section>
+    <section class="section">
+      <h2 id="section-3">任務條件裡的「購買」到底算哪些消費？</h2>
+      <p>在 Google Play 任務裡，系統通常只把「會正常累積 Play Points 的 Google Play 商店交易」認列為符合資格的購買。依照地區規範與個別任務條款，常見符合認列的消費項目包括：</p>
+      <ul>
+        <li>付費購買的 App 或手遊</li>
+        <li>App 內或遊戲內的禮包、道具與虛擬貨幣購買</li>
+        <li>經由 Google Play 處理的訂閱付款與自動續訂</li>
+        <li>在支援積點的地區購買書籍或租借電影</li>
+      </ul>
+      <p><strong>特別注意：用點數去兌換道具，或是用點數兌換的餘額／折抵方式本身並不算任務購買。</strong>（簡單記法就是不會產生新 Play Points 的操作通常不計入。）同理，沒有實際扣款的免費試用延長期間，也不會累積點數或算進任務次數裡。</p>
+    </section>
 
-    <section class="section"><h2 id="section-4">Play 遊戲登入與個人化設定</h2><p>部分遊戲任務需要開啟 Google Play 個人化，才能記錄遊戲內活動；也有任務要求使用已登入的 Play 遊戲設定檔遊玩。</p><ol><li>確認收到任務的 Google 帳號。</li><li>確認遊戲內與 Play 遊戲設定檔登入的是哪個帳號。</li><li>查看任務頁是否寫明個人化設定條件。</li><li>確認遊玩時間、成就或指定動作真的完成。</li><li>重新開啟進度頁，查看是否有處理時間說明。</li></ol><p>不要只因第三方文章說「一定要開」就改變追蹤設定。應先閱讀自己的任務條件，再做隱私選擇。</p></section>
+    <section class="section">
+      <h2 id="section-4">Play 遊戲登入與個人化設定該怎麼確認</h2>
+      <p>除了課金之外，不少遊戲任務還會要求玩家試玩新遊戲或達成特定遊玩目標。這類任務有時需要開啟 Google Play 個人化設定，系統才追蹤得到你在遊戲裡的活動紀錄；也有的任務會規定必須使用已登入的 Google Play 遊戲設定檔遊玩。覺得進度卡住時，可以順著這五點檢查：</p>
+      <ol>
+        <li>確認接收並開啟這張任務卡片的 Google 帳號是哪一個。</li>
+        <li>進到遊戲內和「Google Play 遊戲」App，核對兩邊實際登入的是不是同一個設定檔與帳號。</li>
+        <li>回頭看任務說明頁有沒有明確列出需要開啟個人化設定。</li>
+        <li>確認需要的遊玩時間、關卡成就或指定動作真的已經達成，而不是只有開著背景掛機。</li>
+        <li>退出遊戲再重新打開任務進度頁，看看頁面上有沒有標註「進度更新需要處理時間」。</li>
+      </ol>
+      <p>另外也不用看到網路文章說「一定要把所有追蹤都打開」就盲目調整設定，先看懂自己手上的任務到底需不需要用到個人化紀錄，再依自己的隱私習慣做選擇就好。</p>
+    </section>
 
-    <section class="section"><h2 id="section-5">取消、退款與進度沒有更新</h2><p>若任務尚未完成時，符合條件的購買被取消，Google 表示只要活動仍有效，可以再進行另一筆符合條件的購買。完成任務後，符合條件的購買若獲得退款，任務會回到未完成狀態。活動期限內仍可重新完成任務。</p><ul><li>領取獎勵後，影響資格的交易被撤銷，獎勵也可能取消。</li><li>完成選擇性加碼任務後，即使相關購買退款或任務取消，該加碼任務也不會回到未完成狀態。</li><li>訂單仍在處理中或已取消時，先查訂單狀態，不要立刻判定追蹤失敗。</li></ul><p>若進度仍未更新，記錄任務名稱、期限、步驟、訂單時間與使用帳號，超過畫面所示處理時間後再聯絡 Google Play 支援。不要在論壇公開訂單編號與電子郵件。</p></section>
+    <section class="section">
+      <h2 id="section-5">取消、退款後進度倒退，或進度一直沒更新怎麼辦</h2>
+      <p>萬一任務還沒全部解完，原本計入的那一筆購買卻被取消或退款了，依照 Google 的說明，只要活動還在有效期限內，你還是可以再進行另一筆符合條件的購買來補上進度。反過來說，就算任務已經顯示完成，事後如果把達標的合格購買退掉，該任務也會退回成「未完成」狀態（只要活動期限還沒結束，一樣能重新達成）。</p>
+      <ul>
+        <li><strong>已領獎又退款的後果</strong>：要是你已經把任務獎勵領走了，之後卻把關鍵消費交易撤銷或退款，系統也可能會把該筆獎勵收回去。</li>
+        <li><strong>選擇性加碼任務的例外</strong>：部分任務會附帶選擇性的加碼小任務；一旦該加碼任務完成後，就算相關購買後來退款或主任務取消，該加碼任務本身並不會退回未完成狀態。</li>
+        <li><strong>先查訂單是不是卡在處理中</strong>：如果交易還顯示「處理中」或其實已經失敗取消，進度條當然不會前進，先打開訂單記錄確認狀態會比直接猜測追蹤失敗準確。</li>
+      </ul>
+      <p>如果每個步驟都確實做完，等待時間也超過任務頁面標示的處理緩衝期，進度條依然毫無動靜，建議記下任務名稱、活動期限、步驟條件、訂單時間與使用帳號，再透過官方管道聯絡 Google Play 客服協助處理（切記別在公開討論區貼出訂單編號和電子郵件地址）。</p>
+    </section>
 
-    <section class="section"><h2 id="article-section-7">FAQ</h2><h3 id="article-section-8">可以用任何順序完成步驟嗎？</h3><p>若任務進度頁沒有指定順序，通常可以；最後仍以自己的畫面說明為準。</p><h3 id="article-section-9">Play Pass 續訂算購買嗎？</h3><p>若會累積 Play Points 且符合任務條款，Google 將 Play Pass 訂閱續訂列為購買範例。</p><h3 id="article-section-10">為什麼已完成的任務又變成未完成？</h3><p>完成任務後，符合條件的購買若獲得退款，任務會回到未完成狀態。若已領取獎勵，影響任務狀態的交易遭撤銷時，獎勵也可能被取消。</p></section>
+    <section class="section">
+      <h2 id="article-section-7">常見問題</h2>
+      <h3 id="article-section-8">可以用任何順序完成步驟嗎？</h3>
+      <p>如果任務進度頁沒有特別限定步驟順序，通常可以照自己方便的節奏逐項完成。不過有些活動會要求「先按下參加／開始」才開始計算後面的消費或遊玩，因此動手前還是要以自己畫面上的說明為準。</p>
+      <h3 id="article-section-9">Play Pass 續訂算購買嗎？</h3>
+      <p>只要該筆續訂交易會正常累積 Play Points，而且也符合當次任務的條款限制，就算符合購買條件。Google 官方說明中也直接將 Play Pass 訂閱續訂列為購買範例之一，但還沒扣款的免費試用期則不在此列。</p>
+      <h3 id="article-section-10">為什麼已完成的任務又變成未完成？</h3>
+      <p>最常見的原因是達成任務條件的那筆購買後來獲得了退款。只要影響任務資格的交易被撤銷，任務進度就會退回未完成狀態，甚至已領到的獎勵也可能一併被取消；但若還在任務截止期限內，你仍然可以重新補做符合條件的消費。</p>
+    </section>
 
-    <div class="cta-box"><h3 id="article-section-11">先確認任務，再計算消費</h3><p>只有原本就要進行的購買確實符合任務條件時，才使用計算器估算一般點數。不要先付款，再回頭尋找任務。</p><a class="cta-btn" href="/tw/">開啟計算機</a></div>
-    <aside class="official-source-note"><h2 id="article-section-12">官方來源</h2><p><a href="https://support.google.com/googleplay/answer/11534416?hl=zh-Hant" target="_blank" rel="noopener noreferrer">Google Play 任務</a></p><p>官方資訊最後確認：2026年10月15日。個別活動的最終條件以你的任務進度頁為準。</p></aside>
+    <div class="cta-box"><h3 id="article-section-11">先確認任務資格，再試算正常消費點數</h3><p>只有當你本來就打算購買的項目確定符合任務條件時，才需要打開計算機估算一般消費能累積多少點數，別為了湊任務而先刷卡再回頭找活動。</p><a class="cta-btn" href="/tw/">開啟計算機</a></div>
+    <aside class="official-source-note"><h2 id="article-section-12">官方來源</h2><p><a href="https://support.google.com/googleplay/answer/11534416?hl=zh-Hant" target="_blank" rel="noopener noreferrer">Google Play 任務</a></p><p>官方資訊最後確認：2026 年 10 月 15 日。個別活動的實際內容、步驟與獎勵，仍以你帳號內的任務進度頁為準。</p></aside>
     <section class="section related-links-section"><h2 id="article-section-13">相關指南</h2><ul><li><a href="/tw/articles/google-play-points-not-showing.html">購買點數沒有顯示時</a></li><li><a href="/tw/articles/google-play-points-subscriptions.html">訂閱與 Play Points</a></li><li><a href="/tw/articles/google-play-points-multiple-accounts.html">多個 Google 帳號的 Play Points</a></li><li><a href="/tw/author/katakata.html">營運與驗證方針</a></li></ul></section>
 
 <div class="article-ad-container">

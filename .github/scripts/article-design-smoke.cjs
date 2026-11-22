@@ -23,7 +23,7 @@ const REPRESENTATIVE_CASES = [
     ['diamond-play-pass-value', 'articles/2026-10-10-diamond-play-pass-value.html']
   ].map(([key, articlePath]) => ({ key, path: articlePath, allArticle: true, related: true })),
   ...['monst-in-app-packs-guide', 'pokemon-sleep-play-points-coupon', 'gakumas-webshop-google-play', 'bluearchive-monthly-packs-guide', 'nikke-monthly-card-midasbuy'].map(slug => ({ key: slug, path: 'articles/' + (slug.startsWith('monst') ? '2026-09-19-' : '2026-09-26-') + slug + '.html', allArticle: true, related: true })),
-  { key: 'decision-normalized', path: 'articles/2025-12-25-best-use.html', noIntro: true, summary: true, related: true },
+  { key: 'decision-normalized', path: 'articles/2025-12-25-best-use.html', noIntro: true, related: true },
   { key: 'saved-coupon-deletion', path: 'articles/2026-07-25-play-points-coupon-not-applied.html', allArticle: true, related: true },
   { key: 'troubleshooting-modern', path: 'articles/2026-03-10-play-points-reflection-timing.html', related: true },
   { key: 'retention-super-ticket', path: 'articles/2026-09-19-google-play-super-ticket.html', related: true },
