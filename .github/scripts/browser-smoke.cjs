@@ -272,6 +272,7 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
   try {
     await openPage(page, new URL(locale.path, baseUrl).href);
     await waitForStage(page, `${locale.key} app initialization`, () => (
+      (document.documentElement.dataset.playpointReady === 'true' || Boolean(document.querySelector('#tooltip-reverse-status')?.textContent?.trim())) &&
       document.querySelector('#currentStatus')?.options.length >= 2 &&
       document.querySelector('#targetStatus')?.options.length >= 1 &&
       document.querySelector('#reverseStatus')?.options.length >= 2
@@ -431,6 +432,7 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
       await page.reload({ waitUntil: 'commit', timeout: 45_000 });
       await page.locator('#calculateButton').waitFor({ state: 'attached', timeout: 30_000 });
       await waitForStage(page, 'JP app initialization after Service Worker reload', () => (
+        (document.documentElement.dataset.playpointReady === 'true' || Boolean(document.querySelector('#tooltip-reverse-status')?.textContent?.trim())) &&
         document.querySelector('#currentStatus')?.options.length >= 2
       ));
       const controlled = await page.evaluate(() => Boolean(navigator.serviceWorker.controller));
@@ -453,7 +455,10 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
       await context.setOffline(true);
       await page.reload({ waitUntil: 'commit', timeout: 45_000 });
       await page.locator('#calculateButton').waitFor({ state: 'attached', timeout: 30_000 });
-      await waitForStage(page, 'JP offline core initialization', () => document.querySelector('#currentStatus')?.options.length >= 2);
+      await waitForStage(page, 'JP offline core initialization', () => (
+        (document.documentElement.dataset.playpointReady === 'true' || Boolean(document.querySelector('#tooltip-reverse-status')?.textContent?.trim())) &&
+        document.querySelector('#currentStatus')?.options.length >= 2
+      ));
       await page.locator('#tab-diary').click();
       await waitForStage(page, 'JP offline diary after first use', () => Boolean(document.querySelector('#weekInputs .week-row')));
       await context.setOffline(false);

@@ -405,12 +405,19 @@ export function init() {
     trackWidgetReferral();
 
     registerServiceWorker();
+    if (document.documentElement?.dataset) {
+        document.documentElement.dataset.playpointReady = 'true';
+    }
 }
 
 // 初期ロード完了時の発火
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
     init();
-});
+} else {
+    document.addEventListener('DOMContentLoaded', () => {
+        init();
+    }, { once: true });
+}
 
 if (typeof window !== 'undefined' && window.__TEST_ENV__) {
     window.PP_APP = window.PP_APP || {};
