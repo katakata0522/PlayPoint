@@ -500,7 +500,7 @@ color: var(--text-color);
 }
 select,
 input[type="number"] {
-background: var(--input-bg-color);
+background-color: var(--input-bg-color);
 border: 1px solid var(--input-border-color);
 color: var(--text-color);
 font-size: 1em;
@@ -514,13 +514,21 @@ transition: background-color 0.3s, border-color 0.3s, color 0.3s;
 select {
 display: inline-block;
 vertical-align: top;
+appearance: none;
+-webkit-appearance: none;
+background-image: url("images/chevron-down.svg");
+background-repeat: no-repeat;
+background-position: right 0.85em center;
+background-size: 14px 14px;
+padding-right: 2.5em;
+line-height: 1.4;
 }
 input[type="number"] {
 display: block;
 }
 input:focus, select:focus {
 border-color: var(--input-focus-border-color);
-background: var(--section-bg-color);
+background-color: var(--section-bg-color);
 outline: 2px solid var(--input-focus-border-color);
 outline-offset: 2px;
 }
