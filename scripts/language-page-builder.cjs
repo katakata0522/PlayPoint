@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { replaceDateMetadata } = require('./html-replacements.cjs');
 const { SIMPLIFIED_CALCULATOR_COPY: CALCULATOR_UI_COPY } = require('../js/main-calculator-ui.js');
+const { populateStaticStatusSelects } = require('./static-calculator-layout.cjs');
 
 const SIMPLIFIED_CALCULATOR_COPY = Object.freeze({
   en: {
@@ -112,6 +113,9 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   const ALT_OG = { en: `${config.appName} OGP Image`, ko: `${config.appName} OGP 이미지`, tw: `${config.appName} OGP 圖片` };
   if (LOCALE_OG[langDir]) {
     output = output.replace(/(<meta property="og:locale" content=")[^"]+(">)/, `<meta property="og:locale" content="${LOCALE_OG[langDir]}">`);
+    output = output.replace(/(<meta property="og:image" content=")[^"]+(">)/, `<meta property="og:image" content="https://playpoint-sim.com/images/ogp/pages/${langDir}-home.jpg">`);
+    output = output.replace(/(<meta name="twitter:image" content=")[^"]+(">)/, `<meta name="twitter:image" content="https://playpoint-sim.com/images/ogp/pages/${langDir}-home.jpg">`);
+    output = output.replace(/(<meta property="og:image:type" content=")[^"]+(">)/, `<meta property="og:image:type" content="image/jpeg">`);
     output = output.replace(/(<meta property="og:image:alt" content=")[^"]+(">)/, `<meta property="og:image:alt" content="${ALT_OG[langDir]}">`);
     output = output.replace(/(<meta name="twitter:image:alt" content=")[^"]+(">)/, `<meta name="twitter:image:alt" content="${ALT_OG[langDir]}">`);
     output = output.replaceAll('https://playpoint-sim.com/blog/?q={search_term_string}', `https://playpoint-sim.com/${langDir}/articles/?q={search_term_string}`);
@@ -168,6 +172,10 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   output = output.replace(/"alternateName":\s*(?:"Playポイント計算機"|\[[^\]]*\])/g, `"alternateName": "${config.alternateName || config.appName}"`);
   // gフラグ付きで全descriptionを置換（SoftwareApplicationのdescriptionが対象）
   output = output.replace(/"description": "[^"]+"/g, `"description": "${config.appDesc}"`);
+  output = output.replaceAll('https://playpoint-sim.com/author/katakata.html', `https://playpoint-sim.com/${langDir}/author/katakata.html`);
+  output = output.replace(/"href_matches": "\/articles\/\*"/g, `"href_matches": "/${langDir}/articles/*"`);
+  output = output.replace(/"href_matches": "\/blog\/\*"/g, `"href_matches": "/${langDir}/games/*"`);
+  output = output.replace(/"href_matches": "\/status\/\*"/g, `"href_matches": "/${langDir}/status/*"`);
   output = output.replace(/"priceCurrency": "JPY"/, `"priceCurrency": "${config.currency}"`);
   output = output.replace(/"url": "https:\/\/playpoint-sim\.com\/"/g, `"url": "https://playpoint-sim.com/${langDir}/"`);
   // JSON-LD の inLanguage を各言語版の BCP47 コードに置換
@@ -195,6 +203,11 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   // 11. ファーストビューの静的文言をHTML生成時点で翻訳
   output = replaceStaticLanguageText(output, config.staticText);
   output = replaceSimplifiedCalculatorCopy(output, SIMPLIFIED_CALCULATOR_COPY[langDir]);
+  const STATUS_UP_BY_LOCALE = { en: 'Level Up', ko: '승급', tw: '升級' };
+  output = populateStaticStatusSelects(output, config.region, {
+    statusUp: STATUS_UP_BY_LOCALE[langDir] || 'Level Up',
+    lang: config.inLanguage
+  });
 
   // 12. フッター meta-line の置換
   output = output.replace(/<!-- META_LINE_START -->[\s\S]*?<!-- META_LINE_END -->/, config.metaLine);

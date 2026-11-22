@@ -17,20 +17,20 @@
   <meta property="og:description" content="Pick the calculator mode for your Google Play account country. Japan, U.S., Korea, Taiwan, Hong Kong, and India have dedicated modes.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://playpoint-sim.com/attention.html">
-  <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+  <meta property="og:image" content="https://playpoint-sim.com/images/ogp/pages/attention.jpg">
     <meta name="twitter:image:alt" content="Country &amp; Region Guide | Google Play Points Calculator">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Country &amp; Region Guide | Google Play Points Calculator">
-    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="Play Points Calculator">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Country &amp; Region Guide | Google Play Points Calculator">
   <meta name="twitter:description" content="Choose the correct regional calculator for your Google Play account.">
-  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
+  <meta name="twitter:image" content="https://playpoint-sim.com/images/ogp/pages/attention.jpg">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=fbfb97e91d">
+  <link rel="stylesheet" href="style.css?v=62518d467b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -84,7 +84,18 @@
     .lang-notices p:last-child { margin-bottom: 0; }
     .region-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; margin: 1.2rem 0; }
     .region-card { border: 1px solid rgba(31, 41, 55, 0.14); border-radius: 12px; padding: 1rem; background: var(--section-bg, #fff); }
-    .region-card h2 { margin: 0 0 .45rem; font-size: 1.15rem; }
+    .region-card h3 { margin: 0 0 .45rem; font-size: 1.15rem; display: flex; align-items: center; gap: .45rem; }
+    .region-flag { display: inline-block; width: 20px; height: 15px; vertical-align: -2px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(31, 41, 55, 0.18); flex: 0 0 auto; }
+    .comparison-table th .region-flag,
+    .lang-notices .region-flag { margin-right: .35rem; }
+    .lang-nav a { display: inline-flex; align-items: center; gap: .38rem; }
+    .lang-nav a::before { content: ""; width: 18px; height: 13px; flex: 0 0 18px; border-radius: 2px; background: center / cover no-repeat; box-shadow: 0 0 0 1px rgba(31, 41, 55, 0.18); }
+    .lang-nav a[href="./"]::before { background-image: url("images/flags/jp.svg"); }
+    .lang-nav a[href="./en/"]::before { background-image: url("images/flags/us.svg"); }
+    .lang-nav a[href="./ko/"]::before { background-image: url("images/flags/kr.svg"); }
+    .lang-nav a[href="./tw/"]::before { background-image: url("images/flags/tw.svg"); }
+    .lang-nav a[href="./hk/"]::before { background-image: url("images/flags/hk.svg"); }
+    .lang-nav a[href="./in/"]::before { background-image: url("images/flags/in.svg"); }
     .region-card p { margin: .35rem 0; line-height: 1.6; }
     .region-card ul { margin: .55rem 0 .75rem; padding-left: 1.25rem; line-height: 1.65; }
     .region-card .open-region { display: inline-block; margin-top: .35rem; font-weight: 700; }
@@ -93,6 +104,37 @@
     .warm-closing { margin-top: 1.8rem; padding-top: 1.25rem; border-top: 1px solid rgba(31, 41, 55, 0.12); text-align: center; line-height: 1.75; }
     .warm-closing .closing-note { font-size: .88rem; opacity: .9; }
     .warm-closing .closing-signoff { margin-top: .9rem; margin-bottom: 0; font-size: 1.02rem; }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #0f172a;
+        --text-color: #e2e8f0;
+        --link-color: #cbd5e1;
+        --section-bg-color: #1e293b;
+        --section-bg: #1e293b;
+        --input-border-color: #475569;
+      }
+      body { background: #0f172a; color: #e2e8f0; }
+      a { color: #7dd3fc; }
+      .site-shell-brand a { color: #f8fafc !important; }
+      .top-bar a { background: rgba(125, 211, 252, 0.12); border-color: rgba(125, 211, 252, 0.28); color: #bae6fd; }
+      .top-bar a:hover { background: #0284c7; color: #ffffff; border-color: #38bdf8; }
+      .attention-article { background: #1e293b; border-top-color: #38bdf8; }
+      .attention-title, .attention-subtitle { color: #7dd3fc; }
+      .region-warning { background: rgba(245, 158, 11, 0.16); color: #fde68a; }
+      .comparison-table { color: #e2e8f0; background: #0f172a; }
+      .comparison-table th, .comparison-table td { border-color: #334155; }
+      .comparison-table .col-rule { background: #1e293b; color: #f1f5f9; }
+      .comparison-table .col-us { background: #3b1d1a; color: #fed7aa; }
+      .comparison-table .col-jp { background: #132a3e; color: #bae6fd; }
+      .comparison-table .col-kr { background: #122d21; color: #bbf7d0; }
+      .comparison-table .col-tw { background: #2c1b3d; color: #e9d5ff; }
+      .comparison-table .col-hk { background: #362712; color: #fde68a; }
+      .comparison-table .col-in { background: #3b182c; color: #fbcfe8; }
+      .lang-notices { background: #122b22; border-left-color: #34d399; color: #d1fae5; }
+      .region-card { background: #0f172a; border-color: #334155; }
+      .warm-closing { border-top-color: #334155; }
+      .site-footer-trademark, .copyright { color: #94a3b8; }
+    }
   </style>
 </head>
 <body>
@@ -103,12 +145,12 @@
           <a href="./" style="font-weight:800;color:var(--text-color,#1f2937);text-decoration:none;">← PlayPoint Calculator</a>
         </div>
         <div class="lang-nav" role="navigation" aria-label="Calculator country or region" style="font-size:.9em;display:flex;flex-wrap:wrap;gap:8px 10px;">
-          <a href="./">🇯🇵 Japan</a>
-          <a href="./en/">🇺🇸 U.S.</a>
-          <a href="./ko/">🇰🇷 Korea</a>
-          <a href="./tw/">🇹🇼 Taiwan</a>
-          <a href="./hk/">🇭🇰 Hong Kong</a>
-          <a href="./in/">🇮🇳 India</a>
+          <a href="./">Japan</a>
+          <a href="./en/">U.S.</a>
+          <a href="./ko/">Korea</a>
+          <a href="./tw/">Taiwan</a>
+          <a href="./hk/">Hong Kong</a>
+          <a href="./in/">India</a>
         </div>
       </div>
     </div>
@@ -137,12 +179,12 @@
             <thead>
               <tr>
                 <th scope="col" class="col-rule">Rule / Level</th>
-                <th scope="col" class="col-us">🇺🇸 U.S.</th>
-                <th scope="col" class="col-jp">🇯🇵 Japan</th>
-                <th scope="col" class="col-kr">🇰🇷 Korea</th>
-                <th scope="col" class="col-tw">🇹🇼 Taiwan</th>
-                <th scope="col" class="col-hk">🇭🇰 Hong Kong</th>
-                <th scope="col" class="col-in">🇮🇳 India</th>
+                <th scope="col" class="col-us"><img class="region-flag" src="images/flags/us.svg" alt="" width="20" height="15">U.S.</th>
+                <th scope="col" class="col-jp"><img class="region-flag" src="images/flags/jp.svg" alt="" width="20" height="15">Japan</th>
+                <th scope="col" class="col-kr"><img class="region-flag" src="images/flags/kr.svg" alt="" width="20" height="15">Korea</th>
+                <th scope="col" class="col-tw"><img class="region-flag" src="images/flags/tw.svg" alt="" width="20" height="15">Taiwan</th>
+                <th scope="col" class="col-hk"><img class="region-flag" src="images/flags/hk.svg" alt="" width="20" height="15">Hong Kong</th>
+                <th scope="col" class="col-in"><img class="region-flag" src="images/flags/in.svg" alt="" width="20" height="15">India</th>
               </tr>
             </thead>
             <tbody>
@@ -215,20 +257,20 @@
       </p>
 
       <div class="lang-notices">
-        <p><strong>🇰🇷 한국 플레이어 여러분께:</strong><br>
+        <p><strong><img class="region-flag" src="images/flags/kr.svg" alt="" width="20" height="15">한국 플레이어 여러분께:</strong><br>
         계산기를 찾아주셔서 진심으로 감사합니다! 😊 한국 계정은 ₩1,000당 1포인트 적립 규칙과 고유 등급 조건이 적용되므로, 아래의 <strong>Korea</strong> 계산기를 선택하시면 정확한 필요 금액을 시뮬레이션하실 수 있습니다.</p>
 
-        <p><strong>🇹🇼 給台灣的玩家朋友們:</strong><br>
+        <p><strong><img class="region-flag" src="images/flags/tw.svg" alt="" width="20" height="15">給台灣的玩家朋友們:</strong><br>
         非常感謝您的使用！✨ 台灣 Google Play 帳戶採用每 NT$30 累積 1 點的專屬規則，請使用下方的 <strong>Taiwan</strong> 計算器，即可獲得精準的升級金額試算喔！</p>
 
-        <p><strong>🇭🇰 給香港的玩家朋友們:</strong><br>
+        <p><strong><img class="region-flag" src="images/flags/hk.svg" alt="" width="20" height="15">給香港的玩家朋友們:</strong><br>
         香港帳戶現已提供專屬的 <strong>Hong Kong（每 HK$7 累積 1 點）</strong>計算器！請勿直接套用台灣或日本版，點選下方的香港計算器就能準確試算。</p>
       </div>
 
       <h2>Which calculator should I open?</h2>
       <div class="region-grid">
         <section class="region-card">
-          <h2>🇯🇵 Japan</h2>
+          <h3><img class="region-flag" src="images/flags/jp.svg" alt="" width="20" height="15">Japan</h3>
           <p><strong>Currency / base unit:</strong> JPY / ¥100</p>
           <ul>
             <li>Silver: 250 pt / 1.25 pt per ¥100</li>
@@ -240,7 +282,7 @@
         </section>
 
         <section class="region-card">
-          <h2>🇺🇸 United States</h2>
+          <h3><img class="region-flag" src="images/flags/us.svg" alt="" width="20" height="15">United States</h3>
           <p><strong>Currency / base unit:</strong> USD / $1</p>
           <ul>
             <li>Silver: 150 pt / 1.1 pt per $1</li>
@@ -252,7 +294,7 @@
         </section>
 
         <section class="region-card">
-          <h2>🇰🇷 South Korea</h2>
+          <h3><img class="region-flag" src="images/flags/kr.svg" alt="" width="20" height="15">South Korea</h3>
           <p><strong>Currency / base unit:</strong> KRW / ₩1,000</p>
           <ul>
             <li>Silver: 150 pt / 1.1 pt per ₩1,000</li>
@@ -264,7 +306,7 @@
         </section>
 
         <section class="region-card">
-          <h2>🇹🇼 Taiwan</h2>
+          <h3><img class="region-flag" src="images/flags/tw.svg" alt="" width="20" height="15">Taiwan</h3>
           <p><strong>Currency / base unit:</strong> TWD / NT$30</p>
           <ul>
             <li>Silver: 250 pt / 1.25 pt per NT$30</li>
@@ -276,7 +318,7 @@
         </section>
 
         <section class="region-card">
-          <h2>🇭🇰 Hong Kong</h2>
+          <h3><img class="region-flag" src="images/flags/hk.svg" alt="" width="20" height="15">Hong Kong</h3>
           <p><strong>Currency / base unit:</strong> HKD / HK$7</p>
           <ul>
             <li>Silver: 250 pt / 1.25 pt per HK$7</li>
@@ -289,7 +331,7 @@
         </section>
 
         <section class="region-card">
-          <h2>🇮🇳 India</h2>
+          <h3><img class="region-flag" src="images/flags/in.svg" alt="" width="20" height="15">India</h3>
           <p><strong>Currency / base unit:</strong> INR / ₹5</p>
           <ul>
             <li>Silver: 250 pt / 1.1 pt per ₹5</li>

@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { mapOutsideForeignTerminology } = require('./tw-terminology-contract.cjs');
+const { populateStaticStatusSelects } = require('./static-calculator-layout.cjs');
 
 const SITE_ORIGIN = 'https://playpoint-sim.com';
 const REGION_CONTENT_DATE = '2026-10-08';
@@ -90,12 +91,18 @@ function buildHongKongPage(source) {
   html = replaceMetaContent(html, 'property="og:title"', config.title);
   html = replaceMetaContent(html, 'property="og:description"', config.description);
   html = replaceMetaContent(html, 'property="og:locale"', 'zh_HK');
+  html = replaceMetaContent(html, 'property="og:image"', `${SITE_ORIGIN}/images/ogp/pages/hk-home.jpg`);
+  html = replaceMetaContent(html, 'name="twitter:image"', `${SITE_ORIGIN}/images/ogp/pages/hk-home.jpg`);
+  html = replaceMetaContent(html, 'property="og:image:type"', 'image/jpeg');
   html = replaceMetaContent(html, 'property="og:image:alt"', 'Google Play Points 計算器（香港） OGP 圖片');
   html = replaceMetaContent(html, 'name="twitter:image:alt"', 'Google Play Points 計算器（香港） OGP 圖片');
   html = replaceMetaContent(html, 'name="twitter:title"', config.title);
   html = replaceMetaContent(html, 'name="twitter:description"', config.description);
   html = html.replace(/("@type": "SoftwareApplication",[\s\S]*?"description": ")[^"]*(")/, `$1${config.description}$2`);
   html = html.replaceAll(`${SITE_ORIGIN}/tw/`, `${SITE_ORIGIN}/hk/`);
+  html = html.replaceAll(`${SITE_ORIGIN}/hk/author/katakata.html`, `${SITE_ORIGIN}/tw/author/katakata.html`);
+  html = html.replaceAll(`${SITE_ORIGIN}/hk/articles/`, `${SITE_ORIGIN}/tw/articles/`);
+  html = html.replace(/"href_matches": "\/tw\/status\/\*"/g, '"href_matches": "/hk/google-play-points-guide.html"');
   html = html.replace(/"priceCurrency": "TWD"/g, '"priceCurrency": "HKD"');
   html = html.replace(/"inLanguage": "zh-TW"/g, '"inLanguage": "zh-HK"');
   html = deactivatePrimaryRegion(html, 'TW');
@@ -108,12 +115,17 @@ function buildHongKongPage(source) {
   html = html.replace(/(<footer class="page-footer">)/, (_match, footer) => `${config.factNote}\n\n${footer}`);
   html = html.replace('每 NT$30 獲得點數（自動帶入，可修改）', '每 HK$7 獲得點數（自動帶入，可修改）');
   html = html.replace('每 NT$30 回饋率（直接輸入）', '每 HK$7 獲得點數（自動帶入，可修改）');
+  html = html.replace(
+    /計算器會比較 Google Play 顯示的活動特別獲點率與基本獲點率，採用較高者；不會把目前等級的基本獲點率再乘上活動數字。適用商品、上限與啟用條件請以 Google Play 為準。/g,
+    '本頁使用香港的等級與基本獲點率。若 Google Play 顯示活動特別獲點率，系統會與基本獲點率比較並採用較高者；資格、上限及啟用條件請以 Google Play 為準。'
+  );
   html = html.replace('placeholder="例如：1500" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"', 'placeholder="例如：350" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"');
   html = html.replace(/活動特別獲點率（例：每 NT\$30 3 點）/g, '活動特別獲點率（例：每 HK$7 3 點）');
   html = html.replace(/消費金額 \(NT\$\)/g, '消費金額（HK$）');
   html = mapOutsideForeignTerminology(html, chunk => chunk
     .replace(/黃金級/g, '金級')
     .replace(/白金級/g, '鉑金級'));
+  html = populateStaticStatusSelects(html, 'HK', { statusUp: '升級', lang: 'zh-HK' });
   html = html.replace('<a href="/hk/" hreflang="zh-HK">香港 (HK)</a>', '<a href="/tw/" hreflang="zh-TW">台灣 (TW)</a>');
   html = replaceContentDate(html, config.contentDate);
   return ensureTopHreflang(html);
@@ -128,12 +140,18 @@ function buildIndiaPage(source) {
   html = replaceMetaContent(html, 'property="og:title"', config.title);
   html = replaceMetaContent(html, 'property="og:description"', config.description);
   html = replaceMetaContent(html, 'property="og:locale"', 'en_IN');
+  html = replaceMetaContent(html, 'property="og:image"', `${SITE_ORIGIN}/images/ogp/pages/in-home.jpg`);
+  html = replaceMetaContent(html, 'name="twitter:image"', `${SITE_ORIGIN}/images/ogp/pages/in-home.jpg`);
+  html = replaceMetaContent(html, 'property="og:image:type"', 'image/jpeg');
   html = replaceMetaContent(html, 'property="og:image:alt"', 'Google Play Points Calculator India OGP Image');
   html = replaceMetaContent(html, 'name="twitter:image:alt"', 'Google Play Points Calculator India OGP Image');
   html = replaceMetaContent(html, 'name="twitter:title"', config.title);
   html = replaceMetaContent(html, 'name="twitter:description"', config.description);
   html = html.replace(/("@type": "SoftwareApplication",[\s\S]*?"description": ")[^"]*(")/, `$1${config.description}$2`);
   html = html.replaceAll(`${SITE_ORIGIN}/en/`, `${SITE_ORIGIN}/in/`);
+  html = html.replaceAll(`${SITE_ORIGIN}/in/author/katakata.html`, `${SITE_ORIGIN}/en/author/katakata.html`);
+  html = html.replaceAll(`${SITE_ORIGIN}/in/articles/`, `${SITE_ORIGIN}/en/articles/`);
+  html = html.replace(/"href_matches": "\/en\/status\/\*"/g, '"href_matches": "/in/google-play-points-guide.html"');
   html = html.replace(/"priceCurrency": "USD"/g, '"priceCurrency": "INR"');
   html = html.replace(/"inLanguage": "en"/g, '"inLanguage": "en-IN"');
   html = deactivatePrimaryRegion(html, 'US');
@@ -145,11 +163,16 @@ function buildIndiaPage(source) {
   html = html.replace(/(<footer class="page-footer">)/, (_match, footer) => `${config.factNote}\n\n${footer}`);
   html = html.replace('Points per $1 (auto-filled, editable)', 'Points per ₹5 (auto-filled, editable)');
   html = html.replace('Earn rate per $1 (direct entry)', 'Points per ₹5 (auto-filled, editable)');
+  html = html.replace(
+    /The calculator compares your base earn rate with the special earn rate shown in Google Play and uses the higher rate\. It does not multiply your level rate by the promotion number\. Confirm eligibility, caps, and activation in Google Play\./g,
+    'This page uses India-specific Play Points levels and base earn rates. If Google Play shows a special promotion rate, the calculator compares it with your base rate and uses the higher one. Check eligibility, caps, and activation in Google Play.'
+  );
   html = html.replace('placeholder="e.g., 50" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"', 'placeholder="e.g. 500" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"');
   html = html.replace(/Promotion special earn rate \(e\.g\. 3 pt \/ \$1\)/g, 'Promotion special earn rate (e.g. 3 pt / ₹5)');
   html = html.replace(/Amount spent \(USD\)/g, 'Amount spent (INR)');
   html = html.replace(/Estimate the required spending to reach Platinum or Diamond status\./g, 'Estimate the required spending to reach Platinum status in India.');
   html = html.replace(/such as "just a little more to Platinum," "want to know if I can reach Diamond," or /g, 'such as "just a little more to Platinum" or ');
+  html = populateStaticStatusSelects(html, 'IN', { statusUp: 'Level Up', lang: 'en-IN' });
   html = html.replace('<a href="/in/" hreflang="en-IN">India (IN)</a>', '<a href="/en/" hreflang="en">United States (EN)</a>');
   html = replaceContentDate(html, config.contentDate);
   return ensureTopHreflang(html);

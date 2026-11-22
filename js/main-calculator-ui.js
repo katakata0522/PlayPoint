@@ -3,22 +3,22 @@
 export const SIMPLIFIED_CALCULATOR_COPY = Object.freeze({
     JP: {
         neededPointsHint: 'Google Playの「あと○ポイント」を入力。交換用の残高とは別です。達成済みは0を入力できます。',
-        baseRateLabel: '通常獲得率（自動入力・編集可）',
+        baseRateLabel: '100円あたりの獲得率（自動入力・編集可）',
         multiplierLabel: 'キャンペーン特別獲得率（例：3pt/100円）'
     },
     US: {
         neededPointsHint: 'Enter the points to your next level shown in Google Play, not your redeemable points balance. Enter 0 if already reached.',
-        baseRateLabel: 'Base earn rate per $1 (auto-filled, editable)',
+        baseRateLabel: 'Points per $1 (auto-filled, editable)',
         multiplierLabel: 'Promotion special earn rate (e.g. 3 pt / $1)'
     },
     KR: {
         neededPointsHint: 'Google Play에 표시된 다음 등급까지 남은 포인트를 입력하세요. 교환 가능한 잔액과는 다릅니다. 이미 달성했다면 0을 입력할 수 있습니다.',
-        baseRateLabel: '기본 적립률 (자동 입력·수정 가능)',
+        baseRateLabel: '₩1,000당 적립률 (자동 입력·수정 가능)',
         multiplierLabel: '캠페인 특별 적립률 (예: 1,000원당 3pt)'
     },
     TW: {
         neededPointsHint: '輸入 Google Play 顯示的距離目標等級尚需點數，不是可兌換的點數餘額。已達標時可輸入 0。',
-        baseRateLabel: '基本獲點率（自動帶入，可修改）',
+        baseRateLabel: '每 NT$30 獲得點數（自動帶入，可修改）',
         multiplierLabel: '活動特別獲點率（例：每 NT$30 3 點）'
     },
     HK: {

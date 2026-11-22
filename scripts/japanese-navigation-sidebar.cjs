@@ -156,11 +156,18 @@ function renderHeader(isBlog = false) {
 
 function navigationAssets(html) {
   const existing = html.match(/<!-- guide-navigation-assets:start -->[\s\S]*?<!-- guide-navigation-assets:end -->/)?.[0];
-  if (existing?.includes('/articles/guide-editorial.css')) return html;
+  if (existing?.includes('/articles/guide-editorial.css')) {
+    if (/\bguide-navigation\.js(?:\?[^"]*)?"[^>]*\bdefer\b/.test(existing)) return html;
+    const updated = existing.replace(
+      /(<script\b[^>]*\bsrc="\/js\/guide-navigation\.js(?:\?[^"]*)?"[^>]*)(>)/i,
+      '$1 defer$2'
+    );
+    if (updated !== existing) return html.replace(existing, () => updated);
+  }
   // 生成済みの専用ブロックを置換する。旧配置は独立した行ごと移行する。
   html = html.replace(/<!-- guide-navigation-assets:start -->[\s\S]*?<!-- guide-navigation-assets:end -->\n?/g, '');
   html = html.split('\n').filter(line => !/^\s*<(?:link|script)\s[^<>]*(?:href="\/articles\/(?:guide-navigation|guide-editorial)\.css|src="\/js\/guide-navigation\.js)/.test(line)).join('\n');
-  return html.replace('</head>', '<!-- guide-navigation-assets:start -->\n<link rel="stylesheet" href="/articles/guide-navigation.css">\n<script src="/js/guide-navigation.js"></script>\n<link rel="stylesheet" href="/articles/guide-editorial.css">\n<!-- guide-navigation-assets:end -->\n</head>');
+  return html.replace('</head>', '<!-- guide-navigation-assets:start -->\n<link rel="stylesheet" href="/articles/guide-navigation.css">\n<script src="/js/guide-navigation.js" defer></script>\n<link rel="stylesheet" href="/articles/guide-editorial.css">\n<!-- guide-navigation-assets:end -->\n</head>');
 }
 
 function renderGamesWidget(catalog) {

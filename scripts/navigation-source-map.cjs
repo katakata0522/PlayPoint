@@ -14,8 +14,8 @@ const EXPLICIT_TARGET_MARKERS = Object.freeze({
   ja: /(?:\bJapanese\b|\bJapan\b|日本語|日本|일본어|日文)/i,
   en: /(?:\bEnglish\b|\bU\.?S\.?\b|United States|영문|英文|英語)/i,
   ko: /(?:\bKorean\b|\bKorea\b|한국어|대한민국|韓國|韩国|韓国)/i,
-  tw: /(?:Traditional Chinese|\bTaiwan\b|繁體中文|繁体中文|台灣|台湾)/i,
-  hk: /(?:Hong Kong|香港)/i,
+  tw: /(?:Traditional Chinese|\bTaiwan\b|繁體中文|繁体中文|台灣|台湾|대만|번체)/i,
+  hk: /(?:Hong Kong|香港|홍콩)/i,
   in: /(?:\bIndia\b|인도|印度)/i
 });
 
@@ -178,7 +178,7 @@ function extractAnchors(html, publicPath) {
       target,
       label,
       hasHreflang: /\bhreflang\s*=/.test(attrs),
-      explicitLocaleFallback: hasExplicitTargetMarker(label, localeOf(target)),
+      explicitLocaleFallback: hasExplicitTargetMarker(label, localeOf(target)) || (target === '/attention.html' && hasExplicitTargetMarker(label, 'en')),
       surface: surfaceOf(html.slice(start, end))
     });
   }

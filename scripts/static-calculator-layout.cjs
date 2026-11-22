@@ -1,6 +1,7 @@
 'use strict';
 
 const { SIMPLIFIED_CALCULATOR_COPY } = require('../js/main-calculator-ui.js');
+const { getRegionRule } = require('../js/region-rules.js');
 
 const STATIC_LABELS = Object.freeze({
   baseRate: '100円あたりの獲得率（自動入力・編集可）',
@@ -91,12 +92,39 @@ function decorateStaticLabels(content) {
   return content
     .replace(
       /<span\b[^>]*(?:\bdata-lang-key=["']labelBaseRate["']|\bdata-simplified-calculator-copy=["']baseRateLabel["'])[^>]*>[\s\S]*?<\/span>/i,
-      `<span data-simplified-calculator-copy="baseRateLabel">${STATIC_LABELS.baseRate}</span>`
+      `<span id="baseRate-caption" data-simplified-calculator-copy="baseRateLabel">${STATIC_LABELS.baseRate}</span>`
     )
     .replace(
       /<span\b[^>]*(?:\bdata-lang-key=["']labelMultiplier["']|\bdata-simplified-calculator-copy=["']multiplierLabel["'])[^>]*>[\s\S]*?<\/span>/i,
-      `<span data-simplified-calculator-copy="multiplierLabel">${STATIC_LABELS.multiplier}</span>`
+      `<span id="multiplier-caption" data-simplified-calculator-copy="multiplierLabel">${STATIC_LABELS.multiplier}</span>`
     );
+}
+
+function escapeOptionText(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function populateStaticStatusSelects(content, region = 'JP', { statusUp = '昇格', lang = 'ja' } = {}) {
+  const rule = getRegionRule(region);
+  const statusOptions = rule.tiers
+    .map((tier, index) => `<option value="${tier.rate}"${index === 0 ? ' selected' : ''}>${escapeOptionText(tier.label)}</option>`)
+    .join('');
+  const targetOptions = rule.tiers
+    .slice(1)
+    .map((tier, index) => {
+      const label = `${tier.label} (${statusUp}) (${tier.threshold.toLocaleString(lang)}pt)`;
+      return `<option value="${tier.threshold}" data-status-label="${escapeOptionText(tier.label)}" data-rank-key="${escapeOptionText(tier.id)}" data-target-kind="upgrade"${index === 0 ? ' selected' : ''}>${escapeOptionText(label)}</option>`;
+    })
+    .join('');
+
+  return content
+    .replace(/(<select\b[^>]*\bid="currentStatus"[^>]*>)[\s\S]*?(<\/select>)/i, `$1${statusOptions}$2`)
+    .replace(/(<select\b[^>]*\bid="reverseStatus"[^>]*>)[\s\S]*?(<\/select>)/i, `$1${statusOptions}$2`)
+    .replace(/(<select\b[^>]*\bid="targetStatus"[^>]*>)[\s\S]*?(<\/select>)/i, `$1${targetOptions}$2`);
 }
 
 function markStaticLayout(content) {
@@ -317,6 +345,7 @@ function ensureStaticCalculatorLayout(indexHtml) {
   }
   if (content.includes('</head>') && !content.includes('data-region-selector-style')) content = content.replace('</head>', '<link rel="stylesheet" href="/region-selector.css" data-region-selector-style="true">\n</head>');
   content = decorateStaticLabels(content);
+  content = populateStaticStatusSelects(content, 'JP', { statusUp: '昇格', lang: 'ja' });
   content = ensureStaticNeededPointsHint(content);
   content = ensureStaticAdvancedSettings(content);
   content = ensurePrimaryActionSourceOrder(content);
@@ -335,5 +364,6 @@ module.exports = {
   ensureStaticAdvancedSettings,
   ensureStaticCalculatorLayout,
   findBalancedElementRange,
+  populateStaticStatusSelects,
   validateStaticLayout
 };

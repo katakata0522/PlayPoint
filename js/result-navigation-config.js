@@ -104,7 +104,7 @@ const TW = {
 
 const HK_GUIDE = { href: 'google-play-points-guide.html', title: '香港版 Play Points 等級與 HK$7 攻略', note: '查看銅級至鑽石級門檻、四捨五入與有效期' };
 const HK_OFFICIAL = { href: OFFICIAL_HK, title: 'Google Play 香港官方等級與獲點率', note: '確認最新香港條件' };
-const HK_NOTES = { href: '../attention.html', title: '查看國家／地區注意事項', note: '購買前確認適用條件' };
+const HK_NOTES = { href: '../tw/articles/google-play-points-country-differences.html', title: '查看國家／地區規則比較', note: '購買前確認適用條件' };
 const HK = {
     statusPageRanks: Object.freeze([]),
     maintenancePageRanks: Object.freeze([]),
@@ -125,7 +125,7 @@ const HK = {
 
 const IN_GUIDE = { href: 'google-play-points-guide.html', title: 'India Play Points Levels & ₹5 Earn Guide', note: 'Bronze to Platinum tiers, rounding and perks' };
 const IN_OFFICIAL = { href: OFFICIAL_IN, title: 'Official Google Play India levels and earn rates', note: 'Check the latest India conditions' };
-const IN_NOTES = { href: '../attention.html', title: 'Check country and promotion notes', note: 'Confirm eligibility before buying' };
+const IN_NOTES = { href: '../en/articles/google-play-points-country-differences.html', title: 'Check country rules comparison', note: 'Confirm eligibility before buying' };
 const IN = {
     statusPageRanks: Object.freeze([]),
     maintenancePageRanks: Object.freeze([]),

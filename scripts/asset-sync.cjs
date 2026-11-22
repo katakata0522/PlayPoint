@@ -8,6 +8,7 @@ const { replaceAssetVersion } = require('./html-replacements.cjs');
 const ROOT_SERVICE_WORKER_ASSETS = [
   { versionKey: 'adPrivacyVersion', assetPath: './js/ad-url-privacy.js' },
   { versionKey: 'cssVersion', assetPath: './style.css' },
+  { versionKey: 'regionSelectorCssVersion', assetPath: './region-selector.css' },
   { versionKey: 'analyticsCoreVersion', assetPath: './js/analytics-core.js' },
   { versionKey: 'mainCalculatorUiVersion', assetPath: './js/main-calculator-ui.js' },
   { versionKey: 'mainVersion', assetPath: './js/main.js' },
@@ -126,11 +127,13 @@ function syncServiceWorkerRegistration(rootDir) {
 function collectAssetVersions(rootDir) {
   const adPrivacyVersion = createFileRevision(rootDir, 'js/ad-url-privacy.js');
   const cssVersion = createFileRevision(rootDir, 'style.css');
+  const regionSelectorCssVersion = createFileRevision(rootDir, 'region-selector.css');
   const analyticsCoreVersion = createFileRevision(rootDir, 'js/analytics-core.js');
   const consentVersion = createFileRevision(rootDir, 'js/consent.js');
   const mainCalculatorUiVersion = createFileRevision(rootDir, 'js/main-calculator-ui.js');
   const mainVersion = createFileRevision(rootDir, 'js/main.js');
   const thirdPartyVersion = createFileRevision(rootDir, 'js/third-party.js');
+  const homeExperienceVersion = createFileRevision(rootDir, 'js/home-experience.js');
   const intentTrackingVersion = createFileRevision(rootDir, 'js/intent-tracking.js');
   const weeklyRewardUiVersion = createFileRevision(rootDir, 'js/weekly-reward-ui.js');
   const weeklyRewardUiCssVersion = createFileRevision(rootDir, 'weekly-reward-ui.css');
@@ -152,9 +155,11 @@ function collectAssetVersions(rootDir) {
     blogScriptVersion,
     consentVersion,
     cssVersion,
+    homeExperienceVersion,
     intentTrackingVersion,
     mainCalculatorUiVersion,
     mainVersion,
+    regionSelectorCssVersion,
     thirdPartyVersion,
     weeklyRewardUiCssVersion,
     weeklyRewardUiVersion,
@@ -223,6 +228,9 @@ function syncSharedRuntimeAssetVersions(rootDir, versions) {
     ] },
     { file: 'js/points-cost.js', replacements: [
       ['analytics-core.js', versions.analyticsCoreVersion]
+    ] },
+    { file: 'js/ui.js', replacements: [
+      ['/js/home-experience.js', versions.homeExperienceVersion]
     ] },
     { file: 'blog/components.js', replacements: [
       ['js/consent.js', versions.consentVersion],

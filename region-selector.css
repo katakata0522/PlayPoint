@@ -1,6 +1,36 @@
 .region-switch {
 position: relative;
 }
+.region-label-desktop {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 0.42rem;
+}
+.region-label-desktop::before,
+.region-more-option__flag::before {
+content: "";
+width: 24px;
+height: 18px;
+flex: 0 0 24px;
+border-radius: 2px;
+background: center / cover no-repeat;
+box-shadow: 0 0 0 1px rgba(31, 41, 55, 0.18);
+}
+button[data-region="JP"] .region-label-desktop::before { background-image: url("images/flags/jp.svg"); }
+button[data-region="US"] .region-label-desktop::before { background-image: url("images/flags/us.svg"); }
+button[data-region="KR"] .region-label-desktop::before { background-image: url("images/flags/kr.svg"); }
+button[data-region="TW"] .region-label-desktop::before { background-image: url("images/flags/tw.svg"); }
+.region-more-toggle[data-active-region="HK"] .region-label-desktop::before,
+.region-more-option[data-region="HK"] .region-more-option__flag::before { background-image: url("images/flags/hk.svg"); }
+.region-more-toggle[data-active-region="IN"] .region-label-desktop::before,
+.region-more-option[data-region="IN"] .region-more-option__flag::before { background-image: url("images/flags/in.svg"); }
+.region-more-option__flag {
+display: inline-flex;
+align-items: center;
+font-size: 0;
+line-height: 1;
+}
 .region-label-mobile {
 display: none;
 }
@@ -54,10 +84,6 @@ padding: 8px 10px;
 text-align: left;
 border-radius: 10px;
 }
-.region-more-option__flag {
-font-size: 1.3rem;
-line-height: 1;
-}
 .region-more-option__copy {
 display: grid;
 gap: 1px;
@@ -98,29 +124,7 @@ min-width: 76px;
 border: 1px solid var(--input-border-color) !important;
 border-radius: 8px !important;
 }
-.region-label-desktop {
-display: inline-flex;
-align-items: center;
-gap: 0.42rem;
-}
-.region-label-desktop::before,
-.region-more-option__flag::before {
-content: "";
-width: 24px;
-height: 18px;
-flex: 0 0 24px;
-border-radius: 2px;
-background: center / cover no-repeat;
-box-shadow: 0 0 0 1px rgba(31, 41, 55, 0.18);
-}
-button[data-region="JP"] .region-label-desktop::before { background-image: url("images/flags/jp.svg"); }
-button[data-region="US"] .region-label-desktop::before { background-image: url("images/flags/us.svg"); }
-button[data-region="KR"] .region-label-desktop::before { background-image: url("images/flags/kr.svg"); }
-button[data-region="TW"] .region-label-desktop::before { background-image: url("images/flags/tw.svg"); }
-.region-more-option[data-region="HK"] .region-more-option__flag::before { background-image: url("images/flags/hk.svg"); }
-.region-more-option[data-region="IN"] .region-more-option__flag::before { background-image: url("images/flags/in.svg"); }
 .region-switch .region-more-toggle { min-width: 52px; }
-.region-more-option__flag { font-size: 0; }
 .region-switch > button[data-region]:hover:not(.active),
 .region-switch .region-more-toggle:hover:not([data-region-active="true"]) {
 background: rgba(0, 95, 204, 0.08) !important;
@@ -167,10 +171,18 @@ white-space: nowrap;
 content: none;
 }
 .region-label-desktop {
-display: none;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 0.24rem;
+}
+.region-label-desktop::before {
+width: 16px;
+height: 12px;
+flex: 0 0 16px;
 }
 .region-label-mobile {
-display: inline;
+display: none;
 }
 .region-switch .region-more {
 display: block;

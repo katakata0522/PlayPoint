@@ -612,7 +612,14 @@ export const DIARY = {
             const row = document.createElement('div');
             row.className = 'week-row';
             this.setSavedWeek(row, weekData);
-            const prizeOptionsHTML = texts.prizeOptions.map(opt => `<option value="${opt}" ${weekData.prize === opt ? 'selected' : ''}>${opt}</option>`).join('');
+            const prizeOptions = Array.isArray(texts.prizeOptions) ? texts.prizeOptions : [];
+            const savedPrize = this.normalizePrizeValue(weekData.prize);
+            const hasSavedCustomPrize = Boolean(savedPrize) && !prizeOptions.includes(savedPrize);
+            const renderOptions = hasSavedCustomPrize ? [...prizeOptions, savedPrize] : prizeOptions;
+            const prizeOptionsHTML = renderOptions.map(opt => {
+                const escaped = this.sanitizeString(opt);
+                return `<option value="${escaped}" ${savedPrize === opt ? 'selected' : ''}>${escaped}</option>`;
+            }).join('');
             row.innerHTML = `
                 <label for="week${weekNum}_points">${texts.weekLabel}${weekNum}${texts.weekSuffix} (${dateString})</label>
                 <div class="weekly-points-field">
@@ -888,7 +895,7 @@ export const DIARY = {
         }
     },
 
-    // HTMLエスケープ処理（XSS脆弱性対策）
+    // HTMLエスケープ処理（描画時のXSS脆弱性対策）
     sanitizeString(str) {
         if (typeof str !== 'string') return '';
         return str
@@ -900,6 +907,15 @@ export const DIARY = {
             .replace(/\//g, '&#x2F;');
     },
 
+    // 保存前の文字列正規化（制御文字・BiDi制御文字の除去と長さ上限）
+    normalizePrizeValue(value) {
+        if (typeof value !== 'string' && typeof value !== 'number') return '';
+        return String(value)
+            .replace(/[\u0000-\u001F\u007F-\u009F\u202A-\u202E\u2066-\u2069]/g, '')
+            .trim()
+            .slice(0, 120);
+    },
+
     // JSONテキストから日記データをインポート（既存記録を保持しながら厳格に検証）
     executeImport() {
         if (!STATE.dom.diaryBackupData) return;
@@ -909,6 +925,10 @@ export const DIARY = {
 
         if (!rawData) {
             UI.showToast(texts.errorEmptyBackup || "復元するデータが空です。", 'error');
+            return;
+        }
+        if (rawData.length > 200000) {
+            UI.showToast(texts.importError, 'error');
             return;
         }
 
@@ -944,8 +964,7 @@ export const DIARY = {
                             throw new Error("Invalid points value");
                         }
 
-                        const rawPrize = String(valueObj.prize ?? '').trim();
-                        const prize = this.sanitizeString(rawPrize);
+                        const prize = this.normalizePrizeValue(valueObj.prize ?? '');
                         const entry = { points, prize };
                         if (!DIARY_PURE.hasMeaningfulEntry(entry, defaultPrize)) continue;
 

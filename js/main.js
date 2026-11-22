@@ -6,7 +6,7 @@ import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
 import { SHARE, restoreRateInput } from './share.js';
 import { CALC } from './calculator.js';
-import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js?v=2a5e293ded';
+import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js?v=ce22cbbb32';
 import { initWebVitalsMonitoring } from './web-vitals.js';
 import {
     applyRegionFromPath,

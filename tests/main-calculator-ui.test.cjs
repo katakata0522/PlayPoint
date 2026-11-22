@@ -134,16 +134,16 @@ test('通常計算の簡略化は冪等で、地域変更時は利用者向け�
   simplifyMainCalculatorLayout('US');
 
   assert.deepEqual(fixture.statusSection.children, firstOrder);
-  assert.equal(fixture.baseRateText.textContent, 'Base earn rate per $1 (auto-filled, editable)');
+  assert.equal(fixture.baseRateText.textContent, 'Points per $1 (auto-filled, editable)');
   assert.equal(fixture.multiplierText.textContent, 'Promotion special earn rate (e.g. 3 pt / $1)');
 });
 
 test('公開6地域へ通常獲得率とキャンペーン特別獲得率の文言を出し分ける', () => {
   const expected = {
-    JP: ['通常獲得率（自動入力・編集可）', 'キャンペーン特別獲得率（例：3pt/100円）'],
-    US: ['Base earn rate per $1 (auto-filled, editable)', 'Promotion special earn rate (e.g. 3 pt / $1)'],
-    KR: ['기본 적립률 (자동 입력·수정 가능)', '캠페인 특별 적립률 (예: 1,000원당 3pt)'],
-    TW: ['基本獲點率（自動帶入，可修改）', '活動特別獲點率（例：每 NT$30 3 點）'],
+    JP: ['100円あたりの獲得率（自動入力・編集可）', 'キャンペーン特別獲得率（例：3pt/100円）'],
+    US: ['Points per $1 (auto-filled, editable)', 'Promotion special earn rate (e.g. 3 pt / $1)'],
+    KR: ['₩1,000당 적립률 (자동 입력·수정 가능)', '캠페인 특별 적립률 (예: 1,000원당 3pt)'],
+    TW: ['每 NT$30 獲得點數（自動帶入，可修改）', '活動特別獲點率（例：每 NT$30 3 點）'],
     HK: ['每 HK$7 獲得點數（自動帶入，可修改）', '活動特別獲點率（例：每 HK$7 3 點）'],
     IN: ['Points per ₹5 (auto-filled, editable)', 'Promotion special earn rate (e.g. 3 pt / ₹5)']
   };

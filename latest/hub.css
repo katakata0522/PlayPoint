@@ -118,7 +118,7 @@ html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button { position:
 html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button[aria-selected="false"]:is(:hover,:active) { background:var(--reading-surface); color:var(--reading-text); border-color:var(--reading-link); }
 html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button[aria-selected="true"] { background:var(--reading-selected); color:var(--reading-on-selected); border-color:var(--reading-selected); }
 html[lang] body.latest-hub .guide-latest-layout .benefit-tabs button[aria-selected="true"]::after { content:""; position:absolute; inset-inline:10px; inset-block-end:3px; border-block-end:3px solid currentColor; border-radius:2px; pointer-events:none; }
-body.latest-hub .latest-calc-shortcut { display:inline-flex; align-items:center; gap:6px; min-height:44px; margin-top:4px; padding:6px 12px; border:1px solid var(--reading-border); border-radius:8px; background:var(--reading-soft); color:var(--reading-link); font-size:14px; font-weight:700; text-decoration:none; }
+body.latest-hub .latest-calc-shortcut { display:inline-flex; flex-wrap:wrap; align-items:center; gap:6px; max-width:100%; box-sizing:border-box; min-height:44px; margin-top:4px; padding:6px 12px; border:1px solid var(--reading-border); border-radius:8px; background:var(--reading-soft); color:var(--reading-link); font-size:14px; font-weight:700; text-decoration:none; white-space:normal; overflow-wrap:anywhere; }
 body.latest-hub .latest-calc-shortcut:hover { text-decoration:underline; text-underline-offset:3px; }
 body.latest-hub .benefit-card[data-benefit-state="soon"] { border-top:3px solid var(--reading-link); }
 body.latest-hub .benefit-card[data-benefit-state="ended"] { background:var(--reading-surface); border-style:dashed; }
@@ -141,7 +141,8 @@ body.latest-hub .benefit-card dl div { grid-template-columns:5em minmax(0,1fr); 
 body.latest-hub .benefit-card dt { font-size:13px; line-height:1.75; }
 body.latest-hub .benefit-card dd { font-size:14px; line-height:1.75; overflow-wrap:anywhere; }
 body.latest-hub .benefit-card .benefit-key-condition { font-size:14px; line-height:1.75; margin-bottom:12px; }
-body.latest-hub .benefit-card .benefit-action { padding:10px 12px; font-size:15px; }
+body.latest-hub .benefit-card .benefit-action { padding:10px 12px; font-size:15px; white-space:normal; overflow-wrap:anywhere; box-sizing:border-box; max-width:100%; }
+body.latest-hub .lp-affiliate-btn { max-width:100%; white-space:normal; overflow-wrap:anywhere; box-sizing:border-box; text-align:center; }
 body.latest-hub .benefit-details { margin-top:12px; }
 body.latest-hub .benefit-details > summary { min-height:44px; }
 body.latest-hub :is(.benefit-filter-note,.benefit-footnote) { font-size:13px; }

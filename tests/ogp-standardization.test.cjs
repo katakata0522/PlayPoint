@@ -139,11 +139,21 @@ test('共通ページは用途に合う1200x630の画像と統一メタタグを
   for (const file of commonPages) {
     const html = fs.readFileSync(path.join(root, file), 'utf8');
     const hub = file === 'blog/index.html';
-    const expectedImage = hub ? 'images/guides/article-guide.jpg' : 'ogp.png';
+    const isAttention = file === 'attention.html';
+    const expectedImage = hub ? 'images/guides/article-guide.jpg'
+      : isAttention ? 'images/ogp/pages/attention.jpg'
+        : 'ogp.png';
+    const expectedMime = (hub || isAttention) ? 'image/jpeg' : 'image/png';
     assert.ok(html.includes(`property="og:image" content="https://playpoint-sim.com/${expectedImage}"`), `${file} に用途に合う og:image があること`);
     assert.match(html, /<meta property=["']og:image:width["'] content=["']1200["']\s*\/?>/, `${file} に og:image:width="1200" があること`);
     assert.match(html, /<meta property=["']og:image:height["'] content=["']630["']\s*\/?>/, `${file} に og:image:height="630" があること`);
-    assert.ok(html.includes(`property="og:image:type" content="image/${hub ? 'jpeg' : 'png'}"`), `${file} の画像MIMEが実体と一致すること`);
+    assert.ok(html.includes(`property="og:image:type" content="${expectedMime}"`), `${file} の画像MIMEが実体と一致すること`);
+    if (isAttention) {
+      const dim = getImageDimensions(fs.readFileSync(path.join(root, expectedImage)));
+      assert.equal(dim?.type, 'jpeg', `${file} のJPEG実体が有効であること`);
+      assert.equal(dim?.width, 1200, `${file} の幅が1200pxであること`);
+      assert.equal(dim?.height, 630, `${file} の高さが630pxであること`);
+    }
     const expectedLocale = file === 'attention.html' ? 'en_US' : 'ja_JP';
     const actualLocale = html.match(/<meta property=["']og:locale["'] content=["']([^"']+)["']/)?.[1];
     assert.equal(actualLocale, expectedLocale, `${file} の本文言語と共有言語が一致すること`);
@@ -181,24 +191,29 @@ test('海外の全個別記事も専用画像・地域メタ・Article画像が�
   }
 });
 
-test('多言語トップページは1200x630のogp.pngと各言語メタタグを持つ', () => {
+test('多言語トップページは1200x630の専用OGP画像と各言語メタタグを持つ', () => {
   const intlPages = [
-    { file: 'en/index.html', locale: 'en_US' },
-    { file: 'ko/index.html', locale: 'ko_KR' },
-    { file: 'tw/index.html', locale: 'zh_TW' },
-    { file: 'hk/index.html', locale: 'zh_HK' },
-    { file: 'in/index.html', locale: 'en_IN' }
+    { file: 'en/index.html', locale: 'en_US', image: 'images/ogp/pages/en-home.jpg' },
+    { file: 'ko/index.html', locale: 'ko_KR', image: 'images/ogp/pages/ko-home.jpg' },
+    { file: 'tw/index.html', locale: 'zh_TW', image: 'images/ogp/pages/tw-home.jpg' },
+    { file: 'hk/index.html', locale: 'zh_HK', image: 'images/ogp/pages/hk-home.jpg' },
+    { file: 'in/index.html', locale: 'en_IN', image: 'images/ogp/pages/in-home.jpg' }
   ];
 
-  for (const { file, locale } of intlPages) {
+  for (const { file, locale, image } of intlPages) {
     const html = fs.readFileSync(path.join(root, file), 'utf8');
-    assert.match(html, /<meta property=["']og:image["'] content=["']https:\/\/playpoint-sim\.com\/ogp\.png["']\s*\/?>/, `${file} に og:image があること`);
+    const escapedImage = image.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const dim = getImageDimensions(fs.readFileSync(path.join(root, image)));
+    assert.equal(dim?.type, 'jpeg', `${file} のOGPカード実体がJPEGであること`);
+    assert.equal(dim?.width, 1200, `${file} のOGPカード幅が1200pxであること`);
+    assert.equal(dim?.height, 630, `${file} のOGPカード高さが630pxであること`);
+    assert.match(html, new RegExp(`<meta property=["']og:image["'] content=["']https:\\/\\/playpoint-sim\\.com\\/${escapedImage}["']\\s*\\/?>`), `${file} に専用 og:image があること`);
     assert.match(html, /<meta property=["']og:image:width["'] content=["']1200["']\s*\/?>/, `${file} に og:image:width="1200" があること`);
     assert.match(html, /<meta property=["']og:image:height["'] content=["']630["']\s*\/?>/, `${file} に og:image:height="630" があること`);
-    assert.match(html, /<meta property=["']og:image:type["'] content=["']image\/png["']\s*\/?>/, `${file} に og:image:type="image/png" があること`);
+    assert.match(html, /<meta property=["']og:image:type["'] content=["']image\/jpeg["']\s*\/?>/, `${file} に og:image:type="image/jpeg" があること`);
     assert.match(html, new RegExp(`<meta property=["']og:locale["'] content=["']${locale}["']\\s*\\/?>`), `${file} に og:locale="${locale}" があること`);
     assert.match(html, /<meta property=["']og:image:alt["'] content=["'][^"']+["']\s*\/?>/, `${file} に 空でない og:image:alt があること`);
     assert.match(html, /<meta name=["']twitter:card["'] content=["']summary_large_image["']\s*\/?>/, `${file} に twitter:card があること`);
-    assert.match(html, /<meta name=["']twitter:image["'] content=["']https:\/\/playpoint-sim\.com\/ogp\.png["']\s*\/?>/, `${file} に twitter:image があること`);
+    assert.match(html, new RegExp(`<meta name=["']twitter:image["'] content=["']https:\\/\\/playpoint-sim\\.com\\/${escapedImage}["']\\s*\\/?>`), `${file} に専用 twitter:image があること`);
   }
 });

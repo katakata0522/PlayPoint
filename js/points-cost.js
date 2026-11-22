@@ -7,6 +7,7 @@ const REGIONS = {
     locale: 'ja-JP',
     currency: 'JPY',
     unit: 100,
+    unitLabel: '¥100',
     precision: 0,
     statuses: [
       ['ブロンズ', 1],
@@ -25,6 +26,7 @@ const REGIONS = {
     locale: 'en-US',
     currency: 'USD',
     unit: 1,
+    unitLabel: '$1',
     precision: 2,
     statuses: [
       ['Bronze', 1],
@@ -43,6 +45,7 @@ const REGIONS = {
     locale: 'ko-KR',
     currency: 'KRW',
     unit: 1000,
+    unitLabel: '₩1,000',
     precision: 0,
     statuses: [
       ['브론즈', 1],
@@ -61,6 +64,7 @@ const REGIONS = {
     locale: 'zh-TW',
     currency: 'TWD',
     unit: 30,
+    unitLabel: 'NT$30',
     precision: 0,
     statuses: [
       ['銅級', 1],
@@ -135,7 +139,8 @@ function init() {
   const copyButton = document.getElementById('copy-points-cost-link');
 
   config.statuses.forEach(([label, rate], index) => {
-    const option = new Option(`${label} — ${rate} pt / ${config.unit.toLocaleString(config.locale)}`, String(index));
+    const unitLabel = config.unitLabel || config.unit.toLocaleString(config.locale);
+    const option = new Option(`${label} — ${rate} pt / ${unitLabel}`, String(index));
     statusSelect.add(option);
   });
 
@@ -155,11 +160,12 @@ function init() {
     const finalRate = Math.max(status[1], multiplier);
     const spend = roundSpend((points / finalRate) * config.unit, config.precision);
     const url = updateUrl(points, statusIndex, multiplier);
+    const unitLabel = config.unitLabel || config.unit.toLocaleString(config.locale);
     result.classList.remove('is-error');
     result.innerHTML = `
       <p class="points-cost-result-label">${config.resultLabel}</p>
       <p class="points-cost-result-value">${formatMoney(spend, config)}</p>
-      <p class="points-cost-result-rate">${config.rateLabel}: ${finalRate.toFixed(2)} pt / ${config.unit.toLocaleString(config.locale)}</p>
+      <p class="points-cost-result-rate">${config.rateLabel}: ${finalRate.toFixed(2)} pt / ${unitLabel}</p>
       <p class="points-cost-result-note">${config.note}</p>
     `;
     result.dataset.shareUrl = url;

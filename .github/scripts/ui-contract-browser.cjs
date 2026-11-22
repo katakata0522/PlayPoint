@@ -257,7 +257,7 @@ async function verifyUiContracts(browser, baseUrl, locales, blockExternalRequest
       await page.locator('#btn-copy').click();
       await page.waitForFunction(()=>document.querySelector('#copy-status').textContent.startsWith('コピーしました'));
       const snippet=await page.evaluate(()=>navigator.clipboard.readText());
-      assert.equal(snippet,await page.locator('#code-output').textContent(),'実クリップボードと表示コードが一致する');
+      assert.equal(snippet.replaceAll('\r\n','\n'),(await page.locator('#code-output').textContent()).replaceAll('\r\n','\n'),'実クリップボードと表示コードが一致する');
       const article=await context.newPage();
       const articleErrors=[];
       article.on('pageerror',e=>articleErrors.push(e.message));

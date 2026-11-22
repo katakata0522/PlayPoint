@@ -192,6 +192,9 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = ge
     }
   ];
 
+  const gamesNavLabel = { en: 'Games', ko: '게임별 계산', tw: '遊戲試算' }[localeKey] || 'Games';
+  const breadcrumbLabel = { en: 'Breadcrumb', ko: '탐색 경로', tw: '導覽路徑' }[localeKey] || 'Breadcrumb';
+
   return `<!DOCTYPE html>
 <html lang="${locale.lang}">
 <head>
@@ -224,9 +227,18 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = ge
 </head>
 <body>
 <main class="calculator-wrapper lp-wrapper">
-    <nav class="top-bar" aria-label="Site links">
-        <a href="/${localeKey}/">${escapeHtml(locale.back)}</a>
-        <a href="/${localeKey}/articles/">${escapeHtml(locale.blog)}</a>
+    <nav class="top-bar lp-topbar--intl" aria-label="Site links">
+        <a class="lp-topbar-brand" href="/${localeKey}/">${escapeHtml(locale.siteName)}</a>
+        <div class="lp-topbar-links">
+            <a href="/${localeKey}/">${escapeHtml(locale.back)}</a>
+            <a href="/${localeKey}/games/">${escapeHtml(gamesNavLabel)}</a>
+            <a href="/${localeKey}/articles/">${escapeHtml(locale.blog)}</a>
+        </div>
+    </nav>
+    <nav class="lp-breadcrumb" aria-label="${escapeHtml(breadcrumbLabel)}">
+        <a href="/${localeKey}/">${escapeHtml(locale.siteName)}</a>
+        <span aria-hidden="true">&gt;</span>
+        <span aria-current="page">${escapeHtml(content.h1)}</span>
     </nav>
     <section class="lp-hero">
         <p class="lp-eyebrow">${escapeHtml(content.eyebrow)}</p>

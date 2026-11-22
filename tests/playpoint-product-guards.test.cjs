@@ -181,8 +181,8 @@ test('多言語トップの実行時記事リンクは各言語の記事一覧�
   const configs = loadConfigs();
   const expected = {
     US: { text: 'Articles', href: 'articles/' },
-    KR: { text: '가이드 목록', href: 'articles/' },
-    TW: { text: '指南列表', href: 'articles/' }
+    KR: { text: '가이드', href: 'articles/' },
+    TW: { text: '指南', href: 'articles/' }
   };
   for (const [region, link] of Object.entries(expected)) {
     assert.deepEqual(configs[region].uiText.linkArticles, link, region);
@@ -271,8 +271,9 @@ test('トップページは大きな画像プレビューとOGP画像サイズ�
   for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
     const metas = openingTags(read(file)).filter(node => node.tag === 'meta');
     const robots = metas.find(node => node.attrs.name === 'robots')?.attrs.content || '';
+    const expectedType = file === 'index.html' ? 'image/png' : 'image/jpeg';
     assert.ok(robots.split(/\s*,\s*/).includes('max-image-preview:large'), file);
-    for (const [property, content] of [['og:image:width', '1200'], ['og:image:height', '630'], ['og:image:type', 'image/png']]) {
+    for (const [property, content] of [['og:image:width', '1200'], ['og:image:height', '630'], ['og:image:type', expectedType]]) {
       assert.equal(metas.find(node => node.attrs.property === property)?.attrs.content, content, file + ': ' + property);
     }
   }

@@ -30,12 +30,12 @@
     <meta property="og:description" content="香港 Play Points 升級要花多少？以鉑金級 4,000 分、鑽石級 15,000 分及每 HK$7 的獲點率，估算尚欠積分與港元消費金額。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/hk/">
-    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta property="og:image" content="https://playpoint-sim.com/images/ogp/pages/hk-home.jpg">
     <meta name="twitter:image:alt" content="Google Play Points 計算器（香港） OGP 圖片">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Google Play Points 計算器（香港） OGP 圖片">
-    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:locale" content="zh_HK">
     <meta property="og:locale:alternate" content="ja_JP">
     <meta property="og:locale:alternate" content="en_US">
@@ -46,15 +46,19 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Google Play Points 計算器（香港）｜香港等級與消費金額試算">
     <meta name="twitter:description" content="香港 Play Points 升級要花多少？以鉑金級 4,000 分、鑽石級 15,000 分及每 HK$7 的獲點率，估算尚欠積分與港元消費金額。">
-    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
+    <meta name="twitter:image" content="https://playpoint-sim.com/images/ogp/pages/hk-home.jpg">
 
-    <link rel="modulepreload" href="../js/main.js?v=f0a058dc57">
+    <link rel="modulepreload" href="../js/main.js?v=c814e1ffdf">
     <link rel="modulepreload" href="../js/config.js">
+    <link rel="modulepreload" href="../js/region-rules.js">
+    <link rel="modulepreload" href="../js/region-navigation.js">
     <link rel="modulepreload" href="../js/analytics-core.js?v=8c30c353a7">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=fbfb97e91d">
+    <link rel="modulepreload" href="../js/calculator-core.js">
+    <link rel="modulepreload" href="../js/calculator-result-view.js">
+    <link rel="stylesheet" href="../style.css?v=62518d467b">
     <link rel="stylesheet" href="../visitor-thanks.css?v=d8a0258873">
     <script type="speculationrules">
     {
@@ -84,13 +88,13 @@
           {
             "or": [
               {
-                "href_matches": "/articles/*"
+                "href_matches": "/tw/articles/*"
               },
               {
-                "href_matches": "/blog/*"
+                "href_matches": "/tw/games/*"
               },
               {
-                "href_matches": "/status/*"
+                "href_matches": "/hk/google-play-points-guide.html"
               }
             ]
           },
@@ -120,7 +124,7 @@
       "author": {
         "@type": "Person",
         "name": "katakata",
-        "url": "https://playpoint-sim.com/author/katakata.html"
+        "url": "https://playpoint-sim.com/tw/author/katakata.html"
       },
       "dateModified": "2026-10-13",
       "offers": {
@@ -141,13 +145,13 @@
       "publisher": {
         "@type": "Person",
         "name": "katakata",
-        "url": "https://playpoint-sim.com/author/katakata.html"
+        "url": "https://playpoint-sim.com/tw/author/katakata.html"
       },
       "potentialAction": {
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": "https://playpoint-sim.com/hk/articles/?q={search_term_string}"
+          "urlTemplate": "https://playpoint-sim.com/tw/articles/?q={search_term_string}"
         },
         "query-input": "required name=search_term_string"
       }
@@ -222,22 +226,36 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 @media(prefers-reduced-motion:reduce){.calculator-advanced-settings__chevron{transition:none}}
 </style>
         <script id="playpoint-first-view-state">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&(Number(p.get('multiplier'))>1||Number(p.get('baseRate'))>0)){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>
-<link rel="stylesheet" href="/region-selector.css?v=2a70477346" data-region-selector-style="true">
+<link rel="stylesheet" href="/region-selector.css?v=01460f47c6" data-region-selector-style="true">
 <meta name="playpoint:anchor-ads" content="collapsed-bottom">
 </head>
 <body>
 <main class="calculator-wrapper">
    <div class="top-bar">
         <div class="region-switch" aria-label="Play 國家或地區">
-            <button data-region="JP">JP</button>
-            <button data-region="US">US</button>
-            <button data-region="KR">KR</button>
-            <button data-region="TW">TW</button>
+            <button data-region="JP"><span class="region-label-desktop">JP</span></button>
+            <button data-region="US"><span class="region-label-desktop">US</span></button>
+            <button data-region="KR"><span class="region-label-desktop">KR</span></button>
+            <button data-region="TW"><span class="region-label-desktop">TW</span></button>
+            <div class="region-more" data-region-more="true">
+                <button type="button" class="region-more-toggle active" data-region-menu-toggle data-region-active="true" data-active-region="HK" aria-current="true" aria-haspopup="menu" aria-expanded="false" aria-label="更多地區; 目前地區: 香港" title="香港 — 更多地區"><span class="region-label-desktop">HK</span></button>
+                <div class="region-more-menu" data-region-menu role="menu" aria-label="更多 Play Points 地區" hidden>
+                    <p class="region-more-menu__title">更多地區</p>
+                    <button type="button" class="region-more-option active" role="menuitem" data-region="HK">
+                        <span class="region-more-option__flag" aria-hidden="true"></span>
+                        <span class="region-more-option__copy"><span class="region-more-option__name">香港 Hong Kong</span><span class="region-more-option__detail">繁體中文 · HKD</span></span>
+                    </button>
+                    <button type="button" class="region-more-option" role="menuitem" data-region="IN">
+                        <span class="region-more-option__flag" aria-hidden="true"></span>
+                        <span class="region-more-option__copy"><span class="region-more-option__name">India</span><span class="region-more-option__detail">English · INR</span></span>
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="header-links">
-            <a href="../attention.html" class="alert-link" data-country-notes-link data-lang-key="linkAttention">⚠️ 地區注意事項</a>
-            <a href="../tw/games/" data-lang-key="linkGames">遊戲計算（台灣規則・非香港）</a>
-            <a href="../tw/articles/" data-lang-key="linkArticles">指南</a>
+            <a href="../tw/articles/google-play-points-country-differences.html" class="country-rules-link" data-country-notes-link data-lang-key="linkAttention">各國規則比較</a>
+            <a href="../tw/games/" data-lang-key="linkGames">🎮 遊戲計算（台灣規則・非香港）</a>
+            <a href="../tw/articles/" data-lang-key="linkArticles">繁體中文指南</a>
         </div>
     </div>
 
@@ -258,14 +276,14 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <span class="info-btn" id="currentStatus-help" aria-labelledby="currentStatus-caption currentStatus-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
                 <div class="tooltip-box" id="tooltip-current-status" hidden></div>
             </label>
-            <select id="currentStatus"></select>
+            <select id="currentStatus"><option value="1" selected>銅級</option><option value="1.25">銀級</option><option value="1.5">金級</option><option value="1.75">鉑金級</option><option value="2">鑽石級</option></select>
 
             <label for="targetStatus" class="label-with-tooltip">
                 <span id="targetStatus-caption" data-lang-key="labelTargetStatus">目標等級</span>
                 <span class="info-btn" id="targetStatus-help" aria-labelledby="targetStatus-caption targetStatus-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status" hidden></div>
             </label>
-            <select id="targetStatus"></select>
+            <select id="targetStatus"><option value="250" data-status-label="銀級" data-rank-key="silver" data-target-kind="upgrade" selected>銀級 (升級) (250pt)</option><option value="1000" data-status-label="金級" data-rank-key="gold" data-target-kind="upgrade">金級 (升級) (1,000pt)</option><option value="4000" data-status-label="鉑金級" data-rank-key="platinum" data-target-kind="upgrade">鉑金級 (升級) (4,000pt)</option><option value="15000" data-status-label="鑽石級" data-rank-key="diamond" data-target-kind="upgrade">鑽石級 (升級) (15,000pt)</option></select>
 
             <label for="neededPoints" class="label-with-tooltip">
                 <span id="neededPoints-caption" data-lang-key="labelNeededPoints">距離目標所需點數</span>
@@ -284,7 +302,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">調整獲點率與活動（選填）</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
 <label for="baseRate" class="label-with-tooltip">
-                <span data-simplified-calculator-copy="baseRateLabel">每 HK$7 獲得點數（自動帶入，可修改）</span>
+                <span id="baseRate-caption" data-simplified-calculator-copy="baseRateLabel">每 HK$7 獲得點數（自動帶入，可修改）</span>
                 <span class="info-btn" id="baseRate-help" aria-labelledby="baseRate-caption baseRate-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate" hidden></div>
             </label>
@@ -292,14 +310,14 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-simplified-calculator-copy="multiplierLabel">活動特別獲點率（例：每 HK$7 3 點）</span>
+                <span id="multiplier-caption" data-simplified-calculator-copy="multiplierLabel">活動特別獲點率（例：每 HK$7 3 點）</span>
                 <span class="info-btn" id="multiplier-help" aria-labelledby="multiplier-caption multiplier-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier" hidden></div>
             </label>
 
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">計算器會比較 Google Play 顯示的活動特別獲點率與基本獲點率，採用較高者；不會把目前等級的基本獲點率再乘上活動數字。適用商品、上限與啟用條件請以 Google Play 為準。</div>
+            <div class="warning" data-lang-key="warningRate">本頁使用香港的等級與基本獲點率。若 Google Play 顯示活動特別獲點率，系統會與基本獲點率比較並採用較高者；資格、上限及啟用條件請以 Google Play 為準。</div>
     </div>
 </div>
         </div>
@@ -335,7 +353,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <span class="info-btn" id="reverseStatus-help" aria-labelledby="reverseStatus-caption reverseStatus-help" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-status" hidden></div>
             </label>
-            <select id="reverseStatus"></select>
+            <select id="reverseStatus"><option value="1" selected>銅級</option><option value="1.25">銀級</option><option value="1.5">金級</option><option value="1.75">鉑金級</option><option value="2">鑽石級</option></select>
 
             <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">計算點數</button>
             <details id="reverse-rate-settings" class="calculator-basis-settings">
@@ -354,7 +372,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">計算器會比較 Google Play 顯示的活動特別獲點率與基本獲點率，採用較高者；不會把目前等級的基本獲點率再乘上活動數字。適用商品、上限與啟用條件請以 Google Play 為準。</div>
+            <div class="warning" data-lang-key="warningRate">本頁使用香港的等級與基本獲點率。若 Google Play 顯示活動特別獲點率，系統會與基本獲點率比較並採用較高者；資格、上限及啟用條件請以 Google Play 為準。</div>
             </details>
         </div>
          <div class="section">
@@ -500,7 +518,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=f0a058dc57"></script>
+<script type="module" src="../js/main.js?v=c814e1ffdf"></script>
 <script src="../js/third-party.js?v=2beb04f0e9" defer></script>
 
 </body>

@@ -160,7 +160,7 @@ function createLocales() {
         <p class="home-description-lead">Use this page to check <strong>the spending needed to level up</strong>, <strong>the Play Points you can earn from a spending amount</strong>, and <strong>estimates using a special earn rate shown in Google Play</strong>.</p>
         <figure class="calculation-flow-figure">
             <img src="../images/calculation-flow-en.svg" width="960" height="360" loading="lazy" decoding="async" alt="Three-step flow from points needed through the selected reward condition to estimated spending">
-            <figcaption>Points needed → earn rate → estimated spending. The 1,728-point figure is an input example.</figcaption>
+            <figcaption>Points needed → earn rate (e.g., 2 pt / $1 promo) → estimated spending. The 1,728-point figure is an input example.</figcaption>
         </figure>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
@@ -198,10 +198,10 @@ function createLocales() {
             mainTitle: 'Google Play Points 계산기',
             siteAlias: '별칭: 구글 플레이 포인트 계산기 / 비공식 도구',
             siteDescription: "현재 등급과 목표까지 남은 포인트로 필요한 결제 금액을 계산하세요.",
-            linkAttention: '⚠️ 국가별 안내',
+            linkAttention: '국가별 규칙',
             linkGames: '🎮 게임별 계산',
             linkLatest: '🆕 최신 정보 허브 (일본어)',
-            linkArticles: '📝 가이드',
+            linkArticles: '가이드',
             linkKatakata: '🧪 KatakataLab (일본어)',
             tabMain: '필요 금액 계산',
             tabReverse: '금액으로 포인트',
@@ -361,10 +361,10 @@ function createLocales() {
             mainTitle: 'Google Play Points 計算器',
             siteAlias: '別稱: Google Play 點數計算器 / 非官方工具',
             siteDescription: "輸入目前等級與尚需點數，試算升級所需消費金額。",
-            linkAttention: '⚠️ 地區注意事項',
+            linkAttention: '各國規則比較',
             linkGames: '🎮 遊戲專屬計算',
             linkLatest: '🆕 最新資訊中心 (日文)',
-            linkArticles: '📝 指南',
+            linkArticles: '指南',
             linkKatakata: '🧪 KatakataLab (日文)',
             tabMain: '估算所需金額',
             tabReverse: '依金額反推點數',
