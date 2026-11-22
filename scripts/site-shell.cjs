@@ -64,12 +64,12 @@ const JAPANESE_FIXED_POLICY_LINKS = Object.freeze([
 ]);
 
 const REGION_GUIDE_LINKS = Object.freeze([
-  Object.freeze({ href: './', label: '🇯🇵 Japan' }),
-  Object.freeze({ href: './en/', label: '🇺🇸 U.S.' }),
-  Object.freeze({ href: './ko/', label: '🇰🇷 Korea' }),
-  Object.freeze({ href: './tw/', label: '🇹🇼 Taiwan' }),
-  Object.freeze({ href: './hk/', label: '🇭🇰 Hong Kong' }),
-  Object.freeze({ href: './in/', label: '🇮🇳 India' })
+  Object.freeze({ href: './', label: 'Japan' }),
+  Object.freeze({ href: './en/', label: 'U.S.' }),
+  Object.freeze({ href: './ko/', label: 'Korea' }),
+  Object.freeze({ href: './tw/', label: 'Taiwan' }),
+  Object.freeze({ href: './hk/', label: 'Hong Kong' }),
+  Object.freeze({ href: './in/', label: 'India' })
 ]);
 
 const REGION_GUIDE_BRAND_LINK = Object.freeze({
@@ -115,12 +115,24 @@ function freezeCalculatorLinks(links) {
   return Object.freeze(links.map(link => Object.freeze(link)));
 }
 
-function calculatorHeaderProfile(activeRegion, regionAriaLabel, links) {
+const MORE_REGION_LOCALE_COPY = Object.freeze({
+  ja: Object.freeze({ moreLabel: 'その他の地域', menuLabel: 'その他の Play Points 地域', currentLabel: '現在の地域' }),
+  en: Object.freeze({ moreLabel: 'More regions', menuLabel: 'More Play Points regions', currentLabel: 'current region' }),
+  ko: Object.freeze({ moreLabel: '다른 지역', menuLabel: '다른 Play Points 지역', currentLabel: '현재 지역' }),
+  tw: Object.freeze({ moreLabel: '更多地區', menuLabel: '更多 Play Points 地區', currentLabel: '目前地區' })
+});
+
+function freezeMoreOptions(moreOptions) {
+  return moreOptions ? Object.freeze(moreOptions) : null;
+}
+
+function calculatorHeaderProfile(activeRegion, regionAriaLabel, links, moreOptions = null) {
   return Object.freeze({
     activeRegion,
     regionAriaLabel,
     regionButtons: CALCULATOR_REGION_BUTTONS,
-    links: freezeCalculatorLinks(links)
+    links: freezeCalculatorLinks(links),
+    moreOptions: freezeMoreOptions(moreOptions)
   });
 }
 
@@ -129,32 +141,32 @@ const CALCULATOR_HEADER_PROFILES = Object.freeze({
     { href: 'attention.html', label: '⚠️ For users outside Japan', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
     { href: 'games/', label: '🎮 ゲーム別計算', langKey: 'linkGames' },
     { href: 'blog/', label: '📝 記事トップ', langKey: 'linkArticles' },
-  ]),
+  ], { ...MORE_REGION_LOCALE_COPY.ja, activeExpandedRegion: null, activeExpandedName: '' }),
   'en/index.html': calculatorHeaderProfile('US', 'Play country or region', [
-    { href: './articles/google-play-points-country-differences.html', label: 'Country rules', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: './articles/google-play-points-country-differences.html', label: 'Country rules', className: 'country-rules-link', countryNotes: true, langKey: 'linkAttention' },
     { href: './games/', label: 'Game calculators', langKey: 'linkGames' },
     { href: './articles/', label: 'Articles', langKey: 'linkArticles' },
-  ]),
+  ], { ...MORE_REGION_LOCALE_COPY.en, activeExpandedRegion: null, activeExpandedName: '' }),
   'ko/index.html': calculatorHeaderProfile('KR', 'Play 국가 또는 지역', [
-    { href: './articles/google-play-points-country-differences.html', label: '⚠️ 국가별 안내', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: './articles/google-play-points-country-differences.html', label: '국가별 규칙', className: 'country-rules-link', countryNotes: true, langKey: 'linkAttention' },
     { href: './games/', label: '게임별 계산', langKey: 'linkGames' },
     { href: './articles/', label: '가이드', langKey: 'linkArticles' },
-  ]),
+  ], { ...MORE_REGION_LOCALE_COPY.ko, activeExpandedRegion: null, activeExpandedName: '' }),
   'tw/index.html': calculatorHeaderProfile('TW', 'Play 國家或地區', [
-    { href: './articles/google-play-points-country-differences.html', label: '⚠️ 地區注意事項', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: './articles/google-play-points-country-differences.html', label: '各國規則比較', className: 'country-rules-link', countryNotes: true, langKey: 'linkAttention' },
     { href: './games/', label: '遊戲專屬計算', langKey: 'linkGames' },
     { href: './articles/', label: '指南', langKey: 'linkArticles' },
-  ]),
+  ], { ...MORE_REGION_LOCALE_COPY.tw, activeExpandedRegion: null, activeExpandedName: '' }),
   'hk/index.html': calculatorHeaderProfile(null, 'Play 國家或地區', [
-    { href: '../attention.html', label: '⚠️ 地區注意事項', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
-    { href: '../tw/games/', label: '遊戲計算（台灣規則・非香港）', langKey: 'linkGames' },
-    { href: '../tw/articles/', label: '指南', langKey: 'linkArticles' },
-  ]),
+    { href: '../tw/articles/google-play-points-country-differences.html', label: '各國規則比較', className: 'country-rules-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: '../tw/games/', label: '🎮 遊戲計算（台灣規則・非香港）', langKey: 'linkGames' },
+    { href: '../tw/articles/', label: '繁體中文指南', langKey: 'linkArticles' },
+  ], { ...MORE_REGION_LOCALE_COPY.tw, activeExpandedRegion: 'HK', activeExpandedName: '香港' }),
   'in/index.html': calculatorHeaderProfile(null, 'Play country or region', [
-    { href: '../attention.html', label: 'Country rules', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
-    { href: '../en/games/', label: 'Game calculators (U.S. rules, not India)', langKey: 'linkGames' },
-    { href: '../en/articles/', label: 'Articles', langKey: 'linkArticles' },
-  ])
+    { href: '../en/articles/google-play-points-country-differences.html', label: 'Country rules', className: 'country-rules-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: '../en/games/', label: '🎮 Game calculators (U.S. rules, not India)', langKey: 'linkGames' },
+    { href: '../en/articles/', label: 'English guides', langKey: 'linkArticles' },
+  ], { ...MORE_REGION_LOCALE_COPY.en, activeExpandedRegion: 'IN', activeExpandedName: 'India' })
 });
 
 function escapeHtml(value) {
@@ -281,6 +293,42 @@ function renderCalculatorHeaderLink(link, indent) {
   return `${indent}<a ${attributes.join(' ')}>${escapeHtml(link.label)}</a>`;
 }
 
+function renderCalculatorMoreSelector(moreOptions, indent) {
+  if (!moreOptions) return '';
+  const activeExpanded = moreOptions.activeExpandedRegion || null;
+  const activeFlag = Boolean(activeExpanded);
+  const toggleClass = activeFlag ? 'region-more-toggle active' : 'region-more-toggle';
+  const toggleAriaLabel = activeFlag
+    ? `${moreOptions.moreLabel}; ${moreOptions.currentLabel}: ${moreOptions.activeExpandedName}`
+    : moreOptions.moreLabel;
+  const toggleTitle = activeFlag
+    ? `${moreOptions.activeExpandedName} — ${moreOptions.moreLabel}`
+    : moreOptions.moreLabel;
+  const toggleActiveAttr = activeFlag
+    ? ` data-region-active="true" data-active-region="${escapeHtml(activeExpanded)}" aria-current="true"`
+    : ' data-region-active="false"';
+  const toggleInner = activeFlag
+    ? `<span class="region-label-desktop">${escapeHtml(activeExpanded)}</span>`
+    : '🌐';
+
+  return [
+    `${indent}         <div class="region-more" data-region-more="true">`,
+    `${indent}             <button type="button" class="${toggleClass}" data-region-menu-toggle${toggleActiveAttr} aria-haspopup="menu" aria-expanded="false" aria-label="${escapeHtml(toggleAriaLabel)}" title="${escapeHtml(toggleTitle)}">${toggleInner}</button>`,
+    `${indent}             <div class="region-more-menu" data-region-menu role="menu" aria-label="${escapeHtml(moreOptions.menuLabel)}" hidden>`,
+    `${indent}                 <p class="region-more-menu__title">${escapeHtml(moreOptions.moreLabel)}</p>`,
+    `${indent}                 <button type="button" class="region-more-option${activeExpanded === 'HK' ? ' active' : ''}" role="menuitem" data-region="HK">`,
+    `${indent}                     <span class="region-more-option__flag" aria-hidden="true"></span>`,
+    `${indent}                     <span class="region-more-option__copy"><span class="region-more-option__name">香港 Hong Kong</span><span class="region-more-option__detail">繁體中文 · HKD</span></span>`,
+    `${indent}                 </button>`,
+    `${indent}                 <button type="button" class="region-more-option${activeExpanded === 'IN' ? ' active' : ''}" role="menuitem" data-region="IN">`,
+    `${indent}                     <span class="region-more-option__flag" aria-hidden="true"></span>`,
+    `${indent}                     <span class="region-more-option__copy"><span class="region-more-option__name">India</span><span class="region-more-option__detail">English · INR</span></span>`,
+    `${indent}                 </button>`,
+    `${indent}             </div>`,
+    `${indent}         </div>`
+  ].join('\n');
+}
+
 function renderCalculatorHeader(profile, indent = '') {
   if (!profile || !Array.isArray(profile.regionButtons) || !Array.isArray(profile.links)) {
     throw new TypeError('Calculator header profile requires regionButtons and links arrays.');
@@ -297,20 +345,25 @@ function renderCalculatorHeader(profile, indent = '') {
     throw new RangeError(`Unknown active calculator region: ${profile.activeRegion}`);
   }
 
+  const hasMoreSelector = Boolean(profile.moreOptions);
   const regionButtons = profile.regionButtons.map(button => {
     if (!button?.region || !button?.label) {
       throw new TypeError('Calculator region buttons require region and label.');
     }
     const active = profile.activeRegion === button.region ? ' class="active"' : '';
-    return `${indent}         <button data-region="${escapeHtml(button.region)}"${active}>${escapeHtml(button.label)}</button>`;
+    const inner = hasMoreSelector
+      ? `<span class="region-label-desktop">${escapeHtml(button.label)}</span>`
+      : escapeHtml(button.label);
+    return `${indent}         <button data-region="${escapeHtml(button.region)}"${active}>${inner}</button>`;
   }).join('\n');
 
+  const moreBlock = hasMoreSelector ? `\n${renderCalculatorMoreSelector(profile.moreOptions, indent)}` : '';
   const links = profile.links.map(link => renderCalculatorHeaderLink(link, `${indent}         `)).join('\n');
 
   return [
     `${indent}<div class="top-bar">`,
     `${indent}     <div class="region-switch" aria-label="${escapeHtml(profile.regionAriaLabel)}">`,
-    regionButtons,
+    `${regionButtons}${moreBlock}`,
     `${indent}     </div>`,
     `${indent}     <div class="header-links">`,
     links,

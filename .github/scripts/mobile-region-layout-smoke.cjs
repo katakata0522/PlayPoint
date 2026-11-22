@@ -15,7 +15,6 @@ const VIEWPORT_WIDTHS = [320, 360, 390, 412];
 const TABLET_VIEWPORT_WIDTH = 768;
 const DESKTOP_VIEWPORT_WIDTH = 1024;
 const VIEWPORT_HEIGHT = 844;
-const PRIMARY_MOBILE_LABELS = ['🇯🇵 JP', '🇺🇸 US', '🇰🇷 KR', '🇹🇼 TW'];
 const PRIMARY_DESKTOP_LABELS = ['JP', 'US', 'KR', 'TW'];
 const LOCALES = [
   { key: 'JP', path: '', toggleLabel: '🌐', activeRegion: 'JP' },
@@ -337,10 +336,12 @@ async function verifyLocale(browser, baseUrl, locale) {
       assertSelectionState(layout, locale, `${width}px`);
 
       layout.labels.forEach((label, index) => {
-        assert(label.mobileText === PRIMARY_MOBILE_LABELS[index],
-          `${locale.key} ${width}px: unexpected mobile label for ${label.region}: ${label.mobileText}`);
-        assert(label.mobileDisplay !== 'none', `${locale.key} ${width}px: mobile label hidden for ${label.region}`);
-        assert(label.desktopDisplay === 'none', `${locale.key} ${width}px: desktop label still visible for ${label.region}`);
+        assert(label.desktopText === PRIMARY_DESKTOP_LABELS[index],
+          `${locale.key} ${width}px: unexpected mobile label for ${label.region}: ${label.desktopText}`);
+        assert(label.desktopDisplay !== 'none', `${locale.key} ${width}px: desktop/unified label hidden on mobile for ${label.region}`);
+        assert(!label.mobileDisplay || label.mobileDisplay === 'none', `${locale.key} ${width}px: legacy mobile emoji label visible for ${label.region}`);
+        assert(label.flagBackground.includes(`/images/flags/${label.region.toLowerCase()}.svg`),
+          `${locale.key} ${width}px: missing local SVG flag background on mobile for ${label.region}: ${label.flagBackground}`);
       });
 
       results.push({ width, ...layout });

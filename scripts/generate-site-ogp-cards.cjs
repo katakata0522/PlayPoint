@@ -8,13 +8,7 @@ const ORIGIN = 'https://playpoint-sim.com';
 
 const PROTECTED_DEFAULT_OGP = new Set([
   'index.html',
-  'en/index.html',
-  'ko/index.html',
-  'tw/index.html',
-  'hk/index.html',
-  'in/index.html',
   'about-playpoints.html',
-  'attention.html',
   'changelog.html',
   'embed.html',
   'info.html',
@@ -45,6 +39,14 @@ function localeForRel(rel) {
 function ogpPathForRelativePage(rel) {
   const normalized = String(rel).replaceAll('\\', '/').replace(/^\.\//, '');
   if (PROTECTED_DEFAULT_OGP.has(normalized)) return 'ogp.png';
+
+  const homeMatch = normalized.match(/^(en|ko|tw|hk|in)\/index\.html$/);
+  if (homeMatch) {
+    return `images/ogp/pages/${homeMatch[1]}-home.jpg`;
+  }
+  if (normalized === 'attention.html') {
+    return 'images/ogp/pages/attention.jpg';
+  }
 
   const gameMatch = normalized.match(/^(?:(en|ko|tw)\/)?games\/(?:([^/]+)\/)?index\.html$/);
   if (gameMatch) {
@@ -82,6 +84,8 @@ function collectFallbackPages(rootDir = ROOT) {
         if (PROTECTED_DEFAULT_OGP.has(rel)) continue;
         // Include all game hubs/calculators, status, maintenance, campaign, amount, points-cost, compare, intl hubs & authors
         if (
+          rel === 'attention.html' ||
+          /^(?:en|ko|tw|hk|in)\/index\.html$/.test(rel) ||
           /^(?:(?:en|ko|tw)\/)?games\/(?:[^/]+\/)?index\.html$/.test(rel) ||
           /^(?:(?:en|ko|tw)\/)?(?:status|maintenance|campaign|amount|points-cost|compare)\//.test(rel) ||
           /^(?:en|ko|tw)\/(?:articles\/index|author\/katakata)\.html$/.test(rel) ||
@@ -142,6 +146,10 @@ function extractPageInfo(rootDir, rel) {
       const b64 = fs.readFileSync(iconPath).toString('base64');
       gameIconDataUri = `data:image/webp;base64,${b64}`;
     }
+  } else if (rel === 'attention.html') {
+    category = 'Country & Region Guide';
+  } else if (/^(?:en|ko|tw|hk|in)\/index\.html$/.test(rel)) {
+    category = { en: 'Google Play Points Calculator', ko: 'Google Play Points 계산기', tw: 'Google Play Points 計算器', hk: '香港版 Google Play Points 計算器', in: 'India Google Play Points Calculator' }[loc];
   } else if (/games\/index\.html$/.test(rel)) {
     category = { ja: '対応ゲーム計算機一覧', en: 'Mobile Game Calculators', ko: '게임별 계산기 모음', tw: '手遊計算器總覽' }[loc];
   } else if (/\/status\/|^status\//.test(rel)) {

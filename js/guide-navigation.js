@@ -81,7 +81,7 @@
     const next = sidebar.querySelector('.sidebar-related-link:not([aria-current])') || sidebar.querySelector('.sidebar-next-link[href]');
     if (next) {
       const link = next.cloneNode(true); link.className = 'reader-follow-next';
-      link.textContent = labels[1] + '：' + next.textContent.trim(); nav.append(link);
+      link.textContent = labels[1] + (locale === 'ja' || locale === 'tw' ? '：' : ': ') + next.textContent.trim(); nav.append(link);
     }
     sidebar.append(nav); sidebar.classList.add('reader-has-follow');
   }

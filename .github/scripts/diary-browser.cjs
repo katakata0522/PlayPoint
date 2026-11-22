@@ -32,7 +32,10 @@ async function verifyDiaryBoundaries(browser, baseUrl, locales, blockExternalReq
       page.on('pageerror', error => errors.push(error.message));
       await page.clock.setFixedTime(new Date(date));
       await page.goto(new URL(locale.path, baseUrl).href, { waitUntil: 'domcontentloaded' });
-      await page.waitForFunction(() => document.querySelector('#currentStatus')?.options.length >= 2);
+      await page.waitForFunction(() => (
+        (document.documentElement.dataset.playpointReady === 'true' || Boolean(document.querySelector('#tooltip-reverse-status')?.textContent?.trim())) &&
+        document.querySelector('#currentStatus')?.options.length >= 2
+      ));
       await page.waitForFunction(() => Boolean(document.querySelector('style[data-weekly-reward-ui]')));
       await page.locator('#tab-diary').click();
       await page.waitForFunction(() => Boolean(document.querySelector('#weekInputs .is-weekly-current')));

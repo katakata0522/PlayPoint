@@ -6,7 +6,7 @@ import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
 import { SHARE, restoreRateInput } from './share.js';
 import { CALC } from './calculator.js';
-import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js?v=2a5e293ded';
+import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js?v=ce22cbbb32';
 import { initWebVitalsMonitoring } from './web-vitals.js';
 import {
     applyRegionFromPath,
@@ -405,12 +405,19 @@ export function init() {
     trackWidgetReferral();
 
     registerServiceWorker();
+    if (document.documentElement?.dataset) {
+        document.documentElement.dataset.playpointReady = 'true';
+    }
 }
 
 // 初期ロード完了時の発火
-document.addEventListener('DOMContentLoaded', () => {
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
     init();
-});
+} else {
+    document.addEventListener('DOMContentLoaded', () => {
+        init();
+    }, { once: true });
+}
 
 if (typeof window !== 'undefined' && window.__TEST_ENV__) {
     window.PP_APP = window.PP_APP || {};

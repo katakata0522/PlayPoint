@@ -38,7 +38,7 @@ export function createExpansionConfigs(configs) {
             'tooltip-reverse-status': '<strong>【香港各等級基本獲點率】</strong><ul><li><strong>銅級:</strong> 1.0 pt / HK$7</li><li><strong>銀級:</strong> 1.25 pt / HK$7</li><li><strong>金級:</strong> 1.5 pt / HK$7</li><li><strong>鉑金級:</strong> 1.75 pt / HK$7</li><li><strong>鑽石級:</strong> 2.0 pt / HK$7</li></ul>'
         },
         uiText: {
-            title: 'Google Play Points 計算器（香港）｜升級還差多少？',
+            title: 'Google Play Points 計算器（香港）｜香港等級與消費金額試算',
             mainTitle: 'Google Play Points 計算器（香港）',
             siteAlias: '香港版 / 非官方 Play Points 試算工具',
             siteDescription: "輸入目前等級與尚欠積分，試算香港升級所需的港元消費金額。",
@@ -51,7 +51,7 @@ export function createExpansionConfigs(configs) {
             calculationNote: '※本頁依香港 Play Points 條件估算。今年剩餘期間以相同進度計算；實際獲點率、適用購買項目與活動條件請以 Google Play 官方畫面為準。',
             linkLatest: { text: '🆕 最新資訊中心 (日文)', href: '../latest/' },
             linkArticles: { text: '繁體中文指南', href: '../tw/articles/' },
-            linkGames: { text: '遊戲計算（台灣規則・非香港）', href: '../tw/games/' },
+            linkGames: { text: '🎮 遊戲計算（台灣規則・非香港）', href: '../tw/games/' },
             linkPrivacy: { text: '隱私權政策 (日文)', href: '../privacy.html' },
             linkTerms: { text: '服務條款 (日文)', href: '../terms.html' },
             linkQA: { text: '後記與更新資訊 (日文)', href: '../info.html' },
@@ -59,7 +59,7 @@ export function createExpansionConfigs(configs) {
             linkWidget: { text: '免費小工具（日文）', href: '../embed.html' },
             linkDiscount: { text: '💡 優惠儲值指南（繁中）', href: '../tw/articles/2026-06-20-discount-gift-cards.html' },
             linkAuthor: { text: '營運者與政策（繁體中文）', href: '/tw/author/katakata.html' },
-            linkAttention: { text: '⚠️ 國家別差異', href: '../attention.html' },
+            linkAttention: { text: '各國規則比較', href: '../tw/articles/google-play-points-country-differences.html' },
             calDetails: '領取您的 Google Play Points 每週獎勵並記錄在日記中！\nhttps://playpoint-sim.com/hk/',
             icsFilename: 'play-point-reward-reminder-hk.ics',
             copyResultTemplate: '▼Play Points 計算結果▼\n目標等級： {status}\n預估消費金額： 約{symbol}{yen}\n\n計算來源：Play Points 計算器 ( {url} )',
@@ -83,7 +83,7 @@ export function createExpansionConfigs(configs) {
             'tooltip-reverse-status': '<strong>India base earn rate by level:</strong><ul><li><strong>Bronze:</strong> 1.0 pt / ₹5</li><li><strong>Silver:</strong> 1.1 pts / ₹5</li><li><strong>Gold:</strong> 1.2 pts / ₹5</li><li><strong>Platinum:</strong> 1.4 pts / ₹5</li></ul>'
         },
         uiText: {
-            title: 'Google Play Points Calculator for India | Level-up spending estimate',
+            title: 'Google Play Points Calculator for India | INR level-up estimate',
             mainTitle: 'Google Play Points Calculator — India',
             siteAlias: 'India edition / unofficial Play Points calculator',
             siteDescription: "Enter your levels and points needed to estimate spending in Indian rupees.",
@@ -96,7 +96,7 @@ export function createExpansionConfigs(configs) {
             calculationNote: 'This estimate uses India Play Points conditions and the remaining period through December 31. Check Google Play for the latest eligible purchases, promotion terms, and earn rates.',
             linkLatest: { text: '🆕 Latest Hub (Japanese)', href: '../latest/' },
             linkArticles: { text: 'English guides', href: '../en/articles/' },
-            linkGames: { text: 'Game calculators (U.S. rules, not India)', href: '../en/games/' },
+            linkGames: { text: '🎮 Game calculators (U.S. rules, not India)', href: '../en/games/' },
             linkPrivacy: { text: 'Privacy Policy (Japanese)', href: '../privacy.html' },
             linkTerms: { text: 'Terms of Service (Japanese)', href: '../terms.html' },
             linkQA: { text: 'Afterword & Updates (Japanese)', href: '../info.html' },
@@ -104,7 +104,7 @@ export function createExpansionConfigs(configs) {
             linkWidget: { text: 'Free widget (Japanese)', href: '../embed.html' },
             linkDiscount: { text: '💡 Discount Guide (English)', href: '../en/articles/2026-06-20-discount-gift-cards.html' },
             linkAuthor: { text: 'Operator & Policy (English)', href: '/en/author/katakata.html' },
-            linkAttention: { text: 'Country rules', href: '../attention.html' },
+            linkAttention: { text: 'Country rules', href: '../en/articles/google-play-points-country-differences.html' },
             calDetails: 'Claim your Google Play Points Weekly Reward and log it!\nhttps://playpoint-sim.com/in/',
             icsFilename: 'google-play-reward-reminder-in.ics',
             copyResultTemplate: '▼Google Play Points Calculator Result▼\nTarget Status: {status}\nEstimated Spending: Approx. {symbol}{yen}\n\nSource: Google Play Points Calculator ( {url} )',

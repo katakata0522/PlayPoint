@@ -3,7 +3,7 @@
 import { CONFIGS, STATE, CONSTANTS, getNextFridayCalendarWindow } from './config.js';
 
 const HTML_TEXT_KEYS = new Set(['siteDescription', 'warningRate', 'guestNotice']);
-const LOCALIZED_PAGE_PREFIXES = ['/en/', '/ko/', '/tw/'];
+const LOCALIZED_PAGE_PREFIXES = ['/en/', '/ko/', '/tw/', '/hk/', '/in/'];
 const TAB_NAVIGATION_KEYS = new Set(['ArrowRight', 'ArrowLeft', 'Home', 'End']);
 const HOME_EXPERIENCE_SCROLL_THRESHOLD = 320;
 let homeExperiencePromise = null;
@@ -11,7 +11,7 @@ let homeExperienceScrollBound = false;
 
 function loadHomeExperience() {
     if (!homeExperiencePromise) {
-        homeExperiencePromise = import('/js/home-experience.js?v=20260919_2').catch((error) => {
+        homeExperiencePromise = import('/js/home-experience.js?v=4cc6fbf7ad').catch((error) => {
             homeExperiencePromise = null;
             throw error;
         });
@@ -74,7 +74,7 @@ function updateLocalizedLink(element, value, isSubDir) {
     if (!value.href) return;
 
     const rawHref = value.href;
-    const isAbsolute = rawHref.startsWith('http') || rawHref.startsWith('/');
+    const isAbsolute = rawHref.startsWith('http') || rawHref.startsWith('/') || rawHref.startsWith('../');
     const isLocalizedFile = rawHref.startsWith('articles/');
     const prefix = (isSubDir && !isLocalizedFile) ? '../' : './';
     element.href = isAbsolute ? rawHref : (prefix + rawHref.replace(/^\.\//, ''));

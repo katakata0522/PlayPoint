@@ -18,10 +18,10 @@ const REGION_PATHS = Object.freeze({
 });
 
 const PRIMARY_REGION_LABELS = Object.freeze({
-    JP: { desktop: 'JP', mobile: '🇯🇵 JP' },
-    US: { desktop: 'US', mobile: '🇺🇸 US' },
-    KR: { desktop: 'KR', mobile: '🇰🇷 KR' },
-    TW: { desktop: 'TW', mobile: '🇹🇼 TW' }
+    JP: { desktop: 'JP', mobile: 'JP' },
+    US: { desktop: 'US', mobile: 'US' },
+    KR: { desktop: 'KR', mobile: 'KR' },
+    TW: { desktop: 'TW', mobile: 'TW' }
 });
 
 const EXPANDED_REGION_TOGGLE_LABELS = Object.freeze({
@@ -42,31 +42,36 @@ const REGION_SELECTOR_COPY = Object.freeze({
         regionSuffix: 'Google Play Points region',
         more: 'More regions',
         current: 'current region',
-        menu: 'More Play Points regions'
+        menu: 'More Play Points regions',
+        saveError: 'Failed to save region preference.'
     },
     ja: {
         regionSuffix: 'Google Play Points の国・地域',
         more: 'その他の地域',
         current: '現在の地域',
-        menu: 'その他の Play Points 地域'
+        menu: 'その他の Play Points 地域',
+        saveError: '地域設定の保存に失敗しました。'
     },
     ko: {
         regionSuffix: 'Google Play Points 국가/지역',
         more: '다른 지역',
         current: '현재 지역',
-        menu: '다른 Play Points 지역'
+        menu: '다른 Play Points 지역',
+        saveError: '지역 설정을 저장하지 못했습니다.'
     },
     tw: {
         regionSuffix: 'Google Play Points 國家/地區',
         more: '更多地區',
         current: '目前地區',
-        menu: '更多 Play Points 地區'
+        menu: '更多 Play Points 地區',
+        saveError: '儲存地區設定失敗。'
     },
     hk: {
         regionSuffix: 'Google Play Points 國家/地區',
         more: '更多地區',
         current: '目前地區',
-        menu: '更多 Play Points 地區'
+        menu: '更多 Play Points 地區',
+        saveError: '儲存地區設定失敗。'
     }
 });
 
@@ -136,24 +141,17 @@ function ensureRegionSelectorCriticalStyle() {
     width: 100%;
     gap: 0.25rem;
   }
-  .region-switch > button {
+  .region-switch > button,
+  .region-switch .region-more-toggle {
     width: 100%;
     min-width: 0;
     min-height: 44px;
     padding: 0.45em 0.12em;
     border: 1px solid var(--input-border-color) !important;
     border-radius: 6px !important;
-    font-size: 0;
     line-height: 1;
     white-space: nowrap;
   }
-  .region-switch > button[data-region]::after {
-    font-size: clamp(0.72rem, 3.5vw, 0.82rem);
-  }
-  .region-switch > button[data-region="JP"]::after { content: "🇯🇵 JP"; }
-  .region-switch > button[data-region="US"]::after { content: "🇺🇸 US"; }
-  .region-switch > button[data-region="KR"]::after { content: "🇰🇷 KR"; }
-  .region-switch > button[data-region="TW"]::after { content: "🇹🇼 TW"; }
 }`;
     document.head.appendChild(style);
 }
@@ -168,18 +166,16 @@ function ensureRegionSelectorStylesheet() {
 }
 
 function applyResponsiveRegionLabel(button, region, label) {
-    const desktop = document.createElement('span');
-    desktop.className = 'region-label-desktop';
-    desktop.textContent = label.desktop;
-
-    const mobile = document.createElement('span');
-    mobile.className = 'region-label-mobile';
-    mobile.setAttribute('aria-hidden', 'true');
-    mobile.textContent = label.mobile;
+    const existingLabel = button.querySelector('.region-label-desktop');
+    if (button.children.length !== 1 || !existingLabel || existingLabel.textContent !== label.desktop) {
+        const desktop = document.createElement('span');
+        desktop.className = 'region-label-desktop';
+        desktop.textContent = label.desktop;
+        button.replaceChildren(desktop);
+    }
 
     const copy = getSelectorCopy();
     const accessibleName = getAccessibleRegionName(region);
-    button.replaceChildren(desktop, mobile);
     button.setAttribute('aria-label', `${label.desktop} ${accessibleName} — ${copy.regionSuffix}`);
     button.title = accessibleName;
 }
@@ -212,7 +208,21 @@ function updateExpandedRegionActiveState() {
     if (toggle) {
         const activeExpandedRegion = Boolean(currentExpandedRegion);
         const currentName = activeExpandedRegion ? getAccessibleRegionName(STATE.currentRegion) : '';
-        toggle.textContent = currentExpandedRegion?.short || '🌐';
+        if (activeExpandedRegion) {
+            toggle.dataset.activeRegion = STATE.currentRegion;
+            const existing = toggle.querySelector('.region-label-desktop');
+            if (toggle.children.length !== 1 || !existing || existing.textContent !== currentExpandedRegion.short) {
+                const span = document.createElement('span');
+                span.className = 'region-label-desktop';
+                span.textContent = currentExpandedRegion.short;
+                toggle.replaceChildren(span);
+            }
+        } else {
+            delete toggle.dataset.activeRegion;
+            if (toggle.textContent !== '🌐' || toggle.children.length > 0) {
+                toggle.textContent = '🌐';
+            }
+        }
         toggle.dataset.regionActive = activeExpandedRegion ? 'true' : 'false';
         toggle.classList.toggle(CONSTANTS.CLASS_ACTIVE, activeExpandedRegion);
         if (activeExpandedRegion) toggle.setAttribute('aria-current', 'true');
@@ -241,49 +251,52 @@ export function ensureRegionSelector() {
     ensureRegionSelectorStylesheet();
     decoratePrimaryRegionButtons(switcher);
 
-    if (switcher.querySelector('[data-region-more]')) {
-        updateExpandedRegionActiveState();
-        return;
-    }
-
     const copy = getSelectorCopy();
-    const wrapper = document.createElement('div');
-    wrapper.className = 'region-more';
-    wrapper.dataset.regionMore = 'true';
-    wrapper.innerHTML = `
+    let wrapper = switcher.querySelector('[data-region-more]');
+    if (!wrapper) {
+        wrapper = document.createElement('div');
+        wrapper.className = 'region-more';
+        wrapper.dataset.regionMore = 'true';
+        wrapper.innerHTML = `
         <button type="button" class="region-more-toggle" data-region-menu-toggle data-region-active="false" aria-haspopup="menu" aria-expanded="false" aria-label="${copy.more}" title="${copy.more}">🌐</button>
         <div class="region-more-menu" data-region-menu role="menu" aria-label="${copy.menu}" hidden>
             <p class="region-more-menu__title">${copy.more}</p>
             <button type="button" class="region-more-option" role="menuitem" data-region="HK">
-                <span class="region-more-option__flag" aria-hidden="true">🇭🇰</span>
+                <span class="region-more-option__flag" aria-hidden="true"></span>
                 <span class="region-more-option__copy"><span class="region-more-option__name">香港 Hong Kong</span><span class="region-more-option__detail">繁體中文 · HKD</span></span>
             </button>
             <button type="button" class="region-more-option" role="menuitem" data-region="IN">
-                <span class="region-more-option__flag" aria-hidden="true">🇮🇳</span>
+                <span class="region-more-option__flag" aria-hidden="true"></span>
                 <span class="region-more-option__copy"><span class="region-more-option__name">India</span><span class="region-more-option__detail">English · INR</span></span>
             </button>
         </div>`;
-    switcher.appendChild(wrapper);
+        switcher.appendChild(wrapper);
+    }
 
-    const toggle = wrapper.querySelector('[data-region-menu-toggle]');
-    toggle.addEventListener('click', (event) => {
-        event.stopPropagation();
-        setMenuOpen(wrapper, toggle.getAttribute('aria-expanded') !== 'true');
-    });
+    if (wrapper.dataset.regionBound !== 'true') {
+        wrapper.dataset.regionBound = 'true';
+        const toggle = wrapper.querySelector('[data-region-menu-toggle]');
+        if (toggle) {
+            toggle.addEventListener('click', (event) => {
+                event.stopPropagation();
+                setMenuOpen(wrapper, toggle.getAttribute('aria-expanded') !== 'true');
+            });
 
-    wrapper.querySelectorAll('[data-region]').forEach(button => {
-        button.addEventListener('click', () => setMenuOpen(wrapper, false));
-    });
+            wrapper.querySelectorAll('[data-region]').forEach(button => {
+                button.addEventListener('click', () => setMenuOpen(wrapper, false));
+            });
 
-    document.addEventListener('click', (event) => {
-        if (!wrapper.contains(event.target)) setMenuOpen(wrapper, false);
-    });
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
-            setMenuOpen(wrapper, false);
-            toggle.focus();
+            document.addEventListener('click', (event) => {
+                if (!wrapper.contains(event.target)) setMenuOpen(wrapper, false);
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+                    setMenuOpen(wrapper, false);
+                    toggle.focus();
+                }
+            });
         }
-    });
+    }
 
     updateExpandedRegionActiveState();
 }
@@ -307,7 +320,7 @@ export function switchRegion(newRegion, updateUIForRegion = () => {}) {
         localStorage.setItem(CONSTANTS.STORAGE_REGION_KEY, newRegion);
     } catch (e) {
         console.error('地域設定の保存に失敗しました:', e);
-        UI.showToast('地域設定の保存に失敗しました。', 'error');
+        UI.showToast(getSelectorCopy().saveError, 'error');
     }
 
     const nextPath = REGION_PATHS[newRegion];

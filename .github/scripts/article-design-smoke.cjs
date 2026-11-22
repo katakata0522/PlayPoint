@@ -192,6 +192,9 @@ async function inspect(browser, baseUrl, article, viewport) {
     if (await relatedTarget.count()) {
       const visibility = await relatedTarget.evaluate(element => getComputedStyle(element.closest('.related-links-section, .contextual-guide-links, .article-related-guides')).contentVisibility);
       assert(visibility === 'visible', article.key + '/' + viewport.key + ': related navigation must have stable rendered geometry');
+      await relatedTarget.evaluate(element => element.scrollIntoView({ block: 'center', behavior: 'instant' }));
+      await page.waitForTimeout(100);
+      await relatedTarget.evaluate(element => element.scrollIntoView({ block: 'center', behavior: 'instant' }));
       await relatedTarget.hover();
       await relatedTarget.click({ trial: true });
       const motion = await relatedTarget.evaluate(element => ({ transform: getComputedStyle(element).transform, transition: getComputedStyle(element).transitionDuration }));

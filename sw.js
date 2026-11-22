@@ -1,13 +1,13 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20261113_0804-8aba252f';;
+const CACHE_NAME = 'playpoint-calc-v20261113_0804-c57601c3';
 // 初回は計算機の必須シェルだけを先読みし、記事・日記などは実利用時にキャッシュする。
 const ASSETS = [
   './js/ad-url-privacy.js?v=23412c06ee',
   './',
-  './style.css?v=fbfb97e91d',
-  './region-selector.css',
+  './style.css?v=62518d467b',
+  './region-selector.css?v=01460f47c6',
   './favicon.svg',
   './manifest.json',
   './pwa-launch.html',
@@ -21,8 +21,8 @@ const ASSETS = [
   './js/calculator-result-view.js',
   './js/region-rules.js',
   './js/share.js',
-  './js/main-calculator-ui.js?v=2a5e293ded',
-  './js/main.js?v=f0a058dc57',
+  './js/main-calculator-ui.js?v=ce22cbbb32',
+  './js/main.js?v=ae61a55ce4',
   './js/web-vitals.js',
   './js/region-navigation.js',
   './js/region-expansion-config.js',
@@ -183,22 +183,39 @@ async function handleNavigationRequest(request, cacheKey, event) {
   }
 }
 
-// 静的資産は既存cacheを先に返し、再取得と保存をイベントの寿命へ結び付ける。
+const IMMUTABLE_VERSION_QUERY_PATTERN = /[?&]v=[a-f0-9]{10}[a-z]?(?:&|$)/i;
+
+// 静的資産は既存cacheを先に返す。内容ハッシュ付きキャッシュヒット時は不要な再取得を省く。
 function handleStaticRequest(request, cacheKey, event) {
   const finish = trackResponseStorage(event);
   const cachePromise = openRuntimeCache();
-  const refreshed = cachePromise.then(async (cache) => {
-    const networkResponse = await fetchWithTimeout(request);
-    storeRuntimeResponse(cache, cacheKey, networkResponse).finally(finish);
-    return networkResponse;
+
+  const responseAndWork = cachePromise.then(async (cache) => {
+    const cachedResponse = await matchRuntimeCache(cache, cacheKey);
+    if (cachedResponse && IMMUTABLE_VERSION_QUERY_PATTERN.test(cacheKey)) {
+      finish();
+      return { response: cachedResponse, background: null };
+    }
+    const refreshed = (async () => {
+      const networkResponse = await fetchWithTimeout(request);
+      storeRuntimeResponse(cache, cacheKey, networkResponse).finally(finish);
+      return networkResponse;
+    })();
+    if (cachedResponse) {
+      return { response: cachedResponse, background: refreshed };
+    }
+    const networkResponse = await refreshed;
+    return { response: networkResponse, background: null };
   });
+
   // cache hitでもworker終了で再取得が途中放棄されないよう、dispatch中に登録する。
   // background失敗は処理済みにするが、cache missの応答側には通信エラーを伝える。
-  event.waitUntil(refreshed.then(() => undefined, () => { finish(); }));
-  return cachePromise.then(async (cache) => {
-    const cachedResponse = await matchRuntimeCache(cache, cacheKey);
-    return cachedResponse || refreshed;
-  });
+  event.waitUntil(
+    responseAndWork
+      .then((item) => item.background || undefined)
+      .catch(() => { finish(); })
+  );
+  return responseAndWork.then((item) => item.response);
 }
 
 self.addEventListener('fetch', (event) => {

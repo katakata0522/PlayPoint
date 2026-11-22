@@ -36,8 +36,9 @@ for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.ht
     );
     for (const [region, label] of primaryRegions) {
       const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      assert.match(html, new RegExp(`<button data-region="${region}"(?: class="active")?>${escaped}<\\/button>`));
+      assert.match(html, new RegExp(`<button data-region="${region}"(?: class="active")?><span class="region-label-desktop">${escaped}<\\/span><\\/button>`));
     }
+    assert.match(html, /class="region-more" data-region-more="true"/, `${file}: static .region-more slot must be pre-rendered`);
     const active = html.match(/<button data-region="(?:JP|US|KR|TW)" class="active">/g) || [];
     if (primaryRegionFiles.has(file)) {
       assert.equal(active.length, 1, `${file}: exactly one primary region must be active in fallback HTML`);
@@ -75,28 +76,28 @@ test('mobile selector owns first-paint protection before the async stylesheet ar
   assert.match(js, /ensureRegionSelectorCriticalStyle\(\);[\s\S]*?const bootRegionSelector/);
 });
 
-test('mobile selector keeps separate compact labels and a 44px touch target', () => {
+test('mobile selector keeps unified SVG flag labels without emoji duplication and a 44px touch target', () => {
   const css = fs.readFileSync(path.join(root, 'region-selector.css'), 'utf8');
 
-  assert.match(css, /\.region-label-desktop \{[\s\S]*?display: none/);
-  assert.match(css, /\.region-label-mobile \{[\s\S]*?display: inline/);
+  assert.match(css, /\.region-label-mobile \{[\s\S]*?display: none/);
+  assert.match(css, /@media \(max-width: 520px\)[\s\S]*?\.region-label-desktop \{[\s\S]*?display: inline-flex/);
+  assert.match(css, /@media \(max-width: 520px\)[\s\S]*?\.region-label-desktop::before \{[\s\S]*?width: 16px;[\s\S]*?height: 12px;/);
   assert.match(css, /min-height: 44px/);
 });
 
-test('desktop selector uses local SVG flags without depending on platform emoji rendering', () => {
+test('selector uses local SVG flags across desktop and mobile without depending on platform emoji rendering', () => {
   const css = fs.readFileSync(path.join(root, 'region-selector.css'), 'utf8');
   const js = fs.readFileSync(path.join(root, 'js', 'region-navigation.js'), 'utf8');
 
-  assert.match(css, /@media \(min-width: 521px\)[\s\S]*?\.region-label-desktop::before/);
-  assert.match(css, /width: 24px;[\s\S]*?height: 18px;/);
+  assert.match(css, /\.region-label-desktop::before[\s\S]*?width: 24px;[\s\S]*?height: 18px;/);
   assert.doesNotMatch(css, /data:image\/svg\+xml;base64/);
+  assert.doesNotMatch(js, /[\u{1F1E6}-\u{1F1FF}]/u, 'region-navigation.js must not inject platform flag emojis');
 
-  const labels = { JP: '🇯🇵 JP', US: '🇺🇸 US', KR: '🇰🇷 KR', TW: '🇹🇼 TW' };
   const assets = { JP: 'jp.svg', US: 'us.svg', KR: 'kr.svg', TW: 'tw.svg', HK: 'hk.svg', IN: 'in.svg' };
-  for (const [region, mobile] of Object.entries(labels)) {
+  for (const region of ['JP', 'US', 'KR', 'TW']) {
     assert.ok(
-      js.includes(`${region}: { desktop: '${region}', mobile: '${mobile}' }`),
-      `missing responsive visible label for ${region}`
+      js.includes(`${region}: { desktop: '${region}', mobile: '${region}' }`),
+      `missing clean label for ${region}`
     );
   }
   for (const [region, file] of Object.entries(assets)) {

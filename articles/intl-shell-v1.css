@@ -140,8 +140,8 @@ html[lang] body .intl-mobile-menu nav,html[lang] body .intl-article-site-header 
 html[lang] body .intl-mobile-menu nav a { display:flex; align-items:center; min-height:44px; padding:8px 12px; color:var(--reading-link); font-size:15px; }
 html[lang] body .intl-global-nav { display:none; }
 html[lang] body .intl-article-breadcrumbs { width:calc(100% - 24px); margin:10px auto; }
-html[lang] body .intl-article-breadcrumbs .intl-breadcrumb-current { display:none; }
-html[lang] body .intl-article-breadcrumbs nav > span:nth-last-child(2) { display:none; }
+html[lang] body .intl-article-breadcrumbs nav:has(> a + span + a) .intl-breadcrumb-current { display:none; }
+html[lang] body .intl-article-breadcrumbs nav:has(> a + span + a) > span:nth-last-child(2) { display:none; }
 html[lang] body .intl-layout-container { width:calc(100% - 24px); margin:12px auto; gap:20px; }
 html[lang] body .intl-layout-container .main-card { padding:18px 12px; border-radius:10px; }
 html[lang] body .intl-layout-container .hero { padding:0; margin-bottom:16px; }

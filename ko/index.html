@@ -30,12 +30,12 @@
     <meta property="og:description" content="구글 플레이 포인트 등급 달성 조건 및 획득 포인트를 무료로 시뮬레이션하는 계산기입니다.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/ko/">
-    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta property="og:image" content="https://playpoint-sim.com/images/ogp/pages/ko-home.jpg">
     <meta name="twitter:image:alt" content="Google Play Points 계산기 OGP 이미지">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Google Play Points 계산기 OGP 이미지">
-    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:locale" content="ko_KR">
     <meta property="og:locale:alternate" content="ja_JP">
     <meta property="og:locale:alternate" content="en_US">
@@ -46,15 +46,19 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Google Play Points 계산기 | 다음 등급까지 얼마가 필요할까?">
     <meta name="twitter:description" content="구글 플레이 포인트 등급 달성 조건 및 획득 포인트를 무료로 시뮬레이션하는 계산기입니다.">
-    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
+    <meta name="twitter:image" content="https://playpoint-sim.com/images/ogp/pages/ko-home.jpg">
 
-    <link rel="modulepreload" href="../js/main.js?v=f0a058dc57">
+    <link rel="modulepreload" href="../js/main.js?v=ae61a55ce4">
     <link rel="modulepreload" href="../js/config.js">
+    <link rel="modulepreload" href="../js/region-rules.js">
+    <link rel="modulepreload" href="../js/region-navigation.js">
     <link rel="modulepreload" href="../js/analytics-core.js?v=8c30c353a7">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=fbfb97e91d">
+    <link rel="modulepreload" href="../js/calculator-core.js">
+    <link rel="modulepreload" href="../js/calculator-result-view.js">
+    <link rel="stylesheet" href="../style.css?v=62518d467b">
     <link rel="stylesheet" href="../visitor-thanks.css?v=d8a0258873">
     <script type="speculationrules">
     {
@@ -84,13 +88,13 @@
           {
             "or": [
               {
-                "href_matches": "/articles/*"
+                "href_matches": "/ko/articles/*"
               },
               {
-                "href_matches": "/blog/*"
+                "href_matches": "/ko/games/*"
               },
               {
-                "href_matches": "/status/*"
+                "href_matches": "/ko/status/*"
               }
             ]
           },
@@ -120,7 +124,7 @@
       "author": {
         "@type": "Person",
         "name": "katakata",
-        "url": "https://playpoint-sim.com/author/katakata.html"
+        "url": "https://playpoint-sim.com/ko/author/katakata.html"
       },
       "dateModified": "2026-10-08",
       "offers": {
@@ -141,7 +145,7 @@
       "publisher": {
         "@type": "Person",
         "name": "katakata",
-        "url": "https://playpoint-sim.com/author/katakata.html"
+        "url": "https://playpoint-sim.com/ko/author/katakata.html"
       },
       "potentialAction": {
         "@type": "SearchAction",
@@ -222,20 +226,34 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 @media(prefers-reduced-motion:reduce){.calculator-advanced-settings__chevron{transition:none}}
 </style>
         <script id="playpoint-first-view-state">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&(Number(p.get('multiplier'))>1||Number(p.get('baseRate'))>0)){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>
-<link rel="stylesheet" href="/region-selector.css?v=2a70477346" data-region-selector-style="true">
+<link rel="stylesheet" href="/region-selector.css?v=01460f47c6" data-region-selector-style="true">
 <meta name="playpoint:anchor-ads" content="collapsed-bottom">
 </head>
 <body>
 <main class="calculator-wrapper">
    <div class="top-bar">
         <div class="region-switch" aria-label="Play 국가 또는 지역">
-            <button data-region="JP">JP</button>
-            <button data-region="US">US</button>
-            <button data-region="KR" class="active">KR</button>
-            <button data-region="TW">TW</button>
+            <button data-region="JP"><span class="region-label-desktop">JP</span></button>
+            <button data-region="US"><span class="region-label-desktop">US</span></button>
+            <button data-region="KR" class="active"><span class="region-label-desktop">KR</span></button>
+            <button data-region="TW"><span class="region-label-desktop">TW</span></button>
+            <div class="region-more" data-region-more="true">
+                <button type="button" class="region-more-toggle" data-region-menu-toggle data-region-active="false" aria-haspopup="menu" aria-expanded="false" aria-label="다른 지역" title="다른 지역">🌐</button>
+                <div class="region-more-menu" data-region-menu role="menu" aria-label="다른 Play Points 지역" hidden>
+                    <p class="region-more-menu__title">다른 지역</p>
+                    <button type="button" class="region-more-option" role="menuitem" data-region="HK">
+                        <span class="region-more-option__flag" aria-hidden="true"></span>
+                        <span class="region-more-option__copy"><span class="region-more-option__name">香港 Hong Kong</span><span class="region-more-option__detail">繁體中文 · HKD</span></span>
+                    </button>
+                    <button type="button" class="region-more-option" role="menuitem" data-region="IN">
+                        <span class="region-more-option__flag" aria-hidden="true"></span>
+                        <span class="region-more-option__copy"><span class="region-more-option__name">India</span><span class="region-more-option__detail">English · INR</span></span>
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="header-links">
-            <a href="./articles/google-play-points-country-differences.html" class="alert-link" data-country-notes-link data-lang-key="linkAttention">⚠️ 국가별 안내</a>
+            <a href="./articles/google-play-points-country-differences.html" class="country-rules-link" data-country-notes-link data-lang-key="linkAttention">국가별 규칙</a>
             <a href="./games/" data-lang-key="linkGames">게임별 계산</a>
             <a href="./articles/" data-lang-key="linkArticles">가이드</a>
         </div>
@@ -258,14 +276,14 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <span class="info-btn" id="currentStatus-help" aria-labelledby="currentStatus-caption currentStatus-help" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
                 <div class="tooltip-box" id="tooltip-current-status" hidden></div>
             </label>
-            <select id="currentStatus"></select>
+            <select id="currentStatus"><option value="1" selected>브론즈</option><option value="1.1">실버</option><option value="1.3">골드</option><option value="1.6">플래티넘</option><option value="2">다이아몬드</option></select>
 
             <label for="targetStatus" class="label-with-tooltip">
                 <span id="targetStatus-caption" data-lang-key="labelTargetStatus">목표 등급</span>
                 <span class="info-btn" id="targetStatus-help" aria-labelledby="targetStatus-caption targetStatus-help" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status" hidden></div>
             </label>
-            <select id="targetStatus"></select>
+            <select id="targetStatus"><option value="150" data-status-label="실버" data-rank-key="silver" data-target-kind="upgrade" selected>실버 (승급) (150pt)</option><option value="600" data-status-label="골드" data-rank-key="gold" data-target-kind="upgrade">골드 (승급) (600pt)</option><option value="2400" data-status-label="플래티넘" data-rank-key="platinum" data-target-kind="upgrade">플래티넘 (승급) (2,400pt)</option><option value="15000" data-status-label="다이아몬드" data-rank-key="diamond" data-target-kind="upgrade">다이아몬드 (승급) (15,000pt)</option></select>
 
             <label for="neededPoints" class="label-with-tooltip">
                 <span id="neededPoints-caption" data-lang-key="labelNeededPoints">목표까지 필요한 포인트</span>
@@ -284,7 +302,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">적립률·프로모션 조정 (선택)</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
 <label for="baseRate" class="label-with-tooltip">
-                <span data-simplified-calculator-copy="baseRateLabel">₩1,000당 적립률 (자동 입력·수정 가능)</span>
+                <span id="baseRate-caption" data-simplified-calculator-copy="baseRateLabel">₩1,000당 적립률 (자동 입력·수정 가능)</span>
                 <span class="info-btn" id="baseRate-help" aria-labelledby="baseRate-caption baseRate-help" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate" hidden></div>
             </label>
@@ -292,7 +310,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-simplified-calculator-copy="multiplierLabel">캠페인 특별 적립률 (예: 1,000원당 3pt)</span>
+                <span id="multiplier-caption" data-simplified-calculator-copy="multiplierLabel">캠페인 특별 적립률 (예: 1,000원당 3pt)</span>
                 <span class="info-btn" id="multiplier-help" aria-labelledby="multiplier-caption multiplier-help" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier" hidden></div>
             </label>
@@ -335,7 +353,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <span class="info-btn" id="reverseStatus-help" aria-labelledby="reverseStatus-caption reverseStatus-help" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-status" hidden></div>
             </label>
-            <select id="reverseStatus"></select>
+            <select id="reverseStatus"><option value="1" selected>브론즈</option><option value="1.1">실버</option><option value="1.3">골드</option><option value="1.6">플래티넘</option><option value="2">다이아몬드</option></select>
 
             <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">포인트 계산</button>
             <details id="reverse-rate-settings" class="calculator-basis-settings">
@@ -506,7 +524,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 </main>
 
 <script type="module" src="../js/intl-copy-overrides.js?v=5b9d8046e5"></script>
-<script type="module" src="../js/main.js?v=f0a058dc57"></script>
+<script type="module" src="../js/main.js?v=ae61a55ce4"></script>
 <script src="../js/third-party.js?v=2beb04f0e9" defer></script>
 
 </body>

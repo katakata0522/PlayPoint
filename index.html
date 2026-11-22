@@ -48,13 +48,17 @@
     <meta name="twitter:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を逆算できます。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="js/main.js?v=f0a058dc57">
+    <link rel="modulepreload" href="js/main.js?v=ae61a55ce4">
     <link rel="modulepreload" href="js/config.js">
+    <link rel="modulepreload" href="js/region-rules.js">
+    <link rel="modulepreload" href="js/region-navigation.js">
     <link rel="modulepreload" href="js/analytics-core.js?v=8c30c353a7">
     <link rel="modulepreload" href="js/ui.js">
     <link rel="modulepreload" href="js/share.js">
     <link rel="modulepreload" href="js/calculator.js">
-    <link rel="stylesheet" href="style.css?v=fbfb97e91d">
+    <link rel="modulepreload" href="js/calculator-core.js">
+    <link rel="modulepreload" href="js/calculator-result-view.js">
+    <link rel="stylesheet" href="style.css?v=62518d467b">
     <script type="speculationrules">
     {
   "prefetch": [
@@ -213,17 +217,31 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 @media(prefers-reduced-motion:reduce){.calculator-advanced-settings__chevron{transition:none}}
 </style>
         <script id="playpoint-first-view-state">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&(Number(p.get('multiplier'))>1||Number(p.get('baseRate'))>0)){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>
-<link rel="stylesheet" href="/region-selector.css?v=2a70477346" data-region-selector-style="true">
+<link rel="stylesheet" href="/region-selector.css?v=01460f47c6" data-region-selector-style="true">
 <meta name="playpoint:anchor-ads" content="collapsed-bottom">
 </head>
 <body>
 <main class="calculator-wrapper">
    <div class="top-bar">
         <div class="region-switch" aria-label="Play の国または地域">
-            <button data-region="JP" class="active">JP</button>
-            <button data-region="US">US</button>
-            <button data-region="KR">KR</button>
-            <button data-region="TW">TW</button>
+            <button data-region="JP" class="active"><span class="region-label-desktop">JP</span></button>
+            <button data-region="US"><span class="region-label-desktop">US</span></button>
+            <button data-region="KR"><span class="region-label-desktop">KR</span></button>
+            <button data-region="TW"><span class="region-label-desktop">TW</span></button>
+            <div class="region-more" data-region-more="true">
+                <button type="button" class="region-more-toggle" data-region-menu-toggle data-region-active="false" aria-haspopup="menu" aria-expanded="false" aria-label="その他の地域" title="その他の地域">🌐</button>
+                <div class="region-more-menu" data-region-menu role="menu" aria-label="その他の Play Points 地域" hidden>
+                    <p class="region-more-menu__title">その他の地域</p>
+                    <button type="button" class="region-more-option" role="menuitem" data-region="HK">
+                        <span class="region-more-option__flag" aria-hidden="true"></span>
+                        <span class="region-more-option__copy"><span class="region-more-option__name">香港 Hong Kong</span><span class="region-more-option__detail">繁體中文 · HKD</span></span>
+                    </button>
+                    <button type="button" class="region-more-option" role="menuitem" data-region="IN">
+                        <span class="region-more-option__flag" aria-hidden="true"></span>
+                        <span class="region-more-option__copy"><span class="region-more-option__name">India</span><span class="region-more-option__detail">English · INR</span></span>
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="header-links">
             <a href="attention.html" class="alert-link" data-country-notes-link data-lang-key="linkAttention">⚠️ For users outside Japan</a>
@@ -249,14 +267,14 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <span class="info-btn" id="currentStatus-help" aria-labelledby="currentStatus-caption currentStatus-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
                 <div class="tooltip-box" id="tooltip-current-status" hidden></div>
             </label>
-            <select id="currentStatus"></select>
+            <select id="currentStatus"><option value="1" selected>ブロンズ</option><option value="1.25">シルバー</option><option value="1.5">ゴールド</option><option value="1.75">プラチナ</option><option value="2">ダイヤモンド</option></select>
 
             <label for="targetStatus" class="label-with-tooltip">
                 <span id="targetStatus-caption" data-lang-key="labelTargetStatus">目標ステータス</span>
                 <span class="info-btn" id="targetStatus-help" aria-labelledby="targetStatus-caption targetStatus-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status" hidden></div>
             </label>
-            <select id="targetStatus"></select>
+            <select id="targetStatus"><option value="250" data-status-label="シルバー" data-rank-key="silver" data-target-kind="upgrade" selected>シルバー (昇格) (250pt)</option><option value="1000" data-status-label="ゴールド" data-rank-key="gold" data-target-kind="upgrade">ゴールド (昇格) (1,000pt)</option><option value="4000" data-status-label="プラチナ" data-rank-key="platinum" data-target-kind="upgrade">プラチナ (昇格) (4,000pt)</option><option value="15000" data-status-label="ダイヤモンド" data-rank-key="diamond" data-target-kind="upgrade">ダイヤモンド (昇格) (15,000pt)</option></select>
 
             <label for="neededPoints" class="label-with-tooltip">
                 <span id="neededPoints-caption" data-lang-key="labelNeededPoints">目標までの必要ポイント</span>
@@ -275,7 +293,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">獲得率・キャンペーンを調整（任意）</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
 <label for="baseRate" class="label-with-tooltip">
-                <span data-simplified-calculator-copy="baseRateLabel">100円あたりの獲得率（自動入力・編集可）</span>
+                <span id="baseRate-caption" data-simplified-calculator-copy="baseRateLabel">100円あたりの獲得率（自動入力・編集可）</span>
                 <span class="info-btn" id="baseRate-help" aria-labelledby="baseRate-caption baseRate-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate" hidden></div>
             </label>
@@ -283,7 +301,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-simplified-calculator-copy="multiplierLabel">キャンペーン特別獲得率（例：3pt/100円）</span>
+                <span id="multiplier-caption" data-simplified-calculator-copy="multiplierLabel">キャンペーン特別獲得率（例：3pt/100円）</span>
                 <span class="info-btn" id="multiplier-help" aria-labelledby="multiplier-caption multiplier-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier" hidden></div>
             </label>
@@ -328,7 +346,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <span class="info-btn" id="reverseStatus-help" aria-labelledby="reverseStatus-caption reverseStatus-help" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-status" hidden></div>
             </label>
-            <select id="reverseStatus"></select>
+            <select id="reverseStatus"><option value="1" selected>ブロンズ</option><option value="1.25">シルバー</option><option value="1.5">ゴールド</option><option value="1.75">プラチナ</option><option value="2">ダイヤモンド</option></select>
 
             <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">ポイントを計算</button>
             <details id="reverse-rate-settings" class="calculator-basis-settings">
@@ -517,7 +535,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="js/main.js?v=f0a058dc57"></script>
+<script type="module" src="js/main.js?v=ae61a55ce4"></script>
 <script src="js/third-party.js?v=2beb04f0e9" defer></script>
 
 </body>
