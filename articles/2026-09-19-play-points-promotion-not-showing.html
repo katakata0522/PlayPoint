@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="./article-shared.css?v=f91895d388" />
 
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://playpoint-sim.com/articles/2026-09-19-play-points-promotion-not-showing.html","inLanguage":"ja"},"headline":"「みんなには出てるのに自分にはない」Google Play Pointsの増量キャンペーンが表示されない理由","description":"Google Play Pointsのポイント増量・ポイントアップキャンペーンが自分だけ表示されない時の確認順を解説。全員対象とは限らない理由、Playのカスタマイズ設定、Play Pass、PC限定、新端末、国・通貨条件まで整理します。","inLanguage":"ja","datePublished":"2026-09-19T00:00:00+09:00","dateModified":"2026-10-31T00:00:00+09:00","image":"https://playpoint-sim.com/articles/ogp/2026-09-19-play-points-promotion-not-showing.png","author":{"@type":"Person","name":"かたかた","url":"https://playpoint-sim.com/author/katakata.html"},"publisher":{"@type":"Organization","name":"Playポイント計算機","url":"https://playpoint-sim.com/","logo":{"@type":"ImageObject","url":"https://playpoint-sim.com/favicon.svg"}}}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"同じダイヤモンドの人に出ているなら、自分にも出るはず?","acceptedAnswer":{"@type":"Answer","text":"そうとは限りません。Google公式は、一部プロモーションは購入履歴やPlayストアでの操作に基づいて選ばれた一部ユーザーだけが対象になると案内しています。"}},{"@type":"Question","name":"カスタマイズをONにすれば必ず直る?","acceptedAnswer":{"@type":"Answer","text":"保証はありません。表示に影響する可能性はGoogle公式に明記されていますが、プロモーションごとに対象条件は異なります。設定変更はプライバシー面も含めて自分で判断してください。"}},{"@type":"Question","name":"Playストアを更新・再インストールした方がいい?","acceptedAnswer":{"@type":"Answer","text":"この症状だけなら最初の手段にはしません。まず対象条件、アカウント、カスタマイズ、Play Pass、PC限定などを確認します。Playストア自体が正常に動かない場合は別のトラブルとして切り分けます。"}},{"@type":"Question","name":"表示はあったのに増量されなかった場合は?","acceptedAnswer":{"@type":"Answer","text":"この記事とは別の症状です。購入日時、有効化、対象商品、ポイント履歴などを確認してください。 購入後にポイントが反映されない時の確認順 で整理しています。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"同じダイヤモンドの人に出ているなら、自分にも出るはず?","acceptedAnswer":{"@type":"Answer","text":"そうとは限りません。Google公式でも、一部プロモーションは購入履歴やPlayストアでの操作に基づいて選ばれた一部ユーザーだけが対象になると案内されています。"}},{"@type":"Question","name":"カスタマイズをONにすれば必ず直る?","acceptedAnswer":{"@type":"Answer","text":"必ず出るとは決まっていません。表示に影響する可能性は公式ヘルプに書かれていますが、プロモーションごとに対象条件は異なるため、プライバシー面の納得感も含めて設定を判断するのがおすすめです。"}},{"@type":"Question","name":"Playストアを更新・再インストールした方がいい?","acceptedAnswer":{"@type":"Answer","text":"キャンペーンが見当たらない症状だけなら、最初から試す必要は薄いです。まず対象条件やアカウント、カスタマイズ、Play Pass、PC限定の有無を切り分け、Playストアの動作自体がおかしい場合だけアプリ側のトラブルとして対処します。"}},{"@type":"Question","name":"表示はあったのに増量されなかった場合は?","acceptedAnswer":{"@type":"Answer","text":"表示されない症状とは別の確認が必要です。購入日時や事前の有効化、対象商品、ポイント履歴の順に見ていきます。手順は 購入後にポイントが反映されない時の確認順 にまとめています。"}}]}</script>
   <script type="speculationrules">
   {
     "prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"selector_matches":"[rel~=nofollow]"}}]},"eagerness":"moderate"}],
@@ -86,57 +86,55 @@
 </div>
   </header>
 
-  <div class="intro"><p>SNSで見かけた増量キャンペーンを使おうとしたら、自分の画面にはない。同じゲーム、同じランクなのに、どうして違うのか。設定をあちこち触る前に、対象者と購入先から見ていきましょう。</p></div>
+  <div class="intro"><p>SNSでポイント増量の話題を見かけたのに、自分のGoogle Playを開くと見当たらない。同じゲームを遊んでいて、ランクも同じはずなのにどうしてだろうと不思議になりますよね。設定をあれこれ触る前に、増量キャンペーンが表示されない理由をアカウントや企画の対象条件から順番に見ていきましょう。</p></div>
 
   <section class="answer-box editorial-answer" aria-labelledby="quick-answer">
 <h2 id="quick-answer">自分だけ表示されなくても、不具合とは限らない</h2>
-<p>Play Pointsには、購入履歴やPlayストアでの操作などに応じて、選ばれた人だけに届くプロモーションがあります。<strong>ほかの人の画面にあることと、自分も対象であることは別</strong>です。</p>
-<p>最初に<a href="#article-section-3">購入に使うアカウントの「貯める」</a>を開き、次に<a href="#article-section-7">Play Pass</a>や<a href="#article-section-10">PC限定</a>の企画かを見ます。それでも分からないときに、<a href="#article-section-4">カスタマイズ設定</a>へ進む順がおすすめです。</p>
-<p>キャッシュ削除や再インストールは、この症状だけで急ぐ必要はありません。まずは自分が見ている画面と、告知の条件を合わせるところからです。</p>
+<p>Play Pointsには、購入履歴やPlayストアでの操作などに応じて、選ばれた一部のアカウントに届くプロモーションがあります。<strong>ほかの人の画面に出ていることと、自分も対象に入っていることは別</strong>という前提で切り分けると、落ち着いて状況を整理できます。</p>
+<p>まず<a href="#article-section-3">購入に使うアカウントの「貯める」</a>を開き、次に<a href="#article-section-7">Play Pass</a>や<a href="#article-section-10">PC限定</a>の企画ではないかを確かめます。それでも見当たらないときに、<a href="#article-section-4">カスタマイズ設定</a>の項目へ進む順番がスムーズです。</p>
+<p>この症状だけで、キャッシュ削除やアプリの再インストールを急ぐ必要はありません。まずは自分の画面の条件と、見かけた告知の条件をひとつずつ照らし合わせてみましょう。</p>
 </section>
 
   <section class="section">
     <h2 id="article-section-1">まず症状を3つに分ける</h2>
     <div class="table-wrapper" tabindex="0" role="region" aria-label="まず症状を3つに分ける: 比較表（左右矢印キーでスクロール）">
       <table class="reading-responsive-table" role="table">
-        <thead><tr role="row"><th role="columnheader">症状</th><th role="columnheader">この記事で見る？</th><th role="columnheader">次に見る場所</th></tr></thead>
+        <thead><tr role="row"><th role="columnheader">症状</th><th role="columnheader">ここで扱う範囲</th><th role="columnheader">次に見る場所</th></tr></thead>
         <tbody>
-          <tr role="row"><td role="cell" data-column-label="症状">他の人には増量があるのに、自分の「貯める」には最初からない</td><td role="cell" data-column-label="この記事で見る？"><strong>この記事</strong></td><td role="cell" data-column-label="次に見る場所">対象者・設定・Play Pass・端末条件を確認</td></tr>
-          <tr role="row"><td role="cell" data-column-label="症状">キャンペーンは表示されていたが、購入後に増量分が付かない</td><td role="cell" data-column-label="この記事で見る？">別症状</td><td role="cell" data-column-label="次に見る場所"><a href="./2026-03-10-play-points-reflection-timing.html">購入後にPlay Pointsが反映されない時の確認順</a></td></tr>
-          <tr role="row"><td role="cell" data-column-label="症状">Play Points自体が使えない、アカウント問題の表示がある</td><td role="cell" data-column-label="この記事で見る？">別症状</td><td role="cell" data-column-label="次に見る場所"><a href="./2026-08-19-play-points-locked.html">Play Pointsが利用停止・ロックされた時の確認</a></td></tr>
+          <tr role="row"><td role="cell" data-column-label="症状">他の人には増量があるのに、自分の「貯める」には最初からない</td><td role="cell" data-column-label="ここで扱う範囲"><strong>このページ</strong></td><td role="cell" data-column-label="次に見る場所">対象者・設定・Play Pass・端末条件を切り分け</td></tr>
+          <tr role="row"><td role="cell" data-column-label="症状">キャンペーンは表示されていたが、購入後に増量分が付かない</td><td role="cell" data-column-label="ここで扱う範囲">別症状</td><td role="cell" data-column-label="次に見る場所"><a href="./2026-03-10-play-points-reflection-timing.html">購入後にPlay Pointsが反映されない時の確認順</a></td></tr>
+          <tr role="row"><td role="cell" data-column-label="症状">Play Points自体が使えない、アカウント問題の表示がある</td><td role="cell" data-column-label="ここで扱う範囲">別症状</td><td role="cell" data-column-label="次に見る場所"><a href="./2026-08-19-play-points-locked.html">Play Pointsが利用停止・ロックされた時の確認</a></td></tr>
         </tbody>
       </table>
     </div>
-    <p>この記事は一番上の、<strong>「購入する前から、そもそも増量キャンペーンが見当たらない」</strong>ケースに絞ります。</p>
+    <p>ここでは一番上の、<strong>「買う前から、そもそも増量キャンペーンのカードが見当たらない」</strong>というケースに絞って原因をたどります。</p>
   </section>
 
   <section class="section">
 <h2 id="article-section-3">まず購入用アカウントで「貯める」を開く</h2>
-<p>AndroidのGoogle Playストアで、右上のプロフィール画像→「Play Points」→「貯める」と進みます。Googleが案内する画面では、上部が通常の獲得率、下部がプロモーションやスペシャルオファーの一覧です。</p>
-<p>複数アカウントを入れている人は、ここで選ばれているものが<strong>実際に購入するアカウント</strong>かも見ておきましょう。SNSの画像と比べる前に、自分の購入先の画面をそろえると、この先の条件を判断しやすくなります。</p>
+<p>AndroidのGoogle Playストアで、右上のプロフィール画像→「Play Points」→「貯める」と開きます。Googleの案内では、画面の上部が通常の獲得率、下部がプロモーションやスペシャルオファーの一覧です。</p>
+<p>複数のGoogleアカウントを端末に入れている場合は、いま開いているものが<strong>実際に決済へ使うアカウント</strong>かも見ておきたいところ。SNSのスクリーンショットと比べる前に自分の購入用アカウントへ切り替えておくと、このあとの見分けがつきやすくなります。</p>
 </section>
 
   <section class="section">
 <h2 id="article-section-2">同じランクでも、届くオファーは同じとは限らない</h2>
-<p>Googleは、一部のプロモーションについて、購入履歴やPlayストアでの操作に基づいて対象者を選ぶと説明しています。「同じダイヤモンドなのに自分にはない」という場合も、ランクだけで対象かどうかは決まりません。</p>
-<p>告知を見るときは、対象者に加え、<strong>有効化が必要か・購入期限はいつか・Play Pass加入が条件か</strong>を押さえます。購入回数で報酬を得る企画には通貨の条件もあります。個別の条件は、後半の<a href="#article-section-11">国・通貨・期限の説明</a>で整理します。</p>
-<p>こうした一部ユーザー向けの案内は、Play Points以外のPlayストア特典にもあります。OREFOLDERは2026年4月、Pixel 10aの購入特典が選ばれた一部ユーザー向けだった例を紹介しています。これは<strong>Googleストアのポイントの話</strong>で、Play Points増量の対象条件をそのまま示すものではありません。</p>
-<p><a href="https://orefolder.jp/2026/04/play-store-pixel-10a/" target="_blank" rel="noopener noreferrer">参考：OREFOLDERのPixel 10a購入特典の紹介（過去の例）</a></p>
+<p>Googleのヘルプでは、一部のプロモーションについて「購入履歴やPlayストアでの操作に基づいて対象者を選ぶ」と案内されています。「同じダイヤモンドなのに自分にはない」というときも、ランクだけで全員一律に出るわけではないのが実情です。</p>
+<p>話題になっている告知を見たら、対象者の条件に加えて、<strong>事前の開始操作が必要か・購入期限はいつか・Play Pass加入が前提か</strong>を順に見ていきます。購入回数でポイントが貯まる企画には通貨の指定もあり、こうした条件の違いは後半の<a href="#article-section-11">国・通貨・期限の項目</a>にまとめました。</p>
+<p>こうした一部ユーザー向けの案内はPlay Points以外でも見られ、たとえば<a href="https://orefolder.jp/2026/04/play-store-pixel-10a/" target="_blank" rel="noopener noreferrer">OREFOLDERで紹介されたPixel 10a購入特典の例</a>も選ばれた一部の人向けでした。こちらはGoogleストアのポイントに関する例なのでPlay Points増量の条件とは別ですが、ストア側の特典で対象が分かれること自体は珍しくありません。</p>
 </section>
 
   <section class="section">
 <h2 id="article-section-4">カスタマイズ設定は、使われる情報を読んでから選ぶ</h2>
-<p>アカウントも企画の種類も合っているなら、Google Playのカスタマイズ設定も確認する候補です。Googleは、この設定が表示される特典やプロモーションに影響する可能性を案内しています。</p>
-<p>Playストアのプロフィール画像→「Google Playでのカスタマイズ」→「Google Playをカスタマイズする」で、今の設定を見られます。カスタマイズには、Playの履歴、購入・ダウンロードしたコンテンツ、Googleアカウントの情報などが使われます。</p>
-<div class="callout callout-warning"><h3 id="article-section-5">ポイントだけで設定を決めなくてよい</h3><p><strong>私は「ポイントが欲しいからとりあえずON」はおすすめしません。</strong>どの情報が使われるかを読んで、自分が納得できる場合に選んでください。ONにすれば全員に同じキャンペーンが出る、という保証もありません。</p></div>
-<p>設定を変えるかどうかと、今のオファーが自分に使えるかどうかは、分けて考えられます。今の設定を保ったまま、表示されている特典から選ぶこともできます。</p>
+<p>アカウントも企画の種類も合っているなら、Google Playのカスタマイズ設定も見直せる候補になります。Googleは、この設定が表示される特典やプロモーションに影響する可能性に触れています。</p>
+<p>Playストアのプロフィール画像→「Google Playでのカスタマイズ」→「Google Playをカスタマイズする」を開くと、いまの状態が分かります。この機能には、Playの履歴や購入・ダウンロードしたコンテンツ、Googleアカウントの情報などが利用されます。</p>
+<div class="callout callout-warning"><h3 id="article-section-5">ポイントだけで設定を決めなくてよい</h3><p><strong>個人的には「ポイントが欲しいからとりあえずONにする」のはおすすめしていません。</strong>どの情報が使われるかに目を通したうえで、納得できる場合に選ぶのが安心です。ONにしたからといって、全員に同じキャンペーンが出るわけでもないためです。</p></div>
+<p>設定を切り替えるかどうかと、いま見えているオファーを使うかどうかは分けて考えて大丈夫です。いまのプライバシー設定のまま、表示されている特典だけを上手に拾っていく選び方もあります。</p>
 </section>
 
   <section class="section">
 <h2 id="article-section-6">設定変更後に表示された例はある</h2>
-<p>2026年7月、バニラソルトは、PC版Google Play Gamesの「誰でもポイント8倍」という案内が自分のアカウントには出ず、カスタマイズをONにした後に参加できたと記録しています。</p>
-<p>これはその人のアカウントで起きたことで、全員に同じ結果が出る証明ではありません。公式が示す「設定が表示に影響する可能性」を考えるうえでの一例です。</p>
-<p><a href="https://vanillasalt.net/post/google-play-points-boost-not-eligible-fix/" target="_blank" rel="noopener noreferrer">バニラソルト：カスタマイズ設定とポイントアップの利用記録</a></p>
+<p>2026年7月には、PC版Google Play Gamesの「誰でもポイント8倍」という案内が最初自分のアカウントに出ず、カスタマイズをONにしたあとで参加できたケースが報告されています。当時の流れは<a href="https://vanillasalt.net/post/google-play-points-boost-not-eligible-fix/" target="_blank" rel="noopener noreferrer">バニラソルト：カスタマイズ設定とポイントアップの利用記録</a>で読めます。</p>
+<p>これはその方のアカウントで起きた一例で、誰でも同じ変化が起きるわけではありませんが、公式が案内している「設定が表示に影響する可能性」を確かめる参考にはなります。</p>
 </section>
 
   <section class="section">
@@ -166,40 +164,40 @@
 
   <section class="section">
 <h2 id="article-section-12">条件を見終えても分からないときは</h2>
-<p>ここまで比べても、自分が選ばれなかった理由までは分からないことがあります。対象者の選び方や個別アカウントの状態を、このサイトから確定することはできません。</p>
-<p>公式の条件では対象に見えるのに出ないなら、<a href="#article-section-14">問い合わせ用の情報</a>をまとめて相談へ進めます。同じ設定を何度も変えるより、今の画面を添えて相談する方が状況を伝えやすくなります。</p>
+<p>ここまで順に比べてみても、なぜ自分のアカウントが選ばれなかったのかまで細かく知ることは難しいのが実情です。対象者の判定基準や個別アカウントの状態までは、外からは見分けられません。</p>
+<p>公式の案内では明らかに対象に見えるのに出ないなら、<a href="#article-section-14">問い合わせ用のメモ</a>をそろえて公式サポートへ相談する段階です。同じ設定を何度も切り替え直すより、いまの画面の情報を添えて聞く方がスムーズに状況が伝わります。</p>
 </section>
 
 
 
   <section class="section">
 <h2 id="article-section-13">過去の相談を読むときは、設定画面の違いに注意</h2>
-<p>Google Playコミュニティには2024年、別アカウントには増量があるのに本アカウントには「スペシャル オファーはまだありません」と出る相談や、7倍キャンペーンが見つからない相談がありました。「ウェブとアプリのアクティビティ」の変更後に表示されたという利用者報告もあります。</p>
-<p>これらは公式の仕様書ではなく、当時の利用者の相談です。今の操作はGoogle公式の<strong>「Google Playでのカスタマイズ」</strong>を基準にします。古い画面名が違っていても、同じ設定を無理に探す必要はありません。</p>
+<p>Google Playコミュニティを遡ると2024年ごろにも、「別アカウントには増量があるのに本アカウントには『スペシャル オファーはまだありません』と出る」「7倍キャンペーンが見つからない」といった相談が投稿されていました。「ウェブとアプリのアクティビティ」を変えたら出たという利用者報告も見つかります。</p>
+<p>ただ、当時の画面と現在では設定の名称や配置が変わっている部分があります。いまの操作はGoogle公式が案内している<strong>「Google Playでのカスタマイズ」</strong>を基準に見るのが確実なので、古いスレッドに書かれた項目名を無理に探さなくても大丈夫です。</p>
 </section>
 
   <section class="section">
     <h2 id="article-section-14">それでも「全員対象」のはずなのに出ない時は</h2>
-    <p>ここまで確認して、キャンペーンの公式条件にも「自分が対象」と読み取れるのに表示されない場合は、個別アカウントの状態を外部サイトから確定することはできません。</p>
-    <p>問い合わせ前に、次の情報だけ整理しておくと説明しやすいです。</p>
+    <p>ここまで切り分けて、キャンペーンの公式条件から「自分のアカウントも対象」と読み取れるのに出てこないときは、Google Playの公式サポートへ問い合わせてみるのが確実です。</p>
+    <p>相談する前に次のメモを手元にまとめておくと、やり取りをスムーズに進められます。</p>
     <ul>
       <li>キャンペーン名</li>
       <li>キャンペーンの公式URLや案内画面</li>
-      <li>確認した日時</li>
+      <li>画面を見た日時</li>
       <li>Play Pointsのステータス</li>
       <li>Play Pass加入の有無</li>
-      <li>「貯める」画面に何が表示されているか</li>
+      <li>「貯める」画面に実際に何が表示されているか</li>
       <li>カスタマイズ設定を自分で変更したかどうか</li>
     </ul>
-    <p>注文番号、メールアドレス、決済情報などはSNSやコミュニティへ公開せず、必要な場合だけGoogle Play公式サポートで使ってください。</p>
+    <p>なお、注文番号やメールアドレス、決済情報といった大切な情報はSNSや公開コミュニティには載せず、必要なときだけGoogle Play公式サポートの窓口で伝えるようにしてください。</p>
   </section>
 
   <section class="section faq-section">
     <h2 id="article-section-15">ここまでで残りやすい疑問</h2>
-    <div class="faq-item"><h3 id="article-section-16">同じダイヤモンドの人に出ているなら、自分にも出るはず？</h3><p>そうとは限りません。Google公式は、一部プロモーションは購入履歴やPlayストアでの操作に基づいて選ばれた一部ユーザーだけが対象になると案内しています。</p></div>
-    <div class="faq-item"><h3 id="article-section-17">カスタマイズをONにすれば必ず直る？</h3><p>保証はありません。表示に影響する可能性はGoogle公式に明記されていますが、プロモーションごとに対象条件は異なります。設定変更はプライバシー面も含めて自分で判断してください。</p></div>
-    <div class="faq-item"><h3 id="article-section-18">Playストアを更新・再インストールした方がいい？</h3><p>この症状だけなら最初の手段にはしません。まず対象条件、アカウント、カスタマイズ、Play Pass、PC限定などを確認します。Playストア自体が正常に動かない場合は別のトラブルとして切り分けます。</p></div>
-    <div class="faq-item"><h3 id="article-section-19">表示はあったのに増量されなかった場合は？</h3><p>この記事とは別の症状です。購入日時、有効化、対象商品、ポイント履歴などを確認してください。<a href="./2026-03-10-play-points-reflection-timing.html">購入後にポイントが反映されない時の確認順</a>で整理しています。</p></div>
+    <div class="faq-item"><h3 id="article-section-16">同じダイヤモンドの人に出ているなら、自分にも出るはず？</h3><p>そうとは限りません。Google公式でも、一部プロモーションは購入履歴やPlayストアでの操作に基づいて選ばれた一部ユーザーだけが対象になると案内されています。</p></div>
+    <div class="faq-item"><h3 id="article-section-17">カスタマイズをONにすれば必ず直る？</h3><p>必ず出るとは決まっていません。表示に影響する可能性は公式ヘルプに書かれていますが、プロモーションごとに対象条件は異なるため、プライバシー面の納得感も含めて設定を判断するのがおすすめです。</p></div>
+    <div class="faq-item"><h3 id="article-section-18">Playストアを更新・再インストールした方がいい？</h3><p>キャンペーンが見当たらない症状だけなら、最初から試す必要は薄いです。まず対象条件やアカウント、カスタマイズ、Play Pass、PC限定の有無を切り分け、Playストアの動作自体がおかしい場合だけアプリ側のトラブルとして対処します。</p></div>
+    <div class="faq-item"><h3 id="article-section-19">表示はあったのに増量されなかった場合は？</h3><p>表示されない症状とは別の確認が必要です。購入日時や事前の有効化、対象商品、ポイント履歴の順に見ていきます。手順は<a href="./2026-03-10-play-points-reflection-timing.html">購入後にポイントが反映されない時の確認順</a>にまとめています。</p></div>
   </section>
 
   <section class="section" id="sources">
