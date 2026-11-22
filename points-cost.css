@@ -46,9 +46,18 @@ margin-top: 6px;
 padding: 10px 12px;
 border: 1px solid var(--pc-border);
 border-radius: 10px;
-background: #fff;
+background-color: #fff;
 color: var(--pc-text);
 font: inherit;
+}
+.points-cost-form select {
+appearance: none;
+-webkit-appearance: none;
+background-image: url("images/chevron-down.svg");
+background-repeat: no-repeat;
+background-position: right 12px center;
+background-size: 14px 14px;
+padding-right: 38px;
 }
 .points-cost-form input:focus,
 .points-cost-form select:focus { outline: 3px solid rgba(23,105,224,.18); border-color: var(--pc-accent); }
