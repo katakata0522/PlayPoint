@@ -102,6 +102,8 @@ function playPointGscCaptureUnlocked_(input) {
   var pairId = windows.current.start + '__' + windows.current.end;
   var history = playPointGscEnsureHistorySheet_(spreadsheet);
   var existingRows = playPointGscRowsForPair_(history, pairId);
+  var existingKeys = playPointGscExistingRecordKeys_(existingRows);
+  if (Object.keys(existingKeys).length !== existingRows.length) throw new Error('GSC履歴に同一レコードの重複があります。正本を保持し、比較を保留します。');
 
   if (playPointGscPairComplete_(existingRows)) {
     playPointGscRebuildComparisonViews_(spreadsheet, existingRows, pairId);
@@ -140,7 +142,6 @@ function playPointGscCaptureUnlocked_(input) {
       fetchedAt
     ));
 
-  var existingKeys = playPointGscExistingRecordKeys_(existingRows);
   var newValues = allValues.filter(function(row) {
     return !existingKeys[playPointGscRecordKey_(row)];
   });
@@ -567,12 +568,13 @@ function playPointGscEnsureIndex_(sheet, force) {
   if(!index) index=ss.insertSheet(cfg.indexSheet);
   var grid=index.getLastRow()?index.getRange(1,1,index.getLastRow(),8).getValues():[];
   var state=playPointGscIndexRead_(grid,sourceId,lastRow,nowMs);
+  var rebuild=!!force || !state;
   // 外部の行挿入・削除などを境界で検出。内部の任意編集はappend-only契約外なので定期全監査も行う。
   if(state && state.blocks.length) {
     var first=state.blocks[0], last=state.blocks[state.blocks.length-1];
-    if(sheet.getRange(first[1],1).getValue()!==first[0] || sheet.getRange(last[2],1).getValue()!==last[0]) state=null;
+    if(sheet.getRange(first[1],1).getValue()!==first[0] || sheet.getRange(last[2],1).getValue()!==last[0]) {state=null;rebuild=true;}
   }
-  if(force || !state) state={cursor:1,audited:nowMs,blocks:[]};
+  if(rebuild) state={cursor:1,audited:nowMs,blocks:[]};
   var previousCursor=state.cursor;
   while(state.cursor<lastRow) {
     var count=Math.min(cfg.indexScanChunk,lastRow-state.cursor);
@@ -582,7 +584,7 @@ function playPointGscEnsureIndex_(sheet, force) {
     state.cursor+=count;
   }
   // 通常実行では差分がなければ書き込まない。容量予告も追記時または定期全監査時だけ更新。
-  if(force || previousCursor!==state.cursor || !grid.length || !playPointGscIndexRead_(grid,sourceId,lastRow,nowMs)) {
+  if(rebuild || previousCursor!==state.cursor) {
     playPointGscIndexWrite_(index,sourceId,state,playPointGscIndexCapacity_(ss,sheet,state.blocks,lastRow));
   }
   return state;
