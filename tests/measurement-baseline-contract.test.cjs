@@ -1059,3 +1059,62 @@ test('GSC rejects absent property totals, invalid metrics and repeated API pages
   c.playPointGscQueryApi_=()=>({responseAggregationType:'byPage',rows:[{keys:['a','https://playpoint-sim.com/a'],clicks:1,impressions:3,ctr:0.3}]});
   assert.throws(()=>c.playPointGscFetchQueryPageRows_('site','2026-10-21','2026-11-17'),/不正/);
 });
+
+
+test('legacy GSC data with date-coerced and numeric queries remains internally auditable but never receives a verified receipt',()=>{
+  const {context:c}=loadGscCaptureRuntime();
+  const {windows,pairId,site,rows}=verifiedGscFixture(c);
+  const legacy=rows.map(row=>Array.from(row));
+  // Actual Sheets reads a date-formatted query as a Date, not the original text.
+  const date=vm.runInContext("new Date('2026-10-13T00:00:00+09:00')",c);
+  legacy.forEach(row=>{if(row[6]==='q')row[6]=date;else if(row[6]==='q2')row[6]=10000;});
+  const original=JSON.stringify(legacy);
+  const audit=c.playPointGscAuditLegacyPair_(legacy,pairId,windows,site);
+  assert.equal(audit.state,'LEGACY_UNVERIFIED');
+  assert.equal(audit.rows,10);assert.equal(audit.ambiguousQueries,8);
+  assert.equal(JSON.stringify(legacy),original);
+  assert.throws(()=>c.playPointGscEvidence_(legacy,pairId,windows,site),/不正/);
+  const corrupted=legacy.map(row=>row.slice());corrupted.find(row=>row[5]==='QUERY_BASE_URL_NORMALIZED')[10]++;
+  assert.throws(()=>c.playPointGscAuditLegacyPair_(corrupted,pairId,windows,site),/内部整合/);
+  const result=c.playPointGscLegacyResult_(pairId,windows,audit,'original unavailable');
+  assert.equal(result.status,'LEGACY_UNVERIFIED');assert.match(result.detail,/8行/);
+});
+
+test('legacy capture marks only the matching comparison view and does not refetch or append ambiguous query records',()=>{
+  const {context:c}=loadGscCaptureRuntime();
+  const {windows,pairId,site,rows}=verifiedGscFixture(c);
+  const legacy=rows.map(row=>Array.from(row));
+  legacy.forEach(row=>{if(row[6]==='q')row[6]=123;});
+  const writes=[];
+  const matching={getLastRow:()=>20,getRange:a=>({
+    getValue:()=>a==='B2'?pairId:a==='A5'?'比較状態':'',
+    setValue:v=>writes.push([a,v])
+  })};
+  const different={getLastRow:()=>20,getRange:a=>({getValue:()=>a==='B2'?'2026-10-14__2026-11-10':'比較状態',setValue:()=>{throw Error('unrelated write');}})};
+  c.playPointGscGetSpreadsheet_=()=>({getSheetByName:n=>n===c.PLAYPOINT_GSC_28D_CONFIG.comparisonSheet?matching:different});
+  c.playPointGscGetSiteUrl_=()=>site;
+  c.playPointGscEnsureHistorySheet_=()=>({});
+  c.playPointGscRowsForPair_=()=>legacy;
+  c.playPointGscAppendRows_=()=>{throw Error('unexpected append');};
+  c.playPointGscFetchWindowBundle_=()=>{throw Error('unexpected API request');};
+  const result=c.playPointGscCaptureUnlocked_(windows.current.end);
+  assert.equal(result.status,'LEGACY_UNVERIFIED');
+  assert.equal(writes.length,2);assert.deepEqual(writes[0],['B5','LEGACY_UNVERIFIED']);
+  assert.match(writes[1][1],/原文未確認の型変換 4行/);
+});
+
+test('GSC comparison writes ISO periods and literal query columns before the full grid, never auto-converts 10/13 or 001',()=>{
+  const {context:c}=loadGscCaptureRuntime();
+  const {windows,pairId,site,rows}=verifiedGscFixture(c);
+  rows.forEach(row=>{if(row[6]==='q')row[6]='10/13';else if(row[6]==='q2')row[6]='001';});
+  const evidence=c.playPointGscEvidence_(rows,pairId,windows,site);
+  const all=[...rows,c.playPointGscReceiptRow_(pairId,windows,site,'2026-11-25',evidence)];
+  const calls=[];let grid;
+  const sheet={getLastRow:()=>0,getMaxColumns:()=>14,getMaxRows:()=>1000,setFrozenRows(){},autoResizeColumns(){},
+    getRange(...args){const range={setNumberFormat(v){calls.push(['format',args,v]);return range;},setValues(v){calls.push(['write',args]);grid=v;return range;},setFontWeight(){return range;},setFontSize(){return range;},clearContent(){return range;}};return range;}};
+  c.playPointGscBuildLayerComparisonSheet_({getSheetByName:()=>sheet},'view',all,pairId,'raw','Raw','exact URL',7);
+  assert.deepEqual(calls[0],['format',[16,1,2,2],'@']);
+  assert.equal(calls[1][0],'write');
+  assert.equal(grid[2][1],windows.current.start+' ～ '+windows.current.end);
+  assert.deepEqual(Array.from(grid.slice(15),r=>r[0]).sort(),['001','10/13']);
+});
