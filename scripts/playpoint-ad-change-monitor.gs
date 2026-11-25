@@ -185,6 +185,20 @@ function capturePlayPointAdChangeMonitor(e) {
       }
     }
   }
+  // B優先の追加分析は木曜だけ。月曜の流入診断と定期的に重ならない。
+  if (typeof capturePlayPointFeatureUsageReview === 'function') {
+    var featureDate = playPointP12NowText_().slice(0,10);
+    if (!e || new Date(featureDate + 'T00:00:00Z').getUTCDay() === 4) {
+      if (Date.now()-startedAt<180000) {
+        try { result.maintenance.push({name:'capturePlayPointFeatureUsageReview',state:capturePlayPointFeatureUsageReview(startedAt+300000).state}); }
+        catch(error) { result.maintenance.push({name:'capturePlayPointFeatureUsageReview',state:'ERROR',detail:playPointP12ErrorText_(error)}); }
+      } else {
+        result.maintenance.push({name:'capturePlayPointFeatureUsageReview',state:'SKIPPED_BUDGET'});
+        try { withScriptLock_(function(){playPointP12UpsertHealth_('FEATURE_USAGE',{lastAttempt:playPointP12NowText_(),state:'SKIPPED_BUDGET',note:'既存日次処理を優先。手動再実行可。前回の表を保持。'});}); }
+        catch(healthError) { console.error(healthError); }
+      }
+    }
+  }
   if (failure) throw failure;
   return result;
 }
