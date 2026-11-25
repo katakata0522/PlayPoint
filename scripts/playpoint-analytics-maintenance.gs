@@ -405,6 +405,7 @@ function playPointCaptureReaderOutcomes_() {
         var vitalSheet = ss.getSheetByName(PLAYPOINT_GROWTH_A.vitalsSheet);
         if (vitalView.grid.length > 6) vitalSheet.getRange(7, 11, vitalView.grid.length - 6, 1).setNumberFormat('0.00%');
       }
+      if (vitalView.state !== 'OK') partial = true;
       if (vitalView.state === 'OK' || vitalView.state === 'PARTIAL') {
         playPointP12UpsertHealth_('VITALS_ANALYSIS', { lastAttempt: timestamp, lastSuccess: playPointP12NowText_(),
           dataLatest: period.end, state: vitalView.state, consecutiveFailures: 0, error: '', note: vitalView.detail });
@@ -1370,7 +1371,7 @@ function playPointGrowthTrafficGrid_(period, sources, timestamp) {
   var partial = Object.keys(sources).some(function(key) { return sources[key].state !== 'OK'; }), orphan = 0;
   Object.keys(landings).forEach(function(key) { if (!base[key] && landings[key].total > 0) orphan += landings[key].total; });
   if (orphan) partial = true;
-  var total = 0, matched = 0, unknown = 0;
+  var total = 0, matched = 0, unknown = 0, totalPv = 0, unknownSource = 0;
   Object.keys(base).sort(function(a,b) { return base[b].n-base[a].n; }).forEach(function(key) {
     var b = base[key], l = landings[key], source = JSON.parse(key);
     var entryKnown = good('ENTRY') && ((l && l.total === b.n) || (!l && b.n === 0));
@@ -1381,13 +1382,16 @@ function playPointGrowthTrafficGrid_(period, sources, timestamp) {
     var state = !entryKnown ? (good('ENTRY') ? 'ENTRY_MISMATCH' : 'ENTRY_UNAVAILABLE') :
       b.n < 30 ? 'SMALL_SAMPLE' : unknownCount > 0 && unknownCount / b.n >= 0.05 ? 'CHECK_ENTRY' : 'OBSERVED';
     if (entryKnown) { matched += b.n; unknown += unknownCount; }
-    total += b.n;
+    total += b.n; totalPv += b.pv;
+    if (playPointReaderParameterMissing_(source[0]) || /\(not set\)/i.test(source[0])) unknownSource += b.n;
     grid.push(['流入元別',source[0],source[1],'',b.n,b.users,b.pv,playPointGrowthRatio_(b.engaged,b.n),money,success,
       success === '' ? '' : b.n > 0 ? success / b.n * 100 : '',unknownCount,
       unknownCount === '' ? '' : playPointGrowthRatio_(unknownCount,b.n),state,
       '成功/100セッションはイベント頻度。広告収益はGA4の観測値。未返却の成果/収益は空欄。']);
     if (l) l.rows.filter(function(x) { return playPointReaderParameterMissing_(x.path) || x.n >= 5; })
-      .sort(function(a,b) { return b.n-a.n; }).slice(0,20).forEach(function(x) {
+      .sort(function(a,b) {
+        return Number(playPointReaderParameterMissing_(b.path))-Number(playPointReaderParameterMissing_(a.path)) || b.n-a.n;
+      }).slice(0,20).forEach(function(x) {
         grid.push(['入口明細',source[0],source[1],x.path,x.n,'',x.pv,'','','','','','',
           playPointReaderParameterMissing_(x.path) ? 'UNKNOWN_ENTRY' : entryKnown ? 'OBSERVED' : 'ENTRY_MISMATCH',
           '主な入口（5セッション以上、未設定は必ず表示）。上段と重複するので合算しない。']);
@@ -1407,9 +1411,19 @@ function playPointGrowthTrafficGrid_(period, sources, timestamp) {
     });
   }
   if (orphan) grid.push(['照合警告','','','','','','','','','','','','','ENTRY_MISMATCH','流入元の集計に対応しない入口セッション: '+orphan]);
+  var totalMatches = false;
+  if (good('TOTAL') && sources.TOTAL.rows.length === 1) {
+    var totals = sources.TOTAL.rows[0];
+    totalMatches = playPointGrowthCount_(totals.sessions,'total sessions') === total &&
+      playPointGrowthCount_(totals.screenPageViews,'total PV') === totalPv;
+  }
+  if (!totalMatches) {
+    partial = true;
+    grid.push(['照合警告','','','','','','','','','','','','','TOTAL_MISMATCH','独立取得した全体セッション/PVと内訳が一致しない、または未取得。全体の入口不明率は保留。']);
+  }
   var state = partial ? 'PARTIAL' : 'OK';
-  grid[4][2] = '入口照合 ' + matched + '/' + total + 'セッション / 照合済みの入口不明 ' + unknown + '。全体率は全セグメント一致時のみ。';
-  grid[4][3] = total > 0 && matched === total && !orphan ? unknown / total : '';
+  grid[4][2] = '全体照合 ' + (totalMatches ? 'OK' : '未確認') + ' / 不明参照元 ' + unknownSource + 'セッション / 入口照合 ' + matched + '/' + total + 'セッション / 照合済みの入口不明 ' + unknown + '。全体率は全セグメント一致時のみ。';
+  grid[4][3] = totalMatches && total > 0 && matched === total && !orphan ? unknown / total : '';
   return { state:state, grid:grid, total:total, matched:matched, unknown:unknown };
 }
 
@@ -1436,6 +1450,7 @@ function capturePlayPointTrafficQualityReview() {
     var dims = ['sessionSourceMedium','deviceCategory'], sources = {};
     sources.TRAFFIC = playPointGrowthTrafficSource_(property,period,dims,['sessions','activeUsers','screenPageViews','engagedSessions']);
     if (sources.TRAFFIC.state !== 'OK') throw new Error(sources.TRAFFIC.detail);
+    sources.TOTAL = playPointGrowthTrafficSource_(property,period,[],['sessions','screenPageViews']);
     sources.ENTRY = playPointGrowthTrafficSource_(property,period,dims.concat(['landingPage']),['sessions','screenPageViews']);
     sources.SUCCESS = playPointGrowthTrafficSource_(property,period,dims,['eventCount'],playPointReaderFilter_('eventName',['calculator_funnel_completed']));
     sources.REVENUE = playPointGrowthTrafficSource_(property,period,dims,['totalAdRevenue'],null,'JPY');
