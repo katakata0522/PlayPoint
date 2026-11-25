@@ -135,7 +135,7 @@ function capturePlayPointAdChangeMonitor(e) {
       !playPointAutomationTriggerAllowed_('capturePlayPointAdChangeMonitor', e)) return { state: 'SKIPPED_STALE_TRIGGER' };
   var failure = null, result = {}, startedAt = Date.now();
   try {
-    result = playPointCaptureAdChangeMonitor_();
+    result = playPointAnalyticsWithDeadline_(startedAt+150000,playPointCaptureAdChangeMonitor_);
   } catch (error) {
     failure = error;
     // 収益元が欠測でも、独立したGA4の利用品質・読者行動は更新する。
@@ -143,22 +143,23 @@ function capturePlayPointAdChangeMonitor(e) {
       withScriptLock_(function() { playPointP12HealthError_('AD_CHANGE_MONITOR', playPointP12NowText_(), playPointP12ErrorText_(error)); });
     } catch (healthError) { console.error(healthError); }
   }
-  // 本体は従来どおり。追加分析は期限と前回試行を共有し、滞留した処理を先に実行する。
+  // 旧固定比較も重い分析の一つとして扱い、後続分析の永続的な飢餓を防ぐ。
   result.maintenance=[];
   try {
-    if(Date.now()-startedAt<180000) result.quality=playPointAnalyticsWithDeadline_(startedAt+285000,playPointCaptureChangeQuality_);
-    else result.quality={state:'SKIPPED_BUDGET'};
-  } catch(qualityError) {
-    result.quality={state:'ERROR',detail:playPointP12ErrorText_(qualityError)};
-    try{withScriptLock_(function(){playPointP12HealthError_('CHANGE_QUALITY',playPointP12NowText_(),result.quality.detail);});}
-    catch(healthError){console.error(healthError);}
-  }
-  try {
-    result.maintenance=playPointAnalyticsRunQueue_(startedAt+285000,!e);
+    var queued=playPointAnalyticsRunQueue_(startedAt+285000,!e);
+    queued.forEach(function(item){
+      if(item.name==='playPointCaptureChangeQuality_')result.quality=item.result||{state:item.state,detail:item.detail||''};
+      else result.maintenance.push(item);
+    });
+    if(!result.quality)result.quality={state:'NOT_DUE'};
   }catch(queueError){
     result.maintenance.push({name:'ANALYTICS_QUEUE',state:'ERROR',detail:playPointP12ErrorText_(queueError)});
     try{withScriptLock_(function(){playPointP12HealthError_('ANALYTICS_QUEUE',playPointP12NowText_(),playPointP12ErrorText_(queueError));});}
     catch(healthError){console.error(healthError);}
+  }
+  if(typeof capturePlayPointOperationsDashboard==='function'&&Date.now()<startedAt+255000){
+    try{result.dashboard=capturePlayPointOperationsDashboard();}
+    catch(error){result.dashboard={state:'ERROR',detail:playPointP12ErrorText_(error)};}
   }
   if (failure) throw failure;
   return result;
@@ -484,12 +485,13 @@ function playPointAnalyticsWithDeadline_(deadline,fn){
 var PLAYPOINT_ANALYTICS_QUEUE_KEY='PLAYPOINT_ANALYTICS_QUEUE_V1';
 function playPointAnalyticsQueueJobs_(){
   return [
-    {name:'capturePlayPointEventDailyReview',key:'EVENT_DAILY',days:1,run:typeof capturePlayPointEventDailyReview==='function'?capturePlayPointEventDailyReview:null},
-    {name:'capturePlayPointReaderOutcomes',key:'READER_OUTCOMES',days:1,run:typeof capturePlayPointReaderOutcomes==='function'?capturePlayPointReaderOutcomes:null},
-    {name:'capturePlayPointReleaseEffectReview',key:'RELEASE_EFFECT',days:1,run:typeof capturePlayPointReleaseEffectReview==='function'?capturePlayPointReleaseEffectReview:null},
-    {name:'capturePlayPointGrowthOpportunityReview',key:'GROWTH_OPPORTUNITY',days:1,run:typeof capturePlayPointGrowthOpportunityReview==='function'?capturePlayPointGrowthOpportunityReview:null},
-    {name:'capturePlayPointTrafficQualityReview',key:'TRAFFIC_QUALITY',days:7,run:typeof capturePlayPointTrafficQualityReview==='function'?capturePlayPointTrafficQualityReview:null},
-    {name:'capturePlayPointFeatureUsageReview',key:'FEATURE_USAGE',days:7,run:typeof capturePlayPointFeatureUsageReview==='function'?capturePlayPointFeatureUsageReview:null}
+    {name:'playPointCaptureChangeQuality_',key:'CHANGE_QUALITY',days:1,maxMs:90000,run:typeof playPointCaptureChangeQuality_==='function'?playPointCaptureChangeQuality_:null},
+    {name:'capturePlayPointEventDailyReview',key:'EVENT_DAILY',days:1,maxMs:75000,run:typeof capturePlayPointEventDailyReview==='function'?capturePlayPointEventDailyReview:null},
+    {name:'capturePlayPointReaderOutcomes',key:'READER_OUTCOMES',days:1,maxMs:120000,run:typeof capturePlayPointReaderOutcomes==='function'?capturePlayPointReaderOutcomes:null},
+    {name:'capturePlayPointReleaseEffectReview',key:'RELEASE_EFFECT',days:1,maxMs:90000,run:typeof capturePlayPointReleaseEffectReview==='function'?capturePlayPointReleaseEffectReview:null},
+    {name:'capturePlayPointGrowthOpportunityReview',key:'GROWTH_OPPORTUNITY',days:1,maxMs:45000,run:typeof capturePlayPointGrowthOpportunityReview==='function'?capturePlayPointGrowthOpportunityReview:null},
+    {name:'capturePlayPointTrafficQualityReview',key:'TRAFFIC_QUALITY',days:7,maxMs:105000,run:typeof capturePlayPointTrafficQualityReview==='function'?capturePlayPointTrafficQualityReview:null},
+    {name:'capturePlayPointFeatureUsageReview',key:'FEATURE_USAGE',days:7,maxMs:120000,run:typeof capturePlayPointFeatureUsageReview==='function'?capturePlayPointFeatureUsageReview:null}
   ].filter(function(job){return !!job.run;});
 }
 
@@ -546,7 +548,8 @@ function playPointAnalyticsQueueFinish_(job,today,lease,stateName){
     if(stateName==='OK')entry.lastSuccess=today;
     if(['OK','PARTIAL','NO_OBSERVATIONS','WAITING_DEFINITION','WAITING_EVIDENCE'].indexOf(stateName)>=0)entry.lastCompleted=today;
     // PARTIAL/未定義は永久障害の場合もある。毎日全てを再取得せず通常周期で追跡する。
-    entry.nextDue=playPointP12ShiftIsoDate_(today,entry.lastCompleted===today?job.days:1);
+    var ordinary=['OK','NO_OBSERVATIONS','WAITING_DEFINITION','WAITING_EVIDENCE'].indexOf(stateName)>=0;
+    entry.nextDue=playPointP12ShiftIsoDate_(today,ordinary?job.days:stateName==='PARTIAL'?Math.min(job.days,2):1);
     state[job.key]=entry;playPointAnalyticsQueueWrite_(state);
   });
 }
@@ -555,7 +558,7 @@ function playPointAnalyticsRunQueue_(deadline,manual){
   // 旧テスト/部分導入で日付ヘルパーがない場合も既存の手動動作は維持する。
   if(typeof PropertiesService==='undefined'||typeof playPointP12ShiftIsoDate_!=='function'||!/^\d{4}-\d{2}-\d{2}$/.test(today)){
     jobs.forEach(function(job){
-      try{results.push({name:job.name,state:playPointAnalyticsWithDeadline_(deadline,function(){return job.run(deadline);}).state});}
+      try{var output=playPointAnalyticsWithDeadline_(deadline,function(){return job.run(deadline);});results.push({name:job.name,state:output&&output.state||'OK',result:output});}
       catch(error){results.push({name:job.name,state:'ERROR',detail:playPointP12ErrorText_(error)});}
     });return results;
   }
@@ -566,14 +569,15 @@ function playPointAnalyticsRunQueue_(deadline,manual){
     }
     var lease=playPointAnalyticsQueueClaim_(job,today,manual,Date.now());
     if(!lease)return;
-    var status='ERROR',detail='';
+    var status='ERROR',detail='',result=null;
     try{
-      var result=playPointAnalyticsWithDeadline_(deadline,function(){return job.run(deadline);});
+      var jobDeadline=Math.min(deadline,Date.now()+job.maxMs);
+      result=playPointAnalyticsWithDeadline_(jobDeadline,function(){return job.run(jobDeadline);});
       status=result&&result.state||'ERROR';
     }catch(error){detail=playPointP12ErrorText_(error);status=detail.indexOf('ANALYTICS_BUDGET_EXHAUSTED')>=0?'SKIPPED_BUDGET':'ERROR';}
     try{playPointAnalyticsQueueFinish_(job,today,lease,status);}
     catch(error){detail+=(detail?' / ':'')+'queue checkpoint: '+playPointP12ErrorText_(error);status='ERROR';}
-    results.push({name:job.name,state:status,detail:detail});
+    results.push({name:job.name,state:status,detail:detail,result:result});
   });
   return results;
 }
