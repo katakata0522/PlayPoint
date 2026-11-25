@@ -11,6 +11,10 @@ var PLAYPOINT_GROWTH_A = Object.freeze({
   candidateMinPosition: 4,
   candidateMaxPosition: 15,
   vitalMinObservations: 30,
+  // 30日内の行内ユーザーに対する極端なPV集中を調査候補にする。真の無効流入判定ではない。
+  trafficConcentrationMinPv: 100,
+  trafficConcentrationPvPerUser: 50,
+  trafficConcentrationShare: 0.05,
   historyMaxRows: 10000,
   searchMaxRows: 20000
 });
@@ -94,6 +98,17 @@ function playPointGrowthTrafficKey_(row) {
   return JSON.stringify([String(row.sessionSourceMedium || '(not set)'), String(row.deviceCategory || '(not set)')]);
 }
 
+function playPointGrowthTrafficConcentration_(pv,users,totalPv){
+  var cfg=PLAYPOINT_GROWTH_A;
+  var share=totalPv>0?pv/totalPv:null;
+  var perUser=users>0?pv/users:null;
+  if(pv<cfg.trafficConcentrationMinPv)return null;
+  if(users===0)return {state:'CHECK_ZERO_USERS',perUser:null,share:share};
+  if(perUser>=cfg.trafficConcentrationPvPerUser&&share!==null&&share>=cfg.trafficConcentrationShare)
+    return {state:'CHECK_PV_CONCENTRATION',perUser:perUser,share:share};
+  return null;
+}
+
 function playPointGrowthTrafficGrid_(period, sources, timestamp) {
   var grid = [
     ['流入品質・入口診断',timestamp],
@@ -146,6 +161,9 @@ function playPointGrowthTrafficGrid_(period, sources, timestamp) {
   Object.keys(landings).forEach(function(key) { if (!base[key] && landings[key].total > 0) orphan += landings[key].total; });
   if (orphan) partial = true;
   var total = 0, matched = 0, unknown = 0, totalPv = 0, unknownSource = 0;
+  // PVは加算可能な指標。ユーザーは各セグメントの値だけを使い、人数は合算しない。
+  var segmentPv=Object.keys(base).reduce(function(sum,key){return sum+base[key].pv;},0);
+  var concentrationAlerts=[];
   Object.keys(base).sort(function(a,b) { return base[b].n-base[a].n; }).forEach(function(key) {
     var b = base[key], l = landings[key], source = JSON.parse(key);
     var entryKnown = good('ENTRY') && ((l && l.total === b.n) || (!l && b.n === 0));
@@ -155,6 +173,8 @@ function playPointGrowthTrafficGrid_(period, sources, timestamp) {
     var money = Object.prototype.hasOwnProperty.call(revenue,key) ? revenue[key] : '';
     var state = !entryKnown ? (good('ENTRY') ? 'ENTRY_MISMATCH' : 'ENTRY_UNAVAILABLE') :
       b.n < 30 ? 'SMALL_SAMPLE' : unknownCount > 0 && unknownCount / b.n >= 0.05 ? 'CHECK_ENTRY' : 'OBSERVED';
+    var concentration=playPointGrowthTrafficConcentration_(b.pv,b.users,segmentPv);
+    if(concentration)concentrationAlerts.push([source[0],source[1],b,concentration]);
     if (entryKnown) { matched += b.n; unknown += unknownCount; }
     total += b.n; totalPv += b.pv;
     if (playPointReaderParameterMissing_(source[0]) || /\(not set\)/i.test(source[0])) unknownSource += b.n;
@@ -170,6 +190,12 @@ function playPointGrowthTrafficGrid_(period, sources, timestamp) {
           playPointReaderParameterMissing_(x.path) ? 'UNKNOWN_ENTRY' : entryKnown ? 'OBSERVED' : 'ENTRY_MISMATCH',
           '主な入口（5セッション以上、未設定は必ず表示）。上段と重複するので合算しない。']);
       });
+  });
+  concentrationAlerts.sort(function(a,b){return b[2].pv-a[2].pv;}).forEach(function(alert){
+    var b=alert[2],c=alert[3];
+    grid.push(['流入偏り調査',alert[0],alert[1],'',b.n,b.users,b.pv,'','','','','','',c.state,
+      'セグメントPV/activeUsers '+(c.perUser===null?'算出不可':c.perUser.toFixed(1))+' / 内訳PV構成比 '+(c.share===null?'不明':(c.share*100).toFixed(1)+'%')+
+      '。少数人数の大量PV等の観測。自己アクセス、無効流入、計測誤差のいずれとも断定せず、参照元・ホスト・期間を確認。元データは除外しない。']);
   });
   if (good('HOST')) {
     var hosts = Object.create(null);
@@ -195,10 +221,10 @@ function playPointGrowthTrafficGrid_(period, sources, timestamp) {
     partial = true;
     grid.push(['照合警告','','','','','','','','','','','','','TOTAL_MISMATCH','独立取得した全体セッション/PVと内訳が一致しない、または未取得。全体の入口不明率は保留。']);
   }
-  var state = partial ? 'PARTIAL' : 'OK';
-  grid[4][2] = '全体照合 ' + (totalMatches ? 'OK' : '未確認') + ' / 不明参照元 ' + unknownSource + 'セッション / 入口照合 ' + matched + '/' + total + 'セッション / 照合済みの入口不明 ' + unknown + '。全体率は全セグメント一致時のみ。';
+  var state = partial ? 'PARTIAL' : concentrationAlerts.length?'CHECK':'OK';
+  grid[4][2] = '偏り調査 '+concentrationAlerts.length+'件 / 全体照合 ' + (totalMatches ? 'OK' : '未確認') + ' / 不明参照元 ' + unknownSource + 'セッション / 入口照合 ' + matched + '/' + total + 'セッション / 照合済みの入口不明 ' + unknown + '。全体率は全セグメント一致時のみ。';
   grid[4][3] = totalMatches && total > 0 && matched === total && !orphan ? unknown / total : '';
-  return { state:state, grid:grid, total:total, matched:matched, unknown:unknown };
+  return { state:state, grid:grid, total:total, matched:matched, unknown:unknown, concentrationAlerts:concentrationAlerts.length };
 }
 
 function playPointGrowthTrafficSource_(propertyId,period,dimensions,metrics,filter,currency) {
@@ -247,7 +273,7 @@ function capturePlayPointTrafficQualityReview(deadlineMs) {
       }
       sheet.getRange(5,4).setNumberFormat('0.00%');
       playPointP12UpsertHealth_('TRAFFIC_QUALITY',{lastAttempt:timestamp,lastSuccess:playPointP12NowText_(),dataLatest:period.end,
-        state:view.state,consecutiveFailures:0,error:'',note:'入口照合 '+view.matched+'/'+view.total+' / 照合済み不明 '+view.unknown+'。設定は変更しない。'});
+        state:view.state,consecutiveFailures:0,error:'',note:'入口照合 '+view.matched+'/'+view.total+' / 照合済み不明 '+view.unknown+' / 偏り調査 '+view.concentrationAlerts+'件。設定は変更しない。'});
       return {state:view.state,rows:view.grid.length};
     });
   } catch (error) {
@@ -309,15 +335,17 @@ function playPointGrowthSearchCandidates_(grid,today) {
     throw new Error('検索語×ページのヘッダー不一致');
   }
   var periods=Object.create(null), byQuery=Object.create(null), seen=Object.create(null);
-  var anchors=0, queryVariants=0;
+  var anchors=0, queryVariants=0, ambiguousQueries=0;
   grid.slice(1).forEach(function(row) {
     if (!row[1] && !row[2]) return;
     var query=String(row[1]||''), url=String(row[2]||''), period=String(row[7]||'');
-    if (!query || !/^https:\/\/playpoint-sim\.com\//.test(url) || row[8]!=='FINAL') throw new Error('検索語×ページに未確定・不正な行');
+    if (row[1]==='' || row[1]===null || row[1]===undefined || !/^https:\/\/playpoint-sim\.com\//.test(url) || row[8]!=='FINAL') throw new Error('検索語×ページに未確定・不正な行');
     var match=/^(\d{4}-\d{2}-\d{2}) ～ (\d{4}-\d{2}-\d{2})$/.exec(period);
     if (!match || !playPointMaintenanceIsoDate_(match[1]) || !playPointMaintenanceIsoDate_(match[2]) ||
         match[1]>match[2] || match[2]>=today) throw new Error('検索語×ページの期間が不正');
     periods[period]=true;
+    // 旧シートの数値/日付化された検索語は元の文字列が不明。候補にせず件数を報告する。
+    if(typeof row[1]!=='string'){ambiguousQueries++;return;}
     if (url.indexOf('#')>=0) { anchors++;return; }
     if (url.indexOf('?')>=0) { queryVariants++;return; }
     var key=JSON.stringify([query,url]);
@@ -349,8 +377,8 @@ function playPointGrowthSearchCandidates_(grid,today) {
   });
   candidates.sort(function(a,b){return Number(a.state!=='REVIEW')-Number(b.state!=='REVIEW')||
     (Number(b.scenarios[1]||0)-Number(a.scenarios[1]||0))||b.imp-a.imp;});
-  return {state:stale?'STALE':'OK',period:dates[0],candidates:candidates,excludedAnchors:anchors,
-    detail:'API可視範囲の候補のみ。アンカー除外 '+anchors+'行・クエリ付きURL除外 '+queryVariants+'行。検索語ごとに主候補1URL、競合候補は試算保留。'};
+  return {state:stale?'STALE':ambiguousQueries?'PARTIAL_QUERY_TYPE':'OK',period:dates[0],candidates:candidates,excludedAnchors:anchors,excludedAmbiguousQueries:ambiguousQueries,
+    detail:'API可視範囲の候補のみ。アンカー除外 '+anchors+'行・クエリ付きURL除外 '+queryVariants+'行・原文未確認の非文字列検索語除外 '+ambiguousQueries+'行。検索語ごとに主候補1URL、競合候補は試算保留。'};
 }
 
 function playPointGrowthOpportunityGrid_(daily,end,pages,search,timestamp) {
@@ -422,7 +450,7 @@ function capturePlayPointGrowthOpportunityReview() {
     catch (error) { search={state:'ERROR',detail:playPointP12ErrorText_(error),candidates:[]}; }
     var view=playPointGrowthOpportunityGrid_(daily,end,pages,search,timestamp);
     return withScriptLock_(function(){
-      playPointGrowthPublishGrid_(ss,cfg.opportunitySheet,view.grid,8,10);
+      playPointGrowthPublishGrid_(ss,cfg.opportunitySheet,view.grid,8,10,[4]);
       var sheet=ss.getSheetByName(cfg.opportunitySheet);
       if(view.grid.length>8) sheet.getRange(9,11,view.grid.length-8,1).setNumberFormat('0.00');
       sheet.getRange(3,5).setNumberFormat('0.0');
@@ -476,18 +504,27 @@ function capturePlayPointOperationsDashboard(){
       ['実利用性能','VITALS_ANALYSIS','⚡実利用性能',3],
       ['機能別利用','FEATURE_USAGE','🧩機能別利用分析',9],
       ['ページ価値','PAGE_VALUE','📊ページ価値ファネル',9],
+      ['記事Portfolio','ARTICLE_PORTFOLIO','📚記事Portfolio',9],
       ['URL検査','URL_INSPECTION','🧭URL検査',9]
     ];
     function url(sheet){return sheet?ss.getUrl()+'#gid='+sheet.getSheetId():'';}
     var checks=specs.map(function(spec,index){
-      var component=PLAYPOINT_P12_CONFIG.healthComponents[spec[1]]||'P1P2 '+spec[1],h=health[component]||[];
+      var component=spec[1]==='ARTICLE_PORTFOLIO'?'記事Portfolio（計測＋判断）':PLAYPOINT_P12_CONFIG.healthComponents[spec[1]]||'P1P2 '+spec[1],h=health[component]||[];
       var sheet=ss.getSheetByName(spec[2]), completed=playPointOperationsHealthDate_(h[2]),latest=playPointOperationsHealthDate_(h[3]);
       var state=String(h[4]||'NOT_CAPTURED'),entry=queue[spec[1]]||{},priority=3,note=String(h[6]||h[7]||'');
       var overdue=entry.nextDue&&entry.nextDue<today;
-      if(!sheet||!completed){state=state==='ERROR'?'ERROR':'NOT_CAPTURED';priority=1;}
-      else if(state==='ERROR'){priority=0;}
+      // Portfolioの実表がP1より古い場合は、健康状態の表記だけに依存せず調査候補にする。
+      if(spec[1]==='ARTICLE_PORTFOLIO'){
+        var freshness=playPointPortfolioFreshness_(ss,today);
+        if(freshness.state==='DUE'||freshness.state==='STALE_SOURCE'||freshness.state==='WAITING_SOURCE'){
+          if(state!=='ERROR')state=freshness.state==='DUE'?'STALE / '+state:freshness.state;
+          priority=state==='ERROR'?0:1;note=freshness.note+' / '+note;
+        }
+      }
+      if(state==='ERROR'){priority=0;}
+      else if(!sheet||!completed){if(state!=='WAITING_SOURCE'&&state!=='STALE_SOURCE')state='NOT_CAPTURED';priority=1;}
       else if(completed<playPointP12ShiftIsoDate_(today,-spec[3])){state='STALE / '+state;priority=1;}
-      else if(state!=='OK'){priority=2;}
+      else if(state!=='OK'){priority=Math.min(priority,2);}
       if(overdue){priority=Math.min(priority,1);note='次回予定 '+entry.nextDue+' を超過。 '+note;}
       return {label:spec[0],state:state,completed:completed,latest:latest,note:note.slice(0,350),
         sheet:spec[2],url:url(sheet),priority:priority,order:index};

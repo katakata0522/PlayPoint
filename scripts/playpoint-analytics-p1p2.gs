@@ -525,6 +525,7 @@ function playPointP12CaptureSearchCross_(spreadsheet) {
 
   if (crossRows.length) {
     playPointP12EnsureRows_(sheet, crossHeaderRow + crossRows.length);
+    sheet.getRange(crossHeaderRow + 1, 1, crossRows.length, 3).setNumberFormat('@');
     sheet.getRange(crossHeaderRow + 1, 1, crossRows.length, crossHeaders.length)
       .setValues(crossRows.map(playPointP12LiteralRow_));
   }

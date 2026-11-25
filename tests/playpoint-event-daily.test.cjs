@@ -400,3 +400,69 @@ test('operations dashboard sorts unresolved issues above healthy sections withou
   assert.equal(grid[1][1],'');assert.equal(grid[1][3],10000);
   assert.deepEqual(Array.from(grid.slice(6),r=>r[0]),['error','pending','healthy']);
 });
+
+
+test('日記など任意の計測は日次・週次・読者集計の無行を0に変換しない',()=>{
+  const c=runtime(),period={start:'2026-11-11',end:'2026-11-24'};
+  const rows=[{isoDate:'2026-11-18',eventName:'diary_tab_opened',eventCount:4,totalUsers:3}];
+  const sources={EVENTS:{state:'OK',rows,detail:'OK'},ARTICLE:{state:'OK',rows:[]},ATTRIBUTION:{state:'OK',rows:[]}};
+  const grid=c.playPointEventDailyGrid_(period,'2026-11-25',sources);
+  for(const name of ['diary_entry_saved','game_form_started','reader_question_clicked','share_url_copied']){
+    const row=grid.find(r=>r[0]==='EVENTS'&&r[1]==='2026-11-18'&&r[2]===name);
+    assert.equal(row[3],'');assert.equal(row[4],'');assert.equal(row[6],'NO_EVENT_ROW');
+  }
+  assert.equal(grid.find(r=>r[0]==='前週'&&r[2]==='diary_tab_opened')[3],'');
+  assert.equal(grid.find(r=>r[0]==='直近完了週'&&r[2]==='diary_tab_opened')[3],4);
+  assert.equal(grid.find(r=>r[0]==='EVENTS'&&r[1]==='2026-11-18'&&r[2]==='calculator_form_started')[3],0);
+  const reader=c.playPointReaderBuildGrid_(period,[],{EVENTS:{state:'OK',rows:[],detail:''}},'2026-11-25');
+  assert.equal(reader.find(r=>r[2]==='diary_entry_saved')[1],'NO_EVENT_ROW');
+});
+
+test('公開履歴の最新照合成功と過去の取得上限を分離する',()=>{
+  const c=runtime();
+  const ok=c.playPointGrowthWorkflowCoverage_({recentCount:30,pending:0,limited:true,errors:[]});
+  assert.equal(ok.recentState,'OK');assert.equal(ok.historicalState,'HISTORICAL_LIMITED');
+  assert.equal(c.playPointGrowthWorkflowCoverage_({recentCount:30,pending:1,limited:true,errors:[]}).recentState,'PARTIAL');
+  assert.equal(c.playPointGrowthWorkflowCoverage_({recentCount:30,pending:0,limited:false,errors:['403']}).recentState,'PARTIAL');
+});
+
+test('公開効果の現在の取得期間外と期間内の欠測を混同しない',()=>{
+  const c=releaseRuntime(),p=releaseReceipt(),release=c.playPointGrowthVerifiedRelease_(p,p.commit,'2026-11-25');
+  const days={},gsc={};
+  for(let d='2026-10-21';d<='2026-11-24';d=c.playPointP12ShiftIsoDate_(d,1)){
+    days[d]={page_view:100,calculator_form_started:5,calculator_funnel_completed:4,calculator_validation_error:1};
+    gsc[d]={clicks:10,impressions:200};
+  }
+  const grid=c.playPointGrowthReleaseGrid_([release],{days},gsc,'2026-11-25','now','OK',[],{ga4Start:'2026-10-21',gscStart:'2026-10-21'});
+  assert.equal(grid.find(r=>r[2]===7&&r[3]==='GA4 PV')[9],'OUTSIDE_HISTORY');
+  assert.equal(grid.find(r=>r[2]===7&&r[3]==='GA4 PV')[6],'');
+  const missing=c.playPointGrowthReleaseGrid_([release],{days},gsc,'2026-11-25','now','OK',[],{ga4Start:'2026-10-01',gscStart:'2026-10-01'});
+  assert.equal(missing.find(r=>r[2]===7&&r[3]==='GA4 PV')[9],'MISSING_DAYS');
+});
+
+test('流入の偏りを実データ相当の631PV・2人で検知し、人数もPVも除外しない',()=>{
+  const c=runtime(),p={start:'2026-10-24',end:'2026-11-22'},ok=rows=>({state:'OK',rows});
+  const ref={sessionSourceMedium:'example / referral',deviceCategory:'desktop'},organic={sessionSourceMedium:'google / organic',deviceCategory:'mobile'};
+  const sources={TRAFFIC:ok([{...ref,sessions:75,activeUsers:2,screenPageViews:631,engagedSessions:40},
+    {...organic,sessions:4036,activeUsers:3000,screenPageViews:5265,engagedSessions:2500}]),
+    TOTAL:ok([{sessions:4111,screenPageViews:5896}]),ENTRY:ok([{...ref,landingPage:'/',sessions:75,screenPageViews:631},{...organic,landingPage:'/articles/a.html',sessions:4036,screenPageViews:5265}]),
+    HOST:ok([{hostName:'playpoint-sim.com',screenPageViews:5896}]),SUCCESS:ok([]),REVENUE:ok([])};
+  const v=c.playPointGrowthTrafficGrid_(p,sources,'2026-11-25');
+  assert.equal(v.state,'CHECK');assert.equal(v.concentrationAlerts,1);assert.equal(v.total,4111);assert.equal(v.matched,4111);
+  const warning=v.grid.find(r=>r[0]==='流入偏り調査');
+  assert.equal(warning[6],631);assert.equal(warning[5],2);assert.equal(warning[13],'CHECK_PV_CONCENTRATION');
+  assert.match(warning[14],/315.5.*10.7%/);assert.match(warning[14],/断定せず/);
+  assert.equal(c.playPointGrowthTrafficConcentration_(99,1,5896),null);
+  assert.equal(c.playPointGrowthTrafficConcentration_(631,100,5896),null);
+  assert.equal(c.playPointGrowthTrafficConcentration_(631,2,20000),null);
+  assert.equal(c.playPointGrowthTrafficConcentration_(631,0,5896).state,'CHECK_ZERO_USERS');
+});
+
+test('原文不明の数値・日付化された検索語は候補にせず文字列の先頭ゼロを保持する',()=>{
+  const c=runtime(),period='2026-10-22 ～ 2026-11-20',header=['順位','検索キーワード','ページ','クリック数','表示回数','CTR','平均掲載順位','対象期間','データ状態'];
+  const row=(query,path)=>[1,query,'https://playpoint-sim.com'+path,1,200,0.005,7,period,'FINAL'];
+  const date=vm.runInContext("new Date('2026-10-13T00:00:00+09:00')",c);
+  const v=c.playPointGrowthSearchCandidates_([header,row(46308,'/a'),row(date,'/b'),row('001','/c'),row('10/13','/d')],'2026-11-25');
+  assert.equal(v.state,'PARTIAL_QUERY_TYPE');assert.equal(v.excludedAmbiguousQueries,2);
+  assert.deepEqual(Array.from(v.candidates,r=>r.query).sort(),['001','10/13']);
+});

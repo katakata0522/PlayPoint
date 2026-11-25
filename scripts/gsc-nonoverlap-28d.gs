@@ -69,8 +69,8 @@ function captureGscNonOverlapping28d(input) {
       if (result.status !== 'SKIPPED_STALE_TRIGGER' && typeof recordHealthSuccess_ === 'function') {
         recordHealthSuccess_('GSC_28D', {
           dataThrough: result.current.end,
-          dataState: 'FINAL',
-          detail: result.status + ' / ' + result.pairId + ' / query rows are API-visible rows, not all searches'
+          dataState: result.status==='LEGACY_UNVERIFIED'?'LEGACY_UNVERIFIED':'FINAL',
+          detail: result.status + ' / ' + result.pairId + ' / ' + (result.detail||'query rows are API-visible rows, not all searches')
         });
         updateHealthSheet_(playPointGscGetSpreadsheet_());
       }
@@ -118,14 +118,28 @@ function playPointGscCaptureUnlocked_(input) {
     };
   }
 
+  // 六層が揃っていても旧版の捕捉完全性は未証明。内部整合だけを監査し、保存値を推測で直さない。
+  var legacy=null;
+  if(existingRows.length&&playPointGscPairComplete_(existingRows)){
+    legacy=playPointGscAuditLegacyPair_(existingRows,pairId,windows,siteUrl);
+    playPointGscMarkLegacyViews_(spreadsheet,pairId,legacy);
+    // 非文字列の旧検索語は元の入力文字列を復元できない。APIと偶然一致しても証明へ昇格しない。
+    if(legacy.ambiguousQueries>0)return playPointGscLegacyResult_(pairId,windows,legacy,'検索語の原文が未確認');
+  }
   var fetchedAt = Utilities.formatDate(
     new Date(),
     Session.getScriptTimeZone() || 'Asia/Tokyo',
     'yyyy-MM-dd HH:mm:ss'
   );
 
-  var currentBundle = playPointGscFetchWindowBundle_(siteUrl, windows.current);
-  var previousBundle = playPointGscFetchWindowBundle_(siteUrl, windows.previous);
+  var currentBundle, previousBundle;
+  try {
+    currentBundle=playPointGscFetchWindowBundle_(siteUrl,windows.current);
+    previousBundle=playPointGscFetchWindowBundle_(siteUrl,windows.previous);
+  } catch(error) {
+    if(legacy)return playPointGscLegacyResult_(pairId,windows,legacy,'API再照合未完了: '+String(error.message||error).slice(0,300));
+    throw error;
+  }
 
   var allValues = []
     .concat(playPointGscBundleHistoryValues_(
@@ -147,13 +161,15 @@ function playPointGscCaptureUnlocked_(input) {
 
   var expected = playPointGscEvidence_(allValues,pairId,windows,siteUrl);
   // 中断後にAPIが変化していたら、異なるスナップショットを混ぜない。旧行を勝手に変更しない。
-  existingRows.forEach(function(row) {
+  var differs=existingRows.some(function(row){
     var key=playPointGscRecordKey_(row);
-    if (!Object.prototype.hasOwnProperty.call(expected.byKey,key) ||
-        expected.byKey[key]!==playPointGscCanonicalRow_(row)) {
-      throw new Error('GSC既存履歴と再取得の証拠が異なります。混在を防止し、既存履歴を保持。');
-    }
+    return !Object.prototype.hasOwnProperty.call(expected.byKey,key)||expected.byKey[key]!==playPointGscCanonicalRow_(row);
   });
+  // 旧版の内部整合が取れていても再取得が違えば別スナップショット。未証明の履歴として保護する。
+  if(differs){
+    if(legacy)return playPointGscLegacyResult_(pairId,windows,legacy,'API再取得と既存値が不一致。混在を禁止');
+    throw new Error('GSC既存履歴と再取得の証拠が異なります。混在を防止し、既存履歴を保持。');
+  }
   var newValues = allValues.filter(function(row) {
     return !existingKeys[playPointGscRecordKey_(row)];
   });
@@ -683,7 +699,7 @@ function playPointGscCanonicalRow_(row) {
   }));
 }
 
-function playPointGscEvidence_(rows,pairId,windows,siteUrl) {
+function playPointGscEvidence_(rows,pairId,windows,siteUrl,legacyAudit) {
   var byKey=Object.create(null), counts=Object.create(null), cfg=PLAYPOINT_GSC_28D_CONFIG;
   if(!playPointGscPairComplete_(rows)) throw new Error('GSC証拠の6層が不完全');
   rows.forEach(function(row){
@@ -697,7 +713,8 @@ function playPointGscEvidence_(rows,pairId,windows,siteUrl) {
       row[17]!== (isTotal?'byProperty':'byPage')||
       row[16]!== (isTotal?'byProperty':layer==='raw'?'byPage':'DERIVED_FROM_RAW')||
       values[9]>values[10]||values[11]>1||
-      (!empty&&!isTotal&&(!row[6]||!row[8]||(layer==='raw'&&!row[7])))||
+      (!empty&&!isTotal&&((legacyAudit?row[6]===''||row[6]===null||row[6]===undefined:typeof row[6]!=='string'||!row[6])||
+        !row[8]||(layer==='raw'&&!row[7])))||
       Object.prototype.hasOwnProperty.call(byKey,key)) throw new Error('GSC証拠の期間・属性・指標・重複が不正');
     var group=role+'|'+layer, entry=counts[group]||(counts[group]={rows:0,empty:0});
     entry.rows++; if(empty)entry.empty++;
@@ -711,6 +728,59 @@ function playPointGscEvidence_(rows,pairId,windows,siteUrl) {
   var digest=Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,JSON.stringify(canonicalRows),Utilities.Charset.UTF_8)
     .map(function(b){return ('0'+(b&255).toString(16)).slice(-2);}).join('');
   return {byKey:byKey,count:rows.length,digest:digest};
+}
+
+// 旧版の比較は、原文未確認の型を保ったまま内部整合だけを調べる。
+function playPointGscLegacyQueryKey_(value){
+  if(value instanceof Date)return 'date:'+value.toISOString();
+  if(typeof value==='number'&&Number.isFinite(value))return 'number:'+String(value);
+  if(typeof value==='string'&&value!=='')return 'text:'+value;
+  throw new Error('旧GSC検索語の型が不正');
+}
+function playPointGscAuditLegacyPair_(rows,pairId,windows,siteUrl){
+  var evidence=playPointGscEvidence_(rows,pairId,windows,siteUrl,true), ambiguous=0;
+  rows.forEach(function(row){
+    if((row[5]==='QUERY_PAGE_RAW'||row[5]==='QUERY_BASE_URL_NORMALIZED')&&typeof row[6]!=='string'){
+      playPointGscLegacyQueryKey_(row[6]);ambiguous++;
+    }
+  });
+  ['current_28d','previous_28d'].forEach(function(role){
+    var raw=Object.create(null),normalized=Object.create(null);
+    rows.filter(function(row){return row[1]===role&&row[5]==='QUERY_PAGE_RAW';}).forEach(function(row){
+      var url=playPointGscBaseUrl_(row[7]);
+      if(url!==row[8])throw new Error('旧GSCのRaw URL正規化が不一致');
+      var key=JSON.stringify([playPointGscLegacyQueryKey_(row[6]),url]);
+      var item=raw[key]||(raw[key]={clicks:0,impressions:0,weightedPosition:0});
+      item.clicks+=Number(row[9]);item.impressions+=Number(row[10]);item.weightedPosition+=Number(row[12])*Number(row[10]);
+    });
+    rows.filter(function(row){return row[1]===role&&row[5]==='QUERY_BASE_URL_NORMALIZED';}).forEach(function(row){
+      var key=JSON.stringify([playPointGscLegacyQueryKey_(row[6]),row[8]]);
+      if(normalized[key])throw new Error('旧GSCの正規化行が重複');
+      normalized[key]=true;
+      var item=raw[key];
+      if(!item||item.clicks!==Number(row[9])||item.impressions!==Number(row[10])||
+        Math.abs((item.impressions?item.clicks/item.impressions:0)-Number(row[11]))>1e-10||
+        Math.abs((item.impressions?item.weightedPosition/item.impressions:0)-Number(row[12]))>1e-8)
+        throw new Error('旧GSCのRaw/Normalized内部整合が不一致');
+    });
+    if(Object.keys(raw).length!==Object.keys(normalized).length)throw new Error('旧GSC正規化行数が不一致');
+  });
+  return {state:'LEGACY_UNVERIFIED',rows:evidence.count,ambiguousQueries:ambiguous,
+    detail:'六層とRaw/Normalized内部整合は確認。API可視行の完全性・検索語原文は未証明'};
+}
+function playPointGscLegacyResult_(pairId,windows,audit,reason){
+  return {status:'LEGACY_UNVERIFIED',pairId:pairId,current:windows.current,previous:windows.previous,
+    detail:audit.detail+' / 非文字列検索語 '+audit.ambiguousQueries+'行 / '+reason};
+}
+function playPointGscMarkLegacyViews_(spreadsheet,pairId,audit){
+  // 旧ビューの明細は再生成しない。既に同じpairを表示している派生表だけに状態を付記。
+  [PLAYPOINT_GSC_28D_CONFIG.comparisonSheet,PLAYPOINT_GSC_28D_CONFIG.normalizedComparisonSheet].forEach(function(name){
+    var sheet=spreadsheet.getSheetByName(name);
+    if(!sheet||sheet.getLastRow()<15||String(sheet.getRange('B2').getValue()||'')!==pairId||
+      String(sheet.getRange('A5').getValue()||'')!=='比較状態')return;
+    sheet.getRange('B5').setValue('LEGACY_UNVERIFIED');
+    sheet.getRange('B13').setValue(audit.detail+' / 原文未確認の型変換 '+audit.ambiguousQueries+'行。旧明細を保持');
+  });
 }
 
 function playPointGscReceiptRow_(pairId,windows,siteUrl,fetchedAt,evidence) {
@@ -981,8 +1051,9 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
     return row[1] === 'previous_28d' && row[2] === layer;
   });
 
-  var currentPeriod = currentRows.length ? currentRows[0][3] + ' ～ ' + currentRows[0][4] : 'MISSING';
-  var previousPeriod = previousRows.length ? previousRows[0][3] + ' ～ ' + previousRows[0][4] : 'MISSING';
+  var windows=playPointGscBuildWindows_(pairId.split('__')[1]);
+  var currentPeriod=windows.current.start+' ～ '+windows.current.end;
+  var previousPeriod=windows.previous.start+' ～ '+windows.previous.end;
   // 呼び出し側は保存後の完了記録まで検証済み。旧版の6層だけをREADYへ昇格しない。
   var ready = historyRows.some(function(row){return row[5]==='PAIR_RECEIPT';}) && playPointGscPairComplete_(historyRows);
   var propertyCurrent = playPointGscPropertyTotalForRole_(historyRows, 'current_28d');
@@ -1031,7 +1102,8 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
   var map = {};
 
   rowsForLayer.forEach(function(row) {
-    var query = String(row[6] || '');
+    if(typeof row[6]!=='string'||row[6]==='')throw new Error('検索語原文が文字列でないため比較生成を保留');
+    var query = row[6];
     var url = String(row[urlIndex] || '');
     var key = query + '\u0000' + url;
     if (!map[key]) {
@@ -1081,6 +1153,8 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
     return playPointGscLiteralRow_(values);
   });
   if(grid.length>sheet.getMaxRows())sheet.insertRowsAfter(sheet.getMaxRows(),grid.length-sheet.getMaxRows());
+  // 比較ビューでも検索語・URLを先に文字列型へ設定し、自動日付化・先頭ゼロ消失を防ぐ。
+  if(output.length)sheet.getRange(16,1,output.length,2).setNumberFormat('@');
   // 計算が完了するまでは旧比較を保持し、READYと明細を一括書込。
   sheet.getRange(1,1,grid.length,headers.length).setValues(grid);
   if(oldRows>grid.length)sheet.getRange(grid.length+1,1,oldRows-grid.length,headers.length).clearContent();

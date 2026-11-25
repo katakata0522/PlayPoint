@@ -21,7 +21,7 @@ function indexes() {return Object.fromEntries(['ja','en','ko','tw'].map(l=>[l,{l
 test('公開フィードの最新commitを固定し、不正なrevisionは拒否する',()=>{const c=runtime(),sha='a'.repeat(40);assert.equal(c.playPointMaintenanceCommitFromFeed_('<id>tag:github.com,2008:Grit::Commit/'+sha+'</id>'),sha);assert.throws(()=>c.playPointMaintenanceCommitFromFeed_('<html>login</html>'),/revision/);});
 test('日本語非掲載をHOLDとして含め、4言語の現行台帳を生成する',()=>{const r=runtime().playPointMaintenanceInventory_([{file:'../articles/a.html',listed:true},{file:'../articles/hold.html',listed:false}],indexes());assert.equal(r.length,5);assert.equal(r.find(x=>x.path.includes('hold')).role,'hold');});
 test('公開台帳と検索索引の欠落・未知role・重複を拒否する',()=>{const c=runtime(),a=indexes();a.en.articles=[];assert.throws(()=>c.playPointMaintenanceInventory_([{file:'../articles/a.html'}],a),/不完全/);const b=indexes();b.ko.articles[0].role='unknown';assert.throws(()=>c.playPointMaintenanceInventory_([{file:'../articles/a.html'}],b),/役割/);assert.throws(()=>c.playPointMaintenanceInventory_([{file:'../articles/missing.html'}],indexes()),/ありません/);});
-test('Portfolioの取得失敗を独立した監視状態へ記録する',()=>{let failed='';const c=runtime({withScriptLock_:fn=>fn(),recordHealthAttempt_:()=>{},recordHealthFailure_:(component,error)=>{failed=component+':'+error.message;},resolveAndRememberSpreadsheet_:()=>({}),updateHealthSheet_:()=>{}});c.playPointRefreshPortfolioUnlocked_=()=>{throw Error('source failed');};assert.throws(()=>c.refreshPlayPointArticlePortfolio(),/source failed/);assert.equal(failed,'ARTICLE_PORTFOLIO:source failed');});
+test('Portfolioの取得失敗を独立した監視状態へ記録する',()=>{let failed='';const c=runtime({withScriptLock_:fn=>fn(),recordHealthAttempt_:()=>{},recordHealthFailure_:(component,error)=>{failed=component+':'+error.message;},resolveAndRememberSpreadsheet_:()=>({}),updateHealthSheet_:()=>{}});c.playPointMaintenanceLoadInventory_=()=>[];c.playPointRefreshPortfolioUnlocked_=()=>{throw Error('source failed');};assert.throws(()=>c.refreshPlayPointArticlePortfolio(),/source failed/);assert.equal(failed,'ARTICLE_PORTFOLIO:source failed');});
 function auditRuntime(fail = false) {
   const props = new Map(); let stored = [['日付']], writes=0;
   const coverage = {getLastRow:()=>stored.length,getDataRange:()=>({getValues:()=>stored.map(row=>row.slice())}),getRange:()=>({setNumberFormat:()=>{}})};
@@ -129,4 +129,40 @@ test('新しいP1が不完全なら旧台帳を更新扱いにせず、URL検査
   const results=c.capturePlayPointAnalyticsP1P2();
   assert.equal(results.find(r=>r.stage==='PORTFOLIO').status,'SKIPPED_PAGE_VALUE_NOT_OK');
   assert.equal(results.find(r=>r.stage==='URL_INSPECTION').status,'OK');
+});
+
+
+test('Portfolio daily retry detects newer valid P1, skips duplicate refresh, and waits for stale or partial P1',()=>{
+  const today='2026-11-25';let end='2026-10-19 ～ 2026-11-17',oldEnd='2026-10-12 ～ 2026-11-10',status='OK (join=98.3%)',calls=0;
+  const ss={getSheetByName:name=>name==='📚記事Portfolio'?{getLastRow:()=>290,getRange:()=>({getValue:()=>oldEnd})}:
+    {getLastRow:()=>434,getRange:()=>({getValues:()=>{const head=['対象期間',end];head[11]=status;return [head];}})}};
+  const c=runtime({resolveAndRememberSpreadsheet_:()=>ss,withScriptLock_:fn=>fn(),playPointP12NowText_:()=>today+' 09:00:00'});
+  c.refreshPlayPointArticlePortfolio=()=>{calls++;oldEnd=end;return {rows:281,period:end};};
+  assert.equal(c.playPointPortfolioFreshness_(ss,today).state,'DUE');
+  assert.equal(c.capturePlayPointPortfolioRetry().state,'OK');assert.equal(calls,1);
+  assert.equal(c.capturePlayPointPortfolioRetry().state,'OK');assert.equal(calls,1);
+  status='PARTIAL';assert.equal(c.capturePlayPointPortfolioRetry().state,'WAITING_SOURCE');assert.equal(calls,1);
+  status='OK';end='2026-10-12 ～ 2026-11-10';
+  assert.equal(c.playPointPortfolioFreshness_(ss,today).state,'STALE_SOURCE');
+  assert.equal(c.capturePlayPointPortfolioRetry().state,'WAITING_SOURCE');assert.equal(calls,1);
+  end='2026-10-18 ～ 2026-11-16';
+  assert.equal(c.playPointPortfolioFreshness_(ss,today).state,'WAITING_SOURCE');
+});
+
+test('Portfolio inventory is acquired outside the shared lock, latest existing decisions are read inside it',()=>{
+  let locked=false,events=[];
+  const c=runtime({withScriptLock_:fn=>{assert.equal(locked,false);locked=true;try{return fn();}finally{locked=false;}},
+    recordHealthAttempt_:()=>{assert(locked);events.push('attempt');},
+    recordHealthSuccess_:()=>{assert(locked);events.push('success');},
+    resolveAndRememberSpreadsheet_:()=>({}),updateHealthSheet_:()=>{},recordHealthFailure_:()=>{throw Error('unexpected failure');}});
+  c.playPointMaintenanceLoadInventory_=()=>{assert.equal(locked,false);events.push('inventory');return [item];};
+  c.playPointRefreshPortfolioUnlocked_=inventory=>{assert(locked);assert.equal(inventory[0],item);events.push('write');return {period:'2026-10-19 ～ 2026-11-17'};};
+  c.refreshPlayPointArticlePortfolio();
+  assert.deepEqual(events,['attempt','inventory','write','success']);
+});
+
+test('Portfolio publication refuses a backwards period even if the older P1 remains within freshness budget',()=>{
+  const c=runtime(),previous=old(),data=p1();
+  previous[1]=['P1共通計測期間','2026-09-04 ～ 2026-10-03'];
+  assert.throws(()=>c.playPointMaintenanceBuildPortfolio_([item],previous,data,'2026-10-05 14:00 JST'),/古いP1/);
 });
