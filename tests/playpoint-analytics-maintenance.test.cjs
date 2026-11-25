@@ -46,7 +46,10 @@ test('既存週次P1からPortfolioを更新し、失敗も実行エラーとし
   c.playPointP12GetSpreadsheet_=()=>({});c.playPointP12RunStage_=stage=>({stage,status:'OK'});c.playPointP12Log_=()=>{};
   c.capturePlayPointReaderOutcomes=()=>({state:'OK'});
   c.capturePlayPointEventDailyReview=()=>({state:'OK'});
-  let calls=0;c.refreshPlayPointArticlePortfolio=()=>{calls++;return {rows:241};};assert.equal(c.capturePlayPointAnalyticsP1P2().at(-1).stage,'PORTFOLIO');assert.equal(calls,1);
+  let calls=0;c.refreshPlayPointArticlePortfolio=()=>{calls++;return {rows:241};};
+  const stages=Array.from(c.capturePlayPointAnalyticsP1P2(),r=>r.stage);
+  assert.deepEqual(stages.slice(0,2),['PAGE_VALUE','PORTFOLIO']);
+  assert.equal(stages.at(-1),'URL_INSPECTION');assert.equal(calls,1);
   c.refreshPlayPointArticlePortfolio=()=>{throw Error('inventory unavailable');};assert.throws(()=>c.capturePlayPointAnalyticsP1P2(),/PORTFOLIO=.*inventory unavailable/);
   c.refreshPlayPointArticlePortfolio=()=>({rows:241});c.capturePlayPointReaderOutcomes=()=>{throw Error('reader source unavailable');};
   assert.throws(()=>c.capturePlayPointAnalyticsP1P2(),/READER_OUTCOMES=.*reader source unavailable/);
@@ -112,4 +115,17 @@ test('保存のflush失敗時も再開カーソルを進めない', () => {
   assert.throws(() => c.playPointPageHistoryAuditChunk_(), /flush failed/);
   assert.equal(JSON.parse(props.get(c.PLAYPOINT_MAINTENANCE.checkpoint)).coveredDays,0);
   assert.equal(props.has('oldComplete'),false);
+});
+
+
+test('新しいP1が不完全なら旧台帳を更新扱いにせず、URL検査は独立して続ける',()=>{
+  const c=runtime();const src=fs.readFileSync(path.join(root,'scripts/playpoint-analytics-p1p2.gs'),'utf8');
+  vm.runInContext(src,c);
+  c.playPointP12GetSpreadsheet_=()=>({});c.playPointP12Log_=()=>{};
+  c.playPointP12RunStage_=stage=>({stage,status:stage==='PAGE_VALUE'?'PARTIAL':'OK'});
+  c.capturePlayPointReaderOutcomes=()=>({});c.capturePlayPointEventDailyReview=()=>({});
+  c.refreshPlayPointArticlePortfolio=()=>{throw Error('must preserve previous portfolio');};
+  const results=c.capturePlayPointAnalyticsP1P2();
+  assert.equal(results.find(r=>r.stage==='PORTFOLIO').status,'SKIPPED_PAGE_VALUE_NOT_OK');
+  assert.equal(results.find(r=>r.stage==='URL_INSPECTION').status,'OK');
 });
