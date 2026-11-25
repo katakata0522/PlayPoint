@@ -118,3 +118,43 @@ S優先で追加した既存日次イベント・読者行動集計を再利用�
 ### 稼働反映・受入
 
 GitHub PR Gate合格後、bound Apps Scriptの既存 `playpoint-analytics-maintenance.gs` / `playpoint-ad-change-monitor.gs` を最新mainへ同期する。未反映のS・#841も合わせて反映する。既存のトリガーを増やさない。手動で `capturePlayPointEventDailyReview()`、`capturePlayPointReaderOutcomes()`、`capturePlayPointTrafficQualityReview()`、`capturePlayPointGrowthOpportunityReview()` を実行し、3ビューの期間、元データとの照合、欠測時の空欄、監視行、実行時間を確認する。次回の既存定期処理でも再確認。GitHubのマージだけではApps Scriptの稼働版や実データは更新されない。
+
+
+## 2026-11-25 再監査修正・B優先
+
+### B優先の機能別分析
+
+`capturePlayPointFeatureUsageReview()` は隣接非重複30日間のイベント回数と各イベント内のユニーク利用者を比較する。ゲーム別計算機・購入先比較・日記・カレンダー操作・PWA承諾・URLコピー・X共有操作・ウィジェットを対象とする。未観測行は空欄。地域・ゲーム・計算モードの定義が実際に登録済みの場合のみ分類を取得する。ゲームは標準pagePathの代替分類も可能だが、URL言語を購入地域と同一視しない。分類不明をまとめるときはイベント回数だけ集約し、利用者人数を合算しない。
+
+日記と購入先比較では閉じたGA4順序ファネルを使用し、開始から24時間以内の成功を同一利用者で評価する。独立したイベント人数やページの回数を割って完了率としない。母数が少ない場合・欠落ステップ・取得制限を明示。新たな自由入力値・識別子・カスタム定義・GA4管理設定は追加しない。
+
+### 実行管理（従来の曜日固定を置き換える）
+
+既存7時の収益診断と9時の広告変更監視から同じキューを使う。既存トリガーを追加・削除しない。通常の週次P1/P2から重複する読者・イベント更新を委譲し、手動P1/P2は個別の検証が可能。キューの状態はスクリプトプロパティ `PLAYPOINT_ANALYTICS_QUEUE_V1` に保存する。期限付きlease・前回試行日・成功日・次回予定日を管理し、未処理・滞留を優先する。エラーは翌日以降、PARTIALは通常周期に応じ最大2日で再試行。成功した週次ジョブは7日後。7時の日次イベント集計が成功した場合は9時に重複取得しない。新しいネットワーク通信を開始する前に期限を確認する。単一の通信やロックが長時間を要する可能性は残るため、初回の実行時間を必ず確認する。必要なら独立した `resumePlayPointAnalyticsQueue()` を手動実行する。実測せずに全ジョブの時間内完了を保証しない。
+
+### 公開履歴と変更範囲
+
+公開markerに加え、公開GitHub Actionsの `deploy.yml` 成功runについて本番mirrorと公開検証の両方のstepが成功した記録を確認する。非公開変更によるdeployスキップやPR Gate成功を公開と見なさない。workflowの工程時刻を保守的な公開移行区間として扱い、markerの日時とは証拠種別を区別する。最新30成功runを1回最大4件まで照合し、保存後にカーソルを進める。以前のrun・同一run再実行・rollback/recovery・GitHub API制限などは完全捕捉を保証しない。前回観測版からの公開ファイル差分が取得できた場合だけ変更範囲と評価候補KPIを記載する。これは実際の改修意図や因果関係の証明ではない。署名・Google OAuthトークン・秘密情報をGitHubへ送信しない。
+
+### 運営の入口・責務分離
+
+`capturePlayPointOperationsDashboard()` は既存の監視行、成長分析、GSC索引を読んでPV進捗、要確認、古い分析、容量予告、個別シートのリンクを一か所に集約する。新しいAPIデータ取得はしない。元データの鮮度が確認できないPVを埋めない。新規ビューを日々個別巡回する必要を減らす。
+
+Apps Scriptの同期時は全モジュールを同時に反映する。既存 `playpoint-analytics-maintenance.gs` は読者・日次・共通関数に限定し、抽出された3モジュールを追加する。旧統合版と新分割版を同時に残すと重複定義になるため不可。
+
+- `scripts/playpoint-analytics-maintenance.gs`
+- `scripts/playpoint-analytics-release-effects.gs`（新規）
+- `scripts/playpoint-analytics-growth-review.gs`（新規）
+- `scripts/playpoint-analytics-feature-usage.gs`（新規）
+- `scripts/playpoint-ad-change-monitor.gs`
+- `scripts/playpoint-revenue-diagnostics.gs`
+- `scripts/playpoint-analytics-p1p2.gs`
+- `scripts/gsc-nonoverlap-28d.gs`
+
+### 残るWeb Vitalsの計測元改善
+
+今回の再監査では、現行の簡易計測と標準指標の差を保ったまま分析と運用を安定させる。GoogleChrome/web-vitalsの固定版を自己ホストする変更は、公式配布物の取得・ライセンス/ハッシュ確認、既存同意制御との統合、旧方式と新方式の版別分離、SW/アセット生成、全ブラウザ回帰を通してから別PRで行う。外部CDNの無検証追加や現行計測の上書きはしない。現状を公式CWVの完全な測定とは扱わない。
+
+### 受入
+
+GitHubマージとApps Script反映は別。稼働版のバックアップと差分確認後に全8モジュールを同期し、既存権限・トリガー一覧を維持する。まず `capturePlayPointEventDailyReview()`、`capturePlayPointReaderOutcomes()`、`capturePlayPointFeatureUsageReview()`、`capturePlayPointTrafficQualityReview()`、`capturePlayPointGrowthOpportunityReview()`、`capturePlayPointReleaseEffectReview()`、`capturePlayPointOperationsDashboard()` を個別に確認。次に `rebuildPlayPointGscHistoryIndex()`、`captureGscNonOverlapping28d()` を実行して既存履歴・完了証跡を照合。最後に `resumePlayPointAnalyticsQueue()` と既存の定期実行で期限・再試行・データ鮮度を検証する。古い履歴の再取得が既存証拠と一致しなければ保留し、削除・置換しない。

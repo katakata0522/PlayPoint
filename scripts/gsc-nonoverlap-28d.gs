@@ -15,6 +15,12 @@
 
 var PLAYPOINT_GSC_28D_CONFIG = Object.freeze({
   historySheet: '🗃GSC 28日履歴',
+  indexSheet: '🗂GSC履歴索引',
+  indexVersion: 'GSC_HISTORY_INDEX_V1',
+  indexScanChunk: 20000,
+  indexAuditMs: 28 * 24 * 60 * 60 * 1000,
+  // 運用上の早期警告であってGoogle Sheetsのプラットフォーム上限ではない。
+  historyPlanningCells: 8000000,
   comparisonSheet: '🔍GSC 28日比較',
   normalizedComparisonSheet: '🧹GSC 28日正規化',
   rowLimit: 25000,
@@ -96,8 +102,13 @@ function playPointGscCaptureUnlocked_(input) {
   var pairId = windows.current.start + '__' + windows.current.end;
   var history = playPointGscEnsureHistorySheet_(spreadsheet);
   var existingRows = playPointGscRowsForPair_(history, pairId);
+  var existingKeys = playPointGscExistingRecordKeys_(existingRows);
+  if (Object.keys(existingKeys).length !== existingRows.length) throw new Error('GSC履歴に同一レコードの重複があります。正本を保持し、比較を保留します。');
 
-  if (playPointGscPairComplete_(existingRows)) {
+  var receiptRows = existingRows.filter(function(row){return row[5]==='PAIR_RECEIPT';});
+  // 旧版の6層だけの履歴は保存完了の証明ではない。再取得と照合するまでは完了扱いにしない。
+  if (receiptRows.length) {
+    if (!playPointGscVerifiedPair_(existingRows,pairId,windows,siteUrl)) throw new Error('GSC完了記録と保存データが不一致。正本を保持し、比較を保留。');
     playPointGscRebuildComparisonViews_(spreadsheet, existingRows, pairId);
     return {
       status: 'SKIPPED_ALREADY_COMPLETE',
@@ -134,7 +145,15 @@ function playPointGscCaptureUnlocked_(input) {
       fetchedAt
     ));
 
-  var existingKeys = playPointGscExistingRecordKeys_(existingRows);
+  var expected = playPointGscEvidence_(allValues,pairId,windows,siteUrl);
+  // 中断後にAPIが変化していたら、異なるスナップショットを混ぜない。旧行を勝手に変更しない。
+  existingRows.forEach(function(row) {
+    var key=playPointGscRecordKey_(row);
+    if (!Object.prototype.hasOwnProperty.call(expected.byKey,key) ||
+        expected.byKey[key]!==playPointGscCanonicalRow_(row)) {
+      throw new Error('GSC既存履歴と再取得の証拠が異なります。混在を防止し、既存履歴を保持。');
+    }
+  });
   var newValues = allValues.filter(function(row) {
     return !existingKeys[playPointGscRecordKey_(row)];
   });
@@ -142,14 +161,23 @@ function playPointGscCaptureUnlocked_(input) {
   playPointGscAppendRows_(history, newValues);
 
   var finalRows = playPointGscRowsForPair_(history, pairId);
-  if (!playPointGscPairComplete_(finalRows)) {
+  // 今回APIが返した全レコードが保存されたことを確認する。6層の存在だけで今回の欠測を見逃さない。
+  var actual=playPointGscEvidence_(finalRows,pairId,windows,siteUrl);
+  if(actual.digest!==expected.digest || actual.count!==expected.count) {
     throw new Error('GSC 28-day capture is incomplete after write. Comparison remains blocked.');
   }
-
-  playPointGscRebuildComparisonViews_(spreadsheet, finalRows, pairId);
+  // 完了記録を最後に追記。失敗した実行は次回APIとの厳密照合から再開する。
+  var receipt=playPointGscReceiptRow_(pairId,windows,siteUrl,fetchedAt,expected),receiptRow=history.getLastRow()+1;
+  playPointGscAppendRows_(history,[receipt]);
+  var savedReceipt=history.getRange(receiptRow,1,1,23).getValues()[0];
+  if(playPointGscCanonicalRow_(savedReceipt)!==playPointGscCanonicalRow_(receipt))throw new Error('GSC完了記録の書込後検証失敗');
+  // 直前にデータ本体を全照合済み。領収行のみ再読し、全pairの3回目の読取は行わない。
+  var verifiedRows=finalRows.concat([savedReceipt]);
+  playPointGscEnsureIndex_(history,false);
+  playPointGscRebuildComparisonViews_(spreadsheet, verifiedRows, pairId);
 
   return {
-    status: existingRows.length ? 'REPAIRED_PARTIAL_PAIR' : 'CAPTURED',
+    status: existingRows.length ? 'REVERIFIED_PAIR' : 'CAPTURED',
     pairId: pairId,
     current: windows.current,
     previous: windows.previous,
@@ -300,6 +328,7 @@ function playPointGscFetchQueryPageRows_(siteUrl, startDate, endDate) {
   var out = [];
   var startRow = 0;
   var responseAggregationType = '';
+  var seenKeys=Object.create(null);
 
   while (true) {
     var payload = playPointGscQueryApi_(siteUrl, {
@@ -319,6 +348,13 @@ function playPointGscFetchQueryPageRows_(siteUrl, startDate, endDate) {
     var rows = payload.rows || [];
     rows.forEach(function(row) {
       var exactUrl = row.keys && row.keys[1] ? row.keys[1] : '';
+      if(!Array.isArray(row.keys)||row.keys.length!==2||typeof row.keys[0]!=='string'||!row.keys[0]||
+          !/^https?:\/\//.test(exactUrl)||!Number.isSafeInteger(row.clicks)||!Number.isSafeInteger(row.impressions)||
+          row.clicks<0||row.impressions<row.clicks||!Number.isFinite(row.ctr)||row.ctr<0||row.ctr>1||
+          !Number.isFinite(row.position)||row.position<0) throw new Error('GSC Raw APIの行が不正');
+      var key=JSON.stringify(row.keys);
+      if(seenKeys[key]) throw new Error('GSC Raw APIのページングで重複行');
+      seenKeys[key]=true;
       out.push({
         query: row.keys && row.keys[0] ? row.keys[0] : '',
         exactUrl: exactUrl,
@@ -332,6 +368,7 @@ function playPointGscFetchQueryPageRows_(siteUrl, startDate, endDate) {
 
     if (rows.length < PLAYPOINT_GSC_28D_CONFIG.rowLimit) break;
     startRow += rows.length;
+    if(startRow>=100000) throw new Error('GSC Raw取得安全上限。切り捨てた履歴を完全扱いしない。');
   }
 
   return {
@@ -355,7 +392,10 @@ function playPointGscFetchPropertyTotal_(siteUrl, startDate, endDate) {
 
   playPointGscAssertAggregation_(payload.responseAggregationType, 'byProperty', 'Property Total');
 
-  var row = payload.rows && payload.rows[0] ? payload.rows[0] : {};
+  if(!Array.isArray(payload.rows)||payload.rows.length!==1) throw new Error('GSC Property Totalが未取得。ゼロとして保存しない。');
+  var row=payload.rows[0];
+  if(!Number.isSafeInteger(row.clicks)||!Number.isSafeInteger(row.impressions)||row.clicks<0||row.impressions<row.clicks||
+      !Number.isFinite(row.ctr)||row.ctr<0||row.ctr>1||!Number.isFinite(row.position)||row.position<0) throw new Error('GSC Property Totalが不正');
   return {
     clicks: Number(row.clicks || 0),
     impressions: Number(row.impressions || 0),
@@ -466,31 +506,145 @@ function playPointGscEnsureHistorySheet_(spreadsheet) {
 
   sheet.setFrozenRows(1);
   sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
-  sheet.getRange('L:L').setNumberFormat('0.00%');
-  sheet.getRange('M:M').setNumberFormat('0.00');
+  // 既存の履歴全列を週次で書式更新しない。新規追記範囲だけを設定する。
   return sheet;
+}
+
+// 索引は再生成可能な派生データ。履歴正本は追記専用で変更・削除しない。
+function playPointGscIndexPairValid_(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}__\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  try {
+    var parts = value.split('__');
+    playPointGscAssertIsoDate_(parts[0]); playPointGscAssertIsoDate_(parts[1]);
+    return playPointGscShiftIsoDate_(parts[0], 27) === parts[1];
+  } catch (error) { return false; }
+}
+
+function playPointGscIndexAppendIds_(blocks, ids, firstRow) {
+  ids.forEach(function(row, i) {
+    var id = row[0], n = firstRow + i;
+    var last = blocks[blocks.length - 1];
+    if ((!last||last[0]!==id)&&!playPointGscIndexPairValid_(id)) throw new Error('GSC履歴に空欄・不正pair_idがあります: row ' + n);
+    if (last && last[2] + 1 !== n) throw new Error('GSC履歴索引の行位置が連続していません');
+    if (last && last[0] === id) { last[2] = n; last[3]++; }
+    else blocks.push([id, n, n, 1]);
+  });
+  return blocks;
+}
+
+function playPointGscIndexRead_(grid, sourceId, lastRow, nowMs) {
+  var cfg = PLAYPOINT_GSC_28D_CONFIG;
+  if (!grid.length) return null;
+  if (grid[0][0] !== cfg.indexVersion) throw new Error('GSC履歴索引と同名の別シートです。上書きしません');
+  var m = grid[1] || [], cursor = Number(m[1]), audited = Number(m[2]);
+  if (String(m[0]) !== String(sourceId) || !Number.isSafeInteger(cursor) || cursor < 1 || cursor > lastRow ||
+      !Number.isFinite(audited) || audited <= 0 || audited > nowMs || nowMs-audited >= cfg.indexAuditMs ||
+      !grid[2] || grid[2].slice(0,4).join('|') !== 'pair_id|start_row|end_row|row_count') return null;
+  var blocks = [], expected = 2;
+  for (var i=3;i<grid.length;i++) {
+    var row=grid[i], id=row[0], a=Number(row[1]), b=Number(row[2]), count=Number(row[3]);
+    if (!playPointGscIndexPairValid_(id) || !Number.isSafeInteger(a) || !Number.isSafeInteger(b) ||
+        a!==expected || b<a || b>cursor || count!==b-a+1 ||
+        (blocks.length && blocks[blocks.length-1][0]===id)) return null;
+    blocks.push([id,a,b,count]); expected=b+1;
+  }
+  if (expected!==cursor+1 || String(m[3]||'')!==(blocks.length?blocks[blocks.length-1][0]:'')) return null;
+  return {cursor:cursor,audited:audited,blocks:blocks};
+}
+
+function playPointGscIndexCapacity_(spreadsheet, history, blocks, lastRow) {
+  var cfg=PLAYPOINT_GSC_28D_CONFIG;
+  var cells=spreadsheet.getSheets().reduce(function(sum,sheet) {
+    return sum+sheet.getMaxRows()*sheet.getMaxColumns();
+  },0);
+  // 直近4つのpairの行数。非連続の補完ブロックもpairごとに足す。
+  var counts=Object.create(null);
+  blocks.forEach(function(block){counts[block[0]]=(counts[block[0]]||0)+block[3];});
+  var recent=Object.keys(counts).sort().slice(-4);
+  var estimate=recent.length?Math.ceil(recent.reduce(function(sum,id){return sum+counts[id];},0)/recent.length):0;
+  var expectedCells=estimate*history.getMaxColumns();
+  var headroom=Math.max(0,cfg.historyPlanningCells-cells);
+  return {cells:cells,nextRows:estimate,nextCells:expectedCells,
+    weeks:expectedCells?Math.floor(headroom/expectedCells):'',
+    state:cells+expectedCells>=cfg.historyPlanningCells?'PLAN_ARCHIVE':expectedCells&&headroom/expectedCells<=8?'PLAN_SOON':'OK',
+    historyRows:Math.max(0,lastRow-1),pairs:Object.keys(counts).length};
+}
+
+function playPointGscIndexWrite_(index, sourceId, state, capacity) {
+  var cfg=PLAYPOINT_GSC_28D_CONFIG, width=8;
+  var grid=[
+    [cfg.indexVersion,'scan_cursor','last_full_scan_ms','last_pair_id','allocated_cells','planning_budget_cells','state','weekly_estimate_rows'],
+    [String(sourceId),state.cursor,state.audited,state.blocks.length?state.blocks[state.blocks.length-1][0]:'',
+      capacity.cells,cfg.historyPlanningCells,capacity.state,capacity.nextRows],
+    ['pair_id','start_row','end_row','row_count','履歴行数',capacity.historyRows,'計画余裕（週）',capacity.weeks]
+  ];
+  state.blocks.forEach(function(block){grid.push(block.concat(['','','','']));});
+  var previous=index.getLastRow();
+  if(index.getMaxColumns()<width) index.insertColumnsAfter(index.getMaxColumns(),width-index.getMaxColumns());
+  if(index.getMaxRows()<grid.length) index.insertRowsAfter(index.getMaxRows(),grid.length-index.getMaxRows());
+  index.getRange(1,1,grid.length,width).setValues(grid);
+  if(previous>grid.length) index.getRange(grid.length+1,1,previous-grid.length,width).clearContent();
+  index.setFrozenRows(3);
+  index.getRange(1,1,1,width).setFontWeight('bold');
+  index.getRange(3,1,1,4).setFontWeight('bold');
+  index.setColumnWidth(1,270);
+  index.setColumnWidths(2,width-1,165);
+}
+
+function playPointGscEnsureIndex_(sheet, force) {
+  var cfg=PLAYPOINT_GSC_28D_CONFIG, ss=sheet.getParent(), sourceId=sheet.getSheetId();
+  var lastRow=sheet.getLastRow(), nowMs=Date.now();
+  var index=ss.getSheetByName(cfg.indexSheet);
+  if(!index) index=ss.insertSheet(cfg.indexSheet);
+  var grid=index.getLastRow()?index.getRange(1,1,index.getLastRow(),8).getValues():[];
+  var state=playPointGscIndexRead_(grid,sourceId,lastRow,nowMs);
+  var rebuild=!!force || !state;
+  // 外部の行挿入・削除などを境界で検出。内部の任意編集はappend-only契約外なので定期全監査も行う。
+  if(state && state.blocks.length) {
+    var first=state.blocks[0], last=state.blocks[state.blocks.length-1];
+    if(sheet.getRange(first[1],1).getValue()!==first[0] || sheet.getRange(last[2],1).getValue()!==last[0]) {state=null;rebuild=true;}
+  }
+  if(rebuild) state={cursor:1,audited:nowMs,blocks:[]};
+  var previousCursor=state.cursor;
+  while(state.cursor<lastRow) {
+    var count=Math.min(cfg.indexScanChunk,lastRow-state.cursor);
+    var ids=sheet.getRange(state.cursor+1,1,count,1).getValues();
+    if(ids.length!==count) throw new Error('GSC履歴索引の読み取りが不完全');
+    playPointGscIndexAppendIds_(state.blocks,ids,state.cursor+1);
+    state.cursor+=count;
+  }
+  // 通常実行では差分がなければ書き込まない。容量予告も追記時または定期全監査時だけ更新。
+  if(rebuild || previousCursor!==state.cursor) {
+    playPointGscIndexWrite_(index,sourceId,state,playPointGscIndexCapacity_(ss,sheet,state.blocks,lastRow));
+  }
+  return state;
 }
 
 function playPointGscRowsForPair_(sheet, pairId) {
   if (sheet.getLastRow() < 2) return [];
+  function read(state) {
+    var rows=[];
+    state.blocks.filter(function(block){return block[0]===pairId;}).forEach(function(block){
+      var values=sheet.getRange(block[1],1,block[3],PLAYPOINT_GSC_28D_CONFIG.headers.length).getValues();
+      if(values.length!==block[3] || values.some(function(row){return row[0]!==pairId;})) throw new Error('GSC履歴索引の参照先が不一致');
+      rows=rows.concat(values);
+    });
+    return rows;
+  }
+  var state=playPointGscEnsureIndex_(sheet,false);
+  try{return read(state);}
+  catch(error){return read(playPointGscEnsureIndex_(sheet,true));}
+}
 
-  var idValues = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
-  var firstRow = null;
-  var lastRow = null;
-
-  idValues.forEach(function(row, index) {
-    if (row[0] !== pairId) return;
-    var sheetRow = index + 2;
-    if (firstRow === null) firstRow = sheetRow;
-    lastRow = sheetRow;
-  });
-
-  if (firstRow === null) return [];
-
-  return sheet
-    .getRange(firstRow, 1, lastRow - firstRow + 1, PLAYPOINT_GSC_28D_CONFIG.headers.length)
-    .getValues()
-    .filter(function(row) { return row[0] === pairId; });
+// シートの移動/編集・旧版での追加後は管理者が手動で再索引できる。履歴の値を変更しない。
+function rebuildPlayPointGscHistoryIndex() {
+  var run=function(){
+    var ss=playPointGscGetSpreadsheet_(), history=ss.getSheetByName(PLAYPOINT_GSC_28D_CONFIG.historySheet);
+    if(!history || history.getLastRow()<1) throw new Error('GSC履歴が未取得');
+    var state=playPointGscEnsureIndex_(history,true);
+    return {status:'OK',rows:state.cursor-1,blocks:state.blocks.length};
+  };
+  return typeof withScriptLock_==='function'?withScriptLock_(run):run();
 }
 
 function playPointGscPairComplete_(rows) {
@@ -511,8 +665,73 @@ function playPointGscPairComplete_(rows) {
   return required.every(function(key) { return seen[key] === true; });
 }
 
+
+
+// 取得済みのAPI可視行の完全性を証明する（検索全体の網羅性は保証しない）。
+function playPointGscCanonicalRow_(row) {
+  if(!Array.isArray(row)||row.length!==23) throw new Error('GSC履歴行の列数が不正');
+  return JSON.stringify(row.map(function(value,i){
+    if(i===20) return ''; // 再試行の取得日時は証拠内容と別。
+    if(i>=9&&i<=12) {
+      if(value===''||value===null||!Number.isFinite(Number(value))||Number(value)<0) throw new Error('GSC履歴の指標欠落・不正');
+      var n=Number(value);
+      if(i<=10&&!Number.isSafeInteger(n)) throw new Error('GSC履歴の件数が不正');
+      return i<=10?n:Number(n.toPrecision(12)); // Sheetsの数値精度・API浮動小数差を許容。
+    }
+    if(value instanceof Date&&(i===3||i===4)) return Utilities.formatDate(value,Session.getScriptTimeZone()||'Asia/Tokyo','yyyy-MM-dd');
+    return String(value===null||value===undefined?'':value);
+  }));
+}
+
+function playPointGscEvidence_(rows,pairId,windows,siteUrl) {
+  var byKey=Object.create(null), counts=Object.create(null), cfg=PLAYPOINT_GSC_28D_CONFIG;
+  if(!playPointGscPairComplete_(rows)) throw new Error('GSC証拠の6層が不完全');
+  rows.forEach(function(row){
+    var role=row[1],layer=row[2],window=role==='current_28d'?windows.current:role==='previous_28d'?windows.previous:null;
+    var canonical=playPointGscCanonicalRow_(row), values=JSON.parse(canonical), key=playPointGscRecordKey_(row);
+    var isTotal=layer==='property_total', empty=row[5]==='WINDOW_STATUS';
+    var kind=isTotal?'PROPERTY_TOTAL':layer==='raw'?'QUERY_PAGE_RAW':layer==='normalized'?'QUERY_BASE_URL_NORMALIZED':'';
+    if(!window||!kind||row[0]!==pairId||values[3]!==window.start||values[4]!==window.end||
+      row[18]!==siteUrl||row[14]!==cfg.searchType||row[19]!==cfg.apiTimezone||
+      (empty?(isTotal||row[13]!=='FINAL_NO_ROWS'):(row[5]!==kind||row[13]!=='FINAL'))||
+      row[17]!== (isTotal?'byProperty':'byPage')||
+      row[16]!== (isTotal?'byProperty':layer==='raw'?'byPage':'DERIVED_FROM_RAW')||
+      values[9]>values[10]||values[11]>1||
+      (!empty&&!isTotal&&(!row[6]||!row[8]||(layer==='raw'&&!row[7])))||
+      Object.prototype.hasOwnProperty.call(byKey,key)) throw new Error('GSC証拠の期間・属性・指標・重複が不正');
+    var group=role+'|'+layer, entry=counts[group]||(counts[group]={rows:0,empty:0});
+    entry.rows++; if(empty)entry.empty++;
+    byKey[key]=canonical;
+  });
+  Object.keys(counts).forEach(function(group){
+    var c=counts[group];
+    if((group.indexOf('|property_total')>=0&&c.rows!==1)||(c.empty&&c.rows!==1)) throw new Error('GSC証拠の空窓・合計行が競合');
+  });
+  var canonicalRows=Object.keys(byKey).sort().map(function(key){return byKey[key];});
+  var digest=Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,JSON.stringify(canonicalRows),Utilities.Charset.UTF_8)
+    .map(function(b){return ('0'+(b&255).toString(16)).slice(-2);}).join('');
+  return {byKey:byKey,count:rows.length,digest:digest};
+}
+
+function playPointGscReceiptRow_(pairId,windows,siteUrl,fetchedAt,evidence) {
+  return playPointGscHistoryRow_({pairId:pairId,role:'pair',layer:'capture_receipt',
+    window:windows.current,recordType:'PAIR_RECEIPT',dataState:'FINAL',searchType:'web',
+    siteUrl:siteUrl,fetchedAt:fetchedAt,derivation:'GSC_CAPTURE_V1:'+evidence.count+':'+evidence.digest});
+}
+
+function playPointGscVerifiedPair_(rows,pairId,windows,siteUrl) {
+  var receipts=rows.filter(function(row){return row[5]==='PAIR_RECEIPT';});
+  if(receipts.length!==1) return false;
+  var r=receipts[0], m=/^GSC_CAPTURE_V1:(\d+):([a-f0-9]{64})$/.exec(String(r[22]||''));
+  if(!m||r[0]!==pairId||r[1]!=='pair'||r[2]!=='capture_receipt'||r[13]!=='FINAL'||r[18]!==siteUrl) return false;
+  try {
+    var actual=playPointGscEvidence_(rows.filter(function(row){return row[5]!=='PAIR_RECEIPT';}),pairId,windows,siteUrl);
+    return actual.count===Number(m[1])&&actual.digest===m[2];
+  }catch(error){return false;}
+}
+
 function playPointGscExistingRecordKeys_(rows) {
-  var keys = {};
+  var keys = Object.create(null);
   (rows || []).forEach(function(row) {
     keys[playPointGscRecordKey_(row)] = true;
   });
@@ -711,8 +930,14 @@ function playPointGscAppendRows_(sheet, values) {
     sheet.insertRowsAfter(sheet.getMaxRows(), requiredLastRow - sheet.getMaxRows());
   }
 
+  // 数値に見える検索語やISO日付を自動変換しない。
+  sheet.getRange(startRow,1,values.length,9).setNumberFormat('@');
+  sheet.getRange(startRow,14,values.length,10).setNumberFormat('@');
+  sheet.getRange(startRow,12,values.length,1).setNumberFormat('0.00%');
+  sheet.getRange(startRow,13,values.length,1).setNumberFormat('0.00');
   sheet.getRange(startRow, 1, values.length, PLAYPOINT_GSC_28D_CONFIG.headers.length)
     .setValues(values.map(playPointGscLiteralRow_));
+  if(typeof SpreadsheetApp!=='undefined' && typeof SpreadsheetApp.flush==='function') SpreadsheetApp.flush();
 }
 
 function playPointGscRebuildComparisonViews_(spreadsheet, historyRows, pairId) {
@@ -745,7 +970,9 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
   if (sheet.getMaxColumns() < 14) {
     sheet.insertColumnsAfter(sheet.getMaxColumns(), 14 - sheet.getMaxColumns());
   }
-  sheet.clearContents();
+  var oldRows=sheet.getLastRow(),oldPair=oldRows>=2?String(sheet.getRange('B2').getValue()||''):'';
+  // 手動で過去のpairを再取得しても、最新比較ビューを古い期間で上書きしない。
+  if(playPointGscIndexPairValid_(oldPair)&&oldPair>pairId)return;
 
   var currentRows = historyRows.filter(function(row) {
     return row[1] === 'current_28d' && row[2] === layer;
@@ -756,29 +983,29 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
 
   var currentPeriod = currentRows.length ? currentRows[0][3] + ' ～ ' + currentRows[0][4] : 'MISSING';
   var previousPeriod = previousRows.length ? previousRows[0][3] + ' ～ ' + previousRows[0][4] : 'MISSING';
-  var ready = playPointGscPairComplete_(historyRows);
+  // 呼び出し側は保存後の完了記録まで検証済み。旧版の6層だけをREADYへ昇格しない。
+  var ready = historyRows.some(function(row){return row[5]==='PAIR_RECEIPT';}) && playPointGscPairComplete_(historyRows);
   var propertyCurrent = playPointGscPropertyTotalForRole_(historyRows, 'current_28d');
   var propertyPrevious = playPointGscPropertyTotalForRole_(historyRows, 'previous_28d');
   var metadataRow = playPointGscFirstDataRow_(historyRows);
 
-  sheet.getRange('A1').setValue(title);
-  sheet.getRange('A2:B8').setValues([
-    ['pair_id', pairId],
-    ['current_28d', currentPeriod],
-    ['previous_28d', previousPeriod],
-    ['比較状態', ready ? 'READY' : 'BLOCKED'],
-    ['site_property', metadataRow ? metadataRow[18] : 'MISSING'],
-    ['search_type', metadataRow ? metadataRow[14] : PLAYPOINT_GSC_28D_CONFIG.searchType],
-    ['API日付基準', metadataRow ? metadataRow[19] : PLAYPOINT_GSC_28D_CONFIG.apiTimezone]
-  ]);
-
-  sheet.getRange('A10:F13').setValues([
-    ['Property Total', 'Click', 'Imp.', 'CTR', 'Pos', 'response aggregation'],
+  if(!ready)throw new Error('GSC比較の完了証拠がありません。旧ビューを保持。');
+  var top=[
+    [title],
+    ['pair_id',pairId],
+    ['current_28d',currentPeriod],
+    ['previous_28d',previousPeriod],
+    ['比較状態','READY'],
+    ['site_property',metadataRow?metadataRow[18]:'MISSING'],
+    ['search_type',metadataRow?metadataRow[14]:PLAYPOINT_GSC_28D_CONFIG.searchType],
+    ['API日付基準',metadataRow?metadataRow[19]:PLAYPOINT_GSC_28D_CONFIG.apiTimezone],
+    [],
+    ['Property Total','Click','Imp.','CTR','Pos','response aggregation'],
     ['current_28d'].concat(playPointGscTotalSummaryCells_(propertyCurrent)),
     ['previous_28d'].concat(playPointGscTotalSummaryCells_(propertyPrevious)),
-    ['判断', ready ? '3層×2期間が揃っている' : '不足レイヤーあり。SEO変更に進まない', '', '', '', '']
-  ]);
-  sheet.getRange('G13').setValue('検索語明細はAPIで取得可能な上位行。匿名検索などを含む総量はProperty Totalを参照。');
+    ['判断','取得行数・ハッシュ・完了記録を照合済み','','','','','検索語明細はAPIで取得可能な行。匿名検索などを含む総量はProperty Totalを参照。'],
+    []
+  ];
 
   var headers = [
     '検索クエリ',
@@ -796,7 +1023,7 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
     'ΔCTR',
     'ΔPos'
   ];
-  sheet.getRange(15, 1, 1, headers.length).setValues([headers]);
+  top.push(headers);
 
   var rowsForLayer = historyRows.filter(function(row) {
     return row[2] === layer && row[5] !== 'WINDOW_STATUS';
@@ -849,23 +1076,27 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
       Math.max(Number(a[4] || 0), Number(a[5] || 0));
   });
 
-  if (output.length) {
-    var requiredLastRow = 15 + output.length;
-    if (requiredLastRow > sheet.getMaxRows()) {
-      sheet.insertRowsAfter(sheet.getMaxRows(), requiredLastRow - sheet.getMaxRows());
-    }
-    sheet.getRange(16, 1, output.length, headers.length).setValues(output.map(playPointGscLiteralRow_));
-  }
+  var grid=top.concat(output).map(function(row){
+    var values=row.slice();while(values.length<headers.length)values.push('');
+    return playPointGscLiteralRow_(values);
+  });
+  if(grid.length>sheet.getMaxRows())sheet.insertRowsAfter(sheet.getMaxRows(),grid.length-sheet.getMaxRows());
+  // 計算が完了するまでは旧比較を保持し、READYと明細を一括書込。
+  sheet.getRange(1,1,grid.length,headers.length).setValues(grid);
+  if(oldRows>grid.length)sheet.getRange(grid.length+1,1,oldRows-grid.length,headers.length).clearContent();
 
   sheet.setFrozenRows(15);
   sheet.getRange('A1').setFontWeight('bold').setFontSize(14);
   sheet.getRange('A10:F10').setFontWeight('bold');
   sheet.getRange(15, 1, 1, headers.length).setFontWeight('bold');
-  sheet.getRange('D:D').setNumberFormat('0');
-  sheet.getRange('G:H').setNumberFormat('0.00%');
-  sheet.getRange('M:M').setNumberFormat('0.00%');
-  sheet.getRange('I:J').setNumberFormat('0.00');
-  sheet.getRange('N:N').setNumberFormat('0.00');
+  if(output.length){
+    sheet.getRange(16,3,output.length,4).setNumberFormat('#,##0');
+    sheet.getRange(16,7,output.length,2).setNumberFormat('0.00%');
+    sheet.getRange(16,9,output.length,2).setNumberFormat('0.00');
+    sheet.getRange(16,11,output.length,2).setNumberFormat('#,##0');
+    sheet.getRange(16,13,output.length,1).setNumberFormat('0.00%');
+    sheet.getRange(16,14,output.length,1).setNumberFormat('0.00');
+  }
   sheet.getRange('D11:D12').setNumberFormat('0.00%');
   sheet.getRange('E11:E12').setNumberFormat('0.00');
   sheet.autoResizeColumns(1, headers.length);
