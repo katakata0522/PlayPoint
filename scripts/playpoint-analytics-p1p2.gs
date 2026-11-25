@@ -88,9 +88,13 @@ function capturePlayPointAnalyticsP1P2(e) {
     return playPointP12CaptureSearchCross_(spreadsheet);
   }));
 
-  if (typeof capturePlayPointReaderOutcomes === 'function') {
+  // 定期読者/日次イベントは既存の9時キュー・7時診断へ委譲。手動P1は従来どおり個別実行可。
+  var delegatedAnalytics=!!(e&&typeof playPointAnalyticsRunQueue_==='function');
+  if (!delegatedAnalytics && typeof capturePlayPointReaderOutcomes === 'function') {
     try {
-      summary.push({ stage: 'READER_OUTCOMES', status: 'OK', result: capturePlayPointReaderOutcomes() });
+      var readerResult=typeof playPointAnalyticsWithDeadline_==='function'?
+        playPointAnalyticsWithDeadline_(deadlineMs,capturePlayPointReaderOutcomes):capturePlayPointReaderOutcomes();
+      summary.push({ stage: 'READER_OUTCOMES', status: readerResult&&readerResult.state||'OK', result:readerResult });
     } catch (readerError) {
       playPointP12Log_('ERROR', 'READER_OUTCOMES', playPointP12ErrorText_(readerError));
       summary.push({ stage: 'READER_OUTCOMES', status: 'ERROR', error: playPointP12ErrorText_(readerError) });
@@ -98,9 +102,11 @@ function capturePlayPointAnalyticsP1P2(e) {
   }
 
   // GSCの確定日付に依存しない直近日次イベントを、同じ週次トリガーでも更新する。
-  if (typeof capturePlayPointEventDailyReview === 'function') {
+  if (!delegatedAnalytics && typeof capturePlayPointEventDailyReview === 'function') {
     try {
-      summary.push({ stage: 'EVENT_DAILY', status: 'OK', result: capturePlayPointEventDailyReview() });
+      var dailyResult=typeof playPointAnalyticsWithDeadline_==='function'?
+        playPointAnalyticsWithDeadline_(deadlineMs,capturePlayPointEventDailyReview):capturePlayPointEventDailyReview();
+      summary.push({ stage:'EVENT_DAILY',status:dailyResult&&dailyResult.state||'OK',result:dailyResult });
     } catch (eventDailyError) {
       playPointP12Log_('ERROR', 'EVENT_DAILY', playPointP12ErrorText_(eventDailyError));
       summary.push({ stage: 'EVENT_DAILY', status: 'ERROR', error: playPointP12ErrorText_(eventDailyError) });
@@ -1371,6 +1377,7 @@ function playPointP12InspectUrl_(siteUrl, inspectionUrl) {
 }
 
 function playPointP12GoogleJson_(url, options) {
+  if(typeof playPointAnalyticsCheckBudget_==='function')playPointAnalyticsCheckBudget_();
   options = options || {};
   var request = {
     method: options.method || 'get',
@@ -1383,12 +1390,16 @@ function playPointP12GoogleJson_(url, options) {
   };
 
   // 本体の限定再試行を共有。単体利用でも429/5xxだけを3回まで再試行する。
-  if (typeof fetchJsonWithRetry_ === 'function') return fetchJsonWithRetry_(url, request, 3);
+  // 期限付き実行時は新しい通信・再試行の開始前に期限を検査する。
+  if (typeof fetchJsonWithRetry_ === 'function' &&
+      !(typeof PLAYPOINT_ANALYTICS_DEADLINE_MS!=='undefined'&&PLAYPOINT_ANALYTICS_DEADLINE_MS)) return fetchJsonWithRetry_(url, request, 3);
   var response;
   for (var attempt = 0; attempt < 3; attempt += 1) {
+    if(typeof playPointAnalyticsCheckBudget_==='function')playPointAnalyticsCheckBudget_();
     response = UrlFetchApp.fetch(url, request);
     var status = response.getResponseCode();
     if ((status !== 429 && status < 500) || attempt === 2) break;
+    if(typeof playPointAnalyticsCheckBudget_==='function')playPointAnalyticsCheckBudget_();
     Utilities.sleep(Math.pow(2, attempt) * 1000);
   }
 

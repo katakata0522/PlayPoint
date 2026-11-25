@@ -4,7 +4,8 @@ const assert = require('node:assert/strict');
 const vm = require('node:vm');
 const fs = require('node:fs');
 const path = require('node:path');
-const source = fs.readFileSync(path.join(__dirname, '../scripts/playpoint-analytics-maintenance.gs'), 'utf8');
+const source = ['playpoint-analytics-maintenance.gs','playpoint-analytics-release-effects.gs','playpoint-analytics-growth-review.gs','playpoint-analytics-feature-usage.gs']
+  .map(name=>fs.readFileSync(path.join(__dirname,'../scripts',name),'utf8')).join('\n');
 function runtime(extra = {}) {
   const c = vm.createContext({ console, playPointP12ErrorText_: e => e.message,
     playPointP12NormalizePage_: p => p.replace(/\/$/, ''),

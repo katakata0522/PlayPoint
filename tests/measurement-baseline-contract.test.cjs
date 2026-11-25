@@ -31,7 +31,10 @@ test("legacy AdSense PAGE_URL breakdown is diagnostic-only and cannot become the
 
 function loadGscCaptureRuntime() {
   const source = read('scripts/gsc-nonoverlap-28d.gs');
-  const context = {};
+  const context = {Utilities:{
+    DigestAlgorithm:{SHA_256:'SHA_256'},Charset:{UTF_8:'UTF_8'},
+    computeDigest:(_algo,value)=>Array.from(require('node:crypto').createHash('sha256').update(value,'utf8').digest())
+  }};
   vm.createContext(context);
   vm.runInContext(source, context, { filename: 'gsc-nonoverlap-28d.gs' });
   return { source, context };
@@ -49,9 +52,10 @@ test("GSC capture module keeps adjacent non-overlapping 28-day query × exact UR
   context.playPointGscQueryApi_ = (_site, body) => {
     requests.push(JSON.parse(JSON.stringify(body)));
     assert.ok(requests.length <= 3, 'ページ送りが進まない');
-    return { responseAggregationType: body.aggregationType, rows: body.startRow === 0 ? [
-      { keys: ['q', 'https://playpoint-sim.com/a#one'], clicks: 1, impressions: 2 },
-      { keys: ['q', 'https://playpoint-sim.com/a#two'], clicks: 3, impressions: 4 }
+    return { responseAggregationType: body.aggregationType, rows: body.aggregationType==='byProperty'?
+      [{clicks:4,impressions:6,ctr:4/6,position:2}]:body.startRow === 0 ? [
+      { keys: ['q', 'https://playpoint-sim.com/a#one'], clicks: 1, impressions: 2,ctr:0.5,position:2 },
+      { keys: ['q', 'https://playpoint-sim.com/a#two'], clicks: 3, impressions: 4,ctr:0.75,position:2 }
     ] : [] };
   };
   const raw = context.playPointGscFetchQueryPageRows_('sc-domain:playpoint-sim.com', windows.current.start, windows.current.end);
@@ -149,8 +153,8 @@ test("GSC scheduled capture separates trigger event objects from manual final-en
   context.playPointGscGetSiteUrl_ = () => 'site';
   context.playPointGscFindLatestFinalDate_ = () => '2026-09-10';
   context.playPointGscEnsureHistorySheet_ = () => ({});
-  context.playPointGscRowsForPair_ = () => ['complete'];
-  context.playPointGscPairComplete_ = () => true;
+  context.playPointGscRowsForPair_ = () => [Array.from({length:23},(_,i)=>i===5?'PAIR_RECEIPT':'')];
+  context.playPointGscVerifiedPair_ = () => true;
   context.playPointGscRebuildComparisonViews_ = () => {};
   assert.equal(context.captureGscNonOverlapping28d('2026-09-11').current.end, '2026-09-11');
   assert.equal(context.captureGscNonOverlapping28d(event).current.end, '2026-09-10');
@@ -911,4 +915,147 @@ test('manual inspection retries without changing other analytics stages or trigg
   context.playPointP12RunStage_=stage=>{calls.push(stage);return {stage,status:'OK'};};
   assert.equal(context.capturePlayPointUrlInspectionOnly().status,'OK');
   assert.deepEqual(calls,['URL_INSPECTION']);
+});
+
+
+function fakeGscIndexBook(context, historyRows) {
+  const reads=[], writes=[];
+  const sheets=[];
+  function sheet(name, values, id, cols) {
+    let data=values.map(row=>row.slice());
+    const api={
+      getParent:()=>book,getSheetId:()=>id,getLastRow:()=>data.length,
+      getMaxRows:()=>Math.max(1000,data.length),getMaxColumns:()=>cols,
+      insertRowsAfter(){},insertColumnsAfter(){},setFrozenRows(){},setColumnWidth(){},setColumnWidths(){},
+      getRange(row,col,count=1,width=1){
+        const range={
+          getValue(){reads.push({name,row,col,count:1,width:1,kind:'value'});return data[row-1]?.[col-1]??'';},
+          getValues(){reads.push({name,row,col,count,width,kind:'values'});return Array.from({length:count},(_,i)=>
+            Array.from({length:width},(_,j)=>data[row-1+i]?.[col-1+j]??''));},
+          setValues(rows){writes.push({name,row,col,count,width});rows.forEach((values,i)=>{
+            data[row-1+i]??=[];values.forEach((v,j)=>data[row-1+i][col-1+j]=v);
+          });return range;},
+          clearContent(){data.splice(row-1,count);return range;},
+          setFontWeight(){return range;},setNumberFormat(){return range;}
+        };return range;
+      },
+      append(row){data.push(row.slice());},
+      set(row,col,value){data[row-1][col-1]=value;},
+      values(){return data.map(row=>row.slice());}
+    };
+    sheets.push({name,api});return api;
+  }
+  const book={getSheetByName(name){return sheets.find(x=>x.name===name)?.api??null;},
+    insertSheet(name){return sheet(name,[],987,26);},getSheets(){return sheets.map(x=>x.api);}};
+  const history=sheet(context.PLAYPOINT_GSC_28D_CONFIG.historySheet,historyRows,456,23);
+  return {book,history,reads,writes,index:()=>book.getSheetByName(context.PLAYPOINT_GSC_28D_CONFIG.indexSheet)};
+}
+
+test('GSC index reads only appended IDs and exact pair blocks; noncontiguous recovery is preserved',()=>{
+  const {context:c}=loadGscCaptureRuntime();
+  const a='2026-09-01__2026-09-28',b='2026-09-08__2026-10-05',d='2026-09-15__2026-10-12';
+  const row=(id,label)=>[id,'current_28d','raw','','','QUERY_PAGE_RAW',label];
+  const f=fakeGscIndexBook(c,[Array.from(c.PLAYPOINT_GSC_28D_CONFIG.headers),row(a,'a1'),row(a,'a2'),row(b,'b1'),row(b,'b2'),row(b,'b3')]);
+  const first=c.playPointGscRowsForPair_(f.history,a);
+  assert.equal(first.length,2);
+  const historyName=c.PLAYPOINT_GSC_28D_CONFIG.historySheet;
+  const scan=()=>f.reads.filter(x=>x.name===historyName&&x.kind==='values'&&x.width===1).map(x=>[x.row,x.count]);
+  assert.deepEqual(scan(),[[2,5]]);
+  f.reads.length=0;
+  assert.equal(c.playPointGscRowsForPair_(f.history,b).length,3);
+  assert.deepEqual(scan(),[]);
+  f.history.append(row(d,'d1'));f.history.append(row(d,'d2'));f.history.append(row(a,'a3'));
+  f.reads.length=0;
+  const recovered=c.playPointGscRowsForPair_(f.history,a);
+  assert.deepEqual(Array.from(recovered,x=>x[6]),['a1','a2','a3']);
+  assert.deepEqual(scan(),[[7,3]]);
+  const index=f.index().values();
+  assert.equal(index[1][1],9);
+  assert.deepEqual(index.slice(3).map(x=>x.slice(0,4)),[[a,2,3,2],[b,4,6,3],[d,7,8,2],[a,9,9,1]]);
+  assert.equal(f.writes.some(x=>x.name===historyName),false);
+});
+
+test('GSC index detects old/invalid cursor or source mismatch and repairs shifted pair blocks without rewriting raw history',()=>{
+  const {context:c}=loadGscCaptureRuntime();
+  const a='2026-09-01__2026-09-28',b='2026-09-08__2026-10-05',d='2026-09-15__2026-10-12';
+  const f=fakeGscIndexBook(c,[Array.from(c.PLAYPOINT_GSC_28D_CONFIG.headers),[a],[a],[b],[b],[d]]);
+  assert.equal(c.playPointGscRowsForPair_(f.history,a).length,2);
+  f.history.set(3,1,b); // indexed block now includes a different pair; force full reindex
+  assert.equal(c.playPointGscRowsForPair_(f.history,a).length,1);
+  assert.equal(c.playPointGscRowsForPair_(f.history,b).length,3);
+  const old=f.index().values(),now=Date.now();
+  assert.equal(c.playPointGscIndexRead_(old,999,6,now),null);
+  assert.equal(c.playPointGscIndexRead_(old,456,3,now),null);
+  old[1][2]=now-c.PLAYPOINT_GSC_28D_CONFIG.indexAuditMs;
+  assert.equal(c.playPointGscIndexRead_(old,456,6,now),null);
+  old[0][0]='unrelated';
+  assert.throws(()=>c.playPointGscIndexRead_(old,456,6,now),/同名/);
+  assert.equal(f.writes.some(x=>x.name===c.PLAYPOINT_GSC_28D_CONFIG.historySheet),false);
+});
+
+test('GSC index rejects invalid IDs and reports a conservative cell planning budget rather than deleting history',()=>{
+  const {context:c}=loadGscCaptureRuntime();
+  assert.equal(c.playPointGscIndexPairValid_('2026-02-30__2026-03-29'),false);
+  assert.equal(c.playPointGscIndexPairValid_('2026-09-01__2026-09-29'),false);
+  assert.throws(()=>c.playPointGscIndexAppendIds_([], [['']],2),/不正pair_id/);
+  const a='2026-09-01__2026-09-28',b='2026-09-08__2026-10-05';
+  const history={getMaxRows:()=>335000,getMaxColumns:()=>23};
+  const ss={getSheets:()=>[history,{getMaxRows:()=>10000,getMaxColumns:()=>26}]};
+  const capacity=c.playPointGscIndexCapacity_(ss,history,[[a,2,10001,10000],[b,10002,20001,10000]],20001);
+  assert.equal(capacity.cells,7965000);assert.equal(capacity.nextRows,10000);
+  assert.equal(capacity.state,'PLAN_ARCHIVE');assert.equal(capacity.historyRows,20000);
+  assert.equal(capacity.pairs,2);
+});
+
+test('GSC append formats only the appended CTR and position ranges, and never scans/formats entire columns',()=>{
+  const {context:c}=loadGscCaptureRuntime(),calls=[];
+  const sheet={getLastRow:()=>10,getMaxRows:()=>100,getRange(...args){return {
+    setNumberFormat(format){calls.push(['format',args,format]);},
+    setValues(rows){calls.push(['write',args,rows.length]);}
+  };}};
+  c.playPointGscAppendRows_(sheet,[['x'],['y']]);
+  assert.deepEqual(calls,[['format',[11,1,2,9],'@'],['format',[11,14,2,10],'@'],['format',[11,12,2,1],'0.00%'],['format',[11,13,2,1],'0.00'],
+    ['write',[11,1,2,23],2]]);
+});
+
+
+function verifiedGscFixture(c){
+  const windows=c.playPointGscBuildWindows_('2026-11-17'),pairId=windows.current.start+'__'+windows.current.end,site='sc-domain:playpoint-sim.com';
+  const raw={rows:[{query:'q',exactUrl:'https://playpoint-sim.com/a',baseUrl:'https://playpoint-sim.com/a',clicks:2,impressions:10,ctr:0.2,position:3},
+    {query:'q2',exactUrl:'https://playpoint-sim.com/b#x',baseUrl:'https://playpoint-sim.com/b',clicks:1,impressions:5,ctr:0.2,position:4}],
+    requestAggregationType:'byPage',responseAggregationType:'byPage'};
+  const bundle={raw,normalized:c.playPointGscNormalizeRows_(raw.rows),propertyTotal:{clicks:4,impressions:25,ctr:0.16,position:3,requestAggregationType:'byProperty',responseAggregationType:'byProperty'}};
+  const rows=[...c.playPointGscBundleHistoryValues_(pairId,'current_28d',windows.current,bundle,site,'2026-11-25 09:00:00'),
+    ...c.playPointGscBundleHistoryValues_(pairId,'previous_28d',windows.previous,bundle,site,'2026-11-25 09:00:00')];
+  return {windows,pairId,site,rows};
+}
+test('GSC receipt proves complete returned rows, detects lost rows despite six layers, edits and duplicate receipts',()=>{
+  const {context:c}=loadGscCaptureRuntime();
+  const {windows,pairId,site,rows}=verifiedGscFixture(c);
+  const evidence=c.playPointGscEvidence_(rows,pairId,windows,site);
+  assert.equal(evidence.count,10);assert.match(evidence.digest,/^[a-f0-9]{64}$/);
+  assert.equal(c.playPointGscVerifiedPair_(rows,pairId,windows,site),false);
+  const receipt=c.playPointGscReceiptRow_(pairId,windows,site,'2026-11-25 09:00:00',evidence);
+  const all=[...rows,receipt];
+  assert.equal(c.playPointGscVerifiedPair_(all,pairId,windows,site),true);
+  assert.equal(c.playPointGscVerifiedPair_(all.slice().reverse(),pairId,windows,site),true);
+  const missing=all.slice(1);
+  assert.equal(c.playPointGscPairComplete_(missing),true);
+  assert.equal(c.playPointGscVerifiedPair_(missing,pairId,windows,site),false);
+  const changed=all.map(r=>Array.from(r));changed[0][9]++;
+  assert.equal(c.playPointGscVerifiedPair_(changed,pairId,windows,site),false);
+  assert.equal(c.playPointGscVerifiedPair_(all.concat([receipt]),pairId,windows,site),false);
+  assert.equal(c.playPointGscVerifiedPair_(all,pairId,windows,'wrong site'),false);
+  const fetched=all.map(r=>Array.from(r));fetched[0][20]='2026-11-26 09:00:00';
+  assert.equal(c.playPointGscVerifiedPair_(fetched,pairId,windows,site),true);
+});
+test('GSC rejects absent property totals, invalid metrics and repeated API pages rather than silently constructing zeros',()=>{
+  const {context:c}=loadGscCaptureRuntime();
+  c.playPointGscQueryApi_=()=>({responseAggregationType:'byProperty',rows:[]});
+  assert.throws(()=>c.playPointGscFetchPropertyTotal_('site','2026-10-21','2026-11-17'),/未取得/);
+  c.PLAYPOINT_GSC_28D_CONFIG={...c.PLAYPOINT_GSC_28D_CONFIG,rowLimit:1};
+  c.playPointGscQueryApi_=()=>({responseAggregationType:'byPage',rows:[{keys:['a','https://playpoint-sim.com/a'],clicks:1,impressions:3,ctr:1/3,position:3}]});
+  assert.throws(()=>c.playPointGscFetchQueryPageRows_('site','2026-10-21','2026-11-17'),/重複/);
+  c.playPointGscQueryApi_=()=>({responseAggregationType:'byPage',rows:[{keys:['a','https://playpoint-sim.com/a'],clicks:1,impressions:3,ctr:0.3}]});
+  assert.throws(()=>c.playPointGscFetchQueryPageRows_('site','2026-10-21','2026-11-17'),/不正/);
 });

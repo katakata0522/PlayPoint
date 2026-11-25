@@ -64,17 +64,25 @@ var PLAYPOINT_REVENUE_DIAG_CONFIG = Object.freeze({
 });
 
 function capturePlayPointRevenueDiagnostics(input) {
+  var startedAt=Date.now();
   // 既存の7時トリガーを再利用。GA4集計の失敗はAdSense診断の成功を巻き戻さない。
   var result = typeof withScriptLock_ === 'function'
     ? withScriptLock_(function() { return playPointRevenueCaptureUnlocked_(input); })
     : playPointRevenueCaptureUnlocked_(input);
   if (result.status === 'SKIPPED_STALE_TRIGGER' || typeof capturePlayPointEventDailyReview !== 'function') return result;
   try {
-    result.eventDaily = capturePlayPointEventDailyReview();
+    result.eventDaily = typeof playPointAnalyticsWithDeadline_==='function'?
+      playPointAnalyticsWithDeadline_(Math.min(startedAt+270000,Date.now()+75000),capturePlayPointEventDailyReview):capturePlayPointEventDailyReview();
   } catch (error) {
     result.eventDaily = { state: 'ERROR', detail: playPointRevenueErrorText_(error) };
     playPointRevenueLog_(playPointRevenueGetSpreadsheet_(), 'WARN',
       'GA4イベント日次の更新を独立して保留: ' + result.eventDaily.detail);
+  }
+  // 7時・9時の既存実行枠を利用し、9時に滞留した分析を翌日も候補に残す。
+  // 収益診断を先に完了し、追加分析は独立。新トリガーや権限は不要。
+  if(input&&typeof input==='object'&&typeof playPointAnalyticsRunQueue_==='function'&&Date.now()<startedAt+225000){
+    try{result.maintenance=playPointAnalyticsRunQueue_(startedAt+285000,false);}
+    catch(error){result.maintenance=[{name:'ANALYTICS_QUEUE',state:'ERROR',detail:playPointRevenueErrorText_(error)}];}
   }
   return result;
 }

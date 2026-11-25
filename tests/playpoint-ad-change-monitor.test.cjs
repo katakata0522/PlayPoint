@@ -148,3 +148,48 @@ test('収益比較とその監視記録が失敗しても独立したGA4更新�
   assert.throws(()=>c.capturePlayPointAdChangeMonitor(),/revenue missing/);
   assert.deepEqual(calls,['quality','event','reader']);
 });
+
+
+test('analytics queue rotates overdue jobs, records leases, retries failures and respects daily/weekly cadence',()=>{
+  const properties=new Map(), calls=[];
+  const c=runtime({PropertiesService:{getScriptProperties:()=>({getProperty:key=>properties.get(key)||null,setProperty:(key,value)=>properties.set(key,value)})},
+    withScriptLock_:fn=>fn(),playPointP12NowText_:()=> '2026-11-25 09:00:00',
+    playPointP12ErrorText_:e=>e.message});
+  c.playPointCaptureChangeQuality_=()=>{calls.push('quality');return {state:'OK'};};
+  c.capturePlayPointReaderOutcomes=()=>{calls.push('reader');throw Error('quota');};
+  c.capturePlayPointFeatureUsageReview=()=>{calls.push('feature');return {state:'OK'};};
+  c.playPointAnalyticsQueueWrite_({CHANGE_QUALITY:{lastAttempt:'2026-11-24',nextDue:'2026-11-25'},
+    READER_OUTCOMES:{lastAttempt:'2026-11-23',nextDue:'2026-11-25'},
+    FEATURE_USAGE:{lastAttempt:'2026-11-20',nextDue:'2026-11-23'}});
+  const result=c.playPointAnalyticsRunQueue_(Date.now()+285000,false);
+  assert.deepEqual(calls,['feature','reader','quality']);
+  assert.equal(result.find(x=>x.name==='capturePlayPointReaderOutcomes').state,'ERROR');
+  const state=c.playPointAnalyticsQueueRead_();
+  assert.equal(state.FEATURE_USAGE.nextDue,'2026-12-02');assert.equal(state.FEATURE_USAGE.lastSuccess,'2026-11-25');
+  assert.equal(state.READER_OUTCOMES.nextDue,'2026-11-26');assert.equal(state.READER_OUTCOMES.lastSuccess,undefined);
+  assert.equal(state.CHANGE_QUALITY.leaseUntil,0);
+  assert.equal(c.playPointAnalyticsRunQueue_(Date.now()+285000,false).length,0);
+  c.playPointP12NowText_=()=> '2026-11-26 09:00:00';
+  const jobs=c.playPointAnalyticsQueueJobs_();
+  const reader=jobs.find(job=>job.key==='READER_OUTCOMES');
+  const lease=c.playPointAnalyticsQueueClaim_(reader,'2026-11-26',false,Date.now());
+  assert.ok(lease>0);
+  assert.equal(c.playPointAnalyticsQueueClaim_(reader,'2026-11-26',true,Date.now()),null);
+  c.playPointAnalyticsQueueFinish_(reader,'2026-11-26',lease,'PARTIAL');
+  assert.equal(c.playPointAnalyticsQueueRead_().READER_OUTCOMES.nextDue,'2026-11-27');
+  assert.equal(c.playPointAnalyticsQueueRead_().READER_OUTCOMES.state,'PARTIAL');
+});
+test('analytics queue does not claim jobs when time is insufficient and scoped deadlines are restored after errors',()=>{
+  const calls=[],properties=new Map();
+  const c=runtime({PropertiesService:{getScriptProperties:()=>({getProperty:key=>properties.get(key)||null,setProperty:(k,v)=>properties.set(k,v)})},
+    withScriptLock_:fn=>fn(),playPointP12NowText_:()=> '2026-11-25 09:00:00',playPointP12ErrorText_:e=>e.message});
+  c.playPointCaptureChangeQuality_=()=>{calls.push('quality');return {state:'OK'};};
+  c.capturePlayPointFeatureUsageReview=()=>{calls.push('feature');return {state:'OK'};};
+  const result=c.playPointAnalyticsRunQueue_(Date.now()+1000,false);
+  assert(result.every(x=>x.state==='QUEUED_BUDGET'));assert.equal(calls.length,0);
+  assert.equal(properties.size,0);
+  assert.throws(()=>c.playPointAnalyticsWithDeadline_(Date.now()+1000,()=>{}),/BUDGET_EXHAUSTED/);
+  assert.equal(c.PLAYPOINT_ANALYTICS_DEADLINE_MS,0);
+  assert.throws(()=>c.playPointAnalyticsWithDeadline_(Date.now()+100000,()=>{throw Error('boom');}),/boom/);
+  assert.equal(c.PLAYPOINT_ANALYTICS_DEADLINE_MS,0);
+});
