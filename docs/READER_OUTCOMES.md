@@ -158,3 +158,15 @@ Apps Scriptの同期時は全モジュールを同時に反映する。既存 `p
 ### 受入
 
 GitHubマージとApps Script反映は別。稼働版のバックアップと差分確認後に全8モジュールを同期し、既存権限・トリガー一覧を維持する。まず `capturePlayPointEventDailyReview()`、`capturePlayPointReaderOutcomes()`、`capturePlayPointFeatureUsageReview()`、`capturePlayPointTrafficQualityReview()`、`capturePlayPointGrowthOpportunityReview()`、`capturePlayPointReleaseEffectReview()`、`capturePlayPointOperationsDashboard()` を個別に確認。次に `rebuildPlayPointGscHistoryIndex()`、`captureGscNonOverlapping28d()` を実行して既存履歴・完了証跡を照合。最後に `resumePlayPointAnalyticsQueue()` と既存の定期実行で期限・再試行・データ鮮度を検証する。古い履歴の再取得が既存証拠と一致しなければ保留し、削除・置換しない。
+
+
+## 2026-11-25 実データ再監査の追加修正
+
+- **検索語の原文保護**: GSC履歴だけでなく比較ビュー、検索クロス、成長候補の検索語列も書込前にプレーンテキスト書式を設定する。既存の数値/日付型検索語は元の文字列が確認できないため、成長候補から除外してPARTIAL_QUERY_TYPEと件数を表示する。旧検索語を表示値や日付シリアルから推測で復元しない。
+- **GSC旧履歴**: 六層・Raw/Normalizedの内部整合が取れても捕捉の完全性は未証明。LEGACY_UNVERIFIEDとして既存の同一pair比較ビューを明示する。曖昧な型変換や再取得との差がある旧履歴を上書き・削除せず、完了証跡は付与しない。新方式は従来どおり取得行とSHA-256を厳密照合する。
+- **日記などの欠測**: 日記、ゲーム、検索・任意導線、追加イベントの無行は日次・週次・30日で共通してNO_EVENT_ROW。週内の観測回数の合計は表示できるが未観測日の連続計測を保証しない。PV・従来の計算開始/成功/エラー・記事導線の基盤ゼロ方針は維持。
+- **公開履歴**: 最新30成功runの照合状態と歴史的な取得範囲制限を別に表示。古いrunが存在するだけで最新取得をPARTIALにしない。比較窓が現在の取得範囲外ならOUTSIDE_HISTORY、取得範囲内の欠損はMISSING_DAYS。過去に完全取得した比較値はHISTORICALとして保持する。
+- **流入偏り**: 30日・source/medium×device内で100PV以上、かつ50PV/activeUsers以上かつ内訳PVの5%以上ならCHECK_PV_CONCENTRATION。100PV以上でactiveUsersが0ならCHECK_ZERO_USERS。暫定の調査用閾値であり無効流入や開発者本人の断定ではない。全体値を除外せず、PV構成比は内訳のPV総量を母数とする。データ欠測・総量不一致は別の状態を維持。CHECKでも正常取得した週次ジョブは通常周期で実行する。
+- **Portfolio**: 運営ダッシュボードに既存健康行とP1/Portfolioの期間差を表示。既存キューに日次の再試行判定を追加。正常・9日以内のP1がより新しい時だけ更新する。同一期間の重複取得や古いP1による上書きを避ける。ネットワーク取得は共有ロック外で行い、書込時に最新P1と手動判断を読み直す。既存Bucket、編集判断日時、メモを維持する。
+
+上記のコード・テストと実際のbound Apps Script反映は別工程。旧履歴の原文復元には独立したGSC API証拠が必要。実行時の新旧モジュール混在は不可。
