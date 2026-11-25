@@ -133,7 +133,7 @@ function playPointAdChangeCohortGrid_(stableEnd, groups, timestamp) {
 function capturePlayPointAdChangeMonitor(e) {
   if (e && typeof playPointAutomationTriggerAllowed_ === 'function' &&
       !playPointAutomationTriggerAllowed_('capturePlayPointAdChangeMonitor', e)) return { state: 'SKIPPED_STALE_TRIGGER' };
-  var failure = null, result = {};
+  var failure = null, result = {}, startedAt = Date.now();
   try {
     result = playPointCaptureAdChangeMonitor_();
   } catch (error) {
@@ -166,6 +166,24 @@ function capturePlayPointAdChangeMonitor(e) {
   if (typeof capturePlayPointReleaseEffectReview === 'function') {
     try { result.maintenance.push({ name: 'capturePlayPointReleaseEffectReview', state: capturePlayPointReleaseEffectReview().state }); }
     catch (error) { result.maintenance.push({ name: 'capturePlayPointReleaseEffectReview', state: 'ERROR', detail: playPointP12ErrorText_(error) }); }
+  }
+  // A優先: 日次の既存シートから成長候補を更新。APIを追加する流入診断は週1回に限定。
+  if (typeof capturePlayPointGrowthOpportunityReview === 'function') {
+    try { result.maintenance.push({ name: 'capturePlayPointGrowthOpportunityReview', state: capturePlayPointGrowthOpportunityReview().state }); }
+    catch (error) { result.maintenance.push({ name: 'capturePlayPointGrowthOpportunityReview', state: 'ERROR', detail: playPointP12ErrorText_(error) }); }
+  }
+  if (typeof capturePlayPointTrafficQualityReview === 'function') {
+    var runDate = playPointP12NowText_().slice(0,10);
+    // 手動実行は曜日に依存しない。定期実行は月曜の1回に限定する。
+    if (!e || new Date(runDate + 'T00:00:00Z').getUTCDay() === 1) {
+      if (Date.now() - startedAt < 180000) {
+        try { result.maintenance.push({ name: 'capturePlayPointTrafficQualityReview', state: capturePlayPointTrafficQualityReview(startedAt + 300000).state }); }
+        catch (error) { result.maintenance.push({ name: 'capturePlayPointTrafficQualityReview', state: 'ERROR', detail: playPointP12ErrorText_(error) }); }
+      } else {
+        result.maintenance.push({ name: 'capturePlayPointTrafficQualityReview', state: 'SKIPPED_BUDGET' });
+        withScriptLock_(function(){playPointP12UpsertHealth_('TRAFFIC_QUALITY',{lastAttempt:playPointP12NowText_(),state:'SKIPPED_BUDGET',note:'既存日次処理の時間予算を優先。手動再実行可。前回の表を保持。'});});
+      }
+    }
   }
   if (failure) throw failure;
   return result;
