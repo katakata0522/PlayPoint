@@ -167,9 +167,13 @@ function playPointGscCaptureUnlocked_(input) {
     throw new Error('GSC 28-day capture is incomplete after write. Comparison remains blocked.');
   }
   // 完了記録を最後に追記。失敗した実行は次回APIとの厳密照合から再開する。
-  playPointGscAppendRows_(history,[playPointGscReceiptRow_(pairId,windows,siteUrl,fetchedAt,expected)]);
-  var verifiedRows=playPointGscRowsForPair_(history,pairId);
-  if(!playPointGscVerifiedPair_(verifiedRows,pairId,windows,siteUrl)) throw new Error('GSC完了記録の書込後検証失敗');
+  var receipt=playPointGscReceiptRow_(pairId,windows,siteUrl,fetchedAt,expected),receiptRow=history.getLastRow()+1;
+  playPointGscAppendRows_(history,[receipt]);
+  var savedReceipt=history.getRange(receiptRow,1,1,23).getValues()[0];
+  if(playPointGscCanonicalRow_(savedReceipt)!==playPointGscCanonicalRow_(receipt))throw new Error('GSC完了記録の書込後検証失敗');
+  // 直前にデータ本体を全照合済み。領収行のみ再読し、全pairの3回目の読取は行わない。
+  var verifiedRows=finalRows.concat([savedReceipt]);
+  playPointGscEnsureIndex_(history,false);
   playPointGscRebuildComparisonViews_(spreadsheet, verifiedRows, pairId);
 
   return {
@@ -519,8 +523,8 @@ function playPointGscIndexPairValid_(value) {
 function playPointGscIndexAppendIds_(blocks, ids, firstRow) {
   ids.forEach(function(row, i) {
     var id = row[0], n = firstRow + i;
-    if (!playPointGscIndexPairValid_(id)) throw new Error('GSC履歴に空欄・不正pair_idがあります: row ' + n);
     var last = blocks[blocks.length - 1];
+    if ((!last||last[0]!==id)&&!playPointGscIndexPairValid_(id)) throw new Error('GSC履歴に空欄・不正pair_idがあります: row ' + n);
     if (last && last[2] + 1 !== n) throw new Error('GSC履歴索引の行位置が連続していません');
     if (last && last[0] === id) { last[2] = n; last[3]++; }
     else blocks.push([id, n, n, 1]);
@@ -966,7 +970,9 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
   if (sheet.getMaxColumns() < 14) {
     sheet.insertColumnsAfter(sheet.getMaxColumns(), 14 - sheet.getMaxColumns());
   }
-  sheet.clearContents();
+  var oldRows=sheet.getLastRow(),oldPair=oldRows>=2?String(sheet.getRange('B2').getValue()||''):'';
+  // 手動で過去のpairを再取得しても、最新比較ビューを古い期間で上書きしない。
+  if(playPointGscIndexPairValid_(oldPair)&&oldPair>pairId)return;
 
   var currentRows = historyRows.filter(function(row) {
     return row[1] === 'current_28d' && row[2] === layer;
@@ -983,24 +989,23 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
   var propertyPrevious = playPointGscPropertyTotalForRole_(historyRows, 'previous_28d');
   var metadataRow = playPointGscFirstDataRow_(historyRows);
 
-  sheet.getRange('A1').setValue(title);
-  sheet.getRange('A2:B8').setValues([
-    ['pair_id', pairId],
-    ['current_28d', currentPeriod],
-    ['previous_28d', previousPeriod],
-    ['比較状態', ready ? 'READY' : 'BLOCKED'],
-    ['site_property', metadataRow ? metadataRow[18] : 'MISSING'],
-    ['search_type', metadataRow ? metadataRow[14] : PLAYPOINT_GSC_28D_CONFIG.searchType],
-    ['API日付基準', metadataRow ? metadataRow[19] : PLAYPOINT_GSC_28D_CONFIG.apiTimezone]
-  ]);
-
-  sheet.getRange('A10:F13').setValues([
-    ['Property Total', 'Click', 'Imp.', 'CTR', 'Pos', 'response aggregation'],
+  if(!ready)throw new Error('GSC比較の完了証拠がありません。旧ビューを保持。');
+  var top=[
+    [title],
+    ['pair_id',pairId],
+    ['current_28d',currentPeriod],
+    ['previous_28d',previousPeriod],
+    ['比較状態','READY'],
+    ['site_property',metadataRow?metadataRow[18]:'MISSING'],
+    ['search_type',metadataRow?metadataRow[14]:PLAYPOINT_GSC_28D_CONFIG.searchType],
+    ['API日付基準',metadataRow?metadataRow[19]:PLAYPOINT_GSC_28D_CONFIG.apiTimezone],
+    [],
+    ['Property Total','Click','Imp.','CTR','Pos','response aggregation'],
     ['current_28d'].concat(playPointGscTotalSummaryCells_(propertyCurrent)),
     ['previous_28d'].concat(playPointGscTotalSummaryCells_(propertyPrevious)),
-    ['判断', ready ? '3層×2期間が揃っている' : '不足レイヤーあり。SEO変更に進まない', '', '', '', '']
-  ]);
-  sheet.getRange('G13').setValue('検索語明細はAPIで取得可能な上位行。匿名検索などを含む総量はProperty Totalを参照。');
+    ['判断','取得行数・ハッシュ・完了記録を照合済み','','','','','検索語明細はAPIで取得可能な行。匿名検索などを含む総量はProperty Totalを参照。'],
+    []
+  ];
 
   var headers = [
     '検索クエリ',
@@ -1018,7 +1023,7 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
     'ΔCTR',
     'ΔPos'
   ];
-  sheet.getRange(15, 1, 1, headers.length).setValues([headers]);
+  top.push(headers);
 
   var rowsForLayer = historyRows.filter(function(row) {
     return row[2] === layer && row[5] !== 'WINDOW_STATUS';
@@ -1071,23 +1076,27 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
       Math.max(Number(a[4] || 0), Number(a[5] || 0));
   });
 
-  if (output.length) {
-    var requiredLastRow = 15 + output.length;
-    if (requiredLastRow > sheet.getMaxRows()) {
-      sheet.insertRowsAfter(sheet.getMaxRows(), requiredLastRow - sheet.getMaxRows());
-    }
-    sheet.getRange(16, 1, output.length, headers.length).setValues(output.map(playPointGscLiteralRow_));
-  }
+  var grid=top.concat(output).map(function(row){
+    var values=row.slice();while(values.length<headers.length)values.push('');
+    return playPointGscLiteralRow_(values);
+  });
+  if(grid.length>sheet.getMaxRows())sheet.insertRowsAfter(sheet.getMaxRows(),grid.length-sheet.getMaxRows());
+  // 計算が完了するまでは旧比較を保持し、READYと明細を一括書込。
+  sheet.getRange(1,1,grid.length,headers.length).setValues(grid);
+  if(oldRows>grid.length)sheet.getRange(grid.length+1,1,oldRows-grid.length,headers.length).clearContent();
 
   sheet.setFrozenRows(15);
   sheet.getRange('A1').setFontWeight('bold').setFontSize(14);
   sheet.getRange('A10:F10').setFontWeight('bold');
   sheet.getRange(15, 1, 1, headers.length).setFontWeight('bold');
-  sheet.getRange('D:D').setNumberFormat('0');
-  sheet.getRange('G:H').setNumberFormat('0.00%');
-  sheet.getRange('M:M').setNumberFormat('0.00%');
-  sheet.getRange('I:J').setNumberFormat('0.00');
-  sheet.getRange('N:N').setNumberFormat('0.00');
+  if(output.length){
+    sheet.getRange(16,3,output.length,4).setNumberFormat('#,##0');
+    sheet.getRange(16,7,output.length,2).setNumberFormat('0.00%');
+    sheet.getRange(16,9,output.length,2).setNumberFormat('0.00');
+    sheet.getRange(16,11,output.length,2).setNumberFormat('#,##0');
+    sheet.getRange(16,13,output.length,1).setNumberFormat('0.00%');
+    sheet.getRange(16,14,output.length,1).setNumberFormat('0.00');
+  }
   sheet.getRange('D11:D12').setNumberFormat('0.00%');
   sheet.getRange('E11:E12').setNumberFormat('0.00');
   sheet.autoResizeColumns(1, headers.length);
