@@ -1474,3 +1474,183 @@ function capturePlayPointTrafficQualityReview() {
     throw error;
   }
 }
+
+
+function playPointGrowthPageLabels_(path) {
+  var locale = (path.match(/^\/(en|ko|tw|hk|in)(?:\/|$)/) || [])[1];
+  var language = locale ? locale.toUpperCase() : 'JP/その他';
+  var local = locale ? path.replace(new RegExp('^/'+locale+'(?=/|$)'),'') : path;
+  var type = !local || local === '/' ? '計算機トップ' :
+    /^\/articles\//.test(local) ? '記事' :
+    /^\/games(?:\/|$)/.test(local) ? 'ゲーム' :
+    /^\/latest(?:\/|$)/.test(local) ? '最新情報' :
+    /^\/blog(?:\/|$)/.test(local) ? '記事一覧' :
+    /^\/(status|maintenance|campaign|amount|points-cost)(?:\/|$)/.test(local) ? '検索意図別ツール' : 'その他';
+  return {language:language,type:type};
+}
+
+function playPointGrowthPageChange_(rows, daily, end) {
+  var prevStart=playPointP12ShiftIsoDate_(end,-13), currStart=playPointP12ShiftIsoDate_(end,-6);
+  var dayTotals=Object.create(null), pages=Object.create(null), seen=Object.create(null);
+  rows.forEach(function(row) {
+    var date=playPointGrowthDateCell_(row[0]);
+    if (date < prevStart || date > end) return;
+    if (!playPointMaintenanceIsoDate_(date) || row[5] !== 'RECONCILED') throw new Error('ページ日次履歴の未照合行: '+date);
+    var path=String(row[1] || '');
+    if (!path || path.charAt(0)!=='/' || /[?#]/.test(path)) throw new Error('ページ履歴の未正規化パス');
+    var key=JSON.stringify([date,path]);
+    if (seen[key]) throw new Error('ページ日次履歴に重複');
+    seen[key]=true;
+    var pv=playPointGrowthCount_(row[2],'page daily PV');
+    dayTotals[date]=(dayTotals[date]||0)+pv;
+    var values=pages[path]||(pages[path]=[0,0]);
+    values[date<currStart?0:1]+=pv;
+  });
+  for(var day=prevStart;day<=end;day=playPointP12ShiftIsoDate_(day,1)) {
+    if (!daily.days[day] || !(daily.days[day].page_view>0) ||
+        dayTotals[day]!==daily.days[day].page_view) {
+      return {state:'PAGE_TOTAL_MISMATCH',rows:[],detail:'GA4日次とページ別PVが一致しない日 '+day+'。増減の帰属を保留。'};
+    }
+  }
+  var languages=Object.create(null), features=Object.create(null), ranked=[];
+  function add(map,key,values){var v=map[key]||(map[key]=[0,0]);v[0]+=values[0];v[1]+=values[1];}
+  Object.keys(pages).forEach(function(path){
+    var labels=playPointGrowthPageLabels_(path), values=pages[path];
+    add(languages,labels.language,values);add(features,labels.type,values);
+    ranked.push({path:path,labels:labels,values:values,delta:values[1]-values[0]});
+  });
+  return {state:'OK',languages:languages,features:features,ranked:ranked,detail:prevStart+' ～ '+end+'（前後7日、全14日のPV照合済み）'};
+}
+
+function playPointGrowthSearchCandidates_(grid,today) {
+  var cfg=PLAYPOINT_GROWTH_A;
+  if (!grid[0] || grid[0].slice(0,9).join('|')!==['順位','検索キーワード','ページ','クリック数','表示回数','CTR','平均掲載順位','対象期間','データ状態'].join('|')) {
+    throw new Error('検索語×ページのヘッダー不一致');
+  }
+  var periods=Object.create(null), byQuery=Object.create(null), seen=Object.create(null);
+  var anchors=0;
+  grid.slice(1).forEach(function(row) {
+    if (!row[1] && !row[2]) return;
+    var query=String(row[1]||''), url=String(row[2]||''), period=String(row[7]||'');
+    if (!query || !/^https:\/\/playpoint-sim\.com\//.test(url) || row[8]!=='FINAL') throw new Error('検索語×ページに未確定・不正な行');
+    var match=/^(\d{4}-\d{2}-\d{2}) ～ (\d{4}-\d{2}-\d{2})$/.exec(period);
+    if (!match || !playPointMaintenanceIsoDate_(match[1]) || !playPointMaintenanceIsoDate_(match[2]) ||
+        match[1]>match[2] || match[2]>=today) throw new Error('検索語×ページの期間が不正');
+    periods[period]=true;
+    if (url.indexOf('#')>=0) { anchors++;return; }
+    var key=JSON.stringify([query,url]);
+    if (seen[key]) throw new Error('検索語×ページに重複行');
+    seen[key]=true;
+    var clicks=playPointGrowthCount_(row[3],'GSC clicks'), imp=playPointGrowthCount_(row[4],'GSC impressions');
+    var pos=Number(row[6]);
+    if (!imp || clicks>imp || row[6]==='' || !Number.isFinite(pos) || pos<=0) throw new Error('検索語×ページの数値が不正');
+    (byQuery[query]||(byQuery[query]=[])).push({query:query,url:url,clicks:clicks,imp:imp,ctr:clicks/imp,pos:pos});
+  });
+  var dates=Object.keys(periods);
+  if (dates.length!==1) throw new Error('検索語×ページの期間が混在・未取得');
+  var end=dates[0].slice(-10);
+  var stale=Date.parse(today)-Date.parse(end)>10*86400000;
+  var candidates=[];
+  Object.keys(byQuery).forEach(function(query){
+    var options=byQuery[query].sort(function(a,b){return b.imp-a.imp||b.clicks-a.clicks||a.url.localeCompare(b.url);});
+    var top=options[0];
+    if(top.imp<cfg.candidateMinImpressions || top.pos<cfg.candidateMinPosition || top.pos>cfg.candidateMaxPosition ||
+       top.ctr>=cfg.scenarioCtr[0]) return;
+    var overlap=options.slice(1).some(function(row){return row.imp>=top.imp*0.5||row.clicks>top.clicks;});
+    top.otherUrls=options.length-1;
+    top.state=stale?'STALE':overlap?'INTENT_OVERLAP':'REVIEW';
+    // クリック単位の感度試算でありPV予測ではない。競合URL間の表示回数を合算しない。
+    top.scenarios=top.state==='REVIEW'?cfg.scenarioCtr.map(function(target){
+      return Math.max(0,Math.round(top.imp*target-top.clicks));
+    }):['',''];
+    candidates.push(top);
+  });
+  candidates.sort(function(a,b){return Number(a.state!=='REVIEW')-Number(b.state!=='REVIEW')||
+    (Number(b.scenarios[1]||0)-Number(a.scenarios[1]||0))||b.imp-a.imp;});
+  return {state:stale?'STALE':'OK',period:dates[0],candidates:candidates,excludedAnchors:anchors,
+    detail:'API可視範囲の候補のみ。アンカー除外 '+anchors+'行。検索語ごとに主候補1URL、競合候補は試算保留。'};
+}
+
+function playPointGrowthOpportunityGrid_(daily,end,pages,search,timestamp) {
+  var target=PLAYPOINT_GROWTH_A.targetPv;
+  var week={start:playPointP12ShiftIsoDate_(end,-6),end:end};
+  var month={start:playPointP12ShiftIsoDate_(end,-29),end:end};
+  var seven=playPointGrowthWindowTotals_(daily.days,week,end,['page_view'],true);
+  var thirty=playPointGrowthWindowTotals_(daily.days,month,end,['page_view'],true);
+  var current=seven.values?seven.values.page_view:'', actual=thirty.values?thirty.values.page_view:'';
+  var pace=current===''?'':Math.round(current*30/7);
+  var gap=pace===''?'':Math.max(0,target-pace);
+  var grid=[
+    ['月間1万PV成長分析',timestamp],
+    ['目標（30日換算）',target,'PV','GA4のPVのみ。検索クリックとは別指標'],
+    ['直近確定7日',week.start+' ～ '+week.end,current,'PV',current===''?'':current/7,'日平均',seven.state],
+    ['直近確定30日',month.start+' ～ '+month.end,actual,'PV','','',thirty.state],
+    ['30日換算ペース',pace,'PV','目標までの差',gap,'PV','必要な日平均増分',gap===''?'':gap/30],
+    ['ページ別の増減',pages.state,pages.detail,'言語別と種類別、ページ明細は重複するため合算しない'],
+    ['検索改善機会',search.state,search.period||'',search.detail,'CTR 2%/4%固定の感度試算。検索クリックをPVに換算せず、順位改善も約束しない'],
+    ['区分','対象','言語／種類','検索語','前週PV','今週PV','増減PV','検索表示','検索クリック','CTR','平均順位','追加クリック@2%','追加クリック@4%','状態','補足']
+  ];
+  if (pages.state==='OK') {
+    [['言語別',pages.languages],['種類別',pages.features]].forEach(function(section){
+      Object.keys(section[1]).sort(function(a,b){return section[1][b][1]-section[1][a][1];}).forEach(function(key){
+        var v=section[1][key];
+        grid.push([section[0],key,'','',v[0],v[1],v[1]-v[0],'','','','','','','OBSERVED','同曜日構成の確定7日比較']);
+      });
+    });
+    var ranked=pages.ranked;
+    var winners=ranked.filter(function(row){return row.delta>0;}).sort(function(a,b){return b.delta-a.delta;}).slice(0,20);
+    var losers=ranked.filter(function(row){return row.delta<0;}).sort(function(a,b){return a.delta-b.delta;}).slice(0,10);
+    winners.concat(losers).forEach(function(row){
+      grid.push([row.delta>0?'伸長ページ':'減少ページ',row.path,row.labels.language+' / '+row.labels.type,'',
+        row.values[0],row.values[1],row.delta,'','','','','','','OBSERVED','変化の観測。改修が原因とは断定しない']);
+    });
+  }
+  (search.candidates||[]).slice(0,100).forEach(function(row){
+    var path=row.url.replace(/^https:\/\/playpoint-sim\.com/,'');
+    var label=playPointGrowthPageLabels_(path);
+    grid.push(['検索改善候補',path,label.language+' / '+label.type,row.query,'','','',row.imp,row.clicks,row.ctr,row.pos,
+      row.scenarios[0],row.scenarios[1],row.state,'他の非アンカーURL '+row.otherUrls+'件。検索意図・競合・更新直後の状況を要確認']);
+  });
+  var state=seven.state==='OBSERVED'&&thirty.state==='OBSERVED'&&pages.state==='OK'&&search.state==='OK'?'OK':'PARTIAL';
+  return {state:state,grid:grid,pace:pace,gap:gap,candidates:(search.candidates||[]).length};
+}
+
+function capturePlayPointGrowthOpportunityReview() {
+  var timestamp=playPointP12NowText_(), today=timestamp.slice(0,10), cfg=PLAYPOINT_GROWTH_A;
+  try {
+    var ss=resolveAndRememberSpreadsheet_(), end=playPointP12ShiftIsoDate_(today,-3);
+    var snapshot=withScriptLock_(function(){
+      var daily=ss.getSheetByName(PLAYPOINT_EVENT_DAILY.sheet), history=ss.getSheetByName('📚ページ日次履歴');
+      var search=ss.getSheetByName('🔎検索語×ページ');
+      if (!daily || daily.getLastRow()<7) throw new Error('GA4イベント日次が未取得');
+      var source=daily.getRange(1,1,daily.getLastRow(),8).getValues(), pageRows=[], queryRows=null;
+      if (history && history.getLastRow()>1) {
+        var last=history.getLastRow(), start=Math.max(2,last-cfg.historyMaxRows+1);
+        pageRows=history.getRange(start,1,last-start+1,6).getValues();
+      }
+      if (search && search.getLastRow()>1 && search.getLastRow()<=cfg.searchMaxRows+1) {
+        queryRows=search.getRange(1,1,search.getLastRow(),9).getValues();
+      }
+      return {daily:source,pages:pageRows,search:queryRows};
+    });
+    var daily=playPointGrowthDailyMap_(snapshot.daily), pages, search;
+    try { pages=playPointGrowthPageChange_(snapshot.pages,daily,end); }
+    catch (error) { pages={state:'ERROR',detail:playPointP12ErrorText_(error),rows:[]}; }
+    try { search=playPointGrowthSearchCandidates_(snapshot.search||[],today); }
+    catch (error) { search={state:'ERROR',detail:playPointP12ErrorText_(error),candidates:[]}; }
+    var view=playPointGrowthOpportunityGrid_(daily,end,pages,search,timestamp);
+    return withScriptLock_(function(){
+      playPointGrowthPublishGrid_(ss,cfg.opportunitySheet,view.grid,8,10);
+      var sheet=ss.getSheetByName(cfg.opportunitySheet);
+      if(view.grid.length>8) sheet.getRange(9,11,view.grid.length-8,1).setNumberFormat('0.00');
+      sheet.getRange(3,5).setNumberFormat('0.0');
+      sheet.getRange(5,8).setNumberFormat('0.0');
+      playPointP12UpsertHealth_('GROWTH_OPPORTUNITY',{lastAttempt:timestamp,lastSuccess:playPointP12NowText_(),dataLatest:end,
+        state:view.state,consecutiveFailures:0,error:'',note:'GA4確定ペース '+view.pace+' / 目標差 '+view.gap+' / 候補 '+view.candidates+'。'+pages.state+' / '+search.state});
+      return {state:view.state,rows:view.grid.length,pace:view.pace,gap:view.gap,candidates:view.candidates};
+    });
+  } catch(error) {
+    withScriptLock_(function(){playPointP12HealthError_('GROWTH_OPPORTUNITY',timestamp,playPointP12ErrorText_(error));});
+    throw error;
+  }
+}
