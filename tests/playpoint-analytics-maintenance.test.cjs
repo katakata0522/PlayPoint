@@ -4,7 +4,8 @@ const assert = require('node:assert/strict');
 const vm = require('node:vm');
 const fs = require('node:fs');
 const path = require('node:path');
-const source = fs.readFileSync(path.join(__dirname, '../scripts/playpoint-analytics-maintenance.gs'), 'utf8');
+const source = ['playpoint-analytics-maintenance.gs','playpoint-analytics-release-effects.gs','playpoint-analytics-growth-review.gs','playpoint-analytics-feature-usage.gs']
+  .map(name=>fs.readFileSync(path.join(__dirname,'../scripts',name),'utf8')).join('\n');
 function runtime(overrides = {}) { const c = vm.createContext({ console, ...overrides }); vm.runInContext(source, c); return c; }
 const item = {path:'/articles/a.html',locale:'JP',role:'calculator_bridge',listed:true,modified:'2026-10-04'};
 function p1(metric = 4) { const rows=Array.from({length:5},()=>[]);rows[1]=['','2026-09-03 ～ 2026-10-02'];rows[1][11]='OK';rows.push([item.path,40,300,40/300,30,20,50,7,5,metric,0.8,1.2,0.06,'OK']);return rows; }
