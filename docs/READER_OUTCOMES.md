@@ -91,3 +91,30 @@ Web Vitalsは既存の有限分類（指標名、rating、ページ群、release
 2. `capturePlayPointEventDailyReview()` と `capturePlayPointReaderOutcomes()` を実行し、日次/期間別の追加イベント、NO_EVENT_ROW、役割別成果、VITALSの定義・取得状態を確認する。全イベントの本番受信が確認できたとは扱わない。
 3. `capturePlayPointReleaseEffectReview()` を実行し、公開証拠とJST/PTの比較窓を確認。未取得の場合は実証済みのreceiptのみで復旧し、推定日付を入れない。
 4. 新しいシートや健康状態行の生成、日次・週次の定期実行成功、既存表/手動判断の保存、取得量・実行時間を確認する。GitHubの修正だけで稼働版が更新されたとは判断しない。
+
+
+## 2026-11-25 A優先: 流入品質・月間PV成長・実利用性能
+
+S優先で追加した既存日次イベント・読者行動集計を再利用し、3つの分析ビューを更新する。追加のトリガー、OAuth権限、計測タグ、GA4設定変更は不要。
+
+### 🚪流入品質・入口診断
+
+`capturePlayPointTrafficQualityReview()` はGA4の確定待ちを除いた過去30日を同一期間で取得する。セッションsource/medium×deviceCategoryでセッション・行内の利用者・PV・エンゲージドセッションを取得し、独立したディメンションなし総量と比較する。クエリなしlandingPageの同セグメント内訳を照合し、入口不明数・率は総量が一致した時だけ出す。主要入口は各セグメント20件まで（5セッション以上、未設定は優先表示）。Directの (direct) / (none) は正当な分類として扱い、(not set) と区別する。別の広告収益・初回計算成功イベント・hostName別PVの取得失敗は空欄にし、通常流入の取得を止めない。成功/100セッションはイベント頻度であり、セッション転換率ではない。GA4収益はJPYの観測値でAdSense確定収益ではない。行をまたぐユニーク人数を足さない。入口不明5%以上（30セッション以上）、別ホストなどは調査目安。localhostや少人数の多数PVを自動で不正/開発者流入と判定したりGA4フィルタで除外したりしない。
+
+既存の日次 `capturePlayPointAdChangeMonitor` の月曜実行時に週1回更新し、手動実行では曜日に依存しない。時間予算が不足した場合は新規API取得を開始せず、SKIPPED_BUDGET/部分取得を記録する。単独の通信が長時間停止する可能性は残る。
+
+### 🎯月間1万PV成長分析
+
+`capturePlayPointGrowthOpportunityReview()` は既存の日次トリガーで更新する。GA4日次イベントの3日確定待ちを除いた直近7日と30日を用い、7日ペースの30日換算、1万PVとの差・必要日平均増分を表示する。暦月の確定PVや予測とは区別する。欠損/不完全な日を0で補わない。ページ日次履歴とGA4総PVが前後14日すべて一致している場合のみ、言語、機能種類、増減上位ページを集計する。各分類の数字は同じPVの別軸なので足さない。履歴読み取りは最大1万行の末尾に限定し、足りない時は不完全として扱う。
+
+既存のFINAL検索語×ページを読み、100表示以上・平均4～15位・CTR 2%未満の検索語について、最大表示数の非アンカー・クエリなしURLを1つ選ぶ。別URLに主候補の50%以上の表示、またはより多いクリックがあればINTENT_OVERLAPとして感度試算を保留する。CTRが2%/4%になったと仮定した追加クリックを表示するが、検索順位の予測・改善後のPV予測・成果保証ではない。原表や既存SEO候補、過去比較を変更しない。GSC期間は独立して明示し、10日より古いデータはSTALEとする。API可視範囲の候補に限り、最大100件表示。取得範囲が2万行を超えた場合は黙って切り捨てず候補の集計を保留する。
+
+### ⚡実利用性能
+
+既存のVITALS sourceを再利用し、新たなGA4リクエストは行わない。指標ごとの端末別集計と、同じ指標・端末・ページ群・アセット版の観測分布を表示する。Good/Needs improvement/Poorの回数と割合を示し、30観測未満はSMALL_SAMPLE、30以上かつPoorが25%以上はCHECK_POOR_SHARE（調査目安）。未登録、取得制限、欠落分類、版不明、0観測を区別し、過去の有効なビューを欠測で消さない。Unknown版は公開改修へ帰属させない。
+
+現行の `js/web-vitals.js` は主に計算機ランタイムから動作する簡易実測で、INPは最大観測値、CLSは累積値。Google公式Core Web Vitalsの厳密なINP/CLS/p75や全ページ・全利用者を代表する合否ではない。送信タグや配信版を変更せず、実測分類の比較に限定する。全ページで標準の指標を取得する計測実装の変更は別工程とする。
+
+### 稼働反映・受入
+
+GitHub PR Gate合格後、bound Apps Scriptの既存 `playpoint-analytics-maintenance.gs` / `playpoint-ad-change-monitor.gs` を最新mainへ同期する。未反映のS・#841も合わせて反映する。既存のトリガーを増やさない。手動で `capturePlayPointEventDailyReview()`、`capturePlayPointReaderOutcomes()`、`capturePlayPointTrafficQualityReview()`、`capturePlayPointGrowthOpportunityReview()` を実行し、3ビューの期間、元データとの照合、欠測時の空欄、監視行、実行時間を確認する。次回の既存定期処理でも再確認。GitHubのマージだけではApps Scriptの稼働版や実データは更新されない。

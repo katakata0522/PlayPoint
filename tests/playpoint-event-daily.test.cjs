@@ -212,3 +212,127 @@ test('日別GA4/GSCは未取得と0を区別し、重複・集計条件不一致
   assert.equal(c.playPointGrowthGscMap_(gs)['2026-10-01'].clicks,0);
   assert.throws(()=>c.playPointGrowthGscMap_({...gs,rows:gs.rows.concat(gs.rows)}),/重複/);
 });
+
+
+test('流入元×端末の集計を独立したセッション/PV総量と照合し、入口欠落とDirectを混同しない',()=>{
+  const c=runtime(), period={start:'2026-10-24',end:'2026-11-22'};
+  const g={sessionSourceMedium:'google / organic',deviceCategory:'mobile'};
+  const d={sessionSourceMedium:'(direct) / (none)',deviceCategory:'desktop'};
+  const ok=rows=>({state:'OK',rows});
+  const sources={
+    TRAFFIC:ok([{...g,sessions:100,activeUsers:80,screenPageViews:140,engagedSessions:75},
+      {...d,sessions:10,activeUsers:2,screenPageViews:50,engagedSessions:7}]),
+    TOTAL:ok([{sessions:110,screenPageViews:190}]),
+    ENTRY:ok([{...g,landingPage:'/',sessions:90,screenPageViews:140},{...g,landingPage:'(not set)',sessions:10,screenPageViews:0},
+      {...d,landingPage:'/blog/',sessions:10,screenPageViews:50}]),
+    SUCCESS:ok([{...g,eventCount:5}]), REVENUE:ok([{...g,totalAdRevenue:80}]),
+    HOST:ok([{hostName:'playpoint-sim.com',screenPageViews:180},{hostName:'localhost',screenPageViews:10}])
+  };
+  const view=c.playPointGrowthTrafficGrid_(period,sources,'2026-11-25');
+  assert.equal(view.state,'OK');assert.equal(view.total,110);assert.equal(view.matched,110);
+  assert.equal(view.unknown,10);assert.equal(view.grid[4][3],10/110);
+  const google=view.grid.find(r=>r[0]==='流入元別'&&r[1]===g.sessionSourceMedium);
+  assert.equal(google[7],.75);assert.equal(google[8],80);assert.equal(google[9],5);assert.equal(google[10],5);
+  assert.equal(google[12],.1);assert.equal(google[13],'CHECK_ENTRY');
+  const direct=view.grid.find(r=>r[0]==='流入元別'&&r[1]===d.sessionSourceMedium);
+  assert.equal(direct[8],'');assert.equal(direct[9],'');assert.equal(direct[12],0);
+  assert.match(view.grid[4][2],/不明参照元 0セッション/);
+  assert.equal(view.grid.find(r=>r[3]==='localhost')[13],'CHECK_HOST');
+  assert.equal(view.grid.find(r=>r[0]==='入口明細'&&r[3]==='(not set)')[13],'UNKNOWN_ENTRY');
+  const mismatch=c.playPointGrowthTrafficGrid_(period,{...sources,TOTAL:ok([{sessions:111,screenPageViews:190}])},'now');
+  assert.equal(mismatch.state,'PARTIAL');assert.equal(mismatch.grid[4][3],'');
+  assert(mismatch.grid.some(r=>r[13]==='TOTAL_MISMATCH'));
+  const entryBad=c.playPointGrowthTrafficGrid_(period,{...sources,ENTRY:ok(sources.ENTRY.rows.slice(1))},'now');
+  assert.equal(entryBad.state,'PARTIAL');assert.equal(entryBad.grid[4][3],'');
+  assert.equal(entryBad.grid.find(r=>r[0]==='流入元別'&&r[1]===g.sessionSourceMedium)[12],'');
+  const noRevenue=c.playPointGrowthTrafficGrid_(period,{...sources,REVENUE:{state:'ERROR',rows:[]}},'now');
+  assert.equal(noRevenue.state,'PARTIAL');assert.equal(noRevenue.grid.find(r=>r[0]==='流入元別')[8],'');
+  assert.throws(()=>c.playPointGrowthTrafficGrid_(period,{...sources,TRAFFIC:ok(sources.TRAFFIC.rows.concat(sources.TRAFFIC.rows[0]))},'now'),/重複/);
+  assert.throws(()=>c.playPointGrowthTrafficGrid_(period,{...sources,TRAFFIC:{state:'RESTRICTED',rows:[]}},'now'),/完全な取得/);
+});
+
+test('実利用性能は観測分布のみを集計し、未登録・小標本・版不明・欠損分類を区別',()=>{
+  const c=runtime(), p={start:'2026-10-24',end:'2026-11-22'};
+  function row(name,rating,device,page,version,eventCount) {
+    return {'customEvent:metric_name':name,'customEvent:metric_rating':rating,deviceCategory:device,
+      'customEvent:page_group':page,'customEvent:release_version':version,eventCount};
+  }
+  const rows=[row('LCP','good','mobile','calculator_home','abc',30),
+    row('LCP','poor','mobile','calculator_home','abc',10),
+    row('LCP','needs_improvement','mobile','calculator_home','unknown',2),
+    row('CLS','good','desktop','calculator_home','abc',2),
+    row('(not set)','good','mobile','calculator_home','abc',4)];
+  const view=c.playPointGrowthVitalsGrid_(p,{state:'PARAMETER_PARTIAL',rows,detail:'partial'},'now');
+  assert.equal(view.state,'PARTIAL');assert.match(view.detail,/観測 48件.*分類不可 4件.*未特定 2件/);
+  const mobile=view.grid.find(r=>r[0]==='端末別'&&r[1]==='LCP');
+  assert.equal(mobile[5],42);assert.equal(mobile[9],30/42);assert.equal(mobile[10],10/42);
+  const version=view.grid.find(r=>r[0]==='版・ページ別'&&r[1]==='LCP');
+  assert.equal(version[5],40);assert.equal(version[10],.25);assert.equal(version[11],'CHECK_POOR_SHARE');
+  assert.equal(view.grid.find(r=>r[0]==='版未特定')[11],'SMALL_SAMPLE');
+  assert.match(view.grid[2][1],/公式CWV.*ではない/);
+  const waiting=c.playPointGrowthVitalsGrid_(p,{state:'WAITING_DEFINITION',rows:[],detail:'pending'},'now');
+  assert.equal(waiting.state,'WAITING_DEFINITION');assert.equal(waiting.grid.length,6);
+  const empty=c.playPointGrowthVitalsGrid_(p,{state:'OK',rows:[],detail:''},'now');
+  assert.equal(empty.state,'NO_OBSERVATIONS');assert.equal(empty.grid.length,6);
+  assert.throws(()=>c.playPointGrowthVitalsGrid_(p,{state:'OK',rows:rows.concat(rows[0]),detail:''},'now'),/重複/);
+});
+
+test('月間PVの成長分析は全14日の日次総量と照合し、言語・機能の重複集計を分離する',()=>{
+  const c=runtime(), end='2026-11-22', days={}, history=[];
+  for(let date='2026-10-24';date<=end;date=c.playPointP12ShiftIsoDate_(date,1)){
+    const recent=date>='2026-11-16';
+    days[date]={page_view:recent?210:150};
+    history.push([date,'/',100,0,0,'RECONCILED'],[date,'/ko/articles/a.html',recent?90:30,0,0,'RECONCILED'],
+      [date,'/en/games/a/',20,0,0,'RECONCILED']);
+  }
+  const daily={days};
+  const pages=c.playPointGrowthPageChange_(history,daily,end);
+  assert.equal(pages.state,'OK');
+  assert.deepEqual(Array.from(pages.languages.KO),[210,630]);
+  assert.deepEqual(Array.from(pages.features['ゲーム']),[140,140]);
+  assert.deepEqual(Array.from(pages.features['計算機トップ']),[700,700]);
+  const report=c.playPointGrowthOpportunityGrid_(daily,end,pages,{state:'OK',period:'2026-10-22 ～ 2026-11-20',detail:'',candidates:[]},'now');
+  assert.equal(report.pace,6300);assert.equal(report.gap,3700);
+  assert.equal(report.grid[3][2],4920);
+  assert.equal(report.grid.find(r=>r[0]==='伸長ページ')[6],420);
+  assert.equal(report.state,'OK');
+  const mismatch=c.playPointGrowthPageChange_(history.slice(0,-1),daily,end);
+  assert.equal(mismatch.state,'PAGE_TOTAL_MISMATCH');assert.equal(mismatch.rows.length,0);
+  delete days[end];
+  const missing=c.playPointGrowthOpportunityGrid_(daily,end,mismatch,{state:'ERROR',detail:'missing',candidates:[]},'now');
+  assert.equal(missing.pace,'');assert.equal(missing.gap,'');assert.equal(missing.state,'PARTIAL');
+});
+
+test('検索改善候補は一検索語一URL、断片/URLパラメータ非合算、競合時はクリック試算を保留',()=>{
+  const c=runtime(), period='2026-10-22 ～ 2026-11-20';
+  const header=['順位','検索キーワード','ページ','クリック数','表示回数','CTR','平均掲載順位','対象期間','データ状態'];
+  const row=(q,p,click,imp,pos=8,state='FINAL')=>[1,q,'https://playpoint-sim.com'+p,click,imp,click/imp,pos,period,state];
+  const grid=[header,row('a','/articles/a.html',1,200),row('a','/articles/a.html#section',0,200),
+    row('a','/articles/a.html?q=test',0,300),row('a','/articles/other.html',0,30),
+    row('b','/ko/articles/b.html',0,100),row('b','/en/articles/b.html',0,75),
+    row('c','/articles/c.html',20,200),row('d','/articles/d.html',0,80),
+    row('e','/articles/e.html',0,200,2)];
+  const result=c.playPointGrowthSearchCandidates_(grid,'2026-11-25');
+  assert.equal(result.state,'OK');assert.equal(result.candidates.length,2);
+  assert.equal(result.excludedAnchors,1);
+  assert.equal(result.candidates[0].query,'a');assert.equal(result.candidates[0].imp,200);
+  assert.deepEqual(Array.from(result.candidates[0].scenarios),[3,7]);
+  assert.equal(result.candidates[1].state,'INTENT_OVERLAP');assert.deepEqual(Array.from(result.candidates[1].scenarios),['','']);
+  const stale=c.playPointGrowthSearchCandidates_(grid,'2026-12-03');
+  assert.equal(stale.state,'STALE');assert(stale.candidates.every(r=>r.scenarios[0]===''));
+  assert.throws(()=>c.playPointGrowthSearchCandidates_(grid.concat([grid[1]]),'2026-11-25'),/重複/);
+  assert.throws(()=>c.playPointGrowthSearchCandidates_([header,row('q','/x',1,100,8,'PROVISIONAL')],'2026-11-25'),/未確定/);
+});
+
+test('流入診断は時間予算不足時に新たなAPIを呼ばず、旧期間の結果を上書きしない',()=>{
+  let calls=0, errors=0;
+  const c=runtime({playPointP12NowText_:()=> '2026-11-25 09:00:00',
+    playPointP12BuildGa4Period_:()=>({start:'2026-10-24',end:'2026-11-22'}),
+    playPointP12GetGa4PropertyId_:()=> 'p',resolveAndRememberSpreadsheet_:()=>({}),
+    withScriptLock_:fn=>fn(),playPointP12HealthError_:()=>{errors++;}});
+  c.playPointGrowthTrafficSource_=()=>{calls++;return {state:'OK',rows:[]};};
+  assert.throws(()=>c.capturePlayPointTrafficQualityReview(Date.now()-1),/時間予算/);
+  assert.equal(calls,0);assert.equal(errors,1);
+  const sheet={getLastRow:()=>10,getRange:()=>({getValue:()=> '2026-10-25 ～ 2026-11-23'})};
+  assert.throws(()=>c.playPointGrowthAssertPeriodFresh_({getSheetByName:()=>sheet},'x','2026-11-22'),/より新しい/);
+});
