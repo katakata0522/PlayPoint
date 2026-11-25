@@ -605,9 +605,11 @@ test('v11.6.2 Drive safety patch separates reconciled analytics success from own
 
 function stubAnalyticsSheet(context) {
   const writes = [];
+  writes.formats = [];
   const sheet = { clearContents() {}, getRange(...args) { return {
     setValue(value) { writes.push({ args, value }); },
-    setValues(value) { writes.push({ args, value }); }
+    setValues(value) { writes.push({ args, value }); },
+    setNumberFormat(format) { writes.formats.push({ args, format }); }
   }; } };
   context.PropertiesService = { getScriptProperties: () => ({ getProperty: key => key === 'SEARCH_CONSOLE_SITE_URL' ? 'sc-domain:playpoint-sim.com' : null }) };
   context.playPointP12EnsureSheet_ = () => sheet;
@@ -671,6 +673,7 @@ test('P1 search-cross caps sheet output while preserving totals and truthful hea
     if (count > 0) {
       const data = writes.find(write => write.args.length === 4 && write.args[2] === Math.min(50000, count));
       assert.equal(data.value.length, Math.min(50000, count));
+      assert.deepEqual(writes.formats.find(f=>f.format==='@').args,[data.args[0],1,Math.min(50000,count),3]);
     }
   }
 });
