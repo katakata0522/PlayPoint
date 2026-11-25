@@ -400,13 +400,14 @@ function playPointCaptureReaderOutcomes_() {
     try {
       var vitalView = playPointGrowthVitalsGrid_(period, sources.VITALS, timestamp);
       // 制限・未登録の状態を明示し、過去の有効な観測を欠測で消さない。
-      if (vitalView.state === 'OK' || vitalView.state === 'PARTIAL' || !ss.getSheetByName(PLAYPOINT_GROWTH_A.vitalsSheet)) {
+      if (vitalView.state === 'OK' || vitalView.state === 'PARTIAL' || vitalView.state === 'NO_OBSERVATIONS' || !ss.getSheetByName(PLAYPOINT_GROWTH_A.vitalsSheet)) {
+        playPointGrowthAssertPeriodFresh_(ss, PLAYPOINT_GROWTH_A.vitalsSheet, period.end);
         playPointGrowthPublishGrid_(ss, PLAYPOINT_GROWTH_A.vitalsSheet, vitalView.grid, 6, 10);
         var vitalSheet = ss.getSheetByName(PLAYPOINT_GROWTH_A.vitalsSheet);
         if (vitalView.grid.length > 6) vitalSheet.getRange(7, 11, vitalView.grid.length - 6, 1).setNumberFormat('0.00%');
       }
       if (vitalView.state !== 'OK') partial = true;
-      if (vitalView.state === 'OK' || vitalView.state === 'PARTIAL') {
+      if (vitalView.state === 'OK' || vitalView.state === 'PARTIAL' || vitalView.state === 'NO_OBSERVATIONS') {
         playPointP12UpsertHealth_('VITALS_ANALYSIS', { lastAttempt: timestamp, lastSuccess: playPointP12NowText_(),
           dataLatest: period.end, state: vitalView.state, consecutiveFailures: 0, error: '', note: vitalView.detail });
       } else {
@@ -1248,6 +1249,13 @@ var PLAYPOINT_GROWTH_A = Object.freeze({
   searchMaxRows: 20000
 });
 
+function playPointGrowthAssertPeriodFresh_(ss,title,end) {
+  var sheet=ss.getSheetByName(title);
+  if(!sheet || !sheet.getLastRow()) return;
+  var match=/^\d{4}-\d{2}-\d{2} ～ (\d{4}-\d{2}-\d{2})$/.exec(String(sheet.getRange('B2').getValue()||''));
+  if(match && match[1]>end) throw new Error('より新しい集計を旧期間で置換しない: '+title);
+}
+
 function playPointGrowthCount_(value, label) {
   if (value === '' || value === null || value === undefined || !Number.isSafeInteger(Number(value)) || Number(value) < 0) {
     throw new Error('不正な件数: ' + label);
@@ -1443,20 +1451,27 @@ function playPointGrowthTrafficSource_(propertyId,period,dimensions,metrics,filt
   },[],{});
 }
 
-function capturePlayPointTrafficQualityReview() {
+function capturePlayPointTrafficQualityReview(deadlineMs) {
   var timestamp = playPointP12NowText_();
   try {
     var period = playPointP12BuildGa4Period_(), property = playPointP12GetGa4PropertyId_(), ss = resolveAndRememberSpreadsheet_();
     var dims = ['sessionSourceMedium','deviceCategory'], sources = {};
-    sources.TRAFFIC = playPointGrowthTrafficSource_(property,period,dims,['sessions','activeUsers','screenPageViews','engagedSessions']);
+    // Apps Scriptの直接手動実行は引数なし。共通の実行時間予算を任意で渡せる。
+    var deadline = typeof deadlineMs === 'number' && isFinite(deadlineMs) ? deadlineMs : Date.now()+300000;
+    function report(dimensions,metrics,filter,currency) {
+      if(Date.now() >= deadline-15000) return {state:'SKIPPED_BUDGET',rows:[],detail:'時間予算のため新規取得を開始しない'};
+      return playPointGrowthTrafficSource_(property,period,dimensions,metrics,filter,currency);
+    }
+    sources.TRAFFIC = report(dims,['sessions','activeUsers','screenPageViews','engagedSessions']);
     if (sources.TRAFFIC.state !== 'OK') throw new Error(sources.TRAFFIC.detail);
-    sources.TOTAL = playPointGrowthTrafficSource_(property,period,[],['sessions','screenPageViews']);
-    sources.ENTRY = playPointGrowthTrafficSource_(property,period,dims.concat(['landingPage']),['sessions','screenPageViews']);
-    sources.SUCCESS = playPointGrowthTrafficSource_(property,period,dims,['eventCount'],playPointReaderFilter_('eventName',['calculator_funnel_completed']));
-    sources.REVENUE = playPointGrowthTrafficSource_(property,period,dims,['totalAdRevenue'],null,'JPY');
-    sources.HOST = playPointGrowthTrafficSource_(property,period,['hostName'],['screenPageViews'],playPointReaderFilter_('eventName',['page_view']));
+    sources.TOTAL = report([],['sessions','screenPageViews']);
+    sources.ENTRY = report(dims.concat(['landingPage']),['sessions','screenPageViews']);
+    sources.SUCCESS = report(dims,['eventCount'],playPointReaderFilter_('eventName',['calculator_funnel_completed']));
+    sources.REVENUE = report(dims,['totalAdRevenue'],null,'JPY');
+    sources.HOST = report(['hostName'],['screenPageViews'],playPointReaderFilter_('eventName',['page_view']));
     var view = playPointGrowthTrafficGrid_(period,sources,timestamp);
     return withScriptLock_(function() {
+      playPointGrowthAssertPeriodFresh_(ss,PLAYPOINT_GROWTH_A.trafficSheet,period.end);
       playPointGrowthPublishGrid_(ss,PLAYPOINT_GROWTH_A.trafficSheet,view.grid,6,13);
       var sheet = ss.getSheetByName(PLAYPOINT_GROWTH_A.trafficSheet), count = view.grid.length-6;
       if (count > 0) {
@@ -1528,7 +1543,7 @@ function playPointGrowthSearchCandidates_(grid,today) {
     throw new Error('検索語×ページのヘッダー不一致');
   }
   var periods=Object.create(null), byQuery=Object.create(null), seen=Object.create(null);
-  var anchors=0;
+  var anchors=0, queryVariants=0;
   grid.slice(1).forEach(function(row) {
     if (!row[1] && !row[2]) return;
     var query=String(row[1]||''), url=String(row[2]||''), period=String(row[7]||'');
@@ -1538,6 +1553,7 @@ function playPointGrowthSearchCandidates_(grid,today) {
         match[1]>match[2] || match[2]>=today) throw new Error('検索語×ページの期間が不正');
     periods[period]=true;
     if (url.indexOf('#')>=0) { anchors++;return; }
+    if (url.indexOf('?')>=0) { queryVariants++;return; }
     var key=JSON.stringify([query,url]);
     if (seen[key]) throw new Error('検索語×ページに重複行');
     seen[key]=true;
@@ -1568,7 +1584,7 @@ function playPointGrowthSearchCandidates_(grid,today) {
   candidates.sort(function(a,b){return Number(a.state!=='REVIEW')-Number(b.state!=='REVIEW')||
     (Number(b.scenarios[1]||0)-Number(a.scenarios[1]||0))||b.imp-a.imp;});
   return {state:stale?'STALE':'OK',period:dates[0],candidates:candidates,excludedAnchors:anchors,
-    detail:'API可視範囲の候補のみ。アンカー除外 '+anchors+'行。検索語ごとに主候補1URL、競合候補は試算保留。'};
+    detail:'API可視範囲の候補のみ。アンカー除外 '+anchors+'行・クエリ付きURL除外 '+queryVariants+'行。検索語ごとに主候補1URL、競合候補は試算保留。'};
 }
 
 function playPointGrowthOpportunityGrid_(daily,end,pages,search,timestamp) {
