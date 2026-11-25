@@ -164,7 +164,16 @@ function playPointGrowthWorkflowReview_(releases,timestamp){
   });
   // APIの最新30成功runだけ。古い公開、再実行・rollback、非公開リポジトリは保証外。
   return {rows:additions,checked:checked.slice(-120),pending:runs.length-attempted,
-    limited:payload.total_count>payload.workflow_runs.length,errors:errors};
+    recentCount:payload.workflow_runs.length,limited:payload.total_count>payload.workflow_runs.length,errors:errors};
+}
+
+// 最新の取得範囲での未処理と、取得対象外の古い履歴を別管理する。
+function playPointGrowthWorkflowCoverage_(review){
+  var errors=review.errors||[],pending=review.pending||0;
+  return {recentState:pending||errors.length?'PARTIAL':'OK',
+    recentNote:'最新'+review.recentCount+'成功run / 未処理 '+pending+' / エラー '+errors.length,
+    historicalState:review.limited?'HISTORICAL_LIMITED':'IN_RANGE',
+    historicalNote:review.limited?'最新30成功runより古い履歴は網羅未確認':'API一覧の取得範囲内（rollback等は別）'};
 }
 
 function playPointGrowthReleaseWindow_(release, days, timezone) {
@@ -226,7 +235,12 @@ function playPointGrowthWindowTotals_(days, period, stableEnd, fields, requirePv
   return { state: 'OBSERVED', values: totals };
 }
 
-function playPointGrowthReleaseGrid_(releases, ga4, gsc, today, timestamp, evidenceState, prior) {
+function playPointGrowthReleaseGrid_(releases, ga4, gsc, today, timestamp, evidenceState, prior, coverage) {
+  coverage=coverage||{};
+  function windowTotals(days,period,stableEnd,fields,requirePv,sourceStart){
+    if(period.end<=stableEnd&&sourceStart&&period.start<sourceStart)return {state:'OUTSIDE_HISTORY',values:null};
+    return playPointGrowthWindowTotals_(days,period,stableEnd,fields,requirePv);
+  }
   var cfg = PLAYPOINT_RELEASE_REVIEW, grid = [
     ['公開変更効果', timestamp],
     ['証拠', evidenceState, '観測したverified公開だけ。未観測の公開・同時変更・需要変化は残る。'],
@@ -249,10 +263,10 @@ function playPointGrowthReleaseGrid_(releases, ga4, gsc, today, timestamp, evide
     cfg.windows.forEach(function(days) {
       var jp = playPointGrowthReleaseWindow_(release, days, 'Asia/Tokyo');
       var pt = playPointGrowthReleaseWindow_(release, days, 'America/Los_Angeles');
-      var jpPrev = playPointGrowthWindowTotals_(ga4.days, jp.previous, jstStable, gaFields, true);
-      var jpCurr = playPointGrowthWindowTotals_(ga4.days, jp.current, jstStable, gaFields, true);
-      var scPrev = playPointGrowthWindowTotals_(gsc || {}, pt.previous, ptStable, ['clicks','impressions'], false);
-      var scCurr = playPointGrowthWindowTotals_(gsc || {}, pt.current, ptStable, ['clicks','impressions'], false);
+      var jpPrev = windowTotals(ga4.days, jp.previous, jstStable, gaFields, true,coverage.ga4Start);
+      var jpCurr = windowTotals(ga4.days, jp.current, jstStable, gaFields, true,coverage.ga4Start);
+      var scPrev = windowTotals(gsc || {}, pt.previous, ptStable, ['clicks','impressions'], false,coverage.gscStart);
+      var scCurr = windowTotals(gsc || {}, pt.current, ptStable, ['clicks','impressions'], false,coverage.gscStart);
       var other = releases.filter(function(candidate) {
         if (playPointGrowthReleaseKey_(candidate) === playPointGrowthReleaseKey_(release)) return false;
         var start = Utilities.formatDate(new Date(candidate[1]), 'Asia/Tokyo', 'yyyy-MM-dd');
@@ -263,14 +277,16 @@ function playPointGrowthReleaseGrid_(releases, ga4, gsc, today, timestamp, evide
         var a = metricValue(prev, calculate), b = metricValue(curr, calculate);
         var state = prev.state === 'OBSERVED' && curr.state === 'OBSERVED' ?
           (a === '' || b === '' ? 'NO_DENOMINATOR' : 'OBSERVED') :
-          prev.state === 'PENDING_FINAL' || curr.state === 'PENDING_FINAL' ? 'PENDING_FINAL' : 'MISSING_DAYS';
+          prev.state === 'PENDING_FINAL' || curr.state === 'PENDING_FINAL' ? 'PENDING_FINAL' :
+          prev.state === 'OUTSIDE_HISTORY' || curr.state === 'OUTSIDE_HISTORY' ? 'OUTSIDE_HISTORY' : 'MISSING_DAYS';
         var row = [release[2],release[0],days,name,label(window.previous),label(window.current),
           a,b,a === '' || b === '' ? '' : b-a,state,other,note];
         var key = row.slice(0,6).join('|'), previous = old[key];
-        if (state === 'MISSING_DAYS' && previous && previous[6] !== '' && previous[7] !== '') {
+        if (['MISSING_DAYS','OUTSIDE_HISTORY'].indexOf(state)>=0 && previous && Number.isFinite(previous[6]) && Number.isFinite(previous[7])) {
           row[6] = previous[6]; row[7] = previous[7]; row[8] = previous[8]; row[9] = 'HISTORICAL';
           row[11] += '。前回の完全取得値を保持（現在の再取得は不可）';
         }
+        if(row[9]==='OUTSIDE_HISTORY')row[11]+='。現在の取得期間外。障害や実測0とは区別';
         row.push(release[6]||'PUBLIC_MARKER',release[7]||'未分類',release[8]||'未設定');
         grid.push(row);
       }
@@ -306,12 +322,12 @@ function capturePlayPointReleaseEffectReview() {
       } catch (error) { evidenceErrors.push(playPointP12ErrorText_(error)); }
     }
     // 最新markerだけでは複数公開を取りこぼす。公開GitHub Actionsの成功した検証工程を限定数ずつ照合する。
-    var workflowReview=null, existingReleases=withScriptLock_(function(){return playPointGrowthReleaseLedger_(ss,additions);});
+    var workflowReview=null, workflowCoverage=null, existingReleases=withScriptLock_(function(){return playPointGrowthReleaseLedger_(ss,additions);});
     try {
       workflowReview=playPointGrowthWorkflowReview_(existingReleases,timestamp);
       additions=workflowReview.rows;
-      if(workflowReview.pending||workflowReview.limited||workflowReview.errors.length) evidenceErrors.push(
-        'workflow照合: 未処理 '+workflowReview.pending+' / 期間上限 '+workflowReview.limited+' / '+workflowReview.errors.join(' | '));
+      workflowCoverage=playPointGrowthWorkflowCoverage_(workflowReview);
+      if(workflowCoverage.recentState!=='OK')evidenceErrors.push('workflow照合: '+workflowCoverage.recentNote+' / '+workflowReview.errors.join(' | '));
     }catch(error){evidenceErrors.push('workflow照合: '+playPointP12ErrorText_(error));}
     var releases=withScriptLock_(function(){
       var saved=playPointGrowthReleaseLedger_(ss,workflowReview?workflowReview.rows:[]);
@@ -319,18 +335,20 @@ function capturePlayPointReleaseEffectReview() {
       if(workflowReview)PropertiesService.getScriptProperties().setProperty(cfg.workflowCursorProperty,JSON.stringify(workflowReview.checked));
       return saved;
     });
-    var ga4 = { days: {}, start: today, end: today }, gsc = null, dataErrors = [];
+    var ga4 = { days: {}, start: today, end: today }, gsc = null, dataErrors = [], coverage={};
     if (releases.length) {
       try {
         var daily = ss.getSheetByName(PLAYPOINT_EVENT_DAILY.sheet);
         if (!daily) throw new Error('GA4イベント日次が未取得');
         ga4 = playPointGrowthDailyMap_(daily.getRange(1,1,daily.getLastRow(),8).getValues());
+        coverage.ga4Start=ga4.start;
         if (ga4.end < playPointP12ShiftIsoDate_(today,-3)) dataErrors.push('GA4イベント日次が古い');
       } catch (error) { dataErrors.push(playPointP12ErrorText_(error)); }
       try {
         var end = playPointP12ShiftIsoDate_(today,-4);
         var start = playPointP12ShiftIsoDate_(today,-PLAYPOINT_EVENT_DAILY.historyDays);
         gsc = playPointGrowthGscMap_(playPointP12FetchGscRows_(playPointP12GetSiteUrl_(),start,end,['date'],'byProperty'));
+        coverage.gscStart=start;
       } catch (error) { dataErrors.push(playPointP12ErrorText_(error)); }
     }
     var state = !releases.length ? 'WAITING_EVIDENCE' : evidenceErrors.length || dataErrors.length ? 'PARTIAL' : 'OK';
@@ -338,8 +356,9 @@ function capturePlayPointReleaseEffectReview() {
       var existing = ss.getSheetByName(cfg.report), prior = [];
       if (existing && existing.getLastRow() > 5) prior = existing.getRange(6,1,existing.getLastRow()-5,12).getValues();
       var evidenceState = releases.length + '件のverified公開記録 / ' + state +
-        (evidenceErrors.length || dataErrors.length ? ' / ' + evidenceErrors.concat(dataErrors).join(' | ') : '');
-      var grid = playPointGrowthReleaseGrid_(releases,ga4,gsc,today,timestamp,evidenceState,prior);
+        (evidenceErrors.length || dataErrors.length ? ' / ' + evidenceErrors.concat(dataErrors).join(' | ') : '')+
+        (workflowCoverage?' / 最新照合 '+workflowCoverage.recentState+' ('+workflowCoverage.recentNote+') / 履歴範囲 '+workflowCoverage.historicalState+' ('+workflowCoverage.historicalNote+')':' / workflow照合未取得');
+      var grid = playPointGrowthReleaseGrid_(releases,ga4,gsc,today,timestamp,evidenceState,prior,coverage);
       if (state === 'OK' && grid.slice(5).some(function(row) { return row[9] === 'MISSING_DAYS'; })) {
         state = 'PARTIAL'; evidenceState += ' / 一部比較窓に欠測あり'; grid[1][1] = evidenceState;
       }
