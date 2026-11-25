@@ -320,7 +320,7 @@ test('検索改善候補は一検索語一URL、断片/URLパラメータ非合�
   assert.equal(result.candidates[1].state,'INTENT_OVERLAP');assert.deepEqual(Array.from(result.candidates[1].scenarios),['','']);
   const stale=c.playPointGrowthSearchCandidates_(grid,'2026-12-03');
   assert.equal(stale.state,'STALE');assert(stale.candidates.every(r=>r.scenarios[0]===''));
-  assert.throws(()=>c.playPointGrowthSearchCandidates_(grid.concat(grid[1]),'2026-11-25'),/重複/);
+  assert.throws(()=>c.playPointGrowthSearchCandidates_(grid.concat([grid[1]]),'2026-11-25'),/重複/);
   assert.throws(()=>c.playPointGrowthSearchCandidates_([header,row('q','/x',1,100,8,'PROVISIONAL')],'2026-11-25'),/未確定/);
 });
 
