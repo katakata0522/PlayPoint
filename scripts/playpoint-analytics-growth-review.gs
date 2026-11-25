@@ -436,3 +436,82 @@ function capturePlayPointGrowthOpportunityReview() {
     throw error;
   }
 }
+
+
+// 運営者は詳細シートを毎日巡回しない。既存表・監視状態だけを読み、要確認を先頭にする。
+function playPointOperationsDashboardGrid_(timestamp,overview,checks){
+  var grid=[
+    ['PlayPoint 運営ダッシュボード',timestamp],
+    ['30日換算PVペース',overview.pace,'目標',10000,'差',overview.gap],
+    ['確定7日PV',overview.seven,'確定30日PV',overview.thirty,'集計窓',overview.period],
+    ['データの見方','PVは既存成長分析の実測・換算値。新規取得は行わない。欠測・古い元データは空欄または要確認として扱う。'],
+    ['次に確認','エラー・未取得・期限超過・容量警告を上から。詳細シートは必要な時だけ開く。'],
+    ['分析','状態','最終完了','データ最新／対象期間','次の確認','詳細シート','リンク']
+  ];
+  var sorted=checks.slice().sort(function(a,b){return a.priority-b.priority||a.order-b.order;});
+  sorted.forEach(function(check){grid.push([check.label,check.state,check.completed,check.latest,check.note,check.sheet,check.url]);});
+  return grid;
+}
+function playPointOperationsHealthDate_(value){
+  if(value instanceof Date)return Utilities.formatDate(value,'Asia/Tokyo','yyyy-MM-dd');
+  var date=String(value||'').slice(0,10).replace(/\//g,'-');
+  return playPointMaintenanceIsoDate_(date)?date:'';
+}
+
+function capturePlayPointOperationsDashboard(){
+  var timestamp=playPointP12NowText_(),today=timestamp.slice(0,10),ss=resolveAndRememberSpreadsheet_();
+  return withScriptLock_(function(){
+    var healthSheet=ss.getSheetByName(PLAYPOINT_P12_CONFIG.healthSheet), health=Object.create(null);
+    if(healthSheet&&healthSheet.getLastRow()>1)healthSheet.getRange(2,1,healthSheet.getLastRow()-1,8).getValues().forEach(function(row){
+      health[String(row[0])]=row;
+    });
+    var queue=typeof playPointAnalyticsQueueRead_==='function'?playPointAnalyticsQueueRead_():{};
+    var specs=[
+      ['日次イベント','EVENT_DAILY','📈GA4イベント日次',2],
+      ['読者行動','READER_OUTCOMES','🧑読者行動・再訪',3],
+      ['記事の役割別成果','ROLE_OUTCOMES','📊記事の役割別成果',3],
+      ['公開変更効果','RELEASE_EFFECT','📈公開変更効果',3],
+      ['流入品質','TRAFFIC_QUALITY','🚪流入品質・入口診断',9],
+      ['月間PVの成長','GROWTH_OPPORTUNITY','🎯月間1万PV成長分析',3],
+      ['実利用性能','VITALS_ANALYSIS','⚡実利用性能',3],
+      ['機能別利用','FEATURE_USAGE','🧩機能別利用分析',9],
+      ['ページ価値','PAGE_VALUE','📊ページ価値ファネル',9],
+      ['URL検査','URL_INSPECTION','🧭URL検査',9]
+    ];
+    function url(sheet){return sheet?ss.getUrl()+'#gid='+sheet.getSheetId():'';}
+    var checks=specs.map(function(spec,index){
+      var component=PLAYPOINT_P12_CONFIG.healthComponents[spec[1]]||'P1P2 '+spec[1],h=health[component]||[];
+      var sheet=ss.getSheetByName(spec[2]), completed=playPointOperationsHealthDate_(h[2]),latest=playPointOperationsHealthDate_(h[3]);
+      var state=String(h[4]||'NOT_CAPTURED'),entry=queue[spec[1]]||{},priority=3,note=String(h[6]||h[7]||'');
+      var overdue=entry.nextDue&&entry.nextDue<today;
+      if(!sheet||!completed){state=state==='ERROR'?'ERROR':'NOT_CAPTURED';priority=1;}
+      else if(state==='ERROR'){priority=0;}
+      else if(completed<playPointP12ShiftIsoDate_(today,-spec[3])){state='STALE / '+state;priority=1;}
+      else if(state!=='OK'){priority=2;}
+      if(overdue){priority=Math.min(priority,1);note='次回予定 '+entry.nextDue+' を超過。 '+note;}
+      return {label:spec[0],state:state,completed:completed,latest:latest,note:note.slice(0,350),
+        sheet:spec[2],url:url(sheet),priority:priority,order:index};
+    });
+    var index=ss.getSheetByName('🗂GSC履歴索引'), capacity=index&&index.getLastRow()>=3?index.getRange(1,1,3,8).getValues():null;
+    var capState=capacity&&capacity[0][0]==='GSC_HISTORY_INDEX_V1'?String(capacity[1][6]||'NOT_CAPTURED'):'NOT_CAPTURED';
+    checks.push({label:'GSC履歴容量',state:capState,completed:'',latest:'',
+      note:capacity?'割当セル '+capacity[1][4]+' / 運用目安 '+capacity[1][5]+' / 余裕週 '+capacity[2][7]+'（概算）':'索引・容量の未取得',
+      sheet:'🗂GSC履歴索引',url:url(index),priority:capState==='PLAN_ARCHIVE'?0:capState==='OK'?3:1,order:99});
+    var overview={pace:'',gap:'',seven:'',thirty:'',period:''},growth=ss.getSheetByName(PLAYPOINT_GROWTH_A.opportunitySheet);
+    if(growth&&growth.getLastRow()>=8){
+      var g=growth.getRange(1,1,5,8).getValues(), match=/ ～ (\d{4}-\d{2}-\d{2})$/.exec(String(g[2][1]||''));
+      overview.period=String(g[2][1]||'');
+      if(g[0][0]==='月間1万PV成長分析'&&match&&match[1]>=playPointP12ShiftIsoDate_(today,-5)&&match[1]<today){
+        if(g[2][6]==='OBSERVED'){overview.seven=g[2][2];overview.pace=g[4][1];overview.gap=g[4][4];}
+        if(g[3][6]==='OBSERVED')overview.thirty=g[3][2];
+      }
+    }
+    var grid=playPointOperationsDashboardGrid_(timestamp,overview,checks);
+    playPointGrowthPublishGrid_(ss,'📋運営ダッシュボード',grid,6,0);
+    var sheet=ss.getSheetByName('📋運営ダッシュボード');
+    sheet.setColumnWidth(1,220);sheet.setColumnWidth(2,190);sheet.setColumnWidth(3,150);
+    sheet.setColumnWidth(4,200);sheet.setColumnWidth(5,500);sheet.setColumnWidth(6,260);sheet.setColumnWidth(7,330);
+    sheet.getRange(7,5,checks.length,1).setWrap(true);
+    return {state:checks.some(function(c){return c.priority<3;})?'CHECK':'OK',rows:grid.length};
+  });
+}
