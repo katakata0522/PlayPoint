@@ -1002,7 +1002,8 @@ var PLAYPOINT_RELEASE_REVIEW = Object.freeze({
   registry: '🚀公開変更履歴', report: '📈公開変更効果',
   receiptUrl: 'https://playpoint-sim.com/status/deploy-status.json',
   revisionUrl: 'https://playpoint-sim.com/status/deploy-revision.txt',
-  headers: ['commit', 'deployedAt', 'verifiedAt', 'runId', 'evidence', 'observedAt'],
+  headers: ['commit', 'deployedAt', 'verifiedAt', 'runId', 'evidence', 'observedAt', 'evidence_kind', 'scope', 'candidate_kpi'],
+  workflowCursorProperty: 'PLAYPOINT_DEPLOY_WORKFLOW_REVIEW_V1',
   windows: [7, 14, 28],
   receiptProperty: 'PLAYPOINT_VERIFIED_RELEASE_RECEIPTS_JSON'
 });
@@ -1023,7 +1024,7 @@ function playPointGrowthVerifiedRelease_(payload, revisionText, observedAt) {
     throw new Error('公開検証の証拠が不完全・不一致。GitHubマージ日の代用は禁止');
   }
   return [sha, new Date(payload.deployedAt).toISOString(), new Date(payload.verifiedAt).toISOString(),
-    String(workflow.runId), 'https://github.com/katakata0522/PlayPoint/actions/runs/' + workflow.runId, observedAt];
+    String(workflow.runId), 'https://github.com/katakata0522/PlayPoint/actions/runs/' + workflow.runId, observedAt,'PUBLIC_MARKER','未分類','未設定'];
 }
 
 function playPointGrowthFetchRelease_(timestamp) {
@@ -1037,7 +1038,7 @@ function playPointGrowthFetchRelease_(timestamp) {
   return playPointGrowthVerifiedRelease_(JSON.parse(responses[0].getContentText()), responses[1].getContentText(), timestamp);
 }
 
-function playPointGrowthReleaseKey_(row) { return String(row[0]) + '\u0000' + String(row[2]); }
+function playPointGrowthReleaseKey_(row) { return String(row[0]) + '\u0000' + String(row[3]); }
 
 function playPointGrowthReleaseLedger_(ss, additions) {
   var cfg = PLAYPOINT_RELEASE_REVIEW, sheet = playPointP12EnsureSheet_(ss, cfg.registry, cfg.headers.length);
@@ -1047,6 +1048,10 @@ function playPointGrowthReleaseLedger_(ss, additions) {
     sheet.setColumnWidths(1, cfg.headers.length, 230);
   }
   var existing = sheet.getRange(1, 1, sheet.getLastRow(), cfg.headers.length).getDisplayValues();
+  // 6列の旧履歴は残し、証拠種別・変更範囲の列だけを追加する。
+  if(existing[0].slice(0,6).join('|')===cfg.headers.slice(0,6).join('|')&&existing[0].slice(6).every(function(v){return !v;})){
+    sheet.getRange(1,7,1,3).setValues([cfg.headers.slice(6)]);existing[0]=cfg.headers.slice();
+  }
   if (existing[0].join('|') !== cfg.headers.join('|')) throw new Error('公開変更履歴のヘッダー不一致。既存データを保持');
   var rows = existing.slice(1).filter(function(row) { return row.some(function(value) { return value !== ''; }); });
   var seen = Object.create(null);
@@ -1071,6 +1076,92 @@ function playPointGrowthReleaseLedger_(ss, additions) {
       .setValues(newRows.map(playPointP12LiteralRow_));
   }
   return rows.concat(newRows);
+}
+
+
+
+// Public read-only GitHub API. Never forward Google OAuth credentials to GitHub.
+function playPointGrowthGithubJson_(path){
+  if(typeof playPointAnalyticsCheckBudget_==='function')playPointAnalyticsCheckBudget_();
+  if(!/^\/repos\/katakata0522\/PlayPoint\/(actions\/|compare\/)/.test(path))throw new Error('GitHub証拠のパスが範囲外');
+  var response=UrlFetchApp.fetch('https://api.github.com'+path,{method:'get',muteHttpExceptions:true,followRedirects:false,
+    headers:{Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}});
+  if(response.getResponseCode()!==200)throw new Error('GitHub公開証拠取得 HTTP '+response.getResponseCode());
+  return JSON.parse(response.getContentText());
+}
+
+function playPointGrowthWorkflowReceipt_(run,jobs,timestamp){
+  if(!run||run.status!=='completed'||run.conclusion!=='success'||run.head_branch!=='main'||
+     run.path!=='.github/workflows/deploy.yml'||!/^[a-f0-9]{40}$/.test(String(run.head_sha||''))||
+     !/^[1-9]\d*$/.test(String(run.id||''))||!Array.isArray(jobs))throw new Error('公開workflowの属性不一致');
+  var matches=[];
+  jobs.forEach(function(job){
+    if(job.conclusion!=='success'||!Array.isArray(job.steps))return;
+    var publish=job.steps.filter(function(step){return step.name==='Publish verified deployment status'&&step.conclusion==='success';});
+    var mirror=job.steps.filter(function(step){return step.name==='Deploy strict public mirror via rsync'&&step.conclusion==='success';});
+    if(publish.length===1&&mirror.length===1)matches.push([mirror[0].started_at,publish[0].completed_at]);
+  });
+  if(!matches.length)return null; // CI成功でも配信スキップなら公開ではない。
+  if(matches.length!==1)throw new Error('公開工程が複数あり一意に確定できない');
+  var a=Date.parse(matches[0][0]),b=Date.parse(matches[0][1]);
+  if(!Number.isFinite(a)||!Number.isFinite(b)||a>b||b>Date.now())throw new Error('公開workflow工程日時が不正');
+  return [run.head_sha,new Date(a).toISOString(),new Date(b).toISOString(),String(run.id),
+    'https://github.com/katakata0522/PlayPoint/actions/runs/'+run.id,timestamp,'WORKFLOW_STEPS','未分類','未設定'];
+}
+
+function playPointGrowthReleaseScope_(files){
+  if(!Array.isArray(files))return {scope:'変更範囲未取得',kpi:'未設定'};
+  var categories=Object.create(null),paths=[];
+  files.forEach(function(file){
+    var path=String(file.filename||'');
+    if(!/^[a-zA-Z0-9_.\/-]+$/.test(path)||path.indexOf('..')>=0)return;
+    var label=/^(?:(en|ko|tw)\/)?articles\//.test(path)?'記事':
+      /^(?:(en|ko|tw)\/)?games\//.test(path)?'ゲーム':
+      /^(?:(en|ko|tw)\/)?(?:index\.html|status\/|maintenance\/|amount\/|campaign\/)/.test(path)?'計算機・入口':
+      /^js\/|\.css$|^sw\.js$/.test(path)?'共通UI・性能':null;
+    if(label){categories[label]=(categories[label]||0)+1;if(paths.length<5)paths.push(path);}
+  });
+  var names=Object.keys(categories);
+  return {scope:(names.length?names.map(function(k){return k+' '+categories[k]+'ファイル';}).join(' / ')+' ｜ '+paths.join(', '):'公開範囲未分類')+
+    (files.length>=300?'（差分上限の可能性）':''),
+    kpi:names.map(function(k){return k==='記事'?'検索クリック・記事の役割別成果':k==='ゲーム'?'ゲーム利用':k==='計算機・入口'?'開始・成功・エラー':'実利用性能';}).join(' / ')||'未設定'};
+}
+
+function playPointGrowthWorkflowReview_(releases,timestamp){
+  var cfg=PLAYPOINT_RELEASE_REVIEW,props=PropertiesService.getScriptProperties();
+  var raw=props.getProperty(cfg.workflowCursorProperty),checked=raw?JSON.parse(raw):[];
+  if(!Array.isArray(checked)||checked.some(function(id){return !/^[1-9]\d*$/.test(String(id));}))throw new Error('workflow照合カーソル不正');
+  var done=Object.create(null);checked.forEach(function(id){done[String(id)]=true;});
+  releases.forEach(function(row){done[String(row[3])]=true;});
+  var payload=playPointGrowthGithubJson_('/repos/katakata0522/PlayPoint/actions/workflows/deploy.yml/runs?branch=main&status=success&per_page=30');
+  if(!Array.isArray(payload.workflow_runs)||!Number.isSafeInteger(payload.total_count))throw new Error('workflow一覧応答不正');
+  var runs=payload.workflow_runs.filter(function(run){return !done[String(run.id)];}).sort(function(a,b){return Date.parse(a.created_at)-Date.parse(b.created_at);});
+  var additions=[],errors=[],attempted=0;
+  runs.slice(0,4).forEach(function(run){
+    try{
+      if(!/^[1-9]\d*$/.test(String(run.id)))throw new Error('workflow ID不正');
+      var result=playPointGrowthGithubJson_('/repos/katakata0522/PlayPoint/actions/runs/'+run.id+'/jobs?filter=latest&per_page=100');
+      if(!Array.isArray(result.jobs)||result.total_count!==result.jobs.length)throw new Error('workflow jobsの取得が不完全');
+      var row=playPointGrowthWorkflowReceipt_(run,result.jobs,timestamp);
+      if(row){
+        // 前回観測した公開版からの差分。観測間に別公開があれば真のdeploy差分ではない。
+        var before=releases.concat(additions).filter(function(candidate){return candidate[2]<row[1]&&candidate[0]!==row[0];})
+          .sort(function(a,b){return b[2].localeCompare(a[2]);})[0];
+        if(before){
+          try{
+            var diff=playPointGrowthGithubJson_('/repos/katakata0522/PlayPoint/compare/'+before[0]+'...'+row[0]+'?per_page=1');
+            var scope=playPointGrowthReleaseScope_(diff.files);
+            row[7]='前回観測版から: '+scope.scope;row[8]=scope.kpi;
+          }catch(error){row[7]='差分未取得';}
+        }
+        additions.push(row);
+      }
+      checked.push(String(run.id));attempted++;
+    }catch(error){errors.push(playPointP12ErrorText_(error));}
+  });
+  // APIの最新30成功runだけ。古い公開、再実行・rollback、非公開リポジトリは保証外。
+  return {rows:additions,checked:checked.slice(-120),pending:runs.length-attempted,
+    limited:payload.total_count>payload.workflow_runs.length,errors:errors};
 }
 
 function playPointGrowthReleaseWindow_(release, days, timezone) {
@@ -1138,7 +1229,7 @@ function playPointGrowthReleaseGrid_(releases, ga4, gsc, today, timestamp, evide
     ['証拠', evidenceState, '観測したverified公開だけ。未観測の公開・同時変更・需要変化は残る。'],
     ['比較', '公開開始日〜検証完了日を除き、前後7/14/28日の同曜日構成を比較。GA4はJST、GSCはPT。'],
     ['解釈', '確定待ち・欠測は空欄。回数の比は利用者の完了率ではない。前後比較は因果推定ではない。'],
-    ['公開検証日時', 'commit', '日数', '指標', '前期間', '後期間', '前値', '後値', '差（後−前）', '状態', '他の観測公開', '補足']
+    ['公開検証日時', 'commit', '日数', '指標', '前期間', '後期間', '前値', '後値', '差（後−前）', '状態', '他の観測公開', '補足', '証拠種別', '変更範囲（参考）', '評価候補']
   ];
   var old = Object.create(null);
   (prior || []).forEach(function(row) {
@@ -1177,6 +1268,7 @@ function playPointGrowthReleaseGrid_(releases, ga4, gsc, today, timestamp, evide
           row[6] = previous[6]; row[7] = previous[7]; row[8] = previous[8]; row[9] = 'HISTORICAL';
           row[11] += '。前回の完全取得値を保持（現在の再取得は不可）';
         }
+        row.push(release[6]||'PUBLIC_MARKER',release[7]||'未分類',release[8]||'未設定');
         grid.push(row);
       }
       [['GA4 PV','page_view'],['計算開始回数','calculator_form_started'],['初回計算成功回数','calculator_funnel_completed'],
@@ -1210,7 +1302,20 @@ function capturePlayPointReleaseEffectReview() {
         });
       } catch (error) { evidenceErrors.push(playPointP12ErrorText_(error)); }
     }
-    var releases = withScriptLock_(function() { return playPointGrowthReleaseLedger_(ss, additions); });
+    // 最新markerだけでは複数公開を取りこぼす。公開GitHub Actionsの成功した検証工程を限定数ずつ照合する。
+    var workflowReview=null, existingReleases=withScriptLock_(function(){return playPointGrowthReleaseLedger_(ss,additions);});
+    try {
+      workflowReview=playPointGrowthWorkflowReview_(existingReleases,timestamp);
+      additions=workflowReview.rows;
+      if(workflowReview.pending||workflowReview.limited||workflowReview.errors.length) evidenceErrors.push(
+        'workflow照合: 未処理 '+workflowReview.pending+' / 期間上限 '+workflowReview.limited+' / '+workflowReview.errors.join(' | '));
+    }catch(error){evidenceErrors.push('workflow照合: '+playPointP12ErrorText_(error));}
+    var releases=withScriptLock_(function(){
+      var saved=playPointGrowthReleaseLedger_(ss,workflowReview?workflowReview.rows:[]);
+      // 照合カーソルは履歴が保存された後にのみ進める。
+      if(workflowReview)PropertiesService.getScriptProperties().setProperty(cfg.workflowCursorProperty,JSON.stringify(workflowReview.checked));
+      return saved;
+    });
     var ga4 = { days: {}, start: today, end: today }, gsc = null, dataErrors = [];
     if (releases.length) {
       try {
