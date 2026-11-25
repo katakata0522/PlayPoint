@@ -9,6 +9,12 @@ var PLAYPOINT_GROWTH_EVENTS = Object.freeze([
   'pwa_install_accepted', 'widget_code_copied', 'widget_referral_landed', 'web_vital',
   'article_decision_action', 'article_resolution_action', 'article_reference_action'
 ]);
+// 計測開始・受信の連続性が確認できていない機能は、正常応答の無行を実測0へ変換しない。
+// 基盤の従来集計（PV/開始/成功/エラー/記事導線）のゼロ方針は変更しない。
+var PLAYPOINT_EVENT_UNVERIFIED_ROWS = Object.freeze(PLAYPOINT_GROWTH_EVENTS.concat([
+  'diary_tab_opened','diary_entry_saved','game_form_started','game_calculation_completed',
+  'reader_question_clicked','search','result_related_article_clicked','result_decision_link_clicked'
+]));
 var PLAYPOINT_ROLE_ACTION_EVENTS = Object.freeze({
   decision_support: 'article_decision_action',
   troubleshooting: 'article_resolution_action',
@@ -203,7 +209,7 @@ function playPointReaderBuildGrid_(period, inventory, sources, timestamp) {
         row['customEvent:destination_type'] || row['customEvent:intent_id'] || row['customEvent:candidate_id'] || row['customEvent:calculation_mode'] || row['customEvent:metric_rating'] || '', comment]);
     });
     if (type === 'EVENTS' && source.state === 'OK') {
-      PLAYPOINT_GROWTH_EVENTS.forEach(function(name) {
+      PLAYPOINT_EVENT_UNVERIFIED_ROWS.forEach(function(name) {
         if (!source.rows.some(function(row) { return row.eventName === name; })) {
           add(['EVENTS', 'NO_EVENT_ROW', name, '', '', '', '', '', '', '', '', '正常応答に行なし。計測開始・受信の確認前は利用ゼロと断定しない']);
         }
@@ -498,11 +504,12 @@ function playPointEventDailyGrid_(period, timestamp, sources) {
       var observed = ok ? primary.rows.filter(function(row) {
         return row.eventName === eventName && row.isoDate >= week.start && row.isoDate <= week.end;
       }) : [];
-      var noRow = ok && !observed.length && PLAYPOINT_GROWTH_EVENTS.indexOf(eventName) >= 0;
+      var noRow = ok && !observed.length && PLAYPOINT_EVENT_UNVERIFIED_ROWS.indexOf(eventName) >= 0;
       var total = ok && !noRow ? observed.reduce(function(sum, row) { return sum + row.eventCount; }, 0) : '';
       add([week.label, week.start + ' ～ ' + week.end, eventName, total, '', '',
         noRow ? 'NO_EVENT_ROW' : ok ? 'OBSERVED' : (!covered ? 'NOT_COVERED' : primary.state),
-        noRow ? '正常応答に行なし。計測開始・受信は別途確認' : 'イベント回数の合計。週のユニーク利用者数ではない']);
+        noRow ? '正常応答に行なし。計測開始・受信は別途確認' :
+          PLAYPOINT_EVENT_UNVERIFIED_ROWS.indexOf(eventName)>=0?'返却された観測回数の合計。無行の日の計測継続は未確認。週の人数ではない':'イベント回数の合計。週のユニーク利用者数ではない']);
     });
   });
   // 取得できた期間のみ0件を実測0として表示。欠損したAPI結果は0で埋めない。
@@ -514,7 +521,7 @@ function playPointEventDailyGrid_(period, timestamp, sources) {
         return row.isoDate === date && row.eventName === eventName;
       }) : [];
       if (found.length > 1) throw new Error('GA4日別イベントの重複行: ' + date + ' ' + eventName);
-      var noRow = ok && !found.length && PLAYPOINT_GROWTH_EVENTS.indexOf(eventName) >= 0;
+      var noRow = ok && !found.length && PLAYPOINT_EVENT_UNVERIFIED_ROWS.indexOf(eventName) >= 0;
       add(['EVENTS', date, eventName,
         ok && !noRow ? (found.length ? found[0].eventCount : 0) : '',
         ok && !noRow ? (found.length ? found[0].totalUsers : 0) : '', '',
