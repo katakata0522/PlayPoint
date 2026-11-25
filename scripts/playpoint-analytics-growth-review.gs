@@ -273,7 +273,7 @@ function capturePlayPointTrafficQualityReview(deadlineMs) {
       }
       sheet.getRange(5,4).setNumberFormat('0.00%');
       playPointP12UpsertHealth_('TRAFFIC_QUALITY',{lastAttempt:timestamp,lastSuccess:playPointP12NowText_(),dataLatest:period.end,
-        state:view.state,consecutiveFailures:0,error:'',note:'入口照合 '+view.matched+'/'+view.total+' / 照合済み不明 '+view.unknown+'。設定は変更しない。'});
+        state:view.state,consecutiveFailures:0,error:'',note:'入口照合 '+view.matched+'/'+view.total+' / 照合済み不明 '+view.unknown+' / 偏り調査 '+view.concentrationAlerts+'件。設定は変更しない。'});
       return {state:view.state,rows:view.grid.length};
     });
   } catch (error) {
@@ -335,15 +335,17 @@ function playPointGrowthSearchCandidates_(grid,today) {
     throw new Error('検索語×ページのヘッダー不一致');
   }
   var periods=Object.create(null), byQuery=Object.create(null), seen=Object.create(null);
-  var anchors=0, queryVariants=0;
+  var anchors=0, queryVariants=0, ambiguousQueries=0;
   grid.slice(1).forEach(function(row) {
     if (!row[1] && !row[2]) return;
     var query=String(row[1]||''), url=String(row[2]||''), period=String(row[7]||'');
-    if (!query || !/^https:\/\/playpoint-sim\.com\//.test(url) || row[8]!=='FINAL') throw new Error('検索語×ページに未確定・不正な行');
+    if (row[1]==='' || row[1]===null || row[1]===undefined || !/^https:\/\/playpoint-sim\.com\//.test(url) || row[8]!=='FINAL') throw new Error('検索語×ページに未確定・不正な行');
     var match=/^(\d{4}-\d{2}-\d{2}) ～ (\d{4}-\d{2}-\d{2})$/.exec(period);
     if (!match || !playPointMaintenanceIsoDate_(match[1]) || !playPointMaintenanceIsoDate_(match[2]) ||
         match[1]>match[2] || match[2]>=today) throw new Error('検索語×ページの期間が不正');
     periods[period]=true;
+    // 旧シートの数値/日付化された検索語は元の文字列が不明。候補にせず件数を報告する。
+    if(typeof row[1]!=='string'){ambiguousQueries++;return;}
     if (url.indexOf('#')>=0) { anchors++;return; }
     if (url.indexOf('?')>=0) { queryVariants++;return; }
     var key=JSON.stringify([query,url]);
@@ -375,8 +377,8 @@ function playPointGrowthSearchCandidates_(grid,today) {
   });
   candidates.sort(function(a,b){return Number(a.state!=='REVIEW')-Number(b.state!=='REVIEW')||
     (Number(b.scenarios[1]||0)-Number(a.scenarios[1]||0))||b.imp-a.imp;});
-  return {state:stale?'STALE':'OK',period:dates[0],candidates:candidates,excludedAnchors:anchors,
-    detail:'API可視範囲の候補のみ。アンカー除外 '+anchors+'行・クエリ付きURL除外 '+queryVariants+'行。検索語ごとに主候補1URL、競合候補は試算保留。'};
+  return {state:stale?'STALE':ambiguousQueries?'PARTIAL_QUERY_TYPE':'OK',period:dates[0],candidates:candidates,excludedAnchors:anchors,excludedAmbiguousQueries:ambiguousQueries,
+    detail:'API可視範囲の候補のみ。アンカー除外 '+anchors+'行・クエリ付きURL除外 '+queryVariants+'行・原文未確認の非文字列検索語除外 '+ambiguousQueries+'行。検索語ごとに主候補1URL、競合候補は試算保留。'};
 }
 
 function playPointGrowthOpportunityGrid_(daily,end,pages,search,timestamp) {
@@ -448,7 +450,7 @@ function capturePlayPointGrowthOpportunityReview() {
     catch (error) { search={state:'ERROR',detail:playPointP12ErrorText_(error),candidates:[]}; }
     var view=playPointGrowthOpportunityGrid_(daily,end,pages,search,timestamp);
     return withScriptLock_(function(){
-      playPointGrowthPublishGrid_(ss,cfg.opportunitySheet,view.grid,8,10);
+      playPointGrowthPublishGrid_(ss,cfg.opportunitySheet,view.grid,8,10,[4]);
       var sheet=ss.getSheetByName(cfg.opportunitySheet);
       if(view.grid.length>8) sheet.getRange(9,11,view.grid.length-8,1).setNumberFormat('0.00');
       sheet.getRange(3,5).setNumberFormat('0.0');
@@ -515,12 +517,12 @@ function capturePlayPointOperationsDashboard(){
       if(spec[1]==='ARTICLE_PORTFOLIO'){
         var freshness=playPointPortfolioFreshness_(ss,today);
         if(freshness.state==='DUE'||freshness.state==='STALE_SOURCE'||freshness.state==='WAITING_SOURCE'){
-          state=freshness.state==='DUE'?'STALE / '+state:freshness.state;
-          priority=1;note=freshness.note+' / '+note;
+          if(state!=='ERROR')state=freshness.state==='DUE'?'STALE / '+state:freshness.state;
+          priority=state==='ERROR'?0:1;note=freshness.note+' / '+note;
         }
       }
-      if(!sheet||!completed){state=state==='ERROR'?'ERROR':'NOT_CAPTURED';priority=1;}
-      else if(state==='ERROR'){priority=0;}
+      if(state==='ERROR'){priority=0;}
+      else if(!sheet||!completed){if(state!=='WAITING_SOURCE'&&state!=='STALE_SOURCE')state='NOT_CAPTURED';priority=1;}
       else if(completed<playPointP12ShiftIsoDate_(today,-spec[3])){state='STALE / '+state;priority=1;}
       else if(state!=='OK'){priority=Math.min(priority,2);}
       if(overdue){priority=Math.min(priority,1);note='次回予定 '+entry.nextDue+' を超過。 '+note;}
