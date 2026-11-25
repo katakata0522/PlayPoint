@@ -1758,14 +1758,14 @@ function playPointFeatureUsageGrid_(period,previous,sources,timestamp) {
     ['読み方','イベント回数・イベント別のユニーク利用者を別に表示。未観測は空欄。分類行の人数は足さない。前後期間で同じ人を追跡していない。'],
     ['順序付きファネル','日記・購入先比較だけ、同一利用者の24時間以内の順序をGA4で評価。地域別・ゲーム別の成功率や翌週再訪率とは異なる。'],
     ['取得状態',Object.keys(sources).map(function(key){return key+'='+sources[key].state;}).join(' / ')],
-    ['区分','機能','イベント／指標','分類1','分類2','分類3','前回数','今回数','回数差','前利用者','今利用者','24h順序率','状態','補足']
+    ['区分','機能','イベント／指標','分類1','分類2','分類3','前回数','今回数','回数差','前利用者','今利用者','順序開始人数','順序成功人数','24h順序率','状態','補足']
   ];
   Object.keys(cfg.events).forEach(function(name){
     var a=prev[name],b=cur[name], state=a&&b?'OBSERVED':a||b?'PARTIAL_OBSERVATION':
       sources.CURRENT&&sources.CURRENT.state!=='OK'?sources.CURRENT.state:
       sources.PREVIOUS&&sources.PREVIOUS.state!=='OK'?sources.PREVIOUS.state:'NO_EVENT_ROW';
     grid.push(['30日全体',cfg.events[name][0],name,'','','',a?a.events:'',b?b.events:'',
-      a&&b?b.events-a.events:'',a?a.users:'',b?b.users:'','',state,cfg.events[name][1]+'。未返却行を利用ゼロと断定しない。']);
+      a&&b?b.events-a.events:'',a?a.users:'',b?b.users:'','','','',state,cfg.events[name][1]+'。未返却行を利用ゼロと断定しない。']);
   });
   var partial=!sources.CURRENT || sources.CURRENT.state!=='OK'||!sources.PREVIOUS||sources.PREVIOUS.state!=='OK';
   ['GAME','GAME_PAGE','RETENTION','SHARE','WIDGET_ARRIVAL'].forEach(function(type){
@@ -1773,7 +1773,7 @@ function playPointFeatureUsageGrid_(period,previous,sources,timestamp) {
     if(!source) return;
     if(source.state!=='OK') partial=true;
     if(['OK','PARAMETER_PARTIAL'].indexOf(source.state)<0 || !source.rows.length) {
-      grid.push(['分類明細',type,'','','','','','','','','','',source.state==='OK'?'NO_EVENT_ROW':source.state,source.detail||'取得なし']);
+      grid.push(['分類明細',type,'','','','','','','','','','','','',source.state==='OK'?'NO_EVENT_ROW':source.state,source.detail||'取得なし']);
       return;
     }
     var seen=Object.create(null), classified=Object.create(null);
@@ -1792,21 +1792,21 @@ function playPointFeatureUsageGrid_(period,previous,sources,timestamp) {
         group.events+=events;group.rows++;return;
       }
       grid.push(['分類明細',cfg.events[row.eventName][0],row.eventName,labels[0],labels[1],labels[2],
-        '',events,'','',users,'',source.state==='PARAMETER_PARTIAL'?'OBSERVED_PARTIAL':users<30?'SMALL_SAMPLE':'OBSERVED',
+        '',events,'','',users,'','','',source.state==='PARAMETER_PARTIAL'?'OBSERVED_PARTIAL':users<30?'SMALL_SAMPLE':'OBSERVED',
         type==='GAME_PAGE'?'標準pagePathによる代替分類。ゲーム・地域はURLから推定。別URLの人数は足さない。':'当該分類内の人数。全体行と重複するので足さない。']);
     });
     Object.keys(classified).forEach(function(name){
-      grid.push(['分類明細',cfg.events[name][0],name,'未分類','','','',classified[name].events,'','','','','PARAMETER_PARTIAL',
+      grid.push(['分類明細',cfg.events[name][0],name,'未分類','','','',classified[name].events,'','','','','','','PARAMETER_PARTIAL',
         '分類不可 '+classified[name].rows+'行。イベント回数のみ集約し、ユニーク利用者は合算しない。']);
     });
   });
   cfg.funnels.forEach(function(spec){
     var result=playPointFeatureFunnelResult_(sources[spec.key],spec,cur);
     if(['OBSERVED','SMALL_SAMPLE','NO_OBSERVATIONS'].indexOf(result.state)<0) partial=true;
-    grid.push(['順序付き',spec.feature,spec.startLabel+' → '+spec.finishLabel,'','','','','','','',result.start,result.rate,result.state,
-      result.finish===''?'順序成功人数は未取得':'24h順序成功 '+result.finish+'人 / 開始 '+result.start+'人。activeUsersの順序評価。']);
+    grid.push(['順序付き',spec.feature,spec.startLabel+' → '+spec.finishLabel,'','','','','','','','',result.start,result.finish,result.rate,result.state,
+      result.finish===''?'順序成功人数は未取得':'activeUsersの24時間以内の順序評価。地域別・同じ訪問内の成功率とは異なる。']);
   });
-  return {state:partial?'PARTIAL':'OK',grid:grid};
+  return {state:!Object.keys(cur).length&&!Object.keys(prev).length?'NO_OBSERVATIONS':partial?'PARTIAL':'OK',grid:grid};
 }
 
 function capturePlayPointFeatureUsageReview(deadlineMs) {
@@ -1846,7 +1846,7 @@ function capturePlayPointFeatureUsageReview(deadlineMs) {
     var view=playPointFeatureUsageGrid_(period,previous,sources,timestamp);
     return withScriptLock_(function(){
       playPointGrowthAssertPeriodFresh_(ss,cfg.sheet,period.end);
-      playPointGrowthPublishGrid_(ss,cfg.sheet,view.grid,7,12);
+      playPointGrowthPublishGrid_(ss,cfg.sheet,view.grid,7,14);
       playPointP12UpsertHealth_('FEATURE_USAGE',{lastAttempt:timestamp,lastSuccess:playPointP12NowText_(),dataLatest:period.end,
         state:view.state,consecutiveFailures:0,error:'',note:Object.keys(sources).map(function(key){return key+'='+sources[key].state;}).join(' / ')+'。独立イベント人数は転換率にしない。'});
       return {state:view.state,rows:view.grid.length};
