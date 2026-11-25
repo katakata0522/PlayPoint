@@ -853,3 +853,62 @@ function stubTriggers(context, handler, existing = []) {
     newTrigger(name) { calls.push(['new', name]); return chain; }, deleteTrigger(trigger) { calls.push(['delete', trigger]); } };
   return { calls, created };
 }
+
+
+test('search cross writes explicit integer formats despite changing header row', () => {
+  const { context } = loadP12Runtime();
+  const formats = [];
+  const range = (...args) => ({
+    setFontWeight() { return this; },
+    setFontSize() { return this; },
+    setNumberFormat(format) { formats.push([args,format]); return this; }
+  });
+  context.playPointP12StyleSearchCrossSheet_({getRange:range,setFrozenRows(){},setColumnWidth(){}},5,12,20,30);
+  assert.deepEqual(formats,[
+    [[6,2,12,2],'#,##0'],[[6,4,12,1],'0.00%'],
+    [[21,4,30,4],'#,##0'],[[21,8,30,2],'0.00%'],
+    [[21,10,30,2],'0.00'],[[21,12,30,1],'#,##0'],[[21,13,30,1],'0.00%']
+  ]);
+});
+
+test('URL Inspection uses bounded batches, preserves order, and retries only transient failures', () => {
+  const { context } = loadP12Runtime();
+  const items = Array.from({length:12},(_,i)=>({url:'https://playpoint-sim.com/a'+i}));
+  const sizes=[],retried=[];
+  context.ScriptApp={getOAuthToken:()=> 'fixture-token'};
+  context.UrlFetchApp={fetchAll(requests){
+    sizes.push(requests.length);
+    return requests.map(request=>{
+      const input=JSON.parse(request.payload);
+      assert.equal(request.url,'https://searchconsole.googleapis.com/v1/urlInspection/index:inspect');
+      assert.equal(request.headers.Authorization,'Bearer fixture-token');
+      assert.equal(input.siteUrl,'sc-domain:playpoint-sim.com');
+      const status=input.inspectionUrl.endsWith('/a1')?429:input.inspectionUrl.endsWith('/a2')?403:200;
+      return {getResponseCode:()=>status,getContentText:()=>JSON.stringify({url:input.inspectionUrl})};
+    });
+  }};
+  context.playPointP12InspectUrl_=(_site,url)=>{retried.push(url);return {url};};
+  const result=context.playPointP12InspectBatches_('sc-domain:playpoint-sim.com',items,Date.now()+60000);
+  assert.deepEqual(sizes,[5,5,2]);
+  assert.deepEqual(retried,[items[1].url]);
+  assert.equal(result.length,12);
+  assert.equal(result[1].payload.url,items[1].url);
+  assert.match(result[2].error.message,/403/);
+  assert.equal(result[11].payload.url,items[11].url);
+});
+
+test('URL Inspection time budget is checked before new requests and leaves old report untouched', () => {
+  const { context } = loadP12Runtime();
+  context.playPointP12GetSiteUrl_=()=>{throw Error('must not fetch after deadline');};
+  context.playPointP12EnsureSheet_=()=>{throw Error('must not overwrite report');};
+  assert.throws(()=>context.playPointP12CaptureUrlInspection_({},Date.now()-1),/実行時間予算.*前回の検査表/);
+});
+
+test('manual inspection retries without changing other analytics stages or triggers', () => {
+  const { context } = loadP12Runtime();
+  context.playPointP12GetSpreadsheet_=()=>({});
+  const calls=[];
+  context.playPointP12RunStage_=stage=>{calls.push(stage);return {stage,status:'OK'};};
+  assert.equal(context.capturePlayPointUrlInspectionOnly().status,'OK');
+  assert.deepEqual(calls,['URL_INSPECTION']);
+});
