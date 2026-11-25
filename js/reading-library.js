@@ -204,8 +204,11 @@
     const mount = document.querySelector('[data-intl-guide-controls], #article-grid, #articles-grid, #blog-grid, .articles-grid');
     if (!panel.isConnected) {
       const intlLibrarySlot = document.querySelector('[data-intl-reading-library-slot]');
-      if (!isHub && localLibrary) document.querySelector('aside.ja-article-sidebar').append(panel);
-      else if (intlLibrarySlot) intlLibrarySlot.append(panel);
+      if (!isHub && localLibrary) {
+        const sidebar = document.querySelector('aside.ja-article-sidebar');
+        // 保存・閲覧履歴を追従見出しの前に置き、スクロール中の重なりを防ぐ。
+        sidebar.insertBefore(panel, sidebar.querySelector('.reader-follow'));
+      } else if (intlLibrarySlot) intlLibrarySlot.append(panel);
       else if (mount) mount.before(panel);
       else (document.querySelector('main') || document.body).append(panel);
     }
