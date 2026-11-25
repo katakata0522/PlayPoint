@@ -32,13 +32,21 @@ function playPointGrowthVerifiedRelease_(payload, revisionText, observedAt) {
 
 function playPointGrowthFetchRelease_(timestamp) {
   if(typeof playPointAnalyticsCheckBudget_==='function')playPointAnalyticsCheckBudget_();
-  var responses = UrlFetchApp.fetchAll([PLAYPOINT_RELEASE_REVIEW.receiptUrl, PLAYPOINT_RELEASE_REVIEW.revisionUrl].map(function(url) {
+  var requests = [PLAYPOINT_RELEASE_REVIEW.receiptUrl, PLAYPOINT_RELEASE_REVIEW.revisionUrl].map(function(url) {
     return { url: url, method: 'get', muteHttpExceptions: true, followRedirects: false };
-  }));
-  if (responses.length !== 2 || responses.some(function(response) { return response.getResponseCode() !== 200; })) {
-    throw new Error('公開status/revisionの取得失敗: ' + responses.map(function(response) { return response.getResponseCode(); }).join('/'));
+  });
+  var responses;
+  try {
+    responses = UrlFetchApp.fetchAll(requests);
+  } catch (error) {
+    return {state:'UNAVAILABLE', detail:String(error.message || error).slice(0, 240)};
   }
-  return playPointGrowthVerifiedRelease_(JSON.parse(responses[0].getContentText()), responses[1].getContentText(), timestamp);
+  var statuses = responses.map(function(response) { return response.getResponseCode(); });
+  if (statuses.length !== 2 || statuses.some(function(status) { return status !== 200; })) {
+    return {state:'UNAVAILABLE', detail:statuses.length ? 'HTTP ' + statuses.join('/') : '応答なし'};
+  }
+  var row = playPointGrowthVerifiedRelease_(JSON.parse(responses[0].getContentText()), responses[1].getContentText(), timestamp);
+  return {state:'OK', detail:'', row:row};
 }
 
 function playPointGrowthReleaseKey_(row) { return String(row[0]) + '\u0000' + String(row[3]); }
@@ -89,7 +97,24 @@ function playPointGrowthGithubJson_(path){
   if(!/^\/repos\/katakata0522\/PlayPoint\/(actions\/|compare\/)/.test(path))throw new Error('GitHub証拠のパスが範囲外');
   var response=UrlFetchApp.fetch('https://api.github.com'+path,{method:'get',muteHttpExceptions:true,followRedirects:false,
     headers:{Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}});
-  if(response.getResponseCode()!==200)throw new Error('GitHub公開証拠取得 HTTP '+response.getResponseCode());
+  var status = response.getResponseCode();
+  if (status !== 200) {
+    var error = new Error('GitHub公開証拠取得 HTTP ' + status);
+    if (status === 403 || status === 429) {
+      var headers = response.getAllHeaders(), normalized = Object.create(null);
+      Object.keys(headers).forEach(function(name) { normalized[name.toLowerCase()] = headers[name]; });
+      var retryAfter = normalized['retry-after'];
+      var quotaExhausted = String(normalized['x-ratelimit-remaining']) === '0';
+      error.rateLimited = status === 429 || quotaExhausted || retryAfter !== undefined ||
+        /rate limit/i.test(response.getContentText());
+      var resetMs = Number(normalized['x-ratelimit-reset']) * 1000;
+      if (retryAfter !== undefined) error.message += ' / Retry-After ' + retryAfter;
+      else if (quotaExhausted && resetMs > Date.now() && resetMs <= Date.now() + 86400000) {
+        error.message += ' / 制限解除予定 ' + new Date(resetMs).toISOString();
+      }
+    }
+    throw error;
+  }
   return JSON.parse(response.getContentText());
 }
 
@@ -139,8 +164,9 @@ function playPointGrowthWorkflowReview_(releases,timestamp){
   var payload=playPointGrowthGithubJson_('/repos/katakata0522/PlayPoint/actions/workflows/deploy.yml/runs?branch=main&status=success&per_page=30');
   if(!Array.isArray(payload.workflow_runs)||!Number.isSafeInteger(payload.total_count))throw new Error('workflow一覧応答不正');
   var runs=payload.workflow_runs.filter(function(run){return !done[String(run.id)];}).sort(function(a,b){return Date.parse(a.created_at)-Date.parse(b.created_at);});
-  var additions=[],errors=[],attempted=0;
+  var additions=[],errors=[],attempted=0,rateLimited=false;
   runs.slice(0,4).forEach(function(run){
+    if (rateLimited) return;
     try{
       if(!/^[1-9]\d*$/.test(String(run.id)))throw new Error('workflow ID不正');
       var result=playPointGrowthGithubJson_('/repos/katakata0522/PlayPoint/actions/runs/'+run.id+'/jobs?filter=latest&per_page=100');
@@ -155,12 +181,18 @@ function playPointGrowthWorkflowReview_(releases,timestamp){
             var diff=playPointGrowthGithubJson_('/repos/katakata0522/PlayPoint/compare/'+before[0]+'...'+row[0]+'?per_page=1');
             var scope=playPointGrowthReleaseScope_(diff.files);
             row[7]='前回観測版から: '+scope.scope;row[8]=scope.kpi;
-          }catch(error){row[7]='差分未取得';}
+          } catch (error) {
+            row[7]='差分未取得';
+            if (error.rateLimited) rateLimited = true;
+          }
         }
         additions.push(row);
       }
       checked.push(String(run.id));attempted++;
-    }catch(error){errors.push(playPointP12ErrorText_(error));}
+    } catch (error) {
+      errors.push(playPointP12ErrorText_(error));
+      if (error.rateLimited) rateLimited = true;
+    }
   });
   // APIの最新30成功runだけ。古い公開、再実行・rollback、非公開リポジトリは保証外。
   return {rows:additions,checked:checked.slice(-120),pending:runs.length-attempted,
@@ -308,8 +340,14 @@ function capturePlayPointReleaseEffectReview() {
   var cfg = PLAYPOINT_RELEASE_REVIEW, timestamp = playPointP12NowText_(), today = timestamp.slice(0,10);
   try {
     var ss = resolveAndRememberSpreadsheet_(), additions = [], evidenceErrors = [];
-    try { additions.push(playPointGrowthFetchRelease_(timestamp)); }
-    catch (error) { evidenceErrors.push(playPointP12ErrorText_(error)); }
+    var marker;
+    try {
+      marker = playPointGrowthFetchRelease_(timestamp);
+      if (marker.row) additions.push(marker.row);
+    } catch (error) {
+      // 取得できたマーカーが壊れている場合は、他の証拠があっても要確認とする。
+      marker = {state:'ERROR', detail:String(error.message || error).slice(0, 240)};
+    }
     // 公開URLが実行環境から取得できない場合は、管理者が確認済みのstatusとrevisionを証拠として投入できる。
     var receiptJson = PropertiesService.getScriptProperties().getProperty(cfg.receiptProperty);
     if (receiptJson) {
@@ -351,13 +389,18 @@ function capturePlayPointReleaseEffectReview() {
         coverage.gscStart=start;
       } catch (error) { dataErrors.push(playPointP12ErrorText_(error)); }
     }
-    var state = !releases.length ? 'WAITING_EVIDENCE' : evidenceErrors.length || dataErrors.length ? 'PARTIAL' : 'OK';
+    var useWorkflowEvidence = marker.state === 'UNAVAILABLE' && workflowCoverage && workflowCoverage.recentState === 'OK' &&
+      releases.some(function(row) { return row[6] === 'WORKFLOW_STEPS'; });
+    var markerBlocking = marker.state !== 'OK' && !useWorkflowEvidence;
+    var state = !releases.length ? 'WAITING_EVIDENCE' : markerBlocking || evidenceErrors.length || dataErrors.length ? 'PARTIAL' : 'OK';
     return withScriptLock_(function() {
       var existing = ss.getSheetByName(cfg.report), prior = [];
       if (existing && existing.getLastRow() > 5) prior = existing.getRange(6,1,existing.getLastRow()-5,12).getValues();
       var evidenceState = releases.length + '件のverified公開記録 / ' + state +
-        (evidenceErrors.length || dataErrors.length ? ' / ' + evidenceErrors.concat(dataErrors).join(' | ') : '')+
-        (workflowCoverage?' / 最新照合 '+workflowCoverage.recentState+' ('+workflowCoverage.recentNote+') / 履歴範囲 '+workflowCoverage.historicalState+' ('+workflowCoverage.historicalNote+')':' / workflow照合未取得');
+        ' / 公開マーカー ' + marker.state + (marker.detail ? ' (' + marker.detail + ')' : '') +
+        (useWorkflowEvidence ? ' / 公開証拠 GitHub Actions' : '') +
+        (workflowCoverage?' / 最新照合 '+workflowCoverage.recentState+' ('+workflowCoverage.recentNote+') / 履歴範囲 '+workflowCoverage.historicalState+' ('+workflowCoverage.historicalNote+')':' / workflow照合未取得') +
+        (evidenceErrors.length || dataErrors.length ? ' / ' + evidenceErrors.concat(dataErrors).join(' | ') : '');
       var grid = playPointGrowthReleaseGrid_(releases,ga4,gsc,today,timestamp,evidenceState,prior,coverage);
       if (state === 'OK' && grid.slice(5).some(function(row) { return row[9] === 'MISSING_DAYS'; })) {
         state = 'PARTIAL'; evidenceState += ' / 一部比較窓に欠測あり'; grid[1][1] = evidenceState;

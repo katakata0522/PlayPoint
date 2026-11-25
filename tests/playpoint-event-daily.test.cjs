@@ -426,6 +426,80 @@ test('公開履歴の最新照合成功と過去の取得上限を分離する',
   assert.equal(c.playPointGrowthWorkflowCoverage_({recentCount:30,pending:0,limited:false,errors:['403']}).recentState,'PARTIAL');
 });
 
+test('GitHubのレート制限後は残りのworkflowを取得せず、未照合の実行を保持する', () => {
+  const requested = [];
+  const c = runtime({
+    PropertiesService: { getScriptProperties: () => ({ getProperty: () => null }) },
+    UrlFetchApp: { fetch(url) {
+      requested.push(url);
+      if (requested.length === 1) return {
+        getResponseCode: () => 200,
+        getContentText: () => JSON.stringify({ total_count: 2, workflow_runs: [
+          { id: 1, created_at: '2026-11-20T00:00:00Z' },
+          { id: 2, created_at: '2026-11-21T00:00:00Z' },
+        ] }),
+      };
+      return {
+        getResponseCode: () => 403, getAllHeaders: () => ({ 'X-RateLimit-Remaining': '0' }),
+        getContentText: () => 'API rate limit exceeded',
+      };
+    } },
+  });
+  const result = c.playPointGrowthWorkflowReview_([], '2026-11-25 22:00:00');
+  assert.equal(requested.length, 2);
+  assert.match(requested[1], /\/runs\/1\/jobs/);
+  assert.equal(result.checked.length, 0);
+  assert.equal(result.pending, 2);
+  assert.match(result.errors[0], /HTTP 403/);
+});
+
+test('公開マーカーのHTTP障害は、最新の本番workflow照合が完了した場合に独立して表示する', () => {
+  function capture({ statuses = [501, 501], pending = 0, sameRevision = true, evidenceKind = 'WORKFLOW_STEPS' } = {}) {
+    const c = releaseRuntime();
+    const receipt = { ...releaseReceipt(), deployedAt: '2026-11-22T06:00:00Z', verifiedAt: '2026-11-22T06:05:00Z' };
+    const release = Array.from(c.playPointGrowthVerifiedRelease_(receipt, receipt.commit, '2026-11-25 22:00:00'));
+    release[6] = evidenceKind;
+    const sheet = { getLastRow: () => 0, getRange: () => ({ getValues: () => [], setNumberFormat() {} }) };
+    let health;
+    c.UrlFetchApp = { fetchAll: () => statuses.map((status, index) => ({
+      getResponseCode: () => status,
+      getContentText: () => index === 0 ? JSON.stringify(receipt) : sameRevision ? receipt.commit : 'b'.repeat(40),
+    })) };
+    c.PropertiesService = { getScriptProperties: () => ({ getProperty: () => null, setProperty() {} }) };
+    c.playPointP12NowText_ = () => '2026-11-25 22:00:00';
+    c.resolveAndRememberSpreadsheet_ = () => ({ getSheetByName: () => sheet });
+    c.withScriptLock_ = (run) => run();
+    c.playPointGrowthReleaseLedger_ = () => evidenceKind ? [release] : [];
+    c.playPointGrowthWorkflowReview_ = () => ({ rows: [], checked: [], recentCount: 30, pending, limited: true, errors: [] });
+    c.playPointGrowthDailyMap_ = () => ({ days: {}, start: '2026-10-22', end: '2026-11-24' });
+    c.playPointP12GetSiteUrl_ = () => 'sc-domain:playpoint-sim.com';
+    c.playPointP12FetchGscRows_ = () => ({ responseAggregationType: 'byProperty', rows: [] });
+    c.playPointGrowthPublishGrid_ = () => {};
+    c.playPointP12UpsertHealth_ = (_, value) => { health = value; };
+    const result = c.capturePlayPointReleaseEffectReview();
+    return { result, note: health.note };
+  }
+
+  const recovered = capture();
+  assert.equal(recovered.result.state, 'OK', recovered.note);
+  assert.match(recovered.note, /公開マーカー UNAVAILABLE \(HTTP 501\/501\)/);
+  assert.match(recovered.note, /公開証拠 GitHub Actions/);
+  assert.match(recovered.note, /最新照合 OK.*履歴範囲 HISTORICAL_LIMITED/);
+
+  const incomplete = capture({ pending: 1 });
+  assert.equal(incomplete.result.state, 'PARTIAL');
+  assert.match(incomplete.note, /最新照合 PARTIAL/);
+  assert.doesNotMatch(incomplete.note, /公開証拠 GitHub Actions/);
+
+  const mismatch = capture({ statuses: [200, 200], sameRevision: false });
+  assert.equal(mismatch.result.state, 'PARTIAL');
+  assert.match(mismatch.note, /公開マーカー ERROR/);
+  assert.doesNotMatch(mismatch.note, /公開証拠 GitHub Actions/);
+
+  assert.equal(capture({ evidenceKind: 'PUBLIC_MARKER' }).result.state, 'PARTIAL');
+  assert.equal(capture({ evidenceKind: '' }).result.state, 'WAITING_EVIDENCE');
+});
+
 test('公開効果の現在の取得期間外と期間内の欠測を混同しない',()=>{
   const c=releaseRuntime(),p=releaseReceipt(),release=c.playPointGrowthVerifiedRelease_(p,p.commit,'2026-11-25');
   const days={},gsc={};
