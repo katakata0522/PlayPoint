@@ -45,6 +45,12 @@ function playPointReaderReport_(propertyId, period, dimensions, metrics, filter)
     metrics: metrics.map(function(name) { return { name: name }; }), limit: '10000' };
   if (filter) body.dimensionFilter = filter;
   var report = playPointP12Ga4Report_(propertyId, body);
+  // 空のfixtureや不完全な応答を本番で実測として扱わない。GA4が返すヘッダーを照合する。
+  if(report.dimensionHeaders||report.metricHeaders||report.rowCount!==undefined){
+    var d=(report.dimensionHeaders||[]).map(function(h){return h.name;});
+    var m=(report.metricHeaders||[]).map(function(h){return h.name;});
+    if(d.join('|')!==dimensions.join('|')||m.join('|')!==metrics.join('|'))throw new Error('GA4応答ヘッダーがリクエストと不一致');
+  }
   var metadata = report.metadata || {};
   var rows = playPointP12ParseGa4Rows_(report, dimensions, metrics);
   var parameters = dimensions.filter(function(name) { return name.indexOf('customEvent:') === 0; });
@@ -420,6 +426,7 @@ function playPointCaptureReaderOutcomes_() {
       partial = true;
       playPointP12HealthError_('VITALS_ANALYSIS', playPointP12NowText_(), playPointP12ErrorText_(vitalError));
     }
+    if(partial)playPointP12UpsertHealth_('READER_OUTCOMES',{state:'PARTIAL',note:states+'。派生ビューの個別状態も確認。'});
     return { period: period, rows: grid.length, state: partial ? 'PARTIAL' : 'OK', sources: states };
   });
 }
@@ -656,12 +663,15 @@ function playPointMaintenanceInventory_(manifest, indexes) {
 function playPointMaintenanceLoadInventory_() {
   // XserverはApps Script発の台帳取得に501を返す。公開正本の同じcommitへ固定して読む。
   var options = { muteHttpExceptions: true };
+  if(typeof playPointAnalyticsCheckBudget_==='function')playPointAnalyticsCheckBudget_();
   var response = UrlFetchApp.fetch('https://github.com/katakata0522/PlayPoint/commits/main.atom', options);
   if (response.getResponseCode() !== 200) throw new Error('正本のコミットフィードを取得できません。HTTP ' + response.getResponseCode());
   var revision = playPointMaintenanceCommitFromFeed_(response.getContentText());
   var base = 'https://raw.githubusercontent.com/katakata0522/PlayPoint/' + revision + '/';
+  if(typeof playPointAnalyticsCheckBudget_==='function')playPointAnalyticsCheckBudget_();
   var manifest = fetchJsonWithRetry_(base + 'blog/articles.json', options, 3), indexes = {};
   ['ja', 'en', 'ko', 'tw'].forEach(function(locale) {
+    if(typeof playPointAnalyticsCheckBudget_==='function')playPointAnalyticsCheckBudget_();
     indexes[locale] = fetchJsonWithRetry_(base + (locale === 'ja' ? 'blog' : locale + '/articles') + '/article-search-index.json', options, 3);
   });
   var inventory = playPointMaintenanceInventory_(manifest, indexes);
@@ -965,9 +975,11 @@ function playPointGrowthRoleGrid_(period, inventory, source, reading, timestamp,
 }
 
 function playPointGrowthPublishGrid_(ss, title, grid, headerRow, ratioCol) {
+  if(typeof playPointAnalyticsCheckBudget_==='function')playPointAnalyticsCheckBudget_();
   var width = grid[headerRow - 1].length;
   var rows = grid.map(function(row) {
     var values = row.slice();
+    if(values.length>width)throw new Error('分析シートの列数が契約と不一致: '+title);
     while (values.length < width) values.push('');
     return playPointP12LiteralRow_(values);
   });
@@ -1015,6 +1027,7 @@ function playPointGrowthVerifiedRelease_(payload, revisionText, observedAt) {
 }
 
 function playPointGrowthFetchRelease_(timestamp) {
+  if(typeof playPointAnalyticsCheckBudget_==='function')playPointAnalyticsCheckBudget_();
   var responses = UrlFetchApp.fetchAll([PLAYPOINT_RELEASE_REVIEW.receiptUrl, PLAYPOINT_RELEASE_REVIEW.revisionUrl].map(function(url) {
     return { url: url, method: 'get', muteHttpExceptions: true, followRedirects: false };
   }));
@@ -1743,7 +1756,7 @@ function playPointFeatureClassify_(type,row) {
   if(type==='GAME_PAGE') {
     var path=String(row.pagePath||''), match=/^\/(?:(en|ko|tw)\/)?games\/([a-z0-9-]+)\/(?:index\.html)?$/.exec(path);
     return match && cfg.gameIds.indexOf(match[2])>=0?
-      [match[2],({'en':'US','ko':'KR','tw':'TW'})[match[1]]||'JP',path]:['UNCLASSIFIED','UNCLASSIFIED',''];
+      [match[2],match[1]||'ja',path]:['UNCLASSIFIED','UNCLASSIFIED',''];
   }
   if(type==='SHARE') return [region,enumValue(row['customEvent:calculation_mode'],cfg.modes),''];
   return [region,'',''];
@@ -1793,7 +1806,7 @@ function playPointFeatureUsageGrid_(period,previous,sources,timestamp) {
       }
       grid.push(['分類明細',cfg.events[row.eventName][0],row.eventName,labels[0],labels[1],labels[2],
         '',events,'','',users,'','','',source.state==='PARAMETER_PARTIAL'?'OBSERVED_PARTIAL':users<30?'SMALL_SAMPLE':'OBSERVED',
-        type==='GAME_PAGE'?'標準pagePathによる代替分類。ゲーム・地域はURLから推定。別URLの人数は足さない。':'当該分類内の人数。全体行と重複するので足さない。']);
+        type==='GAME_PAGE'?'標準pagePathによる代替分類。ゲーム・言語のみURLから識別し、購入地域とは扱わない。別URLの人数は足さない。':'当該分類内の人数。全体行と重複するので足さない。']);
     });
     Object.keys(classified).forEach(function(name){
       grid.push(['分類明細',cfg.events[name][0],name,'未分類','','','',classified[name].events,'','','','','','','PARAMETER_PARTIAL',
@@ -1806,7 +1819,7 @@ function playPointFeatureUsageGrid_(period,previous,sources,timestamp) {
     grid.push(['順序付き',spec.feature,spec.startLabel+' → '+spec.finishLabel,'','','','','','','','',result.start,result.finish,result.rate,result.state,
       result.finish===''?'順序成功人数は未取得':'activeUsersの24時間以内の順序評価。地域別・同じ訪問内の成功率とは異なる。']);
   });
-  return {state:!Object.keys(cur).length&&!Object.keys(prev).length?'NO_OBSERVATIONS':partial?'PARTIAL':'OK',grid:grid};
+  return {state:partial?'PARTIAL':!Object.keys(cur).length&&!Object.keys(prev).length?'NO_OBSERVATIONS':'OK',grid:grid};
 }
 
 function capturePlayPointFeatureUsageReview(deadlineMs) {
