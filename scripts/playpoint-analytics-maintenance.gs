@@ -1018,7 +1018,7 @@ function playPointGrowthRoleGrid_(period, inventory, source, reading, timestamp,
   return { covered: covered, grid: grid };
 }
 
-function playPointGrowthPublishGrid_(ss, title, grid, headerRow, ratioCol) {
+function playPointGrowthPublishGrid_(ss, title, grid, headerRow, ratioCol, literalColumns) {
   if(typeof playPointAnalyticsCheckBudget_==='function')playPointAnalyticsCheckBudget_();
   var width = grid[headerRow - 1].length;
   var rows = grid.map(function(row) {
@@ -1029,7 +1029,10 @@ function playPointGrowthPublishGrid_(ss, title, grid, headerRow, ratioCol) {
   });
   var sheet = playPointP12EnsureSheet_(ss, title, width), previousRows = sheet.getLastRow();
   playPointP12EnsureRows_(sheet, rows.length);
-  if (rows.length > headerRow) sheet.getRange(headerRow + 1, 1, rows.length - headerRow, 2).setNumberFormat('@');
+  if (rows.length > headerRow) {
+    sheet.getRange(headerRow + 1, 1, rows.length - headerRow, 2).setNumberFormat('@');
+    (literalColumns||[]).forEach(function(column){sheet.getRange(headerRow+1,column,rows.length-headerRow,1).setNumberFormat('@');});
+  }
   sheet.getRange(1, 1, rows.length, width).setValues(rows);
   if (previousRows > rows.length) sheet.getRange(rows.length + 1, 1, previousRows - rows.length, width).clearContent();
   sheet.setFrozenRows(headerRow);
