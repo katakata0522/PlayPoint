@@ -15,6 +15,12 @@
 
 var PLAYPOINT_GSC_28D_CONFIG = Object.freeze({
   historySheet: '🗃GSC 28日履歴',
+  indexSheet: '🗂GSC履歴索引',
+  indexVersion: 'GSC_HISTORY_INDEX_V1',
+  indexScanChunk: 20000,
+  indexAuditMs: 28 * 24 * 60 * 60 * 1000,
+  // 運用上の早期警告であってGoogle Sheetsのプラットフォーム上限ではない。
+  historyPlanningCells: 8000000,
   comparisonSheet: '🔍GSC 28日比較',
   normalizedComparisonSheet: '🧹GSC 28日正規化',
   rowLimit: 25000,
@@ -142,7 +148,10 @@ function playPointGscCaptureUnlocked_(input) {
   playPointGscAppendRows_(history, newValues);
 
   var finalRows = playPointGscRowsForPair_(history, pairId);
-  if (!playPointGscPairComplete_(finalRows)) {
+  // 今回APIが返した全レコードが保存されたことを確認する。6層の存在だけで今回の欠測を見逃さない。
+  var finalKeys = playPointGscExistingRecordKeys_(finalRows);
+  if (allValues.some(function(row){return !finalKeys[playPointGscRecordKey_(row)];}) ||
+      Object.keys(finalKeys).length !== finalRows.length || !playPointGscPairComplete_(finalRows)) {
     throw new Error('GSC 28-day capture is incomplete after write. Comparison remains blocked.');
   }
 
@@ -466,31 +475,144 @@ function playPointGscEnsureHistorySheet_(spreadsheet) {
 
   sheet.setFrozenRows(1);
   sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
-  sheet.getRange('L:L').setNumberFormat('0.00%');
-  sheet.getRange('M:M').setNumberFormat('0.00');
+  // 既存の履歴全列を週次で書式更新しない。新規追記範囲だけを設定する。
   return sheet;
+}
+
+// 索引は再生成可能な派生データ。履歴正本は追記専用で変更・削除しない。
+function playPointGscIndexPairValid_(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}__\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  try {
+    var parts = value.split('__');
+    playPointGscAssertIsoDate_(parts[0]); playPointGscAssertIsoDate_(parts[1]);
+    return playPointGscShiftIsoDate_(parts[0], 27) === parts[1];
+  } catch (error) { return false; }
+}
+
+function playPointGscIndexAppendIds_(blocks, ids, firstRow) {
+  ids.forEach(function(row, i) {
+    var id = row[0], n = firstRow + i;
+    if (!playPointGscIndexPairValid_(id)) throw new Error('GSC履歴に空欄・不正pair_idがあります: row ' + n);
+    var last = blocks[blocks.length - 1];
+    if (last && last[2] + 1 !== n) throw new Error('GSC履歴索引の行位置が連続していません');
+    if (last && last[0] === id) { last[2] = n; last[3]++; }
+    else blocks.push([id, n, n, 1]);
+  });
+  return blocks;
+}
+
+function playPointGscIndexRead_(grid, sourceId, lastRow, nowMs) {
+  var cfg = PLAYPOINT_GSC_28D_CONFIG;
+  if (!grid.length) return null;
+  if (grid[0][0] !== cfg.indexVersion) throw new Error('GSC履歴索引と同名の別シートです。上書きしません');
+  var m = grid[1] || [], cursor = Number(m[1]), audited = Number(m[2]);
+  if (String(m[0]) !== String(sourceId) || !Number.isSafeInteger(cursor) || cursor < 1 || cursor > lastRow ||
+      !Number.isFinite(audited) || audited <= 0 || audited > nowMs || nowMs-audited >= cfg.indexAuditMs ||
+      !grid[2] || grid[2].slice(0,4).join('|') !== 'pair_id|start_row|end_row|row_count') return null;
+  var blocks = [], expected = 2;
+  for (var i=3;i<grid.length;i++) {
+    var row=grid[i], id=row[0], a=Number(row[1]), b=Number(row[2]), count=Number(row[3]);
+    if (!playPointGscIndexPairValid_(id) || !Number.isSafeInteger(a) || !Number.isSafeInteger(b) ||
+        a!==expected || b<a || b>cursor || count!==b-a+1 ||
+        (blocks.length && blocks[blocks.length-1][0]===id)) return null;
+    blocks.push([id,a,b,count]); expected=b+1;
+  }
+  if (expected!==cursor+1 || String(m[3]||'')!==(blocks.length?blocks[blocks.length-1][0]:'')) return null;
+  return {cursor:cursor,audited:audited,blocks:blocks};
+}
+
+function playPointGscIndexCapacity_(spreadsheet, history, blocks, lastRow) {
+  var cfg=PLAYPOINT_GSC_28D_CONFIG;
+  var cells=spreadsheet.getSheets().reduce(function(sum,sheet) {
+    return sum+sheet.getMaxRows()*sheet.getMaxColumns();
+  },0);
+  // 直近4つのpairの行数。非連続の補完ブロックもpairごとに足す。
+  var counts=Object.create(null);
+  blocks.forEach(function(block){counts[block[0]]=(counts[block[0]]||0)+block[3];});
+  var recent=Object.keys(counts).sort().slice(-4);
+  var estimate=recent.length?Math.ceil(recent.reduce(function(sum,id){return sum+counts[id];},0)/recent.length):0;
+  var expectedCells=estimate*history.getMaxColumns();
+  var headroom=Math.max(0,cfg.historyPlanningCells-cells);
+  return {cells:cells,nextRows:estimate,nextCells:expectedCells,
+    weeks:expectedCells?Math.floor(headroom/expectedCells):'',
+    state:cells+expectedCells>=cfg.historyPlanningCells?'PLAN_ARCHIVE':expectedCells&&headroom/expectedCells<=8?'PLAN_SOON':'OK',
+    historyRows:Math.max(0,lastRow-1),pairs:Object.keys(counts).length};
+}
+
+function playPointGscIndexWrite_(index, sourceId, state, capacity) {
+  var cfg=PLAYPOINT_GSC_28D_CONFIG, width=8;
+  var grid=[
+    [cfg.indexVersion,'scan_cursor','last_full_scan_ms','last_pair_id','allocated_cells','planning_budget_cells','state','weekly_estimate_rows'],
+    [String(sourceId),state.cursor,state.audited,state.blocks.length?state.blocks[state.blocks.length-1][0]:'',
+      capacity.cells,cfg.historyPlanningCells,capacity.state,capacity.nextRows],
+    ['pair_id','start_row','end_row','row_count','履歴行数',capacity.historyRows,'計画余裕（週）',capacity.weeks]
+  ];
+  state.blocks.forEach(function(block){grid.push(block.concat(['','','','']));});
+  var previous=index.getLastRow();
+  if(index.getMaxColumns()<width) index.insertColumnsAfter(index.getMaxColumns(),width-index.getMaxColumns());
+  if(index.getMaxRows()<grid.length) index.insertRowsAfter(index.getMaxRows(),grid.length-index.getMaxRows());
+  index.getRange(1,1,grid.length,width).setValues(grid);
+  if(previous>grid.length) index.getRange(grid.length+1,1,previous-grid.length,width).clearContent();
+  index.setFrozenRows(3);
+  index.getRange(1,1,1,width).setFontWeight('bold');
+  index.getRange(3,1,1,4).setFontWeight('bold');
+  index.setColumnWidth(1,270);
+  index.setColumnWidths(2,width-1,165);
+}
+
+function playPointGscEnsureIndex_(sheet, force) {
+  var cfg=PLAYPOINT_GSC_28D_CONFIG, ss=sheet.getParent(), sourceId=sheet.getSheetId();
+  var lastRow=sheet.getLastRow(), nowMs=Date.now();
+  var index=ss.getSheetByName(cfg.indexSheet);
+  if(!index) index=ss.insertSheet(cfg.indexSheet);
+  var grid=index.getLastRow()?index.getRange(1,1,index.getLastRow(),8).getValues():[];
+  var state=playPointGscIndexRead_(grid,sourceId,lastRow,nowMs);
+  // 外部の行挿入・削除などを境界で検出。内部の任意編集はappend-only契約外なので定期全監査も行う。
+  if(state && state.blocks.length) {
+    var first=state.blocks[0], last=state.blocks[state.blocks.length-1];
+    if(sheet.getRange(first[1],1).getValue()!==first[0] || sheet.getRange(last[2],1).getValue()!==last[0]) state=null;
+  }
+  if(force || !state) state={cursor:1,audited:nowMs,blocks:[]};
+  var previousCursor=state.cursor;
+  while(state.cursor<lastRow) {
+    var count=Math.min(cfg.indexScanChunk,lastRow-state.cursor);
+    var ids=sheet.getRange(state.cursor+1,1,count,1).getValues();
+    if(ids.length!==count) throw new Error('GSC履歴索引の読み取りが不完全');
+    playPointGscIndexAppendIds_(state.blocks,ids,state.cursor+1);
+    state.cursor+=count;
+  }
+  // 通常実行では差分がなければ書き込まない。容量予告も追記時または定期全監査時だけ更新。
+  if(force || previousCursor!==state.cursor || !grid.length || !playPointGscIndexRead_(grid,sourceId,lastRow,nowMs)) {
+    playPointGscIndexWrite_(index,sourceId,state,playPointGscIndexCapacity_(ss,sheet,state.blocks,lastRow));
+  }
+  return state;
 }
 
 function playPointGscRowsForPair_(sheet, pairId) {
   if (sheet.getLastRow() < 2) return [];
+  function read(state) {
+    var rows=[];
+    state.blocks.filter(function(block){return block[0]===pairId;}).forEach(function(block){
+      var values=sheet.getRange(block[1],1,block[3],PLAYPOINT_GSC_28D_CONFIG.headers.length).getValues();
+      if(values.length!==block[3] || values.some(function(row){return row[0]!==pairId;})) throw new Error('GSC履歴索引の参照先が不一致');
+      rows=rows.concat(values);
+    });
+    return rows;
+  }
+  var state=playPointGscEnsureIndex_(sheet,false);
+  try{return read(state);}
+  catch(error){return read(playPointGscEnsureIndex_(sheet,true));}
+}
 
-  var idValues = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
-  var firstRow = null;
-  var lastRow = null;
-
-  idValues.forEach(function(row, index) {
-    if (row[0] !== pairId) return;
-    var sheetRow = index + 2;
-    if (firstRow === null) firstRow = sheetRow;
-    lastRow = sheetRow;
-  });
-
-  if (firstRow === null) return [];
-
-  return sheet
-    .getRange(firstRow, 1, lastRow - firstRow + 1, PLAYPOINT_GSC_28D_CONFIG.headers.length)
-    .getValues()
-    .filter(function(row) { return row[0] === pairId; });
+// シートの移動/編集・旧版での追加後は管理者が手動で再索引できる。履歴の値を変更しない。
+function rebuildPlayPointGscHistoryIndex() {
+  var run=function(){
+    var ss=playPointGscGetSpreadsheet_(), history=ss.getSheetByName(PLAYPOINT_GSC_28D_CONFIG.historySheet);
+    if(!history || history.getLastRow()<1) throw new Error('GSC履歴が未取得');
+    var state=playPointGscEnsureIndex_(history,true);
+    return {status:'OK',rows:state.cursor-1,blocks:state.blocks.length};
+  };
+  return typeof withScriptLock_==='function'?withScriptLock_(run):run();
 }
 
 function playPointGscPairComplete_(rows) {
@@ -711,8 +833,11 @@ function playPointGscAppendRows_(sheet, values) {
     sheet.insertRowsAfter(sheet.getMaxRows(), requiredLastRow - sheet.getMaxRows());
   }
 
+  sheet.getRange(startRow,12,values.length,1).setNumberFormat('0.00%');
+  sheet.getRange(startRow,13,values.length,1).setNumberFormat('0.00');
   sheet.getRange(startRow, 1, values.length, PLAYPOINT_GSC_28D_CONFIG.headers.length)
     .setValues(values.map(playPointGscLiteralRow_));
+  if(typeof SpreadsheetApp!=='undefined' && typeof SpreadsheetApp.flush==='function') SpreadsheetApp.flush();
 }
 
 function playPointGscRebuildComparisonViews_(spreadsheet, historyRows, pairId) {
