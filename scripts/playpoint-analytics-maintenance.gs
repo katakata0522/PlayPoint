@@ -397,6 +397,25 @@ function playPointCaptureReaderOutcomes_() {
       playPointP12Log_('WARN', 'ROLE_OUTCOMES', playPointP12ErrorText_(roleError));
       playPointP12HealthError_('ROLE_OUTCOMES', playPointP12NowText_(), playPointP12ErrorText_(roleError));
     }
+    try {
+      var vitalView = playPointGrowthVitalsGrid_(period, sources.VITALS, timestamp);
+      // 制限・未登録の状態を明示し、過去の有効な観測を欠測で消さない。
+      if (vitalView.state === 'OK' || vitalView.state === 'PARTIAL' || !ss.getSheetByName(PLAYPOINT_GROWTH_A.vitalsSheet)) {
+        playPointGrowthPublishGrid_(ss, PLAYPOINT_GROWTH_A.vitalsSheet, vitalView.grid, 6, 10);
+        var vitalSheet = ss.getSheetByName(PLAYPOINT_GROWTH_A.vitalsSheet);
+        if (vitalView.grid.length > 6) vitalSheet.getRange(7, 11, vitalView.grid.length - 6, 1).setNumberFormat('0.00%');
+      }
+      if (vitalView.state === 'OK' || vitalView.state === 'PARTIAL') {
+        playPointP12UpsertHealth_('VITALS_ANALYSIS', { lastAttempt: timestamp, lastSuccess: playPointP12NowText_(),
+          dataLatest: period.end, state: vitalView.state, consecutiveFailures: 0, error: '', note: vitalView.detail });
+      } else {
+        partial = true;
+        playPointP12UpsertHealth_('VITALS_ANALYSIS', { lastAttempt: timestamp, state: vitalView.state, note: vitalView.detail });
+      }
+    } catch (vitalError) {
+      partial = true;
+      playPointP12HealthError_('VITALS_ANALYSIS', playPointP12NowText_(), playPointP12ErrorText_(vitalError));
+    }
     return { period: period, rows: grid.length, state: partial ? 'PARTIAL' : 'OK', sources: states };
   });
 }
@@ -1208,6 +1227,235 @@ function capturePlayPointReleaseEffectReview() {
     });
   } catch (error) {
     withScriptLock_(function() { playPointP12HealthError_('RELEASE_EFFECT', timestamp, playPointP12ErrorText_(error)); });
+    throw error;
+  }
+}
+
+
+// A優先: 取得済みのデータを再利用し、流入・成長機会・実測性能を別々の判断軸で表示する。
+var PLAYPOINT_GROWTH_A = Object.freeze({
+  trafficSheet: '🚪流入品質・入口診断',
+  opportunitySheet: '🎯月間1万PV成長分析',
+  vitalsSheet: '⚡実利用性能',
+  targetPv: 10000,
+  scenarioCtr: [0.02, 0.04],
+  candidateMinImpressions: 100,
+  candidateMinPosition: 4,
+  candidateMaxPosition: 15,
+  vitalMinObservations: 30,
+  historyMaxRows: 10000,
+  searchMaxRows: 20000
+});
+
+function playPointGrowthCount_(value, label) {
+  if (value === '' || value === null || value === undefined || !Number.isSafeInteger(Number(value)) || Number(value) < 0) {
+    throw new Error('不正な件数: ' + label);
+  }
+  return Number(value);
+}
+
+function playPointGrowthRatio_(numerator, denominator) {
+  return Number.isFinite(numerator) && Number.isFinite(denominator) && denominator > 0 ? numerator / denominator : '';
+}
+
+function playPointGrowthVitalsGrid_(period, source, timestamp) {
+  var grid = [
+    ['実利用性能（既存のweb_vitalイベント）', timestamp],
+    ['対象期間', period.start + ' ～ ' + period.end],
+    ['測定範囲', '既存の計算機ランタイム中心の簡易観測。INPは最大観測値、CLSは累積方式。公式CWVのp75・全サイトの合否ではない。'],
+    ['集計単位', '観測イベント回数のみ。全利用者数・PV・ユニーク利用者数ではない。端末別の全体と版別の明細を合算しない。'],
+    ['取得状態', source ? source.state : 'UNAVAILABLE', source ? source.detail : '元データなし'],
+    ['集計レベル', '指標', '端末', 'ページ群', 'アセット版', '観測数', 'Good', 'Needs improvement', 'Poor', 'Good割合', 'Poor割合', '判定', '補足']
+  ];
+  if (!source || ['OK','PARAMETER_PARTIAL'].indexOf(source.state) < 0) {
+    return { state: source ? source.state : 'UNAVAILABLE', detail: grid[4][2], grid: grid };
+  }
+  var metrics = ['LCP','INP','CLS'], ratings = ['good','needs_improvement','poor'], buckets = Object.create(null), seen = Object.create(null);
+  var omitted = 0, total = 0, unknownVersion = 0;
+  function group(level, metric, device, page, version, rating, count) {
+    var key = JSON.stringify([level,metric,device,page,version]);
+    var item = buckets[key] || (buckets[key] = {labels:[level,metric,device,page,version],counts:[0,0,0]});
+    item.counts[ratings.indexOf(rating)] += count;
+  }
+  source.rows.forEach(function(row) {
+    var count = playPointGrowthCount_(row.eventCount,'web_vital');
+    var metric = row['customEvent:metric_name'], rating = row['customEvent:metric_rating'];
+    var device = String(row.deviceCategory || '(not set)'), page = row['customEvent:page_group'];
+    var version = String(row['customEvent:release_version'] || '(not set)');
+    var key = JSON.stringify([metric,rating,device,page,version]);
+    if (seen[key]) throw new Error('Web Vitals明細の重複');
+    seen[key] = true; total += count;
+    if (metrics.indexOf(metric) < 0 || ratings.indexOf(rating) < 0 || ['mobile','desktop','tablet'].indexOf(device) < 0) {
+      omitted += count; return;
+    }
+    group('端末別',metric,device,'全観測ページ','全観測版',rating,count);
+    // unknown版は実測の分類には使うが、公開版の比較根拠には使わない。
+    if (playPointReaderParameterMissing_(page) || playPointReaderParameterMissing_(version) || version === 'unknown') {
+      unknownVersion += count;
+      group('版未特定',metric,device,playPointReaderParameterMissing_(page) ? '(not set)' : page,'unknown',rating,count);
+    } else {
+      group('版・ページ別',metric,device,page,version,rating,count);
+    }
+  });
+  Object.keys(buckets).map(function(key) { return buckets[key]; }).sort(function(a,b) {
+    return a.labels[0].localeCompare(b.labels[0]) ||
+      a.labels[1].localeCompare(b.labels[1]) || a.labels[2].localeCompare(b.labels[2]) ||
+      a.labels[3].localeCompare(b.labels[3]) || a.labels[4].localeCompare(b.labels[4]);
+  }).forEach(function(item) {
+    var counts = item.counts, n = counts.reduce(function(sum,v) { return sum+v; },0);
+    var good = playPointGrowthRatio_(counts[0],n), poor = playPointGrowthRatio_(counts[2],n);
+    var state = n === 0 ? 'NO_OBSERVATIONS' : n < PLAYPOINT_GROWTH_A.vitalMinObservations ? 'SMALL_SAMPLE' :
+      poor >= 0.25 ? 'CHECK_POOR_SHARE' : 'OBSERVED';
+    grid.push(item.labels.concat([n,counts[0],counts[1],counts[2],good,poor,state,
+      item.labels[0] === '版未特定' ? '公開版との比較不可' : '観測分布のみ。CHECKは調査目安であり公式CWV合否ではない']));
+  });
+  var state = !total ? 'NO_OBSERVATIONS' : source.state !== 'OK' || omitted || unknownVersion ? 'PARTIAL' : 'OK';
+  var detail = '観測 ' + total + '件 / 指標・評価・端末の分類不可 ' + omitted + '件 / 版・ページ未特定 ' + unknownVersion + '件。' + source.detail;
+  grid[4] = ['取得状態',state,detail];
+  return { state: state, detail: detail, grid: grid };
+}
+
+function playPointGrowthTrafficKey_(row) {
+  return JSON.stringify([String(row.sessionSourceMedium || '(not set)'), String(row.deviceCategory || '(not set)')]);
+}
+
+function playPointGrowthTrafficGrid_(period, sources, timestamp) {
+  var grid = [
+    ['流入品質・入口診断',timestamp],
+    ['対象期間',period.start + ' ～ ' + period.end],
+    ['定義','GA4セッションのsource/medium × device。入口はクエリなしlandingPage。ユーザーは行内の人数。行をまたぐ人数は合算しない。'],
+    ['安全','入口欠落・不明参照元・localhostなどは観測として示す。内部流入や不正アクセスと断定せず、GA4フィルタや設定を変更しない。'],
+    ['取得状態',Object.keys(sources).map(function(k) { return k+'='+sources[k].state; }).join(' / ')],
+    ['種別','セッションsource / medium','端末','入口／ホスト','セッション','アクティブユーザー','PV','エンゲージメント率','GA4広告収益（円）','計算初回成功回数','成功/100セッション','入口不明セッション','入口不明割合','状態','補足']
+  ];
+  var primary = sources.TRAFFIC;
+  if (!primary || primary.state !== 'OK') throw new Error('流入元の完全な取得が必要。前回の表を保持');
+  var base = Object.create(null), landings = Object.create(null), revenue = Object.create(null), successes = Object.create(null);
+  var good = function(name) { return sources[name] && sources[name].state === 'OK'; };
+  primary.rows.forEach(function(row) {
+    var key = playPointGrowthTrafficKey_(row);
+    if (base[key]) throw new Error('流入元×端末の重複');
+    var n = playPointGrowthCount_(row.sessions,'sessions'), pv = playPointGrowthCount_(row.screenPageViews,'screenPageViews');
+    var users = playPointGrowthCount_(row.activeUsers,'activeUsers'), engaged = playPointGrowthCount_(row.engagedSessions,'engagedSessions');
+    if (engaged > n) throw new Error('engagedSessionsがsessionsを超過');
+    base[key] = { row:row, n:n, pv:pv, users:users, engaged:engaged };
+  });
+  if (good('ENTRY')) {
+    var exact = Object.create(null);
+    sources.ENTRY.rows.forEach(function(row) {
+      var key = playPointGrowthTrafficKey_(row), path = String(row.landingPage || '(not set)');
+      // URL別のセッション内訳を集約。ページタイトル・query付きURLは取得しない。
+      var full = JSON.stringify([key,path]);
+      if (exact[full]) throw new Error('入口×流入元×端末の重複');
+      exact[full] = true;
+      var n = playPointGrowthCount_(row.sessions,'entry sessions'), pv = playPointGrowthCount_(row.screenPageViews,'entry PV');
+      var item = landings[key] || (landings[key] = {total:0,unknown:0,rows:[]});
+      item.total += n;
+      if (playPointReaderParameterMissing_(path)) item.unknown += n;
+      item.rows.push({path:path,n:n,pv:pv});
+    });
+  }
+  if (good('REVENUE')) sources.REVENUE.rows.forEach(function(row) {
+    var key = playPointGrowthTrafficKey_(row);
+    if (Object.prototype.hasOwnProperty.call(revenue,key) || row.totalAdRevenue === '' || !Number.isFinite(row.totalAdRevenue)) {
+      throw new Error('広告収益の不正・重複');
+    }
+    revenue[key] = row.totalAdRevenue;
+  });
+  if (good('SUCCESS')) sources.SUCCESS.rows.forEach(function(row) {
+    var key = playPointGrowthTrafficKey_(row);
+    if (Object.prototype.hasOwnProperty.call(successes,key)) throw new Error('計算成功イベントの流入元重複');
+    successes[key] = playPointGrowthCount_(row.eventCount,'calculator success');
+  });
+  var partial = Object.keys(sources).some(function(key) { return sources[key].state !== 'OK'; }), orphan = 0;
+  Object.keys(landings).forEach(function(key) { if (!base[key] && landings[key].total > 0) orphan += landings[key].total; });
+  if (orphan) partial = true;
+  var total = 0, matched = 0, unknown = 0;
+  Object.keys(base).sort(function(a,b) { return base[b].n-base[a].n; }).forEach(function(key) {
+    var b = base[key], l = landings[key], source = JSON.parse(key);
+    var entryKnown = good('ENTRY') && ((l && l.total === b.n) || (!l && b.n === 0));
+    if (!entryKnown && good('ENTRY')) partial = true;
+    var unknownCount = entryKnown ? (l ? l.unknown : 0) : '';
+    var success = Object.prototype.hasOwnProperty.call(successes,key) ? successes[key] : '';
+    var money = Object.prototype.hasOwnProperty.call(revenue,key) ? revenue[key] : '';
+    var state = !entryKnown ? (good('ENTRY') ? 'ENTRY_MISMATCH' : 'ENTRY_UNAVAILABLE') :
+      b.n < 30 ? 'SMALL_SAMPLE' : unknownCount > 0 && unknownCount / b.n >= 0.05 ? 'CHECK_ENTRY' : 'OBSERVED';
+    if (entryKnown) { matched += b.n; unknown += unknownCount; }
+    total += b.n;
+    grid.push(['流入元別',source[0],source[1],'',b.n,b.users,b.pv,playPointGrowthRatio_(b.engaged,b.n),money,success,
+      success === '' ? '' : b.n > 0 ? success / b.n * 100 : '',unknownCount,
+      unknownCount === '' ? '' : playPointGrowthRatio_(unknownCount,b.n),state,
+      '成功/100セッションはイベント頻度。広告収益はGA4の観測値。未返却の成果/収益は空欄。']);
+    if (l) l.rows.filter(function(x) { return playPointReaderParameterMissing_(x.path) || x.n >= 5; })
+      .sort(function(a,b) { return b.n-a.n; }).slice(0,20).forEach(function(x) {
+        grid.push(['入口明細',source[0],source[1],x.path,x.n,'',x.pv,'','','','','','',
+          playPointReaderParameterMissing_(x.path) ? 'UNKNOWN_ENTRY' : entryKnown ? 'OBSERVED' : 'ENTRY_MISMATCH',
+          '主な入口（5セッション以上、未設定は必ず表示）。上段と重複するので合算しない。']);
+      });
+  });
+  if (good('HOST')) {
+    var hosts = Object.create(null);
+    sources.HOST.rows.forEach(function(row) {
+      var host = String(row.hostName || '(not set)');
+      if (Object.prototype.hasOwnProperty.call(hosts,host)) throw new Error('ホスト別PVの重複');
+      hosts[host] = playPointGrowthCount_(row.screenPageViews,'host PV');
+    });
+    Object.keys(hosts).sort(function(a,b) { return hosts[b]-hosts[a]; }).forEach(function(host) {
+      grid.push(['ホスト確認','','',host,'','',hosts[host],'','','','','','',
+        /^(www\.)?playpoint-sim\.com$/i.test(host) ? 'OBSERVED' : 'CHECK_HOST',
+        'GA4ページビューのみ。計測除外・内部アクセス・無効トラフィックとは断定しない。']);
+    });
+  }
+  if (orphan) grid.push(['照合警告','','','','','','','','','','','','','ENTRY_MISMATCH','流入元の集計に対応しない入口セッション: '+orphan]);
+  var state = partial ? 'PARTIAL' : 'OK';
+  grid[4][2] = '入口照合 ' + matched + '/' + total + 'セッション / 照合済みの入口不明 ' + unknown + '。全体率は全セグメント一致時のみ。';
+  grid[4][3] = total > 0 && matched === total && !orphan ? unknown / total : '';
+  return { state:state, grid:grid, total:total, matched:matched, unknown:unknown };
+}
+
+function playPointGrowthTrafficSource_(propertyId,period,dimensions,metrics,filter,currency) {
+  return playPointReaderSource_(function() {
+    var body = {dateRanges:[{startDate:period.start,endDate:period.end}],
+      dimensions:dimensions.map(function(name){return {name:name};}),
+      metrics:metrics.map(function(name){return {name:name};}),limit:'10000'};
+    if (filter) body.dimensionFilter = filter;
+    if (currency) body.currencyCode = currency;
+    var response = playPointP12Ga4Report_(propertyId,body);
+    playPointP12AssertDecisionQuality_(response);
+    if (currency && response.metadata && response.metadata.currencyCode && response.metadata.currencyCode !== currency) {
+      throw new Error('GA4広告収益の通貨不一致');
+    }
+    return {rows:playPointP12ParseGa4Rows_(response,dimensions,metrics)};
+  },[],{});
+}
+
+function capturePlayPointTrafficQualityReview() {
+  var timestamp = playPointP12NowText_();
+  try {
+    var period = playPointP12BuildGa4Period_(), property = playPointP12GetGa4PropertyId_(), ss = resolveAndRememberSpreadsheet_();
+    var dims = ['sessionSourceMedium','deviceCategory'], sources = {};
+    sources.TRAFFIC = playPointGrowthTrafficSource_(property,period,dims,['sessions','activeUsers','screenPageViews','engagedSessions']);
+    if (sources.TRAFFIC.state !== 'OK') throw new Error(sources.TRAFFIC.detail);
+    sources.ENTRY = playPointGrowthTrafficSource_(property,period,dims.concat(['landingPage']),['sessions','screenPageViews']);
+    sources.SUCCESS = playPointGrowthTrafficSource_(property,period,dims,['eventCount'],playPointReaderFilter_('eventName',['calculator_funnel_completed']));
+    sources.REVENUE = playPointGrowthTrafficSource_(property,period,dims,['totalAdRevenue'],null,'JPY');
+    sources.HOST = playPointGrowthTrafficSource_(property,period,['hostName'],['screenPageViews'],playPointReaderFilter_('eventName',['page_view']));
+    var view = playPointGrowthTrafficGrid_(period,sources,timestamp);
+    return withScriptLock_(function() {
+      playPointGrowthPublishGrid_(ss,PLAYPOINT_GROWTH_A.trafficSheet,view.grid,6,13);
+      var sheet = ss.getSheetByName(PLAYPOINT_GROWTH_A.trafficSheet), count = view.grid.length-6;
+      if (count > 0) {
+        sheet.getRange(7,8,count,1).setNumberFormat('0.00%');
+        sheet.getRange(7,9,count,1).setNumberFormat('¥#,##0.00');
+        sheet.getRange(7,11,count,1).setNumberFormat('0.00');
+      }
+      sheet.getRange(5,4).setNumberFormat('0.00%');
+      playPointP12UpsertHealth_('TRAFFIC_QUALITY',{lastAttempt:timestamp,lastSuccess:playPointP12NowText_(),dataLatest:period.end,
+        state:view.state,consecutiveFailures:0,error:'',note:'入口照合 '+view.matched+'/'+view.total+' / 照合済み不明 '+view.unknown+'。設定は変更しない。'});
+      return {state:view.state,rows:view.grid.length};
+    });
+  } catch (error) {
+    withScriptLock_(function() { playPointP12HealthError_('TRAFFIC_QUALITY',timestamp,playPointP12ErrorText_(error)); });
     throw error;
   }
 }
