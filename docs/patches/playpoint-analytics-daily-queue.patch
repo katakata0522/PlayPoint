@@ -1,0 +1,23 @@
+diff --git a/PlayPoint_Analytics_v11_6_3_Code.gs b/PlayPoint_Analytics_v11_6_3_Code.gs
+index 08a8668..d3a65cd 100644
+--- a/PlayPoint_Analytics_v11_6_3_Code.gs
++++ b/PlayPoint_Analytics_v11_6_3_Code.gs
+@@ -535,6 +535,17 @@ function runSearchConsoleProvisional(e) {
+  */
+ function runMasterpieceSync(e) {
++  const analyticsDeadlineMs = Date.now() + 285000;
+   return runManagedScheduledHandler_('runMasterpieceSync', e, 45, function () {
+-    return runSyncCore_({ backfillDays: null, source: '通常同期' });
++    const result = runSyncCore_({ backfillDays: null, source: '通常同期' });
++    // 日次同期が共有ロックを解放した後、既存の分析キューへ残りの時間を渡す。
++    if (e && e.triggerUid && typeof playPointAnalyticsRunQueue_ === 'function' &&
++        Date.now() < analyticsDeadlineMs - 45000) {
++      try {
++        playPointAnalyticsRunQueue_(analyticsDeadlineMs, false);
++      } catch (analyticsError) {
++        console.error('日次同期後の分析キュー: ' + errorMessage_(analyticsError));
++      }
++    }
++    return result;
+   });
+ }
