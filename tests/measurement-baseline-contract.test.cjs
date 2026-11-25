@@ -31,7 +31,10 @@ test("legacy AdSense PAGE_URL breakdown is diagnostic-only and cannot become the
 
 function loadGscCaptureRuntime() {
   const source = read('scripts/gsc-nonoverlap-28d.gs');
-  const context = {};
+  const context = {Utilities:{
+    DigestAlgorithm:{SHA_256:'SHA_256'},Charset:{UTF_8:'UTF_8'},
+    computeDigest:(_algo,value)=>Array.from(require('node:crypto').createHash('sha256').update(value,'utf8').digest())
+  }};
   vm.createContext(context);
   vm.runInContext(source, context, { filename: 'gsc-nonoverlap-28d.gs' });
   return { source, context };
@@ -49,9 +52,10 @@ test("GSC capture module keeps adjacent non-overlapping 28-day query × exact UR
   context.playPointGscQueryApi_ = (_site, body) => {
     requests.push(JSON.parse(JSON.stringify(body)));
     assert.ok(requests.length <= 3, 'ページ送りが進まない');
-    return { responseAggregationType: body.aggregationType, rows: body.startRow === 0 ? [
-      { keys: ['q', 'https://playpoint-sim.com/a#one'], clicks: 1, impressions: 2 },
-      { keys: ['q', 'https://playpoint-sim.com/a#two'], clicks: 3, impressions: 4 }
+    return { responseAggregationType: body.aggregationType, rows: body.aggregationType==='byProperty'?
+      [{clicks:4,impressions:6,ctr:4/6,position:2}]:body.startRow === 0 ? [
+      { keys: ['q', 'https://playpoint-sim.com/a#one'], clicks: 1, impressions: 2,ctr:0.5,position:2 },
+      { keys: ['q', 'https://playpoint-sim.com/a#two'], clicks: 3, impressions: 4,ctr:0.75,position:2 }
     ] : [] };
   };
   const raw = context.playPointGscFetchQueryPageRows_('sc-domain:playpoint-sim.com', windows.current.start, windows.current.end);
@@ -149,8 +153,8 @@ test("GSC scheduled capture separates trigger event objects from manual final-en
   context.playPointGscGetSiteUrl_ = () => 'site';
   context.playPointGscFindLatestFinalDate_ = () => '2026-09-10';
   context.playPointGscEnsureHistorySheet_ = () => ({});
-  context.playPointGscRowsForPair_ = () => ['complete'];
-  context.playPointGscPairComplete_ = () => true;
+  context.playPointGscRowsForPair_ = () => [Array.from({length:23},(_,i)=>i===5?'PAIR_RECEIPT':'')];
+  context.playPointGscVerifiedPair_ = () => true;
   context.playPointGscRebuildComparisonViews_ = () => {};
   assert.equal(context.captureGscNonOverlapping28d('2026-09-11').current.end, '2026-09-11');
   assert.equal(context.captureGscNonOverlapping28d(event).current.end, '2026-09-10');
@@ -1010,6 +1014,48 @@ test('GSC append formats only the appended CTR and position ranges, and never sc
     setValues(rows){calls.push(['write',args,rows.length]);}
   };}};
   c.playPointGscAppendRows_(sheet,[['x'],['y']]);
-  assert.deepEqual(calls,[['format',[11,12,2,1],'0.00%'],['format',[11,13,2,1],'0.00'],
+  assert.deepEqual(calls,[['format',[11,1,2,9],'@'],['format',[11,14,2,10],'@'],['format',[11,12,2,1],'0.00%'],['format',[11,13,2,1],'0.00'],
     ['write',[11,1,2,23],2]]);
+});
+
+
+function verifiedGscFixture(c){
+  const windows=c.playPointGscBuildWindows_('2026-11-17'),pairId=windows.current.start+'__'+windows.current.end,site='sc-domain:playpoint-sim.com';
+  const raw={rows:[{query:'q',exactUrl:'https://playpoint-sim.com/a',baseUrl:'https://playpoint-sim.com/a',clicks:2,impressions:10,ctr:0.2,position:3},
+    {query:'q2',exactUrl:'https://playpoint-sim.com/b#x',baseUrl:'https://playpoint-sim.com/b',clicks:1,impressions:5,ctr:0.2,position:4}],
+    requestAggregationType:'byPage',responseAggregationType:'byPage'};
+  const bundle={raw,normalized:c.playPointGscNormalizeRows_(raw.rows),propertyTotal:{clicks:4,impressions:25,ctr:0.16,position:3,requestAggregationType:'byProperty',responseAggregationType:'byProperty'}};
+  const rows=[...c.playPointGscBundleHistoryValues_(pairId,'current_28d',windows.current,bundle,site,'2026-11-25 09:00:00'),
+    ...c.playPointGscBundleHistoryValues_(pairId,'previous_28d',windows.previous,bundle,site,'2026-11-25 09:00:00')];
+  return {windows,pairId,site,rows};
+}
+test('GSC receipt proves complete returned rows, detects lost rows despite six layers, edits and duplicate receipts',()=>{
+  const {context:c}=loadGscCaptureRuntime();
+  const {windows,pairId,site,rows}=verifiedGscFixture(c);
+  const evidence=c.playPointGscEvidence_(rows,pairId,windows,site);
+  assert.equal(evidence.count,10);assert.match(evidence.digest,/^[a-f0-9]{64}$/);
+  assert.equal(c.playPointGscVerifiedPair_(rows,pairId,windows,site),false);
+  const receipt=c.playPointGscReceiptRow_(pairId,windows,site,'2026-11-25 09:00:00',evidence);
+  const all=[...rows,receipt];
+  assert.equal(c.playPointGscVerifiedPair_(all,pairId,windows,site),true);
+  assert.equal(c.playPointGscVerifiedPair_(all.slice().reverse(),pairId,windows,site),true);
+  const missing=all.slice(1);
+  assert.equal(c.playPointGscPairComplete_(missing),true);
+  assert.equal(c.playPointGscVerifiedPair_(missing,pairId,windows,site),false);
+  const changed=all.map(r=>Array.from(r));changed[0][9]++;
+  assert.equal(c.playPointGscVerifiedPair_(changed,pairId,windows,site),false);
+  assert.equal(c.playPointGscVerifiedPair_(all.concat([receipt]),pairId,windows,site),false);
+  assert.equal(c.playPointGscVerifiedPair_(all,pairId,windows,'wrong site'),false);
+  const fetched=all.map(r=>Array.from(r));fetched[0][20]='2026-11-26 09:00:00';
+  assert.equal(c.playPointGscVerifiedPair_(fetched,pairId,windows,site),true);
+});
+test('GSC rejects absent property totals, invalid metrics and repeated API pages rather than silently constructing zeros',()=>{
+  const {context:c}=loadGscCaptureRuntime();
+  c.playPointGscQueryApi_=()=>({responseAggregationType:'byProperty',rows:[]});
+  assert.throws(()=>c.playPointGscFetchPropertyTotal_('site','2026-10-21','2026-11-17'),/未取得/);
+  c.PLAYPOINT_GSC_28D_CONFIG={...c.PLAYPOINT_GSC_28D_CONFIG,rowLimit:1};
+  c.playPointGscQueryApi_=()=>({responseAggregationType:'byPage',rows:[{keys:['a','https://playpoint-sim.com/a'],clicks:1,impressions:3,ctr:1/3,position:3}]});
+  assert.throws(()=>c.playPointGscFetchQueryPageRows_('site','2026-10-21','2026-11-17'),/重複/);
+  c.playPointGscQueryApi_=()=>({responseAggregationType:'byPage',rows:[{keys:['a','https://playpoint-sim.com/a'],clicks:1,impressions:3,ctr:0.3}]});
+  assert.throws(()=>c.playPointGscFetchQueryPageRows_('site','2026-10-21','2026-11-17'),/不正/);
 });
