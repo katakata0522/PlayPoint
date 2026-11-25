@@ -119,7 +119,7 @@ test('保存のflush失敗時も再開カーソルを進めない', () => {
 
 
 test('新しいP1が不完全なら旧台帳を更新扱いにせず、URL検査は独立して続ける',()=>{
-  const c=runtime();const src=fs.readFileSync(path.join(root,'scripts/playpoint-analytics-p1p2.gs'),'utf8');
+  const c=runtime();const src=fs.readFileSync(path.join(__dirname,'../scripts/playpoint-analytics-p1p2.gs'),'utf8');
   vm.runInContext(src,c);
   c.playPointP12GetSpreadsheet_=()=>({});c.playPointP12Log_=()=>{};
   c.playPointP12RunStage_=stage=>({stage,status:stage==='PAGE_VALUE'?'PARTIAL':'OK'});
