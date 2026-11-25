@@ -1,12 +1,29 @@
 'use strict';
 
 // GA4の同一期間・実メタデータを使う。追加トリガーや追加権限は不要。
+var PLAYPOINT_GROWTH_EVENTS = Object.freeze([
+  'calculation_completed', 'reverse_calculation_completed', 'calculator_mode_changed',
+  'purchase_comparison_opened', 'purchase_comparison_completed',
+  'lp_to_calculator_clicked', 'lp_related_link_clicked',
+  'share_url_copied', 'share_x_clicked', 'calendar_reminder_added',
+  'pwa_install_accepted', 'widget_code_copied', 'widget_referral_landed', 'web_vital',
+  'article_decision_action', 'article_resolution_action', 'article_reference_action'
+]);
+var PLAYPOINT_ROLE_ACTION_EVENTS = Object.freeze({
+  decision_support: 'article_decision_action',
+  troubleshooting: 'article_resolution_action',
+  reference: 'article_reference_action'
+});
+var PLAYPOINT_VITALS_DIMENSIONS = Object.freeze([
+  'customEvent:metric_name', 'customEvent:metric_rating', 'customEvent:page_group',
+  'customEvent:release_version', 'deviceCategory'
+]);
 var PLAYPOINT_READER_OUTCOMES = Object.freeze({
   sheet: '🧑読者行動・再訪',
   events: Object.freeze(['page_view', 'article_navigation_click', 'article_to_calculator_clicked',
     'reader_question_clicked', 'search', 'calculator_form_started', 'calculator_funnel_completed',
     'calculator_validation_error', 'diary_tab_opened', 'diary_entry_saved',
-    'game_form_started', 'game_calculation_completed', 'result_related_article_clicked', 'result_decision_link_clicked'])
+    'game_form_started', 'game_calculation_completed', 'result_related_article_clicked', 'result_decision_link_clicked'].concat(PLAYPOINT_GROWTH_EVENTS))
 });
 
 function playPointReaderFilter_(name, values) {
@@ -158,7 +175,9 @@ function playPointReaderBuildGrid_(period, inventory, sources, timestamp) {
       var missing = playPointReaderMissingParameters_(row, source.parameters || []);
       var rowState = source.state === 'PARAMETER_PARTIAL' && source.parameters && source.parameters.length ?
         (missing.length ? 'PARAMETER_PARTIAL' : 'OK') : source.state;
-      var comment = type === 'READING' ? '再訪の閲覧人数。初回記事への帰属ではない' :
+      var comment = type === 'VITALS' ? '匿名の観測回数。p75や全利用者の実測率ではない。' :
+        type === 'ROLE_ACTIONS' ? '記事の閲覧・役割別行動の利用者数。記事別成果シートで比較する。' :
+        type === 'READING' ? '再訪の閲覧人数。初回記事への帰属ではない' :
         type === 'ARTICLE_ACTIONS' ? 'ページ別・イベント別の回数と人数。NAVIGATIONと重複するので足さない。クリックは遷移先での閲覧・疑問解決を保証しない' :
         type === 'SEARCH' ? (playPointReaderParameterMissing_(row['customEvent:results_count']) ? '検索結果件数は未取得（0件ではない）' :
           String(row['customEvent:results_count']) === '0' ? '検索結果0件' : '検索結果件数: ' + row['customEvent:results_count']) :
@@ -167,14 +186,21 @@ function playPointReaderBuildGrid_(period, inventory, sources, timestamp) {
         type === 'ERRORS' ? '入力値は収集せず原因の分類だけを表示' : '';
       if (missing.length) comment += (comment ? '。' : '') + '未設定: ' + missing.map(function(name) { return name.replace('customEvent:', ''); }).join(', ');
       add([type, rowState,
-        row.eventName || row['customEvent:error_type'] || row.funnelStepName || row.cohortNthDay || '',
+        row.eventName || row['customEvent:error_type'] || row['customEvent:metric_name'] || row.funnelStepName || row.cohortNthDay || '',
         row.eventCount !== undefined ? row.eventCount : row.screenPageViews !== undefined ? row.screenPageViews : '',
         row.totalUsers !== undefined ? row.totalUsers : row.activeUsers !== undefined ? row.activeUsers : row.cohortActiveUsers !== undefined ? row.cohortActiveUsers : '',
         row.cohortTotalUsers !== undefined ? row.cohortTotalUsers : '',
-        page || row.cohort || '', locale, article ? article.role : '',
+        page || row.cohort || row['customEvent:page_group'] || '', locale, article ? article.role : (row['customEvent:release_version'] || ''),
         row['customEvent:component'] || row.deviceCategory || row.newVsReturning || '',
-        row['customEvent:destination_type'] || row['customEvent:intent_id'] || row['customEvent:candidate_id'] || row['customEvent:calculation_mode'] || '', comment]);
+        row['customEvent:destination_type'] || row['customEvent:intent_id'] || row['customEvent:candidate_id'] || row['customEvent:calculation_mode'] || row['customEvent:metric_rating'] || '', comment]);
     });
+    if (type === 'EVENTS' && source.state === 'OK') {
+      PLAYPOINT_GROWTH_EVENTS.forEach(function(name) {
+        if (!source.rows.some(function(row) { return row.eventName === name; })) {
+          add(['EVENTS', 'NO_EVENT_ROW', name, '', '', '', '', '', '', '', '', '正常応答に行なし。計測開始・受信の確認前は利用ゼロと断定しない']);
+        }
+      });
+    }
   });
   return grid;
 }
@@ -299,6 +325,17 @@ function playPointCaptureReaderOutcomes_() {
   // 通信中に共通ロックを保持しない。本体の日次・リアルタイム更新を待たせない。
   report('EVENTS', ['eventName'], ['eventCount', 'totalUsers'], playPointReaderFilter_('eventName', PLAYPOINT_READER_OUTCOMES.events));
   report('READING', ['pagePath', 'newVsReturning'], ['screenPageViews', 'activeUsers'], playPointReaderFilter_('eventName', ['page_view']));
+  var verifiedFrom = typeof PropertiesService !== 'undefined' ?
+    PropertiesService.getScriptProperties().getProperty('PLAYPOINT_ROLE_ACTIONS_VERIFIED_FROM') : '';
+  var rolePeriod = playPointGrowthRolePeriod_(period, verifiedFrom, timestamp.slice(0,10));
+  sources.ROLE_ACTIONS = playPointReaderSource_(function() {
+    return playPointReaderReport_(propertyId, rolePeriod, ['pagePath', 'eventName'], ['eventCount', 'totalUsers'],
+      playPointReaderFilter_('eventName', ['page_view'].concat(Object.keys(PLAYPOINT_ROLE_ACTION_EVENTS).map(function(role) {
+        return PLAYPOINT_ROLE_ACTION_EVENTS[role];
+      }))));
+  }, [], definitions);
+  sources.ROLE_ACTIONS.detail += '。役割別の期間: ' + rolePeriod.start + ' ～ ' + rolePeriod.end;
+  report('VITALS', PLAYPOINT_VITALS_DIMENSIONS, ['eventCount'], playPointReaderFilter_('eventName', ['web_vital']));
   // 分類パラメータが欠けても、標準pagePathで取得できる記事別成果を独立に保持する。
   report('ARTICLE_ACTIONS', ['pagePath', 'eventName'], ['eventCount', 'totalUsers'],
     playPointReaderFilter_('eventName', ['article_navigation_click', 'article_to_calculator_clicked']));
@@ -347,6 +384,19 @@ function playPointCaptureReaderOutcomes_() {
     Object.keys(sources).filter(function(type) { return sources[type].state !== 'OK'; }).forEach(function(type) {
       playPointP12Log_('WARN', 'READER_' + type, sources[type].state + ': ' + sources[type].detail);
     });
+    // 新しい専用ビューは独立した監視行を持つ。失敗時も元の読者集計は保持。
+    try {
+      if (!inventory.length || sources.ROLE_ACTIONS.state !== 'OK') throw new Error('記事台帳または役割別行動の完全な取得が必要');
+      var sameWindow = rolePeriod.start === period.start && rolePeriod.end === period.end;
+      var outcome = playPointGrowthRoleGrid_(rolePeriod, inventory, sources.ROLE_ACTIONS, sameWindow ? sources.READING : null, timestamp, verifiedFrom);
+      playPointGrowthPublishGrid_(ss, '📊記事の役割別成果', outcome.grid, 6, 7);
+      playPointP12UpsertHealth_('ROLE_OUTCOMES', { lastAttempt: timestamp, lastSuccess: playPointP12NowText_(), dataLatest: period.end,
+        state: outcome.covered ? 'OK' : 'PARTIAL', consecutiveFailures: 0, error: '', note: '同期間の記事閲覧者数・役割別行動。計測開始日が未確認の期間は未発生を0にしない。' });
+    } catch (roleError) {
+      partial = true;
+      playPointP12Log_('WARN', 'ROLE_OUTCOMES', playPointP12ErrorText_(roleError));
+      playPointP12HealthError_('ROLE_OUTCOMES', playPointP12NowText_(), playPointP12ErrorText_(roleError));
+    }
     return { period: period, rows: grid.length, state: partial ? 'PARTIAL' : 'OK', sources: states };
   });
 }
@@ -354,11 +404,13 @@ function playPointCaptureReaderOutcomes_() {
 // GSCの確定待ちから切り離し、既存GA4イベントだけを日付別に記録する。
 var PLAYPOINT_EVENT_DAILY = Object.freeze({
   sheet: '📈GA4イベント日次',
-  historyDays: 35,
+  historyDays: 63, // 最大28日×2＋公開日の除外＋確定待ち
+  detailDays: 35, // 記事明細・帰属は従来の取得量を維持
   events: Object.freeze(['page_view', 'article_navigation_click', 'article_to_calculator_clicked',
     'calculator_form_started', 'calculator_funnel_completed', 'calculator_validation_error',
     'reader_question_clicked', 'search', 'game_form_started', 'game_calculation_completed',
-    'result_related_article_clicked', 'result_decision_link_clicked'])
+    'diary_tab_opened', 'diary_entry_saved',
+    'result_related_article_clicked', 'result_decision_link_clicked'].concat(PLAYPOINT_GROWTH_EVENTS))
 });
 
 function playPointEventDailyIso_(raw) {
@@ -406,19 +458,21 @@ function playPointEventDailyGrid_(period, timestamp, sources) {
   add(['📈GA4イベント日次', timestamp]);
   add(['対象期間', period.start + ' ～ ' + period.end]);
   add(['注意', 'GA4の日別イベント回数を比較。日内ユーザー数は週合計・同一人物の経路転換率にしない。直近数日は後日再集計で変動する。']);
-  add(['判定', 'GSCの確定期間とは独立。記事別の帰属と計算成功は同一人物の順序付きファネルではない。']);
+  add(['判定', 'GSCの確定期間とは独立。記事・帰属の明細は直近35日。記事別帰属は同一人物の順序付きファネルではない。']);
   add(['取得状態', Object.keys(sources).map(function(name) { return name + '=' + sources[name].state; }).join(' / ')]);
   add(['種別', '日付／期間', 'イベント', 'イベント回数', '日内ユーザー', '記事／帰属元', '状態', '補足']);
   playPointEventDailyWeeks_(period.end).forEach(function(week) {
     PLAYPOINT_EVENT_DAILY.events.forEach(function(eventName) {
       var covered = week.start >= period.start && week.end <= period.end;
       var ok = covered && primary.state === 'OK';
-      var total = ok ? primary.rows.filter(function(row) {
+      var observed = ok ? primary.rows.filter(function(row) {
         return row.eventName === eventName && row.isoDate >= week.start && row.isoDate <= week.end;
-      }).reduce(function(sum, row) { return sum + row.eventCount; }, 0) : '';
+      }) : [];
+      var noRow = ok && !observed.length && PLAYPOINT_GROWTH_EVENTS.indexOf(eventName) >= 0;
+      var total = ok && !noRow ? observed.reduce(function(sum, row) { return sum + row.eventCount; }, 0) : '';
       add([week.label, week.start + ' ～ ' + week.end, eventName, total, '', '',
-        ok ? 'OBSERVED' : (!covered ? 'NOT_COVERED' : primary.state),
-        'イベント回数の合計。週のユニーク利用者数ではない']);
+        noRow ? 'NO_EVENT_ROW' : ok ? 'OBSERVED' : (!covered ? 'NOT_COVERED' : primary.state),
+        noRow ? '正常応答に行なし。計測開始・受信は別途確認' : 'イベント回数の合計。週のユニーク利用者数ではない']);
     });
   });
   // 取得できた期間のみ0件を実測0として表示。欠損したAPI結果は0で埋めない。
@@ -430,10 +484,12 @@ function playPointEventDailyGrid_(period, timestamp, sources) {
         return row.isoDate === date && row.eventName === eventName;
       }) : [];
       if (found.length > 1) throw new Error('GA4日別イベントの重複行: ' + date + ' ' + eventName);
+      var noRow = ok && !found.length && PLAYPOINT_GROWTH_EVENTS.indexOf(eventName) >= 0;
       add(['EVENTS', date, eventName,
-        ok ? (found.length ? found[0].eventCount : 0) : '',
-        ok ? (found.length ? found[0].totalUsers : 0) : '', '',
-        ok ? 'OBSERVED' : primary.state, ok ? '日内ユーザー。直近日は変動あり' : primary.detail]);
+        ok && !noRow ? (found.length ? found[0].eventCount : 0) : '',
+        ok && !noRow ? (found.length ? found[0].totalUsers : 0) : '', '',
+        noRow ? 'NO_EVENT_ROW' : ok ? 'OBSERVED' : primary.state,
+        noRow ? '正常応答に行なし。利用ゼロと断定しない' : ok ? '日内ユーザー。直近日は変動あり' : primary.detail]);
     });
     date = playPointP12ShiftIsoDate_(date, 1);
   }
@@ -458,13 +514,14 @@ function capturePlayPointEventDailyReview() {
     var definitions = {}, sources = {};
     sources.EVENTS = playPointEventDailySource_(propertyId, period, ['date', 'eventName'], PLAYPOINT_EVENT_DAILY.events, definitions);
     if (sources.EVENTS.state !== 'OK') throw new Error('GA4の日別イベント総量が未取得: ' + sources.EVENTS.detail);
-    sources.ARTICLE = playPointEventDailySource_(propertyId, period, ['date', 'pagePath'], ['article_to_calculator_clicked'], definitions);
+    var detailPeriod = { start: playPointP12ShiftIsoDate_(end, 1 - PLAYPOINT_EVENT_DAILY.detailDays), end: end };
+    sources.ARTICLE = playPointEventDailySource_(propertyId, detailPeriod, ['date', 'pagePath'], ['article_to_calculator_clicked'], definitions);
     // 計算開始・成功の入口帰属は登録済みカスタム定義がある時だけ取得する。
     try {
       var metadata = playPointP12GoogleJson_('https://analyticsdata.googleapis.com/v1beta/properties/' +
         encodeURIComponent(propertyId) + '/metadata', { method: 'get' });
       (metadata.dimensions || []).forEach(function(dim) { definitions[dim.apiName] = true; });
-      sources.ATTRIBUTION = playPointEventDailySource_(propertyId, period,
+      sources.ATTRIBUTION = playPointEventDailySource_(propertyId, detailPeriod,
         ['date', 'eventName', 'customEvent:entry_source_path'],
         ['calculator_form_started', 'calculator_funnel_completed'], definitions);
     } catch (error) {
@@ -818,4 +875,339 @@ function syncPlayPointPageHistoryArchives() {
   } while (paths.length >= Math.max(1, CONFIG.ARCHIVE_MAX_MONTHS_PER_RUN) && count < 12 && Date.now() - started < 120000);
   console.log('Drive月次アーカイブ追随: 今回=' + count + '件');
   return { count: count };
+}
+
+
+// 独立した記事別成果ビュー。記事間・別名URL間の人数を加算しない。
+function playPointGrowthRolePeriod_(period, verifiedFrom, today) {
+  // 未確認・未来・不正な設定は通常の読者集計を止めず、成果ビューでエラー／未計測として扱う。
+  if (playPointMaintenanceIsoDate_(verifiedFrom) && verifiedFrom <= today && verifiedFrom > period.start && verifiedFrom <= period.end) {
+    return { start: verifiedFrom, end: period.end };
+  }
+  return period;
+}
+
+function playPointGrowthRoleGrid_(period, inventory, source, reading, timestamp, verifiedFrom) {
+  if (source.state !== 'OK') throw new Error('役割別行動が完全取得されていません');
+  if (verifiedFrom && (!playPointMaintenanceIsoDate_(verifiedFrom) || verifiedFrom > timestamp.slice(0, 10))) {
+    throw new Error('PLAYPOINT_ROLE_ACTIONS_VERIFIED_FROM は実在する確認済み開始日を指定');
+  }
+  var covered = !!verifiedFrom && period.start >= verifiedFrom;
+  var data = Object.create(null), returning = Object.create(null);
+  var events = ['page_view'].concat(Object.keys(PLAYPOINT_ROLE_ACTION_EVENTS).map(function(role) { return PLAYPOINT_ROLE_ACTION_EVENTS[role]; }));
+  source.rows.forEach(function(row) {
+    if (events.indexOf(row.eventName) < 0 || !Number.isSafeInteger(row.totalUsers) || row.totalUsers < 0) throw new Error('役割別イベント応答が不正');
+    var key = row.pagePath + '\u0000' + row.eventName;
+    if (Object.prototype.hasOwnProperty.call(data, key)) throw new Error('役割別イベントの重複。利用者数は合算しない');
+    data[key] = row.totalUsers;
+  });
+  if (reading && reading.state === 'OK') reading.rows.forEach(function(row) {
+    if (row.newVsReturning !== 'returning') return;
+    if (!Number.isSafeInteger(row.activeUsers) || row.activeUsers < 0 || Object.prototype.hasOwnProperty.call(returning, row.pagePath)) {
+      throw new Error('ページ再訪の応答が重複・不正');
+    }
+    returning[row.pagePath] = row.activeUsers;
+  });
+  var grid = [
+    ['記事の役割別成果', timestamp],
+    ['対象期間', period.start + ' ～ ' + period.end],
+    ['確認済み計測開始日', verifiedFrom || '未確認（正の実測件数のみ表示。率と未発生の0は保留）'],
+    ['判定', '記事別の閲覧者と同期間の行動者。順序付きファネルではない。再訪の入口帰属・解決完了・ゲーム計算の帰属は未測定。'],
+    ['保護', '記事管理台帳の編集判断は変更しない。30人未満は小標本。異なる役割の率を順位付けしない。'],
+    ['言語', '記事パス', '役割', '主指標／観測イベント', '閲覧者', '行動者', '参考割合', '状態', '再訪閲覧者（参考）', '補足']
+  ];
+  inventory.forEach(function(article) {
+    var path = article.path, role = article.role, action = PLAYPOINT_ROLE_ACTION_EVENTS[role];
+    var denominator = data[path + '\u0000page_view'];
+    var numerator = action ? data[path + '\u0000' + action] : undefined;
+    var ratio = '', state = 'NOT_MEASURED', note = '既存のページ価値ファネルなどで補助観測。主指標は代用しない。';
+    if (role === 'hold' || article.listed === false) {
+      state = 'HOLD'; numerator = undefined; note = '非掲載・公式確認待ち';
+    } else if (action) {
+      note = '行動は解決・購入の完了を保証しない';
+      if (denominator === undefined || denominator === 0) state = 'NO_DENOMINATOR';
+      else if (numerator !== undefined && numerator > denominator) state = 'COHORT_MISMATCH';
+      else if (!covered) state = 'COVERAGE_UNVERIFIED';
+      else {
+        numerator = numerator === undefined ? 0 : numerator;
+        ratio = numerator / denominator;
+        state = denominator < 30 ? 'SMALL_SAMPLE' : 'OBSERVED';
+      }
+    } else if (role === 'retention') note = '再訪閲覧者は当該ページの期間内の再訪者。初回入口別の再訪率ではない。';
+    grid.push([article.locale, path, role, action || PLAYPOINT_MAINTENANCE.roleKpis[role] || '',
+      denominator === undefined ? '' : denominator, numerator === undefined ? '' : numerator,
+      ratio, state, returning[path] === undefined ? '' : returning[path], note]);
+  });
+  return { covered: covered, grid: grid };
+}
+
+function playPointGrowthPublishGrid_(ss, title, grid, headerRow, ratioCol) {
+  var width = grid[headerRow - 1].length;
+  var rows = grid.map(function(row) {
+    var values = row.slice();
+    while (values.length < width) values.push('');
+    return playPointP12LiteralRow_(values);
+  });
+  var sheet = playPointP12EnsureSheet_(ss, title, width), previousRows = sheet.getLastRow();
+  playPointP12EnsureRows_(sheet, rows.length);
+  if (rows.length > headerRow) sheet.getRange(headerRow + 1, 1, rows.length - headerRow, 2).setNumberFormat('@');
+  sheet.getRange(1, 1, rows.length, width).setValues(rows);
+  if (previousRows > rows.length) sheet.getRange(rows.length + 1, 1, previousRows - rows.length, width).clearContent();
+  sheet.setFrozenRows(headerRow);
+  sheet.getRange(headerRow, 1, 1, width).setFontWeight('bold');
+  sheet.setColumnWidth(1, 160); sheet.setColumnWidth(2, 430);
+  sheet.setColumnWidths(3, width - 2, 150);
+  sheet.setColumnWidth(width, 420);
+  if (ratioCol && rows.length > headerRow) sheet.getRange(headerRow + 1, ratioCol, rows.length - headerRow, 1).setNumberFormat('0.00%');
+}
+
+
+// 公開確認済みの変更だけを登録する。mainのマージ日・未検証のdeployを公開日と扱わない。
+var PLAYPOINT_RELEASE_REVIEW = Object.freeze({
+  registry: '🚀公開変更履歴', report: '📈公開変更効果',
+  receiptUrl: 'https://playpoint-sim.com/status/deploy-status.json',
+  revisionUrl: 'https://playpoint-sim.com/status/deploy-revision.txt',
+  headers: ['commit', 'deployedAt', 'verifiedAt', 'runId', 'evidence', 'observedAt'],
+  windows: [7, 14, 28],
+  receiptProperty: 'PLAYPOINT_VERIFIED_RELEASE_RECEIPTS_JSON'
+});
+
+function playPointGrowthVerifiedRelease_(payload, revisionText, observedAt) {
+  var sha = String(payload && payload.commit || '');
+  var checks = payload && payload.checks || {}, workflow = payload && payload.workflow || {};
+  function iso(value) {
+    return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(value) &&
+      Number.isFinite(Date.parse(value));
+  }
+  if (!payload || payload.schemaVersion !== 1 || payload.status !== 'verified' || payload.environment !== 'production' ||
+      payload.branch !== 'main' || !/^[a-f0-9]{40}$/.test(sha) || String(revisionText || '').trim() !== sha ||
+      checks.preflight !== 'passed' || checks.smokeTest !== 'passed' || checks.seoHealth !== 'passed' ||
+      workflow.repository !== 'katakata0522/PlayPoint' || !/^[1-9]\d*$/.test(String(workflow.runId || '')) ||
+      !iso(payload.deployedAt) || !iso(payload.verifiedAt) || Date.parse(payload.deployedAt) > Date.parse(payload.verifiedAt) ||
+      Date.parse(payload.verifiedAt) > Date.now()) {
+    throw new Error('公開検証の証拠が不完全・不一致。GitHubマージ日の代用は禁止');
+  }
+  return [sha, new Date(payload.deployedAt).toISOString(), new Date(payload.verifiedAt).toISOString(),
+    String(workflow.runId), 'https://github.com/katakata0522/PlayPoint/actions/runs/' + workflow.runId, observedAt];
+}
+
+function playPointGrowthFetchRelease_(timestamp) {
+  var responses = UrlFetchApp.fetchAll([PLAYPOINT_RELEASE_REVIEW.receiptUrl, PLAYPOINT_RELEASE_REVIEW.revisionUrl].map(function(url) {
+    return { url: url, method: 'get', muteHttpExceptions: true, followRedirects: false };
+  }));
+  if (responses.length !== 2 || responses.some(function(response) { return response.getResponseCode() !== 200; })) {
+    throw new Error('公開status/revisionの取得失敗: ' + responses.map(function(response) { return response.getResponseCode(); }).join('/'));
+  }
+  return playPointGrowthVerifiedRelease_(JSON.parse(responses[0].getContentText()), responses[1].getContentText(), timestamp);
+}
+
+function playPointGrowthReleaseKey_(row) { return String(row[0]) + '\u0000' + String(row[2]); }
+
+function playPointGrowthReleaseLedger_(ss, additions) {
+  var cfg = PLAYPOINT_RELEASE_REVIEW, sheet = playPointP12EnsureSheet_(ss, cfg.registry, cfg.headers.length);
+  if (!sheet.getLastRow()) {
+    sheet.getRange(1, 1, 1, cfg.headers.length).setValues([cfg.headers]).setFontWeight('bold');
+    sheet.setFrozenRows(1);
+    sheet.setColumnWidths(1, cfg.headers.length, 230);
+  }
+  var existing = sheet.getRange(1, 1, sheet.getLastRow(), cfg.headers.length).getDisplayValues();
+  if (existing[0].join('|') !== cfg.headers.join('|')) throw new Error('公開変更履歴のヘッダー不一致。既存データを保持');
+  var rows = existing.slice(1).filter(function(row) { return row.some(function(value) { return value !== ''; }); });
+  var seen = Object.create(null);
+  rows.forEach(function(row) {
+    var expectedEvidence = 'https://github.com/katakata0522/PlayPoint/actions/runs/' + row[3];
+    if (!/^[a-f0-9]{40}$/.test(row[0]) || !Number.isFinite(Date.parse(row[1])) ||
+        !Number.isFinite(Date.parse(row[2])) || Date.parse(row[1]) > Date.parse(row[2]) ||
+        Date.parse(row[2]) > Date.now() || !/^[1-9]\d*$/.test(row[3]) || row[4] !== expectedEvidence ||
+        seen[playPointGrowthReleaseKey_(row)]) throw new Error('公開変更履歴の証拠または重複を確認');
+    seen[playPointGrowthReleaseKey_(row)] = true;
+  });
+  var newRows = [];
+  additions.forEach(function(row) {
+    var key = playPointGrowthReleaseKey_(row);
+    if (seen[key]) return;
+    seen[key] = true; newRows.push(row);
+  });
+  if (newRows.length) {
+    var start = sheet.getLastRow() + 1;
+    playPointP12EnsureRows_(sheet, start + newRows.length - 1);
+    sheet.getRange(start, 1, newRows.length, cfg.headers.length).setNumberFormat('@')
+      .setValues(newRows.map(playPointP12LiteralRow_));
+  }
+  return rows.concat(newRows);
+}
+
+function playPointGrowthReleaseWindow_(release, days, timezone) {
+  var deployed = Utilities.formatDate(new Date(release[1]), timezone, 'yyyy-MM-dd');
+  var verified = Utilities.formatDate(new Date(release[2]), timezone, 'yyyy-MM-dd');
+  return {
+    previous: { start: playPointP12ShiftIsoDate_(deployed, -days), end: playPointP12ShiftIsoDate_(deployed, -1) },
+    current: { start: playPointP12ShiftIsoDate_(verified, 1), end: playPointP12ShiftIsoDate_(verified, days) }
+  };
+}
+
+function playPointGrowthDateCell_(value) {
+  return value instanceof Date ? Utilities.formatDate(value, 'Asia/Tokyo', 'yyyy-MM-dd') : String(value || '');
+}
+
+function playPointGrowthDailyMap_(grid) {
+  if (!grid[1] || grid[1][0] !== '対象期間') throw new Error('GA4イベント日次の対象期間が未取得');
+  var match = /^(\d{4}-\d{2}-\d{2}) ～ (\d{4}-\d{2}-\d{2})$/.exec(String(grid[1][1] || ''));
+  if (!match || !playPointMaintenanceIsoDate_(match[1]) || !playPointMaintenanceIsoDate_(match[2]) || match[1] > match[2]) {
+    throw new Error('GA4イベント日次の対象期間が不正');
+  }
+  var byDay = Object.create(null), wanted = ['page_view', 'calculator_form_started', 'calculator_funnel_completed', 'calculator_validation_error'];
+  grid.slice(6).forEach(function(row) {
+    if (row[0] !== 'EVENTS' || wanted.indexOf(row[2]) < 0 || row[6] !== 'OBSERVED') return;
+    var date = playPointGrowthDateCell_(row[1]), count = row[3];
+    if (!playPointMaintenanceIsoDate_(date) || date < match[1] || date > match[2] ||
+        count === '' || count === null || !Number.isSafeInteger(Number(count)) || Number(count) < 0) throw new Error('GA4日次値が不正');
+    var events = byDay[date] || (byDay[date] = Object.create(null));
+    if (Object.prototype.hasOwnProperty.call(events, row[2])) throw new Error('GA4日別イベント重複');
+    events[row[2]] = Number(count);
+  });
+  return { start: match[1], end: match[2], days: byDay };
+}
+
+function playPointGrowthGscMap_(result) {
+  if (!result || result.responseAggregationType !== 'byProperty') throw new Error('GSC property totalの日別取得条件が不一致');
+  var days = Object.create(null);
+  result.rows.forEach(function(row) {
+    var date = row.keys && row.keys.length === 1 ? row.keys[0] : '';
+    if (!playPointMaintenanceIsoDate_(date) || Object.prototype.hasOwnProperty.call(days, date) ||
+        !Number.isSafeInteger(row.clicks) || row.clicks < 0 || !Number.isSafeInteger(row.impressions) ||
+        row.impressions < row.clicks) throw new Error('GSC日別の値が不正・重複');
+    days[date] = { clicks: row.clicks, impressions: row.impressions };
+  });
+  return days;
+}
+
+function playPointGrowthWindowTotals_(days, period, stableEnd, fields, requirePv) {
+  if (period.end > stableEnd) return { state: 'PENDING_FINAL', values: null };
+  var totals = Object.create(null);
+  fields.forEach(function(field) { totals[field] = 0; });
+  for (var day = period.start; day <= period.end; day = playPointP12ShiftIsoDate_(day, 1)) {
+    var values = days[day];
+    if (!values || (requirePv && !(values.page_view > 0)) || fields.some(function(field) { return !Number.isSafeInteger(values[field]) || values[field] < 0; })) {
+      return { state: 'MISSING_DAYS', values: null };
+    }
+    fields.forEach(function(field) { totals[field] += values[field]; });
+  }
+  return { state: 'OBSERVED', values: totals };
+}
+
+function playPointGrowthReleaseGrid_(releases, ga4, gsc, today, timestamp, evidenceState, prior) {
+  var cfg = PLAYPOINT_RELEASE_REVIEW, grid = [
+    ['公開変更効果', timestamp],
+    ['証拠', evidenceState, '観測したverified公開だけ。未観測の公開・同時変更・需要変化は残る。'],
+    ['比較', '公開開始日〜検証完了日を除き、前後7/14/28日の同曜日構成を比較。GA4はJST、GSCはPT。'],
+    ['解釈', '確定待ち・欠測は空欄。回数の比は利用者の完了率ではない。前後比較は因果推定ではない。'],
+    ['公開検証日時', 'commit', '日数', '指標', '前期間', '後期間', '前値', '後値', '差（後−前）', '状態', '他の観測公開', '補足']
+  ];
+  var old = Object.create(null);
+  (prior || []).forEach(function(row) {
+    if (row[9] === 'OBSERVED' || row[9] === 'HISTORICAL') {
+      old[[row[0],row[1],row[2],row[3],row[4],row[5]].join('|')] = row;
+    }
+  });
+  var jstStable = playPointP12ShiftIsoDate_(today, -3), ptStable = playPointP12ShiftIsoDate_(today, -4);
+  var gaFields = ['page_view', 'calculator_form_started', 'calculator_funnel_completed', 'calculator_validation_error'];
+  function label(p) { return p.start + ' ～ ' + p.end; }
+  function metricValue(result, calc) { return result.values ? calc(result.values) : ''; }
+  function ratio(a, b) { return b > 0 ? a / b * 100 : ''; }
+  releases.slice().sort(function(a,b) { return b[2].localeCompare(a[2]); }).forEach(function(release) {
+    cfg.windows.forEach(function(days) {
+      var jp = playPointGrowthReleaseWindow_(release, days, 'Asia/Tokyo');
+      var pt = playPointGrowthReleaseWindow_(release, days, 'America/Los_Angeles');
+      var jpPrev = playPointGrowthWindowTotals_(ga4.days, jp.previous, jstStable, gaFields, true);
+      var jpCurr = playPointGrowthWindowTotals_(ga4.days, jp.current, jstStable, gaFields, true);
+      var scPrev = playPointGrowthWindowTotals_(gsc || {}, pt.previous, ptStable, ['clicks','impressions'], false);
+      var scCurr = playPointGrowthWindowTotals_(gsc || {}, pt.current, ptStable, ['clicks','impressions'], false);
+      var other = releases.filter(function(candidate) {
+        if (playPointGrowthReleaseKey_(candidate) === playPointGrowthReleaseKey_(release)) return false;
+        var start = Utilities.formatDate(new Date(candidate[1]), 'Asia/Tokyo', 'yyyy-MM-dd');
+        var end = Utilities.formatDate(new Date(candidate[2]), 'Asia/Tokyo', 'yyyy-MM-dd');
+        return start <= jp.current.end && end >= jp.previous.start;
+      }).length;
+      function add(name, window, prev, curr, calculate, note) {
+        var a = metricValue(prev, calculate), b = metricValue(curr, calculate);
+        var state = prev.state === 'OBSERVED' && curr.state === 'OBSERVED' ?
+          (a === '' || b === '' ? 'NO_DENOMINATOR' : 'OBSERVED') :
+          prev.state === 'PENDING_FINAL' || curr.state === 'PENDING_FINAL' ? 'PENDING_FINAL' : 'MISSING_DAYS';
+        var row = [release[2],release[0],days,name,label(window.previous),label(window.current),
+          a,b,a === '' || b === '' ? '' : b-a,state,other,note];
+        var key = row.slice(0,6).join('|'), previous = old[key];
+        if (state === 'MISSING_DAYS' && previous && previous[6] !== '' && previous[7] !== '') {
+          row[6] = previous[6]; row[7] = previous[7]; row[8] = previous[8]; row[9] = 'HISTORICAL';
+          row[11] += '。前回の完全取得値を保持（現在の再取得は不可）';
+        }
+        grid.push(row);
+      }
+      [['GA4 PV','page_view'],['計算開始回数','calculator_form_started'],['初回計算成功回数','calculator_funnel_completed'],
+        ['入力エラー回数','calculator_validation_error']].forEach(function(metric) {
+        add(metric[0],jp,jpPrev,jpCurr,function(values) { return values[metric[1]]; },'GA4日別回数、JST');
+      });
+      add('計算成功回数/100PV',jp,jpPrev,jpCurr,function(values) { return ratio(values.calculator_funnel_completed,values.page_view); },'イベント頻度、利用者完了率ではない');
+      add('入力エラー回数/100PV',jp,jpPrev,jpCurr,function(values) { return ratio(values.calculator_validation_error,values.page_view); },'イベント頻度、利用者エラー率ではない');
+      add('Google検索クリック',pt,scPrev,scCurr,function(values) { return values.clicks; },'GSC property total、PT');
+      add('Google検索表示',pt,scPrev,scCurr,function(values) { return values.impressions; },'GSC property total、PT');
+      add('Google検索CTR (%)',pt,scPrev,scCurr,function(values) { return ratio(values.clicks,values.impressions); },'クリック÷表示×100、差はポイント');
+    });
+  });
+  return grid;
+}
+
+function capturePlayPointReleaseEffectReview() {
+  var cfg = PLAYPOINT_RELEASE_REVIEW, timestamp = playPointP12NowText_(), today = timestamp.slice(0,10);
+  try {
+    var ss = resolveAndRememberSpreadsheet_(), additions = [], evidenceErrors = [];
+    try { additions.push(playPointGrowthFetchRelease_(timestamp)); }
+    catch (error) { evidenceErrors.push(playPointP12ErrorText_(error)); }
+    // 公開URLが実行環境から取得できない場合は、管理者が確認済みのstatusとrevisionを証拠として投入できる。
+    var receiptJson = PropertiesService.getScriptProperties().getProperty(cfg.receiptProperty);
+    if (receiptJson) {
+      try {
+        var receipts = JSON.parse(receiptJson);
+        if (!Array.isArray(receipts) || receipts.length > 20) throw new Error('検証済みreceiptは20件以下の配列');
+        receipts.forEach(function(receipt) {
+          additions.push(playPointGrowthVerifiedRelease_(receipt.status, receipt.revision, timestamp));
+        });
+      } catch (error) { evidenceErrors.push(playPointP12ErrorText_(error)); }
+    }
+    var releases = withScriptLock_(function() { return playPointGrowthReleaseLedger_(ss, additions); });
+    var ga4 = { days: {}, start: today, end: today }, gsc = null, dataErrors = [];
+    if (releases.length) {
+      try {
+        var daily = ss.getSheetByName(PLAYPOINT_EVENT_DAILY.sheet);
+        if (!daily) throw new Error('GA4イベント日次が未取得');
+        ga4 = playPointGrowthDailyMap_(daily.getRange(1,1,daily.getLastRow(),8).getValues());
+        if (ga4.end < playPointP12ShiftIsoDate_(today,-3)) dataErrors.push('GA4イベント日次が古い');
+      } catch (error) { dataErrors.push(playPointP12ErrorText_(error)); }
+      try {
+        var end = playPointP12ShiftIsoDate_(today,-4);
+        var start = playPointP12ShiftIsoDate_(today,-PLAYPOINT_EVENT_DAILY.historyDays);
+        gsc = playPointGrowthGscMap_(playPointP12FetchGscRows_(playPointP12GetSiteUrl_(),start,end,['date'],'byProperty'));
+      } catch (error) { dataErrors.push(playPointP12ErrorText_(error)); }
+    }
+    var state = !releases.length ? 'WAITING_EVIDENCE' : evidenceErrors.length || dataErrors.length ? 'PARTIAL' : 'OK';
+    return withScriptLock_(function() {
+      var existing = ss.getSheetByName(cfg.report), prior = [];
+      if (existing && existing.getLastRow() > 5) prior = existing.getRange(6,1,existing.getLastRow()-5,12).getValues();
+      var evidenceState = releases.length + '件のverified公開記録 / ' + state +
+        (evidenceErrors.length || dataErrors.length ? ' / ' + evidenceErrors.concat(dataErrors).join(' | ') : '');
+      var grid = playPointGrowthReleaseGrid_(releases,ga4,gsc,today,timestamp,evidenceState,prior);
+      if (state === 'OK' && grid.slice(5).some(function(row) { return row[9] === 'MISSING_DAYS'; })) {
+        state = 'PARTIAL'; evidenceState += ' / 一部比較窓に欠測あり'; grid[1][1] = evidenceState;
+      }
+      playPointGrowthPublishGrid_(ss,cfg.report,grid,5,0);
+      var sheet = ss.getSheetByName(cfg.report);
+      if (grid.length > 5) sheet.getRange(6,7,grid.length-5,3).setNumberFormat('0.##');
+      playPointP12UpsertHealth_('RELEASE_EFFECT', { lastAttempt: timestamp, lastSuccess: playPointP12NowText_(),
+        dataLatest: releases.length ? ga4.end : '', state: state, consecutiveFailures: 0, error: '', note: evidenceState });
+      return { state: state, releases: releases.length, rows: grid.length };
+    });
+  } catch (error) {
+    withScriptLock_(function() { playPointP12HealthError_('RELEASE_EFFECT', timestamp, playPointP12ErrorText_(error)); });
+    throw error;
+  }
 }

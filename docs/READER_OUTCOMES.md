@@ -65,3 +65,29 @@ node scripts/article-outcome-report.cjs --ga4 response-wrapper.json
 - https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/CohortSpec
 - https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1alpha/properties/runFunnelReport
 - https://support.google.com/analytics/answer/14240153
+
+
+## 2026-11-25 S優先の自動集計・公開変更比較
+
+### 実装済みのイベントを集計へ統合
+
+既存の `capturePlayPointEventDailyReview` と `capturePlayPointReaderOutcomes` のイベントリストに、通常・逆算、モード変更、購入比較、LP導線、共有、カレンダー、PWA、ウィジェット、Web Vitals、役割別行動を追加する。日次の全体イベントは63日（前後28日＋公開日・確定待ちの余裕）、記事別明細と入口帰属は35日のままとする。追加イベントのAPI正常応答に該当行がない時は NO_EVENT_ROW として空欄にし、計測開始や受信の未確認を利用ゼロと扱わない。カレンダーのイベントはカレンダーを開く・iCalを作成する行動であり、実際の予定登録や再訪の保証ではない。
+
+Web Vitalsは既存の有限分類（指標名、rating、ページ群、release_version、端末）を利用し、カスタム定義未登録時は WAITING_DEFINITION とする。観測件数を実際の全利用者数やp75へ置き換えない。新しいGA4管理設定、識別子、自由入力、広告設定は追加しない。
+
+### 📊記事の役割別成果
+
+既存記事台帳と標準 pagePath × eventName × totalUsers を使い、各記事の閲覧者・役割別行動者を同一期間で表示する。意思決定、解決に向けた行動、参照の3役割に既存のarticle_*_actionを割り当てる。計測開始日は、公開と実受信を確認した最初の完全な日を既存Apps Scriptのスクリプトプロパティ `PLAYPOINT_ROLE_ACTIONS_VERIFIED_FROM`（YYYY-MM-DD）へ任意で記録する。未設定時は観測された件数だけを表示し、未発生件数・率を空欄にする。確認済み開始日が直近30日内ならその日以降の同じ窓で取り直す。再訪閲覧者は同じ期間の独立した参考値のみ。計算成功の記事別順序帰属、入口コホート再訪率、疑問解決完了は未計測を維持し、補助イベントから推定しない。母数なし・不一致・小標本・非掲載は明示する。Portfolioの手動判断を変更しない。
+
+### 🚀公開変更履歴 / 📈公開変更効果
+
+既存の日次 `capturePlayPointAdChangeMonitor` から `capturePlayPointReleaseEffectReview()` を実行する。公開status JSONとrevision.txtの両方を読取し、production / verified、main、40桁SHA一致、3検査passed、公開日時と検証日時、対象repo・workflowを検証した記録だけを追記する。マージ日を公開日と見なさない。公開URLがApps Script環境から取得できない場合、実際に検証済みの証拠（同じJSONとrevision文字列）を取得できた管理者だけが `PLAYPOINT_VERIFIED_RELEASE_RECEIPTS_JSON` に `[{"status": { ...実際のstatus JSON... }, "revision": "...実際のSHA..."}]` 形式で登録できる。最大20件/回。同一証拠は重複登録しない。履歴シートを直接書き換えない。初回記録以前の公開や観測間に行われた全公開を捕捉できるとは限らない。取得できなければ WAITING_EVIDENCE/PARTIAL として記録し、過去の証拠を保持する。
+
+前後7/14/28日を、公開開始日から検証完了日まで除いて同じ日数・曜日構成で比較する（GA4はJST、GSCはPTで各々の公開日境界を計算）。GA4 PV・計算開始・初回成功・入力エラーの回数、100PV当たりの行動頻度、GSCのproperty totalの日別クリック・表示・CTRを表示する。確定待ち（GA4は3日、GSCは保守的に4日）や欠測・日付不一致は空欄。過去に両窓を完全取得した値はHISTORICALとして保持する。期間内の他の観測公開数を記録し、因果や唯一の改修効果と断定しない。未確認の公開・季節性・広告・需要の変化は残る。63日より古い未取得窓は復元済みとしない。
+
+### 稼働環境への反映と受入確認
+
+1. PR Gate通過後、bound Apps Scriptの既存 `playpoint-analytics-maintenance.gs` / `playpoint-ad-change-monitor.gs` を同期する。#841の `playpoint-analytics-p1p2.gs` も未反映なら同時に同期。追加トリガーは不要。
+2. `capturePlayPointEventDailyReview()` と `capturePlayPointReaderOutcomes()` を実行し、日次/期間別の追加イベント、NO_EVENT_ROW、役割別成果、VITALSの定義・取得状態を確認する。全イベントの本番受信が確認できたとは扱わない。
+3. `capturePlayPointReleaseEffectReview()` を実行し、公開証拠とJST/PTの比較窓を確認。未取得の場合は実証済みのreceiptのみで復旧し、推定日付を入れない。
+4. 新しいシートや健康状態行の生成、日次・週次の定期実行成功、既存表/手動判断の保存、取得量・実行時間を確認する。GitHubの修正だけで稼働版が更新されたとは判断しない。

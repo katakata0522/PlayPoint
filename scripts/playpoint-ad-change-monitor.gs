@@ -162,6 +162,11 @@ function capturePlayPointAdChangeMonitor(e) {
       result.maintenance.push({ name: name, state: 'ERROR', detail: playPointP12ErrorText_(error) });
     }
   });
+  // 既存の日次イベント・読者集計を使う。追加トリガーや権限なし。
+  if (typeof capturePlayPointReleaseEffectReview === 'function') {
+    try { result.maintenance.push({ name: 'capturePlayPointReleaseEffectReview', state: capturePlayPointReleaseEffectReview().state }); }
+    catch (error) { result.maintenance.push({ name: 'capturePlayPointReleaseEffectReview', state: 'ERROR', detail: playPointP12ErrorText_(error) }); }
+  }
   if (failure) throw failure;
   return result;
 }
