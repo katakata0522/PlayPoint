@@ -612,17 +612,52 @@ var PLAYPOINT_MAINTENANCE = Object.freeze({
 });
 
 function refreshPlayPointArticlePortfolio() {
-  return withScriptLock_(function() {
-    recordHealthAttempt_('ARTICLE_PORTFOLIO');
-    try {
-      var result = playPointRefreshPortfolioUnlocked_();
+  withScriptLock_(function(){recordHealthAttempt_('ARTICLE_PORTFOLIO');});
+  try {
+    // ネットワーク取得は共通ロック外。書込直前に最新のP1・手動判断を読み直す。
+    var inventory=playPointMaintenanceLoadInventory_();
+    if(typeof playPointAnalyticsCheckBudget_==='function')playPointAnalyticsCheckBudget_();
+    return withScriptLock_(function(){
+      var result=playPointRefreshPortfolioUnlocked_(inventory);
       recordHealthSuccess_('ARTICLE_PORTFOLIO', { dataThrough: result.period.slice(-10), dataState: 'MEASUREMENT_PARTIAL', detail: '全台帳 ' + result.inventoryCount + '記事 / 既存行保持 ' + result.preserved + '件 / 判断日時あり ' + result.datedDecisions + '件。主KPI未計測はpartial。' });
       updateHealthSheet_(resolveAndRememberSpreadsheet_());
       return result;
-    } catch (error) {
-      recordHealthFailure_('ARTICLE_PORTFOLIO', error); updateHealthSheet_(resolveAndRememberSpreadsheet_()); throw error;
-    }
-  });
+    });
+  } catch(error) {
+    withScriptLock_(function(){recordHealthFailure_('ARTICLE_PORTFOLIO',error);updateHealthSheet_(resolveAndRememberSpreadsheet_());});
+    throw error;
+  }
+}
+
+function playPointPortfolioPeriodEnd_(value,today){
+  var match=/^(\d{4}-\d{2}-\d{2}) ～ (\d{4}-\d{2}-\d{2})$/.exec(String(value||''));
+  if(!match||!playPointMaintenanceIsoDate_(match[1])||!playPointMaintenanceIsoDate_(match[2])||
+    Date.parse(match[2])-Date.parse(match[1])!==29*86400000||match[2]>=today)return '';
+  return match[2];
+}
+function playPointPortfolioFreshness_(ss,today){
+  var portfolio=ss.getSheetByName(PLAYPOINT_MAINTENANCE.portfolio),p1=ss.getSheetByName('📊ページ価値ファネル');
+  if(!portfolio||portfolio.getLastRow()<11||!p1||p1.getLastRow()<5)
+    return {state:'WAITING_SOURCE',note:'Portfolio/P1の既存表が不足。新規作成・上書きしない'};
+  var head=p1.getRange(2,1,1,12).getValues()[0],p1End=playPointPortfolioPeriodEnd_(head[1],today);
+  if(!p1End||head[0]!=='対象期間'||!/^OK(?:\b|\s|\()/.test(String(head[11]||'')))
+    return {state:'WAITING_SOURCE',note:'正常なP1の過去30日データが未取得'};
+  if(Date.parse(today)-Date.parse(p1End)>9*86400000)
+    return {state:'STALE_SOURCE',note:'P1の計測最新 '+p1End+' が古いため既存判断を保持'};
+  var current=playPointPortfolioPeriodEnd_(portfolio.getRange('B2').getValue(),today);
+  if(current&&current>p1End)return {state:'WAITING_SOURCE',note:'Portfolio '+current+' よりP1 '+p1End+' が古い。上書きしない'};
+  return current===p1End?{state:'CURRENT',note:'Portfolio/P1の計測期間一致 '+p1End}:
+    {state:'DUE',note:'Portfolio '+(current||'未確認')+' / 正常P1 '+p1End+'。更新待ち'};
+}
+
+// P1週次の直後に失敗しても、既存キューから正常P1がある日だけ再試行する。
+function capturePlayPointPortfolioRetry(){
+  var timestamp=playPointP12NowText_(),ss=resolveAndRememberSpreadsheet_(),today=timestamp.slice(0,10);
+  var freshness=withScriptLock_(function(){return playPointPortfolioFreshness_(ss,today);});
+  if(freshness.state==='CURRENT')return {state:'OK',detail:freshness.note};
+  if(freshness.state!=='DUE')return {state:'WAITING_SOURCE',detail:freshness.note};
+  var updated=refreshPlayPointArticlePortfolio();
+  return {state:'OK',period:updated.period,rows:updated.rows};
 }
 
 function playPointMaintenancePath_(value) {
@@ -718,6 +753,8 @@ function playPointMaintenanceBuildPortfolio_(inventory, oldGrid, p1, now) {
     throw new Error('P1の対象期間は実在する過去30日間である必要があります。');
   }
   if (Date.parse(now.slice(0, 10) + 'T00:00:00Z') - Date.parse(end + 'T00:00:00Z') > 9 * 86400000) throw new Error('P1の対象期間が古すぎます。');
+  var oldEnd=oldGrid[1]?playPointPortfolioPeriodEnd_(oldGrid[1][1],now.slice(0,10)):'';
+  if(oldEnd&&oldEnd>end)throw new Error('より新しいPortfolioを古いP1で上書きしない');
   var old = {}, metrics = {}, stamp = oldGrid[0] ? String(oldGrid[0][1] || '') : '';
   oldGrid.slice(11).forEach(function(row) {
     if (typeof row[1] !== 'string' || row[1].charAt(0) !== '/') return;
@@ -782,14 +819,14 @@ function playPointMaintenanceBuildPortfolio_(inventory, oldGrid, p1, now) {
   return { grid: grid.concat(rows), inventoryCount: inventory.length, rows: rows.length, preserved: preserved, datedDecisions: datedDecisions, period: period };
 }
 
-function playPointRefreshPortfolioUnlocked_() {
+function playPointRefreshPortfolioUnlocked_(inventory) {
   var ss = resolveAndRememberSpreadsheet_(), sheet = ss.getSheetByName(PLAYPOINT_MAINTENANCE.portfolio);
   var p1 = ss.getSheetByName('📊ページ価値ファネル');
   if (!sheet || !p1) throw new Error('Portfolio/P1シートがありません。');
   var old = sheet.getDataRange().getValues();
   // Dateセルを表示用日時へ戻し、過去の判断日時を失わない。
   if (old[0]) old[0][1] = sheet.getRange('B1').getDisplayValue();
-  var result = playPointMaintenanceBuildPortfolio_(playPointMaintenanceLoadInventory_(), old, p1.getDataRange().getValues(), currentTimestamp_().slice(0, 16) + ' JST');
+  var result = playPointMaintenanceBuildPortfolio_(inventory||playPointMaintenanceLoadInventory_(), old, p1.getDataRange().getValues(), currentTimestamp_().slice(0, 16) + ' JST');
   var backup = ss.getSheetByName('🗄Portfolio編集判断退避');
   if (!backup) { backup = sheet.copyTo(ss).setName('🗄Portfolio編集判断退避'); backup.hideSheet(); }
   if (sheet.getMaxRows() < result.grid.length) sheet.insertRowsAfter(sheet.getMaxRows(), result.grid.length - sheet.getMaxRows());
