@@ -143,61 +143,22 @@ function capturePlayPointAdChangeMonitor(e) {
       withScriptLock_(function() { playPointP12HealthError_('AD_CHANGE_MONITOR', playPointP12NowText_(), playPointP12ErrorText_(error)); });
     } catch (healthError) { console.error(healthError); }
   }
-  // 通常同期の内側では呼ばれない更新を既存9時トリガーへ接続。補助障害は収益比較を巻き戻さない。
-  result.maintenance = [];
-  try { result.quality = playPointCaptureChangeQuality_(); }
-  catch (qualityError) {
-    result.quality = { state: 'ERROR', detail: playPointP12ErrorText_(qualityError) };
-    try {
-      withScriptLock_(function() { playPointP12HealthError_('CHANGE_QUALITY', playPointP12NowText_(), result.quality.detail); });
-    } catch (healthError) { console.error(healthError); }
+  // 本体は従来どおり。追加分析は期限と前回試行を共有し、滞留した処理を先に実行する。
+  result.maintenance=[];
+  try {
+    if(Date.now()-startedAt<180000) result.quality=playPointAnalyticsWithDeadline_(startedAt+285000,playPointCaptureChangeQuality_);
+    else result.quality={state:'SKIPPED_BUDGET'};
+  } catch(qualityError) {
+    result.quality={state:'ERROR',detail:playPointP12ErrorText_(qualityError)};
+    try{withScriptLock_(function(){playPointP12HealthError_('CHANGE_QUALITY',playPointP12NowText_(),result.quality.detail);});}
+    catch(healthError){console.error(healthError);}
   }
-  ['capturePlayPointEventDailyReview', 'capturePlayPointReaderOutcomes'].forEach(function(name) {
-    var fn = name === 'capturePlayPointEventDailyReview' ?
-      typeof capturePlayPointEventDailyReview === 'function' && capturePlayPointEventDailyReview :
-      typeof capturePlayPointReaderOutcomes === 'function' && capturePlayPointReaderOutcomes;
-    if (!fn) return;
-    try { result.maintenance.push({ name: name, state: fn().state }); }
-    catch (error) {
-      result.maintenance.push({ name: name, state: 'ERROR', detail: playPointP12ErrorText_(error) });
-    }
-  });
-  // 既存の日次イベント・読者集計を使う。追加トリガーや権限なし。
-  if (typeof capturePlayPointReleaseEffectReview === 'function') {
-    try { result.maintenance.push({ name: 'capturePlayPointReleaseEffectReview', state: capturePlayPointReleaseEffectReview().state }); }
-    catch (error) { result.maintenance.push({ name: 'capturePlayPointReleaseEffectReview', state: 'ERROR', detail: playPointP12ErrorText_(error) }); }
-  }
-  // A優先: 日次の既存シートから成長候補を更新。APIを追加する流入診断は週1回に限定。
-  if (typeof capturePlayPointGrowthOpportunityReview === 'function') {
-    try { result.maintenance.push({ name: 'capturePlayPointGrowthOpportunityReview', state: capturePlayPointGrowthOpportunityReview().state }); }
-    catch (error) { result.maintenance.push({ name: 'capturePlayPointGrowthOpportunityReview', state: 'ERROR', detail: playPointP12ErrorText_(error) }); }
-  }
-  if (typeof capturePlayPointTrafficQualityReview === 'function') {
-    var runDate = playPointP12NowText_().slice(0,10);
-    // 手動実行は曜日に依存しない。定期実行は月曜の1回に限定する。
-    if (!e || new Date(runDate + 'T00:00:00Z').getUTCDay() === 1) {
-      if (Date.now() - startedAt < 180000) {
-        try { result.maintenance.push({ name: 'capturePlayPointTrafficQualityReview', state: capturePlayPointTrafficQualityReview(startedAt + 300000).state }); }
-        catch (error) { result.maintenance.push({ name: 'capturePlayPointTrafficQualityReview', state: 'ERROR', detail: playPointP12ErrorText_(error) }); }
-      } else {
-        result.maintenance.push({ name: 'capturePlayPointTrafficQualityReview', state: 'SKIPPED_BUDGET' });
-        withScriptLock_(function(){playPointP12UpsertHealth_('TRAFFIC_QUALITY',{lastAttempt:playPointP12NowText_(),state:'SKIPPED_BUDGET',note:'既存日次処理の時間予算を優先。手動再実行可。前回の表を保持。'});});
-      }
-    }
-  }
-  // B優先の追加分析は木曜だけ。月曜の流入診断と定期的に重ならない。
-  if (typeof capturePlayPointFeatureUsageReview === 'function') {
-    var featureDate = playPointP12NowText_().slice(0,10);
-    if (!e || new Date(featureDate + 'T00:00:00Z').getUTCDay() === 4) {
-      if (Date.now()-startedAt<180000) {
-        try { result.maintenance.push({name:'capturePlayPointFeatureUsageReview',state:capturePlayPointFeatureUsageReview(startedAt+300000).state}); }
-        catch(error) { result.maintenance.push({name:'capturePlayPointFeatureUsageReview',state:'ERROR',detail:playPointP12ErrorText_(error)}); }
-      } else {
-        result.maintenance.push({name:'capturePlayPointFeatureUsageReview',state:'SKIPPED_BUDGET'});
-        try { withScriptLock_(function(){playPointP12UpsertHealth_('FEATURE_USAGE',{lastAttempt:playPointP12NowText_(),state:'SKIPPED_BUDGET',note:'既存日次処理を優先。手動再実行可。前回の表を保持。'});}); }
-        catch(healthError) { console.error(healthError); }
-      }
-    }
+  try {
+    result.maintenance=playPointAnalyticsRunQueue_(startedAt+285000,!e);
+  }catch(queueError){
+    result.maintenance.push({name:'ANALYTICS_QUEUE',state:'ERROR',detail:playPointP12ErrorText_(queueError)});
+    try{withScriptLock_(function(){playPointP12HealthError_('ANALYTICS_QUEUE',playPointP12NowText_(),playPointP12ErrorText_(queueError));});}
+    catch(healthError){console.error(healthError);}
   }
   if (failure) throw failure;
   return result;
@@ -503,4 +464,121 @@ function playPointCaptureChangeQuality_() {
       note: Object.keys(sources).map(function(key) { return key + '=' + sources[key].state; }).join(' / ') });
     return { state: partial ? 'PARTIAL' : 'OK', dataLatest: end, rows: grid.length };
   });
+}
+
+
+// Shared soft deadline, scoped to a single execution. Never changes OAuth scopes or triggers.
+// GAS cannot interrupt an in-flight HTTP request; reserve time before starting each new request.
+var PLAYPOINT_ANALYTICS_DEADLINE_MS=0;
+function playPointAnalyticsCheckBudget_(){
+  if(PLAYPOINT_ANALYTICS_DEADLINE_MS&&Date.now()>=PLAYPOINT_ANALYTICS_DEADLINE_MS-15000)
+    throw new Error('ANALYTICS_BUDGET_EXHAUSTED: 次の取得を開始しません');
+}
+function playPointAnalyticsWithDeadline_(deadline,fn){
+  var old=PLAYPOINT_ANALYTICS_DEADLINE_MS;
+  PLAYPOINT_ANALYTICS_DEADLINE_MS=old?Math.min(old,deadline):deadline;
+  try{playPointAnalyticsCheckBudget_();return fn();}
+  finally{PLAYPOINT_ANALYTICS_DEADLINE_MS=old;}
+}
+
+var PLAYPOINT_ANALYTICS_QUEUE_KEY='PLAYPOINT_ANALYTICS_QUEUE_V1';
+function playPointAnalyticsQueueJobs_(){
+  return [
+    {name:'capturePlayPointEventDailyReview',key:'EVENT_DAILY',days:1,run:typeof capturePlayPointEventDailyReview==='function'?capturePlayPointEventDailyReview:null},
+    {name:'capturePlayPointReaderOutcomes',key:'READER_OUTCOMES',days:1,run:typeof capturePlayPointReaderOutcomes==='function'?capturePlayPointReaderOutcomes:null},
+    {name:'capturePlayPointReleaseEffectReview',key:'RELEASE_EFFECT',days:1,run:typeof capturePlayPointReleaseEffectReview==='function'?capturePlayPointReleaseEffectReview:null},
+    {name:'capturePlayPointGrowthOpportunityReview',key:'GROWTH_OPPORTUNITY',days:1,run:typeof capturePlayPointGrowthOpportunityReview==='function'?capturePlayPointGrowthOpportunityReview:null},
+    {name:'capturePlayPointTrafficQualityReview',key:'TRAFFIC_QUALITY',days:7,run:typeof capturePlayPointTrafficQualityReview==='function'?capturePlayPointTrafficQualityReview:null},
+    {name:'capturePlayPointFeatureUsageReview',key:'FEATURE_USAGE',days:7,run:typeof capturePlayPointFeatureUsageReview==='function'?capturePlayPointFeatureUsageReview:null}
+  ].filter(function(job){return !!job.run;});
+}
+
+function playPointAnalyticsQueueRead_(){
+  if(typeof PropertiesService==='undefined') return {};
+  var raw=PropertiesService.getScriptProperties().getProperty(PLAYPOINT_ANALYTICS_QUEUE_KEY);
+  if(!raw)return {};
+  var parsed=JSON.parse(raw);
+  if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new Error('分析キューの状態が不正。自動上書きしない');
+  return parsed;
+}
+function playPointAnalyticsQueueWrite_(state){
+  if(typeof PropertiesService!=='undefined') PropertiesService.getScriptProperties().setProperty(PLAYPOINT_ANALYTICS_QUEUE_KEY,JSON.stringify(state));
+}
+
+// 期限切れのleaseは回収する。未実行と失敗を別記録にし、失敗の永続的な先頭占有を防ぐ。
+function playPointAnalyticsQueueOrder_(jobs,state,today,manual){
+  return jobs.filter(function(job){
+    var entry=state[job.key]||{};
+    return manual||!entry.nextDue||entry.nextDue<=today;
+  }).sort(function(a,b){
+    var x=state[a.key]||{},y=state[b.key]||{};
+    return String(x.lastAttempt||'').localeCompare(String(y.lastAttempt||''))||
+      String(x.nextDue||'').localeCompare(String(y.nextDue||''));
+  });
+}
+function playPointAnalyticsQueueClaim_(job,today,manual,now){
+  return withScriptLock_(function(){
+    var state=playPointAnalyticsQueueRead_(),entry=state[job.key]||{};
+    if(entry.leaseUntil&&entry.leaseUntil>now)return null;
+    if(!manual&&entry.nextDue&&entry.nextDue>today)return null;
+    // 他の既存トリガーが当日既に更新した日次イベントは重複取得しない。
+    if(!manual&&job.key==='EVENT_DAILY'&&typeof playPointP12ReadHealthRow_==='function'){
+      var health=playPointP12ReadHealthRow_(job.key).values;
+      var finished=health&&health[2];
+      var date=finished instanceof Date?Utilities.formatDate(finished,'Asia/Tokyo','yyyy-MM-dd'):String(finished||'').slice(0,10);
+      if(date===today&&['OK','PARTIAL'].indexOf(String(health[4]))>=0){
+        entry.lastAttempt=today;entry.nextDue=playPointP12ShiftIsoDate_(today,1);entry.state='REUSED_DAILY';
+        state[job.key]=entry;playPointAnalyticsQueueWrite_(state);return null;
+      }
+    }
+    entry.lastAttempt=today;entry.state='RUNNING';entry.leaseUntil=now+360000;
+    // 強制終了時にも翌日の候補になる。明示的な完了時のみ次回の通常周期へ進む。
+    entry.nextDue=playPointP12ShiftIsoDate_(today,1);
+    state[job.key]=entry;playPointAnalyticsQueueWrite_(state);
+    return entry.leaseUntil;
+  });
+}
+function playPointAnalyticsQueueFinish_(job,today,lease,stateName){
+  withScriptLock_(function(){
+    var state=playPointAnalyticsQueueRead_(),entry=state[job.key]||{};
+    if(typeof PropertiesService!=='undefined'&&entry.leaseUntil!==lease)return;
+    entry.leaseUntil=0;entry.state=stateName;
+    if(stateName==='OK')entry.lastSuccess=today;
+    if(['OK','PARTIAL','NO_OBSERVATIONS','WAITING_DEFINITION','WAITING_EVIDENCE'].indexOf(stateName)>=0)entry.lastCompleted=today;
+    // PARTIAL/未定義は永久障害の場合もある。毎日全てを再取得せず通常周期で追跡する。
+    entry.nextDue=playPointP12ShiftIsoDate_(today,entry.lastCompleted===today?job.days:1);
+    state[job.key]=entry;playPointAnalyticsQueueWrite_(state);
+  });
+}
+function playPointAnalyticsRunQueue_(deadline,manual){
+  var timestamp=playPointP12NowText_(), today=timestamp.slice(0,10), jobs=playPointAnalyticsQueueJobs_(), results=[];
+  // 旧テスト/部分導入で日付ヘルパーがない場合も既存の手動動作は維持する。
+  if(typeof PropertiesService==='undefined'||typeof playPointP12ShiftIsoDate_!=='function'||!/^\d{4}-\d{2}-\d{2}$/.test(today)){
+    jobs.forEach(function(job){
+      try{results.push({name:job.name,state:playPointAnalyticsWithDeadline_(deadline,function(){return job.run(deadline);}).state});}
+      catch(error){results.push({name:job.name,state:'ERROR',detail:playPointP12ErrorText_(error)});}
+    });return results;
+  }
+  var ordered=playPointAnalyticsQueueOrder_(jobs,playPointAnalyticsQueueRead_(),today,manual);
+  ordered.forEach(function(job){
+    if(Date.now()>=deadline-45000){
+      results.push({name:job.name,state:'QUEUED_BUDGET'});return;
+    }
+    var lease=playPointAnalyticsQueueClaim_(job,today,manual,Date.now());
+    if(!lease)return;
+    var status='ERROR',detail='';
+    try{
+      var result=playPointAnalyticsWithDeadline_(deadline,function(){return job.run(deadline);});
+      status=result&&result.state||'ERROR';
+    }catch(error){detail=playPointP12ErrorText_(error);status=detail.indexOf('ANALYTICS_BUDGET_EXHAUSTED')>=0?'SKIPPED_BUDGET':'ERROR';}
+    try{playPointAnalyticsQueueFinish_(job,today,lease,status);}
+    catch(error){detail+=(detail?' / ':'')+'queue checkpoint: '+playPointP12ErrorText_(error);status='ERROR';}
+    results.push({name:job.name,state:status,detail:detail});
+  });
+  return results;
+}
+
+// 収益比較を再取得せず、滞留分析だけ手動実行する。新規トリガーは作らない。
+function resumePlayPointAnalyticsQueue(){
+  return playPointAnalyticsRunQueue_(Date.now()+285000,false);
 }
