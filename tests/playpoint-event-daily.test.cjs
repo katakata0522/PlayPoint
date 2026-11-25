@@ -4,7 +4,8 @@ const assert = require('node:assert/strict');
 const vm = require('node:vm');
 const fs = require('node:fs');
 const path = require('node:path');
-const source = fs.readFileSync(path.join(__dirname, '../scripts/playpoint-analytics-maintenance.gs'), 'utf8');
+const source = ['playpoint-analytics-maintenance.gs','playpoint-analytics-release-effects.gs','playpoint-analytics-growth-review.gs','playpoint-analytics-feature-usage.gs']
+  .map(name=>fs.readFileSync(path.join(__dirname,'../scripts',name),'utf8')).join('\n');
 
 function runtime(extra = {}) {
   const c = vm.createContext({
@@ -335,4 +336,67 @@ test('流入診断は時間予算不足時に新たなAPIを呼ばず、旧期�
   assert.equal(calls,0);assert.equal(errors,1);
   const sheet={getLastRow:()=>10,getRange:()=>({getValue:()=> '2026-10-25 ～ 2026-11-23'})};
   assert.throws(()=>c.playPointGrowthAssertPeriodFresh_({getSheetByName:()=>sheet},'x','2026-11-22'),/より新しい/);
+});
+
+
+test('feature usage preserves separate period and sequence users and groups missing classifications without summing people',()=>{
+  const c=runtime(),period={start:'2026-10-24',end:'2026-11-22'},previous={start:'2026-09-24',end:'2026-10-23'},ok=rows=>({state:'OK',rows});
+  const row=(eventName,eventCount,totalUsers,extra={})=>({eventName,eventCount,totalUsers,...extra});
+  const sources={
+    CURRENT:ok([row('diary_tab_opened',40,27),row('diary_entry_saved',14,3),row('game_calculation_completed',32,12)]),
+    PREVIOUS:ok([row('diary_tab_opened',20,15)]),
+    GAME:{state:'PARAMETER_PARTIAL',rows:[
+      row('game_calculation_completed',10,3,{'customEvent:game_id':'monst','customEvent:region':'JP'}),
+      row('game_calculation_completed',4,3,{'customEvent:game_id':'(not set)','customEvent:region':'JP'}),
+      row('game_calculation_completed',5,2,{'customEvent:game_id':'unknown','customEvent:region':'JP'})]},
+    GAME_PAGE:ok([row('game_calculation_completed',7,2,{pagePath:'/en/games/monst/'})]),
+    RETENTION:ok([]),SHARE:{state:'WAITING_DEFINITION',rows:[],detail:'not registered'},WIDGET_ARRIVAL:ok([]),
+    DIARY_FUNNEL:ok([{funnelStepName:'1. 日記を開く',activeUsers:25},{funnelStepName:'2. 24時間以内に保存',activeUsers:2}]),
+    PURCHASE_FUNNEL:{state:'RESTRICTED',rows:[]}
+  };
+  const view=c.playPointFeatureUsageGrid_(period,previous,sources,'2026-11-25');
+  assert.equal(view.state,'PARTIAL');assert(view.grid.slice(6).every(r=>r.length===16));
+  const saved=view.grid.find(r=>r[0]==='30日全体'&&r[2]==='diary_entry_saved');
+  assert.equal(saved[6],'');assert.equal(saved[7],14);assert.equal(saved[8],'');assert.equal(saved[10],3);
+  const missing=view.grid.find(r=>r[0]==='分類明細'&&r[3]==='未分類');
+  assert.equal(missing[7],9);assert.equal(missing[10],'');
+  const page=view.grid.find(r=>r[5]==='/en/games/monst/');
+  assert.equal(page[3],'monst');assert.equal(page[4],'en');
+  const funnel=view.grid.find(r=>r[0]==='順序付き'&&r[1]==='日記');
+  assert.equal(funnel[10],'');assert.equal(funnel[11],25);assert.equal(funnel[12],2);assert.equal(funnel[13],2/25);
+  assert.equal(funnel[14],'SMALL_SAMPLE');
+  assert.equal(view.grid.find(r=>r[0]==='順序付き'&&r[1]==='購入先比較')[13],'');
+  assert.throws(()=>c.playPointFeatureUsageGrid_(period,previous,{...sources,CURRENT:ok(sources.CURRENT.rows.concat([sources.CURRENT.rows[0]]))},'now'),/重複/);
+});
+
+test('ordered diary/purchase sequence rejects missing steps, duplicate rows and impossible success counts',()=>{
+  const c=runtime(),spec=c.PLAYPOINT_FEATURE_USAGE.funnels[0],ok=rows=>({state:'OK',rows});
+  const events={diary_tab_opened:{users:20}};
+  const start={funnelStepName:'1. '+spec.startLabel,activeUsers:15},finish={funnelStepName:'2. '+spec.finishLabel,activeUsers:3};
+  assert.equal(c.playPointFeatureFunnelResult_(ok([start]),spec,events).state,'MISSING_STEP');
+  assert.equal(c.playPointFeatureFunnelResult_(ok([]),spec,events).state,'UNEXPECTED_ZERO');
+  assert.equal(c.playPointFeatureFunnelResult_(ok([start,finish,finish]),spec,events).state,'FUNNEL_MISMATCH');
+  assert.equal(c.playPointFeatureFunnelResult_(ok([start,{...finish,activeUsers:16}]),spec,events).rate,'');
+  assert.equal(c.playPointFeatureFunnelResult_(ok([start,finish]),spec,events).rate,.2);
+});
+
+test('verified workflow reconciliation requires actual mirror and public validation steps, not CI success or skipped deployment',()=>{
+  const c=runtime(),run={status:'completed',conclusion:'success',head_branch:'main',path:'.github/workflows/deploy.yml',head_sha:'a'.repeat(40),id:123};
+  const steps=[{name:'Deploy strict public mirror via rsync',conclusion:'success',started_at:'2026-11-20T00:00:00Z'},
+    {name:'Publish verified deployment status',conclusion:'success',completed_at:'2026-11-20T00:05:00Z'}];
+  const row=c.playPointGrowthWorkflowReceipt_(run,[{conclusion:'success',steps}],'now');
+  assert.equal(row[0],run.head_sha);assert.equal(row[6],'WORKFLOW_STEPS');
+  assert.equal(c.playPointGrowthWorkflowReceipt_(run,[{conclusion:'success',steps:[{...steps[0],conclusion:'skipped'},steps[1]]}],'now'),null);
+  assert.equal(c.playPointGrowthWorkflowReceipt_(run,[{conclusion:'success',steps:[steps[0]]}],'now'),null);
+  assert.throws(()=>c.playPointGrowthWorkflowReceipt_({...run,conclusion:'failure'},[{conclusion:'success',steps}],'now'),/属性/);
+  assert.throws(()=>c.playPointGrowthWorkflowReceipt_({...run,path:'.github/workflows/pr-gate.yml'},[{conclusion:'success',steps}],'now'),/属性/);
+  const scope=c.playPointGrowthReleaseScope_([{filename:'articles/a.html'},{filename:'ko/games/monst/index.html'},{filename:'js/main.js'},{filename:'docs/internal.md'}]);
+  assert.match(scope.scope,/記事 1ファイル/);assert.match(scope.scope,/ゲーム 1ファイル/);assert.match(scope.kpi,/実利用性能/);assert.doesNotMatch(scope.scope,/internal.md/);
+});
+
+test('operations dashboard sorts unresolved issues above healthy sections without deriving missing PV',()=>{
+  const c=runtime(),checks=[{label:'healthy',state:'OK',priority:3,order:0},{label:'error',state:'ERROR',priority:0,order:1},{label:'pending',state:'NOT_CAPTURED',priority:1,order:2}];
+  const grid=c.playPointOperationsDashboardGrid_('now',{pace:'',gap:'',seven:'',thirty:'',period:''},checks);
+  assert.equal(grid[1][1],'');assert.equal(grid[1][3],10000);
+  assert.deepEqual(Array.from(grid.slice(6),r=>r[0]),['error','pending','healthy']);
 });
