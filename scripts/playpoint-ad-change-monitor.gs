@@ -491,7 +491,8 @@ function playPointAnalyticsQueueJobs_(){
     {name:'capturePlayPointReleaseEffectReview',key:'RELEASE_EFFECT',days:1,maxMs:90000,run:typeof capturePlayPointReleaseEffectReview==='function'?capturePlayPointReleaseEffectReview:null},
     {name:'capturePlayPointGrowthOpportunityReview',key:'GROWTH_OPPORTUNITY',days:1,maxMs:45000,run:typeof capturePlayPointGrowthOpportunityReview==='function'?capturePlayPointGrowthOpportunityReview:null},
     {name:'capturePlayPointTrafficQualityReview',key:'TRAFFIC_QUALITY',days:7,maxMs:105000,run:typeof capturePlayPointTrafficQualityReview==='function'?capturePlayPointTrafficQualityReview:null},
-    {name:'capturePlayPointFeatureUsageReview',key:'FEATURE_USAGE',days:7,maxMs:120000,run:typeof capturePlayPointFeatureUsageReview==='function'?capturePlayPointFeatureUsageReview:null}
+    {name:'capturePlayPointFeatureUsageReview',key:'FEATURE_USAGE',days:7,maxMs:120000,run:typeof capturePlayPointFeatureUsageReview==='function'?capturePlayPointFeatureUsageReview:null},
+    {name:'capturePlayPointPortfolioRetry',key:'ARTICLE_PORTFOLIO',days:1,maxMs:90000,run:typeof capturePlayPointPortfolioRetry==='function'?capturePlayPointPortfolioRetry:null}
   ].filter(function(job){return !!job.run;});
 }
 
@@ -546,9 +547,9 @@ function playPointAnalyticsQueueFinish_(job,today,lease,stateName){
     if(typeof PropertiesService!=='undefined'&&entry.leaseUntil!==lease)return;
     entry.leaseUntil=0;entry.state=stateName;
     if(stateName==='OK')entry.lastSuccess=today;
-    if(['OK','PARTIAL','NO_OBSERVATIONS','WAITING_DEFINITION','WAITING_EVIDENCE'].indexOf(stateName)>=0)entry.lastCompleted=today;
+    if(['OK','CHECK','PARTIAL','NO_OBSERVATIONS','WAITING_DEFINITION','WAITING_EVIDENCE','WAITING_SOURCE'].indexOf(stateName)>=0)entry.lastCompleted=today;
     // PARTIAL/未定義は永久障害の場合もある。毎日全てを再取得せず通常周期で追跡する。
-    var ordinary=['OK','NO_OBSERVATIONS','WAITING_DEFINITION','WAITING_EVIDENCE'].indexOf(stateName)>=0;
+    var ordinary=['OK','CHECK','NO_OBSERVATIONS','WAITING_DEFINITION','WAITING_EVIDENCE','WAITING_SOURCE'].indexOf(stateName)>=0;
     entry.nextDue=playPointP12ShiftIsoDate_(today,ordinary?job.days:stateName==='PARTIAL'?Math.min(job.days,2):1);
     state[job.key]=entry;playPointAnalyticsQueueWrite_(state);
   });
