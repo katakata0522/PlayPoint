@@ -284,7 +284,9 @@ async function main() {
   console.log(`[article-css-smoke] verified ${ARTICLE_CASES.length} article generations across ${VIEWPORTS.length} viewports`);
 }
 
-main().catch(error => {
+if (require.main === module) main().catch(error => {
   console.error(error.stack || error.message || error);
   process.exitCode = 1;
 });
+
+module.exports = { startLocalServer, blockExternalRequests };

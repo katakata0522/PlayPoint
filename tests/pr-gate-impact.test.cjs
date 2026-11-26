@@ -97,6 +97,29 @@ test('独立記事HTMLだけの変更はarticles scopeへ絞り、統合対象�
   );
 });
 
+test('案内と更新日の変更に限って対象ページを直接検証する', () => {
+  const { onlyPageDates, ANALYTICS_TESTS } = require('../.github/scripts/detect-pr-gate-impact.cjs');
+  const pages = ['attention.html'];
+  const entry = name => '<url><loc>https://playpoint-sim.com/' + name + '</loc><lastmod>2026-11-01</lastmod></url>';
+  const sitemap = entry('index.html') + entry('attention.html');
+  assert.ok(onlyPageDates('sitemap.xml', sitemap, entry('index.html') + entry('attention.html').replace('11-01', '11-02'), pages));
+  assert.equal(onlyPageDates('sitemap.xml', sitemap, sitemap.replace('11-01', '11-02'), pages), false);
+  const dates = "  'attention.html': '2026-11-01',\n  'index.html': '2026-11-01',";
+  assert.ok(onlyPageDates('scripts/content-dates.cjs', dates, dates.replace('11-01', '11-02'), pages));
+  assert.equal(onlyPageDates('scripts/content-dates.cjs', dates, dates + '\nupdate()', pages), false);
+  const files = [...pages, 'scripts/content-dates.cjs', 'sitemap.xml'];
+  assert.equal(classifyPrGateImpact(files, { datesVerified: true }).browserScope, 'pages');
+  assert.equal(classifyPrGateImpact(files).browserScope, 'full');
+  assert.equal(classifyPrGateImpact(['articles/new-story.html', 'scripts/content-dates.cjs']).browserScope, 'full');
+  assert.equal(classifyPrGateImpact(pages, { regular: false }).browserScope, 'full');
+  assert.deepEqual(resolveChecks('pages'), ['changed-page-smoke.cjs']);
+  const script = 'scripts/playpoint-analytics-maintenance.gs';
+  assert.equal(classifyPrGateImpact([script, ...ANALYTICS_TESTS]).preflightScope, 'analytics');
+  assert.equal(classifyPrGateImpact([script, 'scripts/unknown.gs']).preflightScope, 'full');
+  assert.equal(classifyPrGateImpact([script, 'js/main.js']).preflightScope, 'full');
+  assert.equal(classifyPrGateImpact([script], { regular: false }).preflightScope, 'full');
+});
+
 test('PRブラウザランナーは全8本を3レーン並列またはarticles scopeへ正しく振り分ける', async t => {
   assert.equal(parseScope([]), 'full');
   assert.equal(parseScope(['--scope', 'articles']), 'articles');

@@ -9,6 +9,15 @@ const { generatedFiles } = require('../../scripts/build-targets.cjs');
 const { assetSyncMutableJsTargets, cssTargets } = require('./minify.cjs');
 
 const root = path.resolve(__dirname, '../..');
+if (process.argv.includes('--analytics')) {
+  if (process.argv.length !== 3) throw new Error('分析検証の引数が不正です');
+  const { ANALYTICS_SCRIPTS, ANALYTICS_TESTS } = require('./detect-pr-gate-impact.cjs');
+  const { Script } = require('node:vm');
+  for (const filename of ANALYTICS_SCRIPTS) new Script(fs.readFileSync(path.join(root, filename), 'utf8'), { filename });
+  const run = spawnSync(process.execPath, ['--test', ...ANALYTICS_TESTS], { cwd: root, stdio: 'inherit' });
+  process.exit(run.status ?? 1);
+}
+const syntaxSnapshot = path.join(require('node:os').tmpdir(), 'playpoint-js-' + require('node:crypto').randomUUID() + '.json');
 const prepareDeploy = process.argv.includes('--prepare-deploy');
 const testFiles = fs.readdirSync(path.join(root, 'tests'))
   .filter(file => file.endsWith('.test.cjs'))
@@ -152,7 +161,7 @@ function verifyServiceWorkerPrecacheAssets() {
 snapshotMutableFiles();
 
 try {
-  runPhase('JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
+  runPhase('JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs', '--record', syntaxSnapshot]);
   runInlinePhase('required-tests', '必須テストの実行対象検証', verifyRequiredTests);
   runInlinePhase('public-files', '公開必須ファイル検証', () => { verifyRequiredPublicFiles(); });
   runPhase('生成物の再現性検証', process.execPath, ['.github/scripts/verify-build-output.cjs']);
@@ -173,10 +182,11 @@ try {
   runPhase('全回帰テスト', process.execPath, testArgs(testFiles, 'regression.tap'));
   runPhase('ads.txt検証', process.execPath, ['.github/scripts/check-ads-txt.cjs']);
   runPhase('公開アセット圧縮', process.execPath, ['.github/scripts/minify.cjs']);
-  runPhase('圧縮後JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
+  runPhase('圧縮後JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs', '--changed', syntaxSnapshot]);
   runPhase('圧縮後の配信境界回帰テスト', process.execPath, testArgs(postMinifyTestFiles, 'post-minify-tests.tap'));
 } finally {
   try {
+    fs.rmSync(syntaxSnapshot, { force: true });
     if (!prepareDeploy) restoreMutableFiles();
   } finally {
     if (!phases.finish().passed) process.exitCode = 1;

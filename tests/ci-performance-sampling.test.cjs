@@ -7,6 +7,16 @@ const test = require('node:test');
 const budget = require('../.github/scripts/mobile-performance-budget.cjs');
 const suite = require('../.github/scripts/lighthouse-suite.cjs');
 const diagnostics = require('../.github/scripts/lighthouse-diagnostics.cjs');
+test('Lighthouse selects only existing page-specific changes and expands shared or unknown changes', () => {
+  const diff = (...files) => files.map(file => ':100644 100644 a b M\0' + file + '\0').join('');
+  assert.deepEqual(budget.profilesForDiff(diff('index.html', 'js/ui.js')), ['calculatorHome']);
+  assert.deepEqual(budget.profilesForDiff(diff('blog/index.html', 'ko/articles/google-play-points-join-eligibility.html')), ['articleHub', 'internationalArticleKo']);
+  const all = suite.PAGES.map(([name]) => budget.getProfile(name));
+  for (const raw of ['', diff('style.css'), diff('js/ui.js', '.htaccess'), diff('index.html').replace(' M', ' D')]) {
+    assert.deepEqual(budget.profilesForDiff(raw), all);
+  }
+  assert.deepEqual(budget.requiredProfiles({ GITHUB_EVENT_NAME: 'schedule', AUDIT_TARGET: 'production' }), all);
+});
 function temporary(t) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-lh-test-'));
   t.after(() => fs.rmSync(dir, { recursive: true, force: true })); return dir;
