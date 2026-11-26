@@ -135,7 +135,7 @@ const CONTENT_DATE_OVERRIDES = Object.freeze({
   'sitemap.html': '2026-09-15',
   'embed.html': '2026-10-16',
   // キャンペーン本文の更新日。未再確認の制度説明の公式確認日とは分ける。
-  'latest/index.html': '2026-11-20',
+  'latest/index.html': '2026-11-27',
   'status/diamond/index.html': '2026-08-21',
   'status/platinum/index.html': '2026-08-21',
   'status/gold/index.html': '2026-08-21',
