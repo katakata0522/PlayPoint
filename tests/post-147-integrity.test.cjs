@@ -62,7 +62,7 @@ test('国別比較記事は現在の6地域を案内する', () => {
   assert.match(article, /No Diamond tier/);
   assert.match(article, /CountryCode%3DHK/);
   assert.match(article, /CountryCode%3DIN/);
-  assert.match(article, /og:title" content="Play Points country differences: 6-region comparison"/);
+  assert.match(article, /og:title" content="Google Play Points Available Countries: Full List and 6-Region Comparison"/);
   assert.doesNotMatch(article, /Play Points country differences: US, Korea, Taiwan/);
   assert.match(article, /<meta name="playpoint:official-verified" content="\d{4}-\d{2}-\d{2}">/);
   assert.match(article, /<time data-article-date="official-verified" datetime="\d{4}-\d{2}-\d{2}">[^<]+<\/time>/);

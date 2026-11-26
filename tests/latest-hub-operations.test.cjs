@@ -329,9 +329,10 @@ test('11月の掲載カードは終了済み応募・取得済みコード・楽
   const card = id => latestHtml.match(new RegExp(`<article[^>]+data-benefit-id="${id}"[\\s\\S]*?<\\/article>`))?.[0] || '';
   const family = card('family-posa-2026');
   const rakuten = card('rakuten-gift-coupon-202611');
-  const nextRakuten = card('rakuten-gift-coupon-20261119');
+  const previousRakuten = card('rakuten-gift-coupon-20261119');
+  const nextRakuten = card('rakuten-gift-coupon-20261204');
   const lawson = card('lawson-gift-code-2026-autumn');
-  assert.ok(family && rakuten && nextRakuten && lawson, '終了済み企画と楽天の次回を含む4カードが必要');
+  assert.ok(family && rakuten && previousRakuten && nextRakuten && lawson, '終了済み企画と楽天の次回を含む5カードが必要');
   assert.match(family, /購入・応募は終了/);
   assert.match(family, /11月26日/);
   assert.match(family, /class="benefit-action" href="https:\/\/vdpro\.jp\/fm\.posacards13\/"/);
@@ -340,18 +341,25 @@ test('11月の掲載カードは終了済み応募・取得済みコード・楽
   assert.match(rakuten, /11月11日1:59に取得・利用とも終了/);
   assert.match(rakuten, /先着15,000回/);
   assert.match(rakuten, /現在の購入には利用できません/);
-  assert.match(nextRakuten, /利用開始は11月19日20:00/);
-  assert.match(nextRakuten, /取得11\/9 10:00[〜～]11\/25 1:59・利用11\/19 20:00[〜～]11\/25 1:59/);
-  assert.match(nextRakuten, /先着10,000回/);
+  assert.match(previousRakuten, /取得・利用は終了しました/);
+  assert.match(previousRakuten, /先着10,000回/);
+  assert.match(nextRakuten, /利用開始は12月4日20:00/);
+  assert.match(nextRakuten, /1,500円以上で7%OFF/);
+  assert.match(previousRakuten, /取得11\/9 10:00[〜～]11\/25 1:59・利用11\/19 20:00[〜～]11\/25 1:59/);
+  assert.match(nextRakuten, /取得11\/25 10:00[〜～]12\/11 1:59・利用12\/4 20:00[〜～]12\/11 1:59/);
+  assert.match(nextRakuten, /先着30,000回/);
   const stateAt = (html, now) => classifyBenefit({
     category: 'gift', kind: 'dated',
     start: html.match(/data-start="([^"]+)"/)?.[1],
     end: html.match(/data-end="([^"]+)"/)?.[1]
   }, Date.parse(now));
   assert.equal(stateAt(rakuten, '2026-11-13T12:00:00+09:00'), 'ended');
-  assert.equal(stateAt(nextRakuten, '2026-11-13T12:00:00+09:00'), 'upcoming');
-  assert.equal(stateAt(nextRakuten, '2026-11-19T20:00:00+09:00'), 'soon');
-  assert.equal(stateAt(nextRakuten, '2026-11-25T02:00:00+09:00'), 'ended');
+  assert.equal(stateAt(previousRakuten, '2026-11-13T12:00:00+09:00'), 'upcoming');
+  assert.equal(stateAt(previousRakuten, '2026-11-19T20:00:00+09:00'), 'soon');
+  assert.equal(stateAt(previousRakuten, '2026-11-25T02:00:00+09:00'), 'ended');
+  assert.equal(stateAt(nextRakuten, '2026-11-26T12:00:00+09:00'), 'upcoming');
+  assert.equal(stateAt(nextRakuten, '2026-12-04T20:00:00+09:00'), 'soon');
+  assert.equal(stateAt(nextRakuten, '2026-12-11T02:00:00+09:00'), 'ended');
   assert.match(lawson, /特典取得も11月2日23:59で終了/);
   assert.match(lawson, /取得済み.*12月1日23:59/);
   assert.match(lawson, /class="benefit-action" href="https:\/\/www\.lawson\.co\.jp\/lab\/campaign\/googlemileage2609\/"/);
