@@ -789,9 +789,9 @@ const EN_ARTICLES = [
 const ADDITIONAL_EN_ARTICLES = [
   {
     file: 'en/articles/google-play-points-country-differences.html',
-    title: 'Google Play Points country differences',
-    description: 'A practical country-difference guide for Google Play Points users comparing availability, promotions, rewards, currencies, and local account rules.',
-    h1: 'Google Play Points country differences',
+    title: 'Google Play Points Available Countries: Full List and 6-Region Comparison',
+    description: 'See the 36 countries and regions Google lists for Play Points, plus earning rates and level thresholds for the six regions supported by our calculator.',
+    h1: 'Google Play Points Available Countries: Full List and 6-Region Comparison',
     badge: 'Country differences',
     lead: 'Google Play Points can look similar across countries, but the details that affect a real purchase can change by region. Use this guide to compare the structure without assuming every country has the same offers.',
     intro: 'Many users search in English because they want a simple answer: are Play Points the same in Japan, the US, Korea, Taiwan, or another country? The safest answer is that the checking method can be shared, but the final rule should come from the local Google Play app. This page explains what can differ, what usually stays comparable, and how to use PlayPoint pages without turning a regional guide into a promise.',
@@ -1693,8 +1693,8 @@ const MANUAL_COMPARISON_ARTICLES = [
   {
     "file": "ko/articles/bluearchive-recruitment-stack-update-2026.html",
     "lang": "ko",
-    "title": "블루아카이브 천장이 바뀐다! 11월 10일 모집 스택과 이월 안내",
-    "description": "한국 블루아카이브의 2026년 11월 10일 모집 개편 예고. 100·200스택, 픽업 획득 시 초기화, 일반·특별 스택 이월과 모집 마일리지의 차이를 확인하세요.",
+    "title": "블루아카이브 모집 스택 개편 안내: 천장·이월·마일리지",
+    "description": "한국 블루아카이브의 11월 10일 모집 개편 안내를 정리합니다. 일반·특별 스택, 이월, 픽업 획득 시 초기화와 모집 마일리지의 차이를 확인하세요.",
     "publishedAt": "2026-10-15",
     "modifiedAt": "2026-10-15",
     "manual": true
@@ -1711,8 +1711,8 @@ const MANUAL_COMPARISON_ARTICLES = [
   {
     "file": "ko/articles/google-play-credit-uses.html",
     "lang": "ko",
-    "title": "Google Play 크레딧 사용법: 게임·도서·구독에 쓰는 방법",
-    "description": "한국 Google Play 크레딧으로 살 수 있는 게임·전자책·영화·구독을 확인하고, 잔액 선택과 YouTube 결제 조건, Google Pay·하드웨어의 사용 제한을 알아보세요.",
+    "title": "구글 플레이 크레딧 사용법과 사용처: 게임·도서·구독",
+    "description": "구글 플레이 크레딧으로 무엇을 살 수 있을까요? 게임, 전자책, 영화와 일부 구독에 Google Play 잔액을 사용하는 방법과 사용 제한을 알아보세요.",
     "publishedAt": "2026-10-14",
     "modifiedAt": "2026-10-14",
     "manual": true
@@ -1720,8 +1720,8 @@ const MANUAL_COMPARISON_ARTICLES = [
   {
     "file": "tw/articles/google-play-credit-uses.html",
     "lang": "zh-TW",
-    "title": "Google Play 抵用金怎麼用？遊戲、電子書與訂閱的付款指南",
-    "description": "台灣 Google Play 抵用金可以買什麼？從遊戲、電子書、電影到支援的訂閱，查看餘額付款步驟、YouTube 請款條件與不能使用的地方。",
+    "title": "Google Play 抵用金怎麼用？餘額可以買什麼",
+    "description": "Google Play 抵用金與餘額可以買什麼？整理台灣遊戲、付費 App、電子書及適用訂閱的付款方式、使用限制與注意事項。",
     "publishedAt": "2026-10-14",
     "modifiedAt": "2026-10-14",
     "manual": true
@@ -1859,7 +1859,7 @@ const ARTICLE_HUB_CONTENT = {
     intro: 'Choose the rule that matches your situation. Each guide gives the answer first, then shows what to verify in Google Play.',
     priorityArticles: [
       ['/en/articles/google-play-points-cash-conversion.html', 'Can you cash out Google Play Points?'],
-      ['/en/articles/google-play-points-expiration.html', 'When do Google Play Points expire?'],
+      ['/en/articles/google-play-points-expiration.html', 'Do Google Play Points expire?'],
       ['/en/articles/google-play-points-refund.html', 'What happens to Play Points after a refund?'],
       ['/en/articles/google-play-points-family-sharing.html', 'Can Play Points be shared with family?']
     ],
@@ -1867,7 +1867,7 @@ const ARTICLE_HUB_CONTENT = {
     extraArticles: [
       ['/en/articles/2026-06-20-discount-gift-cards.html', 'Gift card discounts: checks before buying'],
       ['/en/articles/google-play-points-weekly-reward.html', 'Weekly Play Points rewards'],
-      ['/en/articles/google-play-points-multiple-accounts.html', 'Play Points with multiple accounts'],
+      ['/en/articles/google-play-points-multiple-accounts.html', 'Can Play Points be transferred between accounts?'],
       ['/en/articles/google-play-points-use-coupons.html', 'How to use points and coupons'],
       ['/en/articles/google-play-points-join-eligibility.html', 'Eligibility and missing Join button'],
       ['/en/articles/google-play-points-coupon-not-applied.html', 'Coupon not applied'],
