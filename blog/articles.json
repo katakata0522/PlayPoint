@@ -2851,5 +2851,85 @@
         "交換したクレジットを使えないとき"
       ]
     ]
+  },
+  {
+    "id": "google-play-credit-uses",
+    "title": "Google Playクレジットの使い道｜ゲーム以外に何が買える？",
+    "date": "2026-11-26",
+    "modified": "2026-11-26",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "listTitle": "Google Playクレジットの使い道｜ゲーム以外に何が買える？",
+    "listDescription": "Google Playクレジット・残高はゲーム課金以外にも使えます。有料アプリ、電子書籍、映画、定期購入などの使い道、残高の確認方法と有効期限、使えない支払いを日本向けに解説します。",
+    "description": "Google Playクレジット・残高はゲーム課金以外にも使えます。有料アプリ、電子書籍、映画、定期購入などの使い道、残高の確認方法と有効期限、使えない支払いを日本向けに解説します。",
+    "tags": [
+      "Playクレジット",
+      "Google Play残高",
+      "使い道",
+      "ゲーム以外",
+      "有効期限"
+    ],
+    "file": "../articles/2026-11-26-google-play-credit-uses.html",
+    "thumbnail": "../articles/thumbnails/google-play-credit-uses-square-v1.webp",
+    "thumbnailKind": "generic",
+    "ogp": "../articles/ogp/2026-11-26-google-play-credit-uses.jpg",
+    "source": "editorial",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2025-12-25-best-use.html",
+        "Play Pointsの交換先を比較する"
+      ],
+      [
+        "/articles/2026-10-14-play-credit-subscription.html",
+        "Playクレジットと定期購入の条件"
+      ],
+      [
+        "/articles/2026-11-19-google-play-balance-combine-payment.html",
+        "残高不足時の併用払い"
+      ],
+      [
+        "/articles/2026-07-25-play-credit-not-working.html",
+        "残高が使えない原因"
+      ]
+    ]
+  },
+  {
+    "id": "google-store-points-uses",
+    "title": "Google ストアポイントの使い道｜何が買える？有効期限とPlay Pointsとの違い",
+    "date": "2026-11-26",
+    "modified": "2026-11-26",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "listTitle": "Google ストアポイントの使い道｜何が買える？有効期限とPlay Pointsとの違い",
+    "listDescription": "Google ストアポイントはPixelや対象アクセサリーの購入に使える日本向けのポイントです。1ポイントの価値、残高・有効期限、使い方、Google Play PointsやPlayクレジットとの違いを整理します。",
+    "description": "Google ストアポイントはPixelや対象アクセサリーの購入に使える日本向けのポイントです。1ポイントの価値、残高・有効期限、使い方、Google Play PointsやPlayクレジットとの違いを整理します。",
+    "tags": [
+      "Google ストアポイント",
+      "Google Store",
+      "Pixel",
+      "使い道",
+      "有効期限"
+    ],
+    "file": "../articles/2026-11-26-google-store-points-uses.html",
+    "thumbnail": "../articles/thumbnails/google-store-points-uses-square-v1.webp",
+    "thumbnailKind": "generic",
+    "ogp": "../articles/ogp/2026-11-26-google-store-points-uses.jpg",
+    "source": "editorial",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-08-19-play-points-google-store.html",
+        "Play PointsからGoogle Store向け特典コードへの交換"
+      ],
+      [
+        "/articles/2026-11-26-google-play-credit-uses.html",
+        "Google Playクレジットの使い道"
+      ],
+      [
+        "/articles/2025-12-25-best-use.html",
+        "Play Pointsの交換先の選び方"
+      ]
+    ]
   }
 ]
