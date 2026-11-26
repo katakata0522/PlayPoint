@@ -3,6 +3,11 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const root = path.resolve(__dirname, '../..');
+const [mode, snapshot] = process.argv.slice(2);
+if (mode && (!['--record', '--changed'].includes(mode) || !snapshot)) throw new Error('構文検査の引数が不正です');
+const previous = mode === '--changed' && fs.existsSync(snapshot) ? JSON.parse(fs.readFileSync(snapshot, 'utf8')) : {};
+const hashes = {};
+let checked = 0;
 const ignoredDirs = new Set(['.git', 'tests', 'docs', 'node_modules']);
 const ignoredPaths = new Set(['.github/workflows']);
 const ignoredFiles = new Set([]);
@@ -42,6 +47,12 @@ for (const requiredFile of requiredFiles) {
 }
 
 for (const file of jsFiles.sort()) {
+  const name = path.relative(root, file);
+  if (mode) {
+    hashes[name] = require('node:crypto').createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+    if (mode === '--changed' && hashes[name] === previous[name]) continue;
+  }
+  checked++;
   const result = spawnSync(process.execPath, ['--check', file], {
     cwd: root,
     encoding: 'utf8'
@@ -57,5 +68,6 @@ for (const file of jsFiles.sort()) {
 if (failed) {
   process.exitCode = 1;
 } else {
-  console.log(`JS syntax check passed (${jsFiles.length} files).`);
+  if (mode === '--record') fs.writeFileSync(snapshot, JSON.stringify(hashes));
+  console.log(`JS syntax check passed (${checked} checked, ${jsFiles.length} total).`);
 }

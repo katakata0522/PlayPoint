@@ -4,6 +4,16 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { writeJson } = require('./ci-evidence.cjs');
 
+const { execFileSync } = require('node:child_process');
+const PAGES = Object.freeze([
+  ['calculator-home', '/'],
+  ['article-hub', '/blog/'],
+  ['representative-article', '/articles/2026-03-10-play-points-reflection-timing.html'],
+  ['international-article-en', '/en/articles/google-play-points-join-eligibility.html'],
+  ['international-article-ko', '/ko/articles/google-play-points-join-eligibility.html'],
+  ['international-article-tw', '/tw/articles/google-play-points-join-eligibility.html']
+]);
+
 const KB = 1024;
 const TRANSFER_BASELINE_FILE = path.resolve(__dirname, '../performance/transfer-baselines.json');
 const TRANSFER_BASELINE_CONFIG = Object.freeze(JSON.parse(fs.readFileSync(TRANSFER_BASELINE_FILE, 'utf8')));
@@ -198,13 +208,46 @@ function needsAdditionalSamples(report, profile) {
   return metrics.firstPartyTransferBytes <= limits.firstPartyTransferBytes &&
     UX_METRIC_KEYS.some(key => compareMetric(key, metrics[key], limits[key]));
 }
+// 限定するのは代表画面専用の入力だけ。共有資産・追加削除・未知のパスは全画面で計測する。
+function profilesForDiff(raw) {
+  const all = PAGES.map(([name]) => getProfile(name));
+  const routes = new Map(PAGES.map(([name, route]) => [
+    route.slice(1) + (route.endsWith('/') ? 'index.html' : ''), getProfile(name)
+  ]));
+  routes.set('js/ui.js', 'calculatorHome');
+  routes.set('blog/script.js', 'articleHub');
+  routes.set('articles/styles/2026-03-10-play-points-reflection-timing.css', 'representativeArticle');
+  const entries = raw.split('\0');
+  if (entries.pop() !== '' || !entries.length || entries.length % 2) return all;
+  const selected = new Set();
+  for (let index = 0; index < entries.length; index += 2) {
+    const profile = routes.get(entries[index + 1]);
+    if (!profile || !/^:100644 100644 [0-9a-f]+ [0-9a-f]+ M$/.test(entries[index])) return all;
+    selected.add(profile);
+  }
+  return all.filter(profile => selected.has(profile));
+}
+
+function requiredProfiles(env = process.env) {
+  const base = env.PR_BASE_SHA;
+  if (env.GITHUB_EVENT_NAME === 'pull_request' && env.AUDIT_TARGET === 'local' && /^[0-9a-f]{40}$/.test(base)) {
+    try {
+      const git = (...args) => execFileSync('git', args, { cwd: path.resolve(__dirname, '../..'), encoding: 'utf8' });
+      if (git('rev-parse', 'HEAD^1').trim() === base) return profilesForDiff(git('diff', '--raw', '--no-renames', '-z', base, 'HEAD'));
+    } catch (error) {
+      console.warn('Performance scope unavailable, measuring all pages: ' + error.message);
+    }
+  }
+  return PAGES.map(([name]) => getProfile(name));
+}
+
 function reportPathsFromArgs(argv, { requireComplete = true } = {}) {
   if (argv[0] !== '--manifest') return argv;
   if (argv.length !== 2) throw new Error('--manifest requires exactly one path');
   const manifest = JSON.parse(fs.readFileSync(argv[1], 'utf8'));
   if (manifest.schemaVersion !== 1 || !Array.isArray(manifest.reports) || !manifest.reports.length) throw new Error('invalid audit manifest');
   const profiles = new Set(manifest.reports.map(getProfile));
-  const required = Object.keys(MINIMUM_SAMPLES).filter(profile => profile !== 'default');
+  const required = requiredProfiles();
   if (requireComplete && required.some(profile => !profiles.has(profile))) throw new Error('audit manifest is missing a required page profile');
   if (requireComplete && manifest.passed !== true) throw new Error('audit collection did not complete successfully');
   return manifest.reports;
@@ -356,6 +399,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  PAGES, requiredProfiles, profilesForDiff,
   ARTICLE_HARD_BUDGET,
   BUDGETS: HARD_BUDGETS.default,
   HARD_BUDGETS,

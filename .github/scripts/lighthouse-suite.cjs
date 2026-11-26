@@ -2,16 +2,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { getProfile, readReport, needsAdditionalSamples } = require('./mobile-performance-budget.cjs');
+const { PAGES, requiredProfiles, getProfile, readReport, needsAdditionalSamples } = require('./mobile-performance-budget.cjs');
 const { writeJson, cleanError, fingerprint } = require('./ci-evidence.cjs');
-const PAGES = Object.freeze([
-  ['calculator-home', '/'],
-  ['article-hub', '/blog/'],
-  ['representative-article', '/articles/2026-03-10-play-points-reflection-timing.html'],
-  ['international-article-en', '/en/articles/google-play-points-join-eligibility.html'],
-  ['international-article-ko', '/ko/articles/google-play-points-join-eligibility.html'],
-  ['international-article-tw', '/tw/articles/google-play-points-join-eligibility.html']
-]);
 const BLOCKED = Object.freeze([
   'https://www.googletagmanager.com/*', 'https://www.google-analytics.com/*', 'https://analytics.google.com/*',
   'https://stats.g.doubleclick.net/*', 'https://pagead2.googlesyndication.com/*', 'https://googleads.g.doubleclick.net/*'
@@ -49,7 +41,9 @@ function main({ outputDir = 'performance-artifacts', env = process.env, execute 
     if (result.error || result.status !== 0) return null;
     try { return readReport(file); } catch (error) { attempt.error = cleanError(error); save(); return null; }
   }
+  const required = requiredProfiles(env);
   for (const [name, route] of PAGES) {
+    if (!required.includes(getProfile(name))) continue;
     const home = name === 'calculator-home' || name === 'article-hub';
     const first = audit(name, route, 1, home);
     let additional = home;
