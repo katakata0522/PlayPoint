@@ -2266,7 +2266,7 @@
   },
   {
     "id": "discount-gift-cards",
-    "title": "Google Playギフトコードをお得に買う｜楽天・ローソンの還元条件と選び方",
+    "title": "Google Playギフトカードをお得に買う方法｜楽天・コンビニの割引と還元",
     "date": "2026-06-20",
     "category": "キャンペーン",
     "tags": [
@@ -2275,15 +2275,15 @@
       "割引",
       "ポイント還元"
     ],
-    "description": "Google Play ギフトコードを楽天・コンビニ各社で買う際の条件整理。楽天の旧500円OFF終了や次回11月19日20時利用、セブン抽選や終了後期限を確認できます。",
+    "description": "Google Playギフトカード・ギフトコードをお得に買うには？楽天市場やコンビニの割引、ポイント還元、購入条件を比較。利用できる特典と終了済みの企画を分けて紹介します。",
     "file": "../articles/2026-06-20-discount-gift-cards.html",
     "thumbnail": "../articles/thumbnails/discount-gift-cards-square-v1.webp",
-    "modified": "2026-11-13",
+    "modified": "2026-11-26",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/discount-gift-cards.png",
     "thumbnailKind": "generic",
-    "listDescription": "楽天の旧500円OFFは終了。次回の利用は11月19日20時から。セブンの抽選と、ファミマ・ローソンの受付終了後の期限も購入先ごとに確認できます。",
-    "listTitle": "Google Playギフトコードをお得に買う｜楽天・ローソンの還元条件と選び方"
+    "listDescription": "Google Playギフトカード・ギフトコードをお得に買うには？楽天市場やコンビニの割引、ポイント還元、購入条件を比較。利用できる特典と終了済みの企画を分けて紹介します。",
+    "listTitle": "Google Playギフトカードをお得に買う方法"
   },
   {
     "id": "play-points-reflection-timing",
@@ -2780,9 +2780,9 @@
   },
   {
     "id": "2026-10-23-google-play-gift-card-comparison",
-    "title": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】",
+    "title": "Google Playギフトカードはどこで買うと得？楽天・コンビニの特典比較",
     "date": "2026-10-28",
-    "modified": "2026-11-19",
+    "modified": "2026-11-26",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2790,9 +2790,9 @@
       "POSA",
       "購入先比較"
     ],
-    "description": "11月19日時点のGoogle Playギフトカード購入先を比較。ストア内デジタルギフト最大10％還元や楽天11/19開始500円OFF、セブン・ファミマ終了後の確認点を案内します。",
-    "listTitle": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】",
-    "listDescription": "11月19日時点のGoogle Playギフトカード購入先を比較。ストア内デジタルギフト最大10％還元や楽天11/19開始500円OFF、セブン・ファミマ終了後の確認点を案内します。",
+    "description": "Google Playギフトカードの購入先を比較。楽天の割引クーポン、セブン・ファミマの終了済み抽選、別企画のデジタルギフト還元を区別し、期限と条件を案内します。",
+    "listTitle": "Google Playギフトカードの購入先比較",
+    "listDescription": "Google Playギフトカードの購入先を比較。楽天の割引クーポン、セブン・ファミマの終了済み抽選、別企画のデジタルギフト還元を区別し、期限と条件を案内します。",
     "file": "../articles/2026-10-23-google-play-gift-card-comparison.html",
     "ogp": "../articles/ogp/2026-10-23-google-play-gift-card-comparison.jpg",
     "thumbnail": "../articles/thumbnails/2026-10-23-google-play-gift-card-comparison-square-v1.webp",
