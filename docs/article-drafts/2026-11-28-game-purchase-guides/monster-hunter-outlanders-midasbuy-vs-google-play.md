@@ -26,7 +26,7 @@ Midasbuyの詳細FAQでは、基本6,480枚のパックを再購入した場合�
 
 基本6,480枚に対するWeb通常時の追加1,800枚は約27.78%。一方、ゲーム内の8,080枚とWebの8,280枚を比べると約2.48%の増量です。初回の場合は12,960枚と13,160枚なので約1.54%の差です。
 
-同じMidasbuyの別の通貨ガイドでは、ゲーム内通常分を基本数量だけで示した表もあり、資料間に不一致があります。この記事では詳細FAQの数字を用いた比較例に限定し、日本版の実画面を照合するまでは現行商品の差を断定しません。 [別資料](https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-crimson-crest-coins-news_pgywrs)
+同じMidasbuyの別の通貨ガイドでは、ゲーム内通常分を基本数量だけで示した表もあり、資料間に不一致があります。この記事では詳細FAQの数字を用いた比較例に限定し、日本版の実画面を照合するまでは現行商品の差を断定しません。 [別資料](https://www.midasbuy.com/midasbuy/mc/article/monster-hunter-outlanders-top-up-news_err9yt)
 
 ## 日本円ではどう考える？
 
@@ -46,7 +46,7 @@ MidasbuyのGoogle Pay支払いとGoogle Play Billingは別物です。Google Pla
 
 - [Midasbuy公式FAQ：初回・通常時の米ドル建て比較表](https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-top-up-faq-news_hdpsuw)
 - [日本向け公式チャージページ（価格は取得時点の表示）](https://www.midasbuy.com/midasbuy/jp/buy/monster-hunter-outlanders?lang=ja)
-- [Midasbuy通貨ガイド（通常時の比較表にFAQとの相違あり）](https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-crimson-crest-coins-news_pgywrs)
+- [Midasbuy英語版チャージガイド（通常時の比較表にFAQとの相違あり）](https://www.midasbuy.com/midasbuy/mc/article/monster-hunter-outlanders-top-up-news_err9yt)
 - [Google Play Pointsの獲得条件・税抜対象額](https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja)
 - [Google Play以外の決済の扱い](https://support.google.com/googleplay/answer/11174377?hl=ja)
 
