@@ -69,7 +69,9 @@ Midasbuyの詳細FAQでは、基本6,480枚のパックを再購入した場合�
 
 ## 買う場所を決める前に
 
-MidasbuyのGoogle Pay支払いとGoogle Play Billingは別物です。Google Playのポイントや残高を使いたいときは、実際にGoogle Playで処理される購入かどうかを確認してください。欲しい商品を決めてから初回の残りと両経路を比べるのが、無理のない選び方です。
+Midasbuyは公式チャージ窓口の一つで、購入分とボーナス分は決済時に選択したアカウントへ直接付与されます。公式FAQではプロフィール右上の数字がロールID（UID）であると説明されています。購入前には選択したアカウントと価格、合計枚数を見ておきましょう。通常は支払い確認後数分以内に反映される案内ですが、届かない場合は再ログインし、解決しなければ注文番号を添えてMidasbuyサポートへ問い合わせます。購入が処理中なら追加購入せず履歴を確認します。 [公式FAQ](https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-top-up-faq-news_hdpsuw)
+
+Webの決済サービスとGoogle Play Billingは別物です。Google Playのポイントや残高を使いたいときは、実際にGoogle Playで処理される購入かどうかを見ましょう。まず欲しい商品を決めてから、初回の残りと両経路を比べるのが無理のない選び方です。
 
 ## 公式情報・確認に使用した資料
 
@@ -87,5 +89,7 @@ MidasbuyのGoogle Pay支払いとGoogle Play Billingは別物です。Google Pla
 
 - [Midasbuy日本語通貨ガイド：通常時数量の相違資料](https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-crimson-crest-coins-news_pgywrs)
 
+- [Midasbuy日本向け公式チャージ・特典案内](https://www.midasbuy.com/midasbuy/jp/promotions/monster-hunter-outlanders?lang=ja)
+
 ---
-編集用メモ（公開本文には含めない）：日本語FAQと英語FAQの7商品数量一致、日本向け公式ストア7商品の円価格を確認。日本版の現在のゲーム内価格・通常時数量・初回共有条件・資料間矛盾は残る。
+編集用メモ（公開本文には含めない）：日本語・英語FAQの7商品数量、日本向けWeb掲載例、公式プロモーション・受取方法を照合。2回目以降の公式資料間不一致、日本のログイン後価格・数量・初回共有条件は引き続き未取得。

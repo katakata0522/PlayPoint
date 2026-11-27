@@ -10,13 +10,13 @@
       "kind": "evergreen",
       "status": "review",
       "role": "game_decision",
-      "blocker": "公式のWeb販売開始・受取条件・にゃんこクラブを確認。ネコカンの同一商品実売価格と増量数、ゴールド会員価格は未取得。架空の数値は仕組みの説明に限定。",
+      "blocker": "公式のWeb販売開始・受取条件・にゃんこクラブに加え、にゃんポイント1%と決済・注文制約を確認し損得式を修正。日本版の両経路の実売価格/数量、ゴールド会員価格、ポイント端数処理は未取得。仮定例は実売表ではない。",
       "manifestCandidate": {
         "id": "battlecats-webstore-vs-google-play",
         "title": "にゃんこ大戦争の課金はどこがお得？にゃんこ大商店・Google Playのネコカン比較",
         "listTitle": "にゃんこ大戦争｜ネコカンの購入先比較",
-        "description": "にゃんこ大商店のネコカン増量とGoogle Play Pointsを比較。増量別の損得分岐点、にゃんこクラブの受取条件、Web購入品とポイント交換品の違いを解説。",
-        "listDescription": "にゃんこ大商店のネコカン増量とGoogle Play Pointsを比較。増量別の損得分岐点、にゃんこクラブの受取条件、Web購入品とポイント交換品の違いを解説。",
+        "description": "にゃんこ大商店のネコカン増量・にゃんポイント1%とGoogle Play Pointsを比較。ギフトコード割引の損得分岐点、購入・受取条件、にゃんこクラブも解説。",
+        "listDescription": "にゃんこ大商店のネコカン増量・にゃんポイント1%とGoogle Play Pointsを比較。ギフトコード割引の損得分岐点、購入・受取条件、にゃんこクラブも解説。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "にゃんこ大戦争",
@@ -103,6 +103,18 @@
         {
           "title": "ポノス：Ver.15.4でのゴールド会員特典変更",
           "url": "https://ponosgames.com/information/appli/battlecats/club/goldmembers_prev15-3.html"
+        },
+        {
+          "title": "にゃんこ大商店公式FAQ：ゲーム内商品・にゃんポイント・クーポン",
+          "url": "https://www.nyanko-daishoten.jp/Page/guide_faq.aspx"
+        },
+        {
+          "title": "にゃんこ大商店公式利用ガイド：ポイント・カード決済・アカウント連携",
+          "url": "https://www.nyanko-daishoten.jp/Page/guide.aspx"
+        },
+        {
+          "title": "にゃんこ大商店公式会員案内：新規クーポン",
+          "url": "https://www.nyanko-daishoten.jp/Page/welcome.aspx"
         }
       ]
     },
@@ -112,7 +124,7 @@
       "kind": "limited",
       "status": "review",
       "role": "game_decision",
-      "blocker": "第2期の販売期間・無料報酬は公式確認。第1期の価格などは二次情報として明示。第2期の実売価格・内容・購入上限の一次確認が残る。",
+      "blocker": "第2期の販売期間・無料報酬・初回値引きとEX半額企画を公式確認。第1期の価格は二次情報。第2期の商品別価格・内容・上限は一次未取得。",
       "manifestCandidate": {
         "id": "battlecats-14th-anniversary-packs",
         "title": "にゃんこ大戦争14周年｜大感謝パック・超限定セール第2期はいつまで？",
@@ -193,6 +205,10 @@
         {
           "title": "ゲームエイト：第1期のパック価格・継続商品の報告（二次情報）",
           "url": "https://game8.jp/battlecats/834240"
+        },
+        {
+          "title": "にゃんこ大商店公式FAQ：ゲーム内商品のポイント・クーポン",
+          "url": "https://www.nyanko-daishoten.jp/Page/guide_faq.aspx"
         }
       ]
     },
@@ -202,7 +218,7 @@
       "kind": "evergreen",
       "status": "review",
       "role": "game_decision",
-      "blocker": "日本語FAQと英語FAQの7商品数量一致、日本向け公式ストア7商品の円価格を確認。日本版の現在のゲーム内価格・通常時数量・初回共有条件・資料間矛盾は残る。",
+      "blocker": "日本語・英語FAQの7商品数量、日本向けWeb掲載例、公式プロモーション・受取方法を照合。2回目以降の公式資料間不一致、日本のログイン後価格・数量・初回共有条件は引き続き未取得。",
       "manifestCandidate": {
         "id": "monster-hunter-outlanders-midasbuy-vs-google-play",
         "title": "モンスターハンターアウトランダーズの課金比較｜MidasbuyとGoogle Playはどっちがお得？",
@@ -295,6 +311,10 @@
         {
           "title": "Midasbuy日本語通貨ガイド：通常時数量の相違資料",
           "url": "https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-crimson-crest-coins-news_pgywrs"
+        },
+        {
+          "title": "Midasbuy日本向け公式チャージ・特典案内",
+          "url": "https://www.midasbuy.com/midasbuy/jp/promotions/monster-hunter-outlanders?lang=ja"
         }
       ]
     },
