@@ -23,11 +23,11 @@ test('high-impression JP articles expose the observed search intent without keyw
   const quests = read('articles/2026-07-31-google-play-quests.html');
   assert.match(
     quests,
-    /<title>Google Playのクエストとは？ポイント報酬の条件・始め方を解説<\/title>/
+    /<title>Google Playのクエストとは？始め方・達成条件・反映されない時の確認<\/title>/
   );
   assert.match(
     quests,
-    /<h1[^>]*>Google Playのクエストとは？ポイント報酬の条件・始め方を解説<\/h1>/
+    /<h1[^>]*>Google Playのクエストとは？始め方・達成条件・反映されない時の確認<\/h1>/
   );
   assert.match(quests, /「購入」に数えられる取引/);
 
@@ -135,7 +135,7 @@ test('central article surfaces stay in sync with updated JP titles', () => {
   const expected = [
     'スーパーウィークリーリワードで何が当たる？Google Play Pointsの賞品と対象ランク',
     'Google PlayのSuper Ticket（スーパーチケット）とは？配布日・保存期限・使い方',
-    'Google Playのクエストとは？ポイント報酬の条件・始め方を解説',
+    'Google Playのクエストとは？始め方・達成条件・反映されない時の確認',
     'Google Play Pointsが反映されない・遅い時は？いつ付くかと確認する順番'
   ];
 
