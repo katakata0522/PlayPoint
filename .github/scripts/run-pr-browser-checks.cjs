@@ -46,11 +46,12 @@ function parseScope(argv = process.argv.slice(2)) {
   const index = argv.indexOf('--scope');
   if (index === -1) return 'full';
   const value = String(argv[index + 1] || '').trim();
-  if (value === 'full' || value === 'articles') return value;
+  if (['full', 'articles', 'pages'].includes(value)) return value;
   throw new Error(`Unknown browser check scope: ${value || '(empty)'}`);
 }
 
 function resolveLanes(scope = 'full') {
+  if (scope === 'pages') return [[{ script: 'changed-page-smoke.cjs', args: [], env: {} }]];
   if (scope === 'articles') return ARTICLE_PR_LANES;
   if (scope === 'full') return FULL_PR_LANES;
   throw new Error(`Unsupported browser check scope: ${scope}`);
@@ -79,7 +80,10 @@ function runScript(script, args = [], extraEnv = {}) {
 }
 
 async function runPrChecks({ scope = 'full', directory = evidenceDirectory, run = runScript } = {}) {
-  const lanes = resolveLanes(scope);
+  const lanes = [...resolveLanes(scope)];
+  if (scope === 'articles' && JSON.parse(process.env.PLAYPOINT_CHANGED_PAGES || '[]').length) {
+    lanes.push(...resolveLanes('pages'));
+  }
   // 並列実行前に一度だけ前回の証跡ディレクトリを初期化する。
   fs.rmSync(directory, { recursive: true, force: true });
   fs.mkdirSync(directory, { recursive: true });

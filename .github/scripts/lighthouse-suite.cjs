@@ -2,16 +2,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { getProfile, readReport, needsAdditionalSamples } = require('./mobile-performance-budget.cjs');
+const { PAGES, MINIMUM_SAMPLES, requiredProfiles, getProfile, readReport, needsAdditionalSamples } = require('./mobile-performance-budget.cjs');
 const { writeJson, cleanError, fingerprint } = require('./ci-evidence.cjs');
-const PAGES = Object.freeze([
-  ['calculator-home', '/'],
-  ['article-hub', '/blog/'],
-  ['representative-article', '/articles/2026-03-10-play-points-reflection-timing.html'],
-  ['international-article-en', '/en/articles/google-play-points-join-eligibility.html'],
-  ['international-article-ko', '/ko/articles/google-play-points-join-eligibility.html'],
-  ['international-article-tw', '/tw/articles/google-play-points-join-eligibility.html']
-]);
 const BLOCKED = Object.freeze([
   'https://www.googletagmanager.com/*', 'https://www.google-analytics.com/*', 'https://analytics.google.com/*',
   'https://stats.g.doubleclick.net/*', 'https://pagead2.googlesyndication.com/*', 'https://googleads.g.doubleclick.net/*'
@@ -49,15 +41,19 @@ function main({ outputDir = 'performance-artifacts', env = process.env, execute 
     if (result.error || result.status !== 0) return null;
     try { return readReport(file); } catch (error) { attempt.error = cleanError(error); save(); return null; }
   }
+  const required = requiredProfiles(env);
   for (const [name, route] of PAGES) {
-    const home = name === 'calculator-home' || name === 'article-hub';
-    const first = audit(name, route, 1, home);
-    let additional = home;
-    if (!home && first) {
-      try { additional = needsAdditionalSamples(first, getProfile(name)); }
+    const profile = getProfile(name);
+    if (!required.includes(profile)) continue;
+    const minimum = MINIMUM_SAMPLES[profile] ?? MINIMUM_SAMPLES.default;
+    const numbered = minimum > 1;
+    const first = audit(name, route, 1, numbered);
+    let samples = minimum;
+    if (!numbered && first) {
+      try { if (needsAdditionalSamples(first, profile)) samples = 3; }
       catch (error) { manifest.attempts.at(-1).error = cleanError(error); }
     }
-    if (additional) { audit(name, route, 2, home); audit(name, route, 3, home); }
+    for (let number = 2; number <= samples; number++) audit(name, route, number, numbered);
   }
   manifest.passed = manifest.attempts.every(attempt => attempt.exitCode === 0 && !attempt.error);
   save();
