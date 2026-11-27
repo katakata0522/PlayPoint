@@ -72,7 +72,7 @@ const TARGETS = Object.freeze({
 
 const MINIMUM_SAMPLES = Object.freeze({
   calculatorHome: 3,
-  articleHub: 1,
+  articleHub: 3,
   representativeArticle: 1,
   internationalArticleEn: 1,
   internationalArticleKo: 1,
