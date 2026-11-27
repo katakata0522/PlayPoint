@@ -55,6 +55,7 @@ const START_HERE_SLUGS = Object.freeze({
 });
 
 const CATEGORY_OVERRIDES = Object.freeze({
+  'google-play-payment-failed': 'troubleshooting',
   'google-play-points-basics': 'account',
   'google-play-credit-subscriptions': 'earn',
   'google-play-credit-uses': 'earn',

@@ -233,18 +233,19 @@ function renderSearchWidget(localeKey, newline) {
   ].join(newline);
 }
 
-function renderNextWidget(localeKey, role, variant, newline, relativePath = '') {
+function renderNextWidget(localeKey, role, variant, newline, relativePath, rootDir) {
   const copy = COPY[localeKey];
   const config = variant === 'article' ? (copy.role[role] || copy.role.reference) : (variant === 'hub' ? copy.hub : null);
   if (!config) return '';
   const game = require('./intl-game-article-discovery.cjs').metadata('/' + relativePath.replace(/^\//, ''));
-  const target = game ? `/${localeKey}/games/${game.id}/` : resolveTarget(localeKey, config.target);
+  const hasGameCalculator = game && fs.existsSync(path.join(rootDir, localeKey, 'games', game.id, 'index.html'));
+  const target = hasGameCalculator ? `/${localeKey}/games/${game.id}/` : resolveTarget(localeKey, config.target);
   const roleClass = variant === 'article' ? ' sidebar-widget--role-' + (role || 'reference') : '';
   return [
     '  <section class="sidebar-widget sidebar-widget--next' + roleClass + '">',
     '    <h2 class="sidebar-widget-title">' + escapeHtml(config.kicker) + '</h2>',
     '    <div class="sidebar-widget-body">',
-    '      <a class="sidebar-next-link" href="' + escapeHtml(target) + '">' + escapeHtml(game ? game.name + ' · ' + config.cta : config.cta) + '</a>',
+      '      <a class="sidebar-next-link" href="' + escapeHtml(target) + '">' + escapeHtml(hasGameCalculator ? game.name + ' · ' + config.cta : config.cta) + '</a>',
     '    </div>',
     '  </section>'
   ].join(newline);
@@ -355,7 +356,7 @@ function renderSidebar(localeKey, relativePath, section, role, relatedArticles, 
     const related = renderRelatedWidget(localeKey, relatedArticles, newline);
     if (related) widgets.push(related);
   }
-  const next = renderNextWidget(localeKey, role, variant, newline, relativePath);
+  const next = renderNextWidget(localeKey, role, variant, newline, relativePath, rootDir);
   if (next) widgets.push(next);
   widgets.push(renderSearchWidget(localeKey, newline));
   widgets.push(renderBrowseWidget(localeKey, section, catalog, newline, rootDir));

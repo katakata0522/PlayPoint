@@ -122,14 +122,20 @@ const gameContentDateOverrides = Object.fromEntries(
   getGamePageHtmlFiles(rootDir).map(file => [file, getGeneratedGamePageContentDate(file)])
 );
 
+const REGIONAL_ARTICLE_DATES = Object.freeze({
+  'hk/google-play-payment-failed.html': '2026-11-28',
+  'in/google-play-payment-failed.html': '2026-11-28'
+});
+
 const CONTENT_DATE_OVERRIDES = Object.freeze({
   'author/katakata.html': '2026-10-08',
   'about-playpoints.html': '2026-10-14',
   'info.html': '2026-09-22',
   'changelog.html': '2026-09-22',
   'attention.html': '2026-11-21',
-  'hk/google-play-points-guide.html': '2026-11-19',
-  'in/google-play-points-guide.html': '2026-11-19',
+  'hk/google-play-points-guide.html': '2026-11-28',
+  'in/google-play-points-guide.html': '2026-11-28',
+  ...REGIONAL_ARTICLE_DATES,
   'privacy.html': '2026-09-15',
   'terms.html': '2026-09-15',
   'sitemap.html': '2026-09-15',
@@ -162,6 +168,7 @@ function getContentDateForFile(file) {
 }
 
 module.exports = {
+  REGIONAL_ARTICLE_DATES,
   CONTENT_DATE_OVERRIDES,
   GENERATED_GAME_PAGE_CONTENT_DATE,
   GAME_PAGE_CONTENT_DATE_OVERRIDES,

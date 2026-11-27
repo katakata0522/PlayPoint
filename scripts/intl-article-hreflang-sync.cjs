@@ -10,7 +10,12 @@ const INTL_LOCALES = Object.freeze([
   ['ko', 'ko'],
   ['tw', 'zh-TW']
 ]);
+const PAYMENT_LOCALES = [...INTL_LOCALES, ['hk', 'zh-HK'], ['in', 'en-IN']];
 const ARTICLE_JA_ALTERNATES = Object.freeze({
+  'google-play-credit-uses.html': '/articles/2026-11-26-google-play-credit-uses.html',
+  'play-credit-rate-change-2027.html': '/articles/2026-11-25-play-credit-rate-change-2027.html',
+  'monster-hunter-now-web-store-vs-google-play.html': '/articles/2026-11-27-monster-hunter-now-web-store-vs-google-play.html',
+  'google-play-payment-failed.html': '/articles/2026-11-27-google-play-payment-failed.html',
   ...getLocalizedGameGuideJapaneseAlternates(),
   ...Object.fromEntries(require('./intl-topic-expansion-content.cjs').TOPICS.map(topic => [topic.slug + '.html', topic.jaAlternate])),
   'google-play-points-500-1000-cost.html': '/articles/2026-07-24-play-points-500-1000-value.html',
@@ -26,7 +31,8 @@ const ARTICLE_JA_ALTERNATES = Object.freeze({
   'google-play-balance-combine-payment.html': '/articles/2026-11-19-google-play-balance-combine-payment.html'
 });
 const ARTICLE_JA_PARTIAL_ALTERNATES = Object.freeze({
-  'google-play-credit-uses.html': { jaPath: '/articles/2026-11-26-google-play-credit-uses.html', locales: ['ko', 'tw'] },
+  'google-play-pass-after-cancellation.html': { jaPath: '/articles/2026-11-27-google-play-pass-after-cancellation.html', locales: ['ko', 'tw'] },
+  'google-play-gift-card-not-working.html': { jaPath: '/articles/2026-11-27-google-play-gift-card-not-working.html', locales: ['en', 'ko'] },
   'google-play-pass-guide.html': { jaPath: '/articles/2026-08-16-play-pass-worth-it.html', locales: ['en'] },
   'google-play-points-account-locked.html': { jaPath: '/articles/2026-08-19-play-points-locked.html', locales: ['en'] },
   'google-play-points-install-offer-not-received.html': { jaPath: '/articles/2026-08-19-install-offer-points-not-received.html', locales: ['en'] },
@@ -41,6 +47,7 @@ function sitePathToFile(rootDir, sitePath) {
   return path.join(rootDir, relative.endsWith('/') ? relative + 'index.html' : relative);
 }
 function intlUrl(locale, slug) {
+  if (locale === 'hk' || locale === 'in') return SITE_ORIGIN + '/' + locale + '/' + slug;
   return slug === 'index.html'
     ? SITE_ORIGIN + '/' + locale + '/articles/'
     : SITE_ORIGIN + '/' + locale + '/articles/' + slug;
@@ -53,6 +60,9 @@ function upsertIntlJa(html, jaPath) {
   return next.replace(anchor, tag + '\n$1');
 }
 function upsertJapaneseIntlSet(html, slug, jaPath, locales = INTL_LOCALES) {
+  if (slug === 'google-play-payment-failed.html') {
+    html = html.replace(/^[\t ]*<link\b[^>]*\brel=["']alternate["'][^>]*\bhreflang=["'](?:zh-HK|en-IN)["'][^>]*>[\t ]*\r?\n?/gim, '');
+  }
   let next = html.replace(/^[\t ]*<link\b[^>]*\brel=["']alternate["'][^>]*\bhreflang=["'](?:ja|en|ko|zh-TW|x-default)["'][^>]*>[\t ]*\r?\n?/gim, '');
   const tags = [
     '    <link rel="alternate" hreflang="ja" href="' + SITE_ORIGIN + jaPath + '">',
@@ -74,18 +84,21 @@ function syncIntlArticleJapaneseHreflang(rootDir) {
   let checked = 0;
   let changed = 0;
   const groups = [
-    ...Object.entries(ARTICLE_JA_ALTERNATES).map(([slug, jaPath]) => [slug, jaPath, INTL_LOCALES]),
+    ...Object.entries(ARTICLE_JA_ALTERNATES).map(([slug, jaPath]) => [slug, jaPath, slug === 'google-play-payment-failed.html' ? PAYMENT_LOCALES : INTL_LOCALES]),
     ...Object.entries(ARTICLE_JA_PARTIAL_ALTERNATES).map(([slug, config]) => [slug, config.jaPath, INTL_LOCALES.filter(([locale]) => config.locales.includes(locale))])
   ];
   for (const [slug, jaPath, locales] of groups) {
     const jaFile = sitePathToFile(rootDir, jaPath);
     if (!fs.existsSync(jaFile)) throw new Error('Japanese hreflang target is missing: ' + jaPath);
     for (const [locale] of locales) {
-      const intlFile = path.join(rootDir, locale, 'articles', slug);
+      const intlFile = sitePathToFile(rootDir, new URL(intlUrl(locale, slug)).pathname);
       if (!fs.existsSync(intlFile)) throw new Error('International hreflang source is missing: ' + path.relative(rootDir, intlFile));
       checked += 1;
       const current = fs.readFileSync(intlFile, 'utf8');
-      if (writeIfChanged(intlFile, upsertIntlJa(current, jaPath))) changed += 1;
+      // 手書きの地域記事も含む組は、各ページに全言語の相互リンクを揃える。
+      const next = slug === 'google-play-payment-failed.html' || slug === 'google-play-credit-uses.html'
+        ? upsertJapaneseIntlSet(current, slug, jaPath, locales) : upsertIntlJa(current, jaPath);
+      if (writeIfChanged(intlFile, next)) changed += 1;
     }
     checked += 1;
     const jaCurrent = fs.readFileSync(jaFile, 'utf8');

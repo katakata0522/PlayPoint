@@ -1832,6 +1832,14 @@ const MANUAL_FEST_ARTICLES = [
 ];
 
 const INTL_ARTICLES = [
+  ...require('./intl-purchase-guides.json').map(article => {
+    const locale = article.file.split('/')[0];
+    return {
+      ...article, lang: LOCALES[locale].lang, h1: article.title,
+      labels: ARTICLE_LABELS[locale], siteName: LOCALES[locale].siteName, ctaHref: '/' + locale + '/',
+      publishedAt: '2026-11-28', modifiedAt: '2026-11-28'
+    };
+  }),
   ...require('./intl-topic-expansion-content.cjs').buildLocalizedTopicArticles(LOCALES, ARTICLE_LABELS),
   ...[
     ...EN_ARTICLES,

@@ -22,6 +22,29 @@ const GAME_CUES = {
   efootball: ['Google Play Points cannot be converted directly into eFootball Points', 'Google Play 포인트를 직접 전환할 수 없으며', 'Google Play 點數不能直接轉成 eFootball™點數']
 };
 const CUES = {
+  'play-credit-rate-change-2027': {
+    en: { mark: 'some US Play credit rewards will switch to 150 points for $1' },
+    ko: { mark: '일부 Google Play 크레딧을 1,000원어치 받는 데 150포인트가 필요합니다' },
+    tw: { mark: '台灣部分 Play 抵用金自 2027 年 1 月 5 日起改為每 150 點兌換 NT$30' }
+  },
+  'google-play-payment-failed': {
+    en: { mark: 'open the Play Store on the account you used' },
+    ko: { mark: '결제한 계정의 주문부터 찾아보세요' },
+    tw: { mark: '用結帳時的 Google 帳戶找這筆訂單' }
+  },
+  'google-play-gift-card-not-working': {
+    en: { mark: 'the retailer may need to check activation' },
+    ko: { mark: '판매 시점에 카드가 활성화됐는지' }
+  },
+  'monster-hunter-now-web-store-vs-google-play': {
+    en: { mark: 'The listed packs give the same gem quantities on subsequent purchases' },
+    ko: { mark: '첫 구매 기준으로 웹스토어 2,470개, 게임 내 상점 2,250개' },
+    tw: { mark: '第二次以後，兩個通路給的寶石數量相同' }
+  },
+  'google-play-pass-after-cancellation': {
+    ko: { mark: '설치한 게임과 그 데이터는 현재 기기에 남습니다' },
+    tw: { mark: '遊戲和資料會留在原本的裝置上' }
+  },
   '2026-06-20-discount-gift-cards': {
     en: {mark: 'authorized retail partners'},
     ko: {mark: '혜택 한도와 유효기간까지 반영한 실질 결제액'},
@@ -118,6 +141,7 @@ const CUES = {
     ko: {mark: '11월 10일 모집 시스템 개편'}
   },
   'google-play-credit-uses': {
+    en: { mark: 'check the payment options before confirming' },
     ko: {mark: 'Google Play 잔액을 결제 수단으로 선택'},
     tw: {mark: '金額會直接進到你的 Google Play 餘額裡'}
   },
