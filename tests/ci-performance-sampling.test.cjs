@@ -151,6 +151,7 @@ test('計測欠損・無効値・runtimeError・sample不足・重複を合格�
   assert.throws(() => budget.evaluateMetrics('default', {}), /invalid/);
   const sample = files(dir, [{}]);
   assert.equal(budget.evaluateProfileGroup('calculatorHome', sample).failures.length, 1);
+  assert.match(budget.evaluateProfileGroup('articleHub', sample).failures.join('\n'), /sampleCount/);
   assert.throws(() => budget.evaluateProfileGroup('calculatorHome', [sample[0], sample[0], sample[0]]), /duplicate/);
   fs.writeFileSync(sample[0], JSON.stringify({ ...good, runtimeError: { code: 'NO_FCP' } }));
   assert.throws(() => budget.readReport(sample[0]), /不正/);
