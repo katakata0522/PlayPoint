@@ -26,6 +26,7 @@ const ARTICLE_JA_ALTERNATES = Object.freeze({
   'google-play-balance-combine-payment.html': '/articles/2026-11-19-google-play-balance-combine-payment.html'
 });
 const ARTICLE_JA_PARTIAL_ALTERNATES = Object.freeze({
+  'google-play-credit-uses.html': { jaPath: '/articles/2026-11-26-google-play-credit-uses.html', locales: ['ko', 'tw'] },
   'google-play-pass-guide.html': { jaPath: '/articles/2026-08-16-play-pass-worth-it.html', locales: ['en'] },
   'google-play-points-account-locked.html': { jaPath: '/articles/2026-08-19-play-points-locked.html', locales: ['en'] },
   'google-play-points-install-offer-not-received.html': { jaPath: '/articles/2026-08-19-install-offer-points-not-received.html', locales: ['en'] },

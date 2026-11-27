@@ -33,7 +33,7 @@ const targets = [
   { url: 'https://playpoint-sim.com/en/campaign/wait/', contains: 'Should you wait for a Google Play Points promotion?' },
   { url: 'https://playpoint-sim.com/en/amount/10000/', contains: '$50' },
   { url: 'https://playpoint-sim.com/en/articles/google-play-points-not-showing.html', contains: 'Google Play Points not showing up' },
-  { url: 'https://playpoint-sim.com/en/articles/google-play-points-country-differences.html', contains: 'country differences' },
+  { url: 'https://playpoint-sim.com/en/articles/google-play-points-country-differences.html', contains: 'Available Countries' },
   { url: 'https://playpoint-sim.com/ko/status/diamond/', contains: '다이아몬드' },
   { url: 'https://playpoint-sim.com/ko/status/platinum/', contains: '플래티넘' },
   { url: 'https://playpoint-sim.com/ko/status/gold/', contains: '골드' },

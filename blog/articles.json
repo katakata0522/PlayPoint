@@ -119,13 +119,13 @@
   },
   {
     "id": "starrail-supply-pass-value-2026",
-    "modified": "2026-10-29",
+    "modified": "2026-11-26",
     "editorialNext": true,
-    "listDescription": "列車補給標章を毎日受け取れる場合と、すぐ星玉が必要な場合を比較。通常購入との違いを確認できます。",
-    "title": "スタレの列車補給標章で次のガチャに備える｜毎日受取と即時チャージの違い",
+    "listDescription": "崩壊：スターレイルの列車補給標章で最大3,000星玉相当を得る条件を解説。10日・20日・30日の受取量、ログインしなかった日の扱い、即時チャージとの違いを比較します。",
+    "title": "スタレの列車補給標章はお得？もらえる星玉・受け取り方と注意点",
     "category": "使い方",
     "gameTitle": "スタレ",
-    "listTitle": "スタレの列車補給標章｜ガチャ終了までの受取日数で選ぶ",
+    "listTitle": "スタレの列車補給標章｜星玉の受取量と注意点",
     "tags": [
       "スタレ",
       "崩壊スターレイル",
@@ -133,7 +133,7 @@
       "月パス",
       "Play Points"
     ],
-    "description": "列車補給標章の最大3,000星玉相当を、10日・20日・30日の受取量で比較。欲しいガチャに間に合うか、即時チャージとGoogle Play Pointsをどう比べるかを解説します。",
+    "description": "崩壊：スターレイルの列車補給標章で最大3,000星玉相当を得る条件を解説。10日・20日・30日の受取量、ログインしなかった日の扱い、即時チャージとの違いを比較します。",
     "file": "../games/starrail/supply-pass-value/index.html",
     "related": [
       [
@@ -681,9 +681,9 @@
   },
   {
     "id": "umasuku-vs-umaplan-2026",
-    "title": "ウマスクとウマプランはどっち？月980円・1,980円の特典比較",
+    "title": "ウマ娘のウマスクとウマプランはどっち？料金・特典の違い",
     "date": "2026-10-14",
-    "modified": "2026-11-16",
+    "modified": "2026-11-26",
     "category": "使い方",
     "browseCategory": "ゲーム別課金",
     "gameTitle": "ウマ娘",
@@ -799,13 +799,13 @@
     "id": "pokemon-sleep-premium-plans-2026",
     "title": "ポケモンスリープのプレミアムパスは1か月と6か月どっち？毎日の特典と継続の注意点【2026年】",
     "date": "2026-10-14",
-    "modified": "2026-11-17",
+    "modified": "2026-11-26",
     "category": "使い方",
     "browseCategory": "ゲーム別課金",
     "gameTitle": "ポケモンスリープ",
     "listTitle": "ポケモンスリープのプレミアムパス｜毎日の特典と期間の選び方",
-    "listDescription": "ポケスリのプレミアムパスは、試したいなら1か月、半年使う見込みなら6か月を比較。毎日の特典と料金の見方、Androidでプラン変更すると継続期間がリセットされる注意点を解説します。",
-    "description": "ポケモンスリープのプレミアムパスを1か月・6か月で比較。毎日の特典、Androidでのプラン変更と継続期間リセット、iOS価格例の見方を整理します。Google Playの購入画面で料金を確認し、請求1回分のポイントも試算できます。",
+    "listDescription": "ポケモンスリープ（ポケスリ）のプレミアムパスを1か月・6か月で比較。料金の確認方法、毎日の特典、継続特典とプラン変更時の注意点、Google Play購入時のポイントを紹介します。",
+    "description": "ポケモンスリープ（ポケスリ）のプレミアムパスを1か月・6か月で比較。料金の確認方法、毎日の特典、継続特典とプラン変更時の注意点、Google Play購入時のポイントを紹介します。",
     "tags": [
       "ポケモンスリープ",
       "ポケスリ",
@@ -1191,9 +1191,9 @@
   },
   {
     "id": "gakumas-webshop-google-play-2026",
-    "title": "学マスはWEB SHOPとGoogle Playどっち？ジュエル数・DMMとの違いを比較",
+    "title": "学マスのジュエルショップはお得？価格・WEB SHOP・DMMの違い",
     "date": "2026-09-26",
-    "modified": "2026-11-17",
+    "modified": "2026-11-26",
     "category": "使い方",
     "gameTitle": "学マス",
     "listTitle": "学マスWEB SHOPのジュエル増量｜DMMとの違いにも注意",
@@ -1204,7 +1204,7 @@
       "ジュエル",
       "DMM"
     ],
-    "description": "学マスのWEB SHOPとGoogle Playを比較。ジュエルの表示例やスマホ版・DMM版での扱い、購入前の連携先を整理します。Google Playで買う場合のポイントは、本文の税込9,800円の仮例から自分の条件に直して試算できます。",
+    "description": "学マスのジュエル購入先を比較。公式WEB SHOPの商品と価格、Google Playのポイント、DMM版への反映条件、購入したジュエルが表示されない時の確認方法を解説します。",
     "file": "../articles/2026-09-26-gakumas-webshop-google-play.html",
     "related": [
       [
@@ -1221,7 +1221,7 @@
     "listed": true,
     "thumbnail": "../images/game-icons/gakumas.webp",
     "thumbnailKind": "app-icon",
-    "listDescription": "WEB SHOPの増量とGoogle Playの還元を比較。購入前にスマホ版・DMM版でのジュエルの扱いも確認できます。",
+    "listDescription": "学マスのジュエル購入先を比較。公式WEB SHOPの商品と価格、Google Playのポイント、DMM版への反映条件、購入したジュエルが表示されない時の確認方法を解説します。",
     "thumbnail2x": "../images/game-icons/gakumas-2x.webp"
   },
   {
@@ -1261,9 +1261,9 @@
   },
   {
     "id": "monst-in-app-packs-guide-2026",
-    "title": "モンストの課金パックを目的で選ぶ｜スタートダッシュ・モンパスを比較",
+    "title": "モンストのおすすめ課金パック一覧｜価格・中身・モンパスを比較",
     "date": "2026-09-19",
-    "modified": "2026-11-16",
+    "modified": "2026-11-26",
     "category": "使い方",
     "gameTitle": "モンスト",
     "tags": [
@@ -1274,7 +1274,7 @@
       "モンパス",
       "Play Points"
     ],
-    "description": "モンストの課金パックを目的別に比較。スタートダッシュ2種類・初獲得の価格と中身、モンパス2プランの違いを整理します。Google Play購入のポイントを、税抜対象額と獲得率から試算できます。",
+    "description": "モンストの課金パックを目的別に比較。スタートダッシュパック、初獲得パックの価格と内容、モンパス2プランの違いとGoogle Play購入時のポイントを紹介します。",
     "file": "../articles/2026-09-19-monst-in-app-packs-guide.html",
     "related": [
       [
@@ -1295,7 +1295,7 @@
     "source": "article",
     "listed": true,
     "listTitle": "モンストの課金パック選び｜スタートダッシュ・モンパス・初獲得",
-    "listDescription": "常設パックとモンパスを、価格・内容・購入条件で比較。確定ガチャや遊び方に合わせて選べます。",
+    "listDescription": "モンストの課金パックを目的別に比較。スタートダッシュパック、初獲得パックの価格と内容、モンパス2プランの違いとGoogle Play購入時のポイントを紹介します。",
     "browseCategory": "ゲーム別課金",
     "ogp": "../articles/ogp/2026-09-19-monst-in-app-packs-guide.png",
     "thumbnail2x": "../images/game-icons/monst-2x.webp"
@@ -1614,7 +1614,7 @@
     "description": "日本でPlay PointsをGoogle Store用プロモーションコードへ交換できる場合の仕組みと、Googleストアポイント・Playクレジットとの違いを整理します。",
     "file": "../articles/2026-08-19-play-points-google-store.html",
     "thumbnail": "../articles/thumbnails/play-points-google-store-square-v1.webp",
-    "modified": "2026-10-30",
+    "modified": "2026-11-26",
     "browseCategory": "使う・交換",
     "ogp": "../articles/ogp/2026-08-19-play-points-google-store.png",
     "thumbnailKind": "generic",
@@ -2096,9 +2096,9 @@
   },
   {
     "id": "google-play-quests",
-    "title": "Google Playのクエストとは？ポイント報酬の条件・始め方を解説",
+    "title": "Google Playのクエストとは？始め方・達成条件・反映されない時の確認",
     "date": "2026-07-31",
-    "modified": "2026-10-30",
+    "modified": "2026-11-26",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2106,20 +2106,20 @@
       "Play Points",
       "達成条件"
     ],
-    "description": "Google Playのクエストとは？「購入」に数えられる取引、表示場所、対象者ごとの達成条件、Play Gamesログイン、返金時の扱いをGoogle公式情報から確認します。",
+    "description": "Google Playのクエストの始め方、ポイント報酬の条件、プレイや購入が反映されない時の確認方法を解説。対象となる購入、表示場所、Play Gamesログインも整理します。",
     "file": "../articles/2026-07-31-google-play-quests.html",
     "thumbnail": "../articles/thumbnails/google-play-quests-square-v1.webp",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/2026-07-31-google-play-quests.png",
     "thumbnailKind": "generic",
-    "listDescription": "クエストの表示場所と、自分に提示された達成条件を確認。「購入」に数えられる取引やログイン、返金時の扱いが分かります。",
+    "listDescription": "Google Playのクエストの始め方、ポイント報酬の条件、プレイや購入が反映されない時の確認方法を解説。対象となる購入、表示場所、Play Gamesログインも整理します。",
     "listTitle": "Google Playクエスト｜ポイント報酬の条件と始め方"
   },
   {
     "id": "play-points-coupon-not-applied",
     "title": "Google Playの保存済みクーポンは削除できる？使えない・適用解除の確認",
     "date": "2026-07-25",
-    "modified": "2026-11-01",
+    "modified": "2026-11-26",
     "category": "トラブル",
     "tags": [
       "Play Points",
@@ -2131,13 +2131,13 @@
       "削除",
       "適用解除"
     ],
-    "description": "Google Playの保存済みクーポンを削除したい時に、一覧の整理と購入時の適用解除を分けて解説。公式で確認できた操作、期限切れ、クーポンが使えない時の確認順をまとめます。",
+    "description": "Google Playの保存済みクーポンは削除できる？「特典を適用できません」と表示される原因や、購入時の適用解除、期限切れ・利用条件の確認方法を解説します。",
     "file": "../articles/2026-07-25-play-points-coupon-not-applied.html",
     "thumbnail": "../articles/thumbnails/play-points-coupon-not-applied-square-v1.webp",
     "browseCategory": "トラブル・アカウント",
     "ogp": "../articles/ogp/2026-07-25-play-points-coupon-not-applied.png",
     "thumbnailKind": "generic",
-    "listDescription": "保存済み一覧の削除と購入時の適用解除、期限切れ・使えない時の確認先を整理。"
+    "listDescription": "Google Playの保存済みクーポンは削除できる？「特典を適用できません」と表示される原因や、購入時の適用解除、期限切れ・利用条件の確認方法を解説します。"
   },
   {
     "id": "play-credit-not-working",
@@ -2266,7 +2266,7 @@
   },
   {
     "id": "discount-gift-cards",
-    "title": "Google Playギフトコードをお得に買う｜楽天・ローソンの還元条件と選び方",
+    "title": "Google Playギフトカードをお得に買う方法｜楽天・コンビニの割引と還元",
     "date": "2026-06-20",
     "category": "キャンペーン",
     "tags": [
@@ -2275,15 +2275,15 @@
       "割引",
       "ポイント還元"
     ],
-    "description": "Google Play ギフトコードを楽天・コンビニ各社で買う際の条件整理。楽天の旧500円OFF終了や次回11月19日20時利用、セブン抽選や終了後期限を確認できます。",
+    "description": "Google Playギフトカード・ギフトコードをお得に買うには？楽天市場やコンビニの割引、ポイント還元、購入条件を比較。利用できる特典と終了済みの企画を分けて紹介します。",
     "file": "../articles/2026-06-20-discount-gift-cards.html",
     "thumbnail": "../articles/thumbnails/discount-gift-cards-square-v1.webp",
-    "modified": "2026-11-13",
+    "modified": "2026-11-28",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/discount-gift-cards.png",
     "thumbnailKind": "generic",
-    "listDescription": "楽天の旧500円OFFは終了。次回の利用は11月19日20時から。セブンの抽選と、ファミマ・ローソンの受付終了後の期限も購入先ごとに確認できます。",
-    "listTitle": "Google Playギフトコードをお得に買う｜楽天・ローソンの還元条件と選び方"
+    "listDescription": "Google Playギフトカード・ギフトコードをお得に買うには？楽天市場やコンビニの割引、ポイント還元、購入条件を比較。利用できる特典と終了済みの企画を分けて紹介します。",
+    "listTitle": "Google Playギフトカードをお得に買う方法"
   },
   {
     "id": "play-points-reflection-timing",
@@ -2299,7 +2299,7 @@
     "description": "Google Play Pointsが反映されない時に、通常購入とアプリ体験特典の待ち時間、注文・履歴・アカウントの確認順を解説。交換後のPlayクレジット・クーポン・ゲーム内アイテムの確認先も案内します。",
     "file": "../articles/2026-03-10-play-points-reflection-timing.html",
     "thumbnail": "../articles/thumbnails/play-points-reflection-timing-square-v1.webp",
-    "modified": "2026-11-01",
+    "modified": "2026-11-26",
     "listTitle": "ポイントが付かない｜確認する順番と待ち時間",
     "listDescription": "購入後の獲得と交換後の未反映を切り分け。履歴・アカウントの確認から、クレジット・クーポン・アイテム別の対処へ進めます。",
     "browseCategory": "トラブル・アカウント",
@@ -2409,7 +2409,7 @@
   },
   {
     "id": "check-balance",
-    "title": "Google Play Pointsの残高・履歴の見方｜ランク判定ポイントとの違い",
+    "title": "Google Play Pointsの残高・履歴の確認方法｜使えるポイントとランク進捗の違い",
     "date": "2025-12-25",
     "category": "使い方",
     "tags": [
@@ -2418,14 +2418,14 @@
       "履歴",
       "確認方法"
     ],
-    "description": "Google Play Pointsの残高・履歴の見方を整理。Play Points残高、ランク判定用の年間進捗、Google Play残高、交換後のPlayクレジットの違いと、購入・交換・返金でどの数字が変わるかを解説します。",
+    "description": "Google Play Pointsの残高はどこで確認できる？ポイント履歴、有効期限、Google Play残高、ランク判定用ポイントの見方と違いを解説します。",
     "file": "../articles/2025-12-25-check-balance.html",
     "thumbnail": "../articles/thumbnails/check-balance-square-v1.webp",
-    "modified": "2026-10-30",
+    "modified": "2026-11-26",
     "browseCategory": "はじめて・基本",
     "ogp": "../articles/ogp/check-balance.png",
     "thumbnailKind": "generic",
-    "listDescription": "残高と履歴の確認先を知りたい方へ。使えるポイント、年間ランク進捗、Play残高を区別できます。"
+    "listDescription": "Google Play Pointsの残高はどこで確認できる？ポイント履歴、有効期限、Google Play残高、ランク判定用ポイントの見方と違いを解説します。"
   },
   {
     "id": "refund",
@@ -2518,12 +2518,12 @@
       "対象ランク",
       "Play Pass"
     ],
-    "description": "Google Play Pointsの通常ウィークリーリワードは日本ではシルバー以上・毎週金曜更新。何が当たるのか、スーパー週次・Play Pass週次との違い、年間記録の実例も整理します。",
+    "description": "Google Play Pointsのウィークリーリワードはいつ受け取れる？毎週金曜日の特典、シルバーの通常週次とゴールド以上のスーパー週次の違い、受け取れない時の確認方法や獲得記録を紹介します。",
     "file": "../articles/2025-12-25-weekly-reward.html",
     "thumbnail": "../articles/thumbnails/weekly-reward-square-v1.webp",
-    "modified": "2026-10-28",
+    "modified": "2026-11-26",
     "listTitle": "ウィークリーリワード｜受取曜日・ランク別特典",
-    "listDescription": "日本の通常週次はシルバー以上・金曜更新。賞品と受取方法、スーパー週次・Play Pass週次との違いを確認できます。",
+    "listDescription": "Google Play Pointsのウィークリーリワードはいつ受け取れる？毎週金曜日の特典、シルバーの通常週次とゴールド以上のスーパー週次の違い、受け取れない時の確認方法や獲得記録を紹介します。",
     "browseCategory": "ランク・ステータス",
     "ogp": "../articles/ogp/weekly-reward.png",
     "thumbnailKind": "generic"
@@ -2623,7 +2623,7 @@
     "description": "Play Pointsの交換先を、買う予定・最低購入額・有効期限で比較。クーポン、アイテム、Playクレジットの選び方と、Google ストアや現金化との違いを確認できます。",
     "file": "../articles/2025-12-25-best-use.html",
     "thumbnail": "../articles/thumbnails/best-use-square-v1.webp",
-    "modified": "2026-10-30",
+    "modified": "2026-11-26",
     "browseCategory": "使う・交換",
     "ogp": "../articles/ogp/best-use.png",
     "thumbnailKind": "generic",
@@ -2670,7 +2670,7 @@
   },
   {
     "id": "google-play-purchase-history-budget",
-    "title": "ゲームに今月いくら使った？Google Playの購入履歴と予算通知",
+    "title": "Google Playの課金履歴・課金額を確認する方法｜ゲーム別の購入金額を調べる",
     "category": "使い方",
     "tags": [
       "Google Play",
@@ -2679,11 +2679,11 @@
       "ゼンゼロ",
       "予算"
     ],
-    "description": "Google Playの購入履歴はどこ？Android・PCでの確認手順、ゲーム別課金額の集計、予算通知と購入上限の違いを解説。支出を整理した後は、次の購入額からPlay Pointsも試算できます。",
-    "listDescription": "今月の課金額と個別の注文を確認。Google Play以外の購入も分けて整理し、予算通知を設定できます。",
+    "description": "Android・PCでGoogle Playの購入履歴を確認し、ゲーム別の課金額を集計する方法を紹介。予算通知と購入上限の違い、公式Webショップなど別の購入先の注意点も解説します。",
+    "listDescription": "Android・PCでGoogle Playの購入履歴を確認し、ゲーム別の課金額を集計する方法を紹介。予算通知と購入上限の違い、公式Webショップなど別の購入先の注意点も解説します。",
     "file": "../articles/2026-10-15-google-play-purchase-history-budget.html",
     "date": "2026-10-15",
-    "modified": "2026-11-17",
+    "modified": "2026-11-26",
     "ogp": "../articles/ogp/2026-10-15-google-play-purchase-history-budget.png",
     "related": [
       [
@@ -2745,7 +2745,7 @@
     "id": "2026-10-23-familymart-gift-card-lottery",
     "title": "【応募終了】ファミマのGoogle Playギフトカード抽選｜当選メールは11月26日配信予定",
     "date": "2026-10-28",
-    "modified": "2026-11-06",
+    "modified": "2026-11-28",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2780,9 +2780,9 @@
   },
   {
     "id": "2026-10-23-google-play-gift-card-comparison",
-    "title": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】",
+    "title": "Google Playギフトカードはどこで買うと得？楽天・コンビニの特典比較",
     "date": "2026-10-28",
-    "modified": "2026-11-19",
+    "modified": "2026-11-28",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -2790,9 +2790,9 @@
       "POSA",
       "購入先比較"
     ],
-    "description": "11月19日時点のGoogle Playギフトカード購入先を比較。ストア内デジタルギフト最大10％還元や楽天11/19開始500円OFF、セブン・ファミマ終了後の確認点を案内します。",
-    "listTitle": "Google Playギフトカードはどこで買うと得？セブン・ファミマ・楽天を比較【2026年10〜11月】",
-    "listDescription": "11月19日時点のGoogle Playギフトカード購入先を比較。ストア内デジタルギフト最大10％還元や楽天11/19開始500円OFF、セブン・ファミマ終了後の確認点を案内します。",
+    "description": "Google Playギフトカードの購入先を比較。楽天の割引クーポン、セブン・ファミマの終了済み抽選、別企画のデジタルギフト還元を区別し、期限と条件を案内します。",
+    "listTitle": "Google Playギフトカードの購入先比較",
+    "listDescription": "Google Playギフトカードの購入先を比較。楽天の割引クーポン、セブン・ファミマの終了済み抽選、別企画のデジタルギフト還元を区別し、期限と条件を案内します。",
     "file": "../articles/2026-10-23-google-play-gift-card-comparison.html",
     "ogp": "../articles/ogp/2026-10-23-google-play-gift-card-comparison.jpg",
     "thumbnail": "../articles/thumbnails/2026-10-23-google-play-gift-card-comparison-square-v1.webp",
@@ -2849,6 +2849,86 @@
       [
         "/articles/2026-07-25-play-credit-not-working.html",
         "交換したクレジットを使えないとき"
+      ]
+    ]
+  },
+  {
+    "id": "google-play-credit-uses",
+    "title": "Google Playクレジットの使い道｜ゲーム以外に何が買える？",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "listTitle": "Google Playクレジットの使い道｜ゲーム以外に何が買える？",
+    "listDescription": "Google Playクレジット・残高はゲーム課金以外にも使えます。有料アプリ、電子書籍、映画、定期購入などの使い道、残高の確認方法と有効期限、使えない支払いを日本向けに解説します。",
+    "description": "Google Playクレジット・残高はゲーム課金以外にも使えます。有料アプリ、電子書籍、映画、定期購入などの使い道、残高の確認方法と有効期限、使えない支払いを日本向けに解説します。",
+    "tags": [
+      "Playクレジット",
+      "Google Play残高",
+      "使い道",
+      "ゲーム以外",
+      "有効期限"
+    ],
+    "file": "../articles/2026-11-26-google-play-credit-uses.html",
+    "thumbnail": "../articles/thumbnails/google-play-credit-uses-square-v1.webp",
+    "thumbnailKind": "generic",
+    "ogp": "../articles/ogp/2026-11-26-google-play-credit-uses.jpg",
+    "source": "editorial",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2025-12-25-best-use.html",
+        "Play Pointsの交換先を比較する"
+      ],
+      [
+        "/articles/2026-10-14-play-credit-subscription.html",
+        "Playクレジットと定期購入の条件"
+      ],
+      [
+        "/articles/2026-11-19-google-play-balance-combine-payment.html",
+        "残高不足時の併用払い"
+      ],
+      [
+        "/articles/2026-07-25-play-credit-not-working.html",
+        "残高が使えない原因"
+      ]
+    ]
+  },
+  {
+    "id": "google-store-points-uses",
+    "title": "Google ストアポイントの使い道｜何が買える？有効期限とPlay Pointsとの違い",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "listTitle": "Google ストアポイントの使い道｜何が買える？有効期限とPlay Pointsとの違い",
+    "listDescription": "Google ストアポイントはPixelや対象アクセサリーの購入に使える日本向けのポイントです。1ポイントの価値、残高・有効期限、使い方、Google Play PointsやPlayクレジットとの違いを整理します。",
+    "description": "Google ストアポイントはPixelや対象アクセサリーの購入に使える日本向けのポイントです。1ポイントの価値、残高・有効期限、使い方、Google Play PointsやPlayクレジットとの違いを整理します。",
+    "tags": [
+      "Google ストアポイント",
+      "Google Store",
+      "Pixel",
+      "使い道",
+      "有効期限"
+    ],
+    "file": "../articles/2026-11-26-google-store-points-uses.html",
+    "thumbnail": "../articles/thumbnails/google-store-points-uses-square-v1.webp",
+    "thumbnailKind": "generic",
+    "ogp": "../articles/ogp/2026-11-26-google-store-points-uses.jpg",
+    "source": "editorial",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-08-19-play-points-google-store.html",
+        "Play PointsからGoogle Store向け特典コードへの交換"
+      ],
+      [
+        "/articles/2026-11-26-google-play-credit-uses.html",
+        "Google Playクレジットの使い道"
+      ],
+      [
+        "/articles/2025-12-25-best-use.html",
+        "Play Pointsの交換先の選び方"
       ]
     ]
   }
