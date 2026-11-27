@@ -28,7 +28,7 @@ function activeAsset(gameId, gameTitle, rightsHolder, sourcePageUrl, sourceImage
 
 const GAME_THUMBNAIL_ASSETS = Object.freeze({
   'モンハンNow': activeAsset(
-    'monster-hunter-now', 'モンハンNow', 'Niantic, Inc. / CAPCOM CO., LTD.',
+    'monster-hunter-now', 'モンハンNow', 'Scopely Explore, Inc. / CAPCOM CO., LTD.',
     'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=com.nianticlabs.monsterhunter',
     'https://play-lh.googleusercontent.com/k2wh-QCwxCiJoLTgNFoCZe3d6xAnL_jb5_R6E7Mr9F0vXP2aVEd-E94K_Nw6iWsHHMCwoyPfiWP2eyK7iiEf=s0-br30', '2026-11-28'
   ),
