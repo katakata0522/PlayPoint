@@ -1,0 +1,478 @@
+{
+  "checkedAt": "2026-11-27",
+  "scope": "公式公開資料の検索結果・取得できた本文を照合。一部の公式ページ直接取得制限あり。全本文・実機・実決済の確認済みとはしない。",
+  "articles": [
+    {
+      "article": "google-play-gift-card-not-working",
+      "sources": [
+        {
+          "label": "ギフトカード・コードのトラブル解決",
+          "url": "https://support.google.com/googleplay/answer/11564359?hl=ja"
+        },
+        {
+          "label": "ギフトカード・残高の払い戻しポリシー",
+          "url": "https://support.google.com/googleplay/answer/15576671?hl=ja"
+        },
+        {
+          "label": "Google Play残高の利用範囲・国別上限",
+          "url": "https://support.google.com/googleplay/answer/6080850?hl=ja"
+        },
+        {
+          "label": "ギフトカードの利用手順",
+          "url": "https://support.google.com/googleplay/answer/15710842?hl=ja"
+        },
+        {
+          "label": "Google Play Pointsの獲得条件",
+          "url": "https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja"
+        }
+      ],
+      "sections": [
+        {
+          "heading": "いま表示されているエラーはどれ？",
+          "sourceNumbers": [
+            1
+          ]
+        },
+        {
+          "heading": "コードが読み取れないなら、入力と有効化を分けて考える",
+          "sourceNumbers": [
+            1,
+            4
+          ]
+        },
+        {
+          "heading": "「すでに利用されています」と出たら、残高を見る",
+          "sourceNumbers": [
+            1,
+            2
+          ]
+        },
+        {
+          "heading": "「詳しい情報が必要です」は、公式のフォームへ",
+          "sourceNumbers": [
+            1
+          ]
+        },
+        {
+          "heading": "国や残高上限が原因になっていることも",
+          "sourceNumbers": [
+            1,
+            3
+          ]
+        },
+        {
+          "heading": "返品や返金はできる？",
+          "sourceNumbers": [
+            2
+          ]
+        },
+        {
+          "heading": "問い合わせ前に、これだけ手元に残しておこう",
+          "sourceNumbers": [
+            1,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "article": "google-play-balance-use-up",
+      "sources": [
+        {
+          "label": "Google Play残高で買えるもの・併用払い",
+          "url": "https://support.google.com/googleplay/answer/6080850?hl=ja"
+        },
+        {
+          "label": "定期購入の支払い方法・初回と更新の違い",
+          "url": "https://support.google.com/googleplay/answer/2476088?co=GENIE.Platform%3DAndroid&hl=ja"
+        },
+        {
+          "label": "ギフトカードの提供国・日本の残高期限",
+          "url": "https://support.google.com/googleplay/answer/3422734?hl=ja"
+        },
+        {
+          "label": "Play Pointsのクレジット交換と有効期限",
+          "url": "https://support.google.com/googleplay/answer/15776916?hl=ja"
+        },
+        {
+          "label": "残高の払い戻し・譲渡",
+          "url": "https://support.google.com/googleplay/answer/15576671?hl=ja"
+        }
+      ],
+      "sections": [
+        {
+          "heading": "残高より高い商品を買うと、不足分を別の方法で払える場合がある",
+          "sourceNumbers": [
+            1,
+            2
+          ]
+        },
+        {
+          "heading": "10円・100円未満なら、次の買い物に回す",
+          "sourceNumbers": [
+            3,
+            4
+          ]
+        },
+        {
+          "heading": "100円以上あれば、ゲーム以外にも目を向けてみる",
+          "sourceNumbers": [
+            1
+          ]
+        },
+        {
+          "heading": "残高を使ったあと、いくら支払う？",
+          "sourceNumbers": [
+            1
+          ]
+        },
+        {
+          "heading": "余った残高を家族に渡したり、現金に戻したりできる？",
+          "sourceNumbers": [
+            5
+          ]
+        },
+        {
+          "heading": "次の交換は、使う予定が見えてから",
+          "sourceNumbers": [
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "article": "google-play-gift-card-balance-expiration",
+      "sources": [
+        {
+          "label": "ギフトカードの提供国・日本の残高期限",
+          "url": "https://support.google.com/googleplay/answer/3422734?hl=ja"
+        },
+        {
+          "label": "ポイントと交換したクレジット・クーポンの期限",
+          "url": "https://support.google.com/googleplay/answer/15776916?hl=ja"
+        },
+        {
+          "label": "日本のPlay Pointsの期限・ステータス",
+          "url": "https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja"
+        },
+        {
+          "label": "Google Play残高の確認",
+          "url": "https://support.google.com/googleplay/answer/3423011?hl=ja"
+        },
+        {
+          "label": "国制限・プロモーションコードの期限",
+          "url": "https://support.google.com/googleplay/answer/11564359?hl=ja"
+        }
+      ],
+      "sections": [
+        {
+          "heading": "どの方法で手に入れた残高かを確認しよう",
+          "sourceNumbers": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "heading": "まだチャージしていないギフトカードは？",
+          "sourceNumbers": [
+            1,
+            5
+          ]
+        },
+        {
+          "heading": "チャージ後の残高と期限はどこで確認できる？",
+          "sourceNumbers": [
+            4,
+            2
+          ]
+        },
+        {
+          "heading": "1月1日に消えるのは、残高ではなく年間のランク進捗？",
+          "sourceNumbers": [
+            3
+          ]
+        },
+        {
+          "heading": "機種変更をする予定なら",
+          "sourceNumbers": [
+            5
+          ]
+        },
+        {
+          "heading": "期限付きの分から使う予定を考えておく",
+          "sourceNumbers": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "article": "monster-hunter-now-web-store-vs-google-play",
+      "sources": [
+        {
+          "label": "ジェムの入手方法と価格・初回購入例",
+          "url": "https://niantic.helpshift.com/hc/ja/39-monster-hunter-now/faq/5093-how-to-get-gems/"
+        },
+        {
+          "label": "公式Web Storeの説明",
+          "url": "https://niantic.helpshift.com/hc/ja/39-monster-hunter-now/faq/4863-monster-hunter-now-web-store/"
+        },
+        {
+          "label": "プライムハンターパス",
+          "url": "https://niantic.helpshift.com/hc/ja/39-monster-hunter-now/faq/4298-prime-hunter-pass/"
+        },
+        {
+          "label": "エクストリームハンターパス",
+          "url": "https://niantic.helpshift.com/hc/ja/39-monster-hunter-now/faq/4920-extreme-hunter-pass/"
+        },
+        {
+          "label": "ハンターパスの自動更新",
+          "url": "https://niantic.helpshift.com/hc/ja/39-monster-hunter-now/faq/5230-automatic-hunter-pass-renewal-subscription/"
+        },
+        {
+          "label": "公式Web Store",
+          "url": "https://store.monsterhunternow.com/"
+        },
+        {
+          "label": "日本のPlay Points獲得対象",
+          "url": "https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja"
+        },
+        {
+          "label": "Google PlayのモンハンNow公式掲載ページ",
+          "url": "https://play.google.com/store/apps/details?hl=ja&gl=JP&id=com.nianticlabs.monsterhunter"
+        }
+      ],
+      "sections": [
+        {
+          "heading": "14,000円なら、初回は1,500ジェムの差",
+          "sourceNumbers": [
+            1
+          ]
+        },
+        {
+          "heading": "ハンターパスにも、Web Storeならではの追加分がある",
+          "sourceNumbers": [
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "heading": "Google Playの割引があるなら、どのくらいで逆転する？",
+          "sourceNumbers": [
+            1,
+            7
+          ]
+        },
+        {
+          "heading": "買う前に、ゲームを遊ぶ予定も考えてみる",
+          "sourceNumbers": [
+            1,
+            2,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "article": "google-play-balance-charge-limit",
+      "sources": [
+        {
+          "label": "Google Play残高の国別上限",
+          "url": "https://support.google.com/googleplay/answer/6080850?hl=ja"
+        },
+        {
+          "label": "Google Playでギフトカードを購入する場合の国別上限",
+          "url": "https://support.google.com/googleplay/answer/16585331?hl=ja"
+        },
+        {
+          "label": "利用限度エラーの対処",
+          "url": "https://support.google.com/googleplay/answer/11564359?hl=ja"
+        },
+        {
+          "label": "Play Pointsからのクレジット交換",
+          "url": "https://support.google.com/googleplay/answer/15776916?hl=ja"
+        },
+        {
+          "label": "Google Play Pointsの獲得対象",
+          "url": "https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja"
+        },
+        {
+          "label": "Google Play残高の確認",
+          "url": "https://support.google.com/googleplay/answer/3423011?hl=ja"
+        }
+      ],
+      "sections": [
+        {
+          "heading": "20万円・5万円・30万円は、それぞれ違う上限",
+          "sourceNumbers": [
+            1,
+            2
+          ]
+        },
+        {
+          "heading": "すでに残高が18万円あるなら、あといくら追加できる？",
+          "sourceNumbers": [
+            1
+          ]
+        },
+        {
+          "heading": "Play Pointsから交換する場合も、残高を確認",
+          "sourceNumbers": [
+            4
+          ]
+        },
+        {
+          "heading": "「利用限度に達しました」と表示されたら",
+          "sourceNumbers": [
+            3
+          ]
+        },
+        {
+          "heading": "セールでまとめ買いするなら、使う金額から逆算",
+          "sourceNumbers": [
+            5,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "article": "google-play-payment-failed",
+      "sources": [
+        {
+          "label": "Google Playのお支払い問題",
+          "url": "https://support.google.com/googleplay/answer/1267137?hl=ja"
+        },
+        {
+          "label": "注文履歴の確認",
+          "url": "https://support.google.com/googleplay/answer/2850369?hl=ja"
+        },
+        {
+          "label": "アプリ内購入に関する問題",
+          "url": "https://support.google.com/googleplay/answer/1050566?hl=ja"
+        },
+        {
+          "label": "Google Play残高で買えるもの",
+          "url": "https://support.google.com/googleplay/answer/6080850?hl=ja"
+        },
+        {
+          "label": "定期購入の支払い方法",
+          "url": "https://support.google.com/googleplay/answer/2476088?hl=ja"
+        },
+        {
+          "label": "日本で利用できるお支払い方法・キャリア決済",
+          "url": "https://support.google.com/googleplay/answer/2651410?co=GENIE.CountryCode%3DJP&hl=ja"
+        }
+      ],
+      "sections": [
+        {
+          "heading": "最初に、注文が完了しているかを確認",
+          "sourceNumbers": [
+            2,
+            3
+          ]
+        },
+        {
+          "heading": "クレジットカード・デビットカードが使えない場合",
+          "sourceNumbers": [
+            1
+          ]
+        },
+        {
+          "heading": "携帯決済が使えない場合",
+          "sourceNumbers": [
+            1,
+            6
+          ]
+        },
+        {
+          "heading": "Google Play残高があるのに課金できない場合",
+          "sourceNumbers": [
+            4,
+            5
+          ]
+        },
+        {
+          "heading": "お支払い情報の確認を求められた場合",
+          "sourceNumbers": [
+            1
+          ]
+        },
+        {
+          "heading": "購入済みなのにゲーム内のアイテムがない場合",
+          "sourceNumbers": [
+            3
+          ]
+        },
+        {
+          "heading": "困ったときに手元に用意する情報",
+          "sourceNumbers": [
+            1,
+            2,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "article": "google-play-pass-after-cancellation",
+      "sources": [
+        {
+          "label": "Google Playの定期購入解約とデータの扱い",
+          "url": "https://support.google.com/googleplay/answer/7018481?co=GENIE.Platform%3DAndroid&hl=ja"
+        },
+        {
+          "label": "Play Passの契約管理・ファミリー利用",
+          "url": "https://support.google.com/googleplay/answer/9473027?hl=ja"
+        },
+        {
+          "label": "Play Passの割引特典・解約後の扱い",
+          "url": "https://support.google.com/googleplay/answer/14931929?hl=ja"
+        },
+        {
+          "label": "Play Pass週次ボーナス・ブースター",
+          "url": "https://support.google.com/googleplay/answer/16507543?hl=ja"
+        },
+        {
+          "label": "Google Play利用規約・試用とキャンセル",
+          "url": "https://play.google.com/intl/ja_jp/about/play-terms/"
+        }
+      ],
+      "sections": [
+        {
+          "heading": "解約したら、いつから使えなくなる？",
+          "sourceNumbers": [
+            1,
+            2,
+            5
+          ]
+        },
+        {
+          "heading": "残るもの・変わるものを見比べてみよう",
+          "sourceNumbers": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "heading": "木曜日のボーナスやブースターは？",
+          "sourceNumbers": [
+            3,
+            4
+          ]
+        },
+        {
+          "heading": "また遊びたくなったら、再加入できる",
+          "sourceNumbers": [
+            1,
+            2
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -50,7 +50,7 @@ Playストアを開き、右上のプロフィール画像から「お支払い�
 
 購入日・店舗名、レシートや注文確認メール、エラーメッセージ、利用したGoogleアカウントを整理すると、状況を説明しやすくなります。カードも解決するまでは手元に残しておきたいですね。
 
-チャージが済んでから対象商品を購入することでPlay Pointsが貯まるのが通常の流れです。まずは今回購入した分がきちんと残高に入ったか、落ち着いて一つずつ確かめてみましょう。
+チャージそのものは通常Play Pointsの獲得対象ではありません。チャージした残高で対象商品を購入すると、購入条件に応じてポイントが貯まります。Google Play内で対象のデジタルギフトカードを購入する場合には別の条件があります。まずは今回購入した分がきちんと残高に入ったか、落ち着いて一つずつ確かめてみましょう。
 
 ## 確認した公式情報
 
@@ -58,3 +58,4 @@ Playストアを開き、右上のプロフィール画像から「お支払い�
 - [ギフトカード・残高の払い戻しポリシー](https://support.google.com/googleplay/answer/15576671?hl=ja)
 - [Google Play残高の利用範囲・国別上限](https://support.google.com/googleplay/answer/6080850?hl=ja)
 - [ギフトカードの利用手順](https://support.google.com/googleplay/answer/15710842?hl=ja)
+- [Google Play Pointsの獲得条件](https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja)

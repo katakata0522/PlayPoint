@@ -46,7 +46,7 @@ Googleのギフトカード案内では、残高の一部を利用して24時間
 
 たとえば今月のゲーム課金の予定が1万円なら、20万円までチャージできるからといって最大額まで用意する必要はありません。販売店の特典に購入上限や期限があれば、その条件も含め、今後使う予定の金額で考えましょう。
 
-なお、ギフトカードをチャージした時点では通常Play Pointsは貯まりません。対象商品を購入したときに獲得できるため、残高とランクの進捗は分けて見ておきたいですね。
+なお、ギフトカードをチャージした時点では通常Play Pointsは貯まりません。対象商品を購入したときに獲得できるため、残高とランクの進捗は分けて見ておきたいですね。Google Play内のデジタルギフトカード購入は、対象条件に応じた別の扱いがあります。
 
 ## 確認した公式情報
 
@@ -54,3 +54,5 @@ Googleのギフトカード案内では、残高の一部を利用して24時間
 - [Google Playでギフトカードを購入する場合の国別上限](https://support.google.com/googleplay/answer/16585331?hl=ja)
 - [利用限度エラーの対処](https://support.google.com/googleplay/answer/11564359?hl=ja)
 - [Play Pointsからのクレジット交換](https://support.google.com/googleplay/answer/15776916?hl=ja)
+- [Google Play Pointsの獲得対象](https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja)
+- [Google Play残高の確認](https://support.google.com/googleplay/answer/3423011?hl=ja)

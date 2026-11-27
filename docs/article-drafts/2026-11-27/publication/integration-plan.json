@@ -1,0 +1,350 @@
+{
+  "status": "staged-not-published",
+  "template": "articles/2026-11-19-google-play-balance-combine-payment.html",
+  "baseCommit": "a20961684114b981f2f1cd0b9e48d6a1e5250ea7",
+  "plannedDate": "2026-11-27",
+  "manifestAdditions": [
+    {
+      "id": "google-play-gift-card-not-working",
+      "title": "Google Playギフトカードが使えない・チャージできないときは？エラー別の確認方法",
+      "date": "2026-11-27",
+      "modified": "2026-11-27",
+      "category": "トラブル",
+      "browseCategory": "トラブル・アカウント",
+      "listTitle": "Google Playギフトカードが使えない・チャージできないときは？エラー別の確認方法",
+      "listDescription": "Google Playギフトカードがチャージできないときのエラー別の確認方法。有効化、誤登録、本人確認、利用限度、返金を整理します。",
+      "description": "Google Playギフトカードがチャージできないときのエラー別の確認方法。有効化、誤登録、本人確認、利用限度、返金を整理します。",
+      "tags": [
+        "ギフトカード",
+        "チャージできない",
+        "コード",
+        "本人確認",
+        "Google Play残高"
+      ],
+      "file": "../articles/2026-11-27-google-play-gift-card-not-working.html",
+      "thumbnail": "../articles/thumbnails/google-play-gift-card-not-working-square-v1.webp",
+      "thumbnailKind": "generic",
+      "ogp": "../articles/ogp/2026-11-27-google-play-gift-card-not-working.jpg",
+      "source": "editorial",
+      "listed": true,
+      "related": [
+        [
+          "/articles/2026-11-27-google-play-balance-charge-limit.html",
+          "Google Play残高のチャージ上限はいくら？20万円の残高上限とギフトカード購入制限"
+        ],
+        [
+          "/articles/2026-08-05-play-country-change-points.html",
+          "Google Playの国を変更するとPlay Pointsはどうなる？残高・ランクの注意点"
+        ],
+        [
+          "/articles/2026-07-25-play-credit-not-working.html",
+          "Play PointsをPlayクレジットへ交換できない・使えない原因"
+        ]
+      ]
+    },
+    {
+      "id": "google-play-balance-use-up",
+      "title": "Google Play残高を使い切る方法｜余った10円・100円はどう使う？",
+      "date": "2026-11-27",
+      "modified": "2026-11-27",
+      "category": "使い方",
+      "browseCategory": "使う・交換",
+      "listTitle": "Google Play残高を使い切る方法｜余った10円・100円はどう使う？",
+      "listDescription": "余った10円・100円などのGoogle Play残高を、次の買い物や併用払いで無駄なく使う方法。追加支払いの具体例と期限も紹介します。",
+      "description": "余った10円・100円などのGoogle Play残高を、次の買い物や併用払いで無駄なく使う方法。追加支払いの具体例と期限も紹介します。",
+      "tags": [
+        "Google Play残高",
+        "端数",
+        "使い切る",
+        "併用決済"
+      ],
+      "file": "../articles/2026-11-27-google-play-balance-use-up.html",
+      "thumbnail": "../articles/thumbnails/google-play-balance-use-up-square-v1.webp",
+      "thumbnailKind": "generic",
+      "ogp": "../articles/ogp/2026-11-27-google-play-balance-use-up.jpg",
+      "source": "editorial",
+      "listed": true,
+      "related": [
+        [
+          "/articles/2026-11-19-google-play-balance-combine-payment.html",
+          "Google Play残高とクレカ・携帯決済は併用できる？不足分の払い方"
+        ],
+        [
+          "/articles/2026-11-27-google-play-gift-card-balance-expiration.html",
+          "Google Playギフトカード・残高に有効期限はある？チャージ後の期限とポイントの違い"
+        ],
+        [
+          "/articles/2026-10-14-play-credit-subscription.html",
+          "Play Pointsで交換したGoogle Playクレジットはサブスクに使える？初回と更新時の違い【2026年】"
+        ]
+      ]
+    },
+    {
+      "id": "google-play-gift-card-balance-expiration",
+      "title": "Google Playギフトカード・残高に有効期限はある？チャージ後の期限とポイントの違い",
+      "date": "2026-11-27",
+      "modified": "2026-11-27",
+      "category": "使い方",
+      "browseCategory": "はじめて・基本",
+      "listTitle": "Google Playギフトカード・残高に有効期限はある？チャージ後の期限とポイントの違い",
+      "listDescription": "日本のGoogle Playギフトカード残高とPlay Points交換・キャンペーン残高の有効期限の違いを整理。年末や機種変更時の注意点も解説します。",
+      "description": "日本のGoogle Playギフトカード残高とPlay Points交換・キャンペーン残高の有効期限の違いを整理。年末や機種変更時の注意点も解説します。",
+      "tags": [
+        "ギフトカード",
+        "Google Play残高",
+        "有効期限",
+        "失効",
+        "Playクレジット"
+      ],
+      "file": "../articles/2026-11-27-google-play-gift-card-balance-expiration.html",
+      "thumbnail": "../articles/thumbnails/google-play-gift-card-balance-expiration-square-v1.webp",
+      "thumbnailKind": "generic",
+      "ogp": "../articles/ogp/2026-11-27-google-play-gift-card-balance-expiration.jpg",
+      "source": "editorial",
+      "listed": true,
+      "related": [
+        [
+          "/articles/2025-12-25-expiration.html",
+          "Google Play Pointsの有効期限｜失効日・確認方法・期限切れ対策"
+        ],
+        [
+          "/articles/2026-11-27-google-play-balance-use-up.html",
+          "Google Play残高を使い切る方法｜余った10円・100円はどう使う？"
+        ],
+        [
+          "/articles/2026-08-05-play-country-change-points.html",
+          "Google Playの国を変更するとPlay Pointsはどうなる？残高・ランクの注意点"
+        ]
+      ]
+    },
+    {
+      "id": "monster-hunter-now-web-store-vs-google-play",
+      "title": "モンハンNowの課金はどこがお得？Web Storeのジェム増量とGoogle Play Pointsを比較",
+      "date": "2026-11-27",
+      "modified": "2026-11-27",
+      "category": "使い方",
+      "browseCategory": "ゲーム別課金",
+      "listTitle": "モンハンNowの課金はどこがお得？Web Storeのジェム増量とGoogle Play Pointsを比較",
+      "listDescription": "モンハンNowの公式Web StoreとGoogle Play課金を比較。初回のジェム増量、ハンターパス、割引・還元の損得分岐点を公式掲載例で試算します。",
+      "description": "モンハンNowの公式Web StoreとGoogle Play課金を比較。初回のジェム増量、ハンターパス、割引・還元の損得分岐点を公式掲載例で試算します。",
+      "tags": [
+        "モンハンNow",
+        "Monster Hunter Now",
+        "ジェム",
+        "Web Store",
+        "ハンターパス",
+        "Google Play Points"
+      ],
+      "file": "../articles/2026-11-27-monster-hunter-now-web-store-vs-google-play.html",
+      "thumbnail": "../images/game-icons/monster-hunter-now.webp",
+      "thumbnailKind": "app-icon",
+      "gameTitle": "モンハンNow",
+      "thumbnail2x": "../images/game-icons/monster-hunter-now-2x.webp",
+      "ogp": "../articles/ogp/2026-11-27-monster-hunter-now-web-store-vs-google-play.jpg",
+      "source": "editorial",
+      "listed": true,
+      "related": [
+        [
+          "/articles/2026-08-19-web-store-external-billing-points.html",
+          "ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い"
+        ],
+        [
+          "/articles/2026-06-20-discount-gift-cards.html",
+          "Google Playギフトコードをお得に買う｜楽天・ローソンの還元条件と選び方"
+        ],
+        [
+          "/articles/2026-11-27-google-play-balance-use-up.html",
+          "Google Play残高を使い切る方法｜余った10円・100円はどう使う？"
+        ]
+      ]
+    },
+    {
+      "id": "google-play-balance-charge-limit",
+      "title": "Google Play残高のチャージ上限はいくら？20万円の残高上限とギフトカード購入制限",
+      "date": "2026-11-27",
+      "modified": "2026-11-27",
+      "category": "使い方",
+      "browseCategory": "はじめて・基本",
+      "listTitle": "Google Play残高のチャージ上限はいくら？20万円の残高上限とギフトカード購入制限",
+      "listDescription": "日本のGoogle Play残高の保有上限20万円と、Google Play内のギフトカード購入上限の違いを解説。上限までの余裕とエラー時の対処も整理します。",
+      "description": "日本のGoogle Play残高の保有上限20万円と、Google Play内のギフトカード購入上限の違いを解説。上限までの余裕とエラー時の対処も整理します。",
+      "tags": [
+        "Google Play残高",
+        "チャージ上限",
+        "20万円",
+        "ギフトカード",
+        "購入制限"
+      ],
+      "file": "../articles/2026-11-27-google-play-balance-charge-limit.html",
+      "thumbnail": "../articles/thumbnails/google-play-balance-charge-limit-square-v1.webp",
+      "thumbnailKind": "generic",
+      "ogp": "../articles/ogp/2026-11-27-google-play-balance-charge-limit.jpg",
+      "source": "editorial",
+      "listed": true,
+      "related": [
+        [
+          "/articles/2026-11-27-google-play-gift-card-not-working.html",
+          "Google Playギフトカードが使えない・チャージできないときは？エラー別の確認方法"
+        ],
+        [
+          "/articles/2025-12-25-gift-card.html",
+          "Google PlayギフトカードでPlay Pointsは貯まる？付与タイミング"
+        ],
+        [
+          "/articles/2026-06-20-discount-gift-cards.html",
+          "Google Playギフトコードをお得に買う｜楽天・ローソンの還元条件と選び方"
+        ]
+      ]
+    },
+    {
+      "id": "google-play-payment-failed",
+      "title": "Google Playで課金できないときは？カード・残高・携帯決済の確認順",
+      "date": "2026-11-27",
+      "modified": "2026-11-27",
+      "category": "トラブル",
+      "browseCategory": "トラブル・アカウント",
+      "listTitle": "Google Playで課金できないときは？カード・残高・携帯決済の確認順",
+      "listDescription": "Google Playで課金できないときの確認順を解説。注文履歴、カード、携帯決済、残高、本人確認、購入済みアイテム未着を切り分けます。",
+      "description": "Google Playで課金できないときの確認順を解説。注文履歴、カード、携帯決済、残高、本人確認、購入済みアイテム未着を切り分けます。",
+      "tags": [
+        "課金できない",
+        "Google Play",
+        "支払い拒否",
+        "携帯決済",
+        "クレジットカード",
+        "残高"
+      ],
+      "file": "../articles/2026-11-27-google-play-payment-failed.html",
+      "thumbnail": "../articles/thumbnails/google-play-payment-failed-square-v1.webp",
+      "thumbnailKind": "generic",
+      "ogp": "../articles/ogp/2026-11-27-google-play-payment-failed.jpg",
+      "source": "editorial",
+      "listed": true,
+      "related": [
+        [
+          "/articles/2026-03-10-play-points-reflection-timing.html",
+          "Google Play Pointsが反映されない・遅い時は？いつ付くかと確認する順番"
+        ],
+        [
+          "/articles/2026-10-15-google-play-purchase-history-budget.html",
+          "ゲームに今月いくら使った？Google Playの購入履歴と予算通知"
+        ],
+        [
+          "/articles/2026-11-19-google-play-balance-combine-payment.html",
+          "Google Play残高とクレカ・携帯決済は併用できる？不足分の払い方"
+        ]
+      ]
+    },
+    {
+      "id": "google-play-pass-after-cancellation",
+      "title": "Google Play Passを解約するとどうなる？ゲーム・セーブデータ・特典の違い",
+      "date": "2026-11-27",
+      "modified": "2026-11-27",
+      "category": "使い方",
+      "browseCategory": "使う・交換",
+      "listTitle": "Google Play Passを解約するとどうなる？ゲーム・セーブデータ・特典の違い",
+      "listDescription": "Google Play Passを解約するとゲームやセーブデータはどうなる？利用権、広告、割引、木曜のポイント特典、家族の利用を整理します。",
+      "description": "Google Play Passを解約するとゲームやセーブデータはどうなる？利用権、広告、割引、木曜のポイント特典、家族の利用を整理します。",
+      "tags": [
+        "Google Play Pass",
+        "解約",
+        "セーブデータ",
+        "定期購入",
+        "木曜特典"
+      ],
+      "file": "../articles/2026-11-27-google-play-pass-after-cancellation.html",
+      "thumbnail": "../articles/thumbnails/google-play-pass-after-cancellation-square-v1.webp",
+      "thumbnailKind": "generic",
+      "ogp": "../articles/ogp/2026-11-27-google-play-pass-after-cancellation.jpg",
+      "source": "editorial",
+      "listed": true,
+      "related": [
+        [
+          "/articles/2026-08-16-play-pass-worth-it.html",
+          "Google Play Passは何がうれしい？遊び放題と木曜特典、加入前に見たいこと"
+        ],
+        [
+          "/articles/2026-10-10-diamond-play-pass-value.html",
+          "ダイヤモンド会員はPlay Passに絶対入れ！……と言いたくなる理由。年額5,400円の元は取れる？"
+        ],
+        [
+          "/articles/2025-12-25-weekly-reward.html",
+          "Google Play Pointsのウィークリーリワードとは？受取曜日・ランク別特典"
+        ]
+      ]
+    }
+  ],
+  "roleByStem": {
+    "2026-11-27-google-play-gift-card-not-working": "troubleshooting",
+    "2026-11-27-google-play-balance-use-up": "decision_support",
+    "2026-11-27-google-play-gift-card-balance-expiration": "reference",
+    "2026-11-27-monster-hunter-now-web-store-vs-google-play": "game_decision",
+    "2026-11-27-google-play-balance-charge-limit": "reference",
+    "2026-11-27-google-play-payment-failed": "troubleshooting",
+    "2026-11-27-google-play-pass-after-cancellation": "decision_support"
+  },
+  "genericArticleIds": [
+    "google-play-gift-card-not-working",
+    "google-play-balance-use-up",
+    "google-play-gift-card-balance-expiration",
+    "google-play-balance-charge-limit",
+    "google-play-payment-failed",
+    "google-play-pass-after-cancellation"
+  ],
+  "dedicatedOgpIds": [
+    "google-play-gift-card-not-working",
+    "google-play-balance-use-up",
+    "google-play-gift-card-balance-expiration",
+    "monster-hunter-now-web-store-vs-google-play",
+    "google-play-balance-charge-limit",
+    "google-play-payment-failed",
+    "google-play-pass-after-cancellation"
+  ],
+  "gameThumbnailRegistration": {
+    "gameTitle": "モンハンNow",
+    "status": "blocked-official-icon-not-acquired",
+    "officialListing": "https://play.google.com/store/apps/details?hl=ja&gl=JP&id=com.nianticlabs.monsterhunter",
+    "expectedLocalPaths": [
+      "images/game-icons/monster-hunter-now.webp",
+      "images/game-icons/monster-hunter-now-2x.webp"
+    ],
+    "provisionalThumbnail": "articles/thumbnails/monster-hunter-now-web-store-vs-google-play-square-v1.webp"
+  },
+  "relatedChoices": {
+    "google-play-gift-card-not-working": [
+      "google-play-balance-charge-limit",
+      "play-country-change-points",
+      "play-credit-not-working"
+    ],
+    "google-play-balance-use-up": [
+      "google-play-balance-combine-payment",
+      "google-play-gift-card-balance-expiration",
+      "play-credit-subscription-2026"
+    ],
+    "google-play-gift-card-balance-expiration": [
+      "expiration",
+      "google-play-balance-use-up",
+      "play-country-change-points"
+    ],
+    "monster-hunter-now-web-store-vs-google-play": [
+      "web-store-external-billing-points",
+      "discount-gift-cards",
+      "google-play-balance-use-up"
+    ],
+    "google-play-balance-charge-limit": [
+      "google-play-gift-card-not-working",
+      "gift-card",
+      "discount-gift-cards"
+    ],
+    "google-play-payment-failed": [
+      "play-points-reflection-timing",
+      "google-play-purchase-history-budget",
+      "google-play-balance-combine-payment"
+    ],
+    "google-play-pass-after-cancellation": [
+      "play-pass-worth-it",
+      "diamond-play-pass-break-even-2026",
+      "weekly-reward"
+    ]
+  }
+}

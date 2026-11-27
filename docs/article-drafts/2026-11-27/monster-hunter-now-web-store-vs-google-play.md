@@ -32,7 +32,7 @@
 
 エクストリームではアイテムボックス拡張など、ジェム以外の特典もあるため、単純にジェムの数だけでどちらのパスが向いているかは決まりません。
 
-Web Storeで自動更新の定期購入を利用した場合は、さらにプライムで100、エクストリームで200ボーナスジェムと、おさんぽ玉の追加特典が案内されています。単発購入と継続契約を混同せず、現在の料金・更新条件と受取日数を見て選びましょう。
+Web Storeで自動更新の定期購入を利用した場合は、さらにプライムで100、エクストリームで200ボーナスジェムと、おさんぽ玉の追加特典が案内されています。購入できるハンターランクの条件はプライムが5、エクストリームが11です。単発購入と継続契約を混同せず、現在の料金・更新条件と受取日数を見て選びましょう。
 
 ## Google Playの割引があるなら、どのくらいで逆転する？
 
@@ -59,3 +59,4 @@ Web Store側の独自特典、ギフトカードの購入割引、Google Playの
 - [ハンターパスの自動更新](https://niantic.helpshift.com/hc/ja/39-monster-hunter-now/faq/5230-automatic-hunter-pass-renewal-subscription/)
 - [公式Web Store](https://store.monsterhunternow.com/)
 - [日本のPlay Points獲得対象](https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja)
+- [Google PlayのモンハンNow公式掲載ページ](https://play.google.com/store/apps/details?hl=ja&gl=JP&id=com.nianticlabs.monsterhunter)
