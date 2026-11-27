@@ -10,13 +10,13 @@
       "kind": "evergreen",
       "status": "review",
       "role": "game_decision",
-      "blocker": "両経路の日本円・ネコカン実数の同時確認、公式アプリアイコン取得。仮定を実売価格として掲載しない。",
+      "blocker": "公式ヘルプで受取方法・期限・上限確認済み。両経路の日本版の実売価格・数量は未取得。現行の比較表は仮定と明示し、公式アプリアイコン・OGP・生成/ブラウザ確認後に公開判断。",
       "manifestCandidate": {
         "id": "battlecats-webstore-vs-google-play",
         "title": "にゃんこ大戦争の課金はどこがお得？にゃんこ大商店・Google Playのネコカン比較",
         "listTitle": "にゃんこ大戦争｜ネコカンの購入先比較",
-        "description": "11月25日に始まったにゃんこ大商店オンラインのネコカン増量とGoogle Play Pointsの違い。ネコカン単価・ギフトコード割引を比べる方法を試算例で紹介。",
-        "listDescription": "11月25日に始まったにゃんこ大商店オンラインのネコカン増量とGoogle Play Pointsの違い。ネコカン単価・ギフトコード割引を比べる方法を試算例で紹介。",
+        "description": "にゃんこ大商店のネコカン増量とGoogle Play Pointsを比較。ギフトコード割引の試算、Web購入品とポイント交換品の受け取り方・期限も整理します。",
+        "listDescription": "にゃんこ大商店のネコカン増量とGoogle Play Pointsを比較。ギフトコード割引の試算、Web購入品とポイント交換品の受け取り方・期限も整理します。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "にゃんこ大戦争",
@@ -55,7 +55,16 @@
         "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
         "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.ponos.battlecats",
         "appPackage": "jp.co.ponos.battlecats",
-        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認",
+        "listingEvidence": {
+          "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.ponos.battlecats",
+          "publisher": "PONOS Corporation",
+          "downloads": "1,000万+",
+          "age": "当日取得の検索結果。説明文の全世界累計1.2億DLは別指標。",
+          "checkedAt": "2026-11-28",
+          "imageBytes": "未取得",
+          "permission": "別途利用条件確認"
+        }
       },
       "publishedDate": "実公開日未確定",
       "sources": [
@@ -136,7 +145,16 @@
         "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
         "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.ponos.battlecats",
         "appPackage": "jp.co.ponos.battlecats",
-        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認",
+        "listingEvidence": {
+          "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.ponos.battlecats",
+          "publisher": "PONOS Corporation",
+          "downloads": "1,000万+",
+          "age": "当日取得の検索結果。説明文の全世界累計1.2億DLは別指標。",
+          "checkedAt": "2026-11-28",
+          "imageBytes": "未取得",
+          "permission": "別途利用条件確認"
+        }
       },
       "publishedDate": "実公開日未確定",
       "sources": [
@@ -168,7 +186,7 @@
       "kind": "evergreen",
       "status": "review",
       "role": "game_decision",
-      "blocker": "日本円の現行ゲーム内・Web同一商品の数量、初回共有条件、公式資料間の差を実画面で再照合。",
+      "blocker": "日本向け公開検索資料のWeb初回5商品と米ドルFAQの数量一致は確認。日本のゲーム内円価格、通常時の数量・初回適用状態、公式資料間の差は未解決。",
       "manifestCandidate": {
         "id": "monster-hunter-outlanders-midasbuy-vs-google-play",
         "title": "モンスターハンターアウトランダーズの課金比較｜MidasbuyとGoogle Playはどっちがお得？",
@@ -213,7 +231,16 @@
         "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
         "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.tencent.mhadv",
         "appPackage": "com.tencent.mhadv",
-        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認",
+        "listingEvidence": {
+          "url": "https://play.google.com/store/apps/details?gl=jp&hl=ja&id=com.tencent.mhadv",
+          "publisher": "Level Infinite",
+          "downloads": "100万+",
+          "age": "前日取得の検索結果",
+          "checkedAt": "2026-11-28",
+          "imageBytes": "未取得",
+          "permission": "別途利用条件確認"
+        }
       },
       "publishedDate": "実公開日未確定",
       "sources": [
@@ -298,7 +325,16 @@
         "gameIconCandidates": [
           "images/game-icons/phantomparade.webp",
           "images/game-icons/phantomparade-2x.webp"
-        ]
+        ],
+        "listingEvidence": {
+          "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.sumzap.pj0014",
+          "publisher": "Sumzap, Inc.",
+          "downloads": "100万+",
+          "age": "当日取得の検索結果",
+          "checkedAt": "2026-11-28",
+          "imageBytes": "既存画像あり・現在の配信画像未照合",
+          "permission": "別途利用条件確認"
+        }
       },
       "publishedDate": "実公開日未確定",
       "sources": [
@@ -334,7 +370,7 @@
       "kind": "limited",
       "status": "review",
       "role": "game_decision",
-      "blocker": "日本円実売・有償ジュエル内訳を取得。公式が価格を示していない箇所は仮例のみ。",
+      "blocker": "公式告知の追加配布・受取手順を確認。990円/1,500有償ジュエル・9,900円/15,000有償ジュエルは二次情報に一致するが一次の個別価格画面未取得。公開原稿には価格を断定しない。",
       "manifestCandidate": {
         "id": "romasaga-rs-8th-anniversary-jewel-sale",
         "title": "ロマサガRS8周年ジュエルセール｜無料Webパック・有償ジュエルと販売期限",
@@ -379,7 +415,16 @@
         "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
         "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.square_enix.android_googleplay.RSRS",
         "appPackage": "com.square_enix.android_googleplay.RSRS",
-        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認",
+        "listingEvidence": {
+          "url": "https://play.google.com/store/apps/details?hl=ja&id=com.square_enix.android_googleplay.RSRS",
+          "publisher": "SQUARE ENIX Co.,Ltd.",
+          "downloads": "100万+",
+          "age": "約2か月前の取得結果",
+          "checkedAt": "2026-11-28",
+          "imageBytes": "未取得",
+          "permission": "別途利用条件確認"
+        }
       },
       "publishedDate": "実公開日未確定",
       "sources": [
@@ -406,6 +451,10 @@
         {
           "title": "日本向けGoogle Play公式アプリ掲載ページ",
           "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.square_enix.android_googleplay.RSRS"
+        },
+        {
+          "title": "公式Webジュエルショップ（購入画面の確認先）",
+          "url": "https://sqex-bridge.jp/webstore/saga_reuniverse"
         }
       ]
     },
@@ -415,7 +464,7 @@
       "kind": "limited",
       "status": "review",
       "role": "game_decision",
-      "blocker": "日本円の現在価格・購入可能地域、同一商品かどうか、受取終了時刻を再確認。",
+      "blocker": "公式告知の追加分と期限、ストアFAQの決済経路確認。現在の日本円価格・購入地域・同一商品の比較は未確認。",
       "manifestCandidate": {
         "id": "p5x-black-friday-store-packs-2026",
         "title": "ペルソナ5X（P5X）ブラックフライデー2026｜95連パックと公式ストア特典",
@@ -461,7 +510,16 @@
         "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
         "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.sega.persona5.the.phantomx.jp",
         "appPackage": "com.sega.persona5.the.phantomx.jp",
-        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認",
+        "listingEvidence": {
+          "url": "https://play.google.com/store/apps/details?hl=ja&id=com.sega.persona5.the.phantomx.jp",
+          "publisher": "SEGA CORPORATION",
+          "downloads": "50万+",
+          "age": "約2か月前の取得結果",
+          "checkedAt": "2026-11-28",
+          "imageBytes": "未取得",
+          "permission": "別途利用条件確認"
+        }
       },
       "publishedDate": "実公開日未確定",
       "sources": [
@@ -538,7 +596,16 @@
         "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
         "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.takaratomy.duelmastersplays",
         "appPackage": "jp.co.takaratomy.duelmastersplays",
-        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認",
+        "listingEvidence": {
+          "url": "https://play.google.com/store/apps/details?hl=ja&id=jp.co.takaratomy.duelmastersplays",
+          "publisher": "TOMY COMPANY,LTD.",
+          "downloads": "100万+",
+          "age": "約2か月前の取得結果",
+          "checkedAt": "2026-11-28",
+          "imageBytes": "未取得",
+          "permission": "別途利用条件確認"
+        }
       },
       "publishedDate": "実公開日未確定",
       "sources": [
@@ -572,15 +639,15 @@
       "id": "whiteout-survival-frost-stars-topup",
       "game": "ホワサバ",
       "kind": "evergreen",
-      "status": "hold",
+      "status": "review",
       "role": "game_decision",
-      "blocker": "日本向け公式ストアの商品価格・増量条件・対象アカウント・チャージイベント規約。日本向け公式の確実な案内経路を確認するまで公開保留。",
+      "blocker": "公式wikiで累計チャージへの加算・受取・正式購入先を確認したため制度説明記事は編集確認対象。Webの日本円価格・増量率・個別イベント規約と画像・公開テストは残る。",
       "manifestCandidate": {
         "id": "whiteout-survival-frost-stars-topup",
-        "title": "ホワイトアウト・サバイバル（ホワサバ）の課金｜寒霜の星とチャージポイントの違い",
+        "title": "ホワイトアウト・サバイバル（ホワサバ）課金｜寒霜の星と累計チャージの仕組み",
         "listTitle": "ホワサバ｜寒霜の星とチャージポイント",
-        "description": "ホワサバ公式wikiのパック価格・寒霜の星の必要数・チャージポイント目安を整理。Webチャージの増量率やGoogle Play Pointsは別制度として説明。",
-        "listDescription": "ホワサバ公式wikiのパック価格・寒霜の星の必要数・チャージポイント目安を整理。Webチャージの増量率やGoogle Play Pointsは別制度として説明。",
+        "description": "ホワサバの寒霜の星は買っただけでは累計チャージに加算されない？公式wikiで確認したパック購入時のポイント、受取方法、Google Playとの違いを整理。",
+        "listDescription": "ホワサバの寒霜の星は買っただけでは累計チャージに加算されない？公式wikiで確認したパック購入時のポイント、受取方法、Google Playとの違いを整理。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "ホワサバ",
@@ -619,7 +686,16 @@
         "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
         "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.gof.global",
         "appPackage": "com.gof.global",
-        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認",
+        "listingEvidence": {
+          "url": "https://play.google.com/store/apps/details?hl=ja&id=com.gof.global&listing=pve",
+          "publisher": "Century Games PTE. LTD.",
+          "downloads": "1億+",
+          "age": "約6日前の取得結果",
+          "checkedAt": "2026-11-28",
+          "imageBytes": "未取得",
+          "permission": "別途利用条件確認"
+        }
       },
       "publishedDate": "実公開日未確定",
       "sources": [
@@ -628,8 +704,8 @@
           "url": "https://www.whiteoutsurvival.wiki/ja/vip-post/%E7%B7%8F%E5%90%88%E6%A1%88%E5%86%85/"
         },
         {
-          "title": "Century Gamesドメインの公式ストア候補（取得時に商品本文を読めず）",
-          "url": "https://store.centurygames.com/wos"
+          "title": "公式wikiが案内する寒霜の星ショップ（商品一覧は未取得）",
+          "url": "https://pay.whiteoutsurvival.com/"
         },
         {
           "title": "Google Play公式掲載・開発元リンク",
@@ -646,6 +722,10 @@
         {
           "title": "日本向けGoogle Play公式アプリ掲載ページ",
           "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.gof.global"
+        },
+        {
+          "title": "公式wiki：寒霜の星の入手方法・公式ストア導線",
+          "url": "https://www.whiteoutsurvival.wiki/ja/items/%E5%AF%92%E9%9C%9C%E3%81%AE%E6%98%9F/"
         }
       ]
     }
@@ -663,9 +743,10 @@
   "latestMainChecked": "8003cedff93e802d3edfca9362581ffaaa8066d3",
   "publicationGate": {
     "status": "blocked",
-    "reason": "専用OGP8枚未登録、6ゲーム公式アイコン新規取得・利用条件確認、公式実売・一部条件未確認、生成・ブラウザ・PR Gate未実施",
+    "reason": "専用OGP8枚未登録、6ゲーム公式アイコン画像実体未取得、個別実売条件・ファンパレ正式商品未確認、生成・ブラウザ・PR Gate未実施。ホワサバは制度記事として編集確認対象に変更。",
     "draftRobots": "noindex, nofollow",
     "releaseRobots": "index, follow, max-image-preview:large",
     "publicationDates": "実公開日確定後にArticle/datePublished・dateModified、meta、表示日、台帳を同期"
-  }
+  },
+  "additionalEvidenceDate": "2026-11-28"
 }
