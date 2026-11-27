@@ -1,0 +1,602 @@
+{
+  "base": "a6f708a5cfd3417128b1d4400817c39ab0fba05e",
+  "plannedPath": "/game-deals/",
+  "status": "staged-not-public",
+  "genre": "ゲームの限定セール・購入特典",
+  "articleCandidates": [
+    {
+      "id": "battlecats-webstore-vs-google-play",
+      "game": "にゃんこ大戦争",
+      "kind": "evergreen",
+      "status": "review",
+      "role": "game_decision",
+      "blocker": "両経路の日本円・ネコカン実数の同時確認、公式アプリアイコン取得。仮定を実売価格として掲載しない。",
+      "manifestCandidate": {
+        "id": "battlecats-webstore-vs-google-play",
+        "title": "にゃんこ大戦争の課金はどこがお得？にゃんこ大商店とGoogle Playを比較",
+        "listTitle": "にゃんこ大戦争｜ネコカンの購入先比較",
+        "description": "にゃんこ大商店オンラインのネコカン増量とGoogle Play Pointsを比較。購入先ごとの受取数、割引・還元、購入条件から選ぶ方法を解説。",
+        "listDescription": "にゃんこ大商店オンラインのネコカン増量とGoogle Play Pointsを比較。購入先ごとの受取数、割引・還元、購入条件から選ぶ方法を解説。",
+        "category": "使い方",
+        "browseCategory": "ゲーム別課金",
+        "gameTitle": "にゃんこ大戦争",
+        "tags": [
+          "にゃんこ大戦争",
+          "ネコカン",
+          "にゃんこ大商店",
+          "Webショップ",
+          "課金",
+          "課金先比較"
+        ],
+        "file": "../articles/2026-11-28-battlecats-webstore-vs-google-play.html",
+        "ogp": "../articles/ogp/2026-11-28-battlecats-webstore-vs-google-play.jpg",
+        "source": "editorial",
+        "listed": false,
+        "related": [
+          [
+            "/articles/2026-08-19-web-store-external-billing-points.html",
+            "ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い"
+          ],
+          [
+            "/articles/2026-06-20-discount-gift-cards.html",
+            "Google Playギフトカードをお得に買う方法｜楽天・コンビニの割引と還元"
+          ],
+          [
+            "/articles/2026-08-05-play-points-multiplier-stacking.html",
+            "Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法"
+          ]
+        ]
+      },
+      "imageRequirements": {
+        "ogp": "articles/ogp/2026-11-28-battlecats-webstore-vs-google-play.jpg",
+        "width": 1200,
+        "height": 630,
+        "mime": "image/jpeg",
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+      },
+      "publishedDate": "実公開日まで未確定",
+      "sources": [
+        {
+          "title": "ポノス：オンラインショップでのゲーム内商品販売開始",
+          "url": "https://battlecats.club/news/game/news_4558/"
+        },
+        {
+          "title": "にゃんこ大商店オンライン",
+          "url": "https://www.nyanko-daishoten.jp/"
+        },
+        {
+          "title": "Google Play Pointsの獲得条件・税抜対象額",
+          "url": "https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja"
+        },
+        {
+          "title": "Google Play以外の決済の扱い",
+          "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        },
+        {
+          "title": "楽天認定店のギフトコードクーポン条件",
+          "url": "https://event.rakuten.co.jp/computer/gpgiftcard/"
+        }
+      ]
+    },
+    {
+      "id": "battlecats-14th-anniversary-packs",
+      "game": "にゃんこ大戦争",
+      "kind": "limited",
+      "status": "review",
+      "role": "game_decision",
+      "blocker": "第2期の実売価格・内容・購入上限を公式アプリ画面で照合。原稿の仮定例を実商品と混同しない。",
+      "manifestCandidate": {
+        "id": "battlecats-14th-anniversary-packs",
+        "title": "にゃんこ大戦争14周年の大感謝パックはいつまで？ネコカン・限定商品と無料特典",
+        "listTitle": "にゃんこ大戦争14周年｜大感謝パック",
+        "description": "14周年の大感謝パック・超限定セール第2期、レジェンドチケット、にゃんこスロットⅡの期間を整理。購入する前の無料特典と比較の考え方を紹介。",
+        "listDescription": "14周年の大感謝パック・超限定セール第2期、レジェンドチケット、にゃんこスロットⅡの期間を整理。購入する前の無料特典と比較の考え方を紹介。",
+        "category": "使い方",
+        "browseCategory": "ゲーム別課金",
+        "gameTitle": "にゃんこ大戦争",
+        "tags": [
+          "にゃんこ大戦争",
+          "14周年",
+          "大感謝パック",
+          "超限定セール",
+          "ネコカン",
+          "周年・限定パック"
+        ],
+        "file": "../articles/2026-11-28-battlecats-14th-anniversary-packs.html",
+        "ogp": "../articles/ogp/2026-11-28-battlecats-14th-anniversary-packs.jpg",
+        "source": "editorial",
+        "listed": false,
+        "related": [
+          [
+            "/articles/2026-08-19-web-store-external-billing-points.html",
+            "ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い"
+          ],
+          [
+            "/articles/2026-06-20-discount-gift-cards.html",
+            "Google Playギフトカードをお得に買う方法｜楽天・コンビニの割引と還元"
+          ],
+          [
+            "/articles/2026-08-05-play-points-multiplier-stacking.html",
+            "Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法"
+          ]
+        ]
+      },
+      "imageRequirements": {
+        "ogp": "articles/ogp/2026-11-28-battlecats-14th-anniversary-packs.jpg",
+        "width": 1200,
+        "height": 630,
+        "mime": "image/jpeg",
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+      },
+      "publishedDate": "実公開日まで未確定",
+      "sources": [
+        {
+          "title": "ポノス：14周年第2弾の販売・開催期間",
+          "url": "https://battlecats.club/news/game/20261126_14th-event/"
+        },
+        {
+          "title": "ポノス：オンラインショップでのゲーム内商品販売開始",
+          "url": "https://battlecats.club/news/game/news_4558/"
+        },
+        {
+          "title": "Google Play Pointsの獲得条件・税抜対象額",
+          "url": "https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja"
+        },
+        {
+          "title": "Google Play以外の決済の扱い",
+          "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        }
+      ]
+    },
+    {
+      "id": "monster-hunter-outlanders-midasbuy-vs-google-play",
+      "game": "モンハンアウトランダーズ",
+      "kind": "evergreen",
+      "status": "review",
+      "role": "game_decision",
+      "blocker": "日本円の現行ゲーム内・Web同一商品の数量、初回共有条件、公式資料間の差を実画面で再照合。",
+      "manifestCandidate": {
+        "id": "monster-hunter-outlanders-midasbuy-vs-google-play",
+        "title": "モンハンアウトランダーズの課金はどこがお得？MidasbuyとGoogle Playのアカハネコイン比較",
+        "listTitle": "MHO｜アカハネコインの購入先比較",
+        "description": "モンスターハンターアウトランダーズの初回チャージと2回目以降を公式FAQの数量で比較。最大28%の意味とPlay Pointsの損得分岐点を解説。",
+        "listDescription": "モンスターハンターアウトランダーズの初回チャージと2回目以降を公式FAQの数量で比較。最大28%の意味とPlay Pointsの損得分岐点を解説。",
+        "category": "使い方",
+        "browseCategory": "ゲーム別課金",
+        "gameTitle": "モンハンアウトランダーズ",
+        "tags": [
+          "モンハンアウトランダーズ",
+          "MHO",
+          "アカハネコイン",
+          "Midasbuy",
+          "課金",
+          "課金先比較"
+        ],
+        "file": "../articles/2026-11-28-monster-hunter-outlanders-midasbuy-vs-google-play.html",
+        "ogp": "../articles/ogp/2026-11-28-monster-hunter-outlanders-midasbuy-vs-google-play.jpg",
+        "source": "editorial",
+        "listed": false,
+        "related": [
+          [
+            "/articles/2026-08-19-web-store-external-billing-points.html",
+            "ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い"
+          ],
+          [
+            "/articles/2026-06-20-discount-gift-cards.html",
+            "Google Playギフトカードをお得に買う方法｜楽天・コンビニの割引と還元"
+          ],
+          [
+            "/articles/2026-08-05-play-points-multiplier-stacking.html",
+            "Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法"
+          ]
+        ]
+      },
+      "imageRequirements": {
+        "ogp": "articles/ogp/2026-11-28-monster-hunter-outlanders-midasbuy-vs-google-play.jpg",
+        "width": 1200,
+        "height": 630,
+        "mime": "image/jpeg",
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+      },
+      "publishedDate": "実公開日まで未確定",
+      "sources": [
+        {
+          "title": "Midasbuy公式FAQ：初回・通常時の米ドル建て比較表",
+          "url": "https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-top-up-faq-news_hdpsuw"
+        },
+        {
+          "title": "日本向け公式チャージページ（価格は取得時点の表示）",
+          "url": "https://www.midasbuy.com/midasbuy/jp/buy/monster-hunter-outlanders?lang=ja"
+        },
+        {
+          "title": "Midasbuy通貨ガイド（通常時の比較表にFAQとの相違あり）",
+          "url": "https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-crimson-crest-coins-news_pgywrs"
+        },
+        {
+          "title": "Google Play Pointsの獲得条件・税抜対象額",
+          "url": "https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja"
+        },
+        {
+          "title": "Google Play以外の決済の扱い",
+          "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        }
+      ]
+    },
+    {
+      "id": "phantomparade-3rd-anniversary-select-ticket",
+      "game": "ファンパレ",
+      "kind": "limited",
+      "status": "hold",
+      "role": "game_decision",
+      "blocker": "11月30日以降の正式な商品告知・価格・有償通貨区分・対象・期限を一次資料で取得するまで公開保留。",
+      "manifestCandidate": {
+        "id": "phantomparade-3rd-anniversary-select-ticket",
+        "title": "ファンパレ3周年のセレクトチケットに備える｜有償廻珠とWebショップの確認ポイント",
+        "listTitle": "ファンパレ3周年｜セレクトチケット",
+        "description": "ファンパレ3周年のセレクトチケットパックについて、公式放送の予定と未確認の価格を区別。有償廻珠・Webショップ・チケット期限の確認方法を整理。",
+        "listDescription": "ファンパレ3周年のセレクトチケットパックについて、公式放送の予定と未確認の価格を区別。有償廻珠・Webショップ・チケット期限の確認方法を整理。",
+        "category": "使い方",
+        "browseCategory": "ゲーム別課金",
+        "gameTitle": "ファンパレ",
+        "tags": [
+          "ファンパレ",
+          "3周年",
+          "セレクトチケット",
+          "廻珠",
+          "WEBショップ",
+          "周年・限定パック"
+        ],
+        "file": "../articles/2026-11-28-phantomparade-3rd-anniversary-select-ticket.html",
+        "ogp": "../articles/ogp/2026-11-28-phantomparade-3rd-anniversary-select-ticket.jpg",
+        "source": "editorial",
+        "listed": false,
+        "related": [
+          [
+            "/games/phantomparade/google-play-vs-webshop/index.html",
+            "ファンパレWEBショップで廻珠増量！初回特典・マイルと購入先の選び方"
+          ],
+          [
+            "/articles/2026-08-19-web-store-external-billing-points.html",
+            "ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い"
+          ],
+          [
+            "/articles/2026-06-20-discount-gift-cards.html",
+            "Google Playギフトカードをお得に買う方法｜楽天・コンビニの割引と還元"
+          ]
+        ]
+      },
+      "imageRequirements": {
+        "ogp": "articles/ogp/2026-11-28-phantomparade-3rd-anniversary-select-ticket.jpg",
+        "width": 1200,
+        "height": 630,
+        "mime": "image/jpeg",
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+      },
+      "publishedDate": "実公開日まで未確定",
+      "sources": [
+        {
+          "title": "サムザップ：3周年公式放送の解禁内容",
+          "url": "https://sumzap.co.jp/2026/11/15/f84c781794913122/"
+        },
+        {
+          "title": "公式放送アーカイブ（商品条件の再確認先）",
+          "url": "https://youtube.com/live/HNCLeVn39dQ"
+        },
+        {
+          "title": "ゲームエイト：公式放送まとめ（セレクトパックの予定、二次情報）",
+          "url": "https://game8.jp/jujutsuphanpara/582590"
+        },
+        {
+          "title": "Google Play Pointsの獲得条件・税抜対象額",
+          "url": "https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja"
+        },
+        {
+          "title": "Google Play以外の決済の扱い",
+          "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        }
+      ]
+    },
+    {
+      "id": "romasaga-rs-8th-anniversary-jewel-sale",
+      "game": "ロマサガRS",
+      "kind": "limited",
+      "status": "review",
+      "role": "game_decision",
+      "blocker": "日本円実売・有償ジュエル内訳を取得。公式が価格を示していない箇所は仮例のみ。",
+      "manifestCandidate": {
+        "id": "romasaga-rs-8th-anniversary-jewel-sale",
+        "title": "ロマサガRS8周年のジュエルセールはいつまで？無料パック・有償ジュエルとWebショップ",
+        "listTitle": "ロマサガRS8周年｜ジュエルと無料パック",
+        "description": "8周年記念パック、無料Webパック、ジュエルセールの期限を公式発表から整理。有償・無償ジュエルの違いと購入先を比較する手順を紹介。",
+        "listDescription": "8周年記念パック、無料Webパック、ジュエルセールの期限を公式発表から整理。有償・無償ジュエルの違いと購入先を比較する手順を紹介。",
+        "category": "使い方",
+        "browseCategory": "ゲーム別課金",
+        "gameTitle": "ロマサガRS",
+        "tags": [
+          "ロマサガRS",
+          "8周年",
+          "ジュエル",
+          "Webジュエルショップ",
+          "限定パック",
+          "周年・限定パック"
+        ],
+        "file": "../articles/2026-11-28-romasaga-rs-8th-anniversary-jewel-sale.html",
+        "ogp": "../articles/ogp/2026-11-28-romasaga-rs-8th-anniversary-jewel-sale.jpg",
+        "source": "editorial",
+        "listed": false,
+        "related": [
+          [
+            "/articles/2026-08-19-web-store-external-billing-points.html",
+            "ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い"
+          ],
+          [
+            "/articles/2026-06-20-discount-gift-cards.html",
+            "Google Playギフトカードをお得に買う方法｜楽天・コンビニの割引と還元"
+          ],
+          [
+            "/articles/2026-08-05-play-points-multiplier-stacking.html",
+            "Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法"
+          ]
+        ]
+      },
+      "imageRequirements": {
+        "ogp": "articles/ogp/2026-11-28-romasaga-rs-8th-anniversary-jewel-sale.jpg",
+        "width": 1200,
+        "height": 630,
+        "mime": "image/jpeg",
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+      },
+      "publishedDate": "実公開日まで未確定",
+      "sources": [
+        {
+          "title": "アカツキゲームス：8周年記念 厄淵 第1弾",
+          "url": "https://games.aktsk.jp/news/62839/"
+        },
+        {
+          "title": "スクウェア・エニックス公式サイト",
+          "url": "https://www.jp.square-enix.com/saga_reuniverse/"
+        },
+        {
+          "title": "Webジュエルショップ",
+          "url": "https://sqex-bridge.jp/webstore/saga_reuniverse"
+        },
+        {
+          "title": "Google Play Pointsの獲得条件・税抜対象額",
+          "url": "https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja"
+        },
+        {
+          "title": "Google Play以外の決済の扱い",
+          "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        }
+      ]
+    },
+    {
+      "id": "p5x-black-friday-store-packs-2026",
+      "game": "P5X",
+      "kind": "limited",
+      "status": "review",
+      "role": "game_decision",
+      "blocker": "日本円の現在価格・購入可能地域、同一商品かどうか、受取終了時刻を再確認。",
+      "manifestCandidate": {
+        "id": "p5x-black-friday-store-packs-2026",
+        "title": "P5Xブラックフライデー2026｜95連パックと公式ストアの増量はいつまで？",
+        "listTitle": "P5X｜ブラックフライデー限定特典",
+        "description": "P5Xのブラックフライデー公式ストア限定パック、自在結晶の2倍増量、無料プレゼントと受取期限を整理。Google Play購入との違いも解説。",
+        "listDescription": "P5Xのブラックフライデー公式ストア限定パック、自在結晶の2倍増量、無料プレゼントと受取期限を整理。Google Play購入との違いも解説。",
+        "category": "使い方",
+        "browseCategory": "ゲーム別課金",
+        "gameTitle": "P5X",
+        "tags": [
+          "P5X",
+          "ペルソナ5",
+          "ブラックフライデー",
+          "95連",
+          "自在結晶",
+          "公式ストア",
+          "周年・限定パック"
+        ],
+        "file": "../articles/2026-11-28-p5x-black-friday-store-packs-2026.html",
+        "ogp": "../articles/ogp/2026-11-28-p5x-black-friday-store-packs-2026.jpg",
+        "source": "editorial",
+        "listed": false,
+        "related": [
+          [
+            "/articles/2026-08-19-web-store-external-billing-points.html",
+            "ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い"
+          ],
+          [
+            "/articles/2026-06-20-discount-gift-cards.html",
+            "Google Playギフトカードをお得に買う方法｜楽天・コンビニの割引と還元"
+          ],
+          [
+            "/articles/2026-08-05-play-points-multiplier-stacking.html",
+            "Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法"
+          ]
+        ]
+      },
+      "imageRequirements": {
+        "ogp": "articles/ogp/2026-11-28-p5x-black-friday-store-packs-2026.jpg",
+        "width": 1200,
+        "height": 630,
+        "mime": "image/jpeg",
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+      },
+      "publishedDate": "実公開日まで未確定",
+      "sources": [
+        {
+          "title": "P5X公式：ブラックフライデーの特別プレゼント第一弾",
+          "url": "https://p5x.jp/news/details/0015330WPp2yAY.html"
+        },
+        {
+          "title": "P5X公式ストア（取得時は米ドル表示）",
+          "url": "https://p5xjp-store.sega.com/"
+        },
+        {
+          "title": "Google Play Pointsの獲得条件・税抜対象額",
+          "url": "https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja"
+        },
+        {
+          "title": "Google Play以外の決済の扱い",
+          "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        }
+      ]
+    },
+    {
+      "id": "duelmasters-plays-gem-sr-ticket-comparison",
+      "game": "デュエプレ",
+      "kind": "evergreen",
+      "status": "review",
+      "role": "game_decision",
+      "blocker": "日本円のジェム商品価格、日替わり更新時刻、次のレギュラー弾の発売日。未確認でもジェム単位の比較自体は成立。",
+      "manifestCandidate": {
+        "id": "duelmasters-plays-gem-sr-ticket-comparison",
+        "title": "デュエプレのパック購入はどれがお得？1日100ジェムとSRチケット付きセットを比較",
+        "listTitle": "デュエプレ｜100ジェムとSRセット",
+        "description": "デュエル・マスターズ プレイスの1日1パック100ジェム、通常150ジェム、SRチケット付き10パックを比較。新弾DMPX-04の無料チケットも整理。",
+        "listDescription": "デュエル・マスターズ プレイスの1日1パック100ジェム、通常150ジェム、SRチケット付き10パックを比較。新弾DMPX-04の無料チケットも整理。",
+        "category": "使い方",
+        "browseCategory": "ゲーム別課金",
+        "gameTitle": "デュエプレ",
+        "tags": [
+          "デュエプレ",
+          "デュエル・マスターズ プレイス",
+          "ジェム",
+          "SRチケット",
+          "DMPX-04",
+          "課金先比較"
+        ],
+        "file": "../articles/2026-11-28-duelmasters-plays-gem-sr-ticket-comparison.html",
+        "ogp": "../articles/ogp/2026-11-28-duelmasters-plays-gem-sr-ticket-comparison.jpg",
+        "source": "editorial",
+        "listed": false,
+        "related": [
+          [
+            "/articles/2026-08-19-web-store-external-billing-points.html",
+            "ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い"
+          ],
+          [
+            "/articles/2026-06-20-discount-gift-cards.html",
+            "Google Playギフトカードをお得に買う方法｜楽天・コンビニの割引と還元"
+          ],
+          [
+            "/articles/2026-08-05-play-points-multiplier-stacking.html",
+            "Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法"
+          ]
+        ]
+      },
+      "imageRequirements": {
+        "ogp": "articles/ogp/2026-11-28-duelmasters-plays-gem-sr-ticket-comparison.jpg",
+        "width": 1200,
+        "height": 630,
+        "mime": "image/jpeg",
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+      },
+      "publishedDate": "実公開日まで未確定",
+      "sources": [
+        {
+          "title": "デュエプレ公式：DMPX-04 SRチケット付きセット",
+          "url": "https://dmps.takaratomy.co.jp/news/16646"
+        },
+        {
+          "title": "デュエプレ公式：DMPX-04の発売・日替わり割引・ログイン特典",
+          "url": "https://dmps.takaratomy.co.jp/news/16648"
+        },
+        {
+          "title": "前弾の公式発表（過去の例）",
+          "url": "https://dmps.takaratomy.co.jp/news/16154"
+        },
+        {
+          "title": "Google Play Pointsの獲得条件・税抜対象額",
+          "url": "https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja"
+        },
+        {
+          "title": "Google Play以外の決済の扱い",
+          "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        }
+      ]
+    },
+    {
+      "id": "whiteout-survival-frost-stars-topup",
+      "game": "ホワサバ",
+      "kind": "evergreen",
+      "status": "hold",
+      "role": "game_decision",
+      "blocker": "日本向け公式ストアの商品価格・増量条件・対象アカウント・チャージイベント規約。日本向け公式の確実な案内経路を確認するまで公開保留。",
+      "manifestCandidate": {
+        "id": "whiteout-survival-frost-stars-topup",
+        "title": "ホワイトアウト・サバイバルの課金比較｜寒霜の星とチャージポイントはどう違う？",
+        "listTitle": "ホワサバ｜寒霜の星とチャージポイント",
+        "description": "ホワサバの寒霜の星、ゲーム内パック、チャージポイント、Google Play Pointsを別制度として整理。公式ストアの購入条件を確認するためのガイド。",
+        "listDescription": "ホワサバの寒霜の星、ゲーム内パック、チャージポイント、Google Play Pointsを別制度として整理。公式ストアの購入条件を確認するためのガイド。",
+        "category": "使い方",
+        "browseCategory": "ゲーム別課金",
+        "gameTitle": "ホワサバ",
+        "tags": [
+          "ホワサバ",
+          "ホワイトアウト・サバイバル",
+          "寒霜の星",
+          "チャージポイント",
+          "課金",
+          "課金先比較"
+        ],
+        "file": "../articles/2026-11-28-whiteout-survival-frost-stars-topup.html",
+        "ogp": "../articles/ogp/2026-11-28-whiteout-survival-frost-stars-topup.jpg",
+        "source": "editorial",
+        "listed": false,
+        "related": [
+          [
+            "/articles/2026-08-19-web-store-external-billing-points.html",
+            "ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い"
+          ],
+          [
+            "/articles/2026-06-20-discount-gift-cards.html",
+            "Google Playギフトカードをお得に買う方法｜楽天・コンビニの割引と還元"
+          ],
+          [
+            "/articles/2026-08-05-play-points-multiplier-stacking.html",
+            "Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法"
+          ]
+        ]
+      },
+      "imageRequirements": {
+        "ogp": "articles/ogp/2026-11-28-whiteout-survival-frost-stars-topup.jpg",
+        "width": 1200,
+        "height": 630,
+        "mime": "image/jpeg",
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+      },
+      "publishedDate": "実公開日まで未確定",
+      "sources": [
+        {
+          "title": "ホワサバ公式wiki：総合案内・チャージポイントの目安",
+          "url": "https://www.whiteoutsurvival.wiki/ja/vip-post/%E7%B7%8F%E5%90%88%E6%A1%88%E5%86%85/"
+        },
+        {
+          "title": "Century Gamesドメインの公式ストア候補（取得時に商品本文を読めず）",
+          "url": "https://store.centurygames.com/wos"
+        },
+        {
+          "title": "Google Play公式掲載・開発元リンク",
+          "url": "https://play.google.com/store/apps/details?hl=ja&id=com.gof.global&listing=survival"
+        },
+        {
+          "title": "Google Play Pointsの獲得条件・税抜対象額",
+          "url": "https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja"
+        },
+        {
+          "title": "Google Play以外の決済の扱い",
+          "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        }
+      ]
+    }
+  ],
+  "calendar": {
+    "data": "../game-deals/events.json",
+    "preview": "../game-deals/index.html",
+    "entryPoints": [
+      "/latest/",
+      "/blog/?topic=ゲーム別課金"
+    ],
+    "publicIntegration": "既存のカテゴリ・サイドバー・トップを変更せず、latestからゲーム特典への導線を1つ置く。記事の公開後に関連リンクを追加。正式な公開前に既存のSite Shellへ統合する。"
+  }
+}
