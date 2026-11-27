@@ -252,10 +252,10 @@
       "blocker": "11月30日以降の正式な商品告知・価格・有償通貨区分・対象・期限を一次資料で取得するまで公開保留。",
       "manifestCandidate": {
         "id": "phantomparade-3rd-anniversary-select-ticket",
-        "title": "ファンパレ3周年のセレクトチケットに備える｜有償廻珠とWebショップの確認ポイント",
+        "title": "呪術廻戦 ファンパレ3周年｜セレクトチケットパックと有償廻珠の確認",
         "listTitle": "ファンパレ3周年｜セレクトチケット",
-        "description": "ファンパレ3周年のセレクトチケットパックについて、公式放送の予定と未確認の価格を区別。有償廻珠・Webショップ・チケット期限の確認方法を整理。",
-        "listDescription": "ファンパレ3周年のセレクトチケットパックについて、公式放送の予定と未確認の価格を区別。有償廻珠・Webショップ・チケット期限の確認方法を整理。",
+        "description": "ファンパレ3周年セレクトチケットパックの予定と未確認の商品条件を分け、有償廻珠・価格・選択対象・購入と使用の期限を整理。",
+        "listDescription": "ファンパレ3周年セレクトチケットパックの予定と未確認の商品条件を分け、有償廻珠・価格・選択対象・購入と使用の期限を整理。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "ファンパレ",
@@ -291,9 +291,16 @@
         "width": 1200,
         "height": 630,
         "mime": "image/jpeg",
-        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
+        "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.sumzap.pj0014",
+        "appPackage": "jp.co.sumzap.pj0014",
+        "gameIconStatus": "既存台帳・実体あり。最新の公式画像との同一性・利用条件は再確認",
+        "gameIconCandidates": [
+          "images/game-icons/phantomparade.webp",
+          "images/game-icons/phantomparade-2x.webp"
+        ]
       },
-      "publishedDate": "実公開日まで未確定",
+      "publishedDate": "実公開日未確定",
       "sources": [
         {
           "title": "サムザップ：3周年公式放送の解禁内容",
@@ -314,6 +321,10 @@
         {
           "title": "Google Play以外の決済の扱い",
           "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        },
+        {
+          "title": "日本向けGoogle Play公式アプリ掲載ページ",
+          "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.sumzap.pj0014"
         }
       ]
     },
@@ -326,10 +337,10 @@
       "blocker": "日本円実売・有償ジュエル内訳を取得。公式が価格を示していない箇所は仮例のみ。",
       "manifestCandidate": {
         "id": "romasaga-rs-8th-anniversary-jewel-sale",
-        "title": "ロマサガRS8周年のジュエルセールはいつまで？無料パック・有償ジュエルとWebショップ",
+        "title": "ロマサガRS8周年ジュエルセール｜無料Webパック・有償ジュエルと販売期限",
         "listTitle": "ロマサガRS8周年｜ジュエルと無料パック",
-        "description": "8周年記念パック、無料Webパック、ジュエルセールの期限を公式発表から整理。有償・無償ジュエルの違いと購入先を比較する手順を紹介。",
-        "listDescription": "8周年記念パック、無料Webパック、ジュエルセールの期限を公式発表から整理。有償・無償ジュエルの違いと購入先を比較する手順を紹介。",
+        "description": "ロマサガRS8周年記念パックとWebジュエルセールは2027年1月1日4:00まで。最大45,000ジュエルのログイン特典、無償・有償の使い分け、チケット期限も整理。",
+        "listDescription": "ロマサガRS8周年記念パックとWebジュエルセールは2027年1月1日4:00まで。最大45,000ジュエルのログイン特典、無償・有償の使い分け、チケット期限も整理。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "ロマサガRS",
@@ -365,9 +376,12 @@
         "width": 1200,
         "height": 630,
         "mime": "image/jpeg",
-        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
+        "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.square_enix.android_googleplay.RSRS",
+        "appPackage": "com.square_enix.android_googleplay.RSRS",
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
       },
-      "publishedDate": "実公開日まで未確定",
+      "publishedDate": "実公開日未確定",
       "sources": [
         {
           "title": "アカツキゲームス：8周年記念 厄淵 第1弾",
@@ -378,8 +392,8 @@
           "url": "https://www.jp.square-enix.com/saga_reuniverse/"
         },
         {
-          "title": "Webジュエルショップ",
-          "url": "https://sqex-bridge.jp/webstore/saga_reuniverse"
+          "title": "Webジュエルショップ公式利用手順",
+          "url": "https://www.jp.square-enix.com/saga_reuniverse/notice/webjewelshop/"
         },
         {
           "title": "Google Play Pointsの獲得条件・税抜対象額",
@@ -388,6 +402,10 @@
         {
           "title": "Google Play以外の決済の扱い",
           "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        },
+        {
+          "title": "日本向けGoogle Play公式アプリ掲載ページ",
+          "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.square_enix.android_googleplay.RSRS"
         }
       ]
     },
@@ -478,10 +496,10 @@
       "blocker": "日本円のジェム商品価格、日替わり更新時刻、次のレギュラー弾の発売日。未確認でもジェム単位の比較自体は成立。",
       "manifestCandidate": {
         "id": "duelmasters-plays-gem-sr-ticket-comparison",
-        "title": "デュエプレのパック購入はどれがお得？1日100ジェムとSRチケット付きセットを比較",
+        "title": "デュエプレのパック購入はどれがお得？1日100ジェムとSRチケット付き10パック比較",
         "listTitle": "デュエプレ｜100ジェムとSRセット",
-        "description": "デュエル・マスターズ プレイスの1日1パック100ジェム、通常150ジェム、SRチケット付き10パックを比較。新弾DMPX-04の無料チケットも整理。",
-        "listDescription": "デュエル・マスターズ プレイスの1日1パック100ジェム、通常150ジェム、SRチケット付き10パックを比較。新弾DMPX-04の無料チケットも整理。",
+        "description": "デュエル・マスターズ プレイスのDMPX-04で10パックを買うなら、日替わり割引は10日で1,000ジェム、SR付きセットは1,500ジェム。無料配布と購入上限も解説。",
+        "listDescription": "デュエル・マスターズ プレイスのDMPX-04で10パックを買うなら、日替わり割引は10日で1,000ジェム、SR付きセットは1,500ジェム。無料配布と購入上限も解説。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "デュエプレ",
@@ -517,9 +535,12 @@
         "width": 1200,
         "height": 630,
         "mime": "image/jpeg",
-        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
+        "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.takaratomy.duelmastersplays",
+        "appPackage": "jp.co.takaratomy.duelmastersplays",
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
       },
-      "publishedDate": "実公開日まで未確定",
+      "publishedDate": "実公開日未確定",
       "sources": [
         {
           "title": "デュエプレ公式：DMPX-04 SRチケット付きセット",
@@ -540,6 +561,10 @@
         {
           "title": "Google Play以外の決済の扱い",
           "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        },
+        {
+          "title": "日本向けGoogle Play公式アプリ掲載ページ",
+          "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.takaratomy.duelmastersplays"
         }
       ]
     },
@@ -552,10 +577,10 @@
       "blocker": "日本向け公式ストアの商品価格・増量条件・対象アカウント・チャージイベント規約。日本向け公式の確実な案内経路を確認するまで公開保留。",
       "manifestCandidate": {
         "id": "whiteout-survival-frost-stars-topup",
-        "title": "ホワイトアウト・サバイバルの課金比較｜寒霜の星とチャージポイントはどう違う？",
+        "title": "ホワイトアウト・サバイバル（ホワサバ）の課金｜寒霜の星とチャージポイントの違い",
         "listTitle": "ホワサバ｜寒霜の星とチャージポイント",
-        "description": "ホワサバの寒霜の星、ゲーム内パック、チャージポイント、Google Play Pointsを別制度として整理。公式ストアの購入条件を確認するためのガイド。",
-        "listDescription": "ホワサバの寒霜の星、ゲーム内パック、チャージポイント、Google Play Pointsを別制度として整理。公式ストアの購入条件を確認するためのガイド。",
+        "description": "ホワサバ公式wikiのパック価格・寒霜の星の必要数・チャージポイント目安を整理。Webチャージの増量率やGoogle Play Pointsは別制度として説明。",
+        "listDescription": "ホワサバ公式wikiのパック価格・寒霜の星の必要数・チャージポイント目安を整理。Webチャージの増量率やGoogle Play Pointsは別制度として説明。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "ホワサバ",
@@ -591,9 +616,12 @@
         "width": 1200,
         "height": 630,
         "mime": "image/jpeg",
-        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
+        "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.gof.global",
+        "appPackage": "com.gof.global",
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
       },
-      "publishedDate": "実公開日まで未確定",
+      "publishedDate": "実公開日未確定",
       "sources": [
         {
           "title": "ホワサバ公式wiki：総合案内・チャージポイントの目安",
@@ -614,6 +642,10 @@
         {
           "title": "Google Play以外の決済の扱い",
           "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        },
+        {
+          "title": "日本向けGoogle Play公式アプリ掲載ページ",
+          "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.gof.global"
         }
       ]
     }
@@ -626,5 +658,14 @@
       "/blog/?topic=ゲーム別課金"
     ],
     "publicIntegration": "既存のカテゴリ・サイドバー・トップを変更せず、latestからゲーム特典への導線を1つ置く。記事の公開後に関連リンクを追加。正式な公開前に既存のSite Shellへ統合する。"
+  },
+  "auditDate": "2026-11-28",
+  "latestMainChecked": "8003cedff93e802d3edfca9362581ffaaa8066d3",
+  "publicationGate": {
+    "status": "blocked",
+    "reason": "専用OGP8枚未登録、6ゲーム公式アイコン新規取得・利用条件確認、公式実売・一部条件未確認、生成・ブラウザ・PR Gate未実施",
+    "draftRobots": "noindex, nofollow",
+    "releaseRobots": "index, follow, max-image-preview:large",
+    "publicationDates": "実公開日確定後にArticle/datePublished・dateModified、meta、表示日、台帳を同期"
   }
 }
