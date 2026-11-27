@@ -12,6 +12,13 @@ test('Lighthouse selects only existing page-specific changes and expands shared 
   assert.deepEqual(budget.profilesForDiff(diff('index.html', 'js/ui.js')), ['calculatorHome']);
   assert.deepEqual(budget.profilesForDiff(diff('blog/index.html', 'ko/articles/google-play-points-join-eligibility.html')), ['articleHub', 'internationalArticleKo']);
   const all = suite.PAGES.map(([name]) => budget.getProfile(name));
+  const styles = ['articles/intl-article.css', 'articles/intl-shell-v1.css'];
+  const languages = ['internationalArticleEn', 'internationalArticleKo', 'internationalArticleTw'];
+  for (const files of [[styles[0]], [styles[1]], styles]) assert.deepEqual(budget.profilesForDiff(diff(...files)), languages);
+  for (const raw of [diff(styles[0], 'index.html'), diff(styles[1], 'style.css'),
+    diff(styles[0]).replace(' M', ' A'), diff(styles[1]).replace('100644 100644', '100644 120000')]) {
+    assert.deepEqual(budget.profilesForDiff(raw), all);
+  }
   for (const raw of ['', diff('style.css'), diff('js/ui.js', '.htaccess'), diff('index.html').replace(' M', ' D')]) {
     assert.deepEqual(budget.profilesForDiff(raw), all);
   }
@@ -151,6 +158,7 @@ test('計測欠損・無効値・runtimeError・sample不足・重複を合格�
   assert.throws(() => budget.evaluateMetrics('default', {}), /invalid/);
   const sample = files(dir, [{}]);
   assert.equal(budget.evaluateProfileGroup('calculatorHome', sample).failures.length, 1);
+  assert.match(budget.evaluateProfileGroup('articleHub', sample).failures.join('\n'), /sampleCount/);
   assert.throws(() => budget.evaluateProfileGroup('calculatorHome', [sample[0], sample[0], sample[0]]), /duplicate/);
   fs.writeFileSync(sample[0], JSON.stringify({ ...good, runtimeError: { code: 'NO_FCP' } }));
   assert.throws(() => budget.readReport(sample[0]), /不正/);
