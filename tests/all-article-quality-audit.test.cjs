@@ -14,7 +14,8 @@ const international = ['en', 'ko', 'tw'].flatMap(locale =>
     .filter(file => file.endsWith('.html') && file !== 'index.html')
     .map(file => `${locale}/articles/${file}`)
 );
-const articles = [...new Set([...japanese, ...international])].sort();
+const { REGIONAL_ARTICLE_DATES } = require('../scripts/content-dates.cjs');
+const articles = [...new Set([...japanese, ...international, ...Object.keys(REGIONAL_ARTICLE_DATES)])].sort();
 const articleSet = new Set(articles);
 
 function sitePathToFile(sitePath) {
@@ -50,7 +51,7 @@ function articleBody(html, file) {
   return html.slice(start, end);
 }
 
-test('registered Japanese and EN/KO/TW articles keep structural quality signals', () => {
+test('registered Japanese and international articles keep structural quality signals', () => {
   assert.ok(registry.length > 0, 'Japanese Play Points article registry is empty');
   assert.ok(articles.length > 0, 'published Play Points article corpus is empty');
 

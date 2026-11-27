@@ -6,6 +6,7 @@ const { chromium } = require('playwright-core');
 const { articleImages, cardTitle } = require('./intl-article-images.cjs');
 const { metadata: gameMetadata } = require('./intl-game-article-discovery.cjs');
 const { getCategoryLabels, getIntlGuideCategory } = require('./intl-guide-taxonomy.cjs');
+const { REGIONAL_ARTICLE_DATES } = require('./content-dates.cjs');
 const root = path.resolve(__dirname, '..');
 const escape = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('"', '&quot;');
 const REGION = { en: 'UNITED STATES · ENGLISH', ko: '대한민국 · 한국어', tw: '台灣 · 繁體中文', hk: '香港 · 繁體中文', in: 'INDIA · ENGLISH' };
@@ -14,10 +15,11 @@ async function run() {
   // 新規記事の追加時は既存の確認済み画像を上書きしない。
   // 改稿時は --file=相対パス を指定し、見出しを変えた記事だけ再生成できる。
   const selectedFiles = new Set(process.argv.filter(arg => arg.startsWith('--file=')).map(arg => arg.slice('--file='.length)));
-  const articles = articleImages(root).concat(['hk', 'in'].map(locale => ({
-    locale, slug: 'google-play-payment-failed', file: locale + '/google-play-payment-failed.html',
-    image: 'images/ogp/pages/' + locale + '-google-play-payment-failed.jpg'
-  })));
+  const regionalArticles = Object.keys(REGIONAL_ARTICLE_DATES).map(file => {
+    const locale = file.split('/')[0], slug = path.posix.basename(file, '.html');
+    return { locale, slug, file, image: 'images/ogp/pages/' + locale + '-' + slug + '.jpg' };
+  });
+  const articles = articleImages(root).concat(regionalArticles);
   for (const file of selectedFiles) {
     if (!articles.some(article => article.file === file)) throw Error('海外記事が見つかりません: ' + file);
   }
