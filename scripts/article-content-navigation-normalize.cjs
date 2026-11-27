@@ -172,7 +172,7 @@ const SCOPE_NOTES = {
   },
   'en/articles/google-play-points-gift-cards.html': {
     label: 'Scope of this guide',
-    html: 'This guide focuses on <strong>whether buying or redeeming a gift card earns points</strong>. For recurring Google Play charges, renewals, trials, and subscription billing, see <a href="./google-play-points-subscriptions.html">whether subscriptions earn Play Points</a>.'
+    html: 'This guide covers <strong>which gift cards you can buy with points and when a purchase earns them</strong>. For recurring Google Play charges, renewals, trials, and subscription billing, see <a href="./google-play-points-subscriptions.html">whether subscriptions earn Play Points</a>.'
   },
   'en/articles/google-play-points-subscriptions.html': {
     label: 'Scope of this guide',
