@@ -66,7 +66,15 @@ const demandContracts = [
     name: 'English gift-card guide owns conversion and earning questions without a generic calculator CTA',
     file: 'en/articles/google-play-points-gift-cards.html',
     marker: 'id="gift-card-answer"',
-    patterns: [/Can Google Play Points buy gift cards/i, /cannot use Google Play Points or Google Play balance to buy/i, /Play credit is balance, not a gift card/i, /digital gift-card purchases are not eligible/i, /16585331/]
+    patterns: [
+      /Can Google Play Points buy gift cards/i,
+      /can use (?:your )?points to buy eligible brand gift cards/i,
+      /at least 150 Play Points/i,
+      /cannot use Google Play Points or Google Play balance to buy Google Play gift cards/i,
+      /Play credit is balance, not a gift card/i,
+      /digital gift-card purchases are not eligible/i,
+      /16585331/
+    ]
   },
   {
     name: 'Korean expiration guide gives the direct answer without a generic calculator CTA',
