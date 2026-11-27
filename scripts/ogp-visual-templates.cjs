@@ -2,6 +2,34 @@
 
 // Visual cards for the 28 custom OGP designs
 const VISUAL_CARDS = {
+  'play-credit-rate-change-2027': `
+    <div style="text-align:center;width:100%;padding:25px 12px;border:2px solid #63dbc8;border-radius:14px">
+      <div style="font-size:18px;color:#63dbc8">対象となる交換先</div>
+      <strong style="display:block;font-size:30px;color:#fff;margin:14px 0">150pt ＝ 100円分</strong>
+      <div style="font-size:17px;color:#e2e8f0">交換後のクレジットは1年間有効</div>
+    </div>
+  `,
+  'play-points-new-best-use-2027': `
+    <div style="text-align:center;width:100%;padding:25px 12px;border:2px solid #a5b4fc;border-radius:14px">
+      <div style="font-size:18px;color:#a5b4fc">1ポイントで使える金額</div>
+      <strong style="display:block;font-size:30px;color:#fff;margin:14px 0">割引額 ÷ 必要pt</strong>
+      <div style="font-size:17px;color:#e2e8f0">予定している買い物で比べる</div>
+    </div>
+  `,
+  'december-rank-maintenance-checklist-2026': `
+    <div style="text-align:center;width:100%;padding:25px 12px;border:2px solid #80d5eb;border-radius:14px">
+      <div style="font-size:18px;color:#80d5eb">日本の年間判定ポイント</div>
+      <strong style="display:block;font-size:30px;color:#fff;margin:14px 0">プラチナ 4,000pt</strong>
+      <div style="font-size:17px;color:#e2e8f0">ダイヤモンド 15,000pt</div>
+    </div>
+  `,
+  'fgo-new-year-2027-lucky-bag-play-points': `
+    <div style="text-align:center;width:100%;padding:25px 12px;border:2px solid #f8b4bd;border-radius:14px">
+      <div style="font-size:18px;color:#f8b4bd">2026年のお正月福袋</div>
+      <strong style="display:block;font-size:30px;color:#fff;margin:14px 0">有償聖晶石 15個</strong>
+      <div style="font-size:17px;color:#e2e8f0">おまけの無償石は別に数える</div>
+    </div>
+  `,
   'pc-redeem': `
     <div style="width:100%;display:flex;flex-direction:column;gap:20px;text-align:center;">
       <div style="padding:22px 12px;border:2px solid #38bdf8;border-radius:16px;background:#11364a;">

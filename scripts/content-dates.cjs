@@ -135,7 +135,7 @@ const CONTENT_DATE_OVERRIDES = Object.freeze({
   'sitemap.html': '2026-09-15',
   'embed.html': '2026-10-16',
   // キャンペーン本文の更新日。未再確認の制度説明の公式確認日とは分ける。
-  'latest/index.html': '2026-11-27',
+  'latest/index.html': '2026-11-28',
   'status/diamond/index.html': '2026-08-21',
   'status/platinum/index.html': '2026-08-21',
   'status/gold/index.html': '2026-08-21',
@@ -146,6 +146,7 @@ const CONTENT_DATE_OVERRIDES = Object.freeze({
   'campaign/3x/index.html': '2026-08-21',
   'campaign/wait/index.html': '2026-08-21',
   'amount/10000/index.html': '2026-08-25',
+  'compare/redemption-value/index.html': '2026-11-28',
   'compare/earning-rates/index.html': '2026-09-23',
   ...gameContentDateOverrides,
   'en/articles/2026-06-20-discount-gift-cards.html': '2026-08-05',

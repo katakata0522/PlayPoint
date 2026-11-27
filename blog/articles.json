@@ -680,6 +680,538 @@
     "browseCategory": "ゲーム別課金"
   },
   {
+    "id": "2026-11-25-play-credit-rate-change-2027",
+    "title": "Playクレジットの交換レートが一部変更へ｜1月5日の改定前にいくら換える？",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "source": "editorial",
+    "listed": true,
+    "listTitle": "Playクレジットの交換レートが一部変更へ｜1月5日の改定前にいくら換える？",
+    "listDescription": "2027年1月5日から日本の一部のPlayクレジットは150ポイントで100円分になります。300ポイントの比較と交換後の期限から、自分に必要な額を考えます。",
+    "description": "2027年1月5日から日本の一部のPlayクレジットは150ポイントで100円分になります。300ポイントの比較と交換後の期限から、自分に必要な額を考えます。",
+    "tags": [
+      "Play Points",
+      "Playクレジット",
+      "レート改定",
+      "交換先"
+    ],
+    "file": "../articles/2026-11-25-play-credit-rate-change-2027.html",
+    "ogp": "../articles/ogp/2026-11-25-play-credit-rate-change-2027.jpg",
+    "thumbnail": "../articles/thumbnails/2026-11-25-play-credit-rate-change-2027-square-v1.webp",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2026-11-28-play-points-new-best-use-2027.html",
+        "2027年のPlay Pointsの使い道｜クーポン・クレジット・ギフトカードの比べ方"
+      ],
+      [
+        "/compare/redemption-value/",
+        "交換先ごとの1pt単価を比較する"
+      ],
+      [
+        "/articles/2026-11-19-google-play-balance-combine-payment.html",
+        "Play残高と併用払いの条件を確認する"
+      ]
+    ]
+  },
+  {
+    "id": "2026-11-25-play-points-renewal-2026",
+    "title": "Google Play Pointsのリニューアル｜ギフトカード・グッズ・直接払いはどう変わる？",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "キャンペーン",
+    "browseCategory": "最新情報・イベント",
+    "source": "editorial",
+    "listed": true,
+    "listTitle": "Google Play Pointsのリニューアル｜ギフトカード・グッズ・直接払いはどう変わる？",
+    "listDescription": "日本向け告知の4つの変更点を整理。交換先、支払い時のポイント利用、Play Games アシスタントの特典、2027年1月の一部クレジット改定を確認できます。",
+    "description": "日本向け告知の4つの変更点を整理。交換先、支払い時のポイント利用、Play Games アシスタントの特典、2027年1月の一部クレジット改定を確認できます。",
+    "tags": [
+      "Play Points",
+      "リニューアル",
+      "Play Games",
+      "最新情報"
+    ],
+    "file": "../articles/2026-11-25-play-points-renewal-2026.html",
+    "ogp": "../articles/ogp/2026-11-25-play-points-renewal-2026.jpg",
+    "thumbnail": "../articles/thumbnails/2026-11-25-play-points-renewal-2026-square-v1.webp",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2026-11-25-play-credit-rate-change-2027.html",
+        "Playクレジットの交換レートが一部変更へ｜1月5日の改定前にいくら換える？"
+      ],
+      [
+        "/latest/",
+        "Play Points最新キャンペーン・日程まとめ"
+      ],
+      [
+        "/articles/2025-12-25-play-games.html",
+        "Google Play Gamesの基礎と連携状況"
+      ]
+    ]
+  },
+  {
+    "id": "2026-11-25-december-rank-maintenance-checklist-2026",
+    "title": "12月のPlay Pointsランク維持｜2026年末までに見る期限・不足ポイント・必要額",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "ランク",
+    "browseCategory": "ランク・ステータス",
+    "source": "editorial",
+    "listed": true,
+    "listTitle": "12月のPlay Pointsランク維持｜2026年末までに見る期限・不足ポイント・必要額",
+    "listDescription": "プラチナ4,000ポイント、ダイヤモンド15,000ポイントの日本の基準と、今年到達した場合の維持期限を確認。残り300ポイントの購入額も試算します。",
+    "description": "プラチナ4,000ポイント、ダイヤモンド15,000ポイントの日本の基準と、今年到達した場合の維持期限を確認。残り300ポイントの購入額も試算します。",
+    "tags": [
+      "Play Points",
+      "ランク維持",
+      "年末",
+      "チェックリスト"
+    ],
+    "file": "../articles/2026-11-25-december-rank-maintenance-checklist-2026.html",
+    "ogp": "../articles/ogp/2026-11-25-december-rank-maintenance-checklist-2026.jpg",
+    "thumbnail": "../articles/thumbnails/2026-11-25-december-rank-maintenance-checklist-2026-square-v1.webp",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2025-12-25-playpoints-rank-maintenance.html",
+        "Play Pointsランク維持の基本ルール"
+      ],
+      [
+        "/articles/2026-08-16-january-rank-reset.html",
+        "1月のランク・進捗リセットの仕組み"
+      ],
+      [
+        "/articles/2026-11-25-play-credit-rate-change-2027.html",
+        "Playクレジットの交換レートが一部変更へ｜1月5日の改定前にいくら換える？"
+      ]
+    ]
+  },
+  {
+    "id": "2026-11-28-play-points-new-best-use-2027",
+    "title": "2027年のPlay Pointsの使い道｜クーポン・クレジット・ギフトカードの比べ方",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "source": "editorial",
+    "listed": true,
+    "listTitle": "2027年のPlay Pointsの使い道｜クーポン・クレジット・ギフトカードの比べ方",
+    "listDescription": "決まっている支出に何円充てられるかを基準に、ゲームクーポン、対象のPlayクレジット、ギフトカード、グッズ、支払い時の直接利用を比較します。",
+    "description": "決まっている支出に何円充てられるかを基準に、ゲームクーポン、対象のPlayクレジット、ギフトカード、グッズ、支払い時の直接利用を比較します。",
+    "tags": [
+      "Play Points",
+      "使い道",
+      "クーポン",
+      "比較"
+    ],
+    "file": "../articles/2026-11-28-play-points-new-best-use-2027.html",
+    "ogp": "../articles/ogp/2026-11-28-play-points-new-best-use-2027.jpg",
+    "thumbnail": "../articles/thumbnails/2026-11-28-play-points-new-best-use-2027-square-v1.webp",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/compare/redemption-value/",
+        "交換先ごとの1pt単価比較ハブ"
+      ],
+      [
+        "/articles/2026-11-25-play-credit-rate-change-2027.html",
+        "Playクレジットの交換レートが一部変更へ｜1月5日の改定前にいくら換える？"
+      ],
+      [
+        "/articles/2025-12-25-best-use.html",
+        "Play Points使い道ガイド（基本）"
+      ]
+    ]
+  },
+  {
+    "id": "2026-11-28-play-store-pc-webstore-three-billing-routes",
+    "title": "スマホ・PC版Google Play Games・ゲーム公式Webストアの課金を比べる方法",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "使い方",
+    "browseCategory": "貯める・キャンペーン",
+    "source": "editorial",
+    "listed": true,
+    "listTitle": "スマホ・PC版Google Play Games・ゲーム公式Webストアの課金を比べる方法",
+    "listDescription": "購入端末と決済元を区別し、Play Pointsの対象、Webストアのアイテム増量、PC限定特典を同じ数量・金額で比較する手順を紹介します。",
+    "description": "購入端末と決済元を区別し、Play Pointsの対象、Webストアのアイテム増量、PC限定特典を同じ数量・金額で比較する手順を紹介します。",
+    "tags": [
+      "Play Points",
+      "PC版Play Games",
+      "Webストア",
+      "課金ルート"
+    ],
+    "file": "../articles/2026-11-28-play-store-pc-webstore-three-billing-routes.html",
+    "ogp": "../articles/ogp/2026-11-28-play-store-pc-webstore-three-billing-routes.jpg",
+    "thumbnail": "../articles/thumbnails/2026-11-28-play-store-pc-webstore-three-billing-routes-square-v1.webp",
+    "thumbnailKind": "generic",
+    "related": [
+      [
+        "/articles/2026-08-16-pc-play-games-points.html",
+        "PC版Play Gamesでポイントが貯まる条件"
+      ],
+      [
+        "/articles/2026-08-19-web-store-external-billing-points.html",
+        "公式Webストアと外部決済の注意点"
+      ],
+      [
+        "/articles/2026-10-14-play-points-pc-redeem.html",
+        "PCブラウザでのポイント交換手順"
+      ]
+    ]
+  },
+  {
+    "id": "2026-11-28-fgo-new-year-2027-lucky-bag-play-points",
+    "title": "FGOの2027年正月福袋に備えるには？ 過去の有償聖晶石とPlay Pointsの確認手順",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "キャンペーン",
+    "browseCategory": "ゲーム別課金",
+    "source": "editorial",
+    "listed": true,
+    "listTitle": "FGOの2027年正月福袋に備えるには？ 過去の有償聖晶石とPlay Pointsの確認手順",
+    "listDescription": "2026年のお正月福袋は有償聖晶石15個。2027年分の発表前に、手持ちの有償石、買い足す個数、Google Play決済で使える残高を順に確認します。",
+    "description": "2026年のお正月福袋は有償聖晶石15個。2027年分の発表前に、手持ちの有償石、買い足す個数、Google Play決済で使える残高を順に確認します。",
+    "tags": [
+      "FGO",
+      "正月福袋",
+      "Play Points",
+      "ゲーム別課金"
+    ],
+    "file": "../articles/2026-11-28-fgo-new-year-2027-lucky-bag-play-points.html",
+    "ogp": "../articles/ogp/2026-11-28-fgo-new-year-2027-lucky-bag-play-points.jpg",
+    "thumbnail": "../images/game-icons/fgo.webp",
+    "thumbnailKind": "app-icon",
+    "related": [
+      [
+        "/games/fgo/pity-cost/",
+        "FGOの天井・課金額とPlay Points解説"
+      ],
+      [
+        "/articles/2026-11-25-play-credit-rate-change-2027.html",
+        "Playクレジットの交換レートが一部変更へ｜1月5日の改定前にいくら換える？"
+      ],
+      [
+        "/articles/2026-10-23-google-play-gift-card-comparison.html",
+        "Google Playギフトカードのコンビニ還元比較"
+      ]
+    ],
+    "thumbnail2x": "../images/game-icons/fgo-2x.webp",
+    "gameTitle": "FGO"
+  },
+  {
+    "id": "2026-11-28-genshin-starrail-year-end-topup-routes",
+    "title": "原神・スターレイルの年末課金｜月パスとチャージをGoogle Play・公式サイトで比べる",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "キャンペーン",
+    "browseCategory": "ゲーム別課金",
+    "source": "editorial",
+    "listed": true,
+    "listTitle": "原神・スターレイルの年末課金｜月パスとチャージをGoogle Play・公式サイトで比べる",
+    "listDescription": "空月の祝福・列車補給標章や通貨チャージの購入前に、対象アカウント・サーバー・受取日数と、Google PlayとHoYoverse公式決済の条件を確認します。",
+    "description": "空月の祝福・列車補給標章や通貨チャージの購入前に、対象アカウント・サーバー・受取日数と、Google PlayとHoYoverse公式決済の条件を確認します。",
+    "tags": [
+      "原神",
+      "崩壊スターレイル",
+      "Play Points",
+      "課金ルート"
+    ],
+    "file": "../articles/2026-11-28-genshin-starrail-year-end-topup-routes.html",
+    "ogp": "../articles/ogp/2026-11-28-genshin-starrail-year-end-topup-routes.jpg",
+    "thumbnail": "../images/game-icons/genshin.webp",
+    "thumbnailKind": "app-icon",
+    "related": [
+      [
+        "/games/genshin/welkin-value/",
+        "原神 空月の祝福とGoogle Play課金解説"
+      ],
+      [
+        "/games/starrail/supply-pass-value/",
+        "崩壊：スターレイル 列車補給標章と課金比較"
+      ],
+      [
+        "/articles/2026-11-28-play-store-pc-webstore-three-billing-routes.html",
+        "スマホ・PC版Google Play Games・ゲーム公式Webストアの課金を比べる方法"
+      ]
+    ],
+    "thumbnail2x": "../images/game-icons/genshin-2x.webp",
+    "gameTitle": "原神"
+  },
+  {
+    "id": "google-play-gift-card-not-working",
+    "title": "Google Playギフトカードが使えない・チャージできないときは？エラー別の確認方法",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "トラブル",
+    "browseCategory": "トラブル・アカウント",
+    "listTitle": "Google Playギフトカードが使えない・チャージできないときは？エラー別の確認方法",
+    "listDescription": "Google Playギフトカードがチャージできないときのエラー別の確認方法。有効化、誤登録、本人確認、利用限度、返金を整理します。",
+    "description": "Google Playギフトカードがチャージできないときのエラー別の確認方法。有効化、誤登録、本人確認、利用限度、返金を整理します。",
+    "tags": [
+      "ギフトカード",
+      "チャージできない",
+      "コード",
+      "本人確認",
+      "Google Play残高"
+    ],
+    "file": "../articles/2026-11-27-google-play-gift-card-not-working.html",
+    "thumbnail": "../articles/thumbnails/google-play-gift-card-not-working-square-v1.webp",
+    "thumbnailKind": "generic",
+    "ogp": "../articles/ogp/2026-11-27-google-play-gift-card-not-working.jpg",
+    "source": "editorial",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-11-27-google-play-balance-charge-limit.html",
+        "Google Play残高のチャージ上限はいくら？20万円の残高上限とギフトカード購入制限"
+      ],
+      [
+        "/articles/2026-08-05-play-country-change-points.html",
+        "Google Playの国を変更するとPlay Pointsはどうなる？残高・ランクの注意点"
+      ],
+      [
+        "/articles/2026-07-25-play-credit-not-working.html",
+        "Play PointsをPlayクレジットへ交換できない・使えない原因"
+      ]
+    ]
+  },
+  {
+    "id": "google-play-balance-use-up",
+    "title": "Google Play残高を使い切る方法｜余った10円・100円はどう使う？",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "listTitle": "Google Play残高を使い切る方法｜余った10円・100円はどう使う？",
+    "listDescription": "余った10円・100円などのGoogle Play残高を、次の買い物や併用払いで無駄なく使う方法。追加支払いの具体例と期限も紹介します。",
+    "description": "余った10円・100円などのGoogle Play残高を、次の買い物や併用払いで無駄なく使う方法。追加支払いの具体例と期限も紹介します。",
+    "tags": [
+      "Google Play残高",
+      "端数",
+      "使い切る",
+      "併用決済"
+    ],
+    "file": "../articles/2026-11-27-google-play-balance-use-up.html",
+    "thumbnail": "../articles/thumbnails/google-play-balance-use-up-square-v1.webp",
+    "thumbnailKind": "generic",
+    "ogp": "../articles/ogp/2026-11-27-google-play-balance-use-up.jpg",
+    "source": "editorial",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-11-19-google-play-balance-combine-payment.html",
+        "Google Play残高とクレカ・携帯決済は併用できる？不足分の払い方"
+      ],
+      [
+        "/articles/2026-11-27-google-play-gift-card-balance-expiration.html",
+        "Google Playギフトカード・残高に有効期限はある？チャージ後の期限とポイントの違い"
+      ],
+      [
+        "/articles/2026-10-14-play-credit-subscription.html",
+        "Play Pointsで交換したGoogle Playクレジットはサブスクに使える？初回と更新時の違い【2026年】"
+      ]
+    ]
+  },
+  {
+    "id": "google-play-gift-card-balance-expiration",
+    "title": "Google Playギフトカード・残高に有効期限はある？チャージ後の期限とポイントの違い",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "使い方",
+    "browseCategory": "はじめて・基本",
+    "listTitle": "Google Playギフトカード・残高に有効期限はある？チャージ後の期限とポイントの違い",
+    "listDescription": "日本のGoogle Playギフトカード残高とPlay Points交換・キャンペーン残高の有効期限の違いを整理。年末や機種変更時の注意点も解説します。",
+    "description": "日本のGoogle Playギフトカード残高とPlay Points交換・キャンペーン残高の有効期限の違いを整理。年末や機種変更時の注意点も解説します。",
+    "tags": [
+      "ギフトカード",
+      "Google Play残高",
+      "有効期限",
+      "失効",
+      "Playクレジット"
+    ],
+    "file": "../articles/2026-11-27-google-play-gift-card-balance-expiration.html",
+    "thumbnail": "../articles/thumbnails/google-play-gift-card-balance-expiration-square-v1.webp",
+    "thumbnailKind": "generic",
+    "ogp": "../articles/ogp/2026-11-27-google-play-gift-card-balance-expiration.jpg",
+    "source": "editorial",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2025-12-25-expiration.html",
+        "Google Play Pointsの有効期限｜失効日・確認方法・期限切れ対策"
+      ],
+      [
+        "/articles/2026-11-27-google-play-balance-use-up.html",
+        "Google Play残高を使い切る方法｜余った10円・100円はどう使う？"
+      ],
+      [
+        "/articles/2026-08-05-play-country-change-points.html",
+        "Google Playの国を変更するとPlay Pointsはどうなる？残高・ランクの注意点"
+      ]
+    ]
+  },
+  {
+    "id": "monster-hunter-now-web-store-vs-google-play",
+    "title": "モンハンNowの課金はどこがお得？Web Storeのジェム増量とGoogle Play Pointsを比較",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "使い方",
+    "browseCategory": "ゲーム別課金",
+    "listTitle": "モンハンNowの課金はどこがお得？Web Storeのジェム増量とGoogle Play Pointsを比較",
+    "listDescription": "モンハンNowの公式Web StoreとGoogle Play課金を比較。初回のジェム増量、ハンターパス、割引・還元の損得分岐点を公式掲載例で試算します。",
+    "description": "モンハンNowの公式Web StoreとGoogle Play課金を比較。初回のジェム増量、ハンターパス、割引・還元の損得分岐点を公式掲載例で試算します。",
+    "tags": [
+      "モンハンNow",
+      "Monster Hunter Now",
+      "ジェム",
+      "Web Store",
+      "ハンターパス",
+      "Google Play Points"
+    ],
+    "file": "../articles/2026-11-27-monster-hunter-now-web-store-vs-google-play.html",
+    "thumbnail": "../images/game-icons/monster-hunter-now.webp",
+    "thumbnailKind": "app-icon",
+    "gameTitle": "モンハンNow",
+    "thumbnail2x": "../images/game-icons/monster-hunter-now-2x.webp",
+    "ogp": "../articles/ogp/2026-11-27-monster-hunter-now-web-store-vs-google-play.jpg",
+    "source": "editorial",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-08-19-web-store-external-billing-points.html",
+        "ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い"
+      ],
+      [
+        "/articles/2026-06-20-discount-gift-cards.html",
+        "Google Playギフトコードをお得に買う｜楽天・ローソンの還元条件と選び方"
+      ],
+      [
+        "/articles/2026-11-27-google-play-balance-use-up.html",
+        "Google Play残高を使い切る方法｜余った10円・100円はどう使う？"
+      ]
+    ]
+  },
+  {
+    "id": "google-play-balance-charge-limit",
+    "title": "Google Play残高のチャージ上限はいくら？20万円の残高上限とギフトカード購入制限",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "使い方",
+    "browseCategory": "はじめて・基本",
+    "listTitle": "Google Play残高のチャージ上限はいくら？20万円の残高上限とギフトカード購入制限",
+    "listDescription": "日本のGoogle Play残高の保有上限20万円と、Google Play内のギフトカード購入上限の違いを解説。上限までの余裕とエラー時の対処も整理します。",
+    "description": "日本のGoogle Play残高の保有上限20万円と、Google Play内のギフトカード購入上限の違いを解説。上限までの余裕とエラー時の対処も整理します。",
+    "tags": [
+      "Google Play残高",
+      "チャージ上限",
+      "20万円",
+      "ギフトカード",
+      "購入制限"
+    ],
+    "file": "../articles/2026-11-27-google-play-balance-charge-limit.html",
+    "thumbnail": "../articles/thumbnails/google-play-balance-charge-limit-square-v1.webp",
+    "thumbnailKind": "generic",
+    "ogp": "../articles/ogp/2026-11-27-google-play-balance-charge-limit.jpg",
+    "source": "editorial",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-11-27-google-play-gift-card-not-working.html",
+        "Google Playギフトカードが使えない・チャージできないときは？エラー別の確認方法"
+      ],
+      [
+        "/articles/2025-12-25-gift-card.html",
+        "Google PlayギフトカードでPlay Pointsは貯まる？付与タイミング"
+      ],
+      [
+        "/articles/2026-06-20-discount-gift-cards.html",
+        "Google Playギフトコードをお得に買う｜楽天・ローソンの還元条件と選び方"
+      ]
+    ]
+  },
+  {
+    "id": "google-play-payment-failed",
+    "title": "Google Playで課金できないときは？カード・残高・携帯決済の確認順",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "トラブル",
+    "browseCategory": "トラブル・アカウント",
+    "listTitle": "Google Playで課金できないときは？カード・残高・携帯決済の確認順",
+    "listDescription": "Google Playで課金できないときの確認順を解説。注文履歴、カード、携帯決済、残高、本人確認、購入済みアイテム未着を切り分けます。",
+    "description": "Google Playで課金できないときの確認順を解説。注文履歴、カード、携帯決済、残高、本人確認、購入済みアイテム未着を切り分けます。",
+    "tags": [
+      "課金できない",
+      "Google Play",
+      "支払い拒否",
+      "携帯決済",
+      "クレジットカード",
+      "残高"
+    ],
+    "file": "../articles/2026-11-27-google-play-payment-failed.html",
+    "thumbnail": "../articles/thumbnails/google-play-payment-failed-square-v1.webp",
+    "thumbnailKind": "generic",
+    "ogp": "../articles/ogp/2026-11-27-google-play-payment-failed.jpg",
+    "source": "editorial",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-03-10-play-points-reflection-timing.html",
+        "Google Play Pointsが反映されない・遅い時は？いつ付くかと確認する順番"
+      ],
+      [
+        "/articles/2026-10-15-google-play-purchase-history-budget.html",
+        "ゲームに今月いくら使った？Google Playの購入履歴と予算通知"
+      ],
+      [
+        "/articles/2026-11-19-google-play-balance-combine-payment.html",
+        "Google Play残高とクレカ・携帯決済は併用できる？不足分の払い方"
+      ]
+    ]
+  },
+  {
+    "id": "google-play-pass-after-cancellation",
+    "title": "Google Play Passを解約するとどうなる？ゲーム・セーブデータ・特典の違い",
+    "date": "2026-11-28",
+    "modified": "2026-11-28",
+    "category": "使い方",
+    "browseCategory": "使う・交換",
+    "listTitle": "Google Play Passを解約するとどうなる？ゲーム・セーブデータ・特典の違い",
+    "listDescription": "Google Play Passを解約するとゲームやセーブデータはどうなる？利用権、広告、割引、木曜のポイント特典、家族の利用を整理します。",
+    "description": "Google Play Passを解約するとゲームやセーブデータはどうなる？利用権、広告、割引、木曜のポイント特典、家族の利用を整理します。",
+    "tags": [
+      "Google Play Pass",
+      "解約",
+      "セーブデータ",
+      "定期購入",
+      "木曜特典"
+    ],
+    "file": "../articles/2026-11-27-google-play-pass-after-cancellation.html",
+    "thumbnail": "../articles/thumbnails/google-play-pass-after-cancellation-square-v1.webp",
+    "thumbnailKind": "generic",
+    "ogp": "../articles/ogp/2026-11-27-google-play-pass-after-cancellation.jpg",
+    "source": "editorial",
+    "listed": true,
+    "related": [
+      [
+        "/articles/2026-08-16-play-pass-worth-it.html",
+        "Google Play Passは何がうれしい？遊び放題と木曜特典、加入前に見たいこと"
+      ],
+      [
+        "/articles/2026-10-10-diamond-play-pass-value.html",
+        "ダイヤモンド会員はPlay Passに絶対入れ！……と言いたくなる理由。年額5,400円の元は取れる？"
+      ],
+      [
+        "/articles/2025-12-25-weekly-reward.html",
+        "Google Play Pointsのウィークリーリワードとは？受取曜日・ランク別特典"
+      ]
+    ]
+  },
+  {
     "id": "umasuku-vs-umaplan-2026",
     "title": "ウマ娘のウマスクとウマプランはどっち？料金・特典の違い",
     "date": "2026-10-14",
@@ -1862,7 +2394,7 @@
     "description": "Playポイントデーの過去の最大7倍案内と、2026年10月1日に確認した5倍・3倍の表示を紹介。今の対象や期限は自分の「貯める」画面で確認します。",
     "file": "../articles/2026-08-16-play-points-day.html",
     "thumbnail": "../articles/thumbnails/play-points-day-square-v1.webp",
-    "modified": "2026-10-29",
+    "modified": "2026-11-28",
     "browseCategory": "貯める・キャンペーン",
     "ogp": "../articles/ogp/play-points-day-20261030.png",
     "thumbnailKind": "generic",
@@ -1904,7 +2436,7 @@
     "description": "Play PointsのPixel割引クーポンを、個別配布の特典タブとポイント交換の「使う」から探す方法を解説。Google Storeでのコード利用と確認点も紹介します。",
     "file": "../articles/2026-08-16-pixel-discount-coupon.html",
     "thumbnail": "../articles/thumbnails/pixel-discount-coupon-square-v1.webp",
-    "modified": "2026-10-28",
+    "modified": "2026-11-28",
     "listTitle": "Play PointsのPixel割引クーポンを探す｜特典タブ・交換先・使い方",
     "listDescription": "Play PointsのPixel割引クーポンを、個別配布の特典タブとポイント交換の「使う」から探す方法を解説。Google Storeでのコード利用と確認点も紹介します。",
     "browseCategory": "ランク・ステータス",
@@ -2163,7 +2695,7 @@
     "id": "play-points-cash-conversion",
     "title": "Google Play Pointsは現金化・PayPay交換できる？できない理由と使い道",
     "date": "2026-07-24",
-    "modified": "2026-10-28",
+    "modified": "2026-11-28",
     "category": "使い方",
     "tags": [
       "Play Points",
@@ -2183,7 +2715,7 @@
     "id": "points-value-1",
     "title": "Google Play Pointsは何円で1ポイント貯まる？獲得率と交換価値の違い",
     "date": "2026-07-24",
-    "modified": "2026-11-17",
+    "modified": "2026-11-28",
     "category": "使い方",
     "tags": [
       "Play Points",
@@ -2206,7 +2738,7 @@
     "id": "points-value-500-1000",
     "title": "Google Play Pointsを500・1,000ポイント貯めるには｜ランク別の必要額",
     "date": "2026-07-24",
-    "modified": "2026-10-28",
+    "modified": "2026-11-28",
     "category": "ランク",
     "tags": [
       "Play Points",
@@ -2247,7 +2779,7 @@
     "id": "points-value-100",
     "title": "Google Play Pointsを100ポイント貯めるには｜購入額と倍率の目安",
     "date": "2026-07-24",
-    "modified": "2026-11-16",
+    "modified": "2026-11-28",
     "category": "使い方",
     "tags": [
       "Play Points",
@@ -2340,7 +2872,7 @@
     "description": "Google Play GamesとPlay Pointsの役割の違い、ゲームを遊ぶだけでは通常ポイントが付かない理由、クエストでPlay Gamesログインが必要になる場合、PC版を含む購入・獲得条件を解説します。",
     "file": "../articles/2025-12-25-play-games.html",
     "thumbnail": "../articles/thumbnails/play-games-square-v1.webp",
-    "modified": "2026-10-28",
+    "modified": "2026-11-28",
     "browseCategory": "はじめて・基本",
     "ogp": "../articles/ogp/play-games.png",
     "thumbnailKind": "generic",
@@ -2623,7 +3155,7 @@
     "description": "Play Pointsの交換先を、買う予定・最低購入額・有効期限で比較。クーポン、アイテム、Playクレジットの選び方と、Google ストアや現金化との違いを確認できます。",
     "file": "../articles/2025-12-25-best-use.html",
     "thumbnail": "../articles/thumbnails/best-use-square-v1.webp",
-    "modified": "2026-11-26",
+    "modified": "2026-11-28",
     "browseCategory": "使う・交換",
     "ogp": "../articles/ogp/best-use.png",
     "thumbnailKind": "generic",

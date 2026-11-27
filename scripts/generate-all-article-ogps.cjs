@@ -11,6 +11,42 @@ const ogpDir = path.join(articlesDir, 'ogp');
 
 // Mapping for the 22 articles that had shared images or ogp.png
 const DISTINCT_MAPPING = {
+  '2026-11-25-play-credit-rate-change-2027.html': {
+    image: '2026-11-25-play-credit-rate-change-2027.jpg',
+    title: '一部のPlayクレジット<br>交換条件が変わります',
+    template: 'play-credit-rate-change-2027',
+    category: '日本の交換レート',
+    subtitle: '2027年1月5日から。300ポイントで比較',
+    points: [],
+    accentColor: '#63dbc8'
+  },
+  '2026-11-28-play-points-new-best-use-2027.html': {
+    image: '2026-11-28-play-points-new-best-use-2027.jpg',
+    title: 'Play Pointsの使い道<br>どう比べる？',
+    template: 'play-points-new-best-use-2027',
+    category: '交換先の選び方',
+    subtitle: 'クーポン・クレジット・ギフトカード',
+    points: [],
+    accentColor: '#a5b4fc'
+  },
+  '2026-11-25-december-rank-maintenance-checklist-2026.html': {
+    image: '2026-11-25-december-rank-maintenance-checklist-2026.jpg',
+    title: '12月のランク維持<br>期限と不足ポイント',
+    template: 'december-rank-maintenance-checklist-2026',
+    category: '年末のステータス判定',
+    subtitle: '維持期限が今年末か、来年末かを確認',
+    points: [],
+    accentColor: '#80d5eb'
+  },
+  '2026-11-28-fgo-new-year-2027-lucky-bag-play-points.html': {
+    image: '2026-11-28-fgo-new-year-2027-lucky-bag-play-points.jpg',
+    title: 'FGO 正月福袋に備える<br>有償聖晶石の見方',
+    template: 'fgo-new-year-2027-lucky-bag-play-points',
+    category: 'FGOの購入ガイド',
+    subtitle: '2027年分の条件は、その年の公式告知で確認',
+    points: [],
+    accentColor: '#f8b4bd'
+  },
   '2026-10-14-play-points-pc-redeem.html': {
     image: 'play-points-pc-redeem-2026.jpg',
     title: 'PCでPlay Pointsを交換<br>ブラウザとPlay Games',
