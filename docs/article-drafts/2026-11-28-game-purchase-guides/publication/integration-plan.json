@@ -13,10 +13,10 @@
       "blocker": "両経路の日本円・ネコカン実数の同時確認、公式アプリアイコン取得。仮定を実売価格として掲載しない。",
       "manifestCandidate": {
         "id": "battlecats-webstore-vs-google-play",
-        "title": "にゃんこ大戦争の課金はどこがお得？にゃんこ大商店とGoogle Playを比較",
+        "title": "にゃんこ大戦争の課金はどこがお得？にゃんこ大商店・Google Playのネコカン比較",
         "listTitle": "にゃんこ大戦争｜ネコカンの購入先比較",
-        "description": "にゃんこ大商店オンラインのネコカン増量とGoogle Play Pointsを比較。購入先ごとの受取数、割引・還元、購入条件から選ぶ方法を解説。",
-        "listDescription": "にゃんこ大商店オンラインのネコカン増量とGoogle Play Pointsを比較。購入先ごとの受取数、割引・還元、購入条件から選ぶ方法を解説。",
+        "description": "11月25日に始まったにゃんこ大商店オンラインのネコカン増量とGoogle Play Pointsの違い。ネコカン単価・ギフトコード割引を比べる方法を試算例で紹介。",
+        "listDescription": "11月25日に始まったにゃんこ大商店オンラインのネコカン増量とGoogle Play Pointsの違い。ネコカン単価・ギフトコード割引を比べる方法を試算例で紹介。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "にゃんこ大戦争",
@@ -52,9 +52,12 @@
         "width": 1200,
         "height": 630,
         "mime": "image/jpeg",
-        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
+        "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.ponos.battlecats",
+        "appPackage": "jp.co.ponos.battlecats",
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
       },
-      "publishedDate": "実公開日まで未確定",
+      "publishedDate": "実公開日未確定",
       "sources": [
         {
           "title": "ポノス：オンラインショップでのゲーム内商品販売開始",
@@ -75,6 +78,10 @@
         {
           "title": "楽天認定店のギフトコードクーポン条件",
           "url": "https://event.rakuten.co.jp/computer/gpgiftcard/"
+        },
+        {
+          "title": "日本向けGoogle Play公式アプリ掲載ページ",
+          "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.ponos.battlecats"
         }
       ]
     },
@@ -87,10 +94,10 @@
       "blocker": "第2期の実売価格・内容・購入上限を公式アプリ画面で照合。原稿の仮定例を実商品と混同しない。",
       "manifestCandidate": {
         "id": "battlecats-14th-anniversary-packs",
-        "title": "にゃんこ大戦争14周年の大感謝パックはいつまで？ネコカン・限定商品と無料特典",
+        "title": "にゃんこ大戦争14周年｜大感謝パック・超限定セール第2期はいつまで？",
         "listTitle": "にゃんこ大戦争14周年｜大感謝パック",
-        "description": "14周年の大感謝パック・超限定セール第2期、レジェンドチケット、にゃんこスロットⅡの期間を整理。購入する前の無料特典と比較の考え方を紹介。",
-        "listDescription": "14周年の大感謝パック・超限定セール第2期、レジェンドチケット、にゃんこスロットⅡの期間を整理。購入する前の無料特典と比較の考え方を紹介。",
+        "description": "大感謝パック・超限定セール第2期は12月12日10:59まで予定。レジェンドチケット、ネコカン1,014個以上のスロットⅡなど、販売と無料受取の期限を整理。",
+        "listDescription": "大感謝パック・超限定セール第2期は12月12日10:59まで予定。レジェンドチケット、ネコカン1,014個以上のスロットⅡなど、販売と無料受取の期限を整理。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "にゃんこ大戦争",
@@ -126,9 +133,12 @@
         "width": 1200,
         "height": 630,
         "mime": "image/jpeg",
-        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
+        "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.ponos.battlecats",
+        "appPackage": "jp.co.ponos.battlecats",
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
       },
-      "publishedDate": "実公開日まで未確定",
+      "publishedDate": "実公開日未確定",
       "sources": [
         {
           "title": "ポノス：14周年第2弾の販売・開催期間",
@@ -145,6 +155,10 @@
         {
           "title": "Google Play以外の決済の扱い",
           "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        },
+        {
+          "title": "日本向けGoogle Play公式アプリ掲載ページ",
+          "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.ponos.battlecats"
         }
       ]
     },
@@ -157,10 +171,10 @@
       "blocker": "日本円の現行ゲーム内・Web同一商品の数量、初回共有条件、公式資料間の差を実画面で再照合。",
       "manifestCandidate": {
         "id": "monster-hunter-outlanders-midasbuy-vs-google-play",
-        "title": "モンハンアウトランダーズの課金はどこがお得？MidasbuyとGoogle Playのアカハネコイン比較",
+        "title": "モンスターハンターアウトランダーズの課金比較｜MidasbuyとGoogle Playはどっちがお得？",
         "listTitle": "MHO｜アカハネコインの購入先比較",
-        "description": "モンスターハンターアウトランダーズの初回チャージと2回目以降を公式FAQの数量で比較。最大28%の意味とPlay Pointsの損得分岐点を解説。",
-        "listDescription": "モンスターハンターアウトランダーズの初回チャージと2回目以降を公式FAQの数量で比較。最大28%の意味とPlay Pointsの損得分岐点を解説。",
+        "description": "MHOのアカハネコインを初回・2回目以降に分けて比較。Midasbuyの最大28%ボーナスの意味、米ドル公式FAQの数量と日本円での還元試算を紹介。",
+        "listDescription": "MHOのアカハネコインを初回・2回目以降に分けて比較。Midasbuyの最大28%ボーナスの意味、米ドル公式FAQの数量と日本円での還元試算を紹介。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "モンハンアウトランダーズ",
@@ -196,9 +210,12 @@
         "width": 1200,
         "height": 630,
         "mime": "image/jpeg",
-        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
+        "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.tencent.mhadv",
+        "appPackage": "com.tencent.mhadv",
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
       },
-      "publishedDate": "実公開日まで未確定",
+      "publishedDate": "実公開日未確定",
       "sources": [
         {
           "title": "Midasbuy公式FAQ：初回・通常時の米ドル建て比較表",
@@ -219,6 +236,10 @@
         {
           "title": "Google Play以外の決済の扱い",
           "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        },
+        {
+          "title": "日本向けGoogle Play公式アプリ掲載ページ",
+          "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.tencent.mhadv"
         }
       ]
     },
@@ -379,10 +400,10 @@
       "blocker": "日本円の現在価格・購入可能地域、同一商品かどうか、受取終了時刻を再確認。",
       "manifestCandidate": {
         "id": "p5x-black-friday-store-packs-2026",
-        "title": "P5Xブラックフライデー2026｜95連パックと公式ストアの増量はいつまで？",
+        "title": "ペルソナ5X（P5X）ブラックフライデー2026｜95連パックと公式ストア特典",
         "listTitle": "P5X｜ブラックフライデー限定特典",
-        "description": "P5Xのブラックフライデー公式ストア限定パック、自在結晶の2倍増量、無料プレゼントと受取期限を整理。Google Play購入との違いも解説。",
-        "listDescription": "P5Xのブラックフライデー公式ストア限定パック、自在結晶の2倍増量、無料プレゼントと受取期限を整理。Google Play購入との違いも解説。",
+        "description": "P5X公式ストアの95連ミリコインパックは自在結晶800個、異界宝珠セットF×10は5,000個の追加特典。12月10日の増量・メール受取期限と無料プレゼントを整理。",
+        "listDescription": "P5X公式ストアの95連ミリコインパックは自在結晶800個、異界宝珠セットF×10は5,000個の追加特典。12月10日の増量・メール受取期限と無料プレゼントを整理。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "P5X",
@@ -419,9 +440,12 @@
         "width": 1200,
         "height": 630,
         "mime": "image/jpeg",
-        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）"
+        "gameIcon": "Google Play公式アイコンの取得・権利と台帳確認（ファンパレは既存アイコン再利用可）",
+        "appListing": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.sega.persona5.the.phantomx.jp",
+        "appPackage": "com.sega.persona5.the.phantomx.jp",
+        "gameIconStatus": "公式掲載ページ特定・画像実体と利用条件未確認"
       },
-      "publishedDate": "実公開日まで未確定",
+      "publishedDate": "実公開日未確定",
       "sources": [
         {
           "title": "P5X公式：ブラックフライデーの特別プレゼント第一弾",
@@ -438,6 +462,10 @@
         {
           "title": "Google Play以外の決済の扱い",
           "url": "https://support.google.com/googleplay/answer/11174377?hl=ja"
+        },
+        {
+          "title": "日本向けGoogle Play公式アプリ掲載ページ",
+          "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.sega.persona5.the.phantomx.jp"
         }
       ]
     },
