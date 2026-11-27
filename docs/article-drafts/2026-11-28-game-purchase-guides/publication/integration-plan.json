@@ -418,7 +418,7 @@
       "kind": "limited",
       "status": "review",
       "role": "game_decision",
-      "blocker": "公式の配布条件・販売期限・有償限定品を再照合。第1回無料・段階価格とWeb円価格はゲーム内告知を掲載した二次資料の参考値。直接の商品画面・無料枠共有・価格は未確認。",
+      "blocker": "公式の配布条件・販売期限・有償限定品、別枠のメンテナンス配布を確認。段階価格とWeb円価格は二次資料の参考値。直接の商品画面・無料枠共有・全ステップ価格は未確認。",
       "manifestCandidate": {
         "id": "romasaga-rs-8th-anniversary-jewel-sale",
         "title": "ロマサガRS8周年ジュエルセール｜無料Webパック・有償ジュエルと販売期限",
@@ -507,6 +507,10 @@
         {
           "title": "Gamerch：8周年ゲーム内・Web告知の掲載資料（一次画面未照合の二次情報）",
           "url": "https://gamerch.com/saga-reuniverse/1036836"
+        },
+        {
+          "title": "スクウェア・エニックス：11/27メンテナンスとジュエル配布の告知",
+          "url": "https://support.jp.square-enix.com/news.php?drt=1795510800&id=17621&la=0&n=2&tag=c8853e26a637e7c3d347ac051a3f1c228848b0e6"
         }
       ]
     },
@@ -516,7 +520,7 @@
       "kind": "limited",
       "status": "review",
       "role": "game_decision",
-      "blocker": "公式告知と当日取得の公式ストア検索資料で、追加分・無料枠・開始18:00 JST・終了・メール受取を照合。円建て価格、全商品内容、地域・アカウント別条件、12/1追加プレゼントの詳細は未取得。",
+      "blocker": "公式告知の追加分・購入/受取期限・ログイン7枚・1.5周年予告を確認。ストアの開始18時表記とメンテナンス事前予定20時の関係・実際の開始は未確認なので終了後表記を優先。円建て価格・個別商品内容は未取得。",
       "manifestCandidate": {
         "id": "p5x-black-friday-store-packs-2026",
         "title": "ペルソナ5X（P5X）ブラックフライデー2026｜95連パックと公式ストア特典",
@@ -594,6 +598,14 @@
         {
           "title": "日本向けGoogle Play公式アプリ掲載ページ",
           "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.sega.persona5.the.phantomx.jp"
+        },
+        {
+          "title": "P5X公式Ver4.14：7日ログインのミリコインと1.5周年予告",
+          "url": "https://p5x.jp/news/details/001521jd9qwFR0.html"
+        },
+        {
+          "title": "P5X公式：11/26メンテナンス予定（実際の終了時刻は未確認）",
+          "url": "https://p5x.jp/news/details/001519Bnz2p7cZ.html"
         }
       ]
     },
@@ -603,7 +615,7 @@
       "kind": "evergreen",
       "status": "review",
       "role": "game_decision",
-      "blocker": "公式告知でジェム比較・セレクションポイント・SRセット・アクセサリー価格を確認。AndAppの移行条件も出典付き。日本円の現行ジェム商品価格・次弾日程は未取得。",
+      "blocker": "公式告知でジェム比較・選択券・アクセサリー・ジェム利用条件を照合。期間限定マットは800ジェムまたは40チップ。円建て商品価格・次弾日程は未取得。",
       "manifestCandidate": {
         "id": "duelmasters-plays-gem-sr-ticket-comparison",
         "title": "デュエプレのパック購入はどれがお得？1日100ジェムとSRチケット付き10パック比較",
@@ -692,6 +704,14 @@
         {
           "title": "デュエプレ公式：新弾記念アクセサリー価格",
           "url": "https://dmps.takaratomy.co.jp/news/16690"
+        },
+        {
+          "title": "デュエプレ公式：ジェム有効期限・月間購入上限",
+          "url": "https://dmps.takaratomy.co.jp/payment/"
+        },
+        {
+          "title": "デュエプレ公式：限定プレイマットの販売条件",
+          "url": "https://dmps.takaratomy.co.jp/news/16652"
         }
       ]
     },
@@ -701,7 +721,7 @@
       "kind": "evergreen",
       "status": "review",
       "role": "game_decision",
-      "blocker": "公式wikiで累計チャージ加算・豊穣の宴の価格枠・回数・UTC日程を確認しJST換算。日本向けWeb星販売価格、増量率、王国・アカウントの実際の表示は未確認。",
+      "blocker": "公式wikiで累計チャージ加算・月間ギフトの最上位のみのルール・豊穣の宴の価格枠/回数/日程を確認。日本向けWeb星販売価格・増量率・ランク別報酬数量と個別王国の表示は未取得。",
       "manifestCandidate": {
         "id": "whiteout-survival-frost-stars-topup",
         "title": "ホワイトアウト・サバイバル（ホワサバ）課金｜寒霜の星と累計チャージの仕組み",
