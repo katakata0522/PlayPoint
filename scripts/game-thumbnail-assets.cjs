@@ -7,7 +7,7 @@ const DEFAULT_THUMBNAIL = Object.freeze({
 
 const ACQUIRED_AT = '2026-10-03';
 
-function activeAsset(gameId, gameTitle, rightsHolder, sourcePageUrl, sourceImageUrl) {
+function activeAsset(gameId, gameTitle, rightsHolder, sourcePageUrl, sourceImageUrl, acquiredAt = ACQUIRED_AT) {
   return Object.freeze({
     gameId,
     gameTitle,
@@ -17,8 +17,8 @@ function activeAsset(gameId, gameTitle, rightsHolder, sourcePageUrl, sourceImage
     sourceImageUrl,
     localPath: 'images/game-icons/' + gameId + '.webp',
     highDensityLocalPath: 'images/game-icons/' + gameId + '-2x.webp',
-    highDensityAcquiredAt: '2026-10-04',
-    acquiredAt: ACQUIRED_AT,
+    highDensityAcquiredAt: acquiredAt === ACQUIRED_AT ? '2026-10-04' : acquiredAt,
+    acquiredAt,
     modification: 'resize-only-128px-webp',
     usage: 'article-list-thumbnail',
     status: 'active',
@@ -27,6 +27,11 @@ function activeAsset(gameId, gameTitle, rightsHolder, sourcePageUrl, sourceImage
 }
 
 const GAME_THUMBNAIL_ASSETS = Object.freeze({
+  'モンハンNow': activeAsset(
+    'monster-hunter-now', 'モンハンNow', 'Scopely Explore, Inc. / CAPCOM CO., LTD.',
+    'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=com.nianticlabs.monsterhunter',
+    'https://play-lh.googleusercontent.com/k2wh-QCwxCiJoLTgNFoCZe3d6xAnL_jb5_R6E7Mr9F0vXP2aVEd-E94K_Nw6iWsHHMCwoyPfiWP2eyK7iiEf=s0-br30', '2026-11-28'
+  ),
   FGO: activeAsset(
     'fgo', 'FGO', 'Aniplex Inc.',
     'https://play.google.com/store/apps/details?hl=ja&gl=JP&id=com.aniplex.fategrandorder',

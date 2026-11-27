@@ -29,7 +29,10 @@
     "dokkan-battle-dragon-ball-play-points": "../images/game-icons/dokkan.webp",
     "umamusume-half-anniversary-points": "../images/game-icons/umamusume.webp",
     "umasuku-vs-umaplan-2026": "../images/game-icons/umamusume.webp",
-    "pokemon-sleep-premium-plans-2026": "../images/game-icons/pokemon-sleep.webp"
+    "pokemon-sleep-premium-plans-2026": "../images/game-icons/pokemon-sleep.webp",
+    "2026-11-28-fgo-new-year-2027-lucky-bag-play-points": "../images/game-icons/fgo.webp",
+    "2026-11-28-genshin-starrail-year-end-topup-routes": "../images/game-icons/genshin.webp",
+    "monster-hunter-now-web-store-vs-google-play": "../images/game-icons/monster-hunter-now.webp"
   },
   "genericArticleIds": [
     "play-points-stamp-cards",
@@ -105,7 +108,18 @@
     "play-points-pc-redeem-2026",
     "google-play-balance-combine-payment",
     "google-play-credit-uses",
-    "google-store-points-uses"
+    "google-store-points-uses",
+    "2026-11-25-play-credit-rate-change-2027",
+    "2026-11-25-play-points-renewal-2026",
+    "2026-11-25-december-rank-maintenance-checklist-2026",
+    "2026-11-28-play-points-new-best-use-2027",
+    "2026-11-28-play-store-pc-webstore-three-billing-routes",
+    "google-play-gift-card-not-working",
+    "google-play-balance-use-up",
+    "google-play-gift-card-balance-expiration",
+    "google-play-balance-charge-limit",
+    "google-play-payment-failed",
+    "google-play-pass-after-cancellation"
   ],
   "dedicatedOgpIds": [
     "fgo-pity-cost-2026",

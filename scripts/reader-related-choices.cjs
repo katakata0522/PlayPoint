@@ -1,6 +1,20 @@
 'use strict';
 // 各記事を読んだ後の確認順。テーマの一致だけで他ゲームや低頻度の手続きへ誘導しない。
 const RELATED_CHOICES = {
+  'google-play-gift-card-not-working': ["google-play-balance-charge-limit", "play-country-change-points", "play-credit-not-working"],
+  'google-play-balance-use-up': ["google-play-balance-combine-payment", "google-play-gift-card-balance-expiration", "play-credit-subscription-2026"],
+  'google-play-gift-card-balance-expiration': ["expiration", "google-play-balance-use-up", "play-country-change-points"],
+  'monster-hunter-now-web-store-vs-google-play': ["web-store-external-billing-points", "discount-gift-cards", "google-play-balance-use-up"],
+  'google-play-balance-charge-limit': ["google-play-gift-card-not-working", "gift-card", "discount-gift-cards"],
+  'google-play-payment-failed': ["play-points-reflection-timing", "google-play-purchase-history-budget", "google-play-balance-combine-payment"],
+  'google-play-pass-after-cancellation': ["play-pass-worth-it", "diamond-play-pass-break-even-2026", "weekly-reward"],
+  '2026-11-25-play-credit-rate-change-2027': ['2026-11-28-play-points-new-best-use-2027', 'google-play-balance-combine-payment', 'google-play-credit-uses'],
+  '2026-11-25-play-points-renewal-2026': ['2026-11-25-play-credit-rate-change-2027', 'play-games', '2026-11-25-december-rank-maintenance-checklist-2026'],
+  '2026-11-25-december-rank-maintenance-checklist-2026': ["playpoints-rank-maintenance", "january-rank-reset", "2026-11-25-play-credit-rate-change-2027"],
+  '2026-11-28-play-points-new-best-use-2027': ['2026-11-25-play-credit-rate-change-2027', 'best-use', 'play-points-coupon-not-applied'],
+  '2026-11-28-play-store-pc-webstore-three-billing-routes': ["pc-play-games-points", "web-store-external-billing-points", "play-points-pc-redeem-2026"],
+  '2026-11-28-fgo-new-year-2027-lucky-bag-play-points': ['fgo-pity-cost-2026', '2026-11-25-play-credit-rate-change-2027', '2026-10-23-google-play-gift-card-comparison'],
+  '2026-11-28-genshin-starrail-year-end-topup-routes': ['2026-11-28-play-store-pc-webstore-three-billing-routes', 'genshin-welkin-value-2026', 'starrail-supply-pass-value-2026'],
   'google-play-balance-combine-payment': ['best-use', 'play-credit-subscription-2026', 'play-credit-not-working'],
   'play-points-pc-redeem-2026': ['best-use', 'pc-play-games-points', 'play-credit-not-working'],
   '2026-10-23-seven-eleven-gift-card-lottery': ["2026-10-23-familymart-gift-card-lottery", "2026-10-23-google-play-gift-card-comparison", "discount-gift-cards"],

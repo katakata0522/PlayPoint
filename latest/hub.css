@@ -182,3 +182,9 @@ body.latest-hub .lp-ad-container { width:100%; }
   .latest-hub .guide-nav-button[aria-controls="guide-menu"] { grid-column: 3; }
   .latest-hub .guide-header-spacer { grid-column: 1; }
 }
+
+body.latest-hub .latest-deadline-strip { margin: 0 0 18px; padding: 12px 14px; border: 1px solid var(--reading-border); border-radius: 10px; background: var(--reading-surface); }
+body.latest-hub .latest-deadline-strip-title { margin: 0 0 8px; font-size: 14px; font-weight: 700; color: var(--reading-text); }
+body.latest-hub .latest-deadline-list { display: flex; flex-wrap: wrap; gap: 6px 12px; list-style: none; margin: 0; padding: 0; font-size: 13px; line-height: 1.6; }
+body.latest-hub .latest-deadline-list li { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 6px; background: var(--reading-soft); color: var(--reading-text); }
+body.latest-hub .latest-deadline-list time { font-weight: 700; color: var(--reading-link); }

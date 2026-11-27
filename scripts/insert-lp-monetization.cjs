@@ -15,6 +15,7 @@ const lpFiles = [
   'campaign/3x/index.html',
   'campaign/wait/index.html',
   'compare/earning-rates/index.html',
+  'compare/redemption-value/index.html',
   'points-cost/index.html',
   'latest/index.html'
 ];

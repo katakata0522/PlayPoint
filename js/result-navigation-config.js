@@ -25,11 +25,14 @@ const JP = {
         campaign: [
             { href: 'articles/2025-12-25-campaign.html', title: 'ポイント増量キャンペーンの仕組み' },
             { href: 'latest/', title: 'いま開催中の特典・キャンペーンを確認する' },
+            { href: 'articles/2026-11-25-december-rank-maintenance-checklist-2026.html', title: '2026年12月のランク維持期限と不足ポイント' },
             { href: 'articles/2025-12-25-gift-card.html', title: 'ギフトカードとポイント付与の関係' },
             { href: 'articles/2026-06-20-discount-gift-cards.html', title: 'お得に課金するためのギフトコード活用' }
         ],
         default: [
             { href: 'articles/2025-12-25-getting-started.html', title: 'Google Play Pointsの始め方' },
+            { href: 'articles/2026-11-25-december-rank-maintenance-checklist-2026.html', title: '2026年12月のランク維持期限と不足ポイント' },
+            { href: 'articles/2026-11-25-play-credit-rate-change-2027.html', title: '2027年1月の一部Playクレジット改定と交換額' },
             { href: 'articles/2025-12-25-check-balance.html', title: 'ポイント残高・履歴の確認方法' },
             { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' }
         ]
