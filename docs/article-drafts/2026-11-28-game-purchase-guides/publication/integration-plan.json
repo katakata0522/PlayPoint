@@ -10,13 +10,13 @@
       "kind": "evergreen",
       "status": "review",
       "role": "game_decision",
-      "blocker": "公式ヘルプで受取方法・期限・上限確認済み。両経路の日本版の実売価格・数量は未取得。現行の比較表は仮定と明示し、公式アプリアイコン・OGP・生成/ブラウザ確認後に公開判断。",
+      "blocker": "公式のWeb販売開始・受取条件・にゃんこクラブを確認。ネコカンの同一商品実売価格と増量数、ゴールド会員価格は未取得。架空の数値は仕組みの説明に限定。",
       "manifestCandidate": {
         "id": "battlecats-webstore-vs-google-play",
         "title": "にゃんこ大戦争の課金はどこがお得？にゃんこ大商店・Google Playのネコカン比較",
         "listTitle": "にゃんこ大戦争｜ネコカンの購入先比較",
-        "description": "にゃんこ大商店のネコカン増量とGoogle Play Pointsを比較。ギフトコード割引の試算、Web購入品とポイント交換品の受け取り方・期限も整理します。",
-        "listDescription": "にゃんこ大商店のネコカン増量とGoogle Play Pointsを比較。ギフトコード割引の試算、Web購入品とポイント交換品の受け取り方・期限も整理します。",
+        "description": "にゃんこ大商店のネコカン増量とGoogle Play Pointsを比較。増量別の損得分岐点、にゃんこクラブの受取条件、Web購入品とポイント交換品の違いを解説。",
+        "listDescription": "にゃんこ大商店のネコカン増量とGoogle Play Pointsを比較。増量別の損得分岐点、にゃんこクラブの受取条件、Web購入品とポイント交換品の違いを解説。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "にゃんこ大戦争",
@@ -95,6 +95,14 @@
         {
           "title": "ポノス公式ヘルプ：ネコカンショップ・受け取り履歴・Play Points交換品",
           "url": "https://ponosgames.com/information/appli/battlecats/help/index.html"
+        },
+        {
+          "title": "にゃんこクラブ公式：会員特典・有効期間・自動更新なし",
+          "url": "https://ponosgames.com/information/appli/battlecats/club/index.html"
+        },
+        {
+          "title": "ポノス：Ver.15.4でのゴールド会員特典変更",
+          "url": "https://ponosgames.com/information/appli/battlecats/club/goldmembers_prev15-3.html"
         }
       ]
     },
@@ -104,13 +112,13 @@
       "kind": "limited",
       "status": "review",
       "role": "game_decision",
-      "blocker": "第2期の実売価格・内容・購入上限を公式アプリ画面で照合。原稿の仮定例を実商品と混同しない。",
+      "blocker": "第2期の販売期間・無料報酬は公式確認。第1期の価格などは二次情報として明示。第2期の実売価格・内容・購入上限の一次確認が残る。",
       "manifestCandidate": {
         "id": "battlecats-14th-anniversary-packs",
         "title": "にゃんこ大戦争14周年｜大感謝パック・超限定セール第2期はいつまで？",
         "listTitle": "にゃんこ大戦争14周年｜大感謝パック",
-        "description": "大感謝パック・超限定セール第2期は12月12日10:59まで予定。レジェンドチケット、ネコカン1,014個以上のスロットⅡなど、販売と無料受取の期限を整理。",
-        "listDescription": "大感謝パック・超限定セール第2期は12月12日10:59まで予定。レジェンドチケット、ネコカン1,014個以上のスロットⅡなど、販売と無料受取の期限を整理。",
+        "description": "にゃんこ大戦争14周年の大感謝パック・超限定セール第2期は12月12日10:59まで。スロットの無料ネコカン、プラチナチケット、購入・受取期限を整理。",
+        "listDescription": "にゃんこ大戦争14周年の大感謝パック・超限定セール第2期は12月12日10:59まで。スロットの無料ネコカン、プラチナチケット、購入・受取期限を整理。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "にゃんこ大戦争",
@@ -181,6 +189,10 @@
         {
           "title": "日本向けGoogle Play公式アプリ掲載ページ",
           "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.ponos.battlecats"
+        },
+        {
+          "title": "ゲームエイト：第1期のパック価格・継続商品の報告（二次情報）",
+          "url": "https://game8.jp/battlecats/834240"
         }
       ]
     },
@@ -190,13 +202,13 @@
       "kind": "evergreen",
       "status": "review",
       "role": "game_decision",
-      "blocker": "日本向け公開検索資料のWeb初回5商品と米ドルFAQの数量一致は確認。日本のゲーム内円価格、通常時の数量・初回適用状態、公式資料間の差は未解決。",
+      "blocker": "日本語FAQと英語FAQの7商品数量一致、日本向け公式ストア7商品の円価格を確認。日本版の現在のゲーム内価格・通常時数量・初回共有条件・資料間矛盾は残る。",
       "manifestCandidate": {
         "id": "monster-hunter-outlanders-midasbuy-vs-google-play",
         "title": "モンスターハンターアウトランダーズの課金比較｜MidasbuyとGoogle Playはどっちがお得？",
         "listTitle": "MHO｜アカハネコインの購入先比較",
-        "description": "MHOのアカハネコインを初回・2回目以降に分けて比較。Midasbuyの最大28%ボーナスの意味、米ドル公式FAQの数量と日本円での還元試算を紹介。",
-        "listDescription": "MHOのアカハネコインを初回・2回目以降に分けて比較。Midasbuyの最大28%ボーナスの意味、米ドル公式FAQの数量と日本円での還元試算を紹介。",
+        "description": "モンハンアウトランダーズのアカハネコイン初回・通常チャージを比較。日本向けMidasbuyの7商品掲載例、最大28%の意味と公式資料の相違、Play Pointsの試算。",
+        "listDescription": "モンハンアウトランダーズのアカハネコイン初回・通常チャージを比較。日本向けMidasbuyの7商品掲載例、最大28%の意味と公式資料の相違、Play Pointsの試算。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "モンハンアウトランダーズ",
@@ -275,6 +287,14 @@
         {
           "title": "Midasbuy公式FAQ英語版：米ドル建て比較表の数値根拠",
           "url": "https://www.midasbuy.com/midasbuy/bg/article/monster-hunter-outlanders-top-up-faq-news_hdpsuw"
+        },
+        {
+          "title": "Midasbuy日本向け公式ストア：7商品の円価格・初回数量（約1週間前取得）",
+          "url": "https://www.midasbuy.com/midasbuy/jp/buy/monster-hunter-outlanders?from=__mds_buy_mho.socialmedia_global%2F"
+        },
+        {
+          "title": "Midasbuy日本語通貨ガイド：通常時数量の相違資料",
+          "url": "https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-crimson-crest-coins-news_pgywrs"
         }
       ]
     },
@@ -559,13 +579,13 @@
       "kind": "evergreen",
       "status": "review",
       "role": "game_decision",
-      "blocker": "日本円のジェム商品価格、日替わり更新時刻、次のレギュラー弾の発売日。未確認でもジェム単位の比較自体は成立。",
+      "blocker": "公式告知でジェム比較・セレクションポイント・SRセット・アクセサリー価格を確認。AndAppの移行条件も出典付き。日本円の現行ジェム商品価格・次弾日程は未取得。",
       "manifestCandidate": {
         "id": "duelmasters-plays-gem-sr-ticket-comparison",
         "title": "デュエプレのパック購入はどれがお得？1日100ジェムとSRチケット付き10パック比較",
         "listTitle": "デュエプレ｜100ジェムとSRセット",
-        "description": "デュエル・マスターズ プレイスのDMPX-04で10パックを買うなら、日替わり割引は10日で1,000ジェム、SR付きセットは1,500ジェム。無料配布と購入上限も解説。",
-        "listDescription": "デュエル・マスターズ プレイスのDMPX-04で10パックを買うなら、日替わり割引は10日で1,000ジェム、SR付きセットは1,500ジェム。無料配布と購入上限も解説。",
+        "description": "デュエプレDMPX-04の10パックは日替わり10日で1,000ジェム、SRセットは1,500ジェム。待てる日数別の節約、チケットの違い、端末間のジェム移行も解説。",
+        "listDescription": "デュエプレDMPX-04の10パックは日替わり10日で1,000ジェム、SRセットは1,500ジェム。待てる日数別の節約、チケットの違い、端末間のジェム移行も解説。",
         "category": "使い方",
         "browseCategory": "ゲーム別課金",
         "gameTitle": "デュエプレ",
@@ -640,6 +660,14 @@
         {
           "title": "日本向けGoogle Play公式アプリ掲載ページ",
           "url": "https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.takaratomy.duelmastersplays"
+        },
+        {
+          "title": "デュエプレ公式AndAppヘルプ：プラットフォーム間のジェム",
+          "url": "https://dmps.takaratomy.co.jp/news/445"
+        },
+        {
+          "title": "デュエプレ公式：新弾記念アクセサリー価格",
+          "url": "https://dmps.takaratomy.co.jp/news/16690"
         }
       ]
     },
@@ -760,5 +788,6 @@
     "releaseRobots": "index, follow, max-image-preview:large",
     "publicationDates": "実公開日確定後にArticle/datePublished・dateModified、meta、表示日、台帳を同期"
   },
-  "additionalEvidenceDate": "2026-11-28"
+  "additionalEvidenceDate": "2026-11-28",
+  "deepReviewDate": "2026-11-28"
 }
