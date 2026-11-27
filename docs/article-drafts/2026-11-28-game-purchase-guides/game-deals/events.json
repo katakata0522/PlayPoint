@@ -21,15 +21,15 @@
       "type": "purchase",
       "name": "ブラックフライデー増量・限定パック",
       "detail": "95連パックの自在結晶800個→400個、異界宝珠セットの追加5,000個→2,500個。購入とゲーム内メール受取は12/10 10:59までの案内。",
-      "start": "2026-11-26T18:00:00+09:00",
+      "start": null,
       "end": "2026-12-10T10:59:00+09:00",
       "deadline": "12/10 10:59（公式表記）",
       "source": "https://p5x.jp/news/details/0015330WPp2yAY.html",
       "sourceName": "P5X公式",
       "checked": "2026-11-28",
-      "startNote": "11/26 18:00 JST（公式ストアの表示。運営告知はメンテナンス後）",
-      "extraSource": "https://p5xjp-store.sega.com/",
-      "extraSourceName": "公式ストア（開始時刻）"
+      "startNote": "11/26メンテナンス終了後（正確な終了時刻未確認）",
+      "extraSource": "https://p5x.jp/news/details/001519Bnz2p7cZ.html",
+      "extraSourceName": "メンテナンス予定（参考）"
     },
     {
       "id": "nyanko-pack",
@@ -264,6 +264,47 @@
       "source": "https://www.whiteoutsurvival.wiki/ja/vip-post/%E8%B1%8A%E7%A9%A3%E3%81%AE%E5%AE%B4%E3%80%80faq/",
       "sourceName": "公式イベントFAQ",
       "startNote": "11/26 9:00（UTC告知からJST換算）",
+      "checked": "2026-11-28"
+    },
+    {
+      "id": "p5x-7day-login",
+      "game": "P5X",
+      "type": "free",
+      "name": "Ver4.14ログインボーナス",
+      "detail": "期間中7日ログインでプラチナミリコイン計7枚。",
+      "start": null,
+      "end": "2026-12-10T10:59:00+09:00",
+      "deadline": "12/10 10:59",
+      "source": "https://p5x.jp/news/details/001521jd9qwFR0.html",
+      "sourceName": "運営公式",
+      "startNote": "11/26メンテナンス後（時刻未確認）",
+      "checked": "2026-11-28"
+    },
+    {
+      "id": "rs-maintenance-jewels",
+      "game": "ロマサガRS",
+      "type": "free",
+      "name": "メンテナンスのお礼・お詫び",
+      "detail": "11/27メンテナンス告知：200＋100ジュエル。対象期間内のログイン・プレゼントボックス受取。周年53,200ジュエルとは別枠。",
+      "start": null,
+      "end": "2026-12-28T04:00:00+09:00",
+      "deadline": "12/28 4:00（対象ログイン）",
+      "source": "https://support.jp.square-enix.com/news.php?drt=1795510800&id=17621&la=0&n=2&tag=c8853e26a637e7c3d347ac051a3f1c228848b0e6",
+      "sourceName": "公式サポート",
+      "startNote": "11/27メンテナンス終了後",
+      "checked": "2026-11-28"
+    },
+    {
+      "id": "dm-wedding-gate-mat",
+      "game": "デュエプレ",
+      "type": "purchase",
+      "name": "限定プレイマット ウェディング・ゲート",
+      "detail": "800ジェムまたはサプライチップ40枚。所持チップで交換できる場合は追加課金不要。",
+      "start": "2026-11-26T15:00:00+09:00",
+      "end": "2026-12-17T00:00:00+09:00",
+      "deadline": "12/16 23:59",
+      "source": "https://dmps.takaratomy.co.jp/news/16652",
+      "sourceName": "デュエプレ公式",
       "checked": "2026-11-28"
     }
   ]

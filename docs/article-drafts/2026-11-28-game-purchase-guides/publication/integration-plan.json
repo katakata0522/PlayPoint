@@ -822,18 +822,19 @@
       "/blog/?topic=ゲーム別課金"
     ],
     "publicIntegration": "既存のカテゴリ・サイドバー・トップを変更せず、latestからゲーム特典への導線を1つ置く。記事の公開後に関連リンクを追加。正式な公開前に既存のSite Shellへ統合する。",
-    "dataCount": 19,
+    "dataCount": 22,
     "checkedAt": "2026-11-28"
   },
   "auditDate": "2026-11-28",
   "latestMainChecked": "8003cedff93e802d3edfca9362581ffaaa8066d3",
   "publicationGate": {
     "status": "blocked",
-    "reason": "7記事の追加根拠・判断例・期限データを同期済み。専用OGP8枚未登録、6ゲームの公式アイコン未取得、現行実売条件の一部未確認、ファンパレ正式商品未取得、生成・実ブラウザ・PR Gate未実施。",
+    "reason": "追加取得可能な公開情報を7原稿と期限データに同期。公開判断は利用者と別途行う。専用OGP・6ゲーム公式画像実体、必要な実売条件、ファンパレ正式発表、生成・実ブラウザ・PR Gate未完了。",
     "draftRobots": "noindex, nofollow",
     "releaseRobots": "index, follow, max-image-preview:large",
     "publicationDates": "実公開日確定後にArticle/datePublished・dateModified、meta、表示日、台帳を同期"
   },
   "additionalEvidenceDate": "2026-11-28",
-  "deepReviewDate": "2026-11-28"
+  "deepReviewDate": "2026-11-28",
+  "finalEvidenceReviewDate": "2026-11-28"
 }
