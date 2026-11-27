@@ -220,10 +220,21 @@ function profilesForDiff(raw) {
   const entries = raw.split('\0');
   if (entries.pop() !== '' || !entries.length || entries.length % 2) return all;
   const selected = new Set();
+  const internationalStyles = new Set(['articles/intl-article.css', 'articles/intl-shell-v1.css']);
+  let includesInternationalStyle = false;
   for (let index = 0; index < entries.length; index += 2) {
-    const profile = routes.get(entries[index + 1]);
-    if (!profile || !/^:100644 100644 [0-9a-f]+ [0-9a-f]+ M$/.test(entries[index])) return all;
+    if (!/^:100644 100644 [0-9a-f]+ [0-9a-f]+ M$/.test(entries[index])) return all;
+    const file = entries[index + 1];
+    if (internationalStyles.has(file)) {
+      includesInternationalStyle = true;
+      continue;
+    }
+    const profile = routes.get(file);
+    if (!profile) return all;
     selected.add(profile);
+  }
+  if (includesInternationalStyle) {
+    return selected.size ? all : ['internationalArticleEn', 'internationalArticleKo', 'internationalArticleTw'];
   }
   return all.filter(profile => selected.has(profile));
 }
