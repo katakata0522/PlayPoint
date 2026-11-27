@@ -31,9 +31,9 @@ const clusters = [
         slug: 'google-play-points-use-coupons.html',
         officialIds: ['9079840', '9077247'],
         phrases: {
-          en: ['expire after one year', 'automatically', 'Play credit'],
-          ko: ['1년 후 만료', '자동 적용', 'Play 크레딧'],
-          tw: ['一年後到期', '自動套用', 'Play 抵用金']
+          en: ['Play credit redeemed with points expires one year after redemption', 'Coupon deadlines vary', 'automatically', 'Play credit'],
+          ko: ['1년 후 만료', '해당 쿠폰의 만료일', '자동 적용', 'Play 크레딧'],
+          tw: ['一年後到期', '每張優惠券的到期日可能不同', '自動套用', 'Play 抵用金']
         },
         peer: 'google-play-points-join-eligibility.html'
       },
