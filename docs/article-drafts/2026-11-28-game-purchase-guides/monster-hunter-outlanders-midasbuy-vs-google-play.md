@@ -4,7 +4,7 @@
 
 ## 最大28%は基本数量に対するボーナス。アプリ内との差とは別
 
-Midasbuyの詳細FAQでは、基本6,480枚のパックを再購入した場合、ゲーム内8,080枚、Web8,280枚と案内されています。差は200枚です。ただし別のMidasbuy公式ガイドにはゲーム内の通常ボーナスがないとの説明もあります。以下は詳細FAQを前提にした比較で、日本版の現行条件を断定するものではありません。
+Midasbuyの詳細FAQでは、基本6,480枚のパックを再購入した場合、ゲーム内8,080枚、Web8,280枚と案内されています。差は200枚です。ただしMidasbuyの日本語通貨ガイドには、同じ米ドル価格でゲーム内の再購入は6,480枚という別の説明があります。以下は詳細FAQを前提にした比較で、日本版の現行条件を断定するものではありません。
 
 ## 初回と2回目以降を同じパックごとに比べる
 
@@ -26,7 +26,7 @@ Midasbuyの詳細FAQでは、基本6,480枚のパックを再購入した場合�
 
 基本6,480枚に対するWeb通常時の追加1,800枚は約27.78%。一方、ゲーム内の8,080枚とWebの8,280枚を比べると約2.48%の増量です。初回の場合は12,960枚と13,160枚なので約1.54%の差です。
 
-同じMidasbuyの別の通貨ガイドでは、ゲーム内通常分を基本数量だけで示した表もあり、資料間に不一致があります。この記事では詳細FAQの数字を用いた比較例に限定し、日本版の実画面を照合するまでは現行商品の差を断定しません。 [別資料](https://www.midasbuy.com/midasbuy/mc/article/monster-hunter-outlanders-top-up-news_err9yt)
+別の日本語通貨ガイドでは、2回目以降のゲーム内数量を6,480枚と明記しており、詳細FAQと一致していません。この記事の数値は各資料に掲載された米ドル建ての比較例です。日本版の購入画面を照合するまでは現在の差を断定しません。 [日本語通貨ガイド](https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-crimson-crest-coins-news_pgywrs)
 
 ## 日本語FAQでも200枚差。違う表を採用すると損得は変わる
 
@@ -37,11 +37,11 @@ Midasbuyの詳細FAQでは、基本6,480枚のパックを再購入した場合�
 | 詳細FAQ | 8,080 | 363円以上 |
 | 通貨ガイド | 6,480 | 3,261円以上 |
 
-公式の数字をそのまま並べるだけでは、今の日本版の実売がどちらかは分かりません。購入する直前にゲーム内ショップの基本分とボーナス分を見れば、自分の条件に合う行を判定できます。 [日本語FAQ](https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-top-up-faq-news_hdpsuw) ／ [日本語通貨ガイド](https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-crimson-crest-coins-news_pgywrs)
+どちらも公式の公開資料ですが、日本版の現行の購入条件がどちらと一致するかは確認できません。比較表の2行は両経路15,000円という仮定で、Web価格・追加還元・ゲーム内数量のいずれかが異なる場合には、その条件で計算し直します。 [日本語FAQ](https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-top-up-faq-news_hdpsuw) ／ [日本語通貨ガイド](https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-crimson-crest-coins-news_pgywrs)
 
 ## 日本円ではどう考える？
 
-日本向けMidasbuyの公式商品ページの検索資料（約1週間前取得）から、初回7商品すべての円価格と数量を確認できました。これは公式の公開掲載例であり、現在のログイン後の販売画面ではありません。
+2026年11月28日に参照した日本向けMidasbuy公式商品ページの検索資料（約1週間前に収集された内容）から、初回7商品すべての円価格と数量を確認できました。これは公式の公開掲載例であり、現在のログイン後の販売画面ではありません。
 
 | 日本向けWeb表示価格（過去の確認例） | 基本枚数 | 初回追加枚数 | 合計 |
 | ---: | ---: | ---: | ---: |
@@ -53,7 +53,7 @@ Midasbuyの詳細FAQでは、基本6,480枚のパックを再購入した場合�
 | 7,300円 | 3,280 | 3,380 | 6,660 |
 | 15,000円 | 6,480 | 6,680 | 13,160 |
 
-7商品すべてが日本語版・英語版FAQのWeb初回数量と一致しています。初回条件をすべて満たし、掲載価格が維持されている場合、7種類を各1回購入した合計は32,910円・29,155枚です。これは価格表の整合確認のための集計で、全種類を購入することをおすすめするものではありません。ただし、日本版のゲーム内価格・通常時の受取数が同じとはまだ確定していません。米ドルFAQと同じ数量・両経路同一の15,000円という仮定なら、Google Play側が同等以下の単価になるために必要な還元は、初回約227.96円（整数円なら228円以上）、通常時約362.32円（整数円なら363円以上）です。
+7商品すべてが日本語版・英語版FAQのWeb初回数量と一致しています。初回条件をすべて満たし、掲載価格が維持されている場合、7種類を各1回購入した合計は32,910円・29,155枚です。この合計は掲載値を検算するためのもので、すべての初回商品を買う必要はありません。ただし、日本版のゲーム内価格・通常時の受取数が同じとはまだ確定していません。米ドルFAQと同じ数量・両経路同一の15,000円という仮定なら、Google Play側が同等以下の単価になるために必要な還元は、初回約227.96円（整数円なら228円以上）、通常時約362.32円（整数円なら363円以上）です。
 
 税込15,000円、税率10%、通常のダイヤモンド獲得率を仮定した場合の約273ptは、1ptを1円相当で使えるなら初回の目安を上回ります。利用できる交換先やキャンペーンの条件を考慮して、自分の購入画面で確かめましょう。
 
@@ -77,7 +77,7 @@ Webの決済サービスとGoogle Play Billingは別物です。Google Playの�
 
 - [Midasbuy公式FAQ：初回・通常時の米ドル建て比較表](https://www.midasbuy.com/midasbuy/jp/article/monster-hunter-outlanders-top-up-faq-news_hdpsuw)
 - [日本向け公式チャージページ（価格は取得時点の表示）](https://www.midasbuy.com/midasbuy/jp/buy/monster-hunter-outlanders?lang=ja)
-- [Midasbuy英語版チャージガイド（通常時の比較表にFAQとの相違あり）](https://www.midasbuy.com/midasbuy/mc/article/monster-hunter-outlanders-top-up-news_err9yt)
+- [Midasbuy英語版チャージガイド（基本数量・Web数量の参考）](https://www.midasbuy.com/midasbuy/mc/article/monster-hunter-outlanders-top-up-news_err9yt)
 - [Google Play Pointsの獲得条件・税抜対象額](https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja)
 - [Google Play以外の決済の扱い](https://support.google.com/googleplay/answer/11174377?hl=ja)
 
@@ -92,4 +92,4 @@ Webの決済サービスとGoogle Play Billingは別物です。Google Playの�
 - [Midasbuy日本向け公式チャージ・特典案内](https://www.midasbuy.com/midasbuy/jp/promotions/monster-hunter-outlanders?lang=ja)
 
 ---
-編集用メモ（公開本文には含めない）：日本語・英語FAQの7商品数量、日本向けWeb掲載例、公式プロモーション・受取方法を照合。2回目以降の公式資料間不一致、日本のログイン後価格・数量・初回共有条件は引き続き未取得。
+編集用メモ（公開本文には含めない）：日本語/英語詳細FAQの数量と日本向け7商品の掲載価格を再確認・検算。日本語通貨ガイドはゲーム内通常6480と明記しFAQ8080との差が残る。日本版のログイン後価格・数量・初回共有は未確認。

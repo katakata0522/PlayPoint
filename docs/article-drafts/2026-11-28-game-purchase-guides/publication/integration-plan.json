@@ -10,10 +10,10 @@
       "kind": "evergreen",
       "status": "review",
       "role": "game_decision",
-      "blocker": "公式のWeb販売開始・受取条件・にゃんこクラブに加え、にゃんポイント1%と決済・注文制約を確認し損得式を修正。日本版の両経路の実売価格/数量、ゴールド会員価格、ポイント端数処理は未取得。仮定例は実売表ではない。",
+      "blocker": "実売価格・数量とゴールド会員価格は未取得。にゃんポイントは端数切り捨て、税抜1円/ptの利用、期限を再確認。還元の価値と決済額を区別。",
       "manifestCandidate": {
         "id": "battlecats-webstore-vs-google-play",
-        "title": "にゃんこ大戦争の課金はどこがお得？にゃんこ大商店・Google Playのネコカン比較",
+        "title": "にゃんこ大戦争の課金先比較｜にゃんこ大商店のネコカン増量・ポイントとGoogle Play",
         "listTitle": "にゃんこ大戦争｜ネコカンの購入先比較",
         "description": "にゃんこ大商店のネコカン増量・にゃんポイント1%とGoogle Play Pointsを比較。ギフトコード割引の損得分岐点、購入・受取条件、にゃんこクラブも解説。",
         "listDescription": "にゃんこ大商店のネコカン増量・にゃんポイント1%とGoogle Play Pointsを比較。ギフトコード割引の損得分岐点、購入・受取条件、にゃんこクラブも解説。",
@@ -124,7 +124,7 @@
       "kind": "limited",
       "status": "review",
       "role": "game_decision",
-      "blocker": "第2期の販売期間・無料報酬・初回値引きとEX半額企画を公式確認。第1期の価格は二次情報。第2期の商品別価格・内容・上限は一次未取得。",
+      "blocker": "第2期の日程・無料報酬・割引を公式再照合。毎日ステージの最大880個は全期間の上限、記念ミッションは12/25 23:59。第1期・継続商品の値段は二次情報、第2期商品別価格等は未取得。",
       "manifestCandidate": {
         "id": "battlecats-14th-anniversary-packs",
         "title": "にゃんこ大戦争14周年｜大感謝パック・超限定セール第2期はいつまで？",
@@ -209,6 +209,14 @@
         {
           "title": "にゃんこ大商店公式FAQ：ゲーム内商品のポイント・クーポン",
           "url": "https://www.nyanko-daishoten.jp/Page/guide_faq.aspx"
+        },
+        {
+          "title": "ポノス：14周年第1弾・毎日のステージと最大880ネコカン",
+          "url": "https://battlecats.club/news/game/20261112_14th/"
+        },
+        {
+          "title": "ポノス：既クリア者も対象のプラチナチケット記念ミッション",
+          "url": "https://battlecats.club/news/game/20261106_14th/"
         }
       ]
     },
@@ -218,7 +226,7 @@
       "kind": "evergreen",
       "status": "review",
       "role": "game_decision",
-      "blocker": "日本語・英語FAQの7商品数量、日本向けWeb掲載例、公式プロモーション・受取方法を照合。2回目以降の公式資料間不一致、日本のログイン後価格・数量・初回共有条件は引き続き未取得。",
+      "blocker": "日本語/英語詳細FAQの数量と日本向け7商品の掲載価格を再確認・検算。日本語通貨ガイドはゲーム内通常6480と明記しFAQ8080との差が残る。日本版のログイン後価格・数量・初回共有は未確認。",
       "manifestCandidate": {
         "id": "monster-hunter-outlanders-midasbuy-vs-google-play",
         "title": "モンスターハンターアウトランダーズの課金比較｜MidasbuyとGoogle Playはどっちがお得？",
@@ -285,7 +293,7 @@
           "url": "https://www.midasbuy.com/midasbuy/jp/buy/monster-hunter-outlanders?lang=ja"
         },
         {
-          "title": "Midasbuy英語版チャージガイド（通常時の比較表にFAQとの相違あり）",
+          "title": "Midasbuy英語版チャージガイド（基本数量・Web数量の参考）",
           "url": "https://www.midasbuy.com/midasbuy/mc/article/monster-hunter-outlanders-top-up-news_err9yt"
         },
         {
