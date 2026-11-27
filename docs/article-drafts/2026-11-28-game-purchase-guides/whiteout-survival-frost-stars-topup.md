@@ -60,5 +60,7 @@
 
 - [公式wiki：寒霜の星の入手方法・公式ストア導線](https://www.whiteoutsurvival.wiki/ja/items/%E5%AF%92%E9%9C%9C%E3%81%AE%E6%98%9F/)
 
+- [公式wiki：豊穣の宴のパック・無料枠・購入制限](https://www.whiteoutsurvival.wiki/ja/vip-post/%E8%B1%8A%E7%A9%A3%E3%81%AE%E5%AE%B4%E3%80%80faq/)
+
 ---
 編集用メモ（公開本文には含めない）：公式wikiで累計チャージへの加算・受取・正式購入先を確認したため制度説明記事は編集確認対象。Webの日本円価格・増量率・個別イベント規約と画像・公開テストは残る。

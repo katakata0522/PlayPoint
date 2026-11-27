@@ -52,5 +52,7 @@
 
 - [日本向けGoogle Play公式アプリ掲載ページ](https://play.google.com/store/apps/details?gl=JP&hl=ja&id=jp.co.ponos.battlecats)
 
+- [ポノス公式ヘルプ：ネコカンショップ・受け取り履歴・Play Points交換品](https://ponosgames.com/information/appli/battlecats/help/index.html)
+
 ---
 編集用メモ（公開本文には含めない）：公式ヘルプで受取方法・期限・上限確認済み。両経路の日本版の実売価格・数量は未取得。現行の比較表は仮定と明示し、公式アプリアイコン・OGP・生成/ブラウザ確認後に公開判断。

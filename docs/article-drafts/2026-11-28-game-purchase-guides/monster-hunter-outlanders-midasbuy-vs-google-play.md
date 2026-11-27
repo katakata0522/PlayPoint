@@ -62,5 +62,7 @@ MidasbuyのGoogle Pay支払いとGoogle Play Billingは別物です。Google Pla
 
 - [日本向けGoogle Play公式アプリ掲載ページ](https://play.google.com/store/apps/details?gl=JP&hl=ja&id=com.tencent.mhadv)
 
+- [Midasbuy公式FAQ英語版：米ドル建て比較表の数値根拠](https://www.midasbuy.com/midasbuy/bg/article/monster-hunter-outlanders-top-up-faq-news_hdpsuw)
+
 ---
 編集用メモ（公開本文には含めない）：日本向け公開検索資料のWeb初回5商品と米ドルFAQの数量一致は確認。日本のゲーム内円価格、通常時の数量・初回適用状態、公式資料間の差は未解決。
