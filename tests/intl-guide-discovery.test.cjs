@@ -102,7 +102,16 @@ test('international hubs render their curated starts plus searchable category ca
     const hrefs = [...grid.matchAll(/href="([^"]+)" data-guide-card/g)].map(m => m[1]);
     const dates = hrefs.map(href => read(href.slice(1).replace(/\/$/, '/index.html')).match(/"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})/)?.[1] || '');
     assert.deepEqual(dates, [...dates].sort().reverse(), `${locale}: 公開日の新しい記事を先に並べる`);
-    assert.ok(hrefs.indexOf(`/${locale}/articles/2026-10-12-google-play-fest-2026.html`) < 10, `${locale}: 最近のイベントへすぐ到達できる`);
+    const articleDates = fs.readdirSync(path.join(root, locale, 'articles'))
+      .filter(file => file.endsWith('.html') && file !== 'index.html')
+      .map(file => ({
+        href: `/${locale}/articles/${file}`,
+        date: read(`${locale}/articles/${file}`).match(/"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})/)?.[1]
+      }));
+    const latestDate = articleDates.map(article => article.date).filter(Boolean).sort().at(-1);
+    const latestHrefs = articleDates.filter(article => article.date === latestDate).map(article => article.href);
+    assert.deepEqual(new Set(hrefs.slice(0, latestHrefs.length)), new Set(latestHrefs), `${locale}: 最新公開日の全記事へ先頭から到達できる`);
+    assert.ok(hrefs.includes(`/${locale}/articles/2026-10-12-google-play-fest-2026.html`), `${locale}: 過去のイベントも一覧に残る`);
 
     assert.match(html, /\/articles\/intl-hub\.css\?v=[a-z0-9_-]+/i);
     assert.match(html, /\/js\/intl-guide-hub\.js\?v=[a-z0-9_-]+/i);

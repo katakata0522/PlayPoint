@@ -17,6 +17,11 @@ const IDS = ['fgo', 'genshin', 'monst', 'starrail', 'zzz', 'umamusume', 'proseka
 const PASS_LOCALES = Object.freeze({ genshin: ['en', 'ko', 'tw'], starrail: ['en', 'ko', 'tw'], zzz: ['en', 'ko', 'tw'], umamusume: ['en', 'ko', 'tw'], proseka: ['en', 'ko', 'tw'], pokepoke: ['en', 'ko', 'tw'], pad: ['en', 'ko'], arknights: ['en', 'tw'], monst: ['tw'], hbr: ['en', 'ko', 'tw'], phantomparade: ['en'], 'pokemon-go': ['en', 'ko', 'tw'] });
 function metadata(href) {
   const match = String(href).match(/^\/(en|ko|tw)\/articles\/([^/]+)\.html$/);
+  if (match?.[2] === 'monster-hunter-now-web-store-vs-google-play') {
+    const locale = match[1];
+    const name = locale === 'ko' ? '몬스터 헌터 나우' : 'Monster Hunter Now';
+    return { id: 'monster-hunter-now', name, tags: ['shop', 'pass', 'rewards'], locale };
+  }
   const guide = match && ALL_GUIDES.find(item => item.slug === match[2]);
   if (!guide) return null;
   const locale = match[1], content = guide.content[locale], tags = [];

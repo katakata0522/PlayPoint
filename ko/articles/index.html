@@ -127,10 +127,10 @@
       <label for="intl-guide-search">가이드 검색</label>
       <input id="intl-guide-search" type="search" autocomplete="off" placeholder="주제 또는 키워드 검색" data-guide-search>
       <label class="intl-category-label" for="intl-guide-category">전체 가이드 찾아보기</label>
-      <select id="intl-guide-category" data-guide-category><option value="all">전체 (72)</option><option value="account">계정·기본 (10)</option><option value="earn">적립·사용 (46)</option><option value="levels">등급·리워드 (12)</option><option value="troubleshooting">문제 해결 (4)</option></select>
+      <select id="intl-guide-category" data-guide-category><option value="all">전체 (77)</option><option value="account">계정·기본 (10)</option><option value="earn">적립·사용 (49)</option><option value="levels">등급·리워드 (12)</option><option value="troubleshooting">문제 해결 (6)</option></select>
       <div class="intl-guide-shortcuts">
       <details class="intl-guide-more" data-guide-more><summary>게임·구매 유형</summary>
-      <div class="intl-game-discovery" id="intl-hub-games"><div><label for="intl-guide-game">게임으로 찾기</label><select id="intl-guide-game" data-guide-game><option value="all">전체 주제·게임</option><option value="games">전체 게임 가이드</option><option value="fgo">페이트/그랜드 오더</option><option value="genshin">원신</option><option value="monst">몬스터 스트라이크</option><option value="starrail">붕괴: 스타레일</option><option value="zzz">젠레스 존 제로</option><option value="umamusume">우마무스메</option><option value="proseka">프로젝트 세카이</option><option value="pokepoke">포켓몬 카드 게임 Pocket</option><option value="pad">퍼즐앤드래곤</option><option value="arknights">명일방주</option><option value="dokkan">드래곤볼 Z 폭렬격전</option><option value="hbr">헤븐 번즈 레드</option><option value="honkai3rd">붕괴3rd</option><option value="phantomparade">주술회전 팬텀 퍼레이드</option><option value="prospi-a">프로스피A</option><option value="pokemon-go">Pokémon GO</option><option value="efootball">eFootball</option></select></div><div><label for="intl-guide-topic">무엇을 비교할까요?</label><select id="intl-guide-topic" data-guide-topic><option value="all">전체 구매 주제</option><option value="pass">패스·일일 상품</option><option value="trial">무료 체험</option><option value="shop">앱·웹샵 비교</option><option value="rewards">재화·포인트</option><option value="version">일본판 참고</option></select></div></div>
+      <div class="intl-game-discovery" id="intl-hub-games"><div><label for="intl-guide-game">게임으로 찾기</label><select id="intl-guide-game" data-guide-game><option value="all">전체 주제·게임</option><option value="games">전체 게임 가이드</option><option value="monster-hunter-now">몬스터 헌터 나우</option><option value="fgo">페이트/그랜드 오더</option><option value="genshin">원신</option><option value="monst">몬스터 스트라이크</option><option value="starrail">붕괴: 스타레일</option><option value="zzz">젠레스 존 제로</option><option value="umamusume">우마무스메</option><option value="proseka">프로젝트 세카이</option><option value="pokepoke">포켓몬 카드 게임 Pocket</option><option value="pad">퍼즐앤드래곤</option><option value="arknights">명일방주</option><option value="dokkan">드래곤볼 Z 폭렬격전</option><option value="hbr">헤븐 번즈 레드</option><option value="honkai3rd">붕괴3rd</option><option value="phantomparade">주술회전 팬텀 퍼레이드</option><option value="prospi-a">프로스피A</option><option value="pokemon-go">Pokémon GO</option><option value="efootball">eFootball</option></select></div><div><label for="intl-guide-topic">무엇을 비교할까요?</label><select id="intl-guide-topic" data-guide-topic><option value="all">전체 구매 주제</option><option value="pass">패스·일일 상품</option><option value="trial">무료 체험</option><option value="shop">앱·웹샵 비교</option><option value="rewards">재화·포인트</option><option value="version">일본판 참고</option></select></div></div>
       </details>
       <details class="intl-hub-start" data-guide-start><summary id="intl-hub-start">먼저 볼 가이드</summary><section aria-labelledby="intl-hub-start">
       <div class="intl-guide-start-grid">
@@ -163,19 +163,44 @@
       </section></details>
       </div>
       <div class="intl-guide-filters" role="group" aria-label="전체 가이드 찾아보기">
-        <button type="button" class="intl-guide-filter is-active" data-guide-filter="all" aria-pressed="true">전체 <span>72</span></button>
+        <button type="button" class="intl-guide-filter is-active" data-guide-filter="all" aria-pressed="true">전체 <span>77</span></button>
         <button id="intl-hub-account" type="button" class="intl-guide-filter" data-guide-filter="account" aria-pressed="false">계정·기본 <span>10</span></button>
-        <button id="intl-hub-earn" type="button" class="intl-guide-filter" data-guide-filter="earn" aria-pressed="false">적립·사용 <span>46</span></button>
+        <button id="intl-hub-earn" type="button" class="intl-guide-filter" data-guide-filter="earn" aria-pressed="false">적립·사용 <span>49</span></button>
         <button id="intl-hub-levels" type="button" class="intl-guide-filter" data-guide-filter="levels" aria-pressed="false">등급·리워드 <span>12</span></button>
-        <button id="intl-hub-trouble" type="button" class="intl-guide-filter" data-guide-filter="troubleshooting" aria-pressed="false">문제 해결 <span>4</span></button>
+        <button id="intl-hub-trouble" type="button" class="intl-guide-filter" data-guide-filter="troubleshooting" aria-pressed="false">문제 해결 <span>6</span></button>
       </div>
     </div>
-    <p class="intl-guide-result" data-guide-result aria-live="polite">72개 가이드 표시</p>
+    <p class="intl-guide-result" data-guide-result aria-live="polite">77개 가이드 표시</p>
 
     <!-- reader-spotlight:start --><aside class="reader-spotlight" data-reader-spotlight><span class="reader-spotlight-label">구매 전 확인</span><a href="/ko/articles/google-play-points-promotion-not-applied.html">내 구매에 포인트 프로모션이 적용되는지 확인하기</a><span class="reader-spotlight-until">대상·활성화·기한 확인</span></aside><!-- reader-spotlight:end -->
 <section class="intl-hub-browser" aria-labelledby="intl-hub-browse">
       <div class="intl-hub-section-heading"><h2 id="intl-hub-browse">전체 가이드 찾아보기</h2></div>
       <div class="intl-guide-grid" data-guide-grid data-result-template="{count}개 가이드 표시" data-result-template-single="1개 가이드 표시">
+        <a class="intl-guide-card" href="/ko/articles/google-play-gift-card-not-working.html" data-guide-card data-category="troubleshooting" data-search="구글 플레이 기프트 카드 등록 오류, 어디에 문의하나요? 문제 해결  ">
+
+        <span class="intl-guide-card__category">문제 해결</span>
+        <span class="intl-guide-card__title">구글 플레이 기프트 카드 등록 오류, 어디에 문의하나요?</span>
+      </a>
+        <a class="intl-guide-card" href="/ko/articles/play-credit-rate-change-2027.html" data-guide-card data-category="earn" data-search="2027년 1월 5일, 한국 play 크레딧 교환율이 바뀝니다 적립·사용  ">
+
+        <span class="intl-guide-card__category">적립·사용</span>
+        <span class="intl-guide-card__title">2027년 1월 5일, 한국 Play 크레딧 교환율이 바뀝니다</span>
+      </a>
+        <a class="intl-guide-card" href="/ko/articles/google-play-payment-failed.html" data-guide-card data-category="troubleshooting" data-search="구글 플레이 결제 실패 시 주문 내역부터 확인하세요 문제 해결  ">
+
+        <span class="intl-guide-card__category">문제 해결</span>
+        <span class="intl-guide-card__title">구글 플레이 결제 실패 시 주문 내역부터 확인하세요</span>
+      </a>
+        <a class="intl-guide-card" href="/ko/articles/monster-hunter-now-web-store-vs-google-play.html" data-guide-card data-category="earn" data-search="몬스터 헌터 나우 보석, 웹스토어와 구글 플레이 어디서 살까? 적립·사용 몬스터 헌터 나우 앱·웹샵 비교 패스·일일 상품 재화·포인트">
+        <span class="intl-guide-card__game"><img src="/images/game-icons/monster-hunter-now.webp" width="40" height="40" loading="lazy" alt=""><span>몬스터 헌터 나우</span></span>
+        <span class="intl-guide-card__category" data-game="monster-hunter-now" data-topics="shop pass rewards">앱·웹샵 비교 · 패스·일일 상품 · 재화·포인트</span>
+        <span class="intl-guide-card__title">몬스터 헌터 나우 보석, 웹스토어와 구글 플레이 어디서 살까?</span>
+      </a>
+        <a class="intl-guide-card" href="/ko/articles/google-play-pass-after-cancellation.html" data-guide-card data-category="earn" data-search="구글 플레이 패스 해지 후 게임과 저장 데이터는 어떻게 될까? 적립·사용  ">
+
+        <span class="intl-guide-card__category">적립·사용</span>
+        <span class="intl-guide-card__title">구글 플레이 패스 해지 후 게임과 저장 데이터는 어떻게 될까?</span>
+      </a>
         <a class="intl-guide-card" href="/ko/articles/google-play-games-pc-play-points.html" data-guide-card data-category="earn" data-search="pc용 google play games 결제와 play points: pc 전용 부스트 주의할 점 적립·사용  ">
 
         <span class="intl-guide-card__category">적립·사용</span>
@@ -588,9 +613,9 @@
     <h2 class="sidebar-widget-title">가이드 찾아보기</h2>
     <div class="sidebar-widget-body sidebar-browse-grid"><ul class="sidebar-browse-list">
       <li class="sidebar-browse-item"><a class="sidebar-browse-category" href="/ko/articles/#intl-hub-account"><span>계정·기본</span><span class="sidebar-browse-count" aria-label="10개">10</span></a></li>
-      <li class="sidebar-browse-item"><a class="sidebar-browse-category" href="/ko/articles/#intl-hub-earn"><span>적립·사용</span><span class="sidebar-browse-count" aria-label="46개">46</span></a></li>
+      <li class="sidebar-browse-item"><a class="sidebar-browse-category" href="/ko/articles/#intl-hub-earn"><span>적립·사용</span><span class="sidebar-browse-count" aria-label="49개">49</span></a></li>
       <li class="sidebar-browse-item"><a class="sidebar-browse-category" href="/ko/articles/#intl-hub-levels"><span>등급·리워드</span><span class="sidebar-browse-count" aria-label="12개">12</span></a></li>
-      <li class="sidebar-browse-item"><a class="sidebar-browse-category" href="/ko/articles/#intl-hub-trouble"><span>문제 해결</span><span class="sidebar-browse-count" aria-label="4개">4</span></a></li>
+      <li class="sidebar-browse-item"><a class="sidebar-browse-category" href="/ko/articles/#intl-hub-trouble"><span>문제 해결</span><span class="sidebar-browse-count" aria-label="6개">6</span></a></li>
     </ul></div>
   </section>
 <section class="sidebar-widget sidebar-widget--popular" id="reader-popular" data-popular-snapshot="2026-11-21">
