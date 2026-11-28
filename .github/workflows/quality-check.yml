@@ -14,6 +14,10 @@ concurrency:
   group: pr-gate-${{ github.head_ref || github.ref }}-${{ (github.event_name != 'pull_request' || !github.event.pull_request.draft) && 'active' || github.run_id }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   gate:
     name: ${{ (github.event_name != 'pull_request' || !github.event.pull_request.draft) && 'PR Gate' || 'Draft PR Gate' }}
@@ -101,6 +105,14 @@ jobs:
         with:
           path: ${{ runner.temp }}/playpoint-browsers
           key: playpoint-chromium-ubuntu24-${{ hashFiles('.github/ci-runtime/package-lock.json') }}
+
+      - name: Cache npm runtime packages
+        id: cache_npm_runtime
+        if: steps.pr_gate_impact.outputs.browser_required == 'true' || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'refactor/runtime-'))
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.npm
+          key: playpoint-npm-runtime-ubuntu24-${{ hashFiles('.github/ci-runtime/package-lock.json') }}
 
       - name: Install required browser driver
         id: ci_browser

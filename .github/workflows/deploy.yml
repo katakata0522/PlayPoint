@@ -15,6 +15,10 @@ concurrency:
   group: deploy-playpoint-main
   queue: max
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   deploy:
     # 本番反映はmainの内容だけを対象にする
@@ -142,6 +146,7 @@ jobs:
         id: create_deploying_status_marker
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: |
+          set -euo pipefail
           DEPLOY_STARTED_AT="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
           echo "DEPLOY_STARTED_AT=$DEPLOY_STARTED_AT" >> "$GITHUB_ENV"
           DEPLOY_PUBLIC_STATUS=deploying \
@@ -167,6 +172,14 @@ jobs:
         with:
           path: ${{ runner.temp }}/playpoint-browsers
           key: playpoint-chromium-ubuntu24-${{ hashFiles('.github/ci-runtime/package-lock.json') }}
+
+      - name: Cache npm runtime packages
+        id: cache_npm_runtime
+        if: steps.deploy-impact.outputs.deploy_needed == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.npm
+          key: playpoint-npm-runtime-ubuntu24-${{ hashFiles('.github/ci-runtime/package-lock.json') }}
 
       - name: Install production browser verifier
         id: ci_browser
@@ -228,6 +241,7 @@ jobs:
           EXPECTED_DEPLOY_REVISION: ${{ github.sha }}
           EXPECTED_DEPLOY_STATUS: deploying
         run: |
+          set -euo pipefail
           node .github/scripts/smoke-test.cjs
           node .github/scripts/verify-deploy-status.cjs
 
