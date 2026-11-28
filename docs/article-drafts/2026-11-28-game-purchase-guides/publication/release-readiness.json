@@ -1,0 +1,120 @@
+{
+  "checkedAt": "2026-11-28",
+  "main": "068e59887d4d45f3414f81fd0b6ccf1a8321fffd",
+  "baseDraft": "393c6909aff52000b68b67e2ba3d73a1f822da9e",
+  "status": "not-authorized-for-publication",
+  "order": [
+    "whiteout-survival-frost-stars-topup",
+    "p5x-black-friday-store-packs-2026",
+    "battlecats-14th-anniversary-packs",
+    "romasaga-rs-8th-anniversary-jewel-sale",
+    "duelmasters-plays-gem-sr-ticket-comparison",
+    "battlecats-webstore-vs-google-play",
+    "monster-hunter-outlanders-midasbuy-vs-google-play"
+  ],
+  "hold": [
+    "phantomparade-3rd-anniversary-select-ticket"
+  ],
+  "ogpAssets": [
+    {
+      "id": "battlecats-14th-anniversary-packs",
+      "path": "articles/ogp/2026-11-28-battlecats-14th-anniversary-packs.jpg",
+      "width": 1200,
+      "height": 630,
+      "mime": "image/jpeg",
+      "sha256": "b60c7ba5e3e5f36524aa623ff14cb07efe91c22e6ca4fef9c11456b386be230a",
+      "bytes": 80497,
+      "status": "rendered-local-not-in-repository",
+      "artwork": "original editorial typography; no official app icon"
+    },
+    {
+      "id": "battlecats-webstore-vs-google-play",
+      "path": "articles/ogp/2026-11-28-battlecats-webstore-vs-google-play.jpg",
+      "width": 1200,
+      "height": 630,
+      "mime": "image/jpeg",
+      "sha256": "f9fee5ac39f8b169c77c9ad04e11c219c2013b450623451d8a8819187792d7ea",
+      "bytes": 88204,
+      "status": "rendered-local-not-in-repository",
+      "artwork": "original editorial typography; no official app icon"
+    },
+    {
+      "id": "duelmasters-plays-gem-sr-ticket-comparison",
+      "path": "articles/ogp/2026-11-28-duelmasters-plays-gem-sr-ticket-comparison.jpg",
+      "width": 1200,
+      "height": 630,
+      "mime": "image/jpeg",
+      "sha256": "2a63ff93b072c90b83fa5a493e5b9e2dc28498049434ddb1faf927c11ac13178",
+      "bytes": 83651,
+      "status": "rendered-local-not-in-repository",
+      "artwork": "original editorial typography; no official app icon"
+    },
+    {
+      "id": "monster-hunter-outlanders-midasbuy-vs-google-play",
+      "path": "articles/ogp/2026-11-28-monster-hunter-outlanders-midasbuy-vs-google-play.jpg",
+      "width": 1200,
+      "height": 630,
+      "mime": "image/jpeg",
+      "sha256": "5bcb5c134719ea67e970cfa4f1e0baa877d786aa303001a0f1fafe46606a1343",
+      "bytes": 88681,
+      "status": "rendered-local-not-in-repository",
+      "artwork": "original editorial typography; no official app icon"
+    },
+    {
+      "id": "p5x-black-friday-store-packs-2026",
+      "path": "articles/ogp/2026-11-28-p5x-black-friday-store-packs-2026.jpg",
+      "width": 1200,
+      "height": 630,
+      "mime": "image/jpeg",
+      "sha256": "2d353f45448b90584065cc829ee8ad657d44bca74c9074a661d5483126cd1b3e",
+      "bytes": 85956,
+      "status": "rendered-local-not-in-repository",
+      "artwork": "original editorial typography; no official app icon"
+    },
+    {
+      "id": "romasaga-rs-8th-anniversary-jewel-sale",
+      "path": "articles/ogp/2026-11-28-romasaga-rs-8th-anniversary-jewel-sale.jpg",
+      "width": 1200,
+      "height": 630,
+      "mime": "image/jpeg",
+      "sha256": "5fed2a96f3deb933ecda13b1fa2c7e6096993622633213ff553f27de729fa40b",
+      "bytes": 77178,
+      "status": "rendered-local-not-in-repository",
+      "artwork": "original editorial typography; no official app icon"
+    },
+    {
+      "id": "whiteout-survival-frost-stars-topup",
+      "path": "articles/ogp/2026-11-28-whiteout-survival-frost-stars-topup.jpg",
+      "width": 1200,
+      "height": 630,
+      "mime": "image/jpeg",
+      "sha256": "269a255db480e58d8d629f2c373d053039f6e9c0947a64c2e98bbdc11a124e2e",
+      "bytes": 88421,
+      "status": "rendered-local-not-in-repository",
+      "artwork": "original editorial typography; no official app icon"
+    }
+  ],
+  "iconPolicy": {
+    "preferred": "確認・許諾・実体・台帳がそろった公式Google Playアプリアイコン",
+    "fallback": "既存GAME_THUMBNAIL_POLICYの汎用画像。既存testで許容されることを確認してから暫定採用。偽アイコンは使用しない",
+    "newIconsRequired": 6,
+    "existingIcon": "ファンパレ（公開保留）"
+  },
+  "integration": {
+    "ogpContract": "新規jpgは既存HTML headとmanifestを正本にし、専用旧png名へ強制するdedicatedOgpIdsには追加しない。既存の専用一意性・寸法・JPEG検査は必須",
+    "articleRole": "scripts/article-role-registry.cjsのgame_decisionに対象7件のstemを追加して既存テストで照合",
+    "related": "公開する記事だけに相互リンク。ファンパレの未公開URLへはリンクしない",
+    "dates": "実際の公開日・更新日を設定。公式確認日は出典を再照合した日を記録",
+    "generation": "node scripts/prepare-pr.cjs → node .github/scripts/preflight.cjs --prepare-deploy → 最新headのPR Gate → 既存配信経路 → 実URL確認",
+    "notDone": [
+      "GitHubへの画像登録",
+      "6タイトルの公式アイコン取得",
+      "公開ルート配置",
+      "共通台帳と生成物への統合",
+      "全体ビルド",
+      "実ブラウザ",
+      "PR Gate",
+      "マージ・配信"
+    ]
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "source": "events.json",
+  "groups": [
+    {
+      "id": "whiteout-joy",
+      "name": "大歓喜セール",
+      "game": "ホワサバ",
+      "eventIds": [
+        "whiteout-joy-free",
+        "whiteout-joy-paid"
+      ]
+    },
+    {
+      "id": "whiteout-blessing",
+      "name": "豊穣の祝福パック",
+      "game": "ホワサバ",
+      "eventIds": [
+        "whiteout-blessing-free",
+        "whiteout-blessing-paid"
+      ]
+    },
+    {
+      "id": "rs-panel",
+      "name": "8周年パネルミッション",
+      "game": "ロマサガRS",
+      "eventIds": [
+        "rs-panel-mission",
+        "rs-panel-receive"
+      ]
+    },
+    {
+      "id": "rs-shop",
+      "name": "8周年記念ショップ・パック",
+      "game": "ロマサガRS",
+      "eventIds": [
+        "rs-free",
+        "rs-sale"
+      ]
+    },
+    {
+      "id": "nyanko-slot",
+      "name": "にゃんこスロットⅡ 第2回",
+      "game": "にゃんこ大戦争",
+      "eventIds": [
+        "nyanko-slot"
+      ]
+    },
+    {
+      "id": "p5x-bonus",
+      "name": "ブラックフライデー増量・限定パック",
+      "game": "P5X",
+      "eventIds": [
+        "p5x-bonus"
+      ]
+    },
+    {
+      "id": "nyanko-pack",
+      "name": "大感謝パック・超限定セール 第2期",
+      "game": "にゃんこ大戦争",
+      "eventIds": [
+        "nyanko-pack"
+      ]
+    },
+    {
+      "id": "nyanko-legend",
+      "name": "レジェンドチケット販売",
+      "game": "にゃんこ大戦争",
+      "eventIds": [
+        "nyanko-legend"
+      ]
+    },
+    {
+      "id": "p5x-free",
+      "name": "公式ストアの無料プレゼント",
+      "game": "P5X",
+      "eventIds": [
+        "p5x-free"
+      ]
+    },
+    {
+      "id": "rs-login",
+      "name": "超感謝ログインボーナス",
+      "game": "ロマサガRS",
+      "eventIds": [
+        "rs-login"
+      ]
+    },
+    {
+      "id": "dm-free",
+      "name": "DMPX-04 新弾ログイン特典",
+      "game": "デュエプレ",
+      "eventIds": [
+        "dm-free"
+      ]
+    },
+    {
+      "id": "nyanko-login-stamp",
+      "name": "14周年記念ログインスタンプ",
+      "game": "にゃんこ大戦争",
+      "eventIds": [
+        "nyanko-login-stamp"
+      ]
+    },
+    {
+      "id": "rs-auto-login",
+      "name": "自動編成実装記念ログイン",
+      "game": "ロマサガRS",
+      "eventIds": [
+        "rs-auto-login"
+      ]
+    },
+    {
+      "id": "rs-5day-login",
+      "name": "8周年第1弾ログインボーナス",
+      "game": "ロマサガRS",
+      "eventIds": [
+        "rs-5day-login"
+      ]
+    },
+    {
+      "id": "whiteout-decoration",
+      "name": "希望の荘園装飾パック",
+      "game": "ホワサバ",
+      "eventIds": [
+        "whiteout-decoration"
+      ]
+    },
+    {
+      "id": "p5x-7day-login",
+      "name": "Ver4.14ログインボーナス",
+      "game": "P5X",
+      "eventIds": [
+        "p5x-7day-login"
+      ]
+    },
+    {
+      "id": "rs-maintenance-jewels",
+      "name": "メンテナンスのお礼・お詫び",
+      "game": "ロマサガRS",
+      "eventIds": [
+        "rs-maintenance-jewels"
+      ]
+    },
+    {
+      "id": "dm-wedding-gate-mat",
+      "name": "限定プレイマット ウェディング・ゲート",
+      "game": "デュエプレ",
+      "eventIds": [
+        "dm-wedding-gate-mat"
+      ]
+    },
+    {
+      "id": "nyanko-platinum-mission",
+      "name": "14周年記念プラチナチケットミッション",
+      "game": "にゃんこ大戦争",
+      "eventIds": [
+        "nyanko-platinum-mission"
+      ]
+    }
+  ],
+  "groupCount": 19,
+  "eventCount": 23
+}
