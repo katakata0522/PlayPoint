@@ -837,7 +837,7 @@
   "latestMainChecked": "8003cedff93e802d3edfca9362581ffaaa8066d3",
   "publicationGate": {
     "status": "blocked",
-    "reason": "最終ファクト監査・原稿と期限の修正済み。未取得の実売・個別条件は明示し、ファンパレの正式商品発表待ちは維持。専用OGP・公式画像実体、全体生成、実ブラウザ、PR Gateは未完了。公開・正式カレンダー統合は別途判断。",
+    "reason": "専用OGP7枚はローカル制作・寸法/形式/一意性確認済み、GitHub未登録。新規6ゲーム公式アイコン未取得。画像・台帳・生成・実ブラウザ・最新head PR Gateまで非公開。ファンパレ保留。特典一覧は構成検討中。",
     "draftRobots": "noindex, nofollow",
     "releaseRobots": "index, follow, max-image-preview:large",
     "publicationDates": "実公開日確定後にArticle/datePublished・dateModified、meta、表示日、台帳を同期"
@@ -850,5 +850,15 @@
     "scope": "7記事・保留1記事の扱い・期限データ",
     "status": "reviewed-with-explicit-unverified-fields",
     "base": "049f5cbc8383e281a8b9f4473d22ba381aadfb13"
+  },
+  "releasePreparation": {
+    "checkedAt": "2026-11-28",
+    "path": "publication/release-readiness.json",
+    "ogpLocal": 7,
+    "ogpRepository": 0,
+    "groupedPreview": "game-deals/grouped-preview.html",
+    "groupCount": 19,
+    "deadlineCount": 23,
+    "status": "candidate"
   }
 }
